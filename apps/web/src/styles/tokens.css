@@ -1,0 +1,21 @@
+/* Palette « Anthracite et cuivre ». Toute couleur de l'interface passe par ces jetons. */
+:root {
+  --bg: #20262a;
+  --panel: #2a3135;
+  --border: #3c464a;
+  --sunken: #1a1f22;
+  --text: #f1f0ec;
+  --text-muted: #a9b3b5;
+  --action: #f08a4b;
+  --event: #4cc9d6;
+  --clan: #e3c770;
+  --magic: #b39df5;
+  --good: #7ed6a2;
+  --alert: #ff7c7c;
+  --market: #8db4e2;
+
+  --font: 'Bricolage Grotesque', system-ui, sans-serif;
+  --radius: 14px;
+  --radius-sm: 9px;
+  --gap: 14px;
+}

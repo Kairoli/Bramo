@@ -1,0 +1,71 @@
+import { StrictMode, useCallback, useEffect, useState } from 'react';
+import { createRoot } from 'react-dom/client';
+import type { ContentResponse, StateResponse } from '@bramo/shared';
+import { api, RequestError } from './api';
+import { GameProvider, useGame } from './game/GameContext';
+import { LoginScreen } from './LoginScreen';
+import { TopBar } from './components/TopBar';
+import { AbsenceModal } from './components/AbsenceModal';
+import { ShopModal } from './components/ShopModal';
+import { Home } from './rooms/Home';
+import { Professions } from './rooms/Professions';
+import { ProfessionRoom } from './rooms/ProfessionRoom';
+import { CharacterRoom } from './rooms/CharacterRoom';
+import { SoonRoom } from './rooms/SoonRoom';
+import './styles/global.css';
+import './styles/rooms.css';
+
+function Shell() {
+  const { room, professionId, absence, shopOpen, error } = useGame();
+  return (
+    <div className="app">
+      <TopBar />
+      {room === 'home' && <Home />}
+      {room === 'professions' && (professionId ? <ProfessionRoom key={professionId} id={professionId} /> : <Professions />)}
+      {room === 'character' && <CharacterRoom />}
+      {room === 'clan' && <SoonRoom room="clan" />}
+      {room === 'market' && <SoonRoom room="market" />}
+      {room === 'combat' && <SoonRoom room="combat" />}
+      {absence && <AbsenceModal summary={absence} />}
+      {shopOpen && <ShopModal />}
+      {error && <div className="toast">{error}</div>}
+    </div>
+  );
+}
+
+function App() {
+  const [content, setContent] = useState<ContentResponse | null>(null);
+  const [session, setSession] = useState<StateResponse | null | undefined>(undefined);
+  const [fatal, setFatal] = useState<string | null>(null);
+
+  const loadState = useCallback(() => {
+    api
+      .state()
+      // Le résumé d'absence n'est envoyé qu'une fois : ne pas le perdre si deux réponses se croisent.
+      .then((res) => setSession((prev) => (prev && !res.absence ? { ...res, absence: prev.absence } : res)))
+      .catch((err) => (err instanceof RequestError && err.status === 401 ? setSession(null) : setFatal(err.message)));
+  }, []);
+
+  useEffect(() => {
+    api
+      .content()
+      .then(setContent)
+      .catch((err) => setFatal(err.message));
+    loadState();
+  }, [loadState]);
+
+  if (fatal) return <div className="center-message">{fatal}</div>;
+  if (!content || session === undefined) return <div className="center-message muted">Chargement…</div>;
+  if (!session) return <LoginScreen onLoggedIn={loadState} />;
+  return (
+    <GameProvider content={content} initial={session} onLogout={() => setSession(null)}>
+      <Shell />
+    </GameProvider>
+  );
+}
+
+createRoot(document.getElementById('root')!).render(
+  <StrictMode>
+    <App />
+  </StrictMode>,
+);

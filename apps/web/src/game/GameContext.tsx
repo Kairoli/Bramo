@@ -1,0 +1,138 @@
+import { createContext, useCallback, useContext, useEffect, useRef, useState, type ReactNode } from 'react';
+import type { AdvanceSummary, ContentResponse, JournalEntry, StateResponse, StateView } from '@bramo/shared';
+import { api, RequestError } from '../api';
+import { msUntilActivityEnds } from './useLive';
+
+export type Room = 'home' | 'professions' | 'character' | 'clan' | 'market' | 'combat';
+
+interface Game {
+  content: ContentResponse;
+  name: string;
+  state: StateView;
+  /** Heure locale de réception de `state`, pour l'affichage interpolé. */
+  receivedAt: number;
+  journal: JournalEntry[];
+  absence: AdvanceSummary | null;
+  dismissAbsence: () => void;
+  showAbsence: (summary: AdvanceSummary) => void;
+  /** Envoie une intention au serveur ; renvoie false si elle est refusée. */
+  act: (call: () => Promise<StateResponse>) => Promise<boolean>;
+  error: string | null;
+  room: Room;
+  professionId: string | null;
+  go: (room: Room, professionId?: string | null) => void;
+  shopOpen: boolean;
+  setShopOpen: (open: boolean) => void;
+  logout: () => void;
+}
+
+const GameCtx = createContext<Game | null>(null);
+
+export function useGame(): Game {
+  const game = useContext(GameCtx);
+  if (!game) throw new Error('useGame hors de GameProvider');
+  return game;
+}
+
+export function GameProvider({
+  content,
+  initial,
+  onLogout,
+  children,
+}: {
+  content: ContentResponse;
+  initial: StateResponse;
+  onLogout: () => void;
+  children: ReactNode;
+}) {
+  const [snapshot, setSnapshot] = useState({ res: initial, receivedAt: Date.now() });
+  const [journal, setJournal] = useState<JournalEntry[]>(initial.journal);
+  const [absence, setAbsence] = useState<AdvanceSummary | null>(initial.absence);
+  const [error, setError] = useState<string | null>(null);
+  const [room, setRoom] = useState<Room>('home');
+  const [professionId, setProfessionId] = useState<string | null>(null);
+  const [shopOpen, setShopOpen] = useState(false);
+  const errorTimer = useRef<number | undefined>(undefined);
+
+  const apply = useCallback((res: StateResponse) => {
+    setSnapshot({ res, receivedAt: Date.now() });
+    if (res.journal.length) {
+      setJournal((j) => [...[...res.journal].reverse(), ...j.filter((e) => !res.journal.some((n) => n.id === e.id))]);
+    }
+    if (res.absence) setAbsence(res.absence);
+  }, []);
+
+  const flash = useCallback((message: string) => {
+    setError(message);
+    window.clearTimeout(errorTimer.current);
+    errorTimer.current = window.setTimeout(() => setError(null), 4000);
+  }, []);
+
+  const act = useCallback(
+    async (call: () => Promise<StateResponse>) => {
+      try {
+        apply(await call());
+        return true;
+      } catch (err) {
+        if (err instanceof RequestError && err.status === 401) onLogout();
+        else flash(err instanceof Error ? err.message : 'Erreur inconnue.');
+        return false;
+      }
+    },
+    [apply, flash, onLogout],
+  );
+
+  // Historique du journal, puis signes de vie réguliers tant que l'onglet est visible.
+  useEffect(() => {
+    api.journal().then(setJournal).catch(() => {});
+    const refresh = () => {
+      if (document.visibilityState === 'visible') void act(api.state);
+    };
+    const id = window.setInterval(refresh, content.settings.presence.heartbeatSec * 1000);
+    document.addEventListener('visibilitychange', refresh);
+    return () => {
+      window.clearInterval(id);
+      document.removeEventListener('visibilitychange', refresh);
+    };
+  }, [act, content.settings.presence.heartbeatSec]);
+
+  // Si l'activité doit finir avant le prochain signe de vie, on redemande l'état à ce moment-là.
+  const { state } = snapshot.res;
+  useEffect(() => {
+    const recipe = state.activity && content.recipes[state.activity.recipeId];
+    if (!recipe) return;
+    const ms = msUntilActivityEnds(state, recipe);
+    if (ms > content.settings.presence.heartbeatSec * 1000) return;
+    const id = window.setTimeout(() => void act(api.state), Math.max(500, ms + 300));
+    return () => window.clearTimeout(id);
+  }, [state, content, act]);
+
+  const go = useCallback((r: Room, p: string | null = null) => {
+    setRoom(r);
+    setProfessionId(p);
+  }, []);
+
+  const logout = useCallback(() => {
+    api.logout().finally(onLogout);
+  }, [onLogout]);
+
+  const value: Game = {
+    content,
+    name: snapshot.res.name,
+    state: snapshot.res.state,
+    receivedAt: snapshot.receivedAt,
+    journal,
+    absence,
+    dismissAbsence: () => setAbsence(null),
+    showAbsence: setAbsence,
+    act,
+    error,
+    room,
+    professionId,
+    go,
+    shopOpen,
+    setShopOpen,
+    logout,
+  };
+  return <GameCtx.Provider value={value}>{children}</GameCtx.Provider>;
+}

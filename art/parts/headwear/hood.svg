@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 760">
+  <!-- Trois quarts : le pan droit de la capuche passe derrière le visage (calque back), le dessus et le pan proche devant (calque front). -->
+  <g id="back">
+    <path d="M262 70 Q272 112 258 152 L238 166 Q248 130 246 96 Z" fill="var(--c-coat)"/>
+    <path d="M262 70 Q272 112 258 152" stroke="var(--c-glow)" stroke-opacity=".55" stroke-width="2" fill="none"/>
+    <path d="M188 96 Q198 66 216 62 Q238 66 248 96 L246 156 L184 160 Z" fill="var(--c-shadow)"/>
+  </g>
+  <g id="shadow">
+    <path d="M186 92 Q194 66 214 64 Q237 66 246 92 L246 104 Q216 95 188 109 Z" fill="url(#rig-hood)"/>
+  </g>
+  <g id="front">
+    <path d="M216 18 Q252 26 262 70 Q260 82 252 92 Q238 68 214 66 Q194 68 188 96 Q183 124 188 162 L158 168 Q130 128 140 80 Q156 30 216 18 Z" fill="var(--c-coat)"/>
+    <path d="M216 18 Q156 30 140 80 Q130 128 158 168 L188 162 Q183 124 188 96 Q192 78 202 70 Z" fill="url(#rig-shade)"/>
+    <path d="M216 18 Q252 26 262 70 Q260 82 252 92" stroke="var(--c-glow)" stroke-opacity=".55" stroke-width="2" fill="none"/>
+    <path d="M188 96 Q194 68 214 66 Q238 68 252 92" stroke="var(--c-shadow)" stroke-width="3" fill="none"/>
+  </g>
+</svg>

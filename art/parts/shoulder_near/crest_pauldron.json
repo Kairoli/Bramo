@@ -1,0 +1,8 @@
+{
+  "id": "crest_pauldron",
+  "slot": "shoulder_near",
+  "name": "Épaulière à cimier",
+  "colorRoles": ["metal", "trim"],
+  "anchor": [0, 0],
+  "layers": [{ "id": "pauldron", "bone": "upperarm_near", "z": 76 }]
+}

@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 760">
+  <g id="far">
+    <path d="M330 236 L344 228 L349 236 L336 245 Z" fill="var(--c-leather)"/>
+    <path class="fx-pulse" d="M337 239 L350 231" stroke="var(--c-glow)" stroke-width="1.5"/>
+  </g>
+  <g id="near">
+    <path d="M127 366 L154 367 L153 376 L126 375 Z" fill="var(--c-leather)"/>
+  </g>
+</svg>

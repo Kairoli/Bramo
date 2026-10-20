@@ -1,0 +1,11 @@
+{
+  "id": "travel_boots",
+  "slot": "boots",
+  "name": "Bottes de voyage",
+  "colorRoles": ["boots", "trim"],
+  "anchor": [0, 0],
+  "layers": [
+    { "id": "far", "bone": "shin_far", "z": 16 },
+    { "id": "near", "bone": "shin_near", "z": 20 }
+  ]
+}

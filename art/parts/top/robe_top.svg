@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 760">
+  <g id="sleeve_far_upper">
+    <path d="M242 184 L276 180 L304 280 L274 294 Z" fill="var(--c-coat)"/>
+    <path d="M242 184 L276 180 L304 280 L274 294 Z" fill="url(#rig-light)"/>
+    <path d="M276 180 L304 280" stroke="var(--c-glow)" stroke-opacity=".55" stroke-width="2"/>
+  </g>
+  <g id="sleeve_far_lower">
+    <path d="M276 292 L302 278 L344 236 L326 222 Z" fill="var(--c-coat-dark)"/>
+    <path d="M322 220 L348 238 L341 248 L315 230 Z" fill="var(--c-trim)"/>
+  </g>
+  <g id="torso">
+    <path d="M158 172 Q200 156 248 166 Q260 214 254 304 Q206 318 160 304 Q150 240 158 172 Z" fill="var(--c-coat)"/>
+    <path d="M158 172 Q200 156 248 166 Q260 214 254 304 Q206 318 160 304 Q150 240 158 172 Z" fill="url(#rig-light)"/>
+    <path d="M248 166 Q260 214 254 304" stroke="var(--c-glow)" stroke-opacity=".5" stroke-width="2" fill="none"/>
+  </g>
+  <g id="under">
+    <path d="M206 156 L232 158 L223 248 L215 258 L208 246 Z" fill="var(--c-under)"/>
+    <path d="M219 162 L216 250" stroke="#000" stroke-opacity=".25" stroke-width="1.5"/>
+  </g>
+  <g id="sleeve_near_upper">
+    <path d="M144 180 L178 188 L170 298 L138 292 Z" fill="var(--c-coat)"/>
+    <path d="M144 180 L178 188 L170 298 L138 292 Z" fill="url(#rig-shade)"/>
+  </g>
+  <g id="sleeve_near_lower">
+    <path d="M138 288 L168 294 L157 366 L130 362 Z" fill="var(--c-coat-dark)"/>
+    <path d="M128 358 L158 362 L156 374 L126 370 Z" fill="var(--c-trim)"/>
+  </g>
+</svg>

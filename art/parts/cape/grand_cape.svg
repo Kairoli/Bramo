@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 760">
+  <!-- Grande cape et étole : remplace le mantelet et change la silhouette. -->
+  <g id="back">
+    <path d="M156 158 Q116 320 90 664 Q206 696 336 656 Q306 330 262 160 Z" fill="var(--c-mantle)"/>
+    <path d="M156 158 Q116 320 90 664 Q150 682 206 686 L206 160 Z" fill="url(#rig-shade)"/>
+    <path d="M90 664 Q206 696 336 656" stroke="var(--c-trim)" stroke-width="3" fill="none"/>
+    <path d="M262 160 Q306 330 336 656" stroke="var(--c-glow)" stroke-opacity=".45" stroke-width="2" fill="none"/>
+  </g>
+  <g id="front">
+    <path d="M172 152 L194 156 L188 338 L175 352 L162 338 Z" fill="var(--c-mantle)"/>
+    <path d="M172 152 L162 338 L175 352 L188 338 L194 156" stroke="var(--c-trim)" stroke-width="2" fill="none"/>
+    <path d="M172 250 L180 258 L172 266 M180 250 L180 266" stroke="var(--c-trim)" stroke-width="1.6" fill="none"/>
+    <path d="M232 158 L248 162 L250 302 L241 314 L232 302 Z" fill="var(--c-mantle)"/>
+    <path d="M232 158 L232 302 L241 314 L250 302 L248 162" stroke="var(--c-trim)" stroke-width="2" fill="none"/>
+    <path d="M166 150 Q206 136 248 154 L246 166 Q206 150 168 162 Z" fill="var(--c-metal)"/>
+  </g>
+</svg>

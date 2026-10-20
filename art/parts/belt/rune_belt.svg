@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 760">
+  <g id="belt">
+    <path d="M156 290 Q206 302 256 290 L256 312 Q206 324 156 312 Z" fill="var(--c-leather)"/>
+    <rect x="214" y="284" width="20" height="32" rx="3" fill="var(--c-metal)"/>
+    <path class="fx-pulse" d="M220 292 L228 300 L220 308" fill="none" stroke="var(--c-glow)" stroke-width="2" stroke-linecap="round" filter="url(#rig-glow)"/>
+  </g>
+  <g id="stones">
+    <g transform="rotate(-8 170 330)">
+      <rect x="162" y="314" width="15" height="24" rx="2" fill="var(--c-stone)" stroke="var(--c-metal)" stroke-opacity=".5"/>
+      <path d="M166 320 L173 326 L166 332" fill="none" stroke="var(--c-glow)" stroke-opacity=".8" stroke-width="1.5"/>
+    </g>
+    <g transform="rotate(6 246 330)">
+      <rect x="240" y="314" width="13" height="20" rx="2" fill="var(--c-stone)" stroke="var(--c-metal)" stroke-opacity=".5"/>
+      <path d="M246 318 L246 330 M242 324 L250 324" stroke="var(--c-glow)" stroke-opacity=".8" stroke-width="1.5"/>
+    </g>
+  </g>
+</svg>

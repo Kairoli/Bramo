@@ -1,0 +1,13 @@
+{
+  "id": "rune_circle",
+  "slot": "effect",
+  "name": "Cercle de runes",
+  "colorRoles": ["glow", "glowLight"],
+  "anchor": [0, 0],
+  "layers": [
+    { "id": "floor", "bone": "root", "z": 1, "detail": 2 },
+    { "id": "halo", "bone": "hand_far", "z": 2 },
+    { "id": "circle", "bone": "hand_far", "z": 90 },
+    { "id": "particles", "bone": "root", "z": 92, "detail": 2 }
+  ]
+}

@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 760">
+  <g id="pauldron">
+    <path d="M134 180 Q154 160 182 168 Q188 186 178 202 Q156 192 136 202 Z" fill="var(--c-metal)"/>
+    <path d="M136 202 Q156 192 178 202" stroke="var(--c-trim)" stroke-width="2.5" fill="none"/>
+    <circle cx="160" cy="182" r="4" fill="var(--c-glow-light)" class="fx-pulse" filter="url(#rig-glow)"/>
+  </g>
+</svg>

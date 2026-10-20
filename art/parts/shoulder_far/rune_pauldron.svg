@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 760">
+  <g id="pauldron">
+    <path d="M244 170 Q270 154 296 170 Q306 190 296 208 Q272 196 248 198 Z" fill="var(--c-metal)"/>
+    <path class="fx-pulse" d="M264 176 L282 184 L272 198" fill="none" stroke="var(--c-glow)" stroke-width="2" stroke-linecap="round" filter="url(#rig-glow)"/>
+    <path d="M246 170 Q270 154 296 170 Q306 190 296 208" stroke="#F1F0EC" stroke-opacity=".35" stroke-width="1.5" fill="none"/>
+  </g>
+</svg>

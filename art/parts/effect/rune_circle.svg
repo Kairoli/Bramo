@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 760">
+  <!-- Effet de classe du Runiste : cercle de runes dans la couleur d’affinité de la classe. -->
+  <g id="floor">
+    <ellipse cx="210" cy="700" rx="150" ry="22" fill="none" stroke="var(--c-glow)" stroke-opacity=".28" stroke-width="2" stroke-dasharray="3 9"/>
+  </g>
+  <g id="halo">
+    <circle cx="378" cy="176" r="70" fill="var(--c-glow)" opacity=".16" filter="url(#rig-soft)"/>
+  </g>
+  <g id="circle">
+    <g class="fx-hover">
+      <g filter="url(#rig-glow)">
+        <circle class="fx-spin" cx="378" cy="176" r="36" fill="none" stroke="var(--c-glow)" stroke-width="1.5" stroke-dasharray="2 6"/>
+        <circle class="fx-spin-back" cx="378" cy="176" r="27" fill="none" stroke="var(--c-glow)" stroke-width="2" stroke-dasharray="26 8 4 8"/>
+        <path class="fx-pulse" d="M368 164 L378 154 L388 164 L378 196 M370 176 L386 176" fill="none" stroke="var(--c-glow-light)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+      </g>
+      <g class="fx-orbit" filter="url(#rig-glow)">
+        <circle cx="378" cy="176" r="56" fill="none"/>
+        <polygon points="378,120 382,126 378,132 374,126" fill="var(--c-glow-light)"/>
+        <polygon points="430,184 433,188 430,192 427,188" fill="var(--c-glow)"/>
+        <polygon points="336,210 339,215 336,220 333,215" fill="var(--c-glow)"/>
+      </g>
+    </g>
+  </g>
+  <g id="particles">
+    <g fill="var(--c-glow)">
+      <circle class="fx-rise" cx="330" cy="262" r="2" style="animation-delay: 0s"/>
+      <circle class="fx-rise" cx="392" cy="232" r="1.5" style="animation-delay: .7s"/>
+      <circle class="fx-rise" cx="360" cy="300" r="1.8" style="animation-delay: 1.4s"/>
+      <circle class="fx-rise" cx="424" cy="252" r="1.2" style="animation-delay: 2.1s"/>
+      <circle class="fx-rise" cx="300" cy="330" r="1.4" style="animation-delay: 2.8s"/>
+      <circle class="fx-rise" cx="382" cy="204" r="1.6" style="animation-delay: 1.1s"/>
+      <circle class="fx-rise" cx="410" cy="292" r="1.2" style="animation-delay: 3.2s"/>
+    </g>
+  </g>
+</svg>

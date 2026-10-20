@@ -1,0 +1,8 @@
+{
+  "id": "mantlet",
+  "slot": "cape",
+  "name": "Mantelet",
+  "colorRoles": ["mantle", "trim", "metal"],
+  "anchor": [0, 0],
+  "layers": [{ "id": "front", "bone": "cape", "z": 74 }]
+}

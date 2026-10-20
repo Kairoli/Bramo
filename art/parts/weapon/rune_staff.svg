@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 760">
+  <g id="staff">
+    <path d="M147 104 L122 696" stroke="var(--c-wood)" stroke-width="9" stroke-linecap="round"/>
+    <path d="M145 112 L121 690" stroke="var(--c-wood-light)" stroke-width="2.5" stroke-linecap="round" opacity=".7"/>
+    <path d="M147 108 Q130 74 144 46 Q156 24 150 4" fill="none" stroke="var(--c-wood)" stroke-width="8" stroke-linecap="round"/>
+    <circle cx="154" cy="64" r="23" fill="none" stroke="var(--c-metal)" stroke-width="5"/>
+    <circle cx="154" cy="64" r="23" fill="none" stroke="#F1F0EC" stroke-opacity=".25" stroke-width="1.5" stroke-dasharray="20 124"/>
+    <g class="fx-hover">
+      <polygon points="154,48 167,57 165,74 154,81 143,74 141,57" fill="var(--c-stone)" stroke="#3C464A" stroke-width="1.5"/>
+      <path class="fx-pulse" d="M150 56 L158 64 L150 72 M158 56 L158 72" fill="none" stroke="var(--c-glow)" stroke-width="2" stroke-linecap="round" filter="url(#rig-glow)"/>
+    </g>
+  </g>
+  <g id="charm">
+    <path d="M139 300 l-6 10 l6 10 l6 -10z M139 300 L139 270" fill="var(--c-trim)" stroke="var(--c-trim)" stroke-width="1.5"/>
+  </g>
+</svg>

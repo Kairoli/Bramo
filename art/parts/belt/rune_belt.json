@@ -1,0 +1,11 @@
+{
+  "id": "rune_belt",
+  "slot": "belt",
+  "name": "Ceinture à runes",
+  "colorRoles": ["leather", "metal", "stone"],
+  "anchor": [0, 0],
+  "layers": [
+    { "id": "belt", "bone": "pelvis", "z": 40 },
+    { "id": "stones", "bone": "pelvis", "z": 41, "detail": 2 }
+  ]
+}

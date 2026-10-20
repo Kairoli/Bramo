@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 760">
+  <g id="front">
+    <path d="M236 148 Q252 160 248 188 L224 236 L206 266 L182 298 L160 324 L146 300 L134 262 Q122 210 138 172 Q158 150 188 146 Z" fill="var(--c-mantle)"/>
+    <path d="M248 188 L224 236 L206 266 L182 298 L160 324 L146 300 L134 262" fill="none" stroke="var(--c-trim)" stroke-width="3" stroke-linejoin="round"/>
+    <path d="M144 196 Q170 180 206 186 M148 236 Q170 224 196 230" stroke="#000" stroke-opacity=".22" stroke-width="2" fill="none"/>
+    <circle cx="224" cy="170" r="7" fill="var(--c-metal)"/>
+    <circle cx="224" cy="170" r="2.5" fill="var(--c-glow)" class="fx-pulse"/>
+  </g>
+</svg>

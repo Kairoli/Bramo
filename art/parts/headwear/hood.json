@@ -1,0 +1,12 @@
+{
+  "id": "hood",
+  "slot": "headwear",
+  "name": "Capuche de voyage",
+  "colorRoles": ["coat", "shadow"],
+  "anchor": [0, 0],
+  "layers": [
+    { "id": "back", "bone": "head", "z": 52 },
+    { "id": "shadow", "bone": "head", "z": 57 },
+    { "id": "front", "bone": "head", "z": 80 }
+  ]
+}

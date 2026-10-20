@@ -1,0 +1,11 @@
+{
+  "id": "rune_staff",
+  "slot": "weapon",
+  "name": "Bâton runique",
+  "colorRoles": ["wood", "woodLight", "metal", "stone", "trim", "glow"],
+  "anchor": [0, 0],
+  "layers": [
+    { "id": "staff", "bone": "hand_near", "z": 64 },
+    { "id": "charm", "bone": "hand_near", "z": 65, "detail": 2 }
+  ]
+}

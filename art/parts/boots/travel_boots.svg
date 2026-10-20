@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 760">
+  <g id="far">
+    <path d="M220 596 L250 596 L254 652 L278 674 Q250 684 218 682 L222 650 Z" fill="var(--c-boots)" opacity=".92"/>
+    <path d="M220 608 L250 608" stroke="var(--c-trim)" stroke-width="3"/>
+    <path d="M218 682 Q250 684 278 674" stroke="#16130F" stroke-width="4" fill="none"/>
+  </g>
+  <g id="near">
+    <path d="M165 600 L195 600 L197 656 L220 678 Q190 688 160 686 L165 650 Z" fill="var(--c-boots)"/>
+    <path d="M165 612 L195 612" stroke="var(--c-trim)" stroke-width="3"/>
+    <path d="M160 686 Q190 688 220 678" stroke="#16130F" stroke-width="4" fill="none"/>
+  </g>
+</svg>

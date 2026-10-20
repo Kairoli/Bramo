@@ -1,0 +1,11 @@
+{
+  "id": "bearded",
+  "slot": "face",
+  "name": "Barbe courte",
+  "colorRoles": ["beard", "skinDark"],
+  "anchor": [0, 0],
+  "layers": [
+    { "id": "features", "bone": "head", "z": 56 },
+    { "id": "eyes", "bone": "head", "z": 59 }
+  ]
+}

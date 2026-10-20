@@ -1,0 +1,45 @@
+{
+  "id": "humanoid",
+  "description": "Gabarit humanoïde en trois quarts vers la droite. Coordonnées absolues de la pose de repos ; sol à y=700. rotation = pose de référence (setup pose), en degrés, appliquée avant les animations. « near » = côté proche du spectateur (gauche de l'écran), « far » = côté éloigné (droite de l'écran, vers lequel le personnage regarde).",
+  "viewBox": [0, 0, 480, 760],
+  "bones": [
+    { "id": "root", "parent": null, "pivot": [205, 700] },
+    { "id": "pelvis", "parent": "root", "pivot": [206, 326] },
+    { "id": "torso", "parent": "pelvis", "pivot": [206, 300], "rotation": -1.5 },
+    { "id": "neck", "parent": "torso", "pivot": [208, 158] },
+    { "id": "head", "parent": "neck", "pivot": [210, 140], "rotation": 4 },
+    { "id": "upperarm_near", "parent": "torso", "pivot": [162, 186] },
+    { "id": "forearm_near", "parent": "upperarm_near", "pivot": [152, 292] },
+    { "id": "hand_near", "parent": "forearm_near", "pivot": [140, 370] },
+    { "id": "upperarm_far", "parent": "torso", "pivot": [258, 184] },
+    { "id": "forearm_far", "parent": "upperarm_far", "pivot": [290, 284] },
+    { "id": "hand_far", "parent": "forearm_far", "pivot": [336, 234] },
+    { "id": "thigh_near", "parent": "root", "pivot": [184, 334] },
+    { "id": "shin_near", "parent": "thigh_near", "pivot": [180, 560] },
+    { "id": "foot_near", "parent": "shin_near", "pivot": [178, 672] },
+    { "id": "thigh_far", "parent": "root", "pivot": [228, 334] },
+    { "id": "shin_far", "parent": "thigh_far", "pivot": [234, 556] },
+    { "id": "foot_far", "parent": "shin_far", "pivot": [238, 668] },
+    { "id": "cloth_back", "parent": "pelvis", "pivot": [206, 318] },
+    { "id": "cloth_near", "parent": "pelvis", "pivot": [178, 304] },
+    { "id": "cloth_far", "parent": "pelvis", "pivot": [226, 304] },
+    { "id": "cape", "parent": "torso", "pivot": [206, 160] }
+  ],
+  "colors": {
+    "skin": "#C99A78",
+    "skinDark": "#8A6248",
+    "legs": "#2E3438",
+    "legsDark": "#252A2D",
+    "boots": "#2B2320",
+    "leather": "#3A2C24",
+    "wood": "#4A3528",
+    "woodLight": "#7A5A44",
+    "shadow": "#0B0D10",
+    "stone": "#232A2E"
+  },
+  "lods": {
+    "portrait": { "viewBox": [156, 40, 124, 124], "detail": 1 },
+    "scene": { "viewBox": [60, -24, 400, 750], "detail": 2 },
+    "combat": { "viewBox": [40, -40, 440, 780], "detail": 3 }
+  }
+}

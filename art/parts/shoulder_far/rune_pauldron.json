@@ -1,0 +1,8 @@
+{
+  "id": "rune_pauldron",
+  "slot": "shoulder_far",
+  "name": "Épaulière runique",
+  "colorRoles": ["metal"],
+  "anchor": [0, 0],
+  "layers": [{ "id": "pauldron", "bone": "upperarm_far", "z": 44 }]
+}

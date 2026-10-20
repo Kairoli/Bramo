@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 760">
+  <g id="features">
+    <path d="M241 100 L248 112 L241 115" fill="none" stroke="var(--c-skin-dark)" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M190 118 Q194 142 216 156 Q236 148 240 128 Q234 134 226 133 Q214 131 204 124 Z" fill="var(--c-beard)"/>
+    <path d="M222 125 Q232 121 241 126" stroke="var(--c-beard)" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+  </g>
+  <g id="eyes">
+    <ellipse class="fx-pulse" cx="219" cy="101" rx="3.4" ry="1.6" fill="var(--c-glow-light)" filter="url(#rig-glow)"/>
+    <ellipse class="fx-pulse" cx="237" cy="100" rx="2.4" ry="1.4" fill="var(--c-glow-light)" filter="url(#rig-glow)"/>
+  </g>
+</svg>

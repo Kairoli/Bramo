@@ -1,0 +1,55 @@
+# Forge : minerai → lingot → lame ou outil. Durées et XP à équilibrer.
+- id: smelt_bronze
+  name: Lingot de bronze
+  profession: smithing
+  category: bars
+  level: 1
+  durationSec: 4
+  xp: 12
+  inputs: [{ item: copper_ore, qty: 1 }, { item: tin_ore, qty: 1 }]
+  outputs: [{ item: bronze_ingot, qty: 1 }]
+- id: forge_bronze_blade
+  name: Lame de bronze
+  profession: smithing
+  category: weapons
+  level: 5
+  durationSec: 6
+  xp: 30
+  inputs: [{ item: bronze_ingot, qty: 2 }]
+  outputs: [{ item: bronze_blade, qty: 1 }]
+- id: forge_bronze_pickaxe
+  name: Pioche de bronze
+  profession: smithing
+  category: tools
+  level: 10
+  durationSec: 8
+  xp: 45
+  inputs: [{ item: bronze_ingot, qty: 3 }]
+  outputs: [{ item: bronze_pickaxe, qty: 1 }]
+- id: smelt_iron
+  name: Lingot de fer
+  profession: smithing
+  category: bars
+  level: 15
+  durationSec: 5
+  xp: 25
+  inputs: [{ item: iron_ore, qty: 2 }]
+  outputs: [{ item: iron_ingot, qty: 1 }]
+- id: forge_iron_blade
+  name: Lame de fer
+  profession: smithing
+  category: weapons
+  level: 25
+  durationSec: 7
+  xp: 60
+  inputs: [{ item: iron_ingot, qty: 2 }]
+  outputs: [{ item: iron_blade, qty: 1 }]
+- id: forge_iron_pickaxe
+  name: Pioche de fer
+  profession: smithing
+  category: tools
+  level: 30
+  durationSec: 9
+  xp: 90
+  inputs: [{ item: iron_ingot, qty: 3 }]
+  outputs: [{ item: iron_pickaxe, qty: 1 }]

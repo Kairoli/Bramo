@@ -1,0 +1,43 @@
+# Réglages globaux de Bramo. Aucun de ces chiffres ne doit apparaître dans le code.
+
+xp:
+  maxLevel: 99
+
+# Titres de métier : le plus haut palier atteint s'affiche.
+titles:
+  - { level: 1, name: Novice }
+  - { level: 30, name: Apprenti }
+  - { level: 60, name: Compagnon }
+  - { level: 85, name: Maître }
+  - { level: 99, name: Grand maître }
+
+activity:
+  queueLength: 3          # actions en file après l'activité en cours (abonnés : à décider)
+  maxQuantity: 10000      # quantité maximale par lancement
+
+presence:
+  activeTimeoutSec: 120   # sans signe de vie depuis ce délai, le joueur passe hors ligne
+  heartbeatSec: 30        # fréquence des signes de vie du client
+
+rates:
+  active: 1.0             # 100 % en actif
+  offline: 0.25           # à équilibrer
+  offlineCapHours: 12     # accumulation hors ligne maximale
+
+energy:
+  multiplier: 1.5         # à équilibrer
+  dailyHours: 2           # 2 premières heures actives de la journée
+  resetHourUtc: 4         # bascule du jour de jeu (4 h UTC = 5 h ou 6 h à Paris)
+
+# Plafond de chaque source de bonus (0.30 = +30 %).
+bonusCaps:
+  tool: 0.30
+  meal: 0.10
+  clan: 0.10
+  season: 0.20
+
+absence:
+  minSummaryMin: 5        # en dessous, pas de fenêtre de résumé à la connexion
+
+character:
+  startingGold: 100       # à équilibrer

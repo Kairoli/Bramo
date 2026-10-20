@@ -1,0 +1,7 @@
+# Herboristerie. Durées et XP à équilibrer.
+- { id: pick_mint, name: Menthe sauvage, profession: herbalism, category: herbs, level: 1, durationSec: 3, xp: 15, outputs: [{ item: mint, qty: 1 }] }
+- { id: pick_thyme, name: Thym, profession: herbalism, category: herbs, level: 10, durationSec: 4, xp: 25, outputs: [{ item: thyme, qty: 1 }] }
+- { id: pick_nettle, name: Racine d'ortie, profession: herbalism, category: herbs, level: 20, durationSec: 5, xp: 38, outputs: [{ item: nettle_root, qty: 1 }] }
+- { id: pick_sage, name: Sauge pourpre, profession: herbalism, category: herbs, level: 35, durationSec: 6, xp: 55, outputs: [{ item: sage, qty: 1 }] }
+- { id: pick_lantern_lily, name: Lys-lanterne, profession: herbalism, category: herbs, level: 50, durationSec: 7, xp: 80, outputs: [{ item: lantern_lily, qty: 1 }] }
+- { id: pick_frost_flower, name: Fleur de givre, profession: herbalism, category: herbs, level: 70, durationSec: 9, xp: 120, outputs: [{ item: frost_flower, qty: 1 }] }

@@ -1,0 +1,7 @@
+# Minage. Durées et XP à équilibrer.
+- { id: mine_copper, name: Minerai de cuivre, profession: mining, category: ores, level: 1, durationSec: 3, xp: 17, outputs: [{ item: copper_ore, qty: 1 }] }
+- { id: mine_tin, name: Minerai d'étain, profession: mining, category: ores, level: 1, durationSec: 3, xp: 17, outputs: [{ item: tin_ore, qty: 1 }] }
+- { id: mine_iron, name: Minerai de fer, profession: mining, category: ores, level: 15, durationSec: 4, xp: 35, outputs: [{ item: iron_ore, qty: 1 }] }
+- { id: mine_coal, name: Charbon, profession: mining, category: ores, level: 25, durationSec: 5, xp: 50, outputs: [{ item: coal, qty: 1 }] }
+- { id: mine_mithril, name: Minerai de mithril, profession: mining, category: ores, level: 50, durationSec: 7, xp: 80, outputs: [{ item: mithril_ore, qty: 1 }] }
+- { id: mine_orichalcum, name: Minerai d'orichalque, profession: mining, category: ores, level: 70, durationSec: 9, xp: 125, outputs: [{ item: orichalcum_ore, qty: 1 }] }

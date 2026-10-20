@@ -1,0 +1,117 @@
+# Les 14 métiers du lancement. status: soon = visible mais pas encore jouable.
+
+# --- Récolte ---
+- id: mining
+  name: Minage
+  family: gathering
+  status: playable
+  place: Mines des Monts de Brisefer
+  description: Extraire le minerai des galeries.
+  master: { name: Maître Orvald, line: "« Une bonne pioche vaut dix bras. Reviens quand tu sauras lire la roche. »" }
+  categories:
+    - { id: ores, name: Minerais }
+
+- id: woodcutting
+  name: Bûcheronnage
+  family: gathering
+  status: soon
+  place: Bois des Murmures
+  description: Abattre et débiter le bois.
+
+- id: fishing
+  name: Pêche
+  family: gathering
+  status: soon
+  place: Mer des Lanternes
+  description: Pêcher en mer et en rivière.
+
+- id: herbalism
+  name: Herboristerie
+  family: gathering
+  status: playable
+  place: Jardins des Brumes
+  description: Cueillir herbes, racines et fleurs rares.
+  master: { name: Maîtresse Ysolde, line: "« Cueille à l'aube, jamais à midi. La sauge, elle, s'en moque. »" }
+  categories:
+    - { id: herbs, name: Herbes }
+
+- id: hunting
+  name: Chasse
+  family: gathering
+  status: soon
+  place: Landes du Nord
+  description: Traquer le gibier, rapporter cuirs et viandes.
+
+# --- Artisanat ---
+- id: smithing
+  name: Forge
+  family: crafting
+  status: playable
+  place: Forge du campement
+  description: Fondre les lingots, forger lames et outils.
+  master: { name: Maître Brunhild, line: "« Ramène-moi des lames dignes de ce nom et je t'apprendrai la trempe. »" }
+  categories:
+    - { id: bars, name: Lingots }
+    - { id: weapons, name: Armes }
+    - { id: tools, name: Outils }
+
+- id: carpentry
+  name: Menuiserie
+  family: crafting
+  status: soon
+  place: Atelier du campement
+  description: Manches, arcs, meubles et charpentes.
+
+- id: cooking
+  name: Cuisine
+  family: crafting
+  status: playable
+  place: Cuisines du campement
+  description: Préparer des repas qui donnent un coup de fouet.
+  master: { name: Maître Bertin, line: "« Un bon repas, et la journée file deux fois plus vite. Bon, presque. »" }
+  categories:
+    - { id: infusions, name: Infusions }
+    - { id: dishes, name: Plats }
+
+- id: alchemy
+  name: Alchimie
+  family: crafting
+  status: soon
+  place: Laboratoire
+  description: Potions et élixirs.
+
+- id: tailoring
+  name: Couture
+  family: crafting
+  status: soon
+  place: Atelier du campement
+  description: Tissus, cuirs et tenues.
+
+- id: artificing
+  name: Artificerie
+  family: crafting
+  status: soon
+  place: Atelier des artificiers
+  description: Mécanismes, pièges et engins.
+
+- id: enchanting
+  name: Enchantement
+  family: crafting
+  status: soon
+  place: Cercle des runes
+  description: Graver des runes, enchanter les objets.
+
+# --- Monde et clan ---
+- id: construction
+  name: Construction
+  family: world
+  status: soon
+  place: Halle du clan
+  description: Bâtir les projets du clan.
+
+- id: exploration
+  name: Exploration
+  family: world
+  status: soon
+  place: Carte du monde
+  description: Découvrir de nouveaux lieux et leurs ressources.

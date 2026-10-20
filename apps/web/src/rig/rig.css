@@ -7,6 +7,12 @@
 .rig-portrait {
   overflow: hidden;
 }
+.rig [data-layer] {
+  transition: opacity 0.2s;
+}
+.rig .rig-dim {
+  opacity: 0.25;
+}
 
 .rig .fx-spin {
   animation: fx-spin 14s linear infinite;

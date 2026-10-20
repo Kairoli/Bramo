@@ -1,45 +1,164 @@
 import { api } from '../api';
 import { useGame } from '../game/GameContext';
-import { duration, num, signedPct } from '../format';
-import { Character } from '../rig/Character';
+import { duration, num, pct, signedPct } from '../format';
 import { Bar, FAMILY_COLOR, ItemIcon } from '../components/ui';
-import { useNow } from '../game/useLive';
+import { DOLL_LEFT, DOLL_RIGHT, PaperDoll, PartThumb, useEquipment } from '../components/equipment';
 
+const COMBAT_STATS = ['Points de vie', 'Attaque', 'Défense', 'Puissance magique', 'Précision', 'Esquive'];
+
+/** Salle Personnage : le personnage au centre, tout ce qu'il porte, ses caractéristiques. */
 export function CharacterRoom() {
-  const { name, content, state, receivedAt, act, setShopOpen } = useGame();
-  const now = useNow(1000);
+  const { name, content, state, act, setShopOpen } = useGame();
+  const equipment = useEquipment();
+  const { settings } = content;
+  const outfit = content.cosmetics.outfits.find((o) => o.id === content.cosmetics.default.outfit)!;
+  const preview = content.classes[content.cosmetics.default.class];
+  const skills = content.professions.map((p) => ({ p, s: state.skills[p.id]! }));
+  const best = skills.filter((x) => x.p.status === 'playable').sort((a, b) => b.s.xp - a.s.xp)[0]!;
+  const totalLevel = skills.reduce((sum, x) => sum + x.s.level, 0);
+  const totalXp = skills.reduce((sum, x) => sum + x.s.xp, 0);
+  const rate = state.activity?.rate;
+  const activeProfession =
+    state.activity && content.professions.find((p) => p.id === content.recipes[state.activity!.recipeId]?.profession);
   const items = Object.entries(state.inventory)
     .map(([id, qty]) => ({ item: content.items[id]!, qty }))
     .filter((x) => x.item)
     .sort((a, b) => a.item.category.localeCompare(b.item.category) || a.item.name.localeCompare(b.item.name));
-  const totalLevel = content.professions.reduce((s, p) => s + (state.skills[p.id]?.level ?? 1), 0);
-  const buff = state.buff;
+
+  const bonuses = [
+    { label: 'Outil', value: rate?.tool ?? 0, cap: settings.bonusCaps.tool, soon: false },
+    { label: 'Repas', value: rate?.meal ?? 0, cap: settings.bonusCaps.meal, soon: false },
+    { label: 'Clan', value: 0, cap: settings.bonusCaps.clan, soon: true },
+    { label: 'Saison', value: 0, cap: settings.bonusCaps.season, soon: true },
+  ];
 
   return (
-    <main className="room">
-      <section className="panel band character-band">
-        <div className="band-label">[Le personnage, animé]</div>
-        <Character className="band-figure" />
-        <div className="character-identity">
-          <div className="eyebrow" style={{ color: 'var(--magic)' }}>
-            Classe · bientôt
-          </div>
-          <h1>{name}</h1>
-          <p className="muted">Niveau total {totalLevel}. Les classes (Forgefeu, Traqueur, Runiste) arriveront avec le combat.</p>
-          {buff && (
-            <span className="chip" style={{ color: 'var(--good)', borderColor: 'var(--good)' }}>
-              {content.items[buff.itemId]?.name} : {signedPct(buff.bonus)} encore {duration(buff.until - (state.serverTime + now - receivedAt))}
-            </span>
-          )}
+    <main className="character-room">
+      <section className="panel char-equipment">
+        <span className="eyebrow">Équipement et apparence</span>
+        <div className="equip-list">
+          {[...DOLL_LEFT, ...DOLL_RIGHT].map((id) => {
+            const e = equipment[id];
+            return (
+              <div key={id} className={`equip-row${e.name ? '' : ' empty'}`}>
+                <span className={`equip-slot equip-${e.kind}${e.name ? '' : ' empty'}`}>
+                  {e.thumb ? (
+                    <PartThumb slot={e.thumb.slot} partId={e.thumb.partId} />
+                  ) : e.item ? (
+                    <ItemIcon item={e.item} small />
+                  ) : null}
+                </span>
+                <span className="equip-text">
+                  <span className="eyebrow">{e.label}</span>
+                  <strong>{e.name ?? 'Vide'}</strong>
+                  <span className="muted">{e.detail}</span>
+                </span>
+              </div>
+            );
+          })}
+        </div>
+
+        <header className="bag-head">
+          <span className="eyebrow">Sac</span>
+          <button className="btn btn-sm" onClick={() => setShopOpen(true)}>
+            Marchand du port
+          </button>
+        </header>
+        <div className="bag scroll">
+          {items.length === 0 && <p className="muted">Votre sac est vide.</p>}
+          {items.map(({ item, qty }) => (
+            <div key={item.id} className="bag-item">
+              <ItemIcon item={item} small />
+              <span className="bag-name">{item.name}</span>
+              <span className="muted">×{num(qty)}</span>
+              {item.meal ? (
+                <button className="btn btn-sm" onClick={() => act(() => api.eat(item.id))}>
+                  Manger
+                </button>
+              ) : (
+                <span />
+              )}
+            </div>
+          ))}
         </div>
       </section>
 
-      <div className="character-bottom">
-        <section className="panel skills-panel">
+      <section className="panel band char-stage">
+        <header className="char-stage-head">
+          <div className="eyebrow" style={{ color: 'var(--magic)' }}>
+            Classe à venir · aperçu {preview?.name}
+          </div>
+          <h1>{name}</h1>
+          <div style={{ color: 'var(--clan)' }}>
+            {best.s.title} · {best.p.name} {best.s.level}
+          </div>
+        </header>
+        <PaperDoll size="page" />
+        <footer className="char-stage-foot">
+          <span className="chip">Tenue {outfit.name}</span>
+          <span className="chip">Niveau total {totalLevel}</span>
+          <span className="chip">Survolez un emplacement pour voir la pièce</span>
+        </footer>
+      </section>
+
+      <section className="panel char-stats scroll">
+        <span className="eyebrow">Caractéristiques</span>
+        <dl className="kv">
+          <dt>Niveau total</dt>
+          <dd>{totalLevel}</dd>
+          <dt>XP cumulée</dt>
+          <dd>{num(totalXp)}</dd>
+          <dt>Or</dt>
+          <dd style={{ color: 'var(--action)' }}>{num(state.gold)}</dd>
+          <dt>Métier principal</dt>
+          <dd>
+            {best.p.name} {best.s.level}
+          </dd>
+        </dl>
+
+        <div className="stat-block">
+          <div className="stat-block-head">
+            <span className="eyebrow">Rendement</span>
+            <span className="muted">{activeProfession ? activeProfession.name : 'aucune activité'}</span>
+          </div>
+          <dl className="kv">
+            <dt>Présence</dt>
+            <dd style={{ color: rate?.energized ? 'var(--good)' : undefined }}>
+              {rate ? `${pct(rate.presence)}${rate.energized ? ' · énergie' : ''}` : '—'}
+            </dd>
+            <dt>Hors ligne</dt>
+            <dd>
+              {pct(settings.rates.offline)}, {settings.rates.offlineCapHours} h max
+            </dd>
+            <dt>Total appliqué</dt>
+            <dd style={{ color: 'var(--action)' }}>{rate ? pct(rate.total) : '—'}</dd>
+          </dl>
+          {bonuses.map((b) => (
+            <div key={b.label} className={`bonus-row${b.soon ? ' soon' : ''}`}>
+              <span>{b.label}</span>
+              <span className="muted">{b.soon ? 'bientôt' : `${signedPct(b.value)} / ${signedPct(b.cap)}`}</span>
+              <Bar value={b.cap ? b.value / b.cap : 0} color="var(--good)" />
+            </div>
+          ))}
+        </div>
+
+        <div className="stat-block">
+          <div className="stat-block-head">
+            <span className="eyebrow">Énergie du jour</span>
+            <span className="muted">
+              {duration(state.energy.remainingMs)} / {duration(state.energy.maxMs)}
+            </span>
+          </div>
+          <Bar value={state.energy.maxMs ? state.energy.remainingMs / state.energy.maxMs : 0} />
+          <p className="muted small">
+            Gains à {pct(settings.energy.multiplier)} pendant vos premières heures actives de la journée.
+          </p>
+        </div>
+
+        <div className="stat-block">
           <span className="eyebrow">Métiers</span>
-          <div className="skills-list">
-            {content.professions.map((p) => {
-              const s = state.skills[p.id]!;
+          <div className="skills-compact">
+            {skills.map(({ p, s }) => {
               const span = s.nextLevelXp ? (s.xp - s.levelXp) / (s.nextLevelXp - s.levelXp) : 1;
               return (
                 <div key={p.id} className={`skill-row${p.status === 'soon' ? ' soon' : ''}`}>
@@ -51,41 +170,23 @@ export function CharacterRoom() {
               );
             })}
           </div>
-        </section>
+        </div>
 
-        <section className="panel bag-panel">
-          <header className="bag-head">
-            <span className="eyebrow">Sac</span>
-            <button className="btn btn-sm" onClick={() => setShopOpen(true)}>
-              Marchand du port
-            </button>
-          </header>
-          <div className="bag scroll">
-            {items.length === 0 && <p className="muted">Votre sac est vide.</p>}
-            {items.map(({ item, qty }) => (
-              <div key={item.id} className="bag-item">
-                <ItemIcon item={item} small />
-                <span className="bag-name">
-                  {item.name}
-                  {item.tool && <span className="muted"> · outil {signedPct(item.tool.bonus)}</span>}
-                  {item.meal && (
-                    <span className="muted">
-                      {' '}
-                      · repas {signedPct(item.meal.bonus)}, {item.meal.durationMin} min
-                    </span>
-                  )}
-                </span>
-                <span className="muted">×{num(qty)}</span>
-                {item.meal && (
-                  <button className="btn btn-sm" onClick={() => act(() => api.eat(item.id))}>
-                    Manger
-                  </button>
-                )}
+        <div className="stat-block soon">
+          <div className="stat-block-head">
+            <span className="eyebrow">Combat</span>
+            <span className="muted">arrive avec les classes</span>
+          </div>
+          <dl className="kv">
+            {COMBAT_STATS.map((s) => (
+              <div key={s} style={{ display: 'contents' }}>
+                <dt>{s}</dt>
+                <dd>—</dd>
               </div>
             ))}
-          </div>
-        </section>
-      </div>
+          </dl>
+        </div>
+      </section>
     </main>
   );
 }

@@ -154,7 +154,11 @@ Maquettes de référence : `docs/maquettes/`
 - **En bas, trois colonnes** :
   - gauche : journal et discussion, onglets Tout / Journal / Clan / Serveur (P1 : seul Journal fonctionne) ;
   - centre : activité en cours (anneau de progression, gains, file d'actions) et lien « Changer d'activité » ;
-  - droite : personnage d'un coup d'œil (portrait, nom, titre, classe et voie), sans alertes d'équipement.
+  - droite : le personnage **en entier**, entouré de ses emplacements (cosmétiques, arme, outil, repas), avec nom, titre, classe et voie, sans alertes d'équipement. Lien « Ouvrir le personnage ».
+
+### 9.2 bis Salle Personnage
+- Trois colonnes : équipement et apparence (détail de chaque emplacement) et sac ; le personnage centré, entouré de ses emplacements ; les caractéristiques (progression, rendement et bonus plafonnés, énergie, métiers, combat à venir).
+- Emplacements : Coiffe, Épaules, Haut, Gants, Ceinture, Cape, Bas, Bottes (cosmétiques) ; Arme (de classe) ; Outil et Repas (objets qui donnent un bonus). Un vrai système d'équipement avec statistiques arrivera avec le combat (P4).
 
 ### 9.3 Salle Métiers
 - Grille de tous les métiers, groupés (Récolte, Artisanat, Monde et clan). Les métiers « Bientôt » en pointillés.

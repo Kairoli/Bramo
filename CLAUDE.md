@@ -56,7 +56,8 @@ Ce fichier suffit à reprendre le projet sans autre contexte : le lire en entier
 
 - **Un accueil et cinq salles** : Accueil, Métiers, Personnage, Clan, Marché, Combat → six onglets dans la barre du haut. Tout le reste s'ouvre **en popup ou en volet, jamais en nouvel écran**.
 - **Aucun scroll de page.** Cible 1440×900, doit rester correct à 1280×720. Le scroll interne à un panneau (journal) est permis.
-- **Squelette commun** : en haut une bande visuelle (le lieu), en bas le contenu.
+- **Squelette commun** : en haut une bande visuelle (le lieu), en bas le contenu. Exception : la salle **Personnage**, en trois colonnes (équipement et sac · personnage centré · caractéristiques).
+- **Le personnage se montre toujours en entier, entouré de ce qu'il porte** (composant `PaperDoll`) : à droite de l'accueil, au centre de la salle Personnage. Pas de tête dans un rond. Survoler un emplacement met la pièce en valeur sur le personnage.
 - **Une seule police** : Bricolage Grotesque (Google Fonts).
 - **Palette « Anthracite et cuivre »**, uniquement via jetons CSS :
 

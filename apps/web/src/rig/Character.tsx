@@ -10,6 +10,7 @@ const CHILDREN = Object.fromEntries(rig.bones.map((b) => [b.id, rig.bones.filter
 
 interface Layer {
   key: string;
+  slot: string;
   bone: string;
   z: number;
   markup: string;
@@ -31,7 +32,7 @@ export function resolveParts(content: ContentResponse, appearance: Appearance): 
 }
 
 /** Variables CSS de couleur : palette de la tenue, couleurs du gabarit, couleur d'affinité de la classe. */
-function colorVars(content: ContentResponse, appearance: Appearance): CSSProperties {
+export function colorVars(content: ContentResponse, appearance: Appearance): CSSProperties {
   const outfit = content.cosmetics.outfits.find((o) => o.id === appearance.outfit) ?? content.cosmetics.outfits[0]!;
   const glow = content.classes[appearance.classId]?.affinityColor ?? '#B39DF5';
   const kebab = (s: string) => s.replace(/[A-Z]/g, (c) => `-${c.toLowerCase()}`);
@@ -51,17 +52,66 @@ export interface CharacterProps {
   showBones?: boolean;
   /** Vue éclatée : écarte les calques selon leur ordre d'empilement. */
   explode?: boolean;
+  /** Met une pièce en valeur (survol d'un emplacement) : les autres calques s'estompent. */
+  highlight?: Slot[] | null;
   className?: string;
   title?: string;
+}
+
+/** Apparence par défaut (data/cosmetics.yaml) tant que le personnage n'en a pas d'autre. */
+export function useLook(appearance?: Appearance): Appearance {
+  const content = useContent();
+  return appearance ?? { outfit: content.cosmetics.default.outfit, classId: content.cosmetics.default.class };
+}
+
+/** Dégradés et filtres partagés par les pièces (ids rendus uniques par `uid`). */
+export function RigDefs({ uid }: { uid: string }) {
+  return (
+    <defs>
+      <filter id={`${uid}-rig-glow`} x="-50%" y="-50%" width="200%" height="200%">
+        <feGaussianBlur stdDeviation="4" result="b" />
+        <feMerge>
+          <feMergeNode in="b" />
+          <feMergeNode in="SourceGraphic" />
+        </feMerge>
+      </filter>
+      <filter id={`${uid}-rig-soft`} x="-50%" y="-50%" width="200%" height="200%">
+        <feGaussianBlur stdDeviation="14" />
+      </filter>
+      {/* Ombre douce côté gauche, lumière de contour du sort côté droit. */}
+      <linearGradient id={`${uid}-rig-shade`} x1="0" x2="1">
+        <stop offset="0" stopColor="#000" stopOpacity=".35" />
+        <stop offset=".55" stopColor="#000" stopOpacity="0" />
+      </linearGradient>
+      <linearGradient id={`${uid}-rig-light`} x1="0" x2="1">
+        <stop offset=".45" stopColor="var(--c-glow)" stopOpacity="0" />
+        <stop offset="1" stopColor="var(--c-glow)" stopOpacity=".22" />
+      </linearGradient>
+      <linearGradient id={`${uid}-rig-hood`} x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stopColor="#0B0D10" stopOpacity=".92" />
+        <stop offset=".75" stopColor="#0B0D10" stopOpacity=".75" />
+        <stop offset="1" stopColor="#0B0D10" stopOpacity="0" />
+      </linearGradient>
+    </defs>
+  );
 }
 
 /**
  * Personnage assemblé à partir de pièces SVG posées sur les os du gabarit.
  * Règle de mise en scène : toujours en trois quarts vers la droite, jamais en miroir.
  */
-export function Character({ appearance, lod = 'scene', animate = true, showBones, explode, className, title }: CharacterProps) {
+export function Character({
+  appearance,
+  lod = 'scene',
+  animate = true,
+  showBones,
+  explode,
+  highlight,
+  className,
+  title,
+}: CharacterProps) {
   const content = useContent();
-  const look = appearance ?? { outfit: content.cosmetics.default.outfit, classId: content.cosmetics.default.class };
+  const look = useLook(appearance);
   const uid = useId().replace(/[^a-zA-Z0-9]/g, '');
   const level = rig.lods[lod];
 
@@ -74,6 +124,7 @@ export function Character({ appearance, lod = 'scene', animate = true, showBones
         if (l.detail > level.detail) continue;
         out.push({
           key: `${slot}/${id}/${l.id}`,
+          slot,
           bone: l.bone,
           z: l.z,
           markup: part.markup[l.id]!.replaceAll('#rig-', `#${uid}-rig-`),
@@ -126,37 +177,13 @@ export function Character({ appearance, lod = 'scene', animate = true, showBones
       role="img"
       aria-label={title ?? 'Personnage'}
     >
-      <defs>
-        <filter id={`${uid}-rig-glow`} x="-50%" y="-50%" width="200%" height="200%">
-          <feGaussianBlur stdDeviation="4" result="b" />
-          <feMerge>
-            <feMergeNode in="b" />
-            <feMergeNode in="SourceGraphic" />
-          </feMerge>
-        </filter>
-        <filter id={`${uid}-rig-soft`} x="-50%" y="-50%" width="200%" height="200%">
-          <feGaussianBlur stdDeviation="14" />
-        </filter>
-        {/* Ombre douce côté gauche, lumière de contour du sort côté droit. */}
-        <linearGradient id={`${uid}-rig-shade`} x1="0" x2="1">
-          <stop offset="0" stopColor="#000" stopOpacity=".35" />
-          <stop offset=".55" stopColor="#000" stopOpacity="0" />
-        </linearGradient>
-        <linearGradient id={`${uid}-rig-light`} x1="0" x2="1">
-          <stop offset=".45" stopColor="var(--c-glow)" stopOpacity="0" />
-          <stop offset="1" stopColor="var(--c-glow)" stopOpacity=".22" />
-        </linearGradient>
-        <linearGradient id={`${uid}-rig-hood`} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor="#0B0D10" stopOpacity=".92" />
-          <stop offset=".75" stopColor="#0B0D10" stopOpacity=".75" />
-          <stop offset="1" stopColor="#0B0D10" stopOpacity="0" />
-        </linearGradient>
-      </defs>
+      <RigDefs uid={uid} />
 
       {layers.map((l) => (
         <g
           key={l.key}
           data-layer={l.key}
+          className={highlight?.length && !highlight.includes(l.slot as Slot) && l.slot !== 'body' ? 'rig-dim' : undefined}
           ref={(el) => {
             if (el) layerRefs.current.set(l.key, el);
             else layerRefs.current.delete(l.key);

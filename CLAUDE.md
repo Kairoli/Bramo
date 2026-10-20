@@ -78,12 +78,15 @@ Ce fichier suffit à reprendre le projet sans autre contexte : le lire en entier
 
 Le détail écran par écran (accueil, salle Métiers, salle d'un métier) est dans `docs/game-design.md`, section Interface.
 
-## Personnages (règle de mise en scène)
+## Personnages
 
-- Le personnage est **toujours à gauche de la scène**, de face mais **tourné et regardant vers la droite**. **On ne le retourne jamais en miroir.**
-- **Proportions réalistes**, pas de grosse tête (pas de chibi).
-- Pour l'instant : simples placeholders.
-- Plus tard : 2D vectorielle découpée en pièces (squelette + emplacements de tenue), ambiance sombre, lumière colorée venant des sorts. Référence de style : `docs/maquettes/5-runiste.png`.
+- Le personnage est **toujours à gauche de la scène**, en **trois quarts vers la droite** : regard, arme et sorts vont vers la droite. **On ne le retourne jamais en miroir** (sur une carte, on utilise un portrait ou un pion).
+- **Proportions réalistes** (7,5 à 8 têtes), pas de grosse tête. Ambiance sombre mais lisible sur l'anthracite grâce à la lumière de contour et aux touches vives.
+- **L'apparence ne dépend jamais de la classe.** La classe se lit à l'arme et à l'effet, dans sa couleur d'affinité : magie #B39DF5 ; mêlée #F08A4B et tir #7ED6A2 sont des propositions à valider.
+- Les cosmétiques sont le seul revenu : une nouvelle tenue se fait **sans retoucher les animations**.
+- Style original (esprit Dofus ou Darkest Dungeon permis, formes copiées interdites).
+- **Système** : gabarit à os + pièces SVG par emplacement + animations en images clés, modèle compatible Spine/Rive. Tout est décrit dans [`art/README.md`](art/README.md). Tenues dans `data/cosmetics.yaml`, armes et effets de classe dans `data/classes.yaml`. Rendu : `apps/web/src/rig/Character.tsx`, trois niveaux de détail (portrait ~80 px, scène ~400 px, combat). Page de test : `/#atelier`.
+- En P1, tous les personnages s'affichent avec l'apparence par défaut (`cosmetics.yaml > default` : Cendres + Runiste), en attendant le choix de classe et de tenue.
 
 ## Architecture du moteur (P1)
 
@@ -102,4 +105,5 @@ packages/shared schémas zod, types, formules pures + tests
 data/           contenu et équilibrage en YAML
 sim/            simulateur d'équilibrage (plus tard)
 docs/           game design, maquettes
+art/            gabarit, pièces et animations des personnages
 ```

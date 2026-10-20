@@ -71,6 +71,8 @@ p {
 }
 
 .btn {
+  color: inherit;
+  text-decoration: none;
   border: 1px solid var(--border);
   background: var(--panel);
   border-radius: var(--radius-sm);

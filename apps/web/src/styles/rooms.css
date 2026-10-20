@@ -314,37 +314,75 @@
 .character-card {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 8px;
+  gap: 12px;
   padding: 14px 16px;
-  text-align: center;
+}
+.character-head {
+  display: flex;
+  align-items: center;
+  gap: 14px;
 }
 .character-portrait {
-  flex: 1;
-  min-height: 0;
-  aspect-ratio: 1;
-  max-width: 100%;
+  flex: none;
+  width: 84px;
+  height: 84px;
   border-radius: 50%;
-  border: 1px dashed var(--border);
-  display: grid;
-  place-items: center;
   overflow: hidden;
+  border: 2px solid var(--magic);
+  background: radial-gradient(circle at 70% 30%, rgb(179 157 245 / 0.18), transparent 60%), var(--sunken);
+  box-shadow: 0 0 18px rgb(179 157 245 / 0.18);
 }
-.character-figure {
-  height: 92%;
+.character-portrait .rig {
+  width: 100%;
+  height: 100%;
 }
-.character-card h3 {
+.character-id {
+  display: grid;
+  gap: 4px;
+  justify-items: start;
+  min-width: 0;
+}
+.character-id h3 {
   font-size: 22px;
   font-weight: 700;
 }
-.character-total {
+.character-id .chip {
+  font-size: 11px;
+  white-space: normal;
+}
+.character-skills {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  align-content: center;
+  gap: 8px;
+}
+.character-skill {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 4px 10px;
+  padding: 0;
+  background: none;
+  border: none;
+  text-align: left;
+  font-size: 13px;
+}
+.character-skill .bar {
+  grid-column: 1 / -1;
+}
+.character-skill:hover span {
+  color: var(--action);
+}
+.character-foot {
+  display: flex;
+  justify-content: space-between;
   font-size: 12px;
 }
 
 /* ---------- Salle Métiers ---------- */
 
 .professions-band {
-  padding: 18px;
+  padding: 18px 18px 18px clamp(180px, 18%, 260px);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -869,4 +907,140 @@
   .master-bubble p {
     display: none;
   }
+}
+
+/* ---------- Atelier de personnages (développement) ---------- */
+
+.atelier {
+  height: 100vh;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 400px;
+  gap: var(--gap);
+  padding: 14px;
+}
+.atelier-stage {
+  display: grid;
+  place-items: center;
+  min-height: 0;
+  background:
+    radial-gradient(ellipse at 62% 30%, rgb(179 157 245 / 0.1), transparent 55%),
+    var(--sunken);
+}
+.atelier-lods {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+}
+.atelier-chips {
+  position: absolute;
+  left: 14px;
+  bottom: 14px;
+  display: flex;
+  gap: 8px;
+}
+.atelier-frame {
+  display: grid;
+  place-items: center;
+}
+.atelier-portrait .rig {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--panel);
+}
+.atelier-scene .rig {
+  height: 400px;
+}
+.atelier-combat {
+  position: absolute;
+  inset: 56px 14px 56px;
+}
+.atelier-combat .rig {
+  position: absolute;
+  inset: 0;
+  height: 100%;
+  width: 100%;
+}
+.atelier-side {
+  padding: 26px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.atelier-side h1 {
+  font-size: 44px;
+  font-weight: 800;
+  line-height: 1;
+}
+.atelier-classes {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.atelier-classes .chip {
+  cursor: pointer;
+  font-weight: 600;
+}
+.atelier-classes .chip:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.outfits {
+  display: grid;
+  gap: 8px;
+}
+.outfit {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--panel);
+  text-align: left;
+}
+.outfit > span:last-child {
+  display: grid;
+}
+.outfit.selected {
+  border-color: var(--action);
+  background: var(--sunken);
+}
+.swatches {
+  display: flex;
+  border-radius: 6px;
+  overflow: hidden;
+}
+.swatches span {
+  width: 14px;
+  height: 30px;
+}
+.swatches span:last-child {
+  width: 6px;
+}
+.slot-list {
+  display: grid;
+  gap: 6px;
+}
+.slot-row {
+  display: grid;
+  grid-template-columns: 1fr 170px;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+}
+.slot-row select {
+  font: inherit;
+  color: var(--text);
+  background: var(--sunken);
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  padding: 5px 8px;
+}
+.atelier-toggles {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 4px;
 }

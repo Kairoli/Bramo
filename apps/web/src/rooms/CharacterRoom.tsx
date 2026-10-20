@@ -1,7 +1,7 @@
 import { api } from '../api';
 import { useGame } from '../game/GameContext';
 import { duration, num, signedPct } from '../format';
-import { Figure } from '../components/Figure';
+import { Character } from '../rig/Character';
 import { Bar, FAMILY_COLOR, ItemIcon } from '../components/ui';
 import { useNow } from '../game/useLive';
 
@@ -19,7 +19,7 @@ export function CharacterRoom() {
     <main className="room">
       <section className="panel band character-band">
         <div className="band-label">[Le personnage, animé]</div>
-        <Figure className="band-figure" />
+        <Character className="band-figure" />
         <div className="character-identity">
           <div className="eyebrow" style={{ color: 'var(--magic)' }}>
             Classe · bientôt

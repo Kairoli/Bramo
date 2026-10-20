@@ -1,0 +1,91 @@
+/* Animations secondaires des pièces (effets, lueurs). Le squelette, lui, est animé en JS. */
+
+.rig {
+  display: block;
+  overflow: visible;
+}
+.rig-portrait {
+  overflow: hidden;
+}
+
+.rig .fx-spin {
+  animation: fx-spin 14s linear infinite;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.rig .fx-spin-back {
+  animation: fx-spin 9s linear infinite reverse;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.rig .fx-orbit {
+  animation: fx-spin 5s linear infinite;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.rig .fx-hover {
+  animation: fx-hover 3.2s ease-in-out infinite;
+}
+.rig .fx-pulse {
+  animation: fx-pulse 2.4s ease-in-out infinite;
+}
+.rig .fx-rise {
+  animation: fx-rise 3.6s ease-out infinite;
+}
+
+@keyframes fx-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes fx-hover {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+@keyframes fx-pulse {
+  0%,
+  100% {
+    opacity: 0.55;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+@keyframes fx-rise {
+  0% {
+    transform: translateY(0);
+    opacity: 0;
+  }
+  15% {
+    opacity: 0.9;
+  }
+  100% {
+    transform: translateY(-120px);
+    opacity: 0;
+  }
+}
+
+.rig-still * {
+  animation: none !important;
+}
+@media (prefers-reduced-motion: reduce) {
+  .rig * {
+    animation: none !important;
+  }
+}
+
+.rig-bones line {
+  stroke: var(--event);
+  stroke-width: 2;
+  stroke-dasharray: 4 3;
+}
+.rig-bones circle {
+  fill: var(--sunken);
+  stroke: var(--event);
+  stroke-width: 2;
+}

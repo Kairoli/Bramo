@@ -1,6 +1,7 @@
 import type { ProfessionFamily } from '@bramo/shared';
 import { useGame } from '../game/GameContext';
 import { Bar, FAMILY_COLOR, FAMILY_NAME } from '../components/ui';
+import { Character } from '../rig/Character';
 
 const FAMILIES: ProfessionFamily[] = ['gathering', 'crafting', 'world'];
 
@@ -14,6 +15,7 @@ export function Professions() {
     <main className="room">
       <section className="panel band professions-band">
         <div className="band-label">[Illustration animée : le quartier des artisans]</div>
+        <Character className="band-figure" />
         <div className="professions-title">
           <h1>Métiers</h1>
           <div className="row-gap">

@@ -6,5 +6,7 @@ export default defineConfig({
   server: {
     port: 5173,
     proxy: { '/api': 'http://127.0.0.1:3001' },
+    // Les pièces des personnages sont lues dans art/, à la racine du dépôt.
+    fs: { allow: ['../..'] },
   },
 });

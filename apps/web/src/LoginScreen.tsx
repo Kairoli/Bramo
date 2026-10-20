@@ -1,6 +1,6 @@
 import { useState, type FormEvent } from 'react';
 import { api } from './api';
-import { Figure } from './components/Figure';
+import { Character } from './rig/Character';
 
 export function LoginScreen({ onLoggedIn }: { onLoggedIn: () => void }) {
   const [mode, setMode] = useState<'login' | 'register'>('login');
@@ -26,7 +26,7 @@ export function LoginScreen({ onLoggedIn }: { onLoggedIn: () => void }) {
   return (
     <div className="login">
       <div className="panel band login-scene">
-        <Figure className="band-figure" />
+        <Character className="band-figure" />
         <div className="login-title">
           <div className="logo" style={{ fontSize: 56 }}>
             Bramo

@@ -12,6 +12,8 @@ import { Professions } from './rooms/Professions';
 import { ProfessionRoom } from './rooms/ProfessionRoom';
 import { CharacterRoom } from './rooms/CharacterRoom';
 import { SoonRoom } from './rooms/SoonRoom';
+import { Atelier } from './rooms/Atelier';
+import { ContentContext } from './game/ContentContext';
 import './styles/global.css';
 import './styles/rooms.css';
 
@@ -37,6 +39,12 @@ function App() {
   const [content, setContent] = useState<ContentResponse | null>(null);
   const [session, setSession] = useState<StateResponse | null | undefined>(undefined);
   const [fatal, setFatal] = useState<string | null>(null);
+  const [hash, setHash] = useState(location.hash);
+  useEffect(() => {
+    const onHash = () => setHash(location.hash);
+    window.addEventListener('hashchange', onHash);
+    return () => window.removeEventListener('hashchange', onHash);
+  }, []);
 
   const loadState = useCallback(() => {
     api
@@ -56,11 +64,18 @@ function App() {
 
   if (fatal) return <div className="center-message">{fatal}</div>;
   if (!content || session === undefined) return <div className="center-message muted">Chargement…</div>;
-  if (!session) return <LoginScreen onLoggedIn={loadState} />;
   return (
-    <GameProvider content={content} initial={session} onLogout={() => setSession(null)}>
-      <Shell />
-    </GameProvider>
+    <ContentContext.Provider value={content}>
+      {hash === '#atelier' ? (
+        <Atelier />
+      ) : !session ? (
+        <LoginScreen onLoggedIn={loadState} />
+      ) : (
+        <GameProvider content={content} initial={session} onLogout={() => setSession(null)}>
+          <Shell />
+        </GameProvider>
+      )}
+    </ContentContext.Provider>
   );
 }
 

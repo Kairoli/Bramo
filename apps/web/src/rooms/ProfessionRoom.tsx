@@ -5,7 +5,7 @@ import { useGame } from '../game/GameContext';
 import { useLiveActivity } from '../game/useLive';
 import { duration, num, seconds } from '../format';
 import { Bar, ItemIcon, Ring } from '../components/ui';
-import { Figure } from '../components/Figure';
+import { Character } from '../rig/Character';
 import { QueueChips } from '../components/QueueChips';
 
 const PAGE = 6;
@@ -28,7 +28,7 @@ export function ProfessionRoom({ id }: { id: string }) {
     <main className="room">
       <section className="panel band">
         <div className="band-label">[Illustration animée : {profession.place}]</div>
-        <Figure className="band-figure profession-figure" />
+        <Character className="band-figure profession-figure" />
         <div className="sunken skill-card">
           <button className="btn btn-sm" onClick={() => go('professions')}>
             ← Tous les métiers

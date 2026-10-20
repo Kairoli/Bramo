@@ -35,6 +35,11 @@ export function TopBar() {
             <Bar value={maxMs ? remainingMs / maxMs : 0} />
           </div>
         </div>
+        {import.meta.env.DEV && (
+          <a className="btn btn-ghost btn-sm" href="#atelier" title="Atelier de personnages (développement)">
+            Atelier
+          </a>
+        )}
         <button className="btn btn-ghost btn-sm" onClick={logout}>
           Quitter
         </button>

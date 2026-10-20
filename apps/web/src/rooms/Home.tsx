@@ -9,8 +9,8 @@ export function Home() {
       <WorldMap />
       <div className="home-bottom">
         <JournalPanel />
-        <ActivityPanel />
         <CharacterCard />
+        <ActivityPanel />
       </div>
     </main>
   );

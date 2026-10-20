@@ -151,10 +151,10 @@ Maquettes de référence : `docs/maquettes/`
 
 ### 9.2 Accueil
 - **En haut** : carte du monde avec des lieux cliquables (Mines, Bois, Halle du clan, Arène…) et un volet d'infos à droite.
-- **En bas, trois colonnes** :
+- **En bas, trois colonnes** (colonnes latérales de même largeur, le personnage au centre de l'écran) :
   - gauche : journal et discussion, onglets Tout / Journal / Clan / Serveur (P1 : seul Journal fonctionne) ;
-  - centre : activité en cours (anneau de progression, gains, file d'actions) et lien « Changer d'activité » ;
-  - droite : le personnage **en entier**, entouré de ses emplacements (cosmétiques, arme, outil, repas), avec nom, titre, classe et voie, sans alertes d'équipement. Lien « Ouvrir le personnage ».
+  - droite : activité en cours (anneau de progression, gains, file d'actions) et lien « Changer d'activité » ;
+  - centre : le personnage **en entier**, entouré de ses emplacements (cosmétiques, arme, outil, repas), avec nom, titre, classe et voie, sans alertes d'équipement. Lien « Ouvrir le personnage ».
 
 ### 9.2 bis Salle Personnage
 - Trois colonnes : équipement et apparence (détail de chaque emplacement) et sac ; le personnage centré, entouré de ses emplacements ; les caractéristiques (progression, rendement et bonus plafonnés, énergie, métiers, combat à venir).

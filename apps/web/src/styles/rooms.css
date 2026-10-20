@@ -164,7 +164,8 @@
 
 .home-bottom {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1.35fr) minmax(0, 0.8fr);
+  /* Colonnes latérales égales : le personnage reste au centre de l'écran. */
+  grid-template-columns: minmax(0, 1fr) minmax(0, 0.82fr) minmax(0, 1fr);
   gap: var(--gap);
   min-height: 0;
 }
@@ -215,6 +216,7 @@
 }
 
 .activity {
+  container-type: inline-size;
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -239,6 +241,15 @@
   grid-template-columns: minmax(0, 0.9fr) auto minmax(0, 1.3fr);
   align-items: center;
   gap: 18px;
+}
+/* Colonne étroite : on retire l'illustration pour garder l'anneau et les détails lisibles. */
+@container (max-width: 540px) {
+  .activity-body {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+  .activity-scene {
+    display: none;
+  }
 }
 .activity-scene {
   height: 100%;

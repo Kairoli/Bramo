@@ -5,6 +5,7 @@ import {
   professionsFileSchema,
   recipesFileSchema,
   settingsSchema,
+  trialsFileSchema,
 } from './schemas/content.js';
 import { classesFileSchema, cosmeticsFileSchema } from './schemas/art.js';
 import { buildXpTable } from './formulas/xp.js';
@@ -17,6 +18,7 @@ export interface RawContent {
   items: unknown;
   classes: unknown;
   cosmetics: unknown;
+  trials: unknown;
   /** Un fichier de recettes par entrée : [nom du fichier, contenu]. */
   recipes: [string, unknown][];
 }
@@ -34,6 +36,7 @@ export function buildContent(raw: RawContent): Content {
   const itemList = parse(itemsFileSchema, raw.items, 'items.yaml');
   const classList = parse(classesFileSchema, raw.classes, 'classes.yaml');
   const cosmetics = parse(cosmeticsFileSchema, raw.cosmetics, 'cosmetics.yaml');
+  const trialList = parse(trialsFileSchema, raw.trials, 'trials.yaml');
   const errors: string[] = [];
 
   const unique = <T extends { id: string }>(list: T[], file: string) => {
@@ -67,10 +70,36 @@ export function buildContent(raw: RawContent): Content {
       if (!items[s.item]) errors.push(`recette ${r.id} : objet inconnu « ${s.item} »`);
     }
   }
+
+  // Épreuves : triées par métier puis par palier, une seule par palier.
+  const trials = unique(
+    [...trialList].sort((a, b) => a.profession.localeCompare(b.profession) || a.rank - b.rank),
+    'trials.yaml',
+  );
+  const ranks = new Set<string>();
+  for (const t of trialList) {
+    if (!professionMap[t.profession]) errors.push(`épreuve ${t.id} : métier inconnu « ${t.profession} »`);
+    if (!settings.titles.some((title) => title.level === t.rank)) {
+      errors.push(`épreuve ${t.id} : le niveau ${t.rank} n'est pas un palier de titre`);
+    }
+    const key = `${t.profession}/${t.rank}`;
+    if (ranks.has(key)) errors.push(`épreuve ${t.id} : deux épreuves pour ${key}`);
+    ranks.add(key);
+    for (const s of t.tasks) if (!items[s.item]) errors.push(`épreuve ${t.id} : objet inconnu « ${s.item} »`);
+  }
+  for (const r of Object.values(recipes)) {
+    if (!r.trial) continue;
+    const t = trials[r.trial];
+    if (!t) errors.push(`recette ${r.id} : épreuve inconnue « ${r.trial} »`);
+    else if (t.profession !== r.profession) errors.push(`recette ${r.id} : l'épreuve ${t.id} est d'un autre métier`);
+  }
   const classes = unique(classList, 'classes.yaml');
   unique(cosmetics.outfits, 'cosmetics.yaml');
   for (const c of classList) {
     if (!professionMap[c.profession]) errors.push(`classes.yaml : ${c.id} est liée à un métier inconnu « ${c.profession} »`);
+    if (!cosmetics.outfits.some((o) => o.id === c.startingOutfit)) {
+      errors.push(`classes.yaml : tenue de départ inconnue « ${c.startingOutfit} » pour ${c.id}`);
+    }
   }
   if (!classes[cosmetics.default.class]) errors.push(`cosmetics.yaml : classe par défaut inconnue « ${cosmetics.default.class} »`);
   if (!cosmetics.outfits.some((o) => o.id === cosmetics.default.outfit)) {
@@ -78,5 +107,5 @@ export function buildContent(raw: RawContent): Content {
   }
   if (errors.length) throw new ContentError(`Données incohérentes :\n- ${errors.join('\n- ')}`);
 
-  return { settings, professions, items, recipes, classes, cosmetics, xpTable: buildXpTable(settings.xp.maxLevel) };
+  return { settings, professions, items, recipes, trials, classes, cosmetics, xpTable: buildXpTable(settings.xp.maxLevel) };
 }

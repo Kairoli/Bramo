@@ -1,7 +1,8 @@
 # Tenues (cosmétiques). Une tenue = une palette de 7 rôles + une pièce par emplacement.
 # Les pièces sont dans art/parts/<emplacement>/<id>.svg ; une nouvelle tenue ne retouche jamais les animations.
 
-# Apparence affichée tant que le choix de classe et de tenue n'existe pas (P1).
+# Apparence affichée avant le choix de la classe (écran de connexion, Atelier).
+# Chaque classe a ensuite sa tenue de départ (data/classes.yaml, startingOutfit).
 default:
   outfit: ashes
   class: runist
@@ -9,7 +10,7 @@ default:
 outfits:
   - id: ashes
     name: Cendres
-    subtitle: Tenue de départ
+    subtitle: Tenue de départ du Runiste
     palette:
       coat: "#34424A"
       coatDark: "#232D33"
@@ -28,6 +29,28 @@ outfits:
       boots: travel_boots
       cape: mantlet
       shoulder_far: rune_pauldron
+
+  # Tenue de départ du Forgefeu : tête nue, tunique retroussée, tablier de cuir, bottes ferrées.
+  - id: embers
+    name: Braise
+    subtitle: Tenue de départ du Forgefeu
+    palette:
+      coat: "#4E4038"
+      coatDark: "#352A24"
+      mantle: "#6E4630"
+      under: "#2C3235"
+      trim: "#F08A4B"
+      metal: "#9AA0A2"
+      beard: "#6B321F"
+    parts:
+      headwear: forge_band
+      face: forge_beard
+      top: forge_tunic
+      belt: forge_belt
+      robe: forge_apron
+      gloves: forge_gauntlets
+      boots: forge_boots
+      shoulder_far: forge_pauldron
 
   - id: high_tide
     name: Marée haute

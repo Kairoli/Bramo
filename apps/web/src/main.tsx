@@ -7,6 +7,7 @@ import { LoginScreen } from './LoginScreen';
 import { TopBar } from './components/TopBar';
 import { AbsenceModal } from './components/AbsenceModal';
 import { ShopModal } from './components/ShopModal';
+import { ClassScreen } from './components/ClassChoice';
 import { Home } from './rooms/Home';
 import { Professions } from './rooms/Professions';
 import { ProfessionRoom } from './rooms/ProfessionRoom';
@@ -18,7 +19,16 @@ import './styles/global.css';
 import './styles/rooms.css';
 
 function Shell() {
-  const { room, professionId, absence, shopOpen, error } = useGame();
+  const { state, room, professionId, absence, shopOpen, error } = useGame();
+  // Chaque personnage choisit sa classe avant d'entrer, même fraîchement créé.
+  if (!state.classId) {
+    return (
+      <div className="app">
+        <ClassScreen />
+        {error && <div className="toast">{error}</div>}
+      </div>
+    );
+  }
   return (
     <div className="app">
       <TopBar />

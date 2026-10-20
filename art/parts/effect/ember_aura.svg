@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 760">
+  <!-- Effet de classe du Forgefeu : le sol se fend de chaleur sous le marteau, des braises montent,
+       et le poing proche rougeoie comme un fer sorti du feu. Tout passe par la couleur d'affinité. -->
+  <g id="cracks">
+    <g class="fx-pulse" fill="none" stroke="var(--c-glow)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" filter="url(#rig-glow)">
+      <path d="M340 702 L318 708 L300 706 L284 712"/>
+      <path d="M408 702 L428 708 L440 705 L456 711"/>
+      <path d="M362 703 L356 714 L344 718"/>
+      <path d="M390 703 L398 713 L412 716"/>
+    </g>
+  </g>
+  <g id="heat">
+    <ellipse cx="374" cy="690" rx="70" ry="26" fill="var(--c-glow)" opacity=".2" filter="url(#rig-soft)"/>
+  </g>
+  <g id="fist">
+    <circle cx="140" cy="384" r="22" fill="var(--c-glow)" opacity=".22" filter="url(#rig-soft)"/>
+    <path class="fx-pulse" d="M128 378 L153 377 M128 386 L153 385" stroke="var(--c-glow-light)" stroke-width="1.8" stroke-linecap="round" filter="url(#rig-glow)"/>
+    <g class="fx-orbit">
+      <circle cx="140" cy="384" r="26" fill="none"/>
+      <circle cx="140" cy="358" r="1.8" fill="var(--c-glow-light)"/>
+      <circle cx="165" cy="392" r="1.4" fill="var(--c-glow)"/>
+      <circle cx="118" cy="398" r="1.4" fill="var(--c-glow)"/>
+    </g>
+  </g>
+  <g id="embers">
+    <g fill="var(--c-glow)" filter="url(#rig-glow)">
+      <circle class="fx-rise" cx="352" cy="640" r="2" style="animation-delay: 0s"/>
+      <circle class="fx-rise" cx="388" cy="630" r="1.6" style="animation-delay: .6s"/>
+      <circle class="fx-rise" cx="370" cy="650" r="1.4" style="animation-delay: 1.3s"/>
+      <circle class="fx-rise" cx="404" cy="644" r="1.8" style="animation-delay: 2s"/>
+      <circle class="fx-rise" cx="342" cy="660" r="1.2" style="animation-delay: 2.6s"/>
+      <circle class="fx-rise" cx="146" cy="370" r="1.4" style="animation-delay: .9s"/>
+      <circle class="fx-rise" cx="132" cy="374" r="1.2" style="animation-delay: 2.3s"/>
+    </g>
+  </g>
+</svg>

@@ -25,6 +25,12 @@
   value: 30
   tool: { profession: mining, bonus: 0.20 }   # à équilibrer
 
+# --- Chefs-d'œuvre : fabriqués pendant une épreuve de maître, remis au maître ---
+- { id: apprentice_blade, name: Lame d'épreuve, category: masterwork, value: 40 }
+- { id: journeyman_blade, name: Lame de compagnon, category: masterwork, value: 120 }
+- { id: apprentice_dish, name: Truite du maître, category: masterwork, value: 40 }
+- { id: journeyman_feast, name: Banquet du compagnon, category: masterwork, value: 120 }
+
 # --- Herbes (Herboristerie) ---
 - { id: mint, name: Menthe sauvage, category: herb, value: 1 }
 - { id: thyme, name: Thym, category: herb, value: 2 }

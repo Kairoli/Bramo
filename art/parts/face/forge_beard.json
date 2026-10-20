@@ -1,0 +1,11 @@
+{
+  "id": "forge_beard",
+  "slot": "face",
+  "name": "Barbe tressée",
+  "colorRoles": ["beard", "skinDark", "metal"],
+  "anchor": [0, 0],
+  "layers": [
+    { "id": "features", "bone": "head", "z": 56 },
+    { "id": "eyes", "bone": "head", "z": 59 }
+  ]
+}

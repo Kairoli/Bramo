@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { maxAffordable, type Recipe } from '@bramo/shared';
+import { maxAffordable, trialsOf, type Recipe } from '@bramo/shared';
 import { api } from '../api';
 import { useGame } from '../game/GameContext';
 import { useLiveActivity } from '../game/useLive';
@@ -11,16 +11,19 @@ import { QueueChips } from '../components/QueueChips';
 const PAGE = 6;
 
 export function ProfessionRoom({ id }: { id: string }) {
-  const { content, state, go } = useGame();
+  const { content, state, look, go } = useGame();
   const profession = content.professions.find((p) => p.id === id)!;
   const skill = state.skills[id]!;
+  // Les chefs-d'œuvre n'apparaissent que pendant leur épreuve.
   const recipes = Object.values(content.recipes)
-    .filter((r) => r.profession === id)
+    .filter((r) => r.profession === id && (!r.trial || state.trials[r.trial] === 'open'))
     .sort((a, b) => a.level - b.level);
   const current = state.activity?.recipeId;
-  const [selectedId, setSelectedId] = useState<string>(
-    recipes.find((r) => r.id === current)?.id ?? [...recipes].reverse().find((r) => r.level <= skill.level)?.id ?? recipes[0]!.id,
-  );
+  const fallbackId =
+    recipes.find((r) => r.id === current)?.id ?? [...recipes].reverse().find((r) => r.level <= skill.level && !r.trial)?.id ?? recipes[0]!.id;
+  const [chosenId, setSelectedId] = useState<string>(fallbackId);
+  // Un chef-d'œuvre disparaît une fois l'épreuve réussie : on revient alors à une recette du métier.
+  const selectedId = recipes.some((r) => r.id === chosenId) ? chosenId : fallbackId;
   const selected = content.recipes[selectedId]!;
   const span = skill.nextLevelXp ? (skill.xp - skill.levelXp) / (skill.nextLevelXp - skill.levelXp) : 1;
 
@@ -28,7 +31,7 @@ export function ProfessionRoom({ id }: { id: string }) {
     <main className="room">
       <section className="panel band">
         <div className="band-label">[Illustration animée : {profession.place}]</div>
-        <Character className="band-figure profession-figure" />
+        <Character appearance={look} className="band-figure profession-figure" />
         <div className="sunken skill-card">
           <button className="btn btn-sm" onClick={() => go('professions')}>
             ← Tous les métiers
@@ -39,34 +42,148 @@ export function ProfessionRoom({ id }: { id: string }) {
           </div>
           <div>
             {skill.title}
-            {skill.nextTitle && (
-              <span className="muted">
-                {' '}
-                · {skill.nextTitle.name} au niveau {skill.nextTitle.level}
-              </span>
-            )}
+            {skill.nextTitle &&
+              (skill.nextTitle.trialId && skill.level >= skill.nextTitle.level ? (
+                <span style={{ color: 'var(--clan)' }}> · épreuve de {skill.nextTitle.name} à passer</span>
+              ) : (
+                <span className="muted">
+                  {' '}
+                  · {skill.nextTitle.name} au niveau {skill.nextTitle.level}
+                  {skill.nextTitle.trialId ? ', par l’épreuve du maître' : ''}
+                </span>
+              ))}
           </div>
           <Bar value={span} />
           <div className="muted skill-xp">
             {num(skill.xp)} XP{skill.nextLevelXp ? ` · encore ${num(skill.nextLevelXp - skill.xp)} pour le niveau ${skill.level + 1}` : ''}
           </div>
         </div>
-        {profession.master && (
-          <div className="sunken master-bubble">
-            <span className="npc-avatar" />
-            <div>
-              <strong>{profession.master.name}</strong>
-              <p className="muted">{profession.master.line}</p>
-            </div>
-          </div>
-        )}
+        {profession.master && <MasterPanel professionId={id} onCraft={setSelectedId} />}
       </section>
 
       <div className="profession-bottom">
         <RecipeList recipes={recipes} level={skill.level} selectedId={selectedId} onSelect={setSelectedId} />
-        <RecipeDetail recipe={selected} level={skill.level} />
+        <RecipeDetail key={selected.id} recipe={selected} level={skill.level} />
       </div>
     </main>
+  );
+}
+
+/**
+ * Le maître du métier et son épreuve, à droite de la scène.
+ * Quatre cas : épreuve à passer (mise en avant), prochaine épreuve (verrouillée), toutes réussies, aucune.
+ */
+function MasterPanel({ professionId, onCraft }: { professionId: string; onCraft: (recipeId: string) => void }) {
+  const { content, state, act } = useGame();
+  const profession = content.professions.find((p) => p.id === professionId)!;
+  const master = profession.master!;
+  const skill = state.skills[professionId]!;
+  const trials = trialsOf(professionId, content);
+  const [success, setSuccess] = useState<string | null>(null);
+  const open = trials.find((t) => state.trials[t.id] === 'open');
+  const next = open ?? trials.find((t) => state.trials[t.id] === 'locked');
+  const titleOf = (rank: number) => content.settings.titles.find((t) => t.level === rank)?.name ?? '';
+
+  if (success) {
+    return (
+      <div className="sunken master-bubble trial-success" role="status">
+        <span className="npc-avatar" />
+        <div>
+          <span className="eyebrow">Épreuve réussie</span>
+          <strong>{success}</strong>
+          <p className="muted">{master.name} vous serre la main.</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!next) {
+    return (
+      <div className="sunken master-bubble">
+        <span className="npc-avatar" />
+        <div>
+          <strong>{master.name}</strong>
+          <p className="muted">
+            {trials.length ? 'Vous avez réussi toutes les épreuves de ce métier, pour l’instant.' : master.line}
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!open) {
+    return (
+      <div className="sunken master-bubble trial-locked">
+        <span className="npc-avatar" />
+        <div className="trial-body">
+          <strong>{master.name}</strong>
+          <p className="muted">{master.line}</p>
+          <span className="eyebrow">
+            Prochaine épreuve · {titleOf(next.rank)} au niveau {next.rank}
+          </span>
+          <Bar value={skill.level / next.rank} color="var(--clan)" />
+          <span className="muted small">
+            « {next.name} » · vous êtes niveau {skill.level}
+          </span>
+        </div>
+      </div>
+    );
+  }
+
+  const ready = open.tasks.every((t) => (state.inventory[t.item] ?? 0) >= t.qty);
+  // La recette du métier qui produit l'objet demandé (le chef-d'œuvre de l'épreuve en priorité).
+  const recipeFor = (item: string) =>
+    Object.values(content.recipes)
+      .filter((r) => r.profession === professionId && (!r.trial || r.trial === open.id) && r.outputs.some((o) => o.item === item))
+      .sort((a, b) => Number(!!b.trial) - Number(!!a.trial))[0];
+  const verb = profession.family === 'gathering' ? 'Récolter' : 'Fabriquer';
+  const submit = async () => {
+    if (await act(() => api.completeTrial(open.id))) {
+      setSuccess(`Vous devenez ${titleOf(open.rank)} en ${profession.name} · +${num(open.reward.gold)} or`);
+      window.setTimeout(() => setSuccess(null), 6000);
+    }
+  };
+
+  return (
+    <div className="sunken master-bubble trial-open">
+      <span className="npc-avatar" />
+      <div className="trial-body">
+        <span className="trial-badge">Épreuve · titre de {titleOf(open.rank)}</span>
+        <strong>
+          {master.name} · « {open.name} »
+        </strong>
+        <p className="muted trial-intro">{open.intro}</p>
+        <ul className="trial-tasks">
+          {open.tasks.map((t) => {
+            const have = state.inventory[t.item] ?? 0;
+            const done = have >= t.qty;
+            const recipe = recipeFor(t.item);
+            return (
+              <li key={t.item} className={done ? 'done' : undefined}>
+                <span className="trial-check" aria-hidden>
+                  {done ? '✓' : ''}
+                </span>
+                <span>{content.items[t.item]?.name}</span>
+                {recipe && !done && (
+                  <button className="link" onClick={() => onCraft(recipe.id)}>
+                    {verb}
+                  </button>
+                )}
+                <span className="trial-count">
+                  {num(Math.min(have, t.qty))} / {num(t.qty)}
+                </span>
+              </li>
+            );
+          })}
+        </ul>
+        <div className="trial-foot">
+          <button className="btn btn-primary btn-sm" disabled={!ready} onClick={submit}>
+            Remettre au maître
+          </button>
+          <span className="muted small">{ready ? 'Les objets seront consommés.' : `Récompense : ${num(open.reward.gold)} or et le titre`}</span>
+        </div>
+      </div>
+    </div>
   );
 }
 
@@ -84,22 +201,32 @@ function RecipeList({
   const { content, state } = useGame();
   const profession = content.professions.find((p) => p.id === recipes[0]?.profession)!;
   const [category, setCategory] = useState<string | null>(null);
+  // L'onglet « Épreuve » n'apparaît que lorsqu'un chef-d'œuvre est à fabriquer.
+  const categories = profession.categories.filter((c) => recipes.some((r) => r.category === c.id));
   const filtered = recipes.filter((r) => !category || r.category === category);
   const [page, setPage] = useState(() => Math.floor(Math.max(0, filtered.findIndex((r) => r.id === selectedId)) / PAGE));
   const pages = Math.max(1, Math.ceil(filtered.length / PAGE));
   useEffect(() => setPage((p) => Math.min(p, pages - 1)), [pages]);
+  // Une recette choisie ailleurs (« Fabriquer » dans l'épreuve) : afficher sa page.
+  useEffect(() => {
+    const index = recipes.filter((r) => !category || r.category === category).findIndex((r) => r.id === selectedId);
+    if (index !== -1) return setPage(Math.floor(index / PAGE));
+    setCategory(null);
+    setPage(Math.floor(Math.max(0, recipes.findIndex((r) => r.id === selectedId)) / PAGE));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedId]);
   const visible = filtered.slice(page * PAGE, page * PAGE + PAGE);
 
   return (
     <section className="panel recipes">
       <header className="recipes-head">
         <span className="eyebrow">Recettes</span>
-        {profession.categories.length > 1 && (
+        {categories.length > 1 && (
           <div className="tabs tabs-sm" role="tablist">
             <button role="tab" aria-selected={!category} onClick={() => setCategory(null)}>
               Tout
             </button>
-            {profession.categories.map((c) => (
+            {categories.map((c) => (
               <button key={c.id} role="tab" aria-selected={category === c.id} onClick={() => setCategory(c.id)}>
                 {c.name}
               </button>
@@ -115,7 +242,7 @@ function RecipeList({
           return (
             <button
               key={r.id}
-              className={`recipe-card${locked ? ' locked' : ''}${r.id === selectedId ? ' selected' : ''}`}
+              className={`recipe-card${locked ? ' locked' : ''}${r.trial ? ' masterwork' : ''}${r.id === selectedId ? ' selected' : ''}`}
               onClick={() => onSelect(r.id)}
             >
               <ItemIcon item={out} dim={locked} />
@@ -124,6 +251,10 @@ function RecipeList({
                 <span className="muted">{inputs || 'Récolte'}</span>
                 {state.activity?.recipeId === r.id ? (
                   <span style={{ color: 'var(--action)' }}>En cours</span>
+                ) : r.trial ? (
+                  <span className="recipe-cat" style={{ color: 'var(--clan)' }}>
+                    Chef-d’œuvre de l’épreuve
+                  </span>
                 ) : (
                   <span className="muted recipe-cat">{profession.categories.find((c) => c.id === r.category)?.name}</span>
                 )}
@@ -157,7 +288,8 @@ function RecipeDetail({ recipe, level }: { recipe: Recipe; level: number }) {
   const live = useLiveActivity();
   const { maxQuantity, queueLength } = content.settings.activity;
   const affordable = Math.min(maxQuantity, maxAffordable(recipe, state.inventory));
-  const [qty, setQty] = useState(() => Math.max(1, Math.min(100, affordable)));
+  // Un chef-d'œuvre d'épreuve se fabrique à l'unité.
+  const [qty, setQty] = useState(() => (recipe.trial ? 1 : Math.max(1, Math.min(100, affordable))));
   const locked = recipe.level > level;
   const running = live && live.recipe.id === recipe.id ? live : null;
   const currentName = state.activity && content.recipes[state.activity.recipeId]?.name;

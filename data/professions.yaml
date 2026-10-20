@@ -54,6 +54,7 @@
     - { id: bars, name: Lingots }
     - { id: weapons, name: Armes }
     - { id: tools, name: Outils }
+    - { id: masterwork, name: Épreuve }
 
 - id: carpentry
   name: Menuiserie
@@ -72,6 +73,7 @@
   categories:
     - { id: infusions, name: Infusions }
     - { id: dishes, name: Plats }
+    - { id: masterwork, name: Épreuve }
 
 - id: alchemy
   name: Alchimie

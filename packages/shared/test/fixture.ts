@@ -49,7 +49,15 @@ export const content = buildContent({
     { id: 'pick', name: 'Pioche', category: 'tool', value: 10, tool: { profession: 'mining', bonus: 0.5 } },
     { id: 'stew', name: 'Ragoût', category: 'meal', value: 3, shopPrice: 10, meal: { bonus: 0.1, durationMin: 30 } },
   ],
-  classes: [{ id: 'mage', name: 'Mage', style: 'magic', profession: 'mining', affinityColor: '#B39DF5' }],
+  classes: [
+    { id: 'mage', name: 'Mage', style: 'magic', profession: 'mining', affinityColor: '#B39DF5', pitch: '', startingOutfit: 'plain', pose: 'mage' },
+    { id: 'brute', name: 'Brute', style: 'melee', profession: 'smithing', affinityColor: '#F08A4B', pitch: '', startingOutfit: 'plain', pose: 'brute' },
+  ],
+  trials: [
+    // Minage 30 puis 60 : remettre du minerai, puis un lingot.
+    { id: 'mining_30', profession: 'mining', rank: 30, name: 'Épreuve 30', intro: '', tasks: [{ item: 'ore', qty: 10 }], reward: { gold: 50 } },
+    { id: 'mining_60', profession: 'mining', rank: 60, name: 'Épreuve 60', intro: '', tasks: [{ item: 'bar', qty: 1 }], reward: { gold: 80 } },
+  ],
   cosmetics: {
     default: { outfit: 'plain', class: 'mage' },
     outfits: [
@@ -71,6 +79,8 @@ export const content = buildContent({
         // 10 s, 2 minerais → 1 lingot.
         { id: 'smelt', name: 'Fondre', profession: 'smithing', category: 'bars', level: 1, durationSec: 10, xp: 20, inputs: [{ item: 'ore', qty: 2 }], outputs: [{ item: 'bar', qty: 1 }] },
         { id: 'hard', name: 'Difficile', profession: 'mining', category: 'ores', level: 50, durationSec: 10, xp: 10, outputs: [{ item: 'ore', qty: 1 }] },
+        // Chef-d'œuvre : seulement pendant l'épreuve mining_30.
+        { id: 'masterpiece', name: 'Chef-d’œuvre', profession: 'mining', category: 'ores', level: 30, durationSec: 10, xp: 10, trial: 'mining_30', outputs: [{ item: 'ore', qty: 1 }] },
       ],
     ],
   ],
@@ -94,6 +104,9 @@ export function makeState(over: Partial<CharacterState> = {}): CharacterState {
     // Énergie déjà épuisée par défaut, pour tester le rendement de base.
     energy: { dayKey: '2026-01-10', usedMs: 2 * HOUR },
     buff: null,
+    classId: 'mage',
+    outfit: null,
+    trials: [],
     ...over,
   };
 }

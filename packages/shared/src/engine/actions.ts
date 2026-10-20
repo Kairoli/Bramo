@@ -2,6 +2,7 @@ import type { Content } from '../schemas/content.js';
 import { levelForXp } from '../formulas/xp.js';
 import { type CharacterState, GameError, addStack, cloneState } from './state.js';
 import { startNextFromQueue } from './advance.js';
+import { recipeAvailable } from './trials.js';
 
 /**
  * Actions du joueur. Toutes pures : elles reçoivent un état déjà avancé jusqu'à `now`
@@ -24,6 +25,9 @@ export function startActivity(
   if (profession?.status !== 'playable') throw new GameError('soon', 'Ce métier arrive bientôt.');
   const level = levelForXp(input.skills[recipe.profession] ?? 0, content.xpTable);
   if (level < recipe.level) throw new GameError('level', `Niveau ${recipe.level} requis.`);
+  if (!recipeAvailable(recipe.trial, input, content)) {
+    throw new GameError('trial', 'Ce chef-d’œuvre ne se fabrique que pendant l’épreuve du maître.');
+  }
   const { maxQuantity, queueLength } = content.settings.activity;
   if (!Number.isInteger(quantity) || quantity < 1 || quantity > maxQuantity) {
     throw new GameError('quantity', `Quantité entre 1 et ${maxQuantity}.`);
@@ -86,6 +90,18 @@ export function sellItem(input: CharacterState, itemId: string, qty: number, con
   return state;
 }
 
+/**
+ * Choisir ou changer de classe : gratuit et à tout moment, puisque les classes s'appuient sur les métiers.
+ * Une tenue choisie est gardée ; sinon le personnage prend la tenue de départ de sa nouvelle classe.
+ */
+export function chooseClass(input: CharacterState, classId: string, content: Content): CharacterState {
+  if (!content.classes[classId]) throw new GameError('unknown_class', 'Classe inconnue.');
+  if (input.classId === classId) throw new GameError('same_class', 'C’est déjà votre classe.');
+  const state = cloneState(input);
+  state.classId = classId;
+  return state;
+}
+
 export function newCharacterState(now: number, content: Content): CharacterState {
   return {
     gold: content.settings.character.startingGold,
@@ -97,5 +113,8 @@ export function newCharacterState(now: number, content: Content): CharacterState
     lastSeenAt: now,
     energy: { dayKey: '', usedMs: 0 },
     buff: null,
+    classId: null,
+    outfit: null,
+    trials: [],
   };
 }

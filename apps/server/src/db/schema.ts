@@ -45,6 +45,11 @@ export const characters = pgTable('characters', {
   queue: jsonb('queue').$type<QueuedAction[]>().notNull().default([]),
   energy: jsonb('energy').$type<EnergyState>().notNull(),
   buff: jsonb('buff').$type<MealBuff | null>(),
+  /** Null tant que le joueur n'a pas choisi sa classe. */
+  classId: text('class_id'),
+  /** Null = tenue de départ de la classe. */
+  outfit: text('outfit'),
+  trials: jsonb('trials').$type<string[]>().notNull().default([]),
   lastTickAt: ts('last_tick_at').notNull(),
   lastSeenAt: ts('last_seen_at').notNull(),
   createdAt: ts('created_at').notNull().defaultNow(),

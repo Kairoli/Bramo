@@ -1,0 +1,8 @@
+{
+  "id": "forge_pauldron",
+  "slot": "shoulder_far",
+  "name": "Épaulière rivetée",
+  "colorRoles": ["metal", "trim"],
+  "anchor": [0, 0],
+  "layers": [{ "id": "pauldron", "bone": "upperarm_far", "z": 44 }]
+}

@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 760">
+  <!-- Tête nue du Forgefeu : cheveux courts en épis, bandeau de cuir noué derrière (les pans pendent côté proche). -->
+  <g id="back">
+    <path d="M186 108 Q178 136 194 152 L202 132 Z" fill="var(--c-beard)"/>
+    <path d="M190 100 Q176 110 170 132 L178 136 Q182 118 194 106 Z" fill="var(--c-leather)"/>
+    <path d="M190 104 Q182 122 186 146 L192 144 Q190 124 196 108 Z" fill="var(--c-leather)" opacity=".8"/>
+  </g>
+  <g id="front">
+    <path d="M183 110 Q180 88 188 76 L186 62 L198 70 L202 56 L212 66 L220 54 L226 66 L238 60 L236 72 Q246 78 246 90 Q236 82 222 81 Q204 82 197 98 Q193 110 191 124 Q185 120 183 110 Z" fill="var(--c-beard)"/>
+    <path d="M183 110 Q180 88 188 76 L186 62 L198 70 L202 56 L208 66 Q198 80 196 98 Q193 110 191 124 Q185 120 183 110 Z" fill="url(#rig-shade)"/>
+    <path d="M226 66 L238 60 L236 72 Q246 78 246 90" stroke="var(--c-glow)" stroke-opacity=".45" stroke-width="1.8" fill="none" stroke-linejoin="round"/>
+    <path d="M185 98 Q214 86 246 91 L246 97 Q214 93 187 106 Z" fill="var(--c-leather)"/>
+    <path d="M185 98 Q214 86 246 91" stroke="var(--c-trim)" stroke-width="1.2" fill="none" opacity=".8"/>
+  </g>
+</svg>

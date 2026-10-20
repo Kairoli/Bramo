@@ -64,15 +64,23 @@ export function orderedBones(rig: Rig): Rig['bones'] {
   return out;
 }
 
-/** Cinématique directe : matrice monde de chaque os à l'instant t de l'animation. */
-export function worldMatrices(bones: Rig['bones'], anim: Animation | null, t: number): Record<string, Matrix> {
+/**
+ * Cinématique directe : matrice monde de chaque os à l'instant t de l'animation.
+ * `pose` : degrés ajoutés à la pose de référence (pose de la classe), avant l'animation.
+ */
+export function worldMatrices(
+  bones: Rig['bones'],
+  anim: Animation | null,
+  t: number,
+  pose: Record<string, number> = {},
+): Record<string, Matrix> {
   const world: Record<string, Matrix> = {};
   const time = anim ? t % anim.duration : 0;
   for (const bone of bones) {
     const track = anim?.bones[bone.id];
     const [deg] = track?.rotate ? sample(track.rotate, time) : [0];
     const [dx, dy] = track?.translate ? sample(track.translate, time) : [0, 0];
-    const local = localMatrix(bone.pivot, bone.rotation + deg!, dx!, dy!);
+    const local = localMatrix(bone.pivot, bone.rotation + (pose[bone.id] ?? 0) + deg!, dx!, dy!);
     world[bone.id] = bone.parent ? multiply(world[bone.parent]!, local) : local;
   }
   return world;

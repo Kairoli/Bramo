@@ -7,9 +7,11 @@ import type { Content } from '../schemas/content.js';
 import {
   type Animation,
   type PartManifest,
+  type Pose,
   type Rig,
   animationSchema,
   partManifestSchema,
+  poseSchema,
   rigSchema,
   slots,
 } from '../schemas/art.js';
@@ -26,6 +28,7 @@ export function loadContent(dataDir: string, artDir?: string): Content {
     items: read('items.yaml'),
     classes: read('classes.yaml'),
     cosmetics: read('cosmetics.yaml'),
+    trials: read('trials.yaml'),
     recipes: recipeFiles.map((f) => [`recipes/${f}`, read(join('recipes', f))]),
   });
   if (artDir) checkArtReferences(content, loadArt(artDir));
@@ -36,6 +39,7 @@ export interface ArtBundle {
   rig: Rig;
   parts: PartManifest[];
   animations: Animation[];
+  poses: Pose[];
 }
 
 function parseJson<T>(schema: z.ZodType<T>, file: string): T {
@@ -83,8 +87,18 @@ export function loadArt(artDir: string): ArtBundle {
   for (const a of animations) {
     for (const b of Object.keys(a.bones)) if (!bones.has(b)) errors.push(`animation ${a.id} : os inconnu « ${b} »`);
   }
+
+  const poseDir = join(artDir, 'rig', 'poses');
+  const poses = readdirSync(poseDir)
+    .filter((f) => f.endsWith('.json'))
+    .map((f) => parseJson(poseSchema, join(poseDir, f)));
+  for (const p of poses) {
+    for (const b of Object.keys(p.bones)) if (!bones.has(b)) errors.push(`pose ${p.id} : os inconnu « ${b} »`);
+    if (!animations.some((a) => a.id === p.animation)) errors.push(`pose ${p.id} : animation inconnue « ${p.animation} »`);
+    if (!parts.some((part) => part.slot === 'body' && part.id === p.body)) errors.push(`pose ${p.id} : corps inconnu « ${p.body} »`);
+  }
   if (errors.length) throw new ContentError(`art/ incohérent :\n- ${errors.join('\n- ')}`);
-  return { rig, parts, animations };
+  return { rig, parts, animations, poses };
 }
 
 /** Vérifie que les tenues et classes de data/ pointent vers des pièces existantes. */
@@ -99,6 +113,7 @@ function checkArtReferences(content: Content, art: ArtBundle): void {
   for (const c of Object.values(content.classes)) {
     if (c.weapon && !has('weapon', c.weapon)) errors.push(`classe ${c.id} : arme introuvable « ${c.weapon} »`);
     if (c.effect && !has('effect', c.effect)) errors.push(`classe ${c.id} : effet introuvable « ${c.effect} »`);
+    if (!art.poses.some((p) => p.id === c.pose)) errors.push(`classe ${c.id} : pose introuvable art/rig/poses/${c.pose}`);
   }
   if (errors.length) throw new ContentError(`Références vers art/ cassées :\n- ${errors.join('\n- ')}`);
 }

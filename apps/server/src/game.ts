@@ -2,6 +2,7 @@ import {
   type AdvanceSummary,
   type CharacterState,
   type Content,
+  type JournalEntry,
   type StateResponse,
   advance,
   viewState,
@@ -14,6 +15,7 @@ export interface ActionResult {
   state: CharacterState;
   /** Ligne de journal à ajouter pour l'action du joueur. */
   log?: string;
+  logKind?: JournalEntry['kind'];
 }
 
 export type Action = (state: CharacterState, now: number) => ActionResult;
@@ -36,13 +38,13 @@ export async function play(db: Db, content: Content, accountId: number, now: num
     const isAbsence =
       awayMs >= content.settings.absence.minSummaryMin * 60_000 &&
       (summary.workedMs > 0 || summary.finished.length > 0);
-    const entries = entriesFromSummary(summary, content, isAbsence);
+    const entries = entriesFromSummary(summary, content, isAbsence, loaded.state.trials);
 
     let state = advanced;
     if (action) {
       const result = action(advanced, now);
       state = result.state;
-      if (result.log) entries.push({ at: now, kind: 'info', text: result.log });
+      if (result.log) entries.push({ at: now, kind: result.logKind ?? 'info', text: result.log });
     }
     state.lastSeenAt = now;
 

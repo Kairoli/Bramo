@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 760">
+  <!-- Tunique de forge : carrure large, manches retroussées au coude, avant-bras nus, col ouvert. -->
+  <g id="sleeve_far_upper">
+    <path d="M240 182 L278 175 L304 276 L272 290 Z" fill="var(--c-coat)"/>
+    <path d="M240 182 L278 175 L304 276 L272 290 Z" fill="url(#rig-light)"/>
+    <path d="M278 175 L304 276" stroke="var(--c-glow)" stroke-opacity=".5" stroke-width="2"/>
+    <path d="M268 274 L304 260 L310 280 L276 296 Z" fill="var(--c-coat-dark)"/>
+    <path d="M268 274 L304 260" stroke="var(--c-trim)" stroke-width="2"/>
+  </g>
+  <g id="forearm_far">
+    <path d="M278 292 L306 280 L343 240 L325 225 Z" fill="var(--c-skin)"/>
+    <path d="M278 292 L306 280 L343 240" stroke="var(--c-skin-dark)" stroke-width="3" fill="none" opacity=".8"/>
+    <path d="M296 270 Q312 262 322 248" stroke="var(--c-skin-dark)" stroke-width="1.5" fill="none" opacity=".7"/>
+  </g>
+  <g id="torso">
+    <path d="M150 176 Q200 156 254 166 Q266 216 258 306 Q206 322 156 306 Q144 240 150 176 Z" fill="var(--c-coat)"/>
+    <path d="M150 176 Q200 156 254 166 Q266 216 258 306 Q206 322 156 306 Q144 240 150 176 Z" fill="url(#rig-light)"/>
+    <path d="M150 176 Q144 240 156 306 Q176 312 196 314 Q184 240 190 170 Z" fill="url(#rig-shade)"/>
+    <path d="M254 166 Q266 216 258 306" stroke="var(--c-glow)" stroke-opacity=".5" stroke-width="2" fill="none"/>
+  </g>
+  <g id="under">
+    <path d="M200 158 L236 160 L222 206 Z" fill="var(--c-skin-dark)"/>
+    <path d="M196 156 L222 208 M240 158 L222 208" stroke="var(--c-under)" stroke-width="5" stroke-linecap="round" fill="none"/>
+  </g>
+  <g id="sleeve_near_upper">
+    <path d="M148 176 Q166 170 182 186 L174 280 L136 276 L138 196 Q140 182 148 176 Z" fill="var(--c-coat)"/>
+    <path d="M148 176 Q166 170 182 186 L174 280 L136 276 L138 196 Q140 182 148 176 Z" fill="url(#rig-shade)"/>
+    <path d="M133 270 L176 276 L175 296 L131 290 Z" fill="var(--c-coat-dark)"/>
+    <path d="M133 270 L176 276" stroke="var(--c-trim)" stroke-width="2"/>
+  </g>
+  <g id="forearm_near">
+    <path d="M136 288 L170 294 L158 370 L127 366 Z" fill="var(--c-skin)"/>
+    <path d="M136 288 L170 294 L158 370 L127 366 Z" fill="url(#rig-shade)"/>
+    <path d="M150 304 Q146 330 140 352" stroke="var(--c-skin-dark)" stroke-width="1.5" fill="none" opacity=".7"/>
+  </g>
+</svg>

@@ -1,0 +1,20 @@
+{
+  "id": "idle_forgefire",
+  "description": "Repos du Forgefeu : respiration lente et lourde, épaules qui montent, poing proche qui se serre. Le bras du marteau compense le buste pour que le marteau reste posé au sol.",
+  "duration": 3.2,
+  "bones": {
+    "pelvis": { "translate": [[0, 0, 0], [1.6, 0, 1], [3.2, 0, 0]] },
+    "torso": { "rotate": [[0, 0], [1.6, -0.6], [3.2, 0]], "translate": [[0, 0, 0], [1.6, 0, 0.6], [3.2, 0, 0]] },
+    "neck": { "rotate": [[0, 0], [1.7, 0.4], [3.2, 0]] },
+    "head": { "rotate": [[0, 0], [1.8, -1.2], [3.2, 0]] },
+    "upperarm_far": { "rotate": [[0, 0], [1.6, 0.6], [3.2, 0]] },
+    "forearm_far": { "rotate": [[0, 0], [1.6, -0.4], [3.2, 0]] },
+    "upperarm_near": { "rotate": [[0, 0], [1.6, 1.6], [3.2, 0]] },
+    "forearm_near": { "rotate": [[0, 0], [1.6, -2.2], [3.2, 0]] },
+    "hand_near": { "rotate": [[0, 0], [1.4, -3], [3.2, 0]] },
+    "cloth_near": { "rotate": [[0, 0], [1.9, 0.6], [3.2, 0]] },
+    "cloth_far": { "rotate": [[0, 0], [1.7, -0.7], [3.2, 0]] },
+    "cloth_back": { "rotate": [[0, 0], [2, 0.4], [3.2, 0]] },
+    "cape": { "rotate": [[0, 0], [2.1, 0.6], [3.2, 0]] }
+  }
+}

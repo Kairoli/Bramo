@@ -1,0 +1,90 @@
+# Épreuves des maîtres. À chaque palier de titre (Apprenti 30, Compagnon 60…), le maître du métier
+# confie une épreuve : remettre des objets. La réussir donne le titre et un peu d'or.
+# Personne n'est bloqué : le niveau continue de monter sans l'épreuve, seul le titre l'attend.
+# Pour un métier d'artisanat, l'épreuve demande un chef-d'œuvre : une recette (trial: <id>)
+# qui n'apparaît que pendant l'épreuve. Quantités et récompenses à équilibrer.
+
+# --- Minage · Maître Orvald ---
+- id: mining_apprentice
+  profession: mining
+  rank: 30
+  name: Lire la roche
+  intro: "« Un apprenti sait ce qu'il frappe. Rapporte-moi du fer et du charbon, et pas de la caillasse. »"
+  tasks:
+    - { item: iron_ore, qty: 60 }
+    - { item: coal, qty: 30 }
+  reward: { gold: 120 }
+
+- id: mining_journeyman
+  profession: mining
+  rank: 60
+  name: Le filon de mithril
+  intro: "« Le mithril ne se laisse pas prendre par n'importe qui. Montre-moi que tu l'as trouvé. »"
+  tasks:
+    - { item: mithril_ore, qty: 80 }
+    - { item: coal, qty: 60 }
+  reward: { gold: 400 }
+
+# --- Herboristerie · Maîtresse Ysolde ---
+- id: herbalism_apprentice
+  profession: herbalism
+  rank: 30
+  name: L'herbier
+  intro: "« Avant de cueillir le rare, apprends le commun. Remplis-moi ce panier. »"
+  tasks:
+    - { item: mint, qty: 30 }
+    - { item: thyme, qty: 40 }
+    - { item: nettle_root, qty: 40 }
+  reward: { gold: 120 }
+
+- id: herbalism_journeyman
+  profession: herbalism
+  rank: 60
+  name: La cueillette de nuit
+  intro: "« Les lys-lanternes ne s'ouvrent qu'à la nuit tombée. Reviens avec la rosée. »"
+  tasks:
+    - { item: sage, qty: 40 }
+    - { item: lantern_lily, qty: 50 }
+  reward: { gold: 400 }
+
+# --- Forge · Maître Brunhild ---
+- id: smithing_apprentice
+  profession: smithing
+  rank: 30
+  name: La lame d'apprenti
+  intro: "« Forge-moi une lame d'épreuve, et ramène dix lames de fer pour que je voie ta main. »"
+  tasks:
+    - { item: apprentice_blade, qty: 1 }
+    - { item: iron_blade, qty: 10 }
+  reward: { gold: 150 }
+
+- id: smithing_journeyman
+  profession: smithing
+  rank: 60
+  name: Le chef-d'œuvre du compagnon
+  intro: "« Un compagnon forge pour les autres. Ton chef-d'œuvre, et trois pioches pour les mines. »"
+  tasks:
+    - { item: journeyman_blade, qty: 1 }
+    - { item: iron_pickaxe, qty: 3 }
+  reward: { gold: 500 }
+
+# --- Cuisine · Maître Bertin ---
+- id: cooking_apprentice
+  profession: cooking
+  rank: 30
+  name: Le plat du jour
+  intro: "« Cuisine-moi mon plat d'épreuve, et dix bouillons pour la tablée. Pas un de brûlé. »"
+  tasks:
+    - { item: apprentice_dish, qty: 1 }
+    - { item: nettle_broth, qty: 10 }
+  reward: { gold: 150 }
+
+- id: cooking_journeyman
+  profession: cooking
+  rank: 60
+  name: Le banquet
+  intro: "« Un compagnon nourrit une salle entière. Prépare le banquet, je m'occupe des invités. »"
+  tasks:
+    - { item: journeyman_feast, qty: 1 }
+    - { item: lantern_soup, qty: 10 }
+  reward: { gold: 500 }

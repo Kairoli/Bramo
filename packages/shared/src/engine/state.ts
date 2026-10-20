@@ -33,6 +33,12 @@ export interface CharacterState {
   lastSeenAt: number;
   energy: EnergyState;
   buff: MealBuff | null;
+  /** Classe de base, choisie à la création (null tant qu'elle ne l'est pas) et changeable à tout moment. */
+  classId: string | null;
+  /** Tenue choisie ; null = la tenue de départ de la classe. */
+  outfit: string | null;
+  /** Épreuves de maître réussies. */
+  trials: string[];
 }
 
 export class GameError extends Error {

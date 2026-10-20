@@ -1,0 +1,11 @@
+{
+  "id": "forge_band",
+  "slot": "headwear",
+  "name": "Bandeau de forgeron",
+  "colorRoles": ["beard", "leather", "trim"],
+  "anchor": [0, 0],
+  "layers": [
+    { "id": "back", "bone": "head", "z": 52 },
+    { "id": "front", "bone": "head", "z": 58 }
+  ]
+}

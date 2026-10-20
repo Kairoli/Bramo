@@ -21,11 +21,13 @@ export const startBody = z.object({
 export const cancelBody = z.object({ index: z.number().int().min(-1) });
 export const itemBody = z.object({ itemId: z.string() });
 export const tradeBody = z.object({ itemId: z.string(), qty: z.number().int().min(1) });
+export const classBody = z.object({ classId: z.string() });
+export const trialBody = z.object({ trialId: z.string() });
 
 export interface JournalEntry {
   id: number;
   at: number;
-  kind: 'absence' | 'levelup' | 'finished' | 'started' | 'info';
+  kind: 'absence' | 'levelup' | 'finished' | 'started' | 'info' | 'trial';
   text: string;
   data?: AdvanceSummary;
 }

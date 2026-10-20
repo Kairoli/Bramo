@@ -12,9 +12,10 @@ describe('data/', () => {
     expect(content.professions).toHaveLength(14);
   });
 
-  it('chaque métier jouable a 5 à 6 recettes', () => {
+  it('chaque métier jouable a 5 à 6 recettes (hors chefs-d’œuvre) et ses épreuves de maître', () => {
     for (const p of content.professions.filter((p) => p.status === 'playable')) {
-      const count = Object.values(content.recipes).filter((r) => r.profession === p.id).length;
+      const count = Object.values(content.recipes).filter((r) => r.profession === p.id && !r.trial).length;
+      expect(Object.values(content.trials).filter((t) => t.profession === p.id).length, p.id).toBeGreaterThanOrEqual(2);
       expect(count, p.id).toBeGreaterThanOrEqual(5);
       expect(count, p.id).toBeLessThanOrEqual(6);
     }
@@ -29,12 +30,27 @@ describe('data/', () => {
     expect(shapes.size).toBeGreaterThan(1);
   });
 
-  it('chaque ingrédient peut être obtenu (recette ou marchand)', () => {
+  it('chaque ingrédient et chaque objet d’épreuve peut être obtenu (recette ou marchand)', () => {
     const produced = new Set(Object.values(content.recipes).flatMap((r) => r.outputs.map((o) => o.item)));
+    const obtainable = (item: string) => produced.has(item) || content.items[item]?.shopPrice !== undefined;
     for (const r of Object.values(content.recipes)) {
-      for (const i of r.inputs) {
-        expect(produced.has(i.item) || content.items[i.item]?.shopPrice !== undefined, `${r.id} → ${i.item}`).toBe(true);
-      }
+      for (const i of r.inputs) expect(obtainable(i.item), `${r.id} → ${i.item}`).toBe(true);
     }
+    for (const t of Object.values(content.trials)) {
+      for (const i of t.tasks) expect(obtainable(i.item), `${t.id} → ${i.item}`).toBe(true);
+    }
+  });
+
+  it('chaque classe a sa pose, sa tenue de départ et une animation de repos', () => {
+    const art = loadArt(artDir);
+    for (const c of Object.values(content.classes)) {
+      const pose = art.poses.find((p) => p.id === c.pose);
+      expect(pose, c.id).toBeDefined();
+      expect(art.animations.some((a) => a.id === pose!.animation), c.id).toBe(true);
+    }
+    // Les classes terminées ne se ressemblent pas au départ : tenue et pose différentes.
+    const finished = Object.values(content.classes).filter((c) => c.weapon);
+    expect(new Set(finished.map((c) => c.startingOutfit)).size).toBe(finished.length);
+    expect(new Set(finished.map((c) => c.pose)).size).toBe(finished.length);
   });
 });

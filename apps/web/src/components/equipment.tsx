@@ -54,8 +54,8 @@ export const DOLL_RIGHT: EquipSlotId[] = ['weapon', 'tool', 'meal', 'cape', 'rob
  * et objets qui donnent un bonus (outil du métier en cours, repas actif).
  */
 export function useEquipment(appearance?: Appearance): Record<EquipSlotId, EquipEntry> {
-  const { content, state, receivedAt } = useGame();
-  const look = useLook(appearance);
+  const { content, state, receivedAt, look: playerLook } = useGame();
+  const look = useLook(appearance ?? playerLook);
   const now = useNow(1000);
   const worn = resolveParts(content, look);
   const outfit = content.cosmetics.outfits.find((o) => o.id === look.outfit)!;
@@ -83,7 +83,7 @@ export function useEquipment(appearance?: Appearance): Record<EquipSlotId, Equip
     label: 'Arme',
     kind: 'class',
     name: weapon?.name ?? null,
-    detail: weapon ? `Arme de classe · aperçu ${cls?.name}` : 'Vide',
+    detail: weapon ? `Arme de classe · ${cls?.name}` : `Arme du ${cls?.name} à venir`,
     thumb: weapon ? { slot: 'weapon', partId: weapon.id } : null,
     item: null,
     highlight: ['weapon', 'effect'],
@@ -126,8 +126,8 @@ export function useEquipment(appearance?: Appearance): Record<EquipSlotId, Equip
 
 /** Miniature d'une pièce de tenue, recadrée automatiquement sur son contenu. */
 export function PartThumb({ slot, partId, appearance }: { slot: Slot; partId: string; appearance?: Appearance }) {
-  const { content } = useGame();
-  const look = useLook(appearance);
+  const { content, look: playerLook } = useGame();
+  const look = useLook(appearance ?? playerLook);
   const uid = useId().replace(/[^a-zA-Z0-9]/g, '');
   const ref = useRef<SVGGElement>(null);
   const [viewBox, setViewBox] = useState('0 0 480 760');
@@ -200,6 +200,7 @@ export function EquipSlot({
 
 /** Le personnage en entier, entouré de ce qu'il porte. Survoler un emplacement met la pièce en valeur. */
 export function PaperDoll({ size }: { size: 'card' | 'page' }) {
+  const { look } = useGame();
   const equipment = useEquipment();
   const [highlight, setHighlight] = useState<Slot[] | null>(null);
   return (
@@ -210,7 +211,7 @@ export function PaperDoll({ size }: { size: 'card' | 'page' }) {
         ))}
       </div>
       <div className="doll-figure">
-        <Character lod="scene" highlight={highlight} />
+        <Character appearance={look} lod="scene" highlight={highlight} />
       </div>
       <div className="doll-col">
         {DOLL_RIGHT.map((id) => (

@@ -1,0 +1,13 @@
+{
+  "id": "ember_aura",
+  "slot": "effect",
+  "name": "Braises de forge",
+  "colorRoles": ["glow", "glowLight"],
+  "anchor": [0, 0],
+  "layers": [
+    { "id": "cracks", "bone": "root", "z": 1, "detail": 2 },
+    { "id": "heat", "bone": "root", "z": 2 },
+    { "id": "fist", "bone": "hand_near", "z": 90 },
+    { "id": "embers", "bone": "root", "z": 92, "detail": 2 }
+  ]
+}

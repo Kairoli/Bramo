@@ -9,6 +9,9 @@ import {
   buyItem,
   cancelAction,
   cancelBody,
+  chooseClass,
+  classBody,
+  completeTrial,
   credentialsBody,
   eatMeal,
   itemBody,
@@ -17,6 +20,7 @@ import {
   startActivity,
   startBody,
   tradeBody,
+  trialBody,
 } from '@bramo/shared';
 import type { Db } from './db/index.js';
 import { accounts, characters } from './db/schema.js';
@@ -100,6 +104,7 @@ export async function buildApp({ db, content, clock = Date.now, secureCookies = 
     professions: content.professions,
     items: content.items,
     recipes: content.recipes,
+    trials: content.trials,
     classes: content.classes,
     cosmetics: content.cosmetics,
   };
@@ -128,6 +133,9 @@ export async function buildApp({ db, content, clock = Date.now, secureCookies = 
         queue: s.queue,
         energy: s.energy,
         buff: s.buff,
+        classId: s.classId,
+        outfit: s.outfit,
+        trials: s.trials,
         lastTickAt: new Date(s.lastTickAt),
         lastSeenAt: new Date(s.lastSeenAt),
       });
@@ -200,6 +208,29 @@ export async function buildApp({ db, content, clock = Date.now, secureCookies = 
       state: sellItem(state, itemId, qty, content),
       log: `Vente : ${qty} × ${itemName(itemId)}.`,
     }));
+  });
+
+  app.post('/api/character/class', (req) => {
+    const { classId } = body(classBody, req);
+    return playAs(req, (state) => ({
+      state: chooseClass(state, classId, content),
+      log: `${state.classId ? 'Vous changez de classe' : 'Vous choisissez votre classe'} : ${content.classes[classId]?.name}.`,
+    }));
+  });
+
+  app.post('/api/trials/complete', (req) => {
+    const { trialId } = body(trialBody, req);
+    return playAs(req, (state) => {
+      const trial = content.trials[trialId];
+      const next = completeTrial(state, trialId, content);
+      const title = trial && content.settings.titles.find((t) => t.level === trial.rank)?.name;
+      const profession = trial && content.professions.find((p) => p.id === trial.profession);
+      return {
+        state: next,
+        log: `Épreuve réussie : « ${trial?.name} ». Vous devenez ${title} en ${profession?.name}, +${trial?.reward.gold} or.`,
+        logKind: 'trial',
+      };
+    });
   });
 
   app.get('/api/journal', async (req) => {

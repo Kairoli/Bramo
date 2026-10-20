@@ -1,0 +1,6 @@
+{
+  "id": "runist",
+  "description": "Runiste : la pose de référence du gabarit. Bâton planté dans la main proche, main du sort levée vers la droite.",
+  "bones": {},
+  "animation": "idle"
+}

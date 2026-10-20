@@ -1,4 +1,12 @@
-import { type Animation, type PartManifest, animationSchema, partManifestSchema, rigSchema } from '@bramo/shared';
+import {
+  type Animation,
+  type PartManifest,
+  type Pose,
+  animationSchema,
+  partManifestSchema,
+  poseSchema,
+  rigSchema,
+} from '@bramo/shared';
 import rigJson from '../../../../art/rig/humanoid.json';
 
 /**
@@ -13,6 +21,7 @@ const svgFiles = import.meta.glob('../../../../art/parts/*/*.svg', {
   import: 'default',
 }) as Record<string, string>;
 const animationFiles = import.meta.glob('../../../../art/rig/animations/*.json', { eager: true, import: 'default' });
+const poseFiles = import.meta.glob('../../../../art/rig/poses/*.json', { eager: true, import: 'default' });
 
 export const rig = rigSchema.parse(rigJson);
 
@@ -49,6 +58,12 @@ export const animations: Record<string, Animation> = {};
 for (const json of Object.values(animationFiles)) {
   const anim = animationSchema.parse(json);
   animations[anim.id] = anim;
+}
+
+export const poses: Record<string, Pose> = {};
+for (const json of Object.values(poseFiles)) {
+  const pose = poseSchema.parse(json);
+  poses[pose.id] = pose;
 }
 
 export function partsInSlot(slot: string): LoadedPart[] {

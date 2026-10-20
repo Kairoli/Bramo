@@ -1,7 +1,7 @@
 import { useEffect, useId, useMemo, useRef, type CSSProperties } from 'react';
-import type { Appearance, ContentResponse, Lod, Slot } from '@bramo/shared';
+import type { Appearance, ContentResponse, Lod, Pose, Slot } from '@bramo/shared';
 import { useContent } from '../game/ContentContext';
-import { type LoadedPart, animations, parts, rig } from './assets';
+import { type LoadedPart, animations, parts, poses, rig } from './assets';
 import { type Matrix, orderedBones, toSvg, worldMatrices } from './skeleton';
 import './rig.css';
 
@@ -17,12 +17,18 @@ interface Layer {
   anchor: [number, number];
 }
 
-/** Pièces portées : corps de base + tenue + retouches pièce par pièce + arme et effet de la classe. */
+/** Pose de la classe (plus tard : de la voie) ; la pose de référence si la classe n'en a pas. */
+export function poseFor(content: ContentResponse, appearance: Appearance): Pose | null {
+  const id = content.classes[appearance.classId]?.pose;
+  return (id && poses[id]) || null;
+}
+
+/** Pièces portées : corps de la pose + tenue + retouches pièce par pièce + arme et effet de la classe. */
 export function resolveParts(content: ContentResponse, appearance: Appearance): Partial<Record<Slot, string>> {
   const outfit = content.cosmetics.outfits.find((o) => o.id === appearance.outfit) ?? content.cosmetics.outfits[0]!;
   const cls = content.classes[appearance.classId];
   const chosen: Partial<Record<Slot, string | null>> = {
-    body: 'base',
+    body: poseFor(content, appearance)?.body ?? 'base',
     ...outfit.parts,
     weapon: cls?.weapon ?? null,
     effect: cls?.effect ?? null,
@@ -139,11 +145,13 @@ export function Character({
   const layerRefs = useRef(new Map<string, SVGGElement>());
   const boneRefs = useRef(new Map<string, SVGGElement>());
   const explodeAmount = useRef(0);
+  const pose = poseFor(content, look);
 
   // Boucle d'animation : on écrit directement les attributs transform, sans re-rendu React.
   useEffect(() => {
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const anim = animate && !reduced ? (animations.idle ?? null) : null;
+    const anim = animate && !reduced ? (animations[pose?.animation ?? 'idle'] ?? null) : null;
+    const offsets = pose?.bones ?? {};
     const zs = layers.map((l) => l.z);
     const zMid = (Math.min(...zs) + Math.max(...zs)) / 2;
     let frame = 0;
@@ -151,7 +159,7 @@ export function Character({
     const draw = (now: number) => {
       const target = explode ? 1 : 0;
       explodeAmount.current += (target - explodeAmount.current) * (reduced ? 1 : 0.12);
-      const world: Record<string, Matrix> = worldMatrices(BONES, anim, now / 1000);
+      const world: Record<string, Matrix> = worldMatrices(BONES, anim, now / 1000, offsets);
       for (const l of layers) {
         const el = layerRefs.current.get(l.key);
         if (!el) continue;
@@ -165,7 +173,7 @@ export function Character({
     };
     frame = requestAnimationFrame(draw);
     return () => cancelAnimationFrame(frame);
-  }, [layers, animate, explode]);
+  }, [layers, animate, explode, pose]);
 
   const [x, y, w, h] = level.viewBox;
   return (

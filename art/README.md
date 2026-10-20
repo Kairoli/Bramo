@@ -6,6 +6,7 @@ Une nouvelle tenue (le seul revenu du jeu) se fait **sans retoucher les animatio
 - `reference/` : le test de style d'origine (Runiste de face, avant le système). Ne sert plus qu'à titre de référence.
 - `rig/humanoid.json` : le gabarit (os, pivots, couleurs du corps, niveaux de détail).
 - `rig/animations/*.json` : les animations, en images clés par os.
+- `rig/poses/*.json` : les poses de classe (plus tard, de voie).
 - `parts/<emplacement>/<id>.svg` + `<id>.json` : les pièces.
 
 Le rendu est fait dans le client par `apps/web/src/rig/Character.tsx`. La page de développement **Atelier** (`/#atelier`, lien « Atelier » dans la barre du haut en mode dev) permet de changer les pièces une à une, d'afficher les os, de couper l'animation et d'éclater les calques.
@@ -14,7 +15,8 @@ Le rendu est fait dans le client par `apps/web/src/rig/Character.tsx`. La page d
 
 - Toujours à gauche de la scène, en **trois quarts vers la droite**. Le regard, l'arme et les sorts vont vers la droite. **Jamais de miroir.**
 - Proportions réalistes (environ 7,5 à 8 têtes).
-- L'apparence ne dépend jamais de la classe : la classe se lit à **l'arme** et à **l'effet**, dans sa couleur d'affinité (`--c-glow`).
+- **On voit tout de suite qui joue quoi** : chaque classe a sa **tenue de départ** (`startingOutfit` dans `data/classes.yaml`) et sa **pose**, plus son **arme** et son **effet** dans sa couleur d'affinité (`--c-glow`). À terme, chaque voie aura sa pose.
+- Les tenues cosmétiques se portent ensuite par-dessus, avec n'importe quelle classe : elles suivent les os, donc toutes les poses.
 - Lumière : contour coloré par le sort côté droit (`url(#rig-light)` et traits `--c-glow`), ombre douce côté gauche (`url(#rig-shade)`), visage dans l'ombre de la capuche (`url(#rig-hood)`).
 
 ## Le gabarit
@@ -35,6 +37,21 @@ Coordonnées absolues de la pose de repos, viewBox `0 0 480 760`, sol à `y = 70
 | cape | torso | cape et mantelet |
 
 `rotation` sur un os = pose de référence (setup pose), appliquée avant les animations.
+
+## Les poses
+
+Une pose (`rig/poses/<id>.json`) ajoute des degrés à la pose de référence de certains os, choisit le **corps de base** (`body`, pour la forme des mains) et son **animation de repos**. La classe pointe vers sa pose (`pose` dans `data/classes.yaml`).
+
+| Pose | Classe | Corps | Animation |
+|---|---|---|---|
+| `runist` | Runiste (et Traqueur en attendant son visuel) | `base` (main du sort ouverte) | `idle` |
+| `forgefire` | Forgefeu : campé, jambes écartées, marteau posé tête au sol à droite, poing proche fermé | `base_grip` (poings) | `idle_forgefire` |
+
+Les pièces restent dessinées sur la pose de repos et suivent leurs os ; une tenue va donc avec toutes les poses. Deux exceptions, propres à une pose :
+- un poing qui tient une arme est dessiné **dans la pose** puis ramené dans le repère de repos de son os par la matrice inverse (voir `parts/body/base_grip.svg`) ;
+- une arme posée au sol (le marteau du Forgefeu) est portée par l'os `root` : elle ne bouge pas quand le personnage respire.
+
+Pour calculer les pivots d'une pose et la matrice inverse d'un os, reprendre la cinématique de `apps/web/src/rig/skeleton.ts` (`worldMatrices` avec les décalages de la pose).
 
 ## Les pièces
 
@@ -80,7 +97,7 @@ Classes CSS utilisables dans les pièces : `fx-pulse` (lueur), `fx-hover` (flott
 1. Dessiner la pièce dans `parts/<emplacement>/<id>.svg`, sur la pose de repos, avec les variables de couleur.
 2. Écrire `<id>.json` (calques, os, z).
 3. La référencer dans une tenue de `data/cosmetics.yaml` (ou comme arme ou effet dans `data/classes.yaml`).
-4. Vérifier dans l'Atelier. `pnpm test` valide les manifestes, les os, les calques et les références.
+4. Vérifier dans l'Atelier, sur chaque classe (donc chaque pose). `pnpm test` valide les manifestes, les os, les calques, les poses et les références.
 
 ## Vers Rive ou Spine
 

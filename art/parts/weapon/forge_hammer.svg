@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 760">
+  <!-- Marteau de forge du Forgefeu, posé tête au sol devant le personnage (côté droit).
+       Il repose sur le sol : il est porté par l'os root, et le poing glisse un peu le long du manche en respirant. -->
+  <g id="ground">
+    <ellipse cx="374" cy="700" rx="56" ry="8" fill="#000" opacity=".55"/>
+  </g>
+  <g id="hammer">
+    <path d="M308 306 L370 648" stroke="var(--c-wood)" stroke-width="12" stroke-linecap="round"/>
+    <path d="M305 314 L366 646" stroke="var(--c-wood-light)" stroke-width="3" stroke-linecap="round" opacity=".55"/>
+    <g transform="rotate(-10.2 316 346)">
+      <rect x="309" y="322" width="14" height="48" rx="2" fill="var(--c-leather)"/>
+      <path d="M309 330 L323 326 M309 340 L323 336 M309 350 L323 346 M309 360 L323 356" stroke="#16130F" stroke-width="1.5" opacity=".7"/>
+    </g>
+    <g transform="rotate(-10.2 308 304)">
+      <rect x="300" y="294" width="16" height="16" rx="3" fill="var(--c-metal)"/>
+      <rect x="300" y="294" width="16" height="16" rx="3" fill="url(#rig-shade)"/>
+    </g>
+    <g transform="rotate(-10.2 368 628)">
+      <rect x="360" y="618" width="16" height="22" rx="2" fill="var(--c-metal)"/>
+      <path d="M360 624 L376 624" stroke="#000" stroke-opacity=".3" stroke-width="2"/>
+    </g>
+    <path d="M346 644 L402 644 L408 650 L408 696 L402 702 L346 702 L340 696 L340 650 Z" fill="var(--c-stone)"/>
+    <path d="M330 636 L350 640 L352 704 L330 708 Q324 672 330 636 Z" fill="var(--c-metal)"/>
+    <path d="M330 636 L350 640 L352 704 L330 708 Q324 672 330 636 Z" fill="url(#rig-shade)"/>
+    <path d="M418 636 L398 640 L396 704 L418 708 Q424 672 418 636 Z" fill="var(--c-metal)"/>
+    <path d="M418 636 Q424 672 418 708" stroke="var(--c-glow)" stroke-opacity=".75" stroke-width="2.5" fill="none"/>
+    <path d="M352 652 L396 652 M352 694 L396 694" stroke="var(--c-trim)" stroke-width="3"/>
+    <path d="M346 644 L402 644" stroke="#F1F0EC" stroke-opacity=".25" stroke-width="2"/>
+    <path class="fx-pulse" d="M364 664 L374 673 L364 682 M384 664 L374 673 L384 682" fill="none" stroke="var(--c-glow)" stroke-width="2.6" stroke-linecap="round" filter="url(#rig-glow)"/>
+  </g>
+</svg>

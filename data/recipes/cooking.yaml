@@ -44,6 +44,27 @@
   xp: 95
   inputs: [{ item: lantern_lily, qty: 2 }, { item: raw_fish, qty: 1 }]
   outputs: [{ item: lantern_soup, qty: 1 }]
+# Chefs-d'œuvre : visibles seulement pendant l'épreuve du maître.
+- id: cook_apprentice_dish
+  name: Truite du maître
+  profession: cooking
+  category: masterwork
+  trial: cooking_apprentice
+  level: 30
+  durationSec: 60
+  xp: 300
+  inputs: [{ item: trout, qty: 2 }, { item: sage, qty: 3 }, { item: thyme, qty: 3 }]
+  outputs: [{ item: apprentice_dish, qty: 1 }]
+- id: cook_journeyman_feast
+  name: Banquet du compagnon
+  profession: cooking
+  category: masterwork
+  trial: cooking_journeyman
+  level: 60
+  durationSec: 120
+  xp: 1200
+  inputs: [{ item: trout, qty: 3 }, { item: sage, qty: 4 }, { item: lantern_lily, qty: 4 }]
+  outputs: [{ item: journeyman_feast, qty: 1 }]
 - id: cook_frost_feast
   name: Festin du givre
   profession: cooking

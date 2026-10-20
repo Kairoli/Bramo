@@ -1,0 +1,11 @@
+{
+  "id": "forge_hammer",
+  "slot": "weapon",
+  "name": "Marteau de forge",
+  "colorRoles": ["wood", "woodLight", "leather", "metal", "stone", "trim", "glow"],
+  "anchor": [0, 0],
+  "layers": [
+    { "id": "ground", "bone": "root", "z": 3 },
+    { "id": "hammer", "bone": "root", "z": 26 }
+  ]
+}

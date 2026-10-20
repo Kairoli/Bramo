@@ -1,0 +1,19 @@
+{
+  "id": "forgefire",
+  "description": "Forgefeu : campé, jambes écartées, le marteau de forge posé tête au sol devant lui (main du côté droit), le poing proche fermé le long du corps.",
+  "bones": {
+    "torso": 1.5,
+    "head": -3,
+    "upperarm_far": -8,
+    "forearm_far": 135,
+    "hand_far": -30,
+    "upperarm_near": 5,
+    "forearm_near": -12,
+    "thigh_near": 3,
+    "shin_near": -3,
+    "thigh_far": -5,
+    "shin_far": 5
+  },
+  "body": "base_grip",
+  "animation": "idle_forgefire"
+}

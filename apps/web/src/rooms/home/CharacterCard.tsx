@@ -1,5 +1,6 @@
 import { useGame } from '../../game/GameContext';
 import { PaperDoll } from '../../components/equipment';
+import { STYLE_NAMES } from '../../components/ClassChoice';
 
 /** Le personnage en entier, avec ce qu'il porte ; le détail est dans la salle Personnage. */
 export function CharacterCard() {
@@ -8,7 +9,7 @@ export function CharacterCard() {
     .filter((p) => p.status === 'playable')
     .map((p) => ({ p, s: state.skills[p.id]! }))
     .sort((a, b) => b.s.xp - a.s.xp)[0]!;
-  const preview = content.classes[content.cosmetics.default.class];
+  const cls = state.classId ? content.classes[state.classId] : undefined;
 
   return (
     <section className="panel character-card">
@@ -18,9 +19,11 @@ export function CharacterCard() {
         <div style={{ color: 'var(--clan)' }}>
           {best.s.title} · {best.p.name} {best.s.level}
         </div>
-        <span className="chip" style={{ color: 'var(--magic)', borderColor: 'var(--magic)' }}>
-          Classe à venir · aperçu {preview?.name}
-        </span>
+        {cls && (
+          <span className="chip" style={{ color: cls.affinityColor, borderColor: cls.affinityColor }}>
+            {cls.name} · {STYLE_NAMES[cls.style]}
+          </span>
+        )}
       </div>
       <button className="link character-open" onClick={() => go('character')}>
         Ouvrir le personnage →

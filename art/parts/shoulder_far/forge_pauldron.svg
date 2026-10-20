@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 760">
+  <!-- Épaulière lourde à deux lames rivetées, bord cuivré. -->
+  <g id="pauldron">
+    <path d="M242 174 Q266 156 292 168 Q302 186 294 204 Q270 194 248 198 Z" fill="var(--c-metal)"/>
+    <path d="M242 174 Q266 156 292 168 Q302 186 294 204 Q270 194 248 198 Z" fill="#000" opacity=".28"/>
+    <path d="M250 194 Q272 188 296 200 Q298 214 290 222 Q270 210 254 212 Z" fill="var(--c-metal)"/>
+    <path d="M250 194 Q272 188 296 200 Q298 214 290 222 Q270 210 254 212 Z" fill="#000" opacity=".4"/>
+    <path d="M244 174 Q266 156 292 168 Q302 186 294 204" stroke="var(--c-trim)" stroke-width="2" fill="none"/>
+    <path d="M276 164 Q290 170 294 184" stroke="#F1F0EC" stroke-opacity=".3" stroke-width="2" fill="none"/>
+    <circle cx="262" cy="176" r="2" fill="#F1F0EC" opacity=".45"/>
+    <circle cx="282" cy="176" r="2" fill="#F1F0EC" opacity=".45"/>
+  </g>
+</svg>

@@ -78,9 +78,8 @@ export function Atelier() {
               key={c.id}
               className={`chip${c.id === look.classId ? ' active' : ''}`}
               style={{ borderColor: c.id === look.classId ? c.affinityColor : undefined, color: c.affinityColor }}
-              disabled={!c.weapon}
-              title={c.weapon ? undefined : 'Arme et effet à venir'}
-              onClick={() => setLook((l) => ({ ...l, classId: c.id }))}
+              title={c.weapon ? `Tenue de départ et pose du ${c.name}` : 'Visuel à venir'}
+              onClick={() => setLook({ classId: c.id, outfit: c.startingOutfit })}
             >
               {c.name}
             </button>

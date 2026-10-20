@@ -44,6 +44,27 @@
   xp: 60
   inputs: [{ item: iron_ingot, qty: 2 }]
   outputs: [{ item: iron_blade, qty: 1 }]
+# Chefs-d'œuvre : visibles seulement pendant l'épreuve du maître.
+- id: forge_apprentice_blade
+  name: Lame d'épreuve
+  profession: smithing
+  category: masterwork
+  trial: smithing_apprentice
+  level: 30
+  durationSec: 60
+  xp: 300
+  inputs: [{ item: iron_ingot, qty: 10 }, { item: bronze_ingot, qty: 5 }]
+  outputs: [{ item: apprentice_blade, qty: 1 }]
+- id: forge_journeyman_blade
+  name: Lame de compagnon
+  profession: smithing
+  category: masterwork
+  trial: smithing_journeyman
+  level: 60
+  durationSec: 120
+  xp: 1200
+  inputs: [{ item: iron_ingot, qty: 30 }, { item: coal, qty: 20 }]
+  outputs: [{ item: journeyman_blade, qty: 1 }]
 - id: forge_iron_pickaxe
   name: Pioche de fer
   profession: smithing

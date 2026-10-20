@@ -81,11 +81,31 @@ export const recipeSchema = z.object({
   xp: z.number().min(0),
   inputs: z.array(stackSchema).default([]),
   outputs: z.array(stackSchema).min(1),
+  /** Recette de chef-d'œuvre : n'existe que pendant cette épreuve de maître. */
+  trial: id.optional(),
+});
+
+/**
+ * Épreuve de maître : au niveau d'un palier de titre, le maître du métier demande des objets.
+ * Les remettre donne le titre (Apprenti, Compagnon…). Le niveau, lui, continue de monter sans elle.
+ */
+export const trialSchema = z.object({
+  id,
+  profession: id,
+  /** Palier de titre ouvert par l'épreuve (un niveau de settings.titles). */
+  rank: z.number().int().min(2),
+  name: z.string(),
+  /** Ce que dit le maître en confiant l'épreuve. */
+  intro: z.string(),
+  /** Objets à remettre au maître (consommés). */
+  tasks: z.array(stackSchema).min(1),
+  reward: z.object({ gold: z.number().int().min(0) }),
 });
 
 export const professionsFileSchema = z.array(professionSchema);
 export const itemsFileSchema = z.array(itemSchema);
 export const recipesFileSchema = z.array(recipeSchema);
+export const trialsFileSchema = z.array(trialSchema);
 
 export type Settings = z.infer<typeof settingsSchema>;
 export type ProfessionFamily = z.infer<typeof professionFamilySchema>;
@@ -93,6 +113,7 @@ export type Profession = z.infer<typeof professionSchema>;
 export type Item = z.infer<typeof itemSchema>;
 export type Recipe = z.infer<typeof recipeSchema>;
 export type Stack = z.infer<typeof stackSchema>;
+export type Trial = z.infer<typeof trialSchema>;
 
 /** Contenu chargé, validé et indexé. Construit par `buildContent`. */
 export interface Content {
@@ -100,6 +121,8 @@ export interface Content {
   professions: Profession[];
   items: Record<string, Item>;
   recipes: Record<string, Recipe>;
+  /** Épreuves de maître, dans l'ordre des paliers pour chaque métier. */
+  trials: Record<string, Trial>;
   classes: Record<string, CharacterClass>;
   cosmetics: Cosmetics;
   /** xpTable[L] = XP totale pour atteindre le niveau L (index 0 inutilisé). */

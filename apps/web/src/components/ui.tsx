@@ -57,6 +57,7 @@ const CATEGORY_COLOR: Record<string, string> = {
   herb: 'var(--good)',
   fish: 'var(--event)',
   meal: 'var(--clan)',
+  masterwork: 'var(--clan)',
 };
 
 /** Icône provisoire : initiale dans un carré pointillé, couleur selon la catégorie. */

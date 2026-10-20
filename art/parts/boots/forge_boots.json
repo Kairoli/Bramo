@@ -1,0 +1,11 @@
+{
+  "id": "forge_boots",
+  "slot": "boots",
+  "name": "Bottes ferrées",
+  "colorRoles": ["boots", "leather", "metal"],
+  "anchor": [0, 0],
+  "layers": [
+    { "id": "far", "bone": "shin_far", "z": 16 },
+    { "id": "near", "bone": "shin_near", "z": 20 }
+  ]
+}

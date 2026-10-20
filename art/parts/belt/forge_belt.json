@@ -1,0 +1,11 @@
+{
+  "id": "forge_belt",
+  "slot": "belt",
+  "name": "Ceinture à outils",
+  "colorRoles": ["leather", "metal", "trim"],
+  "anchor": [0, 0],
+  "layers": [
+    { "id": "belt", "bone": "pelvis", "z": 40 },
+    { "id": "tools", "bone": "pelvis", "z": 41, "detail": 2 }
+  ]
+}

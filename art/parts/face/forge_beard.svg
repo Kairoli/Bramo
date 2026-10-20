@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 760">
+  <!-- Visage du Forgefeu : sourcils épais, grande barbe tressée avec une bague de métal, regard sombre. -->
+  <g id="features">
+    <path d="M241 100 L249 112 L241 115" fill="none" stroke="var(--c-skin-dark)" stroke-width="1.8" stroke-linecap="round"/>
+    <path d="M226 92 Q236 88 246 92" stroke="var(--c-beard)" stroke-width="4" fill="none" stroke-linecap="round"/>
+    <path d="M188 114 Q188 150 212 170 Q238 162 245 124 Q236 132 226 131 Q212 129 202 120 Z" fill="var(--c-beard)"/>
+    <path d="M188 114 Q188 150 212 170 L210 128 Q202 124 198 118 Z" fill="url(#rig-shade)"/>
+    <path d="M218 126 Q230 116 247 120 Q246 127 240 128 Q232 124 226 130 Z" fill="var(--c-beard)"/>
+    <path d="M222 125 Q232 119 244 121" stroke="#000" stroke-opacity=".25" stroke-width="1.2" fill="none"/>
+    <path d="M212 168 L214 190" stroke="var(--c-beard)" stroke-width="7" stroke-linecap="round"/>
+    <rect x="207" y="176" width="13" height="6" rx="2" fill="var(--c-metal)" transform="rotate(4 213 179)"/>
+  </g>
+  <g id="eyes">
+    <ellipse cx="220" cy="101" rx="3.2" ry="1.7" fill="#14181B"/>
+    <ellipse cx="237" cy="100" rx="2.3" ry="1.4" fill="#14181B"/>
+    <circle class="fx-pulse" cx="238" cy="99.6" r=".9" fill="var(--c-glow-light)"/>
+  </g>
+</svg>

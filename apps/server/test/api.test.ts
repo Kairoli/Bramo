@@ -44,6 +44,26 @@ describe('API', () => {
     expect(state.state.skills.mining?.level).toBe(1);
   });
 
+  it('fait choisir la classe au nouveau personnage, puis la laisse changer', async () => {
+    const fresh = (await call('GET', '/api/state')).json as StateResponse;
+    expect(fresh.state.classId).toBeNull();
+    const chosen = (await call('POST', '/api/character/class', { classId: 'forgefire' })).json as StateResponse;
+    expect(chosen.state.appearance).toEqual({ classId: 'forgefire', outfit: 'embers' });
+    expect(chosen.journal[0]?.text).toBe('Vous choisissez votre classe : Forgefeu.');
+    const changed = (await call('POST', '/api/character/class', { classId: 'runist' })).json as StateResponse;
+    expect(changed.state.appearance).toEqual({ classId: 'runist', outfit: 'ashes' });
+    expect((await call('POST', '/api/character/class', { classId: 'paladin' })).status).toBe(400);
+  });
+
+  it('refuse une épreuve de maître avant son niveau', async () => {
+    const res = await call('POST', '/api/trials/complete', { trialId: 'mining_apprentice' });
+    expect(res.status).toBe(400);
+    expect(res.json.message).toBe('Niveau 30 requis pour cette épreuve.');
+    const state = (await call('GET', '/api/state')).json as StateResponse;
+    expect(state.state.trials.mining_apprentice).toBe('locked');
+    expect(state.state.skills.mining?.nextTitle).toMatchObject({ name: 'Apprenti', trialId: 'mining_apprentice' });
+  });
+
   it('refuse un pseudo déjà pris', async () => {
     const res = await call('POST', '/api/auth/register', { username: 'brann', password: 'motdepasse' });
     expect(res.status).toBe(409);

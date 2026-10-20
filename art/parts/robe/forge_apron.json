@@ -1,0 +1,12 @@
+{
+  "id": "forge_apron",
+  "slot": "robe",
+  "name": "Tablier de cuir",
+  "colorRoles": ["mantle", "leather", "trim"],
+  "anchor": [0, 0],
+  "layers": [
+    { "id": "flap_far", "bone": "cloth_far", "z": 30 },
+    { "id": "flap_near", "bone": "cloth_near", "z": 32 },
+    { "id": "bib", "bone": "torso", "z": 39 }
+  ]
+}

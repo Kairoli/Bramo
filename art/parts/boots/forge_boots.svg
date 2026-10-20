@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 760">
+  <!-- Bottes de forge : tige haute à revers, bout ferré. -->
+  <g id="far">
+    <path d="M218 586 L252 586 L255 650 L282 672 Q252 686 216 684 L220 648 Z" fill="var(--c-boots)" opacity=".92"/>
+    <path d="M258 664 Q274 668 282 672 Q276 682 260 684 Z" fill="var(--c-metal)" opacity=".55"/>
+    <path d="M216 586 L254 586 L254 600 L216 600 Z" fill="var(--c-leather)"/>
+    <path d="M216 684 Q252 686 282 672" stroke="#16130F" stroke-width="5" fill="none"/>
+  </g>
+  <g id="near">
+    <path d="M163 590 L197 590 L199 654 L224 676 Q192 690 158 688 L163 652 Z" fill="var(--c-boots)"/>
+    <path d="M202 668 Q216 672 224 676 Q218 686 202 688 Z" fill="var(--c-metal)" opacity=".7"/>
+    <path d="M161 590 L199 590 L199 604 L161 604 Z" fill="var(--c-leather)"/>
+    <path d="M158 688 Q192 690 224 676" stroke="#16130F" stroke-width="5" fill="none"/>
+  </g>
+</svg>

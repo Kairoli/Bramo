@@ -1,5 +1,5 @@
 import { desc, eq } from 'drizzle-orm';
-import { type AdvanceSummary, type Content, type JournalEntry, titleForLevel } from '@bramo/shared';
+import { type AdvanceSummary, type Content, type JournalEntry, earnedTitle, previousTrial, trialsOf } from '@bramo/shared';
 import type { Db, Tx } from './db/index.js';
 import { journal } from './db/schema.js';
 
@@ -15,8 +15,16 @@ export function formatDuration(ms: number): string {
   return m ? `${h} h ${String(m).padStart(2, '0')}` : `${h} h`;
 }
 
-/** Transforme le résumé d'un calcul de progression en lignes de journal, en français. */
-export function entriesFromSummary(summary: AdvanceSummary, content: Content, isAbsence: boolean): NewEntry[] {
+/**
+ * Transforme le résumé d'un calcul de progression en lignes de journal, en français.
+ * `trials` : épreuves déjà réussies (un palier avec épreuve n'est acquis qu'une fois l'épreuve passée).
+ */
+export function entriesFromSummary(
+  summary: AdvanceSummary,
+  content: Content,
+  isAbsence: boolean,
+  trials: readonly string[],
+): NewEntry[] {
   const at = summary.to;
   const profession = (id: string) => content.professions.find((p) => p.id === id)?.name ?? id;
   const item = (id: string) => content.items[id]?.name ?? id;
@@ -47,10 +55,18 @@ export function entriesFromSummary(summary: AdvanceSummary, content: Content, is
   }
   for (const id of summary.started) entries.push({ at, kind: 'started', text: `La file enchaîne : ${recipe(id)}.` });
   for (const l of summary.levelUps) {
-    const before = titleForLevel(l.from, content.settings.titles);
-    const after = titleForLevel(l.to, content.settings.titles);
+    const before = earnedTitle(l.skill, l.from, trials, content).name;
+    const after = earnedTitle(l.skill, l.to, trials, content).name;
     const title = after !== before ? ` Vous devenez ${after}.` : '';
     entries.push({ at, kind: 'levelup', text: `${profession(l.skill)} passe au niveau ${l.to}.${title}` });
+    // Une épreuve s'ouvre : le maître du métier vous attend.
+    const opened = trialsOf(l.skill, content).find(
+      (t) => t.rank > l.from && t.rank <= l.to && !trials.includes(t.id) && !previousTrial(t, trials, content),
+    );
+    const master = content.professions.find((p) => p.id === l.skill)?.master?.name;
+    if (opened && master) {
+      entries.push({ at, kind: 'trial', text: `${master} vous attend pour l’épreuve « ${opened.name} ».` });
+    }
   }
   return entries;
 }

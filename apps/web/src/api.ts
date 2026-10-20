@@ -39,4 +39,6 @@ export const api = {
   eat: (itemId: string) => request<StateResponse>('POST', '/items/eat', { itemId }),
   buy: (itemId: string, qty: number) => request<StateResponse>('POST', '/shop/buy', { itemId, qty }),
   sell: (itemId: string, qty: number) => request<StateResponse>('POST', '/shop/sell', { itemId, qty }),
+  chooseClass: (classId: string) => request<StateResponse>('POST', '/character/class', { classId }),
+  completeTrial: (trialId: string) => request<StateResponse>('POST', '/trials/complete', { trialId }),
 };

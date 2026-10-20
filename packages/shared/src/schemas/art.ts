@@ -93,12 +93,32 @@ export const animationSchema = z.object({
 });
 export type Animation = z.infer<typeof animationSchema>;
 
+/**
+ * Pose d'une classe (plus tard : d'une voie) : décalages d'angle sur la pose de référence du gabarit,
+ * puis animation de repos propre. Les pièces suivent leurs os : une tenue va avec toutes les poses.
+ */
+export const poseSchema = z.object({
+  id,
+  description: z.string().optional(),
+  /** Degrés ajoutés à la rotation de référence de chaque os. */
+  bones: z.record(id, z.number()).default({}),
+  /** Corps de base propre à la pose (forme des mains : main ouverte du sort, poing qui tient l'arme…). */
+  body: id.default('base'),
+  animation: id,
+});
+export type Pose = z.infer<typeof poseSchema>;
+
 export const classSchema = z.object({
   id,
   name: z.string(),
   style: z.enum(['melee', 'ranged', 'magic']),
   profession: id,
   affinityColor: hex,
+  /** Phrase de présentation affichée au choix de la classe. */
+  pitch: z.string(),
+  /** Tenue portée tant que le joueur n'en a pas choisi d'autre. */
+  startingOutfit: id,
+  pose: id,
   weapon: id.optional(),
   effect: id.optional(),
 });
@@ -120,7 +140,7 @@ export const cosmeticsFileSchema = z.object({
 });
 export type Cosmetics = z.infer<typeof cosmeticsFileSchema>;
 
-/** Apparence d'un personnage : tenue, classe, et pièces changées une à une. */
+/** Apparence d'un personnage : tenue, classe (qui donne la pose, l'arme et l'effet), et pièces changées une à une. */
 export interface Appearance {
   outfit: string;
   classId: string;

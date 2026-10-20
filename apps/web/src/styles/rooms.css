@@ -1014,6 +1014,188 @@
   color: var(--alert);
 }
 
+/* ---------- Épreuves des maîtres (salle d'un métier) ---------- */
+
+.master-bubble.trial-open,
+.master-bubble.trial-locked,
+.master-bubble.trial-success {
+  align-items: flex-start;
+}
+.master-bubble.trial-open {
+  border-color: var(--clan);
+  box-shadow: 0 0 0 1px rgb(227 199 112 / 0.18), 0 10px 30px rgb(0 0 0 / 0.35);
+}
+.master-bubble.trial-locked {
+  border-color: var(--border);
+}
+.master-bubble.trial-success {
+  border-color: var(--good);
+}
+.trial-success .eyebrow {
+  color: var(--good);
+}
+.trial-success > div,
+.trial-body {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+  flex: 1;
+}
+.trial-badge {
+  justify-self: start;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--sunken);
+  background: var(--clan);
+  border-radius: 999px;
+  padding: 2px 9px;
+}
+.trial-intro {
+  font-style: italic;
+}
+.trial-tasks {
+  list-style: none;
+  display: grid;
+  gap: 4px;
+}
+.trial-tasks li {
+  display: grid;
+  grid-template-columns: 18px minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+}
+.trial-tasks li > span:nth-child(2) {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.trial-tasks .link {
+  font-size: 12px;
+  color: var(--clan);
+}
+.trial-check {
+  width: 18px;
+  height: 18px;
+  border-radius: 5px;
+  border: 1px solid var(--border);
+  display: grid;
+  place-items: center;
+  font-size: 12px;
+  font-weight: 800;
+}
+.trial-tasks li.done .trial-check {
+  background: var(--good);
+  border-color: var(--good);
+  color: var(--sunken);
+}
+.trial-tasks li.done > span:nth-child(2) {
+  color: var(--text-muted);
+}
+.trial-count {
+  font-variant-numeric: tabular-nums;
+  color: var(--text-muted);
+}
+.trial-foot {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 2px;
+}
+.trial-foot .btn {
+  white-space: nowrap;
+}
+.master-card.waiting {
+  border-color: var(--clan);
+}
+.recipe-card.masterwork {
+  border-color: rgb(227 199 112 / 0.6);
+  background: linear-gradient(135deg, rgb(227 199 112 / 0.08), transparent 60%), var(--sunken);
+}
+
+/* ---------- Choix de la classe ---------- */
+
+.class-screen {
+  grid-row: 1 / -1;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: var(--gap);
+  min-height: 0;
+}
+.class-head {
+  display: grid;
+  justify-items: center;
+  text-align: center;
+  gap: 6px;
+  padding-top: 8px;
+}
+.class-head h1 {
+  font-size: 40px;
+  font-weight: 800;
+  line-height: 1.05;
+}
+.class-head p {
+  max-width: 620px;
+}
+.class-cards {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--gap);
+  min-height: 0;
+}
+.class-card {
+  --affinity: var(--action);
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto auto;
+  gap: 12px;
+  padding: 14px;
+  min-height: 0;
+  transition: border-color 0.15s;
+}
+.class-card:hover,
+.class-card.current {
+  border-color: var(--affinity);
+}
+.class-figure {
+  position: relative;
+  min-height: 0;
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse at 50% 85%, color-mix(in srgb, var(--affinity) 22%, transparent), transparent 65%),
+    var(--sunken);
+}
+.class-figure .rig {
+  position: absolute;
+  inset: 8px 0 0;
+  width: 100%;
+  height: calc(100% - 8px);
+}
+.class-text {
+  display: grid;
+  gap: 4px;
+}
+.class-text h2 {
+  font-size: 28px;
+  font-weight: 800;
+  line-height: 1.1;
+}
+.class-link {
+  font-size: 13px;
+}
+.class-modal {
+  width: min(1100px, calc(100vw - 48px));
+  height: min(720px, calc(100vh - 48px));
+  grid-template-rows: auto auto minmax(0, 1fr);
+}
+.class-modal-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+}
+
 /* ---------- Petits écrans (1280×720) ---------- */
 
 @media (max-height: 780px) {
@@ -1091,6 +1273,26 @@
   }
   .char-stage-head h1 {
     font-size: 28px;
+  }
+  .master-bubble.trial-open {
+    padding: 10px 12px;
+    width: min(400px, 34%);
+  }
+  .trial-intro {
+    display: none;
+  }
+  .trial-tasks li {
+    font-size: 12px;
+  }
+  .class-head h1 {
+    font-size: 30px;
+  }
+  .class-text h2 {
+    font-size: 22px;
+  }
+  .class-card {
+    padding: 10px;
+    gap: 8px;
   }
 }
 

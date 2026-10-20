@@ -1,4 +1,6 @@
+import { useState } from 'react';
 import { api } from '../api';
+import { ClassModal, STYLE_NAMES } from '../components/ClassChoice';
 import { useGame } from '../game/GameContext';
 import { duration, num, pct, signedPct } from '../format';
 import { Bar, FAMILY_COLOR, ItemIcon } from '../components/ui';
@@ -8,11 +10,13 @@ const COMBAT_STATS = ['Points de vie', 'Attaque', 'Défense', 'Puissance magique
 
 /** Salle Personnage : le personnage au centre, tout ce qu'il porte, ses caractéristiques. */
 export function CharacterRoom() {
-  const { name, content, state, act, setShopOpen } = useGame();
+  const { name, content, state, look, act, setShopOpen } = useGame();
   const equipment = useEquipment();
   const { settings } = content;
-  const outfit = content.cosmetics.outfits.find((o) => o.id === content.cosmetics.default.outfit)!;
-  const preview = content.classes[content.cosmetics.default.class];
+  const [classOpen, setClassOpen] = useState(false);
+  const outfit = content.cosmetics.outfits.find((o) => o.id === look?.outfit);
+  const cls = look && content.classes[look.classId];
+  const linked = cls && content.professions.find((p) => p.id === cls.profession);
   const skills = content.professions.map((p) => ({ p, s: state.skills[p.id]! }));
   const best = skills.filter((x) => x.p.status === 'playable').sort((a, b) => b.s.xp - a.s.xp)[0]!;
   const totalLevel = skills.reduce((sum, x) => sum + x.s.level, 0);
@@ -85,9 +89,11 @@ export function CharacterRoom() {
 
       <section className="panel band char-stage">
         <header className="char-stage-head">
-          <div className="eyebrow" style={{ color: 'var(--magic)' }}>
-            Classe à venir · aperçu {preview?.name}
-          </div>
+          {cls && (
+            <div className="eyebrow" style={{ color: cls.affinityColor }}>
+              {cls.name} · {STYLE_NAMES[cls.style]} · métier lié {linked?.name}
+            </div>
+          )}
           <h1>{name}</h1>
           <div style={{ color: 'var(--clan)' }}>
             {best.s.title} · {best.p.name} {best.s.level}
@@ -95,10 +101,13 @@ export function CharacterRoom() {
         </header>
         <PaperDoll size="page" />
         <footer className="char-stage-foot">
-          <span className="chip">Tenue {outfit.name}</span>
+          <button className="btn btn-sm" onClick={() => setClassOpen(true)}>
+            Changer de classe
+          </button>
+          {outfit && <span className="chip">Tenue {outfit.name}</span>}
           <span className="chip">Niveau total {totalLevel}</span>
-          <span className="chip">Survolez un emplacement pour voir la pièce</span>
         </footer>
+        {classOpen && <ClassModal onClose={() => setClassOpen(false)} />}
       </section>
 
       <section className="panel char-stats scroll">
@@ -175,7 +184,7 @@ export function CharacterRoom() {
         <div className="stat-block soon">
           <div className="stat-block-head">
             <span className="eyebrow">Combat</span>
-            <span className="muted">arrive avec les classes</span>
+            <span className="muted">arrive bientôt</span>
           </div>
           <dl className="kv">
             {COMBAT_STATS.map((s) => (

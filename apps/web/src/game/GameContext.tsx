@@ -1,5 +1,5 @@
 import { createContext, useCallback, useContext, useEffect, useRef, useState, type ReactNode } from 'react';
-import type { AdvanceSummary, ContentResponse, JournalEntry, StateResponse, StateView } from '@bramo/shared';
+import type { AdvanceSummary, Appearance, ContentResponse, JournalEntry, StateResponse, StateView } from '@bramo/shared';
 import { api, RequestError } from '../api';
 import { msUntilActivityEnds } from './useLive';
 
@@ -9,6 +9,8 @@ interface Game {
   content: ContentResponse;
   name: string;
   state: StateView;
+  /** Apparence du personnage (classe et tenue) ; undefined tant que la classe n'est pas choisie. */
+  look: Appearance | undefined;
   /** Heure locale de réception de `state`, pour l'affichage interpolé. */
   receivedAt: number;
   journal: JournalEntry[];
@@ -120,6 +122,7 @@ export function GameProvider({
     content,
     name: snapshot.res.name,
     state: snapshot.res.state,
+    look: snapshot.res.state.appearance ?? undefined,
     receivedAt: snapshot.receivedAt,
     journal,
     absence,

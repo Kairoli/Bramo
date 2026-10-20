@@ -28,6 +28,9 @@ export async function loadCharacterForUpdate(tx: Tx, accountId: number): Promise
       lastSeenAt: row.lastSeenAt.getTime(),
       energy: row.energy,
       buff: row.buff ?? null,
+      classId: row.classId,
+      outfit: row.outfit,
+      trials: row.trials,
     },
   };
 }
@@ -42,6 +45,9 @@ export async function saveCharacter(tx: Tx, id: number, before: CharacterState, 
       queue: after.queue,
       energy: after.energy,
       buff: after.buff,
+      classId: after.classId,
+      outfit: after.outfit,
+      trials: after.trials,
       lastTickAt: new Date(after.lastTickAt),
       lastSeenAt: new Date(after.lastSeenAt),
     })

@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 760">
+  <!-- Manchettes de forge : larges bracelets de cuir au poignet, qui vont avec toutes les poses de main. -->
+  <g id="far">
+    <path d="M311 237 L325 222 L349 244 L335 259 Z" fill="var(--c-leather)"/>
+    <path d="M311 237 L325 222" stroke="var(--c-trim)" stroke-width="2.5"/>
+    <path d="M318 242 L330 229 M326 249 L338 236" stroke="#000" stroke-opacity=".3" stroke-width="1.5"/>
+    <circle cx="336" cy="246" r="2.5" fill="var(--c-metal)"/>
+  </g>
+  <g id="near">
+    <path d="M126 352 L158 356 L156 376 L123 371 Z" fill="var(--c-leather)"/>
+    <path d="M126 352 L158 356" stroke="var(--c-trim)" stroke-width="2.5"/>
+    <path d="M125 362 L157 366" stroke="#000" stroke-opacity=".3" stroke-width="1.5"/>
+    <circle cx="141" cy="365" r="2.5" fill="var(--c-metal)"/>
+  </g>
+</svg>

@@ -38,6 +38,13 @@ Repères : niveau 2 = 83 XP, niveau 99 = **13 034 431 XP**.
 | 85 | Maître |
 | 99 | Grand maître |
 
+### 3.2 bis Épreuves des maîtres
+À un palier de titre, le maître PNJ du métier confie une **épreuve** : remettre des objets (consommés). La réussir donne **le titre** et un peu d'or. Sans elle, le niveau continue de monter : seul le titre attend (personne n'est bloqué). On ne saute pas une épreuve.
+- Récolte : livrer des ressources (ex. Minage 30 : 60 minerais de fer et 30 charbons).
+- Artisanat : fabriquer un **chef-d'œuvre** avec une recette qui n'existe que pendant l'épreuve, puis le remettre avec quelques objets courants.
+- Prototype : Apprenti (30) et Compagnon (60) pour les quatre métiers jouables ; Maître et Grand maître restent automatiques tant qu'ils n'ont pas d'épreuve.
+- Pas de quête journalière ni de chantier commun au serveur : les objectifs collectifs passent par les clans, les boosts par les saisons et les événements.
+
 ### 3.3 Maîtrise après 99 *(plus tard)*
 Paliers au rendement décroissant, plafonnés à **+10 %** au total.
 
@@ -100,7 +107,7 @@ Aucune boucle serveur permanente. À chaque interaction ou connexion, le serveur
 ## 6. Comptes
 Pseudo et mot de passe, un personnage par compte.
 
-## 7. Classes *(P4–P5, ne pas coder maintenant)*
+## 7. Classes *(combat en P4–P5)*
 
 ### 7.1 Classes de base
 | Classe | Style | Métier lié |
@@ -110,6 +117,10 @@ Pseudo et mot de passe, un personnage par compte.
 | Runiste | Magie | Enchantement |
 
 Chaque classe a **trois voies** : dégâts, contrôle, soutien.
+
+**Choix** : tout personnage, même niveau 1 et fraîchement créé, choisit sa classe avant d'entrer dans le jeu. Il en change **quand il veut, gratuitement** (les classes s'appuient sur les métiers ; rien n'est perdu).
+
+**Visuel** : chaque classe a sa **tenue de départ** et sa **pose** (Runiste : bâton et main du sort levée ; Forgefeu : campé, marteau posé au sol) pour qu'on voie tout de suite qui joue quoi. À terme, chaque voie aura aussi sa pose. Les tenues cosmétiques se changent ensuite librement par-dessus : elles suivent les os, donc toutes les poses.
 
 ### 7.2 Progression de classe
 - Niveau 30 : choix de la **voie**.

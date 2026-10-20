@@ -22,7 +22,7 @@ Bramo est un **idle-RPG multijoueur jouable dans le navigateur**, dans l'esprit 
 
 ## 2. Le contenu vit dans les données, pas dans le code
 
-- Contenu et équilibrage en **YAML** dans `data/` : `settings.yaml` (réglages globaux), `professions.yaml`, `items.yaml`, `recipes/*.yaml`, `classes.yaml`, `cosmetics.yaml`.
+- Contenu et équilibrage en **YAML** dans `data/` : `settings.yaml` (réglages globaux), `professions.yaml`, `items.yaml`, `recipes/*.yaml`, `trials.yaml` (épreuves des maîtres), `classes.yaml`, `cosmetics.yaml`.
 - Chargés et **validés au démarrage avec zod** (schémas dans `packages/shared/src/schemas/`), y compris les références croisées (recette → objet, tenue → pièce de `art/`…). Un fichier invalide empêche le démarrage avec un message clair.
 - **Aucun chiffre de jeu codé en dur.** Les formules (forme mathématique) sont dans `packages/shared`, leurs paramètres dans `data/`.
 - Valeurs provisoires marquées **`# à équilibrer`**.
@@ -53,6 +53,16 @@ Bramo est un **idle-RPG multijoueur jouable dans le navigateur**, dans l'esprit 
 
 ## 5. État du projet (à jour au 21 octobre 2026)
 
+### Fait — classes choisies et épreuves des maîtres (21 octobre)
+
+- **Classe dès la création** : un personnage sans classe voit l'écran « Choisissez votre classe » (trois cartes avec la classe dans sa tenue et sa pose) avant d'entrer. Il en change **à tout moment, gratuitement** (salle Personnage → « Changer de classe »). Route `POST /api/character/class`, action `chooseClass`.
+- **Apparence par personnage** : colonnes `class_id`, `outfit` (null = tenue de départ de la classe) et `trials` sur `characters` (migration `0001`). `StateView.appearance` donne classe et tenue ; tout le jeu affiche le vrai personnage (`useGame().look`).
+- **Tenue de départ et pose par classe** (`startingOutfit`, `pose` dans `classes.yaml`, poses dans `art/rig/poses/`). Le moteur applique les décalages de la pose puis son animation de repos.
+- **Forgefeu complet** : tenue Braise (bandeau, barbe tressée, tunique retroussée, tablier de cuir, ceinture à outils, manchettes, bottes ferrées, épaulière rivetée), corps `base_grip` (poings), marteau de forge posé au sol, effet Braises de forge (sol qui se fend, braises, poing qui rougeoie), animation `idle_forgefire`.
+- **Épreuves des maîtres** (`data/trials.yaml`, `engine/trials.ts`) : Apprenti (30) et Compagnon (60) pour Minage, Herboristerie, Forge et Cuisine. Le titre d'un palier qui a une épreuve n'est acquis qu'après elle ; le niveau monte sans. Les métiers d'artisanat demandent un **chef-d'œuvre** (recette `trial:` visible seulement pendant l'épreuve, onglet « Épreuve »). Route `POST /api/trials/complete`. Journal : « Maître X vous attend » à l'ouverture, ligne « Épreuve » à la réussite.
+- **Interface des épreuves** : dans la scène de chaque métier, la carte du maître montre l'épreuve à passer (objets cochés, compteurs, liens « Fabriquer » / « Récolter », bouton « Remettre au maître »), la prochaine épreuve verrouillée (barre de niveau) ou « toutes réussies ». Salle Métiers : badge « Épreuve » et « Vous attend » sur les maîtres.
+- Tests : 51 dans `packages/shared`, 10 d'API. Vérifié dans le navigateur à 1440×900 et 1280×720, sans scroll, de la création du compte à la réussite d'une épreuve.
+
 ### Fait — P1, prototype solo
 
 **Moteur de jeu** (`packages/shared`, 44 tests)
@@ -65,11 +75,11 @@ Bramo est un **idle-RPG multijoueur jouable dans le navigateur**, dans l'esprit 
 - 14 métiers (Récolte : Minage, Bûcheronnage, Pêche, Herboristerie, Chasse ; Artisanat : Forge, Menuiserie, Cuisine, Alchimie, Couture, Artificerie, Enchantement ; Monde et clan : Construction, Exploration). **Jouables : Minage, Forge, Herboristerie, Cuisine**, 6 recettes chacun. Les autres sont `status: soon`.
 - Chaînes : minerai → lingot → lame ou pioche (les pioches donnent le bonus d'outil du Minage) ; herbes + poisson → repas (bonus temporaire).
 - Le poisson est vendu par le **marchand du port** (PNJ) tant que la Pêche n'existe pas ; le marchand rachète tout à la valeur de l'objet.
-- 3 classes visuelles (`classes.yaml`) : Runiste (complet), Forgefeu et Traqueur (couleurs proposées, sans arme ni effet).
-- 3 tenues (`cosmetics.yaml`) : Cendres (départ), Marée haute (saison), Grand maître (Enchantement 99, change la silhouette).
+- 3 classes (`classes.yaml`) : Runiste et Forgefeu complets, Traqueur provisoire (tenue et pose du Runiste, sans arme ni effet).
+- 4 tenues (`cosmetics.yaml`) : Cendres (départ du Runiste), Braise (départ du Forgefeu), Marée haute (saison), Grand maître (Enchantement 99, change la silhouette).
 
 **Serveur** (`apps/server`, 8 tests d'API)
-- Routes : `POST /api/auth/register|login|logout`, `GET /api/content` (public), `GET /api/state` (sert aussi de signe de vie), `POST /api/activity/start|cancel`, `POST /api/items/eat`, `POST /api/shop/buy|sell`, `GET /api/journal`.
+- Routes : `POST /api/auth/register|login|logout`, `GET /api/content` (public), `GET /api/state` (sert aussi de signe de vie), `POST /api/activity/start|cancel`, `POST /api/items/eat`, `POST /api/shop/buy|sell`, `POST /api/character/class`, `POST /api/trials/complete`, `GET /api/journal`.
 - `game.ts > play()` : point d'entrée unique de toute requête de jeu (verrouiller la ligne → avancer → action → marquer présent → enregistrer → journal). Le **résumé d'absence** est renvoyé une seule fois (absence ≥ 5 min avec du travail effectué), puis reste dans le journal.
 - Tables : `accounts`, `sessions`, `characters` (activité, file, énergie, repas en jsonb), `character_skills`, `character_items`, `journal`.
 
@@ -93,8 +103,10 @@ Bramo est un **idle-RPG multijoueur jouable dans le navigateur**, dans l'esprit 
 - **Pas de déploiement** : le serveur tourne avec `tsx`, il n'y a ni build de production du serveur, ni service des fichiers statiques du client, ni reverse proxy, ni HTTPS. `secureCookies` s'active avec `NODE_ENV=production`.
 - Pas de limite de tentatives de connexion, pas de changement de mot de passe, pas de suppression de compte.
 - Chiffres non équilibrés (`# à équilibrer`), simulateur absent.
-- Une seule animation (repos). Marée haute ne change que les couleurs. Forgefeu et Traqueur n'ont ni arme ni effet.
-- Tout le monde s'affiche avec l'apparence par défaut (Cendres + Runiste) : l'apparence n'est pas stockée par personnage.
+- Animations de repos seulement (une par pose). Marée haute ne change que les couleurs. Le Traqueur n'a ni tenue, ni pose, ni arme, ni effet propres.
+- Le choix de tenue n'a pas encore d'écran : `outfit` reste null (tenue de départ de la classe). Les niveaux de classe n'existent pas encore (combat en P4).
+- Les épreuves Maître (85) et Grand maître (99) ne sont pas écrites : ces titres restent automatiques. Pas d'épreuve pour les métiers « Bientôt ».
+- L'écran de choix de classe est un contrôle du client : le serveur accepte les actions de jeu d'un personnage sans classe.
 - Pas de vrai système d'équipement : les emplacements montrent la tenue, l'arme de classe en aperçu, la meilleure pioche et le repas actif.
 - Les onglets Tout / Clan / Serveur du journal et la discussion sont désactivés.
 - Bandeaux des salles : textes provisoires « [Illustration animée : …] » à la place des scènes.
@@ -106,15 +118,11 @@ Bramo est un **idle-RPG multijoueur jouable dans le navigateur**, dans l'esprit 
 ### Prochaines étapes (ordre proposé)
 
 1. **Mise en service sur le homeserver** : Postgres (docker compose), `.env` avec `DATABASE_URL`, build du client (`pnpm --filter @bramo/web build`), le serveur Fastify sert `apps/web/dist` (ou un reverse proxy devant), HTTPS, `NODE_ENV=production`, service systemd ou conteneur, sauvegardes de la base. Limite de tentatives de connexion.
-2. **Carte du monde à repenser** (décision de l'auteur en attente). Pistes proposées :
-   - le pion du joueur au lieu de son activité, qui se déplace quand la file enchaîne ;
-   - un bonus du jour par lieu (« Filon riche aux Mines : fer +15 % jusqu'à minuit »), réglé côté serveur ;
-   - les régions découvertes par le métier d'Exploration (brouillard), ce qui tient avec 14 métiers ;
-   - plus tard : événements, clans et saisons dessus.
-   Recommandation : pion + bonus du jour d'abord.
-3. **Animation et vie de l'interface** (choix de l'auteur en attente) : « +1 objet » flottant à chaque fabrication, pulsation de l'anneau, célébration de montée de niveau, scènes animées dans les bandeaux (forge, mines, eau), carte teintée selon l'heure, entrées du journal qui glissent.
-4. **Personnages** : Forgefeu et Traqueur sur le même gabarit (valider les couleurs cuivre #F08A4B et jade #7ED6A2), animations « travail » par famille de métier, une tenue Marée haute qui change aussi de forme.
-5. **P0 — chiffrage et simulateur** dans `sim/` : bots par profil sur les mêmes formules, vérifier le ratio tryhard / casu (2 à 2,5).
+2. **Accueil à refaire** (direction choisie par l'auteur le 21 octobre) : la carte du monde est remplacée par une **scène du bourg** où passent d'autres joueurs (vrais joueurs récemment actifs, avec leur classe et leur activité) et un **Panneau du bourg** dont le cœur est le **fil du serveur** (montées de titre, épreuves réussies, premières fabrications). Décisions : **pas de bonus du jour** (les boosts viennent des saisons et événements), **pas de chantier commun au serveur** (c'est le rôle des clans), commandes de PNJ non tranchées. La carte pourra revenir en popup « Voyager » avec l'Exploration.
+3. **Animation et vie de l'interface** (choix de l'auteur en attente) : « +1 objet » flottant à chaque fabrication, pulsation de l'anneau, célébration de montée de niveau et d'épreuve réussie, scènes animées dans les bandeaux (forge, mines, eau), entrées du journal qui glissent.
+4. **Personnages** : Traqueur (tenue de départ, pose, arc, effet jade), **une pose par voie** à terme, écran de choix de tenue, animations « travail » par famille de métier, une tenue Marée haute qui change aussi de forme. Couleurs cuivre #F08A4B (mêlée) et jade #7ED6A2 (tir) toujours à valider.
+5. **Épreuves** : Maître (85) et Grand maître (99), et une épreuve pour chaque métier qui ouvre.
+6. **P0 — chiffrage et simulateur** dans `sim/` : bots par profil sur les mêmes formules, vérifier le ratio tryhard / casu (2 à 2,5).
 
 ### Feuille de route
 
@@ -130,7 +138,7 @@ Bramo est un **idle-RPG multijoueur jouable dans le navigateur**, dans l'esprit 
 
 ### Décisions en attente de l'auteur
 
-- Direction de la carte du monde et animations prioritaires (voir ci-dessus).
+- Animations prioritaires ; commandes de PNJ (oui ou non) pour le Panneau du bourg.
 - **Équipement en deux couches** (proposé) : l'équipement porte les statistiques, s'use et passe par le marché ; l'apparence (tenue cosmétique) le recouvre visuellement. L'emplacement affiche l'apparence, l'infobulle les deux.
 - Couleurs d'affinité mêlée et tir.
 - Questions ouvertes du game design : public visé, arrivée du PvP, durée exacte des saisons, longueur de la file pour les abonnés.
@@ -144,6 +152,8 @@ Bramo est un **idle-RPG multijoueur jouable dans le navigateur**, dans l'esprit 
 - Gains : 100 % en actif, 25 % hors ligne plafonné à 12 h, énergie quotidienne ×1,5 sur les 2 premières heures actives (le jour bascule à 4 h UTC).
 - Bonus plafonnés : outil +30 %, repas +10 %, clan +10 %, saison +20 %.
 - Résumé d'absence à la connexion, puis dans le journal.
+- Classe choisie avant d'entrer, changeable à tout moment et gratuitement.
+- Titres : un palier qui a une épreuve de maître n'est acquis qu'une fois l'épreuve réussie (objets remis, consommés) ; on ne saute pas une épreuve ; le niveau, lui, n'attend jamais.
 - Plus tard (dans le game design) : maîtrise après 99 (paliers décroissants, +10 % max), affinité de métier (+1 % par tranche de 10 niveaux du métier lié, +10 % max), objets faits maison signés et de meilleure qualité, progression de classe (voie 30, spécialisation 60, éveil 75).
 
 ## 8. Interface
@@ -176,8 +186,8 @@ Détail écran par écran : `docs/game-design.md`, section Interface.
 
 - **Trois quarts vers la droite** : regard, arme et sorts vont vers la droite. **Jamais de miroir** (sur une carte : portrait ou pion). Dans les scènes, le personnage est à gauche.
 - **Proportions réalistes** (7,5 à 8 têtes). Ambiance sombre, lisible grâce à la lumière de contour (couleur du sort) et aux touches vives.
-- **L'apparence ne dépend jamais de la classe** : la classe se lit à l'arme et à l'effet, dans sa couleur d'affinité (`--c-glow`).
-- Une nouvelle tenue se fait **sans retoucher les animations**. Style original.
+- **On voit tout de suite qui joue quoi** : chaque classe a sa **tenue de départ** et sa **pose** (à terme, chaque voie aura sa pose), plus son arme et son effet dans sa couleur d'affinité (`--c-glow`). Les tenues cosmétiques se changent ensuite librement, avec n'importe quelle classe.
+- Une nouvelle tenue se fait **sans retoucher les animations ni les poses** (les pièces suivent les os). Style original.
 - Système complet, conventions de dessin, ordre d'empilement et pièges : [`art/README.md`](art/README.md).
 
 ## 10. Où trouver quoi
@@ -196,16 +206,16 @@ apps/web/src/
   main.tsx          routes (jeu, connexion, #atelier)
   game/             GameContext (état, signe de vie, actions), useLive (interpolation)
   rooms/            salles (Home + home/, Professions, ProfessionRoom, CharacterRoom, SoonRoom, Atelier)
-  components/       TopBar, popups, QueueChips, equipment (PaperDoll), ui
+  components/       TopBar, popups, QueueChips, equipment (PaperDoll), ClassChoice, ui
   rig/              moteur des personnages (assets, skeleton, Character)
   styles/           tokens.css, global.css, rooms.css
 packages/shared/src/
   schemas/          zod : contenu (content.ts) et personnages (art.ts)
   formulas/         xp.ts, rates.ts (présence, énergie, bonus)
-  engine/           advance, actions, view, state
+  engine/           advance, actions, trials, view, state
   node/             loadContent(dataDir, artDir), loadArt
 data/               contenu et équilibrage (YAML)
-art/                gabarit, animations, pièces des personnages
+art/                gabarit, animations, poses, pièces des personnages
 docs/               game design et maquettes
 sim/                simulateur (à venir)
 ```
@@ -216,4 +226,5 @@ sim/                simulateur (à venir)
 - **SVG des pièces** : pas de `--` dans un commentaire XML (le navigateur refuse tout le fichier ; `pnpm test` le détecte). Ids de dégradés et filtres en `#rig-…`.
 - Les pièces sont lues depuis `art/` par Vite (`server.fs.allow: ['../..']` dans `apps/web/vite.config.ts`).
 - Le résumé d'absence n'est envoyé qu'une fois : le client garde le premier si deux réponses se croisent (StrictMode).
-- pnpm récent bloque les scripts d'installation (esbuild) : ça fonctionne sans, `pnpm approve-builds` si besoin.
+- pnpm récent bloque les scripts d'installation (esbuild) : ça fonctionne sans, `pnpm approve-builds` si besoin. `pnpm install` peut alors finir en erreur `ERR_PNPM_IGNORED_BUILDS` alors que les paquets sont bien installés.
+- `tsx watch` ne surveille pas `data/` ni `art/` : après un changement de YAML ou de pièce, redémarrer le serveur (ou toucher un fichier de `packages/shared`).

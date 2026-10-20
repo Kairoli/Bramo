@@ -1,0 +1,23 @@
+# Classes de base (jouables en P4). Ici : uniquement ce qui sert à l'affichage.
+# L'apparence ne dépend jamais de la classe : la classe se lit à l'arme et à l'effet,
+# dans sa couleur d'affinité (--c-glow des pièces).
+
+- id: runist
+  name: Runiste
+  style: magic
+  profession: enchanting
+  affinityColor: "#B39DF5"
+  weapon: rune_staff
+  effect: rune_circle
+
+- id: forgefire
+  name: Forgefeu
+  style: melee
+  profession: smithing
+  affinityColor: "#F08A4B"   # proposition, à valider
+
+- id: tracker
+  name: Traqueur
+  style: ranged
+  profession: hunting
+  affinityColor: "#7ED6A2"   # proposition, à valider

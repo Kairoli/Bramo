@@ -1,0 +1,76 @@
+# Tenues (cosmétiques). Une tenue = une palette de 7 rôles + une pièce par emplacement.
+# Les pièces sont dans art/parts/<emplacement>/<id>.svg ; une nouvelle tenue ne retouche jamais les animations.
+
+# Apparence affichée tant que le choix de classe et de tenue n'existe pas (P1).
+default:
+  outfit: ashes
+  class: runist
+
+outfits:
+  - id: ashes
+    name: Cendres
+    subtitle: Tenue de départ
+    palette:
+      coat: "#34424A"
+      coatDark: "#232D33"
+      mantle: "#4A3A30"
+      under: "#4B3F63"
+      trim: "#F08A4B"
+      metal: "#8C9497"
+      beard: "#3B2A22"
+    parts:
+      headwear: hood
+      face: bearded
+      top: robe_top
+      belt: rune_belt
+      robe: long_robe
+      gloves: wraps
+      boots: travel_boots
+      cape: mantlet
+      shoulder_far: rune_pauldron
+
+  - id: high_tide
+    name: Marée haute
+    subtitle: Saison des marées
+    palette:
+      coat: "#1F4652"
+      coatDark: "#15313A"
+      mantle: "#2C5E66"
+      under: "#E3C770"
+      trim: "#4CC9D6"
+      metal: "#B8C4C6"
+      beard: "#3B2A22"
+    parts:
+      headwear: hood
+      face: bearded
+      top: robe_top
+      belt: rune_belt
+      robe: long_robe
+      gloves: wraps
+      boots: travel_boots
+      cape: mantlet
+      shoulder_far: rune_pauldron
+
+  # Change de silhouette : capuche à pointe et diadème, grande cape, seconde épaulière.
+  - id: grandmaster
+    name: Grand maître
+    subtitle: Enchantement 99
+    palette:
+      coat: "#2B2738"
+      coatDark: "#1C1A26"
+      mantle: "#5A2E36"
+      under: "#B39DF5"
+      trim: "#E3C770"
+      metal: "#E3C770"
+      beard: "#5E5853"
+    parts:
+      headwear: hood_grandmaster
+      face: bearded
+      top: robe_top
+      belt: rune_belt
+      robe: long_robe
+      gloves: wraps
+      boots: travel_boots
+      cape: grand_cape
+      shoulder_near: crest_pauldron
+      shoulder_far: rune_pauldron

@@ -9,12 +9,13 @@ const root = fileURLToPath(new URL('../../../', import.meta.url));
 if (existsSync(`${root}.env`)) process.loadEnvFile(`${root}.env`);
 
 const dataDir = process.env.DATA_DIR ?? `${root}data`;
+const artDir = process.env.ART_DIR ?? `${root}art`;
 const pgliteDir = process.env.PGLITE_DIR ?? fileURLToPath(new URL('../.pglite', import.meta.url));
 const port = Number(process.env.PORT ?? 3001);
 
 let content;
 try {
-  content = loadContent(dataDir);
+  content = loadContent(dataDir, artDir);
 } catch (err) {
   // Données invalides : on refuse de démarrer, avec un message lisible.
   console.error(err instanceof ContentError ? `\n${err.message}\n` : err);

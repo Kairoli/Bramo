@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import type { CharacterClass, Cosmetics } from './art.js';
 
 /** Identifiants techniques : anglais, snake_case. */
 const id = z.string().regex(/^[a-z][a-z0-9_]*$/, 'identifiant attendu en snake_case (ex. bronze_ingot)');
@@ -99,6 +100,8 @@ export interface Content {
   professions: Profession[];
   items: Record<string, Item>;
   recipes: Record<string, Recipe>;
+  classes: Record<string, CharacterClass>;
+  cosmetics: Cosmetics;
   /** xpTable[L] = XP totale pour atteindre le niveau L (index 0 inutilisé). */
   xpTable: number[];
 }

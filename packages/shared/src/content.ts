@@ -6,6 +6,7 @@ import {
   recipesFileSchema,
   settingsSchema,
 } from './schemas/content.js';
+import { classesFileSchema, cosmeticsFileSchema } from './schemas/art.js';
 import { buildXpTable } from './formulas/xp.js';
 
 export class ContentError extends Error {}
@@ -14,6 +15,8 @@ export interface RawContent {
   settings: unknown;
   professions: unknown;
   items: unknown;
+  classes: unknown;
+  cosmetics: unknown;
   /** Un fichier de recettes par entrée : [nom du fichier, contenu]. */
   recipes: [string, unknown][];
 }
@@ -29,6 +32,8 @@ export function buildContent(raw: RawContent): Content {
   const settings = parse(settingsSchema, raw.settings, 'settings.yaml');
   const professions = parse(professionsFileSchema, raw.professions, 'professions.yaml');
   const itemList = parse(itemsFileSchema, raw.items, 'items.yaml');
+  const classList = parse(classesFileSchema, raw.classes, 'classes.yaml');
+  const cosmetics = parse(cosmeticsFileSchema, raw.cosmetics, 'cosmetics.yaml');
   const errors: string[] = [];
 
   const unique = <T extends { id: string }>(list: T[], file: string) => {
@@ -62,7 +67,16 @@ export function buildContent(raw: RawContent): Content {
       if (!items[s.item]) errors.push(`recette ${r.id} : objet inconnu « ${s.item} »`);
     }
   }
+  const classes = unique(classList, 'classes.yaml');
+  unique(cosmetics.outfits, 'cosmetics.yaml');
+  for (const c of classList) {
+    if (!professionMap[c.profession]) errors.push(`classes.yaml : ${c.id} est liée à un métier inconnu « ${c.profession} »`);
+  }
+  if (!classes[cosmetics.default.class]) errors.push(`cosmetics.yaml : classe par défaut inconnue « ${cosmetics.default.class} »`);
+  if (!cosmetics.outfits.some((o) => o.id === cosmetics.default.outfit)) {
+    errors.push(`cosmetics.yaml : tenue par défaut inconnue « ${cosmetics.default.outfit} »`);
+  }
   if (errors.length) throw new ContentError(`Données incohérentes :\n- ${errors.join('\n- ')}`);
 
-  return { settings, professions, items, recipes, xpTable: buildXpTable(settings.xp.maxLevel) };
+  return { settings, professions, items, recipes, classes, cosmetics, xpTable: buildXpTable(settings.xp.maxLevel) };
 }

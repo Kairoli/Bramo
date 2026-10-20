@@ -1,4 +1,5 @@
 export * from './schemas/content.js';
+export * from './schemas/art.js';
 export * from './content.js';
 export * from './formulas/xp.js';
 export * from './formulas/rates.js';

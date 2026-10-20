@@ -100,6 +100,8 @@ export async function buildApp({ db, content, clock = Date.now, secureCookies = 
     professions: content.professions,
     items: content.items,
     recipes: content.recipes,
+    classes: content.classes,
+    cosmetics: content.cosmetics,
   };
   app.get('/api/health', async () => ({ ok: true }));
   app.get('/api/content', async () => publicContent);

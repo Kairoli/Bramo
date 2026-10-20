@@ -1,11 +1,12 @@
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
-import { loadContent } from '../src/node/index.js';
+import { loadArt, loadContent } from '../src/node/index.js';
 
 const dataDir = fileURLToPath(new URL('../../../data', import.meta.url));
+const artDir = fileURLToPath(new URL('../../../art', import.meta.url));
 
 describe('data/', () => {
-  const content = loadContent(dataDir);
+  const content = loadContent(dataDir, artDir);
 
   it('se charge et se valide', () => {
     expect(content.professions).toHaveLength(14);
@@ -17,6 +18,15 @@ describe('data/', () => {
       expect(count, p.id).toBeGreaterThanOrEqual(5);
       expect(count, p.id).toBeLessThanOrEqual(6);
     }
+  });
+
+  it('art/ est cohérent et les tenues pointent vers des pièces existantes', () => {
+    const art = loadArt(artDir);
+    expect(art.rig.bones.length).toBeGreaterThan(15);
+    expect(art.animations.map((a) => a.id)).toContain('idle');
+    // Au moins une tenue change de forme, pas seulement de couleurs.
+    const shapes = new Set(content.cosmetics.outfits.map((o) => JSON.stringify(o.parts)));
+    expect(shapes.size).toBeGreaterThan(1);
   });
 
   it('chaque ingrédient peut être obtenu (recette ou marchand)', () => {

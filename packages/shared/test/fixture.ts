@@ -49,6 +49,19 @@ export const content = buildContent({
     { id: 'pick', name: 'Pioche', category: 'tool', value: 10, tool: { profession: 'mining', bonus: 0.5 } },
     { id: 'stew', name: 'Ragoût', category: 'meal', value: 3, shopPrice: 10, meal: { bonus: 0.1, durationMin: 30 } },
   ],
+  classes: [{ id: 'mage', name: 'Mage', style: 'magic', profession: 'mining', affinityColor: '#B39DF5' }],
+  cosmetics: {
+    default: { outfit: 'plain', class: 'mage' },
+    outfits: [
+      {
+        id: 'plain',
+        name: 'Simple',
+        subtitle: 'Test',
+        palette: { coat: '#000000', coatDark: '#000000', mantle: '#000000', under: '#000000', trim: '#000000', metal: '#000000', beard: '#000000' },
+        parts: {},
+      },
+    ],
+  },
   recipes: [
     [
       'test.yaml',

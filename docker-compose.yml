@@ -1,0 +1,14 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: bramo
+      POSTGRES_PASSWORD: bramo
+      POSTGRES_DB: bramo
+    ports:
+      - "5432:5432"
+    volumes:
+      - bramo-pg:/var/lib/postgresql/data
+
+volumes:
+  bramo-pg:

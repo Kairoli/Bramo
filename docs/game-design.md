@@ -59,7 +59,9 @@ Les objets fabriqués par un joueur sont **signés** de son nom et de **meilleur
 - minerai (Minage) → lingot (Forge) → lame / outil (Forge) ;
 - herbes (Herboristerie) + poisson → repas (Cuisine).
 
-Le poisson venant de la Pêche (« bientôt »), le prototype prévoit une source de repli pour les recettes de Cuisine (recettes sans poisson, ou poisson acheté au PNJ) — à trancher dans les données.
+Le poisson venant de la Pêche (« bientôt »), le prototype le fait vendre par le **marchand du port** (PNJ) à prix fixe, ce qui donne aussi un usage à l'or. Le marchand rachète tous les objets à leur valeur. Il disparaîtra ou changera de rôle quand la Pêche et le marché arriveront.
+
+Les repas donnent un bonus de vitesse temporaire (un seul actif à la fois, plafonné à +10 %). Les pioches forgées donnent le bonus d'outil du Minage (plafonné à +30 %).
 
 Les autres métiers existent dans les données et apparaissent « Bientôt » (en pointillés) dans l'interface.
 

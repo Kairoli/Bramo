@@ -26,7 +26,9 @@ Ce fichier suffit à reprendre le projet sans autre contexte : le lire en entier
   - `apps/server` : Node + Fastify. API, auth, calcul de la progression.
   - `apps/web` : React + Vite. Affichage uniquement.
   - `packages/shared` : types, schémas zod, formules de jeu pures et testées (utilisées par le serveur, le client pour l'affichage prévisionnel, et le simulateur).
-- **PostgreSQL** via `docker-compose` en local, ORM **Drizzle**. Rester **compatible Supabase** (Postgres standard, pas d'extension exotique, migrations SQL versionnées).
+- **PostgreSQL** via `docker-compose` en local, ORM **Drizzle**. Rester **compatible Supabase** (Postgres standard, pas d'extension exotique, migrations SQL versionnées dans `apps/server/drizzle/`, appliquées au démarrage).
+  - Sans `DATABASE_URL`, le serveur bascule sur **PGlite** (Postgres embarqué, `apps/server/.pglite/`) : aucun prérequis pour développer. Les tests d'API utilisent PGlite en mémoire.
+  - **Cible de production** : PostgreSQL et les données hébergés sur le homeserver de l'auteur (à mettre en place plus tard ; seule `DATABASE_URL` changera).
 - **Tests : vitest**, en priorité sur les formules (XP, gains hors ligne, énergie, plafonds de bonus).
 - `pnpm dev` lance tout en local. Le README explique l'installation.
 - **Calcul à la demande** : pas de boucle serveur permanente. La progression se déduit d'horodatages (début de l'activité, dernière visite) au moment où le joueur interagit ou se connecte.
@@ -82,6 +84,14 @@ Le détail écran par écran (accueil, salle Métiers, salle d'un métier) est d
 - **Proportions réalistes**, pas de grosse tête (pas de chibi).
 - Pour l'instant : simples placeholders.
 - Plus tard : 2D vectorielle découpée en pièces (squelette + emplacements de tenue), ambiance sombre, lumière colorée venant des sorts. Référence de style : `docs/maquettes/5-runiste.png`.
+
+## Architecture du moteur (P1)
+
+- `packages/shared/src/engine/advance.ts` : `advance(state, now, content)` fait avancer un personnage jusqu'à `now` à partir des horodatages (`lastTickAt`, `lastSeenAt`). Fenêtres successives : actif (×énergie tant qu'il en reste, sinon ×1) pendant `activeTimeoutSec` après le dernier signe de vie, puis hors ligne (×0,25) pendant 12 h, puis plus rien. Les bonus plafonnés multiplient la vitesse. Fonction pure, testée.
+- `packages/shared/src/engine/actions.ts` : intentions du joueur (lancer, mettre en file, annuler, manger, acheter, vendre), pures, lèvent `GameError` avec un message français affichable.
+- `apps/server/src/game.ts` : `play()` est le point d'entrée unique de toute requête de jeu (verrouiller → avancer → action → marquer présent → enregistrer → journal). Le résumé d'absence est renvoyé une seule fois, puis reste dans le journal.
+- Côté client, `GET /api/state` sert de signe de vie (toutes les `heartbeatSec` tant que l'onglet est visible). L'anneau de progression est une interpolation d'affichage ; la vérité revient à chaque réponse.
+- Le poisson des recettes de Cuisine est vendu par le **marchand du port** (PNJ, prix dans `items.yaml`) tant que la Pêche n'est pas ouverte.
 
 ## Arborescence (cible)
 

@@ -51,7 +51,7 @@ class HttpError extends Error {
 }
 
 export async function buildApp({ db, content, clock = Date.now, secureCookies = false }: AppOptions) {
-  const app = Fastify({ logger: { level: process.env.LOG_LEVEL ?? 'info' }, disableRequestLogging: true });
+  const app = Fastify({ logger: { level: process.env.LOG_LEVEL ?? 'warn' } });
   await app.register(cookie);
 
   app.setErrorHandler((err, _req, reply) => {

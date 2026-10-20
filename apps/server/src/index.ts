@@ -23,7 +23,6 @@ try {
 
 const { db, close } = await createDb(process.env.DATABASE_URL || undefined, pgliteDir);
 const app = await buildApp({ db, content, secureCookies: process.env.NODE_ENV === 'production' });
-app.log.info(process.env.DATABASE_URL ? 'Base : PostgreSQL' : `Base : PGlite (${pgliteDir})`);
 
 for (const signal of ['SIGINT', 'SIGTERM'] as const) {
   process.on(signal, async () => {
@@ -34,3 +33,4 @@ for (const signal of ['SIGINT', 'SIGTERM'] as const) {
 }
 
 await app.listen({ port, host: '127.0.0.1' });
+console.log(`Bramo API sur http://127.0.0.1:${port} · base : ${process.env.DATABASE_URL ? 'PostgreSQL' : `PGlite (${pgliteDir})`}`);

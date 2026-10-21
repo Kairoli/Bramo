@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 760">
+  <!-- Plastron de plates : cuirasse bombée à arête centrale, lames de ventre, brassards articulés, gorgerin. (ouvrage légendaire). -->
+  <g id="sleeve_far_upper">
+    <path d="M240 182 L278 175 L304 276 L272 290 Z" fill="var(--c-coat-dark)"/>
+    <path d="M250 184 L282 180 L302 262 L276 274 Z" fill="var(--c-metal)"/>
+    <path d="M250 184 L282 180 L302 262 L276 274 Z" fill="url(#rig-light)"/>
+    <path d="M268 274 L304 260 L310 280 L276 296 Z" fill="var(--c-metal)"/>
+    <path d="M268 274 L304 260" stroke="var(--c-trim)" stroke-width="2"/>
+    <path d="M262 232 L292 224" stroke="#000" stroke-opacity=".3" stroke-width="1.6"/>
+    <path d="M262 214 L294 206" stroke="var(--c-trim)" stroke-width="1.6" fill="none" stroke-linecap="round"/><path d="M264 240 L296 232" stroke="var(--c-glow)" stroke-width="2" fill="none" stroke-linecap="round" class="fx-pulse"/>
+  </g>
+  <g id="forearm_far">
+    <path d="M278 292 L306 280 L343 240 L325 225 Z" fill="var(--c-metal)"/>
+    <path d="M278 292 L306 280 L343 240 L325 225 Z" fill="url(#rig-light)"/>
+    <path d="M288 284 L312 296 M300 272 L322 284 M312 258 L334 270" stroke="#000" stroke-opacity=".3" stroke-width="1.6" fill="none"/>
+    <path d="M278 292 L306 280 L343 240" stroke="var(--c-trim)" stroke-width="2" fill="none"/>
+    <path d="M296 270 L318 258" stroke="var(--c-trim)" stroke-width="1.6" fill="none" stroke-linecap="round"/><path d="M300 284 L322 272" stroke="var(--c-glow)" stroke-width="2" fill="none" stroke-linecap="round" class="fx-pulse"/>
+  </g>
+  <g id="torso">
+    <path d="M150 176 Q200 156 254 166 Q266 216 258 306 Q206 322 156 306 Q144 240 150 176 Z" fill="var(--c-metal)"/>
+    <path d="M150 176 Q200 156 254 166 Q266 216 258 306 Q206 322 156 306 Q144 240 150 176 Z" fill="url(#rig-light)"/>
+    <path d="M150 176 Q144 240 156 306 Q176 312 196 314 Q184 240 190 170 Z" fill="url(#rig-shade)"/>
+    <path d="M214 168 Q222 240 216 316" stroke="#000" stroke-opacity=".32" stroke-width="2.4" fill="none"/>
+    <path d="M216 168 Q224 240 218 316" stroke="#F1F0EC" stroke-opacity=".22" stroke-width="1.4" fill="none"/>
+    <path d="M154 262 Q206 278 260 262 M155 280 Q206 296 259 280" stroke="#000" stroke-opacity=".34" stroke-width="2" fill="none"/>
+    <path d="M154 226 Q198 240 262 224" stroke="var(--c-trim)" stroke-width="2.4" fill="none"/>
+    <path d="M150 176 Q200 156 254 166" stroke="var(--c-trim)" stroke-width="2.6" fill="none"/>
+    <path d="M254 166 Q266 216 258 306" stroke="var(--c-glow)" stroke-opacity=".5" stroke-width="2" fill="none"/>
+    <circle cx="176" cy="238" r="2.2" fill="#F1F0EC" opacity=".5"/>
+    <circle cx="240" cy="236" r="2.2" fill="#F1F0EC" opacity=".5"/>
+    <path d="M152 180 Q200 160 252 170" stroke="#F1F0EC" stroke-opacity=".28" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M178 250 L190 262 M236 270 L246 282 M170 214 L176 224" stroke="#000" stroke-opacity=".3" stroke-width="1.4" fill="none"/><circle cx="170" cy="190" r="2" fill="#F1F0EC"/><circle cx="244" cy="192" r="2" fill="#F1F0EC"/>
+    <path d="M158 190 Q180 200 206 200 M258 192 Q236 204 220 204" stroke="var(--c-trim)" stroke-width="1.8" fill="none" stroke-linecap="round"/><circle cx="212" cy="214" r="13" fill="var(--c-coat-dark)"/><circle cx="212" cy="214" r="13" fill="none" stroke="var(--c-trim)" stroke-width="2.6"/><path d="M212 204 L220 214 L212 224 L204 214 Z" fill="var(--c-glow)" class="fx-pulse"/><path d="M212 196 L212 188 M230 214 L238 214 M194 214 L186 214" stroke="var(--c-glow)" stroke-width="2" fill="none" stroke-linecap="round" class="fx-pulse"/><path d="M160 232 Q186 246 206 240 M258 230 Q236 244 220 240" stroke="var(--c-glow)" stroke-width="2" fill="none" stroke-linecap="round" class="fx-pulse"/>
+  </g>
+  <g id="under">
+    <path d="M192 150 Q210 142 238 152 L246 176 Q214 190 188 176 Z" fill="var(--c-metal)"/>
+    <path d="M192 150 Q210 142 238 152 L246 176 Q214 190 188 176 Z" fill="#000" opacity=".28"/>
+    <path d="M190 164 Q214 176 244 164" stroke="var(--c-trim)" stroke-width="2.2" fill="none"/>
+  </g>
+  <g id="sleeve_near_upper">
+    <path d="M148 176 Q166 170 182 186 L174 280 L136 276 L138 196 Q140 182 148 176 Z" fill="var(--c-coat-dark)"/>
+    <path d="M144 194 Q150 180 166 178 Q178 190 172 262 L142 258 Z" fill="var(--c-metal)"/>
+    <path d="M144 194 Q150 180 166 178 Q178 190 172 262 L142 258 Z" fill="url(#rig-shade)"/>
+    <path d="M133 270 L176 276 L175 296 L131 290 Z" fill="var(--c-metal)"/>
+    <path d="M133 270 L176 276" stroke="var(--c-trim)" stroke-width="2"/>
+    <path d="M144 226 L172 230" stroke="#000" stroke-opacity=".3" stroke-width="1.6"/>
+    <path d="M146 190 Q152 180 166 178" stroke="#F1F0EC" stroke-opacity=".28" stroke-width="2" fill="none" stroke-linecap="round"/>
+    <path d="M146 214 Q158 220 170 216" stroke="var(--c-trim)" stroke-width="1.6" fill="none" stroke-linecap="round"/><path d="M150 238 Q160 244 170 240" stroke="var(--c-glow)" stroke-width="2" fill="none" stroke-linecap="round" class="fx-pulse"/>
+  </g>
+  <g id="forearm_near">
+    <path d="M136 288 L170 294 L158 370 L127 366 Z" fill="var(--c-metal)"/>
+    <path d="M136 288 L170 294 L158 370 L127 366 Z" fill="url(#rig-shade)"/>
+    <path d="M134 310 L166 316 M131 332 L162 338 M129 350 L160 356" stroke="#000" stroke-opacity=".3" stroke-width="1.6" fill="none"/>
+    <path d="M136 288 L170 294" stroke="var(--c-trim)" stroke-width="2"/>
+    <path d="M140 340 L150 348" stroke="#000" stroke-opacity=".3" stroke-width="1.4" fill="none"/>
+    <path d="M135 322 L166 328" stroke="var(--c-trim)" stroke-width="1.6" fill="none" stroke-linecap="round"/><path d="M133 342 L164 348" stroke="var(--c-glow)" stroke-width="2" fill="none" stroke-linecap="round" class="fx-pulse"/>
+  </g>
+</svg>

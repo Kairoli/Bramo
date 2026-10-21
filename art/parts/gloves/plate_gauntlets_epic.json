@@ -1,0 +1,25 @@
+{
+  "id": "plate_gauntlets_epic",
+  "slot": "gloves",
+  "name": "Gantelets de plates (ouvrage épique)",
+  "colorRoles": [
+    "metal",
+    "trim"
+  ],
+  "anchor": [
+    0,
+    0
+  ],
+  "layers": [
+    {
+      "id": "far",
+      "bone": "hand_far",
+      "z": 28
+    },
+    {
+      "id": "near",
+      "bone": "hand_near",
+      "z": 71
+    }
+  ]
+}

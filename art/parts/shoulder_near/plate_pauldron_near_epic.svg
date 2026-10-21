@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 760">
+  <!-- Épaulière proche : trois lames bombées, bord galonné. (ouvrage épique). -->
+  <g id="pauldron">
+    <path d="M132 190 Q142 160 176 164 Q190 176 186 200 Q160 190 138 204 Z" fill="var(--c-metal)"/>
+    <path d="M132 190 Q142 160 176 164 Q190 176 186 200 Q160 190 138 204 Z" fill="url(#rig-light)"/>
+    <path d="M134 204 Q160 192 188 202 Q188 218 182 226 Q158 214 138 224 Z" fill="var(--c-metal)"/>
+    <path d="M134 204 Q160 192 188 202 Q188 218 182 226 Q158 214 138 224 Z" fill="#000" opacity=".34"/>
+    <path d="M136 222 Q158 210 182 224 L178 238 Q158 228 140 238 Z" fill="var(--c-metal)"/>
+    <path d="M136 222 Q158 210 182 224 L178 238 Q158 228 140 238 Z" fill="#000" opacity=".48"/>
+    <path d="M132 190 Q142 160 176 164" stroke="var(--c-trim)" stroke-width="2.4" fill="none"/>
+    <circle cx="156" cy="180" r="2" fill="#F1F0EC" opacity=".5"/>
+    <path d="M136 192 Q146 168 174 168" stroke="#F1F0EC" stroke-opacity=".28" stroke-width="2" fill="none" stroke-linecap="round"/><circle cx="148" cy="182" r="1.8" fill="#F1F0EC"/><circle cx="168" cy="176" r="1.8" fill="#F1F0EC"/>
+    <path d="M140 212 Q160 202 184 212" stroke="var(--c-trim)" stroke-width="1.6" fill="none" stroke-linecap="round"/><circle cx="150" cy="182" r="2.4" fill="var(--c-trim)"/><circle cx="168" cy="176" r="2.4" fill="var(--c-trim)"/>
+  </g>
+</svg>

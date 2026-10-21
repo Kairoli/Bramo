@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 760">
+  <!-- Jambières de plates : cuissots, genouillères en coupole, grèves. (ouvrage légendaire). -->
+  <g id="thigh_far">
+    <path d="M212 330 L244 330 L248 556 L219 556 Z" fill="var(--c-metal)"/>
+    <path d="M212 330 L244 330 L248 556 L219 556 Z" fill="#000" opacity=".3"/>
+    <path d="M214 400 L246 398 M216 470 L248 468" stroke="#000" stroke-opacity=".35" stroke-width="1.6"/>
+    <path d="M244 330 L248 556" stroke="var(--c-glow)" stroke-opacity=".4" stroke-width="2"/>
+    <path d="M226 340 Q224 440 228 548" stroke="var(--c-trim)" stroke-width="1.6" fill="none" stroke-linecap="round"/><path d="M238 348 Q236 440 240 548" stroke="var(--c-glow)" stroke-width="2" fill="none" stroke-linecap="round" class="fx-pulse"/>
+  </g>
+  <g id="shin_far">
+    <ellipse cx="234" cy="556" rx="17" ry="14" fill="var(--c-metal)"/>
+    <ellipse cx="234" cy="556" rx="17" ry="14" fill="#000" opacity=".28"/>
+    <circle cx="234" cy="556" r="3" fill="var(--c-trim)"/>
+    <path d="M220 568 L248 568 L252 634 L226 634 Z" fill="var(--c-metal)"/>
+    <path d="M220 568 L248 568 L252 634 L226 634 Z" fill="#000" opacity=".3"/>
+    <path d="M222 590 L250 590" stroke="var(--c-trim)" stroke-width="2"/>
+    <path d="M232 576 L236 628" stroke="var(--c-trim)" stroke-width="1.6" fill="none" stroke-linecap="round"/><path d="M242 576 L244 628" stroke="var(--c-glow)" stroke-width="1.8" fill="none" stroke-linecap="round" class="fx-pulse"/>
+  </g>
+  <g id="thigh_near">
+    <path d="M162 332 L204 332 L198 562 L166 562 Z" fill="var(--c-metal)"/>
+    <path d="M162 332 L204 332 L198 562 L166 562 Z" fill="url(#rig-light)"/>
+    <path d="M164 332 L168 562" stroke="#000" stroke-opacity=".25" stroke-width="3"/>
+    <path d="M163 404 L202 402 M165 474 L200 472" stroke="#000" stroke-opacity=".35" stroke-width="1.8"/>
+    <path d="M162 332 L204 332" stroke="var(--c-trim)" stroke-width="2.4"/>
+    <path d="M164 340 L168 552" stroke="#F1F0EC" stroke-opacity=".28" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M178 420 L186 432 M170 494 L178 504" stroke="#000" stroke-opacity=".3" stroke-width="1.4" fill="none"/>
+    <path d="M176 340 Q172 440 176 548" stroke="var(--c-trim)" stroke-width="1.6" fill="none" stroke-linecap="round"/><path d="M190 348 Q186 440 188 548" stroke="var(--c-glow)" stroke-width="2" fill="none" stroke-linecap="round" class="fx-pulse"/>
+  </g>
+  <g id="shin_near">
+    <ellipse cx="182" cy="562" rx="19" ry="16" fill="var(--c-metal)"/>
+    <ellipse cx="182" cy="562" rx="19" ry="16" fill="url(#rig-light)"/>
+    <circle cx="182" cy="562" r="3.4" fill="var(--c-trim)"/>
+    <path d="M165 576 L198 578 L192 650 L168 648 Z" fill="var(--c-metal)"/>
+    <path d="M165 576 L198 578 L192 650 L168 648 Z" fill="url(#rig-shade)"/>
+    <path d="M167 600 L196 602 M168 626 L194 628" stroke="#000" stroke-opacity=".35" stroke-width="1.6"/>
+    <path d="M165 576 L198 578" stroke="var(--c-trim)" stroke-width="2.2"/>
+    <path d="M176 586 L182 646" stroke="var(--c-trim)" stroke-width="1.6" fill="none" stroke-linecap="round"/><path d="M188 584 L186 644" stroke="var(--c-glow)" stroke-width="1.8" fill="none" stroke-linecap="round" class="fx-pulse"/>
+  </g>
+</svg>

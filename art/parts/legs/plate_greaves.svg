@@ -20,6 +20,7 @@
     <path d="M164 332 L168 562" stroke="#000" stroke-opacity=".25" stroke-width="3"/>
     <path d="M163 404 L202 402 M165 474 L200 472" stroke="#000" stroke-opacity=".35" stroke-width="1.8"/>
     <path d="M162 332 L204 332" stroke="var(--c-trim)" stroke-width="2.4"/>
+    <path d="M164 340 L168 552" stroke="#F1F0EC" stroke-opacity=".28" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M178 420 L186 432 M170 494 L178 504" stroke="#000" stroke-opacity=".3" stroke-width="1.4" fill="none"/>
   </g>
   <g id="shin_near">
     <ellipse cx="182" cy="562" rx="19" ry="16" fill="var(--c-metal)"/>

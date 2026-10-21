@@ -26,6 +26,7 @@
     <path d="M254 166 Q266 216 258 306" stroke="var(--c-glow)" stroke-opacity=".5" stroke-width="2" fill="none"/>
     <circle cx="176" cy="238" r="2.2" fill="#F1F0EC" opacity=".5"/>
     <circle cx="240" cy="236" r="2.2" fill="#F1F0EC" opacity=".5"/>
+    <path d="M152 180 Q200 160 252 170" stroke="#F1F0EC" stroke-opacity=".28" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M178 250 L190 262 M236 270 L246 282 M170 214 L176 224" stroke="#000" stroke-opacity=".3" stroke-width="1.4" fill="none"/><circle cx="170" cy="190" r="2" fill="#F1F0EC"/><circle cx="244" cy="192" r="2" fill="#F1F0EC"/>
   </g>
   <g id="under">
     <path d="M192 150 Q210 142 238 152 L246 176 Q214 190 188 176 Z" fill="var(--c-metal)"/>
@@ -39,11 +40,13 @@
     <path d="M133 270 L176 276 L175 296 L131 290 Z" fill="var(--c-metal)"/>
     <path d="M133 270 L176 276" stroke="var(--c-trim)" stroke-width="2"/>
     <path d="M144 226 L172 230" stroke="#000" stroke-opacity=".3" stroke-width="1.6"/>
+    <path d="M146 190 Q152 180 166 178" stroke="#F1F0EC" stroke-opacity=".28" stroke-width="2" fill="none" stroke-linecap="round"/>
   </g>
   <g id="forearm_near">
     <path d="M136 288 L170 294 L158 370 L127 366 Z" fill="var(--c-metal)"/>
     <path d="M136 288 L170 294 L158 370 L127 366 Z" fill="url(#rig-shade)"/>
     <path d="M134 310 L166 316 M131 332 L162 338 M129 350 L160 356" stroke="#000" stroke-opacity=".3" stroke-width="1.6" fill="none"/>
     <path d="M136 288 L170 294" stroke="var(--c-trim)" stroke-width="2"/>
+    <path d="M140 340 L150 348" stroke="#000" stroke-opacity=".3" stroke-width="1.4" fill="none"/>
   </g>
 </svg>

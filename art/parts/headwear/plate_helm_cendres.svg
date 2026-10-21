@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 760">
+  <!-- Heaume de fantassin : calotte à crête, jugulaire côté proche, nasal. Le visage reste dégagé à droite. (Cendres persistantes). -->
+  <g id="back">
+    <path d="M184 104 Q176 128 188 150 L204 146 L200 112 Z" fill="var(--c-metal)"/>
+    <path d="M184 104 Q176 128 188 150 L204 146 L200 112 Z" fill="#000" opacity=".4"/>
+    <path d="M186 124 L202 126 M186 136 L202 138" stroke="#000" stroke-opacity=".35" stroke-width="1.5"/>
+    <path d="M196 62 Q170 36 148 70 Q172 60 190 78 Z" fill="#2A1F1C"/><path d="M196 62 Q170 36 148 70" stroke="#FF8A3C" stroke-width="2.2" fill="none" stroke-linejoin="round" class="fx-pulse"/>
+  </g>
+  <g id="front">
+    <path d="M181 112 Q176 70 212 58 Q248 58 250 92 L248 99 Q226 90 203 101 L199 128 Q190 134 185 128 Z" fill="var(--c-metal)"/>
+    <path d="M181 112 Q176 70 212 58 Q248 58 250 92 L248 99 Q226 90 203 101 L199 128 Q190 134 185 128 Z" fill="url(#rig-light)"/>
+    <path d="M181 112 Q176 70 212 58 L208 104 L199 128 Q190 134 185 128 Z" fill="url(#rig-shade)"/>
+    <path d="M196 62 Q220 50 244 66" stroke="var(--c-trim)" stroke-width="4" fill="none" stroke-linecap="round"/>
+    <path d="M183 98 Q214 88 249 94" stroke="var(--c-trim)" stroke-width="2.4" fill="none"/>
+    <path d="M239 94 L243 114" stroke="var(--c-metal)" stroke-width="5" stroke-linecap="round"/>
+    <path d="M239 94 L243 114" stroke="#000" stroke-opacity=".3" stroke-width="1.4"/>
+    <path d="M232 62 Q246 70 250 90" stroke="var(--c-glow)" stroke-opacity=".5" stroke-width="1.8" fill="none"/>
+    <circle cx="196" cy="100" r="2" fill="#F1F0EC" opacity=".5"/>
+    <circle cx="222" cy="92" r="2" fill="#F1F0EC" opacity=".5"/>
+    <path d="M184 100 Q192 72 214 62" stroke="#F1F0EC" stroke-opacity=".28" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M200 66 L204 96" stroke="#000" stroke-opacity=".3" stroke-width="1.4" fill="none"/>
+    <path d="M204 76 L212 86 L206 94 M224 68 L230 80 L240 84" stroke="#FF8A3C" stroke-width="2.2" fill="none" stroke-linejoin="round" class="fx-pulse"/><path d="M202 60 Q206 34 214 50 Q218 28 226 52 Q232 38 236 62 Z" fill="#FF6A2B" class="fx-pulse"/><path d="M210 60 Q214 46 218 56 Q222 44 226 60 Z" fill="#FFC15A"/>
+  </g>
+</svg>

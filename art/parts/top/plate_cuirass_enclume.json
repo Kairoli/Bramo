@@ -1,0 +1,46 @@
+{
+  "id": "plate_cuirass_enclume",
+  "slot": "top",
+  "name": "Plastron de plates (L'Enclume patiente)",
+  "colorRoles": [
+    "metal",
+    "coatDark",
+    "trim"
+  ],
+  "anchor": [
+    0,
+    0
+  ],
+  "layers": [
+    {
+      "id": "sleeve_far_upper",
+      "bone": "upperarm_far",
+      "z": 24
+    },
+    {
+      "id": "forearm_far",
+      "bone": "forearm_far",
+      "z": 25
+    },
+    {
+      "id": "torso",
+      "bone": "torso",
+      "z": 36
+    },
+    {
+      "id": "under",
+      "bone": "torso",
+      "z": 38
+    },
+    {
+      "id": "sleeve_near_upper",
+      "bone": "upperarm_near",
+      "z": 66
+    },
+    {
+      "id": "forearm_near",
+      "bone": "forearm_near",
+      "z": 67
+    }
+  ]
+}

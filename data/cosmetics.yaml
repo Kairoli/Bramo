@@ -190,3 +190,99 @@ outfits:
       cape: battle_cloak
       shoulder_far: forge_pauldron
       shoulder_near: plate_pauldron_near
+
+  # Esquisse de la famille Armure, ne fait pas partie des tenues du jeu : Épique
+  - id: sketch_armor_20_epic
+    name: Armure épique, palier 20 (esquisse)
+    subtitle: Épique
+    palette:
+      coat: "#2F3E52"
+      coatDark: "#202B3A"
+      mantle: "#5B3A8C"
+      under: "#1C2430"
+      trim: "#C7A6FF"
+      metal: "#B9C4D0"
+      beard: "#6B321F"
+    parts:
+      headwear: plate_helm_epic
+      face: forge_beard
+      top: plate_cuirass_epic
+      belt: plate_girdle_epic
+      legs: plate_greaves_epic
+      gloves: plate_gauntlets_epic
+      boots: plate_sabatons_epic
+      cape: battle_cloak_epic
+      shoulder_far: forge_pauldron
+      shoulder_near: plate_pauldron_near_epic
+
+  # Esquisse de la famille Armure, ne fait pas partie des tenues du jeu : Légendaire
+  - id: sketch_armor_20_legendary
+    name: Armure légendaire, palier 20 (esquisse)
+    subtitle: Légendaire
+    palette:
+      coat: "#3A2F22"
+      coatDark: "#26201A"
+      mantle: "#8A2E2A"
+      under: "#2A211B"
+      trim: "#F0B24B"
+      metal: "#DAD6CC"
+      beard: "#6B321F"
+    parts:
+      headwear: plate_helm_legendary
+      face: forge_beard
+      top: plate_cuirass_legendary
+      belt: plate_girdle_legendary
+      legs: plate_greaves_legendary
+      gloves: plate_gauntlets_legendary
+      boots: plate_sabatons_legendary
+      cape: battle_cloak_legendary
+      shoulder_far: forge_pauldron
+      shoulder_near: plate_pauldron_near_legendary
+
+  # Esquisse de la famille Armure, ne fait pas partie des tenues du jeu : Ensemble, 4 pièces + ceinturon et bottes de base
+  - id: sketch_set_cendres
+    name: Cendres persistantes (esquisse)
+    subtitle: Ensemble, 4 pièces + ceinturon et bottes de base
+    palette:
+      coat: "#2B2522"
+      coatDark: "#1C1715"
+      mantle: "#2A1F1C"
+      under: "#1C1715"
+      trim: "#FF8A3C"
+      metal: "#4A4440"
+      beard: "#6B321F"
+    parts:
+      headwear: plate_helm_cendres
+      face: forge_beard
+      top: plate_cuirass_cendres
+      belt: plate_girdle
+      legs: plate_greaves_cendres
+      gloves: plate_gauntlets_cendres
+      boots: plate_sabatons
+      cape: battle_cloak
+      shoulder_far: forge_pauldron
+      shoulder_near: plate_pauldron_near
+
+  # Esquisse de la famille Armure, ne fait pas partie des tenues du jeu : Ensemble, 4 pièces + heaume et gants de base
+  - id: sketch_set_enclume
+    name: L'Enclume patiente (esquisse)
+    subtitle: Ensemble, 4 pièces + heaume et gants de base
+    palette:
+      coat: "#3A4350"
+      coatDark: "#262C35"
+      mantle: "#3A4350"
+      under: "#242A32"
+      trim: "#C98A4B"
+      metal: "#7E8A96"
+      beard: "#6B321F"
+    parts:
+      headwear: plate_helm
+      face: forge_beard
+      top: plate_cuirass_enclume
+      belt: plate_girdle_enclume
+      legs: plate_greaves_enclume
+      gloves: plate_gauntlets
+      boots: plate_sabatons_enclume
+      cape: battle_cloak
+      shoulder_far: forge_pauldron
+      shoulder_near: plate_pauldron_near

@@ -16,5 +16,6 @@
     <path d="M232 62 Q246 70 250 90" stroke="var(--c-glow)" stroke-opacity=".5" stroke-width="1.8" fill="none"/>
     <circle cx="196" cy="100" r="2" fill="#F1F0EC" opacity=".5"/>
     <circle cx="222" cy="92" r="2" fill="#F1F0EC" opacity=".5"/>
+    <path d="M184 100 Q192 72 214 62" stroke="#F1F0EC" stroke-opacity=".28" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M200 66 L204 96" stroke="#000" stroke-opacity=".3" stroke-width="1.4" fill="none"/>
   </g>
 </svg>

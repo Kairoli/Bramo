@@ -1,0 +1,25 @@
+{
+  "id": "plate_helm_legendary",
+  "slot": "headwear",
+  "name": "Heaume de fantassin (ouvrage légendaire)",
+  "colorRoles": [
+    "metal",
+    "trim"
+  ],
+  "anchor": [
+    0,
+    0
+  ],
+  "layers": [
+    {
+      "id": "back",
+      "bone": "head",
+      "z": 52
+    },
+    {
+      "id": "front",
+      "bone": "head",
+      "z": 60
+    }
+  ]
+}

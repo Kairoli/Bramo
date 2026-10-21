@@ -1,0 +1,25 @@
+{
+  "id": "plate_helm_cendres",
+  "slot": "headwear",
+  "name": "Heaume de fantassin (Cendres persistantes)",
+  "colorRoles": [
+    "metal",
+    "trim"
+  ],
+  "anchor": [
+    0,
+    0
+  ],
+  "layers": [
+    {
+      "id": "back",
+      "bone": "head",
+      "z": 52
+    },
+    {
+      "id": "front",
+      "bone": "head",
+      "z": 60
+    }
+  ]
+}

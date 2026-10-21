@@ -6,6 +6,7 @@
     <path d="M196 288 L228 290 L228 322 L196 320 Z" fill="var(--c-metal)"/>
     <path d="M196 288 L228 290 L228 322 L196 320 Z" fill="url(#rig-light)"/>
     <path d="M203 296 L221 297 L221 314 L203 313 Z" fill="none" stroke="var(--c-trim)" stroke-width="2.4"/>
+    <path d="M160 304 L170 308 M240 306 L252 302" stroke="#000" stroke-opacity=".3" stroke-width="1.4" fill="none"/><circle cx="168" cy="298" r="1.8" fill="#F1F0EC"/><circle cx="186" cy="304" r="1.8" fill="#F1F0EC"/><circle cx="238" cy="304" r="1.8" fill="#F1F0EC"/><circle cx="252" cy="298" r="1.8" fill="#F1F0EC"/>
   </g>
   <g id="tassets">
     <path d="M154 314 L196 322 L190 372 L152 360 Z" fill="var(--c-metal)"/>

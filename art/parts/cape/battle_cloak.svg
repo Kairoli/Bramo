@@ -5,6 +5,7 @@
     <path d="M166 162 Q146 250 138 424 Q172 446 212 436 Q236 416 246 336 L246 168 Z" fill="url(#rig-shade)"/>
     <path d="M138 424 Q172 446 212 436 Q236 416 246 336" stroke="var(--c-trim)" stroke-width="3" fill="none"/>
     <path d="M176 200 Q168 300 164 410 M206 190 Q202 300 204 420" stroke="#000" stroke-opacity=".22" stroke-width="2" fill="none"/>
+    <path d="M176 200 Q168 300 164 410" stroke="#F1F0EC" stroke-opacity=".08" stroke-width="3" fill="none"/>
   </g>
   <g id="front">
     <path d="M176 168 Q210 182 244 170" stroke="var(--c-metal)" stroke-width="3.5" fill="none" stroke-dasharray="6 3"/>

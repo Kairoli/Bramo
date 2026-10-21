@@ -1,0 +1,35 @@
+{
+  "id": "plate_greaves_enclume",
+  "slot": "legs",
+  "name": "Jambières de plates (L'Enclume patiente)",
+  "colorRoles": [
+    "metal",
+    "trim"
+  ],
+  "anchor": [
+    0,
+    0
+  ],
+  "layers": [
+    {
+      "id": "thigh_far",
+      "bone": "thigh_far",
+      "z": 16
+    },
+    {
+      "id": "shin_far",
+      "bone": "shin_far",
+      "z": 17
+    },
+    {
+      "id": "thigh_near",
+      "bone": "thigh_near",
+      "z": 21
+    },
+    {
+      "id": "shin_near",
+      "bone": "shin_near",
+      "z": 22
+    }
+  ]
+}

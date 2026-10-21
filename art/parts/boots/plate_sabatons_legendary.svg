@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 760">
+  <!-- Solerets : cheville articulée, pied à lames, bout pointu. (ouvrage légendaire). -->
+  <g id="far">
+    <path d="M220 628 L252 628 L255 656 L284 674 Q252 690 216 686 L220 658 Z" fill="var(--c-metal)"/>
+    <path d="M220 628 L252 628 L255 656 L284 674 Q252 690 216 686 L220 658 Z" fill="#000" opacity=".38"/>
+    <path d="M232 668 L236 686 M246 664 L250 684 M262 666 Q270 678 268 688" stroke="#000" stroke-opacity=".4" stroke-width="1.6" fill="none"/>
+    <path d="M216 686 Q252 690 284 674" stroke="#16130F" stroke-width="5" fill="none"/>
+    <path d="M228 660 Q256 672 280 672" stroke="var(--c-trim)" stroke-width="1.6" fill="none" stroke-linecap="round"/><path d="M226 644 L250 646" stroke="var(--c-glow)" stroke-width="1.8" fill="none" stroke-linecap="round" class="fx-pulse"/>
+  </g>
+  <g id="near">
+    <path d="M165 632 L199 632 L201 658 L228 678 Q194 694 158 690 L163 660 Z" fill="var(--c-metal)"/>
+    <path d="M165 632 L199 632 L201 658 L228 678 Q194 694 158 690 L163 660 Z" fill="url(#rig-light)"/>
+    <path d="M176 672 L180 690 M190 668 L194 688 M208 670 Q216 682 214 692" stroke="#000" stroke-opacity=".4" stroke-width="1.6" fill="none"/>
+    <path d="M165 632 L199 632" stroke="var(--c-trim)" stroke-width="2.4"/>
+    <path d="M158 690 Q194 694 228 678" stroke="#16130F" stroke-width="5" fill="none"/>
+    <path d="M172 664 Q196 676 222 674" stroke="var(--c-trim)" stroke-width="1.6" fill="none" stroke-linecap="round"/><path d="M170 650 L196 652" stroke="var(--c-glow)" stroke-width="1.8" fill="none" stroke-linecap="round" class="fx-pulse"/>
+  </g>
+</svg>

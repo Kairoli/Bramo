@@ -1,0 +1,272 @@
+<svg class="rig rig-combat" viewBox="40 -40 440 780" preserveAspectRatio="xMidYMax meet" role="img" aria-label="Personnage" style="--c-skin: #C99A78; --c-skin-dark: #8A6248; --c-legs: #2E3438; --c-legs-dark: #252A2D; --c-boots: #2B2320; --c-leather: #3A2C24; --c-wood: #4A3528; --c-wood-light: #7A5A44; --c-shadow: #0B0D10; --c-stone: #232A2E; --c-coat: #2F3E52; --c-coat-dark: #202B3A; --c-mantle: #5B3A8C; --c-under: #1C2430; --c-trim: #C7A6FF; --c-metal: #B9C4D0; --c-beard: #6B321F; --c-glow: #F08A4B; --c-glow-light: color-mix(in srgb, #F08A4B 45%, white);"><defs><filter id="r0-rig-glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="4" result="b"></feGaussianBlur><feMerge><feMergeNode in="b"></feMergeNode><feMergeNode in="SourceGraphic"></feMergeNode></feMerge></filter><filter id="r0-rig-soft" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="14"></feGaussianBlur></filter><linearGradient id="r0-rig-shade" x1="0" x2="1"><stop offset="0" stop-color="#000" stop-opacity=".35"></stop><stop offset=".55" stop-color="#000" stop-opacity="0"></stop></linearGradient><linearGradient id="r0-rig-light" x1="0" x2="1"><stop offset=".45" stop-color="var(--c-glow)" stop-opacity="0"></stop><stop offset="1" stop-color="var(--c-glow)" stop-opacity=".22"></stop></linearGradient><linearGradient id="r0-rig-hood" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0B0D10" stop-opacity=".92"></stop><stop offset=".75" stop-color="#0B0D10" stop-opacity=".75"></stop><stop offset="1" stop-color="#0B0D10" stop-opacity="0"></stop></linearGradient></defs><g data-layer="body/base_grip/shadow" transform="translate(0.00 0) matrix(1 0 0 1 0 0)"><g>
+    <ellipse xmlns="http://www.w3.org/2000/svg" cx="226" cy="700" rx="118" ry="14" fill="#000" opacity=".45"></ellipse>
+  </g></g><g data-layer="effect/ember_aura/cracks" transform="translate(0.00 0) matrix(1 0 0 1 0 0)"><g>
+    <g xmlns="http://www.w3.org/2000/svg" class="fx-pulse" fill="none" stroke="var(--c-glow)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" filter="url(#r0-rig-glow)">
+      <path d="M268 702 L292 708 L312 706 L330 712"></path>
+      <path d="M150 702 L130 708 L112 705 L96 711"></path>
+      <path d="M252 703 L260 714 L274 718"></path>
+      <path d="M164 703 L158 713 L146 716"></path>
+    </g>
+  </g></g><g data-layer="effect/ember_aura/heat" transform="translate(0.00 0) matrix(1 0 0 1 0 0)"><g>
+    <ellipse xmlns="http://www.w3.org/2000/svg" cx="206" cy="692" rx="104" ry="24" fill="var(--c-glow)" opacity=".18" filter="url(#r0-rig-soft)"></ellipse>
+  </g></g><g data-layer="cape/battle_cloak_epic/back" transform="translate(0.00 0) matrix(1 0.0068 -0.0068 1 1.2408 -0.9779)"><g>
+    <path xmlns="http://www.w3.org/2000/svg" d="M166 162 Q146 250 138 424 Q172 446 212 436 Q236 416 246 336 L246 168 Z" fill="var(--c-mantle)"></path>
+    <path xmlns="http://www.w3.org/2000/svg" d="M166 162 Q146 250 138 424 Q172 446 212 436 Q236 416 246 336 L246 168 Z" fill="url(#r0-rig-shade)"></path>
+    <path xmlns="http://www.w3.org/2000/svg" d="M138 424 Q172 446 212 436 Q236 416 246 336" stroke="var(--c-trim)" stroke-width="3" fill="none"></path>
+    <path xmlns="http://www.w3.org/2000/svg" d="M176 200 Q168 300 164 410 M206 190 Q202 300 204 420" stroke="#000" stroke-opacity=".22" stroke-width="2" fill="none"></path>
+    <path xmlns="http://www.w3.org/2000/svg" d="M176 200 Q168 300 164 410" stroke="#F1F0EC" stroke-opacity=".08" stroke-width="3" fill="none"></path>
+    <path xmlns="http://www.w3.org/2000/svg" d="M142 408 Q172 428 210 420 M152 380 Q176 396 206 390" stroke="var(--c-trim)" stroke-width="1.6" fill="none" stroke-linecap="round"></path>
+  </g></g><g data-layer="body/base_grip/thigh_far" transform="translate(0.00 0) matrix(0.9962 -0.0872 0.0872 0.9962 -28.2424 21.1425)"><g>
+    <path xmlns="http://www.w3.org/2000/svg" d="M214 330 L242 330 L246 558 L220 558 Z" fill="var(--c-legs-dark)"></path>
+  </g></g><g data-layer="body/base_grip/shin_far" transform="translate(0.00 0) matrix(1 0 0 1 19.3257 -1.3677)"><g>
+    <path xmlns="http://www.w3.org/2000/svg" d="M219 550 L246 550 L250 668 L226 668 Z" fill="var(--c-legs-dark)"></path>
+  </g></g><g data-layer="legs/plate_greaves_epic/thigh_far" transform="translate(0.00 0) matrix(0.9962 -0.0872 0.0872 0.9962 -28.2424 21.1425)"><g>
+    <path xmlns="http://www.w3.org/2000/svg" d="M212 330 L244 330 L248 556 L219 556 Z" fill="var(--c-metal)"></path>
+    <path xmlns="http://www.w3.org/2000/svg" d="M212 330 L244 330 L248 556 L219 556 Z" fill="#000" opacity=".3"></path>
+    <path xmlns="http://www.w3.org/2000/svg" d="M214 400 L246 398 M216 470 L248 468" stroke="#000" stroke-opacity=".35" stroke-width="1.6"></path>
+    <path xmlns="http://www.w3.org/2000/svg" d="M244 330 L248 556" stroke="var(--c-glow)" stroke-opacity=".4" stroke-width="2"></path>
+    <path xmlns="http://www.w3.org/2000/svg" d="M226 340 Q224 440 228 548" stroke="var(--c-trim)" stroke-width="1.6" fill="none" stroke-linecap="round"></path>
+  </g></g><g data-layer="legs/plate_greaves_epic/shin_far" transform="translate(0.00 0) matrix(1 0 0 1 19.3257 -1.3677)"><g>
+    <ellipse xmlns="http://www.w3.org/2000/svg" cx="234" cy="556" rx="17" ry="14" fill="var(--c-metal)"></ellipse>
+    <ellipse xmlns="http://www.w3.org/2000/svg" cx="234" cy="556" rx="17" ry="14" fill="#000" opacity=".28"></ellipse>
+    <circle xmlns="http://www.w3.org/2000/svg" cx="234" cy="556" r="3" fill="var(--c-trim)"></circle>
+    <path xmlns="http://www.w3.org/2000/svg" d="M220 568 L248 568 L252 634 L226 634 Z" fill="var(--c-metal)"></path>
+    <path xmlns="http://www.w3.org/2000/svg" d="M220 568 L248 568 L252 634 L226 634 Z" fill="#000" opacity=".3"></path>
+    <path xmlns="http://www.w3.org/2000/svg" d="M222 590 L250 590" stroke="var(--c-trim)" stroke-width="2"></path>
+    <path xmlns="http://www.w3.org/2000/svg" d="M232 576 L236 628" stroke="var(--c-trim)" stroke-width="1.6" fill="none" stroke-linecap="round"></path>
+  </g></g><g data-layer="body/base_grip/thigh_near" transform="translate(0.00 0) matrix(0.9986 0.0523 -0.0523 0.9986 17.7324 -9.1721)"><g>
+    <path xmlns="http://www.w3.org/2000/svg" d="M166 332 L202 332 L196 562 L168 562 Z" fill="var(--c-legs)"></path>
+  </g></g><g data-layer="boots/plate_sabatons_epic/far" transform="translate(0.00 0) matrix(1 0 0 1 19.3257 -1.3677)"><g>
+    <path xmlns="http://www.w3.org/2000/svg" d="M220 628 L252 628 L255 656 L284 674 Q252 690 216 686 L220 658 Z" fill="var(--c-metal)"></path>
+    <path xmlns="http://www.w3.org/2000/svg" d="M220 628 L252 628 L255 656 L284 674 Q252 690 216 686 L220 658 Z" fill="#000" opacity=".38"></path>
+    <path xmlns="http://www.w3.org/2000/svg" d="M232 668 L236 686 M246 664 L250 684 M262 666 Q270 678 268 688" stroke="#000" stroke-opacity=".4" stroke-width="1.6" fill="none"></path>
+    <path xmlns="http://www.w3.org/2000/svg" d="M216 686 Q252 690 284 674" stroke="#16130F" stroke-width="5" fill="none"></path>
+    <path xmlns="http://www.w3.org/2000/svg" d="M228 660 Q256 672 280 672" stroke="var(--c-trim)" stroke-width="1.6" fill="none" stroke-linecap="round"></path>
+  </g></g><g data-layer="body/base_grip/shin_near" transform="translate(0.00 0) matrix(1 0 0 1 -11.8224 -0.5191)"><g>
+    <path xmlns="http://www.w3.org/2000/svg" d="M167 554 L196 554 L191 672 L169 672 Z" fill="var(--c-legs)"></path>
+  </g></g><g data-layer="legs/plate_greaves_epic/thigh_near" transform="translate(0.00 0) matrix(0.9986 0.0523 -0.0523 0.9986 17.7324 -9.1721)"><g>
+    <path xmlns="http://www.w3.org/2000/svg" d="M162 332 L204 332 L198 562 L166 562 Z" fill="var(--c-metal)"></path>
+    <path xmlns="http://www.w3.org/2000/svg" d="M162 332 L204 332 L198 562 L166 562 Z" fill="url(#r0-rig-light)"></path>
+    <path xmlns="http://www.w3.org/2000/svg" d="M164 332 L168 562" stroke="#000" stroke-opacity=".25" stroke-width="3"></path>
+    <path xmlns="http://www.w3.org/2000/svg" d="M163 404 L202 402 M165 474 L200 472" stroke="#000" stroke-opacity=".35" stroke-width="1.8"></path>
+    <path xmlns="http://www.w3.org/2000/svg" d="M162 332 L204 332" stroke="var(--c-trim)" stroke-width="2.4"></path>
+    <path xmlns="http://www.w3.org/2000/svg" d="M164 340 L168 552" stroke="#F1F0EC" stroke-opacity=".28" stroke-width="2" fill="none" stroke-linecap="round"></path><path xmlns="http://www.w3.org/2000/svg" d="M178 420 L186 432 M170 494 L178 504" stroke="#000" stroke-opacity=".3" stroke-width="1.4" fill="none"></path>
+    <path xmlns="http://www.w3.org/2000/svg" d="M176 340 Q172 440 176 548" stroke="var(--c-trim)" stroke-width="1.6" fill="none" stroke-linecap="round"></path>
+  </g></g><g data-layer="legs/plate_greaves_epic/shin_near" transform="translate(0.00 0) matrix(1 0 0 1 -11.8224 -0.5191)"><g>
+    <ellipse xmlns="http://www.w3.org/2000/svg" cx="182" cy="562" rx="19" ry="16" fill="var(--c-metal)"></ellipse>
+    <ellipse xmlns="http://www.w3.org/2000/svg" cx="182" cy="562" rx="19" ry="16" fill="url(#r0-rig-light)"></ellipse>
+    <circle xmlns="http://www.w3.org/2000/svg" cx="182" cy="562" r="3.4" fill="var(--c-trim)"></circle>
+    <path xmlns="http://www.w3.org/2000/svg" d="M165 576 L198 578 L192 650 L168 648 Z" fill="var(--c-metal)"></path>
+    <path xmlns="http://www.w3.org/2000/svg" d="M165 576 L198 578 L192 650 L168 648 Z" fill="url(#r0-rig-shade)"></path>
+    <path xmlns="http://www.w3.org/2000/svg" d="M167 600 L196 602 M168 626 L194 628" stroke="#000" stroke-opacity=".35" stroke-width="1.6"></path>
+    <path xmlns="http://www.w3.org/2000/svg" d="M165 576 L198 578" stroke="var(--c-trim)" stroke-width="2.2"></path>
+    <path xmlns="http://www.w3.org/2000/svg" d="M176 586 L182 646" stroke="var(--c-trim)" stroke-width="1.6" fill="none" stroke-linecap="round"></path>
+  </g></g><g data-layer="boots/plate_sabatons_epic/near" transform="translate(0.00 0) matrix(1 0 0 1 -11.8224 -0.5191)"><g>
+    <path xmlns="http://www.w3.org/2000/svg" d="M165 632 L199 632 L201 658 L228 678 Q194 694 158 690 L163 660 Z" fill="var(--c-metal)"></path>
+    <path xmlns="http://www.w3.org/2000/svg" d="M165 632 L199 632 L201 658 L228 678 Q194 694 158 690 L163 660 Z" fill="url(#r0-rig-light)"></path>
+    <path xmlns="http://www.w3.org/2000/svg" d="M176 672 L180 690 M190 668 L194 688 M208 670 Q216 682 214 692" stroke="#000" stroke-opacity=".4" stroke-width="1.6" fill="none"></path>
+    <path xmlns="http://www.w3.org/2000/svg" d="M165 632 L199 632" stroke="var(--c-trim)" stroke-width="2.4"></path>
+    <path xmlns="http://www.w3.org/2000/svg" d="M158 690 Q194 694 228 678" stroke="#16130F" stroke-width="5" fill="none"></path>
+    <path xmlns="http://www.w3.org/2000/svg" d="M172 664 Q196 676 222 674" stroke="var(--c-trim)" stroke-width="1.6" fill="none" stroke-linecap="round"></path>
+  </g></g><g data-layer="top/plate_cuirass_epic/sleeve_far_upper" transform="translate(0.00 0) matrix(0.9996 0.029 -0.029 0.9996 5.4933 -6.76)"><g>
+    <path xmlns="http://www.w3.org/2000/svg" d="M240 182 L278 175 L304 276 L272 290 Z" fill="var(--c-coat-dark)"></path>
+    <path xmlns="http://www.w3.org/2000/svg" d="M250 184 L282 180 L302 262 L276 274 Z" fill="var(--c-metal)"></path>
+    <path xmlns="http://www.w3.org/2000/svg" d="M250 184 L282 180 L302 262 L276 274 Z" fill="url(#r0-rig-light)"></path>
+    <path xmlns="http://www.w3.org/2000/svg" d="M268 274 L304 260 L310 280 L276 296 Z" fill="var(--c-metal)"></path>
+    <path xmlns="http://www.w3.org/2000/svg" d="M268 274 L304 260" stroke="var(--c-trim)" stroke-width="2"></path>
+    <path xmlns="http://www.w3.org/2000/svg" d="M262 232 L292 224" stroke="#000" stroke-opacity=".3" stroke-width="1.6"></path>
+    <path xmlns="http://www.w3.org/2000/svg" d="M262 214 L294 206" stroke="var(--c-trim)" stroke-width="1.6" fill="none" stroke-linecap="round"></path>
+  </g></g><g data-layer="top/plate_cuirass_epic/forearm_far" transform="translate(0.00 0) matrix(0.9868 -0.1621 0.1621 0.9868 -45.081 52.311)"><g>
+    <path xmlns="http://www.w3.org/2000/svg" d="M278 292 L306 280 L343 240 L325 225 Z" fill="var(--c-metal)"></path>
+    <path xmlns="http://www.w3.org/2000/svg" d="M278 292 L306 280 L343 240 L325 225 Z" fill="url(#r0-rig-light)"></path>
+    <path xmlns="http://www.w3.org/2000/svg" d="M288 284 L312 296 M300 272 L322 284 M312 258 L334 270" stroke="#000" stroke-opacity=".3" stroke-width="1.6" fill="none"></path>
+    <path xmlns="http://www.w3.org/2000/svg" d="M278 292 L306 280 L343 240" stroke="var(--c-trim)" stroke-width="2" fill="none"></path>
+    <path xmlns="http://www.w3.org/2000/svg" d="M296 270 L318 258" stroke="var(--c-trim)" stroke-width="1.6" fill="none" stroke-linecap="round"></path>
+  </g></g><g data-layer="gloves/plate_gauntlets_epic/far" transform="translate(0.00 0) matrix(0.9886 -0.1505 0.1505 0.9886 -42.9898 47.9969)"><g>
+    <path xmlns="http://www.w3.org/2000/svg" d="M309 235 L325 219 L351 243 L335 261 Z" fill="var(--c-metal)"></path>
+    <path xmlns="http://www.w3.org/2000/svg" d="M309 235 L325 219 L351 243 L335 261 Z" fill="url(#r0-rig-light)"></path>
+    <path xmlns="http://www.w3.org/2000/svg" d="M309 235 L325 219" stroke="var(--c-trim)" stroke-width="2.6"></path>
+    <path xmlns="http://www.w3.org/2000/svg" d="M317 242 L331 227 M325 250 L339 235" stroke="#000" stroke-opacity=".3" stroke-width="1.5"></path>
+    <circle xmlns="http://www.w3.org/2000/svg" cx="337" cy="247" r="2.5" fill="#F1F0EC" opacity=".5"></circle>
+    <path xmlns="http://www.w3.org/2000/svg" d="M313 244 L337 224" stroke="var(--c-trim)" stroke-width="1.6" fill="none" stroke-linecap="round"></path>
+  </g></g><g data-layer="body/base_grip/neck" transform="translate(0.00 0) matrix(1 0.0017 -0.0017 1 0.4246 0.0776)"><g>
+    <path xmlns="http://www.w3.org/2000/svg" d="M194 124 L222 128 L226 164 L192 164 Z" fill="var(--c-skin-dark)"></path>
+  </g></g><g data-layer="top/plate_cuirass_epic/torso" transform="translate(0.00 0) matrix(1 0.0047 -0.0047 1 0.9042 -0.5496)"><g>
+    <path xmlns="http://www.w3.org/2000/svg" d="M150 176 Q200 156 254 166 Q266 216 258 306 Q206 322 156 306 Q144 240 150 176 Z" fill="var(--c-metal)"></path>
+    <path xmlns="http://www.w3.org/2000/svg" d="M150 176 Q200 156 254 166 Q266 216 258 306 Q206 322 156 306 Q144 240 150 176 Z" fill="url(#r0-rig-light)"></path>
+    <path xmlns="http://www.w3.org/2000/svg" d="M150 176 Q144 240 156 306 Q176 312 196 314 Q184 240 190 170 Z" fill="url(#r0-rig-shade)"></path>
+    <path xmlns="http://www.w3.org/2000/svg" d="M214 168 Q222 240 216 316" stroke="#000" stroke-opacity=".32" stroke-width="2.4" fill="none"></path>
+    <path xmlns="http://www.w3.org/2000/svg" d="M216 168 Q224 240 218 316" stroke="#F1F0EC" stroke-opacity=".22" stroke-width="1.4" fill="none"></path>
+    <path xmlns="http://www.w3.org/2000/svg" d="M154 262 Q206 278 260 262 M155 280 Q206 296 259 280" stroke="#000" stroke-opacity=".34" stroke-width="2" fill="none"></path>
+    <path xmlns="http://www.w3.org/2000/svg" d="M154 226 Q198 240 262 224" stroke="var(--c-trim)" stroke-width="2.4" fill="none"></path>
+    <path xmlns="http://www.w3.org/2000/svg" d="M150 176 Q200 156 254 166" stroke="var(--c-trim)" stroke-width="2.6" fill="none"></path>
+    <path xmlns="http://www.w3.org/2000/svg" d="M254 166 Q266 216 258 306" stroke="var(--c-glow)" stroke-opacity=".5" stroke-width="2" fill="none"></path>
+    <circle xmlns="http://www.w3.org/2000/svg" cx="176" cy="238" r="2.2" fill="#F1F0EC" opacity=".5"></circle>
+    <circle xmlns="http://www.w3.org/2000/svg" cx="240" cy="236" r="2.2" fill="#F1F0EC" opacity=".5"></circle>
+    <path xmlns="http://www.w3.org/2000/svg" d="M152 180 Q200 160 252 170" stroke="#F1F0EC" stroke-opacity=".28" stroke-width="2" fill="none" stroke-linecap="round"></path><path xmlns="http://www.w3.org/2000/svg" d="M178 250 L190 262 M236 270 L246 282 M170 214 L176 224" stroke="#000" stroke-opacity=".3" stroke-width="1.4" fill="none"></path><circle xmlns="http://www.w3.org/2000/svg" cx="170" cy="190" r="2" fill="#F1F0EC"></circle><circle xmlns="http://www.w3.org/2000/svg" cx="244" cy="192" r="2" fill="#F1F0EC"></circle>
+    <path xmlns="http://www.w3.org/2000/svg" d="M158 190 Q180 200 206 200 M258 192 Q236 204 220 204 M162 292 Q206 304 256 292" stroke="var(--c-trim)" stroke-width="1.8" fill="none" stroke-linecap="round"></path><circle xmlns="http://www.w3.org/2000/svg" cx="212" cy="214" r="12" fill="var(--c-coat-dark)"></circle><circle xmlns="http://www.w3.org/2000/svg" cx="212" cy="214" r="12" fill="none" stroke="var(--c-trim)" stroke-width="2.4"></circle><path xmlns="http://www.w3.org/2000/svg" d="M212 206 L218 214 L212 222 L206 214 Z" fill="var(--c-trim)"></path>
+  </g></g><g data-layer="top/plate_cuirass_epic/under" transform="translate(0.00 0) matrix(1 0.0047 -0.0047 1 0.9042 -0.5496)"><g>
+    <path xmlns="http://www.w3.org/2000/svg" d="M192 150 Q210 142 238 152 L246 176 Q214 190 188 176 Z" fill="var(--c-metal)"></path>
+    <path xmlns="http://www.w3.org/2000/svg" d="M192 150 Q210 142 238 152 L246 176 Q214 190 188 176 Z" fill="#000" opacity=".28"></path>
+    <path xmlns="http://www.w3.org/2000/svg" d="M190 164 Q214 176 244 164" stroke="var(--c-trim)" stroke-width="2.2" fill="none"></path>
+  </g></g><g data-layer="belt/plate_girdle_epic/belt" transform="translate(0.00 0) matrix(1 0 0 1 -0.5032 0.2683)"><g>
+    <path xmlns="http://www.w3.org/2000/svg" d="M152 290 Q206 304 260 290 L260 316 Q206 330 152 316 Z" fill="var(--c-leather)"></path>
+    <path xmlns="http://www.w3.org/2000/svg" d="M152 290 Q206 304 260 290" stroke="var(--c-metal)" stroke-width="3" fill="none"></path>
+    <path xmlns="http://www.w3.org/2000/svg" d="M196 288 L228 290 L228 322 L196 320 Z" fill="var(--c-metal)"></path>
+    <path xmlns="http://www.w3.org/2000/svg" d="M196 288 L228 290 L228 322 L196 320 Z" fill="url(#r0-rig-light)"></path>
+    <path xmlns="http://www.w3.org/2000/svg" d="M203 296 L221 297 L221 314 L203 313 Z" fill="none" stroke="var(--c-trim)" stroke-width="2.4"></path>
+    <path xmlns="http://www.w3.org/2000/svg" d="M160 304 L170 308 M240 306 L252 302" stroke="#000" stroke-opacity=".3" stroke-width="1.4" fill="none"></path><circle xmlns="http://www.w3.org/2000/svg" cx="168" cy="298" r="1.8" fill="#F1F0EC"></circle><circle xmlns="http://www.w3.org/2000/svg" cx="186" cy="304" r="1.8" fill="#F1F0EC"></circle><circle xmlns="http://www.w3.org/2000/svg" cx="238" cy="304" r="1.8" fill="#F1F0EC"></circle><circle xmlns="http://www.w3.org/2000/svg" cx="252" cy="298" r="1.8" fill="#F1F0EC"></circle>
+    <circle xmlns="http://www.w3.org/2000/svg" cx="168" cy="298" r="2.2" fill="var(--c-trim)"></circle><circle xmlns="http://www.w3.org/2000/svg" cx="186" cy="304" r="2.2" fill="var(--c-trim)"></circle><circle xmlns="http://www.w3.org/2000/svg" cx="238" cy="304" r="2.2" fill="var(--c-trim)"></circle><circle xmlns="http://www.w3.org/2000/svg" cx="252" cy="298" r="2.2" fill="var(--c-trim)"></circle>
+  </g></g><g data-layer="belt/plate_girdle_epic/tassets" transform="translate(0.00 0) matrix(1 0 0 1 -0.5032 0.2683)"><g>
+    <path xmlns="http://www.w3.org/2000/svg" d="M154 314 L196 322 L190 372 L152 360 Z" fill="var(--c-metal)"></path>
+    <path xmlns="http://www.w3.org/2000/svg" d="M154 314 L196 322 L190 372 L152 360 Z" fill="url(#r0-rig-shade)"></path>
+    <path xmlns="http://www.w3.org/2000/svg" d="M153 338 L193 346" stroke="#000" stroke-opacity=".35" stroke-width="1.6"></path>
+    <path xmlns="http://www.w3.org/2000/svg" d="M230 322 L262 314 L268 364 L234 372 Z" fill="var(--c-metal)"></path>
+    <path xmlns="http://www.w3.org/2000/svg" d="M230 322 L262 314 L268 364 L234 372 Z" fill="#000" opacity=".25"></path>
+    <path xmlns="http://www.w3.org/2000/svg" d="M231 346 L265 338" stroke="#000" stroke-opacity=".35" stroke-width="1.6"></path>
+    <path xmlns="http://www.w3.org/2000/svg" d="M154 314 L196 322 M230 322 L262 314" stroke="var(--c-trim)" stroke-width="2"></path>
+    <path xmlns="http://www.w3.org/2000/svg" d="M158 328 L190 336 M232 336 L264 328" stroke="var(--c-trim)" stroke-width="1.6" fill="none" stroke-linecap="round"></path>
+  </g></g><g data-layer="shoulder_far/forge_pauldron/pauldron" transform="translate(0.00 0) matrix(0.9996 0.029 -0.029 0.9996 5.4933 -6.76)"><g>
+    <path xmlns="http://www.w3.org/2000/svg" d="M242 174 Q266 156 292 168 Q302 186 294 204 Q270 194 248 198 Z" fill="var(--c-metal)"></path>
+    <path xmlns="http://www.w3.org/2000/svg" d="M242 174 Q266 156 292 168 Q302 186 294 204 Q270 194 248 198 Z" fill="#000" opacity=".28"></path>
+    <path xmlns="http://www.w3.org/2000/svg" d="M250 194 Q272 188 296 200 Q298 214 290 222 Q270 210 254 212 Z" fill="var(--c-metal)"></path>
+    <path xmlns="http://www.w3.org/2000/svg" d="M250 194 Q272 188 296 200 Q298 214 290 222 Q270 210 254 212 Z" fill="#000" opacity=".4"></path>
+    <path xmlns="http://www.w3.org/2000/svg" d="M244 174 Q266 156 292 168 Q302 186 294 204" stroke="var(--c-trim)" stroke-width="2" fill="none"></path>
+    <path xmlns="http://www.w3.org/2000/svg" d="M276 164 Q290 170 294 184" stroke="#F1F0EC" stroke-opacity=".3" stroke-width="2" fill="none"></path>
+    <circle xmlns="http://www.w3.org/2000/svg" cx="262" cy="176" r="2" fill="#F1F0EC" opacity=".45"></circle>
+    <circle xmlns="http://www.w3.org/2000/svg" cx="282" cy="176" r="2" fill="#F1F0EC" opacity=".45"></circle>
+  </g></g><g data-layer="weapon/forge_hammer/hammer" transform="translate(0.00 0) matrix(0.9886 -0.1505 0.1505 0.9886 -42.9898 47.9969)"><g>
+    <g xmlns="http://www.w3.org/2000/svg" transform="matrix(0.9848 0.1736 -0.1736 0.9848 57.3613 -46.4738)">
+      <g transform="translate(138 86) rotate(133.5) scale(0.7) translate(-374 -673)">
+        <path d="M308 306 L370 648" stroke="var(--c-wood)" stroke-width="12" stroke-linecap="round"></path>
+        <path d="M305 314 L366 646" stroke="var(--c-wood-light)" stroke-width="3" stroke-linecap="round" opacity=".55"></path>
+        <g transform="rotate(-10.2 316 346)">
+          <rect x="309" y="322" width="14" height="48" rx="2" fill="var(--c-leather)"></rect>
+          <path d="M309 330 L323 326 M309 340 L323 336 M309 350 L323 346 M309 360 L323 356" stroke="#16130F" stroke-width="1.5" opacity=".7"></path>
+        </g>
+        <g transform="rotate(-10.2 308 304)">
+          <rect x="300" y="294" width="16" height="16" rx="3" fill="var(--c-metal)"></rect>
+          <rect x="300" y="294" width="16" height="16" rx="3" fill="url(#r0-rig-shade)"></rect>
+        </g>
+        <g transform="rotate(-10.2 368 628)">
+          <rect x="360" y="618" width="16" height="22" rx="2" fill="var(--c-metal)"></rect>
+          <path d="M360 624 L376 624" stroke="#000" stroke-opacity=".3" stroke-width="2"></path>
+        </g>
+        <path d="M346 644 L402 644 L408 650 L408 696 L402 702 L346 702 L340 696 L340 650 Z" fill="var(--c-stone)"></path>
+        <path d="M330 636 L350 640 L352 704 L330 708 Q324 672 330 636 Z" fill="var(--c-metal)"></path>
+        <path d="M330 636 L350 640 L352 704 L330 708 Q324 672 330 636 Z" fill="url(#r0-rig-shade)"></path>
+        <path d="M418 636 L398 640 L396 704 L418 708 Q424 672 418 636 Z" fill="var(--c-metal)"></path>
+        <path d="M418 636 Q424 672 418 708" stroke="var(--c-glow)" stroke-opacity=".75" stroke-width="2.5" fill="none"></path>
+        <path d="M352 652 L396 652 M352 694 L396 694" stroke="var(--c-trim)" stroke-width="3"></path>
+        <path d="M346 644 L402 644" stroke="#F1F0EC" stroke-opacity=".25" stroke-width="2"></path>
+        <path class="fx-pulse" d="M364 664 L374 673 L364 682 M384 664 L374 673 L384 682" fill="none" stroke="var(--c-glow)" stroke-width="2.6" stroke-linecap="round" filter="url(#r0-rig-glow)"></path>
+      </g>
+    </g>
+  </g></g><g data-layer="body/base_grip/hand_far" transform="translate(0.00 0) matrix(0.9886 -0.1505 0.1505 0.9886 -42.9898 47.9969)"><g>
+    <g xmlns="http://www.w3.org/2000/svg" transform="matrix(0.9848 0.1736 -0.1736 0.9848 57.3613 -46.4738)">
+      <g transform="translate(332 214) rotate(33)">
+        <rect x="-15" y="-13" width="30" height="26" rx="8" fill="var(--c-skin)"></rect>
+        <path d="M-5 -12 L-5 12 M4 -12 L4 12 M12 -10 L12 10" stroke="var(--c-skin-dark)" stroke-width="1.6" fill="none"></path>
+        <path d="M-14 -13 Q-4 -20 10 -14" stroke="var(--c-skin-dark)" stroke-width="2.6" fill="none" stroke-linecap="round"></path>
+      </g>
+    </g>
+  </g></g><g data-layer="headwear/plate_helm_epic/back" transform="translate(0.00 0) matrix(0.9996 0.0271 -0.0271 0.9996 4.0681 -5.2207)"><g>
+    <path xmlns="http://www.w3.org/2000/svg" d="M184 104 Q176 128 188 150 L204 146 L200 112 Z" fill="var(--c-metal)"></path>
+    <path xmlns="http://www.w3.org/2000/svg" d="M184 104 Q176 128 188 150 L204 146 L200 112 Z" fill="#000" opacity=".4"></path>
+    <path xmlns="http://www.w3.org/2000/svg" d="M186 124 L202 126 M186 136 L202 138" stroke="#000" stroke-opacity=".35" stroke-width="1.5"></path>
+    <path xmlns="http://www.w3.org/2000/svg" d="M194 62 Q166 38 146 76 Q170 66 190 80 Z" fill="var(--c-mantle)"></path><path xmlns="http://www.w3.org/2000/svg" d="M194 62 Q166 38 146 76" stroke="var(--c-trim)" stroke-width="1.6" fill="none" stroke-linecap="round"></path>
+  </g></g><g data-layer="body/base_grip/head" transform="translate(0.00 0) matrix(0.9996 0.0271 -0.0271 0.9996 4.0681 -5.2207)"><g>
+    <path xmlns="http://www.w3.org/2000/svg" d="M186 100 Q188 72 212 68 Q236 70 240 92 L242 104 L250 113 L242 118 L240 128 Q236 142 222 150 Q200 148 190 130 Z" fill="var(--c-skin)"></path>
+    <path xmlns="http://www.w3.org/2000/svg" d="M186 100 Q188 72 212 68 L208 149 Q198 143 190 130 Z" fill="url(#r0-rig-shade)"></path>
+  </g></g><g data-layer="face/forge_beard/features" transform="translate(0.00 0) matrix(0.9996 0.0271 -0.0271 0.9996 4.0681 -5.2207)"><g>
+    <path xmlns="http://www.w3.org/2000/svg" d="M241 100 L249 112 L241 115" fill="none" stroke="var(--c-skin-dark)" stroke-width="1.8" stroke-linecap="round"></path>
+    <path xmlns="http://www.w3.org/2000/svg" d="M226 92 Q236 88 246 92" stroke="var(--c-beard)" stroke-width="4" fill="none" stroke-linecap="round"></path>
+    <path xmlns="http://www.w3.org/2000/svg" d="M188 114 Q188 150 212 170 Q238 162 245 124 Q236 132 226 131 Q212 129 202 120 Z" fill="var(--c-beard)"></path>
+    <path xmlns="http://www.w3.org/2000/svg" d="M188 114 Q188 150 212 170 L210 128 Q202 124 198 118 Z" fill="url(#r0-rig-shade)"></path>
+    <path xmlns="http://www.w3.org/2000/svg" d="M218 126 Q230 116 247 120 Q246 127 240 128 Q232 124 226 130 Z" fill="var(--c-beard)"></path>
+    <path xmlns="http://www.w3.org/2000/svg" d="M222 125 Q232 119 244 121" stroke="#000" stroke-opacity=".25" stroke-width="1.2" fill="none"></path>
+    <path xmlns="http://www.w3.org/2000/svg" d="M212 168 L214 190" stroke="var(--c-beard)" stroke-width="7" stroke-linecap="round"></path>
+    <rect xmlns="http://www.w3.org/2000/svg" x="207" y="176" width="13" height="6" rx="2" fill="var(--c-metal)" transform="rotate(4 213 179)"></rect>
+  </g></g><g data-layer="face/forge_beard/eyes" transform="translate(0.00 0) matrix(0.9996 0.0271 -0.0271 0.9996 4.0681 -5.2207)"><g>
+    <ellipse xmlns="http://www.w3.org/2000/svg" cx="220" cy="101" rx="3.2" ry="1.7" fill="#14181B"></ellipse>
+    <ellipse xmlns="http://www.w3.org/2000/svg" cx="237" cy="100" rx="2.3" ry="1.4" fill="#14181B"></ellipse>
+    <circle xmlns="http://www.w3.org/2000/svg" class="fx-pulse" cx="238" cy="99.6" r=".9" fill="var(--c-glow-light)"></circle>
+  </g></g><g data-layer="headwear/plate_helm_epic/front" transform="translate(0.00 0) matrix(0.9996 0.0271 -0.0271 0.9996 4.0681 -5.2207)"><g>
+    <path xmlns="http://www.w3.org/2000/svg" d="M181 112 Q176 70 212 58 Q248 58 250 92 L248 99 Q226 90 203 101 L199 128 Q190 134 185 128 Z" fill="var(--c-metal)"></path>
+    <path xmlns="http://www.w3.org/2000/svg" d="M181 112 Q176 70 212 58 Q248 58 250 92 L248 99 Q226 90 203 101 L199 128 Q190 134 185 128 Z" fill="url(#r0-rig-light)"></path>
+    <path xmlns="http://www.w3.org/2000/svg" d="M181 112 Q176 70 212 58 L208 104 L199 128 Q190 134 185 128 Z" fill="url(#r0-rig-shade)"></path>
+    <path xmlns="http://www.w3.org/2000/svg" d="M196 62 Q220 50 244 66" stroke="var(--c-trim)" stroke-width="4" fill="none" stroke-linecap="round"></path>
+    <path xmlns="http://www.w3.org/2000/svg" d="M183 98 Q214 88 249 94" stroke="var(--c-trim)" stroke-width="2.4" fill="none"></path>
+    <path xmlns="http://www.w3.org/2000/svg" d="M239 94 L243 114" stroke="var(--c-metal)" stroke-width="5" stroke-linecap="round"></path>
+    <path xmlns="http://www.w3.org/2000/svg" d="M239 94 L243 114" stroke="#000" stroke-opacity=".3" stroke-width="1.4"></path>
+    <path xmlns="http://www.w3.org/2000/svg" d="M232 62 Q246 70 250 90" stroke="var(--c-glow)" stroke-opacity=".5" stroke-width="1.8" fill="none"></path>
+    <circle xmlns="http://www.w3.org/2000/svg" cx="196" cy="100" r="2" fill="#F1F0EC" opacity=".5"></circle>
+    <circle xmlns="http://www.w3.org/2000/svg" cx="222" cy="92" r="2" fill="#F1F0EC" opacity=".5"></circle>
+    <path xmlns="http://www.w3.org/2000/svg" d="M184 100 Q192 72 214 62" stroke="#F1F0EC" stroke-opacity=".28" stroke-width="2" fill="none" stroke-linecap="round"></path><path xmlns="http://www.w3.org/2000/svg" d="M200 66 L204 96" stroke="#000" stroke-opacity=".3" stroke-width="1.4" fill="none"></path>
+    <path xmlns="http://www.w3.org/2000/svg" d="M200 72 Q222 62 244 76 M204 84 Q224 76 246 86" stroke="var(--c-trim)" stroke-width="1.6" fill="none" stroke-linecap="round"></path><circle xmlns="http://www.w3.org/2000/svg" cx="230" cy="70" r="2.4" fill="var(--c-trim)"></circle>
+  </g></g><g data-layer="top/plate_cuirass_epic/sleeve_near_upper" transform="translate(0.00 0) matrix(0.8345 0.551 -0.551 0.8345 129.3283 -58.273)"><g>
+    <path xmlns="http://www.w3.org/2000/svg" d="M148 176 Q166 170 182 186 L174 280 L136 276 L138 196 Q140 182 148 176 Z" fill="var(--c-coat-dark)"></path>
+    <path xmlns="http://www.w3.org/2000/svg" d="M144 194 Q150 180 166 178 Q178 190 172 262 L142 258 Z" fill="var(--c-metal)"></path>
+    <path xmlns="http://www.w3.org/2000/svg" d="M144 194 Q150 180 166 178 Q178 190 172 262 L142 258 Z" fill="url(#r0-rig-shade)"></path>
+    <path xmlns="http://www.w3.org/2000/svg" d="M133 270 L176 276 L175 296 L131 290 Z" fill="var(--c-metal)"></path>
+    <path xmlns="http://www.w3.org/2000/svg" d="M133 270 L176 276" stroke="var(--c-trim)" stroke-width="2"></path>
+    <path xmlns="http://www.w3.org/2000/svg" d="M144 226 L172 230" stroke="#000" stroke-opacity=".3" stroke-width="1.6"></path>
+    <path xmlns="http://www.w3.org/2000/svg" d="M146 190 Q152 180 166 178" stroke="#F1F0EC" stroke-opacity=".28" stroke-width="2" fill="none" stroke-linecap="round"></path>
+    <path xmlns="http://www.w3.org/2000/svg" d="M146 214 Q158 220 170 216" stroke="var(--c-trim)" stroke-width="1.6" fill="none" stroke-linecap="round"></path>
+  </g></g><g data-layer="top/plate_cuirass_epic/forearm_near" transform="translate(0.00 0) matrix(0.4578 -0.8891 0.8891 0.4578 -233.9098 270.6179)"><g>
+    <path xmlns="http://www.w3.org/2000/svg" d="M136 288 L170 294 L158 370 L127 366 Z" fill="var(--c-metal)"></path>
+    <path xmlns="http://www.w3.org/2000/svg" d="M136 288 L170 294 L158 370 L127 366 Z" fill="url(#r0-rig-shade)"></path>
+    <path xmlns="http://www.w3.org/2000/svg" d="M134 310 L166 316 M131 332 L162 338 M129 350 L160 356" stroke="#000" stroke-opacity=".3" stroke-width="1.6" fill="none"></path>
+    <path xmlns="http://www.w3.org/2000/svg" d="M136 288 L170 294" stroke="var(--c-trim)" stroke-width="2"></path>
+    <path xmlns="http://www.w3.org/2000/svg" d="M140 340 L150 348" stroke="#000" stroke-opacity=".3" stroke-width="1.4" fill="none"></path>
+    <path xmlns="http://www.w3.org/2000/svg" d="M135 322 L166 328" stroke="var(--c-trim)" stroke-width="1.6" fill="none" stroke-linecap="round"></path>
+  </g></g><g data-layer="body/base_grip/hand_near" transform="translate(0.00 0) matrix(0.4531 -0.8915 0.8915 0.4531 -234.1415 272.6941)"><g>
+    <path xmlns="http://www.w3.org/2000/svg" d="M125 366 Q119 386 129 397 L151 396 Q159 385 155 366 Z" fill="var(--c-skin)"></path>
+    <path xmlns="http://www.w3.org/2000/svg" d="M127 376 L154 375 M127 384 L154 383 M128 391 L152 390" stroke="var(--c-skin-dark)" stroke-width="1.5"></path>
+  </g></g><g data-layer="gloves/plate_gauntlets_epic/near" transform="translate(0.00 0) matrix(0.4531 -0.8915 0.8915 0.4531 -234.1415 272.6941)"><g>
+    <path xmlns="http://www.w3.org/2000/svg" d="M124 350 L160 355 L158 378 L121 372 Z" fill="var(--c-metal)"></path>
+    <path xmlns="http://www.w3.org/2000/svg" d="M124 350 L160 355 L158 378 L121 372 Z" fill="url(#r0-rig-shade)"></path>
+    <path xmlns="http://www.w3.org/2000/svg" d="M124 350 L160 355" stroke="var(--c-trim)" stroke-width="2.6"></path>
+    <path xmlns="http://www.w3.org/2000/svg" d="M125 366 Q119 386 129 397 L151 396 Q159 385 155 366 Z" fill="var(--c-metal)"></path>
+    <path xmlns="http://www.w3.org/2000/svg" d="M125 366 Q119 386 129 397 L151 396 Q159 385 155 366 Z" fill="#000" opacity=".2"></path>
+    <path xmlns="http://www.w3.org/2000/svg" d="M127 378 L154 377 M127 386 L154 385 M128 392 L152 391" stroke="#000" stroke-opacity=".4" stroke-width="1.5"></path>
+    <circle xmlns="http://www.w3.org/2000/svg" cx="141" cy="365" r="2.5" fill="#F1F0EC" opacity=".5"></circle>
+    <path xmlns="http://www.w3.org/2000/svg" d="M126 372 L156 376" stroke="var(--c-trim)" stroke-width="1.6" fill="none" stroke-linecap="round"></path>
+  </g></g><g data-layer="cape/battle_cloak_epic/front" transform="translate(0.00 0) matrix(1 0.0068 -0.0068 1 1.2408 -0.9779)"><g>
+    <path xmlns="http://www.w3.org/2000/svg" d="M176 168 Q210 182 244 170" stroke="var(--c-metal)" stroke-width="3.5" fill="none" stroke-dasharray="6 3"></path>
+    <circle xmlns="http://www.w3.org/2000/svg" cx="178" cy="168" r="6" fill="var(--c-metal)"></circle>
+    <circle xmlns="http://www.w3.org/2000/svg" cx="178" cy="168" r="2.6" fill="var(--c-trim)"></circle>
+    <circle xmlns="http://www.w3.org/2000/svg" cx="244" cy="170" r="6" fill="var(--c-metal)"></circle>
+    <circle xmlns="http://www.w3.org/2000/svg" cx="244" cy="170" r="2.6" fill="var(--c-trim)"></circle>
+  </g></g><g data-layer="shoulder_near/plate_pauldron_near_epic/pauldron" transform="translate(0.00 0) matrix(0.8345 0.551 -0.551 0.8345 129.3283 -58.273)"><g>
+    <path xmlns="http://www.w3.org/2000/svg" d="M132 190 Q142 160 176 164 Q190 176 186 200 Q160 190 138 204 Z" fill="var(--c-metal)"></path>
+    <path xmlns="http://www.w3.org/2000/svg" d="M132 190 Q142 160 176 164 Q190 176 186 200 Q160 190 138 204 Z" fill="url(#r0-rig-light)"></path>
+    <path xmlns="http://www.w3.org/2000/svg" d="M134 204 Q160 192 188 202 Q188 218 182 226 Q158 214 138 224 Z" fill="var(--c-metal)"></path>
+    <path xmlns="http://www.w3.org/2000/svg" d="M134 204 Q160 192 188 202 Q188 218 182 226 Q158 214 138 224 Z" fill="#000" opacity=".34"></path>
+    <path xmlns="http://www.w3.org/2000/svg" d="M136 222 Q158 210 182 224 L178 238 Q158 228 140 238 Z" fill="var(--c-metal)"></path>
+    <path xmlns="http://www.w3.org/2000/svg" d="M136 222 Q158 210 182 224 L178 238 Q158 228 140 238 Z" fill="#000" opacity=".48"></path>
+    <path xmlns="http://www.w3.org/2000/svg" d="M132 190 Q142 160 176 164" stroke="var(--c-trim)" stroke-width="2.4" fill="none"></path>
+    <circle xmlns="http://www.w3.org/2000/svg" cx="156" cy="180" r="2" fill="#F1F0EC" opacity=".5"></circle>
+    <path xmlns="http://www.w3.org/2000/svg" d="M136 192 Q146 168 174 168" stroke="#F1F0EC" stroke-opacity=".28" stroke-width="2" fill="none" stroke-linecap="round"></path><circle xmlns="http://www.w3.org/2000/svg" cx="148" cy="182" r="1.8" fill="#F1F0EC"></circle><circle xmlns="http://www.w3.org/2000/svg" cx="168" cy="176" r="1.8" fill="#F1F0EC"></circle>
+    <path xmlns="http://www.w3.org/2000/svg" d="M140 212 Q160 202 184 212" stroke="var(--c-trim)" stroke-width="1.6" fill="none" stroke-linecap="round"></path><circle xmlns="http://www.w3.org/2000/svg" cx="150" cy="182" r="2.4" fill="var(--c-trim)"></circle><circle xmlns="http://www.w3.org/2000/svg" cx="168" cy="176" r="2.4" fill="var(--c-trim)"></circle>
+  </g></g><g data-layer="effect/ember_aura/fist" transform="translate(0.00 0) matrix(0.4531 -0.8915 0.8915 0.4531 -234.1415 272.6941)"><g>
+    <circle xmlns="http://www.w3.org/2000/svg" cx="140" cy="384" r="22" fill="var(--c-glow)" opacity=".22" filter="url(#r0-rig-soft)"></circle>
+    <path xmlns="http://www.w3.org/2000/svg" class="fx-pulse" d="M128 378 L153 377 M128 386 L153 385" stroke="var(--c-glow-light)" stroke-width="1.8" stroke-linecap="round" filter="url(#r0-rig-glow)"></path>
+    <g xmlns="http://www.w3.org/2000/svg" class="fx-orbit">
+      <circle cx="140" cy="384" r="26" fill="none"></circle>
+      <circle cx="140" cy="358" r="1.8" fill="var(--c-glow-light)"></circle>
+      <circle cx="165" cy="392" r="1.4" fill="var(--c-glow)"></circle>
+      <circle cx="118" cy="398" r="1.4" fill="var(--c-glow)"></circle>
+    </g>
+  </g></g><g data-layer="effect/ember_aura/embers" transform="translate(0.00 0) matrix(1 0 0 1 0 0)"><g>
+    <g xmlns="http://www.w3.org/2000/svg" fill="var(--c-glow)" filter="url(#r0-rig-glow)">
+      <circle class="fx-rise" cx="118" cy="78" r="2" style="animation-delay: 0s"></circle>
+      <circle class="fx-rise" cx="152" cy="70" r="1.6" style="animation-delay: .6s"></circle>
+      <circle class="fx-rise" cx="136" cy="96" r="1.4" style="animation-delay: 1.3s"></circle>
+      <circle class="fx-rise" cx="104" cy="92" r="1.8" style="animation-delay: 2s"></circle>
+      <circle class="fx-rise" cx="250" cy="690" r="1.2" style="animation-delay: 2.6s"></circle>
+      <circle class="fx-rise" cx="176" cy="694" r="1.6" style="animation-delay: 1.7s"></circle>
+      <circle class="fx-rise" cx="146" cy="370" r="1.4" style="animation-delay: .9s"></circle>
+      <circle class="fx-rise" cx="132" cy="374" r="1.2" style="animation-delay: 2.3s"></circle>
+    </g>
+  </g></g></svg>

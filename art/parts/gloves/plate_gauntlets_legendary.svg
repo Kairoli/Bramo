@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 760">
+  <!-- Gantelets de plates : manchettes évasées, plaque de dos de main côté proche, phalanges. (ouvrage légendaire). -->
+  <g id="far">
+    <path d="M309 235 L325 219 L351 243 L335 261 Z" fill="var(--c-metal)"/>
+    <path d="M309 235 L325 219 L351 243 L335 261 Z" fill="url(#rig-light)"/>
+    <path d="M309 235 L325 219" stroke="var(--c-trim)" stroke-width="2.6"/>
+    <path d="M317 242 L331 227 M325 250 L339 235" stroke="#000" stroke-opacity=".3" stroke-width="1.5"/>
+    <circle cx="337" cy="247" r="2.5" fill="#F1F0EC" opacity=".5"/>
+    <path d="M313 244 L337 224" stroke="var(--c-trim)" stroke-width="1.6" fill="none" stroke-linecap="round"/><path d="M319 252 L341 232" stroke="var(--c-glow)" stroke-width="1.8" fill="none" stroke-linecap="round" class="fx-pulse"/>
+  </g>
+  <g id="near">
+    <path d="M124 350 L160 355 L158 378 L121 372 Z" fill="var(--c-metal)"/>
+    <path d="M124 350 L160 355 L158 378 L121 372 Z" fill="url(#rig-shade)"/>
+    <path d="M124 350 L160 355" stroke="var(--c-trim)" stroke-width="2.6"/>
+    <path d="M125 366 Q119 386 129 397 L151 396 Q159 385 155 366 Z" fill="var(--c-metal)"/>
+    <path d="M125 366 Q119 386 129 397 L151 396 Q159 385 155 366 Z" fill="#000" opacity=".2"/>
+    <path d="M127 378 L154 377 M127 386 L154 385 M128 392 L152 391" stroke="#000" stroke-opacity=".4" stroke-width="1.5"/>
+    <circle cx="141" cy="365" r="2.5" fill="#F1F0EC" opacity=".5"/>
+    <path d="M126 372 L156 376" stroke="var(--c-trim)" stroke-width="1.6" fill="none" stroke-linecap="round"/><path d="M128 390 L152 389" stroke="var(--c-glow)" stroke-width="1.8" fill="none" stroke-linecap="round" class="fx-pulse"/>
+  </g>
+</svg>

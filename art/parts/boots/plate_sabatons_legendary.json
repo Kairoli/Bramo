@@ -1,0 +1,25 @@
+{
+  "id": "plate_sabatons_legendary",
+  "slot": "boots",
+  "name": "Solerets de plates (ouvrage légendaire)",
+  "colorRoles": [
+    "metal",
+    "trim"
+  ],
+  "anchor": [
+    0,
+    0
+  ],
+  "layers": [
+    {
+      "id": "far",
+      "bone": "shin_far",
+      "z": 18
+    },
+    {
+      "id": "near",
+      "bone": "shin_near",
+      "z": 23
+    }
+  ]
+}

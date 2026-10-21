@@ -1,0 +1,175 @@
+{
+ "options": {
+  "initialShare": 0.6,
+  "joinDays": 60,
+  "players": 60,
+  "days": 120,
+  "seed": 1
+ },
+ "summary": {
+  "players": 60,
+  "days": 120,
+  "goldPerPlayer": 24269,
+  "inflowNpc": 139.56388888888887,
+  "outflowTax": 17.252222222222223,
+  "outflowPnj": 2.178333333333334,
+  "outflowStall": 0,
+  "netPerPlayerDay": 120.13333333333331,
+  "noToolShare": 0.1333333333333333,
+  "idleShare": 0,
+  "forgeShare": 0.01909334326346774,
+  "volumePerPlayerDay": 313.9661111111111,
+  "unsoldDays": 280.00598967687597,
+  "priceRatio": 0.41311380775226025,
+  "gini": 0.6670632670320261,
+  "newcomers": 24,
+  "firstToolDays": 0.4166666666666667,
+  "noToolEver": 0,
+  "day500": 5.416666666666667,
+  "pnjRepairs": 2037,
+  "artisanRepairs": 0,
+  "pnjRepairPrice": 7,
+  "artisanFloor": 15
+ },
+ "scales": [
+  {
+   "label": "10 joueurs",
+   "summary": {
+    "players": 10,
+    "days": 120,
+    "goldPerPlayer": 20647,
+    "inflowNpc": 135.88333333333333,
+    "outflowTax": 1.133333333333333,
+    "outflowPnj": 2.1233333333333335,
+    "outflowStall": 0,
+    "netPerPlayerDay": 132.62666666666667,
+    "noToolShare": 0.15000000000000005,
+    "idleShare": 0,
+    "forgeShare": 0,
+    "volumePerPlayerDay": 20.88,
+    "unsoldDays": 3825.687420178799,
+    "priceRatio": 0.3333333333333333,
+    "gini": 0.17136830583095602,
+    "newcomers": 4,
+    "firstToolDays": 0,
+    "noToolEver": 0,
+    "day500": 3.25,
+    "pnjRepairs": 336,
+    "artisanRepairs": 0,
+    "pnjRepairPrice": 7,
+    "artisanFloor": 15
+   }
+  },
+  {
+   "label": "30 joueurs",
+   "summary": {
+    "players": 30,
+    "days": 120,
+    "goldPerPlayer": 24810,
+    "inflowNpc": 151.3222222222222,
+    "outflowTax": 14.80111111111111,
+    "outflowPnj": 2.1566666666666663,
+    "outflowStall": 0,
+    "netPerPlayerDay": 134.36444444444442,
+    "noToolShare": 0.16666666666666666,
+    "idleShare": 0,
+    "forgeShare": 0.001175596009888837,
+    "volumePerPlayerDay": 265.1455555555556,
+    "unsoldDays": 339.7566410064074,
+    "priceRatio": 0.354747966836785,
+    "gini": 0.6538709407770734,
+    "newcomers": 12,
+    "firstToolDays": 0.8333333333333334,
+    "noToolEver": 0,
+    "day500": 4.583333333333333,
+    "pnjRepairs": 1014,
+    "artisanRepairs": 2,
+    "pnjRepairPrice": 7,
+    "artisanFloor": 15
+   }
+  },
+  {
+   "label": "60 joueurs (simulation ci-dessus)",
+   "summary": {
+    "players": 60,
+    "days": 120,
+    "goldPerPlayer": 24269,
+    "inflowNpc": 139.56388888888887,
+    "outflowTax": 17.252222222222223,
+    "outflowPnj": 2.178333333333334,
+    "outflowStall": 0,
+    "netPerPlayerDay": 120.13333333333331,
+    "noToolShare": 0.1333333333333333,
+    "idleShare": 0,
+    "forgeShare": 0.01909334326346774,
+    "volumePerPlayerDay": 313.9661111111111,
+    "unsoldDays": 280.00598967687597,
+    "priceRatio": 0.41311380775226025,
+    "gini": 0.6670632670320261,
+    "newcomers": 24,
+    "firstToolDays": 0.4166666666666667,
+    "noToolEver": 0,
+    "day500": 5.416666666666667,
+    "pnjRepairs": 2037,
+    "artisanRepairs": 0,
+    "pnjRepairPrice": 7,
+    "artisanFloor": 15
+   }
+  },
+  {
+   "label": "120 joueurs",
+   "summary": {
+    "players": 120,
+    "days": 120,
+    "goldPerPlayer": 25103,
+    "inflowNpc": 176.13888888888889,
+    "outflowTax": 22.093611111111112,
+    "outflowPnj": 1.8713888888888888,
+    "outflowStall": 0,
+    "netPerPlayerDay": 152.17388888888888,
+    "noToolShare": 0.12527777777777777,
+    "idleShare": 0,
+    "forgeShare": 0.023913754958304428,
+    "volumePerPlayerDay": 405.76249999999993,
+    "unsoldDays": 230.96594477475537,
+    "priceRatio": 0.3364606923325784,
+    "gini": 0.8049563911782902,
+    "newcomers": 48,
+    "firstToolDays": 0.6666666666666666,
+    "noToolEver": 0,
+    "day500": 5.666666666666667,
+    "pnjRepairs": 3610,
+    "artisanRepairs": 0,
+    "pnjRepairPrice": 7,
+    "artisanFloor": 15
+   }
+  }
+ ],
+ "findings": [
+  {
+   "level": "alerte",
+   "title": "L’or entre bien plus vite qu’il ne sort",
+   "text": "Les commandes PNJ créent 140 or par joueur et par jour ; la taxe, les réparations du PNJ et l’étal en retirent 19 (17 de taxe, 2 de réparations et d’étal). Solde : +120 or par joueur et par jour, soit 24 269 or par joueur au bout de 120 jours. Les leviers : baisser les récompenses des commandes, ou ajouter de vrais postes de dépense (clan, construction, équipement de combat) avant l’ouverture."
+  },
+  {
+   "level": "alerte",
+   "title": "Les matières premières se vendent à perte",
+   "text": "Le prix moyen des objets les plus échangés vaut 41,3 % du prix de référence. Un récolteur qui joue 16 h par jour produit des milliers d’unités : l’offre écrase la demande, et il reste l’équivalent de 280 jours de ventes en offres invendues. À un ou deux or l’unité, la taxe de 5 % arrondie à l’avantage de la taxe fait qu’une vente à l’unité à 1 or ne rapporte rien : il faut vendre par lots, ou prévoir un minimum de taxe."
+  },
+  {
+   "level": "attention",
+   "title": "Les réparations vont au PNJ, pas aux artisans",
+   "text": "2 037 réparations chez le PNJ à 7 or en moyenne, 0 par les joueurs. Un artisan doit au minimum rembourser ses matériaux (environ 15 or de lingots), le PNJ demande moins de la moitié. C’est cohérent avec ton garde-fou (la Forge ne doit pas devenir indispensable), mais la réparation par un artisan ne servira alors à personne : à toi de choisir entre un PNJ plus cher et un service assumé comme secondaire."
+  },
+  {
+   "level": "bon",
+   "title": "La Forge n’est pas surchargée",
+   "text": "1,9 % du temps de travail est passé en Forge (7 métiers jouables, un forgeron pour sept joueurs environ). Les artisans simulés passent l’essentiel de leur temps à récolter faute d’ingrédients ou de profit à fabriquer : lis ce chiffre comme un minimum. Elle ne devient pas un passage obligé tant que le combat n’ajoute pas d’armes."
+  },
+  {
+   "level": "bon",
+   "title": "Les débuts d’un nouveau joueur",
+   "text": "Un nouvel arrivant a son premier outil en état au bout de 0,4 jour(s) en moyenne et tous en ont eu un. Il atteint 500 or en 5,4 jour(s) : ses premières commandes PNJ et ses ventes le lancent vite."
+  }
+ ]
+}

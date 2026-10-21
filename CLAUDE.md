@@ -67,6 +67,7 @@ Bramo est un **idle-RPG multijoueur jouable dans le navigateur**, dans l'esprit 
 - **Pêche jouable** : 5 poissons (frais, truite, brochet, poisson-lanterne, raie), cannes de bronze et de fer (recettes de Forge), maître Naël, épreuves 30 et 60. `sim calibrate --data --write` a recalculé les repas et les valeurs.
 - **Client** : salle **Marché** (`rooms/MarketRoom.tsx`) : livre d'ordres par objet, achat direct, formulaire d'ordre avec taxe affichée, `Mes ordres`, `Comptoir de la guilde` ; le sac propose « Vendre » (ouvre le Marché sur l'objet) ; une recette à ingrédient manquant renvoie au Marché.
 - Tests : 79 dans `packages/shared`, 17 d'API (scénarios à deux joueurs : marché, étal, réparation par un artisan, prime), 10 du simulateur. Vérifié dans le navigateur : livre, achat, onglets Comptoir et Artisans.
+- **Simulation du marché** (`pnpm --filter @bramo/sim sim market`, `sim/src/market/` : échangeur en mémoire aux règles du serveur, bots, tableau de bord `sim/reports/marche.html`) : première passe le 21 octobre, résultats et points à reprendre dans `docs/design/marche.md` §8. **Louis reporte l'équilibrage** (or, prix, réparations) à plus tard.
 - **Décidé : pas de commandes à matériaux fournis, pas de frais de dépôt** (`docs/design/marche.md` §7, avec la mesure de la demande de Forge). **Pas encore fait** : simulateur avec ordres de marché, équilibrage des commandes PNJ, de l'étal et de la prime.
 
 ### Fait — usure, réparation, recyclage et garde-manger (21 octobre)

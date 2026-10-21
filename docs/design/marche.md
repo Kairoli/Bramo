@@ -57,3 +57,12 @@ Chaque exemplaire a sa propre usure (voir [`items.md`](items.md)). Conséquences
 1. **Équilibre de l'or** : 3 commandes × ~150 or par jour et par joueur, 100 or de départ, taxe 5 %, réparations. À simuler avec des bots qui passent des ordres avant d'ouvrir à du public.
 2. **Plafond de la prime** : 100 unités par jour et 20 % de l'XP. Trop généreux pour un artisan spécialisé qui sert beaucoup, ou trop faible ?
 3. **Qualité des objets, sets, objets signés** : `items.md` §4, à trancher avant le combat.
+
+## 8. Première simulation du marché (21 octobre, `sim market`, 60 joueurs, 120 jours)
+
+Résultats détaillés : `sim/reports/marche.html`. Louis a décidé de **reporter l'équilibrage** : on continue à développer le jeu, puis on refait des simulations avec plus de contenu. À reprendre à ce moment-là :
+- **Or** : les commandes PNJ créent ~140 or par joueur et par jour pour ~19 de sorties (taxe, réparations PNJ, étal). Les bots n'ont pas de poste de dépense ; le vrai équilibre dépend des puits à venir (clan, construction, équipement de combat). Ne pas retoucher les récompenses avant d'avoir ces puits.
+- **Prix** : les matières premières se vendent à ~40 % de la référence (offre énorme : 16 h d'autonomie à 100 %). Le prix entier minimal (1 or) et la taxe arrondie à l'avantage de la taxe rendent les très petits lots sans valeur : à revoir (vente par lots, taxe minimale).
+- **Réparations** : les bots choisissent toujours le PNJ (7 or contre ~15 or de matériaux pour un artisan). La réparation par un artisan n'est donc utilisée que par choix de rôle. À trancher quand on aura une vraie économie : renchérir le PNJ ou assumer l'artisan comme service secondaire.
+- **Forge** : 1,9 % du temps de travail, donc pas surchargée (minimum : les artisans simulés récoltent surtout). Le combat ajoutera de la demande.
+- **Débuts** : un nouveau joueur a son premier outil en moins d'un jour et 500 or en ~5 jours : le démarrage tient.

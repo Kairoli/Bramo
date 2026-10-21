@@ -20,6 +20,7 @@ pnpm --filter @bramo/sim sim report
 | `chains [--proposal p]` | Chaînes d'exemple : temps autonome, répartition par métier, étapes, niveaux requis, parcelles |
 | `consumables [--proposal p]` | Rapport bonus / coût de chaque repas |
 | `economy [--proposal p]` | Flux de travail et d'or par joueur, variantes, sensibilité, taille du serveur, débouchés du bas niveau |
+| `market [--players n] [--days n] [--seed n]` | **Simulation du marché** : des bots (récolteurs, artisans, présences variées) jouent avec le vrai moteur et le marché du jeu ; écrit `reports/marche.html` (tableau de bord visuel) et `marche.json` |
 | `calibrate [--proposal p] [--write]` | Recalcule l'XP des recettes, la durée des repas et la valeur des objets d'une proposition à partir des règles (`src/rules.ts`) |
 
 `pnpm --filter @bramo/sim test` vérifie entre autres que la mesure de référence est reproduite et que la proposition respecte ses règles.
@@ -35,6 +36,7 @@ src/
   economy.ts     bilan de flux : usure, consommables, construction, recyclage, or, taille du serveur
   rules.ts       règles d'équilibrage proposées (XP par heure, durées, rendement des repas, valeur de référence)
   calibrate.ts   réécrit les valeurs dérivées d'une proposition (commentaires YAML conservés)
+  market/        marché en mémoire (exchange.ts, mêmes règles que le serveur), bots et boucle des jours (world.ts), page HTML (dashboard.ts)
   scenarios/     un fichier par rapport
 proposals/
   boucle-v0/     proposition de données (même format que data/) + plots.yaml et economy.yaml propres au simulateur
@@ -49,6 +51,6 @@ Fichiers propres au simulateur (pas encore dans le moteur) : `plots.yaml` (parce
 
 ## Limites
 
-- Le modèle économique est un **bilan de flux moyens**, pas une simulation de prix : prochaine étape, des bots qui passent des ordres au marché.
+- Le modèle économique de `economy` est un **bilan de flux moyens**. La commande `market` simule des prix avec des bots, mais ils ne dépensent presque rien (pas de clan, de construction ni de combat) et suivent des règles de prix simples.
 - Le combat, l'usure et les parcelles ne sont pas encore dans le moteur : ils sont modélisés à part.
 - Les joueurs qui partagent leur temps sont calculés à partir du spécialiste (journées découpées en parts égales).

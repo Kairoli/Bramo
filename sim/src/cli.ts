@@ -7,6 +7,7 @@ import { presenceReport } from './scenarios/presence.js';
 import { milestonesReport, progressionReport } from './scenarios/progression.js';
 import { economyReport } from './scenarios/economy.js';
 import { chainsReport, consumablesReport } from './scenarios/chains.js';
+import { marketReport, marketText } from './scenarios/market.js';
 
 const [command = 'help', ...args] = process.argv.slice(2);
 const opt = (name: string, fallback: string) => {
@@ -15,6 +16,7 @@ const opt = (name: string, fallback: string) => {
 };
 
 const commands: Record<string, () => string> = {
+  market: () => marketText(marketReport({ players: Number(opt('players', '60')), days: Number(opt('days', '120')), seed: Number(opt('seed', '1')) })),
   presence: () => presenceReport(),
   progression: () => progressionReport(opt('proposal', 'boucle-v0'), Number(opt('days', '520'))),
   milestones: () => milestonesReport(opt('proposal', 'boucle-v0')),

@@ -55,6 +55,14 @@ Bramo est un **idle-RPG multijoueur jouable dans le navigateur**, dans l'esprit 
 
 ## 5. État du projet (à jour au 21 octobre 2026)
 
+### Fait — moteur d'objets à exemplaires (21 octobre)
+
+- **Données** : `data/gear.yaml` (754 modèles, chacun avec sa rareté fixe, ses lignes fixes `stats`, `rolls` = nombre de lignes aléatoires), `gear_pools.yaml` (lignes aléatoires par emplacement, 6 à 7 par emplacement, multipliées par `tierScale` du palier), `gear_slots.yaml` (emplacements ; deux anneaux), `gear_sets.yaml` (7 ensembles). Générés par `docs/design/catalogue/export_gear.mjs` depuis le catalogue illustratif, puis `data/` fait foi. Validation croisée dans `buildContent` (emplacement, classe, ensemble, assez de lignes pour un chef-d'œuvre, palier connu). `settings.gear` : `lifeHours` (usure), `masterpiece` (chance min/max, plafond par jour, écart pour la chance max : **X à fixer**). Fiche lisible : `docs/design/catalogue/ITEMS.md` et `README.md` (comment tout voir).
+- **Moteur** (`engine/equipment.ts`) : `rollLines` (Commun 0-1, Rare 1-2, Épique 2-3, Légendaire 3-4 lignes, valeurs dans la plage du palier), chef-d'œuvre (maximum de lignes **choisies par l'artisan, toutes au jet max, plus une ligne bonus** ; jamais par perfectionnement), `masterpieceChance`, `newInstance`, `equipGear` / `unequipGear` (style de la classe obligatoire ; deux anneaux), `dropMismatched` (changement de classe), `gearTotals` (lignes fixes + aléatoires + bonus d'ensemble à 2/3/4 pièces ; une pièce usée ne compte plus), `viewGear`.
+- **Serveur** : table `gear_items` (migration `0011`) ; `GET /api/gear`, `GET /api/gear/catalogue` (public), `POST /api/gear/equip|unequip`, `POST /api/dev/gear/grant` (obtenir un objet de test : **désactivé en production**, option `devTools`). Changer de classe range les pièces du mauvais style.
+- **Client** : salle Personnage, mode Équipement : emplacements portés, sac d'équipement, totaux et bonus d'ensemble (`components/GearPanel.tsx`), panneau de test en développement.
+- **Pas encore fait** : fabrication et butin (aucune recette ne produit d'équipement ; seule l'obtention de test en crée), usure en combat, gemmes serties, perfectionnement par un artisan, vitrine du marché (les exemplaires ne se vendent pas encore), lien équipement → apparence par défaut.
+
 ### Fait — apparence limitée à la classe, mode Apparence (21 octobre)
 
 - **Décidé par Louis** : l'apparence n'emprunte que les styles de sa classe/voie (un Runiste ne porte plus la tenue du Forgefeu), et le joueur choisit l'**apparence de chaque pièce à la main** sans toucher à son build, via une **bascule Équipement / Apparence à côté du nom** dans la salle Personnage.

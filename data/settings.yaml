@@ -41,6 +41,15 @@ bonusCaps:
   season: 0.20
 
 # Usure : un outil usé ne donne plus son bonus mais n'est jamais perdu ; réparer rend toute la durabilité.
+# Équipement porté : usure et chef-d'œuvre.
+gear:
+  lifeHours: 150          # heures de combat avant qu'une pièce soit usée ; à équilibrer
+  masterpiece:            # chance de chef-d'œuvre par fabrication (jet max partout) ; X à fixer selon le nombre de fabrications par jour
+    chanceMin: 0.02
+    chanceMax: 0.05
+    dailyCap: 1           # chefs-d'œuvre par artisan et par jour de jeu
+    gapForMax: 40         # avance sur la recette (niveaux) pour atteindre la chance maximale ; la chance monte linéairement de chanceMin à chanceMax
+
 wear:
   repairGoldShare: 1.5    # coût PNJ = 150 % de la valeur de l objet au prorata de l usure (décision de Louis : le PNJ coûte plus cher qu un artisan) ; à équilibrer
   recycleShare: 0.4       # part des matériaux principaux rendue, arrondie vers le bas

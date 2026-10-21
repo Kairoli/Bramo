@@ -1,0 +1,100 @@
+import { z } from 'zod';
+
+/** Identifiants techniques : anglais, snake_case. */
+const id = z.string().regex(/^[a-z][a-z0-9_]*$/, 'identifiant attendu en snake_case');
+
+export const gearStats = ['vitality', 'defense', 'power', 'haste', 'crit', 'tenacity'] as const;
+export const rarities = ['common', 'rare', 'epic', 'legendary'] as const;
+export type Rarity = (typeof rarities)[number];
+
+/** Emplacement d'équipement ; `capacity` exemplaires peuvent être portés à la fois (deux anneaux). */
+export const gearSlotSchema = z.object({
+  id,
+  name: z.string(),
+  kind: z.enum(['clothing', 'jewel', 'weapon']),
+  capacity: z.number().int().min(1),
+  /** Poids de l'emplacement dans le budget de statistiques (indicatif, déjà appliqué aux valeurs). */
+  weight: z.number().positive(),
+});
+
+/** Ligne aléatoire possible : plage de valeur en % au palier 1 (multipliée par `tierScale` du palier de l'objet). */
+export const gearLineSchema = z.object({ name: z.string(), min: z.number().positive(), max: z.number().positive() });
+
+export const gearPoolsFileSchema = z.object({
+  tierScale: z.record(z.string(), z.number().positive()),
+  pools: z.record(z.string(), z.array(gearLineSchema).min(1)),
+});
+
+/**
+ * Modèle d'équipement. Sa rareté est fixe. Chaque exemplaire garde les lignes fixes (`stats`) et tire entre `rolls[0]`
+ * et `rolls[1]` lignes aléatoires dans le groupe de lignes de son emplacement.
+ */
+export const gearModelSchema = z.object({
+  id,
+  name: z.string(),
+  kind: z.enum(['clothing', 'jewel', 'weapon']),
+  slot: id,
+  /** Famille : armor, cuirass, trail, robe (vêtements), jewel, ou la catégorie d'arme. */
+  family: id,
+  /** Classes qui peuvent le porter (les bijoux sont universels). */
+  classes: z.array(id).min(1),
+  tier: z.number().int().min(1),
+  rarity: z.enum(rarities),
+  orientation: z.enum(['protective', 'offensive']),
+  material: z.string(),
+  stats: z.array(z.object({ stat: z.enum(gearStats), value: z.number().int().min(1) })).min(1),
+  rolls: z.tuple([z.number().int().min(0), z.number().int().min(0)]),
+  socket: z.enum(['aucun', 'mineur', 'oui', 'majeur']),
+  set: id.optional(),
+  source: z.array(z.enum(['craft', 'loot', 'plan', 'dungeon', 'event'])).min(1),
+  weaponSpeed: z.string().optional(),
+  conditional: z.string().optional(),
+  named: z.boolean().optional(),
+});
+
+export const gearSetSchema = z.object({
+  id,
+  name: z.string(),
+  class: id,
+  family: id,
+  theme: z.string(),
+  event: z.boolean(),
+  /** Bonus à 2, 3 et 4 pièces portées. */
+  bonuses: z.array(z.string()).length(3),
+  note: z.string(),
+});
+
+export const gearFileSchema = z.array(gearModelSchema);
+export const gearSlotsFileSchema = z.array(gearSlotSchema);
+export const gearSetsFileSchema = z.array(gearSetSchema);
+
+export type GearSlot = z.infer<typeof gearSlotSchema>;
+export type GearLine = z.infer<typeof gearLineSchema>;
+export type GearPools = z.infer<typeof gearPoolsFileSchema>;
+export type GearModel = z.infer<typeof gearModelSchema>;
+export type GearSet = z.infer<typeof gearSetSchema>;
+
+/** Ligne aléatoire tirée sur un exemplaire. */
+export interface RolledLine {
+  name: string;
+  value: number;
+  /** Plage possible pour ce modèle, pour afficher « 4,2 sur 3,8-8,6 ». */
+  min: number;
+  max: number;
+  /** Ligne bonus du chef-d'œuvre (non perfectionnable). */
+  bonus?: boolean;
+}
+
+/** Un exemplaire d'équipement : le modèle, ses lignes tirées, son usure et ce qu'il doit à son artisan. */
+export interface GearInstance {
+  id: number;
+  model: string;
+  lines: RolledLine[];
+  masterpiece: boolean;
+  /** Nom de l'artisan qui l'a fabriqué (null : butin). */
+  signedBy: string | null;
+  /** Usure en ms de combat effectif ; l'exemplaire est « usé » à partir de `settings.gear.lifeHours`. */
+  wear: number;
+  /** Emplacement où il est porté, ou null (dans le sac). */
+  equipped: string | null;
+}

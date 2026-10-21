@@ -20,8 +20,11 @@ const PIECES = {
   armor_pauldron_far: ['shoulder_far', 'forge_pauldron'],
 };
 const ALLOWED_HEX = new Set(['#000', '#000000', '#fff', '#ffffff', '#f1f0ec', '#16130f', '#ff8a3c', '#ffc15a', '#ff6a2b']);
-const MAX_PATHS = 150;
-const MAX_BYTES = 60 * 1024;
+// Limites levées par Louis (21 octobre) pour laisser plus de finesse : on avertit au-delà du confort, on n'échoue que sur l'abus.
+const WARN_PATHS = 150;
+const MAX_PATHS = 3000;
+const WARN_BYTES = 60 * 1024;
+const MAX_BYTES = 600 * 1024;
 
 const dir = process.argv[2];
 if (!dir) {
@@ -49,6 +52,7 @@ for (const f of files) {
   console.log(`${f} (${slot}, ${(size / 1024).toFixed(1)} Ko)`);
 
   if (size > MAX_BYTES) fail(f, `${(size / 1024).toFixed(0)} Ko, maximum ${MAX_BYTES / 1024} Ko`);
+  else if (size > WARN_BYTES) warn(f, `${(size / 1024).toFixed(0)} Ko : lourd (confort ${WARN_BYTES / 1024} Ko), à mesurer dans le jeu`);
   if (!/<svg[^>]*xmlns="http:\/\/www\.w3\.org\/2000\/svg"/.test(text)) fail(f, 'balise <svg> sans xmlns');
   if (!/viewBox="0 0 480 760"/.test(text)) fail(f, 'viewBox doit être exactement "0 0 480 760"');
   for (const bad of ['<image', '<filter', '<script', '<foreignObject', '<use ', 'href="http', 'xlink:href']) {
@@ -76,7 +80,8 @@ for (const f of files) {
 
   const paths = (text.match(/<(path|circle|ellipse|rect|polygon|polyline|line)\b/g) ?? []).length;
   if (paths > MAX_PATHS) fail(f, `${paths} formes, maximum ${MAX_PATHS}`);
-  else console.log(`  ${paths} formes, ${ids.length} calques`);
+  else if (paths > WARN_PATHS) warn(f, `${paths} formes : au-delà du confort (${WARN_PATHS}), à mesurer dans le jeu`);
+  if (paths <= MAX_PATHS) console.log(`  ${paths} formes, ${ids.length} calques`);
 }
 const missing = [...expected].filter((e) => !files.includes(`${e}.svg`));
 if (missing.length) console.log(`Pièces non livrées dans ce lot : ${missing.join(', ')}`);

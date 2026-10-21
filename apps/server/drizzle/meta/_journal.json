@@ -78,6 +78,13 @@
       "when": 1792597248901,
       "tag": "0010_look",
       "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1792598612146,
+      "tag": "0011_gear",
+      "breakpoints": true
     }
   ]
 }

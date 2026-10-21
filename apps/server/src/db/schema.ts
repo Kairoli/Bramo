@@ -1,4 +1,5 @@
 import {
+  boolean,
   doublePrecision,
   index,
   integer,
@@ -9,7 +10,7 @@ import {
   text,
   timestamp,
 } from 'drizzle-orm/pg-core';
-import type { Activity, AdvanceSummary, EnergyState, MealBuff, QueuedAction } from '@bramo/shared';
+import type { Activity, AdvanceSummary, EnergyState, MealBuff, QueuedAction, RolledLine } from '@bramo/shared';
 
 /** Postgres standard uniquement : le schéma doit rester compatible Supabase. */
 
@@ -73,6 +74,26 @@ export const characterSkills = pgTable(
     xp: doublePrecision('xp').notNull(),
   },
   (t) => [primaryKey({ columns: [t.characterId, t.skill] })],
+);
+
+/** Exemplaires d'équipement : un identifiant propre, des lignes tirées, une usure, un emplacement porté (ou null : dans le sac). */
+export const gearItems = pgTable(
+  'gear_items',
+  {
+    id: serial('id').primaryKey(),
+    characterId: integer('character_id')
+      .notNull()
+      .references(() => characters.id, { onDelete: 'cascade' }),
+    modelId: text('model_id').notNull(),
+    lines: jsonb('lines').$type<RolledLine[]>().notNull().default([]),
+    masterpiece: boolean('masterpiece').notNull().default(false),
+    signedBy: text('signed_by'),
+    /** Usure en ms de combat effectif. */
+    wear: doublePrecision('wear').notNull().default(0),
+    equipped: text('equipped'),
+    createdAt: ts('created_at').notNull().defaultNow(),
+  },
+  (t) => [index('gear_items_character').on(t.characterId)],
 );
 
 export const characterItems = pgTable(

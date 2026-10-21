@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import type { GearView } from '@bramo/shared';
 import { api } from '../api';
 import { ClassModal, OutfitModal, STYLE_NAMES } from '../components/ClassChoice';
 import { EnergyButton } from '../components/EnergyButton';
@@ -6,9 +7,8 @@ import { useGame } from '../game/GameContext';
 import { duration, num, pct, signedPct } from '../format';
 import { Bar, FAMILY_COLOR, ItemIcon } from '../components/ui';
 import { AppearancePicker } from '../components/AppearancePicker';
+import { GearPanel, GearTotalsBlock } from '../components/GearPanel';
 import { DOLL_LEFT, DOLL_RIGHT, PaperDoll, PartThumb, useEquipment } from '../components/equipment';
-
-const COMBAT_STATS = ['Points de vie', 'Attaque', 'Défense', 'Puissance magique', 'Précision', 'Esquive'];
 
 /** Salle Personnage : le personnage au centre, tout ce qu'il porte, ses caractéristiques. */
 export function CharacterRoom() {
@@ -19,6 +19,10 @@ export function CharacterRoom() {
   const [outfitOpen, setOutfitOpen] = useState(false);
   /** « Équipement » : ce qui compte pour le build ; « Apparence » : l'aspect de chaque pièce, sans effet sur le build. */
   const [mode, setMode] = useState<'gear' | 'look'>('gear');
+  const [gear, setGear] = useState<GearView | null>(null);
+  useEffect(() => {
+    api.gear().then(setGear).catch(() => {});
+  }, [state.classId]);
   const outfit = content.cosmetics.outfits.find((o) => o.id === look?.outfit);
   const cls = look && content.classes[look.classId];
   const skills = content.professions.map((p) => ({ p, s: state.skills[p.id]! }));
@@ -51,8 +55,9 @@ export function CharacterRoom() {
       <section className="panel char-equipment">
         <span className="eyebrow">{mode === 'look' ? 'Apparence' : 'Équipement'}</span>
         {mode === 'look' && <AppearancePicker />}
+        {mode === 'gear' && <GearPanel gear={gear} onChange={setGear} />}
         <div className="equip-list" hidden={mode === 'look'}>
-          {[...DOLL_LEFT, ...DOLL_RIGHT].map((id) => {
+          {[...DOLL_LEFT, ...DOLL_RIGHT].filter((id) => id === 'tool' || id === 'meal').map((id) => {
             const e = equipment[id];
             return (
               <div key={id} className={`equip-row${e.name ? '' : ' empty'}`}>
@@ -270,20 +275,7 @@ export function CharacterRoom() {
           </div>
         </div>
 
-        <div className="stat-block soon">
-          <div className="stat-block-head">
-            <span className="eyebrow">Combat</span>
-            <span className="muted">arrive bientôt</span>
-          </div>
-          <dl className="kv">
-            {COMBAT_STATS.map((s) => (
-              <div key={s} style={{ display: 'contents' }}>
-                <dt>{s}</dt>
-                <dd>—</dd>
-              </div>
-            ))}
-          </dl>
-        </div>
+        <GearTotalsBlock gear={gear} />
       </section>
     </main>
   );

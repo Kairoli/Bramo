@@ -131,16 +131,16 @@ export const basePoints = (level) => Math.round(18 + level * 4.2);
 
 /** Lignes variables compatibles par emplacement, avec leur plage de valeurs en % au palier 1 (elle grandit avec le palier). */
 export const VARIABLE_LINES = {
-  head: [['Critique', 2, 4], ['Ténacité', 3, 6], ['Dégâts de Feu', 2, 4], ['Dégâts de Givre', 2, 4]],
-  torso: [['Vitalité', 3, 6], ['Défense', 3, 6], ['Bouclier de début de combat', 2, 5], ['Régénération', 1, 3]],
-  hands: [['Cadence', 2, 4], ['Critique', 2, 4], ['Dégâts physiques', 2, 4], ['Dégâts de Foudre', 2, 4]],
-  legs: [['Vitalité', 3, 6], ['Résistance au ralentissement', 4, 8], ['Défense', 2, 5], ['Dégâts de Givre', 2, 4]],
-  feet: [['Cadence', 2, 4], ['Résistance au ralentissement', 4, 8], ['Critique', 1, 3], ['Dégâts de Foudre', 2, 4]],
-  cape: [['Défense', 2, 5], ['Ténacité', 3, 6], ['Dégâts de Feu', 2, 4], ['Critique', 1, 3]],
-  belt: [['Vitalité', 3, 6], ['Cadence', 2, 4], ['Dégâts physiques', 2, 4], ['Bouclier de début de combat', 2, 5]],
-  necklace: [['Critique', 2, 5], ['Dégâts critiques', 4, 9], ['Régénération', 1, 3], ['Ténacité', 3, 6]],
-  ring: [['Critique', 2, 4], ['Cadence', 2, 4], ['Dégâts de Feu', 2, 4], ['Dégâts de Givre', 2, 4], ['Dégâts de Foudre', 2, 4]],
-  weapon: [['Dégâts critiques', 4, 9], ['Cadence', 2, 4], ['Pénétration', 2, 5], ['Dégâts de l\'élément de l\'arme', 3, 6]],
+  head: [['Critique', 2, 4], ['Ténacité', 3, 6], ['Dégâts de Feu', 2, 4], ['Dégâts de Givre', 2, 4], ['Vitalité', 3, 6], ['Défense', 2, 5]],
+  torso: [['Vitalité', 3, 6], ['Défense', 3, 6], ['Bouclier de début de combat', 2, 5], ['Régénération', 1, 3], ['Ténacité', 3, 6], ['Résistance au ralentissement', 4, 8]],
+  hands: [['Cadence', 2, 4], ['Critique', 2, 4], ['Dégâts physiques', 2, 4], ['Dégâts de Foudre', 2, 4], ['Pénétration', 2, 5], ['Dégâts critiques', 4, 9]],
+  legs: [['Vitalité', 3, 6], ['Résistance au ralentissement', 4, 8], ['Défense', 2, 5], ['Dégâts de Givre', 2, 4], ['Ténacité', 3, 6], ['Régénération', 1, 3]],
+  feet: [['Cadence', 2, 4], ['Résistance au ralentissement', 4, 8], ['Critique', 1, 3], ['Dégâts de Foudre', 2, 4], ['Vitalité', 3, 6], ['Dégâts de Feu', 2, 4]],
+  cape: [['Défense', 2, 5], ['Ténacité', 3, 6], ['Dégâts de Feu', 2, 4], ['Critique', 1, 3], ['Régénération', 1, 3], ['Dégâts de Givre', 2, 4]],
+  belt: [['Vitalité', 3, 6], ['Cadence', 2, 4], ['Dégâts physiques', 2, 4], ['Bouclier de début de combat', 2, 5], ['Défense', 2, 5], ['Régénération', 1, 3]],
+  necklace: [['Critique', 2, 5], ['Dégâts critiques', 4, 9], ['Régénération', 1, 3], ['Ténacité', 3, 6], ['Vitalité', 3, 6], ['Cadence', 2, 4]],
+  ring: [['Critique', 2, 4], ['Cadence', 2, 4], ['Dégâts de Feu', 2, 4], ['Dégâts de Givre', 2, 4], ['Dégâts de Foudre', 2, 4], ['Pénétration', 2, 5]],
+  weapon: [['Dégâts critiques', 4, 9], ['Cadence', 2, 4], ['Pénétration', 2, 5], ['Dégâts de l\'élément de l\'arme', 3, 6], ['Critique', 2, 4], ['Dégâts physiques', 2, 4]],
 };
 
 const WEAPON_NAMES = {"hammer":["Marteau de chantier","Cogne-tout","Faiseur de silences","La Rancune"],"sword_shield":["Épée et rondache de garde","Épée du Mur de fer","Serment et Rempart","Le Dernier Mot"],"axe":["Hache de bûcheron-soldat","Fend-crâne","Hache des Veillées rouges","Mâchoire de Vorn"],"longbow":["Arc de chasse","Arc de la Haie vive","Sifflerelle","Murmure-d'épine"],"crossbow":["Arbalète de rempart","Claque-neuf","Arbalète du Percepteur","Le Verdict"],"daggers":["Couteaux de poche","Dagues du Chat maigre","Dagues de la Pie-grièche","Les Sœurs silencieuses"],"staff":["Bâton de marche runique","Bâton de l'Encrier","Éclat d'orage têtu","Plume de Foudre"],"scepter":["Sceptre de notaire","Sceptre fêlé","Sceptre du Sceau brisé","Le Dernier Décret"],"grimoire":["Carnet de runes","Grimoire des marges","Le Livre des ratures","Livre-qui-murmure"]};

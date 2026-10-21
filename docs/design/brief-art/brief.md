@@ -27,7 +27,7 @@ Conséquence : le même dessin doit servir pour toutes les poses. Les zones d'ar
 5. **Ordre de dessin** : le moteur trie les calques par profondeur (section 5). Au sein d'un calque, l'ordre est le tien.
 6. **Interdits** : `<image>` (aucun bitmap), `<filter>` (flou, ombre portée…), `<script>`, `<foreignObject>`, `<use>`, `xlink:href`, polices, `<text>`. Pas de texte ni de logo.
 7. **Commentaires XML** : jamais de `--` à l'intérieur (le fichier entier serait rejeté).
-8. **Poids** : au plus **150 formes** (`path`, `circle`, `ellipse`, `rect`, `polygon`) et **60 Ko** par fichier. Arrondis les coordonnées à 1 décimale. Simplifie : une texture peinte se suggère avec 10 à 20 bonnes formes, pas avec 2 000.
+8. **Poids** : pas de plafond strict, mais **sois économe** : chaque forme est un élément du navigateur animé en permanence, et plusieurs personnages sont à l'écran en même temps. Vise quelques centaines de formes par pièce au maximum (le contrôle avertit au-delà de 150 formes ou 60 Ko et n'échoue qu'au-delà de 3 000 formes ou 600 Ko). Arrondis les coordonnées à 1 décimale et fusionne les formes qui ont le même remplissage.
 9. **Dégradés** : autorisés, mais leur `id` doit commencer par `rig-` (ex. `rig-metal-sheen`) et ils sont définis dans un `<defs>` du fichier. Deux dégradés existent déjà sans que tu aies à les définir : `url(#rig-shade)` (ombre douce côté gauche) et `url(#rig-light)` (lumière de contour côté droit, couleur du sort).
 
 ## 4. Couleurs : le point le plus important
@@ -76,7 +76,7 @@ Ambiance sombre et chaude, personnage lisible sur fond sombre, métal usé et ra
 
 1. **D'abord un test** avec seulement `armor_helm.svg` et `armor_cuirass.svg`. On les contrôle (automatiquement) avant que tu fasses le reste. Cela évite de refaire dix pièces si une règle est mal comprise.
 2. Ensuite le lot complet, **un fichier par pièce**, avec exactement les noms de la colonne « Fichier ».
-3. Avant de livrer, **vérifie toi-même** : (a) `viewBox="0 0 480 760"` ; (b) tous les calques de la section 5 présents, avec ces `id` ; (c) aucune couleur hex en dur hors liste ; (d) pas de `<filter>`, `<image>`, `<use>`, `<text>` ; (e) moins de 150 formes et 60 Ko ; (f) pas de `--` dans un commentaire ; (g) la pièce se superpose correctement au `gabarit_corps.svg` (mets les deux dans le même `viewBox` et compare).
+3. Avant de livrer, **vérifie toi-même** : (a) `viewBox="0 0 480 760"` ; (b) tous les calques de la section 5 présents, avec ces `id` ; (c) aucune couleur hex en dur hors liste ; (d) pas de `<filter>`, `<image>`, `<use>`, `<text>` ; (e) un nombre de formes raisonnable (voir la règle 8) ; (f) pas de `--` dans un commentaire ; (g) la pièce se superpose correctement au `gabarit_corps.svg` (mets les deux dans le même `viewBox` et compare).
 4. Donne le SVG **brut dans un bloc de code**, sans explication au milieu, pour que je puisse le copier tel quel.
 
 ## 8. Ce qu'on ne te demande pas

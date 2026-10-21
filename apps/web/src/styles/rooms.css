@@ -1830,3 +1830,109 @@
 .equip-list[hidden] {
   display: none;
 }
+
+/* Équipement réel : emplacements, sac, totaux. */
+.gear-panel {
+  display: grid;
+  gap: 10px;
+  min-height: 0;
+}
+.gear-slots {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+.gear-slot {
+  display: grid;
+  gap: 4px;
+  align-content: start;
+  background: var(--sunken);
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--rc, var(--border));
+  border-radius: 9px;
+  padding: 6px 8px;
+  min-width: 0;
+}
+.gear-slot.empty {
+  opacity: 0.7;
+}
+.gear-card {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+.gear-card.worn {
+  opacity: 0.55;
+}
+.gear-card-head {
+  display: grid;
+  gap: 0;
+}
+.gear-card-head strong {
+  font-size: 13px;
+  color: var(--rc);
+  overflow-wrap: anywhere;
+}
+.gear-lines {
+  display: grid;
+  gap: 1px;
+  font-size: 11.5px;
+  color: var(--text-muted);
+}
+.gear-lines b {
+  color: var(--text);
+}
+.gear-lines .rolled {
+  color: var(--event);
+}
+.gear-lines .bonus {
+  color: var(--r-legendary);
+}
+.gear-lines .cond {
+  color: var(--magic);
+}
+.gear-card .btn {
+  justify-self: start;
+}
+.gear-bag {
+  display: grid;
+  gap: 8px;
+  max-height: 260px;
+  overflow-y: auto;
+}
+.gear-bag .gear-card {
+  background: var(--sunken);
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--rc);
+  border-radius: 9px;
+  padding: 6px 8px;
+}
+.gear-dev {
+  border-top: 1px dashed var(--border);
+  padding-top: 8px;
+}
+.gear-dev-body {
+  display: grid;
+  gap: 6px;
+  margin-top: 6px;
+}
+.set-progress {
+  display: grid;
+  gap: 2px;
+  margin-top: 8px;
+  padding: 6px 8px;
+  background: var(--sunken);
+  border-radius: 8px;
+}
+/* Les cartes d'équipement peuvent être longues : le panneau défile, jamais la page. */
+.char-equipment {
+  overflow-y: auto;
+  min-height: 0;
+}
+.char-equipment .bag {
+  flex: none;
+  max-height: 200px;
+}
+.char-equipment > * {
+  flex-shrink: 0;
+}

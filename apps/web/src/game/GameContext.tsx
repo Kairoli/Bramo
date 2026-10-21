@@ -20,6 +20,8 @@ interface Game {
   /** Envoie une intention au serveur ; renvoie false si elle est refusée. */
   act: (call: () => Promise<StateResponse>) => Promise<boolean>;
   error: string | null;
+  /** Affiche un message d'erreur passager. */
+  flash: (message: string) => void;
   room: Room;
   professionId: string | null;
   go: (room: Room, professionId?: string | null) => void;
@@ -137,6 +139,7 @@ export function GameProvider({
     showAbsence: setAbsence,
     act,
     error,
+    flash,
     room,
     professionId,
     go,

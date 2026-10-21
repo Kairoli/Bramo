@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import type { CharacterClass, Cosmetics } from './art.js';
+import type { GearModel, GearPools, GearSet, GearSlot } from './gear.js';
 
 /** Identifiants techniques : anglais, snake_case. */
 const id = z.string().regex(/^[a-z][a-z0-9_]*$/, 'identifiant attendu en snake_case (ex. bronze_ingot)');
@@ -40,6 +41,13 @@ export const settingsSchema = z.object({
     meal: ratio,
     clan: ratio,
     season: ratio,
+  }),
+  /** Équipement : usure des pièces portées et chef-d'œuvre. */
+  gear: z.object({
+    /** Heures de combat effectif avant qu'une pièce soit usée (elle perd alors ses statistiques ; la réparation remet tout, sans perte de maximum). */
+    lifeHours: z.number().positive(),
+    /** Chef-d'œuvre : chance par fabrication selon l'avance de l'artisan sur la recette, bornée à [min, max]. X à fixer quand on connaîtra le nombre de fabrications par jour. */
+    masterpiece: z.object({ chanceMin: z.number().min(0).max(1), chanceMax: z.number().min(0).max(1), dailyCap: z.number().int().min(0), gapForMax: z.number().positive() }),
   }),
   /** Usure (outils) : la durabilité se compte en heures de travail effectif ; réparer rend tout, sans perte de maximum. */
   wear: z.object({
@@ -225,6 +233,14 @@ export interface Content {
   buildings: Record<string, Building>;
   classes: Record<string, CharacterClass>;
   cosmetics: Cosmetics;
+  /** Emplacements d'équipement. */
+  gearSlots: Record<string, GearSlot>;
+  /** Lignes aléatoires par emplacement. */
+  gearPools: GearPools;
+  /** Modèles d'équipement (volumineux : non envoyés avec le contenu, voir /api/gear/catalogue). */
+  gearModels: Record<string, GearModel>;
+  /** Ensembles d'équipement. */
+  gearSets: Record<string, GearSet>;
   /** xpTable[L] = XP totale pour atteindre le niveau L (index 0 inutilisé). */
   xpTable: number[];
 }

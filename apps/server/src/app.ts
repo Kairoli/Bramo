@@ -28,6 +28,9 @@ import {
   chooseClass,
   chooseOutfit,
   setLook,
+  viewGear,
+  gearGrantBody,
+  gearIdBody,
   lookBody,
   outfitBody,
   classBody,
@@ -62,6 +65,7 @@ import { recentEntries } from './journal.js';
 import { joinEvent, recordEvents, townView } from './town.js';
 import { contribute, createClan, joinClan, kickMember, leaveClan, listClans, myClanView, setRank } from './clans.js';
 import { cancelRepair, openRepairs, requestRepair, takeRepair } from './repairs.js';
+import { dropMismatchedOwned, equipOwned, grantGear, loadGear, unequipOwned } from './gear.js';
 import { buyFromStall, cancelOrder, fillOrder, marketBook, marketSummary, myOrders, placeOrder } from './market.js';
 
 export interface AppOptions {
@@ -70,6 +74,8 @@ export interface AppOptions {
   /** Horloge injectable pour les tests. */
   clock?: () => number;
   secureCookies?: boolean;
+  /** Outils de test : obtenir n'importe quel objet (désactivé en production). */
+  devTools?: boolean;
 }
 
 class HttpError extends Error {
@@ -82,7 +88,7 @@ class HttpError extends Error {
   }
 }
 
-export async function buildApp({ db, content, clock = Date.now, secureCookies = false }: AppOptions) {
+export async function buildApp({ db, content, clock = Date.now, secureCookies = false, devTools = false }: AppOptions) {
   const app = Fastify({ logger: { level: process.env.LOG_LEVEL ?? 'warn' } });
   await app.register(cookie);
 
@@ -144,6 +150,9 @@ export async function buildApp({ db, content, clock = Date.now, secureCookies = 
     trials: content.trials,
     classes: content.classes,
     cosmetics: content.cosmetics,
+    gearSlots: content.gearSlots,
+    gearPools: content.gearPools,
+    gearSets: content.gearSets,
   };
   app.get('/api/health', async () => ({ ok: true }));
   app.get('/api/content', async () => publicContent);
@@ -353,11 +362,59 @@ export async function buildApp({ db, content, clock = Date.now, secureCookies = 
 
   app.post('/api/character/class', (req) => {
     const { classId } = body(classBody, req);
-    return playAs(req, (state) => ({
-      state: chooseClass(state, classId, content),
-      log: `${state.classId ? 'Vous changez de classe' : 'Vous choisissez votre classe'} : ${content.classes[classId]?.name}.`,
-    }));
+    return playAs(req, async (state, _now, ctx) => {
+      const next = chooseClass(state, classId, content);
+      await dropMismatchedOwned(ctx.tx, ctx.characterId, classId, content);
+      return {
+        state: next,
+        log: `${state.classId ? 'Vous changez de classe' : 'Vous choisissez votre classe'} : ${content.classes[classId]?.name}.`,
+      };
+    });
   });
+
+  // --- Équipement : exemplaires, porté / sac ---
+
+  /** Catalogue public : tous les modèles, sous forme compacte (pour l'interface et pour les curieux). */
+  app.get('/api/gear/catalogue', async () => ({ models: Object.values(content.gearModels) }));
+
+  app.get('/api/gear', async (req) => {
+    const me = await myCharacter(req);
+    return viewGear(await loadGear(db, me.id), me.classId, content);
+  });
+
+  app.post('/api/gear/equip', async (req) => {
+    const { id } = body(gearIdBody, req);
+    await playAs(req, async (state, _now, ctx) => {
+      await equipOwned(ctx.tx, ctx.characterId, state, id, content);
+      return { state };
+    });
+    const me = await myCharacter(req);
+    return viewGear(await loadGear(db, me.id), me.classId, content);
+  });
+
+  app.post('/api/gear/unequip', async (req) => {
+    const { id } = body(gearIdBody, req);
+    await playAs(req, async (_state, _now, ctx) => {
+      await unequipOwned(ctx.tx, ctx.characterId, id);
+      return { state: _state };
+    });
+    const me = await myCharacter(req);
+    return viewGear(await loadGear(db, me.id), me.classId, content);
+  });
+
+  if (devTools) {
+    /** Test : mettre un ou plusieurs exemplaires d'un modèle dans son sac (jamais en production). */
+    app.post('/api/dev/gear/grant', async (req) => {
+      const { modelId, masterpiece, count } = body(gearGrantBody, req);
+      if (!content.gearModels[modelId]) throw new HttpError(404, 'unknown_model', 'Modèle inconnu.');
+      await playAs(req, async (state, _now, ctx) => {
+        for (let i = 0; i < (count ?? 1); i++) await grantGear(ctx.tx, ctx.characterId, modelId, content, Math.random, { masterpiece, signedBy: masterpiece ? ctx.characterName : null });
+        return { state, log: `Objet de test obtenu : ${content.gearModels[modelId]!.name}.` };
+      });
+      const me = await myCharacter(req);
+      return viewGear(await loadGear(db, me.id), me.classId, content);
+    });
+  }
 
   app.post('/api/trials/complete', (req) => {
     const { trialId } = body(trialBody, req);

@@ -1,0 +1,11 @@
+# Emplacements d'équipement. capacity = combien d'exemplaires peuvent être portés à la fois (deux anneaux).
+- {"id":"head","name":"Coiffe","kind":"clothing","capacity":1,"weight":0.8}
+- {"id":"torso","name":"Torse","kind":"clothing","capacity":1,"weight":1.4}
+- {"id":"hands","name":"Gants","kind":"clothing","capacity":1,"weight":0.6}
+- {"id":"legs","name":"Jambes","kind":"clothing","capacity":1,"weight":1}
+- {"id":"feet","name":"Bottes","kind":"clothing","capacity":1,"weight":0.6}
+- {"id":"cape","name":"Cape","kind":"clothing","capacity":1,"weight":0.6}
+- {"id":"belt","name":"Ceinture","kind":"clothing","capacity":1,"weight":0.6}
+- {"id":"necklace","name":"Collier","kind":"jewel","capacity":1,"weight":0.7}
+- {"id":"ring","name":"Anneau","kind":"jewel","capacity":2,"weight":0.5}
+- {"id":"weapon","name":"Arme","kind":"weapon","capacity":1,"weight":1.6}

@@ -11,6 +11,7 @@ export const settings = {
   energy: { multiplier: 1.5, charges: 2, durationMin: 30, resetHourUtc: 4 },
   bonusCaps: { tool: 0.3, meal: 0.1, clan: 0.1, season: 0.2 },
   wear: { repairGoldShare: 0.5, recycleShare: 0.4, repairXpShare: 0.5 },
+  gear: { lifeHours: 150, masterpiece: { chanceMin: 0.02, chanceMax: 0.05, dailyCap: 1, gapForMax: 40 } },
   commissions: { primeShare: 0.2, primeUnitsPerDay: 10 },
   market: { taxShare: 0.05, maxOpenOrders: 3, maxPrice: 1000, maxQuantity: 100 },
   npcOrders: { perDay: 2 },

@@ -31,6 +31,10 @@ export function readRawContent(dataDir: string): RawContent {
     trials: read('trials.yaml'),
     buildings: existsSync(join(dataDir, 'buildings.yaml')) ? read('buildings.yaml') : [],
     npcOrders: existsSync(join(dataDir, 'npc_orders.yaml')) ? read('npc_orders.yaml') : [],
+    gear: existsSync(join(dataDir, 'gear.yaml')) ? read('gear.yaml') : [],
+    gearSlots: existsSync(join(dataDir, 'gear_slots.yaml')) ? read('gear_slots.yaml') : [],
+    gearPools: existsSync(join(dataDir, 'gear_pools.yaml')) ? read('gear_pools.yaml') : undefined,
+    gearSets: existsSync(join(dataDir, 'gear_sets.yaml')) ? read('gear_sets.yaml') : [],
     recipes: recipeFiles.map((f) => [`recipes/${f}`, read(join('recipes', f))]),
   };
 }

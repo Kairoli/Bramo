@@ -23,7 +23,7 @@ try {
 }
 
 const { db, close } = await createDb(process.env.DATABASE_URL || undefined, pgliteDir);
-const app = await buildApp({ db, content, secureCookies: process.env.NODE_ENV === 'production' });
+const app = await buildApp({ db, content, secureCookies: process.env.NODE_ENV === 'production', devTools: process.env.NODE_ENV !== 'production' });
 
 for (const signal of ['SIGINT', 'SIGTERM'] as const) {
   process.on(signal, async () => {

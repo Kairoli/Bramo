@@ -10,6 +10,7 @@ import {
   trialsFileSchema,
 } from './schemas/content.js';
 import { classesFileSchema, cosmeticsFileSchema } from './schemas/art.js';
+import { gearFileSchema, gearPoolsFileSchema, gearSetsFileSchema, gearSlotsFileSchema } from './schemas/gear.js';
 import { buildXpTable } from './formulas/xp.js';
 
 export class ContentError extends Error {}
@@ -23,6 +24,11 @@ export interface RawContent {
   trials: unknown;
   npcOrders: unknown;
   buildings?: unknown;
+  /** Équipement : modèles, emplacements, lignes aléatoires, ensembles (optionnels pour les propositions du simulateur). */
+  gear?: unknown;
+  gearSlots?: unknown;
+  gearPools?: unknown;
+  gearSets?: unknown;
   /** Un fichier de recettes par entrée : [nom du fichier, contenu]. */
   recipes: [string, unknown][];
 }
@@ -43,6 +49,10 @@ export function buildContent(raw: RawContent): Content {
   const trialList = parse(trialsFileSchema, raw.trials, 'trials.yaml');
   const npcOrderList = parse(npcOrdersFileSchema, raw.npcOrders ?? [], 'npc_orders.yaml');
   const buildingList = parse(buildingsFileSchema, raw.buildings ?? [], 'buildings.yaml');
+  const gearSlotList = parse(gearSlotsFileSchema, raw.gearSlots ?? [], 'gear_slots.yaml');
+  const gearPools = parse(gearPoolsFileSchema.default({ tierScale: {}, pools: {} }), raw.gearPools ?? undefined, 'gear_pools.yaml');
+  const gearList = parse(gearFileSchema, raw.gear ?? [], 'gear.yaml');
+  const gearSetList = parse(gearSetsFileSchema, raw.gearSets ?? [], 'gear_sets.yaml');
   const errors: string[] = [];
 
   const unique = <T extends { id: string }>(list: T[], file: string) => {
@@ -127,7 +137,26 @@ export function buildContent(raw: RawContent): Content {
   if (!cosmetics.outfits.some((o) => o.id === cosmetics.default.outfit)) {
     errors.push(`cosmetics.yaml : tenue par défaut inconnue « ${cosmetics.default.outfit} »`);
   }
+  const gearSlots = unique(gearSlotList, 'gear_slots.yaml');
+  const gearSets = unique(gearSetList, 'gear_sets.yaml');
+  const gearModels = unique(gearList, 'gear.yaml');
+  for (const m of gearList) {
+    const slot = gearSlots[m.slot];
+    if (!slot) errors.push(`gear.yaml : ${m.id} est sur un emplacement inconnu « ${m.slot} »`);
+    else if (slot.kind !== m.kind) errors.push(`gear.yaml : ${m.id} est « ${m.kind} » mais l'emplacement ${m.slot} est « ${slot.kind} »`);
+    for (const c of m.classes) if (!classes[c]) errors.push(`gear.yaml : ${m.id} est réservé à une classe inconnue « ${c} »`);
+    if (m.set && !gearSets[m.set]) errors.push(`gear.yaml : ${m.id} appartient à un ensemble inconnu « ${m.set} »`);
+    if (m.rolls[0] > m.rolls[1]) errors.push(`gear.yaml : ${m.id} : rolls min > max`);
+    const pool = gearPools.pools[m.slot];
+    if (!pool) errors.push(`gear.yaml : ${m.id} : pas de lignes aléatoires pour l'emplacement ${m.slot} (gear_pools.yaml)`);
+    else if (m.rolls[1] + 1 > pool.length) errors.push(`gear.yaml : ${m.id} : ${m.rolls[1]} lignes tirées (+1 de chef-d'œuvre) mais l'emplacement ${m.slot} n'en propose que ${pool.length}`);
+    if (!(String(m.tier) in gearPools.tierScale)) errors.push(`gear.yaml : ${m.id} : palier ${m.tier} absent de gear_pools.yaml (tierScale)`);
+  }
+  for (const s of gearSetList) {
+    if (!classes[s.class]) errors.push(`gear_sets.yaml : ${s.id} : classe inconnue « ${s.class} »`);
+    if (gearList.filter((m) => m.set === s.id).length < 4) errors.push(`gear_sets.yaml : l'ensemble ${s.id} a moins de 4 pièces`);
+  }
   if (errors.length) throw new ContentError(`Données incohérentes :\n- ${errors.join('\n- ')}`);
 
-  return { settings, professions, items, recipes, trials, npcOrders, buildings, classes, cosmetics, xpTable: buildXpTable(settings.xp.maxLevel) };
+  return { settings, professions, items, recipes, trials, npcOrders, buildings, classes, cosmetics, gearSlots, gearPools, gearModels, gearSets, xpTable: buildXpTable(settings.xp.maxLevel) };
 }

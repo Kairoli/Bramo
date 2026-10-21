@@ -1,0 +1,14 @@
+# Lignes aléatoires possibles par emplacement : plage en % au palier 1 ; elle est multipliée par tierScale du palier de l'objet.
+# (La valeur tirée par exemplaire se situe entre min et max, voir engine/equipment.ts.)
+tierScale: {"1":1,"10":1.45,"20":1.9}
+pools:
+  head: [{"name":"Critique","min":2,"max":4},{"name":"Ténacité","min":3,"max":6},{"name":"Dégâts de Feu","min":2,"max":4},{"name":"Dégâts de Givre","min":2,"max":4},{"name":"Vitalité","min":3,"max":6},{"name":"Défense","min":2,"max":5}]
+  torso: [{"name":"Vitalité","min":3,"max":6},{"name":"Défense","min":3,"max":6},{"name":"Bouclier de début de combat","min":2,"max":5},{"name":"Régénération","min":1,"max":3},{"name":"Ténacité","min":3,"max":6},{"name":"Résistance au ralentissement","min":4,"max":8}]
+  hands: [{"name":"Cadence","min":2,"max":4},{"name":"Critique","min":2,"max":4},{"name":"Dégâts physiques","min":2,"max":4},{"name":"Dégâts de Foudre","min":2,"max":4},{"name":"Pénétration","min":2,"max":5},{"name":"Dégâts critiques","min":4,"max":9}]
+  legs: [{"name":"Vitalité","min":3,"max":6},{"name":"Résistance au ralentissement","min":4,"max":8},{"name":"Défense","min":2,"max":5},{"name":"Dégâts de Givre","min":2,"max":4},{"name":"Ténacité","min":3,"max":6},{"name":"Régénération","min":1,"max":3}]
+  feet: [{"name":"Cadence","min":2,"max":4},{"name":"Résistance au ralentissement","min":4,"max":8},{"name":"Critique","min":1,"max":3},{"name":"Dégâts de Foudre","min":2,"max":4},{"name":"Vitalité","min":3,"max":6},{"name":"Dégâts de Feu","min":2,"max":4}]
+  cape: [{"name":"Défense","min":2,"max":5},{"name":"Ténacité","min":3,"max":6},{"name":"Dégâts de Feu","min":2,"max":4},{"name":"Critique","min":1,"max":3},{"name":"Régénération","min":1,"max":3},{"name":"Dégâts de Givre","min":2,"max":4}]
+  belt: [{"name":"Vitalité","min":3,"max":6},{"name":"Cadence","min":2,"max":4},{"name":"Dégâts physiques","min":2,"max":4},{"name":"Bouclier de début de combat","min":2,"max":5},{"name":"Défense","min":2,"max":5},{"name":"Régénération","min":1,"max":3}]
+  necklace: [{"name":"Critique","min":2,"max":5},{"name":"Dégâts critiques","min":4,"max":9},{"name":"Régénération","min":1,"max":3},{"name":"Ténacité","min":3,"max":6},{"name":"Vitalité","min":3,"max":6},{"name":"Cadence","min":2,"max":4}]
+  ring: [{"name":"Critique","min":2,"max":4},{"name":"Cadence","min":2,"max":4},{"name":"Dégâts de Feu","min":2,"max":4},{"name":"Dégâts de Givre","min":2,"max":4},{"name":"Dégâts de Foudre","min":2,"max":4},{"name":"Pénétration","min":2,"max":5}]
+  weapon: [{"name":"Dégâts critiques","min":4,"max":9},{"name":"Cadence","min":2,"max":4},{"name":"Pénétration","min":2,"max":5},{"name":"Dégâts de l'élément de l'arme","min":3,"max":6},{"name":"Critique","min":2,"max":4},{"name":"Dégâts physiques","min":2,"max":4}]

@@ -20,7 +20,7 @@ beforeAll(async () => {
   const created = await createDb(undefined, 'memory://');
   close = created.close;
   db = created.db;
-  app = await buildApp({ db: created.db, content, clock: () => now });
+  app = await buildApp({ db: created.db, content, clock: () => now, devTools: true });
 });
 afterAll(async () => {
   await app.close();
@@ -82,6 +82,49 @@ describe('API', () => {
     const reset = (await call('POST', '/api/character/look', { slot: 'headwear', partId: null })).json as StateResponse;
     expect(reset.state.appearance).toEqual({ classId: 'forgefire', outfit: 'embers' });
     await call('POST', '/api/character/class', { classId: 'runist' });
+  });
+
+  it('donne des exemplaires, les équipe selon la classe, et les range quand la classe change', async () => {
+    const catalogue = (await call('GET', '/api/gear/catalogue')).json as { models: { id: string; slot: string; classes: string[]; tier: number }[] };
+    expect(catalogue.models.length).toBeGreaterThan(700);
+    const pick = (slot: string, cls: string, tier = 1) => catalogue.models.find((m) => m.slot === slot && m.classes.length === 1 && m.classes[0] === cls && m.tier === tier)!.id;
+
+    // Le personnage est un Runiste à ce stade.
+    const robe = pick('torso', 'runist');
+    const mail = pick('torso', 'forgefire');
+    const granted = (await call('POST', '/api/dev/gear/grant', { modelId: robe, count: 2 })).json;
+    expect(granted.items).toHaveLength(2);
+    expect(granted.items[0]).toMatchObject({ model: robe, equipped: null, wearable: true, worn: false });
+    expect(granted.items[0].lines.length).toBeLessThanOrEqual(4);
+    const other = (await call('POST', '/api/dev/gear/grant', { modelId: mail })).json;
+    const mailId = other.items.find((g: { model: string }) => g.model === mail).id;
+    expect(other.items.find((g: { id: number }) => g.id === mailId).wearable).toBe(false);
+    expect((await call('POST', '/api/dev/gear/grant', { modelId: 'nope' })).status).toBe(404);
+
+    // Équiper : le bon style, pas un autre ; un second torse remplace le premier.
+    expect((await call('POST', '/api/gear/equip', { id: mailId })).status).toBe(400);
+    const [first, second] = granted.items as { id: number }[];
+    const worn = (await call('POST', '/api/gear/equip', { id: first!.id })).json;
+    expect(worn.items.find((g: { id: number }) => g.id === first!.id).equipped).toBe('torso');
+    expect(worn.totals.stats.power ?? worn.totals.stats.vitality ?? worn.totals.stats.defense).toBeGreaterThan(0);
+    const swapped = (await call('POST', '/api/gear/equip', { id: second!.id })).json;
+    expect(swapped.items.filter((g: { equipped: string | null }) => g.equipped === 'torso')).toHaveLength(1);
+    expect(swapped.items.find((g: { id: number }) => g.id === first!.id).equipped).toBeNull();
+
+    // Trois anneaux : deux portés au plus.
+    const ring = catalogue.models.find((m) => m.slot === 'ring' && m.tier === 1)!.id;
+    const rings = ((await call('POST', '/api/dev/gear/grant', { modelId: ring, count: 3 })).json.items as { id: number; model: string }[]).filter((g) => g.model === ring);
+    for (const r of rings) await call('POST', '/api/gear/equip', { id: r.id });
+    const all = (await call('GET', '/api/gear')).json;
+    expect(all.items.filter((g: { equipped: string | null }) => g.equipped === 'ring')).toHaveLength(2);
+
+    // Changer de classe range les pièces qui ne sont plus du bon style (les anneaux, universels, restent).
+    await call('POST', '/api/character/class', { classId: 'forgefire' });
+    const forge = (await call('GET', '/api/gear')).json;
+    expect(forge.items.find((g: { id: number }) => g.id === second!.id).equipped).toBeNull();
+    expect(forge.items.filter((g: { equipped: string | null }) => g.equipped === 'ring')).toHaveLength(2);
+    await call('POST', '/api/character/class', { classId: 'runist' });
+    expect((await call('POST', '/api/gear/unequip', { id: rings[0]!.id })).json.items.find((g: { id: number }) => g.id === rings[0]!.id).equipped).toBeNull();
   });
 
   it('refuse une commande de maître avant son niveau', async () => {

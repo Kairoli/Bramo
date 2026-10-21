@@ -97,6 +97,15 @@ Le v1.0 annonce à la fois des « filons de clan à +5 % par membre présent, pl
   - Le coût d'un projet est proportionnel au nombre de membres **actifs sur 14 jours**, avec un minimum de 3 : un petit clan bâtit aussi vite par tête qu'un grand.
 - **Postes d'experts** : un membre qui a le surnom du niveau 80 d'un métier ([`rangs.md`](rangs.md)) peut occuper le poste correspondant. Effet : il peut accepter les **commandes d'expert** du clan (recettes de qualité) et donne +2 % dans ce métier aux membres, **compté dans le plafond Clan de +10 %**. Avec le surnom du niveau 60, un poste d'« adjoint » existe, sans bonus mais avec les commandes, pour que les clans jeunes aient aussi des rôles.
 
+### Premier prototype (21 octobre) [Prototype, choix de Claude à valider]
+
+Ce qui est dans le code (`apps/server/src/clans.ts`, salle Clan, `settings.clan`) :
+- **Fonder** un clan (500 or, nom unique de 3 à 24 caractères, présentation facultative), **rejoindre** un clan ouvert (30 membres au plus), **quitter**. Rangs **chef, officier, membre** : le chef nomme et rétrograde les officiers, passe la main, exclut ; un officier exclut un simple membre. Le chef ne part qu'après avoir transféré la direction ; seul dans son clan, il peut le dissoudre (entrepôt et fonds lui reviennent).
+- **Entrepôt commun** : tout le monde dépose ; **seuls les officiers et le chef retirent** (en attendant les commandes internes, qui serviront à répartir). 60 types d'objets au plus ; les objets qui s'usent n'y vont pas encore (l'état de chaque exemplaire doit être conservé). Journal des mouvements.
+- **Projet « bonus de clan »** (la Construction n'existe pas encore) : on verse de l'or, le niveau N coûte **N × 500 or × membres actifs sur 14 jours (au moins 3)**, chaque niveau donne **+2 % de production à tous les membres**, jusqu'à **+10 % au niveau 5** (plafond `bonusCaps.clan`). Le surplus reste au fonds. C'est un puits d'or. Le bonus s'applique au calcul de la production dès le chargement du personnage, y compris hors ligne, et ne retire rien à un absent.
+- **Guilde du bourg** : qui n'a pas de clan reçoit **+3 %** (un bonus, pas un vrai clan : pas d'entrepôt ni de commandes pour l'instant).
+- **Pas encore fait** : commandes internes, postes d'experts (surnom du palier 80, [`rangs.md`](rangs.md)), objets durables à l'entrepôt, période d'essai des nouveaux, chat de clan, invitations (tous les clans sont ouverts), halle et bâtiments (Construction).
+
 ### Petites communautés, nouveaux et occasionnels [Recommandé]
 
 - **La Guilde du bourg** : un clan PNJ que tout joueur sans clan rejoint d'office (entrepôt modeste, commandes internes, bonus de clan +3 %). Personne ne joue seul faute d'avoir trouvé un clan, et le recrutement s'y fait naturellement.

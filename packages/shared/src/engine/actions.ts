@@ -208,5 +208,6 @@ export function newCharacterState(now: number, content: Content): CharacterState
     outfit: null,
     trials: [],
     shown: {},
+    clanBonus: 0,
   };
 }

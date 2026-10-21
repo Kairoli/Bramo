@@ -55,6 +55,14 @@ Bramo est un **idle-RPG multijoueur jouable dans le navigateur**, dans l'esprit 
 
 ## 5. État du projet (à jour au 21 octobre 2026)
 
+### Fait — premier prototype des clans (21 octobre)
+
+- **Serveur** (`apps/server/src/clans.ts`, migration `0007_clans`) : tables `clans`, `clan_members`, `clan_items`, `clan_log` ; fonder, rejoindre, quitter/dissoudre, exclure, rangs (chef / officier / membre), transfert de direction, entrepôt (dépôt pour tous, retrait pour officiers et chef), projet de bonus (or versé, niveaux 1 à 5, +2 % chacun, coût N × 500 × membres actifs sur 14 jours, au moins 3), journal. Routes `/api/clans`, `/api/clan` et `POST /api/clan/create|join|leave|kick|rank|leader|deposit|withdraw|donate`.
+- **Moteur** : `CharacterState.clanBonus` (renseigné par `loadCharacterForUpdate`, jamais enregistré : bonus du clan, sinon +3 % de la Guilde du bourg) alimente `bonusesFor` ; `clanBonusFor`, `clanLevelCost` dans `engine/commission.ts`. `loadCharacterForUpdate(tx, accountId, content)` prend désormais le contenu.
+- **Client** : salle Clan (`rooms/ClanRoom.tsx`) : sans clan, fonder ou rejoindre ; dans un clan, onglets Entrepôt, Membres, Projet, Journal.
+- Tests : 19 d'API (dont un scénario de clan à trois joueurs). Détail et limites : `docs/design/monde.md` §3 (premier prototype).
+- **Pas encore fait** : commandes internes, postes d'experts, objets durables à l'entrepôt, invitations, chat de clan, halle et bâtiments (Construction, Agriculture). Louis doit valider les chiffres (création 500 or, coût des niveaux) et les droits de retrait.
+
 ### Fait — choix de tenue (21 octobre)
 
 - Action `chooseOutfit` et `unlockedOutfits` (`engine/actions.ts`), `POST /api/character/outfit`, `StateView.unlockedOutfits`. Sont débloquées **les tenues de départ des trois classes** ; Marée haute (saison) et Grand maître (Enchantement 99) restent verrouillées, avec leur condition affichée. Fenêtre « Changer de tenue » dans la salle Personnage (`OutfitModal`). La tenue est un cosmétique gratuit, avec n'importe quelle classe.
@@ -195,9 +203,9 @@ Bramo est un **idle-RPG multijoueur jouable dans le navigateur**, dans l'esprit 
 | Phase | Contenu | État |
 |---|---|---|
 | P0 | Chiffrage et simulateur | **commencé** (conception chiffrée, `sim/`, proposition `boucle-v0`) |
-| P1 | Prototype solo | **fait** (reste : mise en service, carte, animations) |
-| P2 | Marché (ordres achat/vente, taxe 5 %) et commandes ; usure des objets comme puits | à faire |
-| P3 | Clans : entrepôt, commandes internes, postes d'experts, projets de construction | à faire |
+| P1 | Prototype solo | **fait** (reste : mise en service, animations) |
+| P2 | Marché (ordres achat/vente, taxe 5 %), commandes PNJ, usure | **fait en prototype** (reste : simulateur de marché, équilibrage) |
+| P3 | Clans : entrepôt, commandes internes, postes d'experts, projets de construction | **commencé** (fonder, rangs, entrepôt, projet de bonus) ; reste commandes internes, postes d'experts, Construction |
 | P4 | Combat et classes (Forgefeu mêlée, Traqueur tir, Runiste magie ; triangle mêlée > tir > magie > mêlée ; voies dégâts/contrôle/soutien) ; vrai système d'équipement | à faire |
 | P5 | Saisons (6 semaines, une mutation chacune) et classes de métier (Artificier, Alchimiste au niveau 40 du métier) | à faire |
 | P6 | Arènes PvP et ouverture | à faire |

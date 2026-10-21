@@ -7,6 +7,12 @@ import {
   type ContentResponse,
   GameError,
   activateEnergy,
+  clanGoldBody,
+  clanIdBody,
+  clanItemBody,
+  clanMemberBody,
+  clanNameBody,
+  clanRankBody,
   completeNpcOrder,
   nicknameBody,
   setNickname,
@@ -53,6 +59,7 @@ import {
 import { type Action, NoCharacterError, play } from './game.js';
 import { recentEntries } from './journal.js';
 import { joinEvent, recordEvents, townView } from './town.js';
+import { createClan, depositItems, donateGold, joinClan, kickMember, leaveClan, listClans, myClanView, setRank, withdrawItems } from './clans.js';
 import { cancelRepair, openRepairs, requestRepair, takeRepair } from './repairs.js';
 import { buyFromStall, cancelOrder, fillOrder, marketBook, marketSummary, myOrders, placeOrder } from './market.js';
 
@@ -365,6 +372,62 @@ export async function buildApp({ db, content, clock = Date.now, secureCookies = 
   app.post('/api/nickname', (req) => {
     const { profession, rank } = body(nicknameBody, req);
     return playAs(req, (state) => ({ state: setNickname(state, profession, rank, content) }));
+  });
+
+  // --- Clans ---
+
+  app.get('/api/clans', async (req) => {
+    await requireAccount(req);
+    return listClans(db, content);
+  });
+
+  app.get('/api/clan', async (req) => {
+    const me = await myCharacter(req);
+    return myClanView(db, content, me.id, clock());
+  });
+
+  app.post('/api/clan/create', (req) => {
+    const p = body(clanNameBody, req);
+    return playAs(req, (state, now, { tx, characterId, characterName }) => createClan(tx, content, characterId, characterName, state, p, now));
+  });
+
+  app.post('/api/clan/join', (req) => {
+    const { clanId } = body(clanIdBody, req);
+    return playAs(req, (state, now, { tx, characterId, characterName }) => joinClan(tx, content, characterId, characterName, state, clanId, now));
+  });
+
+  app.post('/api/clan/leave', (req) =>
+    playAs(req, (state, now, { tx, characterId, characterName }) => leaveClan(tx, content, characterId, characterName, state, now)),
+  );
+
+  app.post('/api/clan/kick', (req) => {
+    const { characterId: target } = body(clanMemberBody, req);
+    return playAs(req, (state, now, { tx, characterId }) => kickMember(tx, content, characterId, state, target, now));
+  });
+
+  app.post('/api/clan/rank', (req) => {
+    const { characterId: target, rank } = body(clanRankBody, req);
+    return playAs(req, (state, now, { tx, characterId }) => setRank(tx, content, characterId, state, target, rank, now));
+  });
+
+  app.post('/api/clan/leader', (req) => {
+    const { characterId: target } = body(clanMemberBody, req);
+    return playAs(req, (state, now, { tx, characterId }) => setRank(tx, content, characterId, state, target, 'leader', now));
+  });
+
+  app.post('/api/clan/deposit', (req) => {
+    const { itemId, qty } = body(clanItemBody, req);
+    return playAs(req, (state, now, { tx, characterId, characterName }) => depositItems(tx, content, characterId, characterName, state, itemId, qty, now));
+  });
+
+  app.post('/api/clan/withdraw', (req) => {
+    const { itemId, qty } = body(clanItemBody, req);
+    return playAs(req, (state, now, { tx, characterId, characterName }) => withdrawItems(tx, content, characterId, characterName, state, itemId, qty, now));
+  });
+
+  app.post('/api/clan/donate', (req) => {
+    const { amount } = body(clanGoldBody, req);
+    return playAs(req, (state, now, { tx, characterId, characterName }) => donateGold(tx, content, characterId, characterName, state, amount, now));
   });
 
   app.get('/api/town', async (req) => {

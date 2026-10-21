@@ -82,6 +82,55 @@ export interface MyOrderView extends MarketOrderView {
   waitingQty: number;
 }
 
+export const clanNameBody = z.object({ name: z.string().trim().min(1).max(60), description: z.string().trim().max(200).default('') });
+export const clanIdBody = z.object({ clanId: z.number().int() });
+export const clanMemberBody = z.object({ characterId: z.number().int() });
+export const clanRankBody = z.object({ characterId: z.number().int(), rank: z.enum(['officer', 'member']) });
+export const clanItemBody = z.object({ itemId: z.string(), qty: z.number().int().min(1) });
+export const clanGoldBody = z.object({ amount: z.number().int().min(1) });
+
+export type ClanRank = 'leader' | 'officer' | 'member';
+
+/** Un clan dans la liste des clans à rejoindre. */
+export interface ClanListItem {
+  id: number;
+  name: string;
+  description: string;
+  members: number;
+  maxMembers: number;
+  level: number;
+  bonus: number;
+}
+
+export interface ClanMemberView {
+  id: number;
+  name: string;
+  rank: ClanRank;
+  /** Vu depuis moins de `clan.activeDays` jours. */
+  active: boolean;
+  lastSeenAt: number;
+}
+
+/** Le clan du joueur, avec son entrepôt et son projet. */
+export interface ClanView {
+  id: number;
+  name: string;
+  description: string;
+  level: number;
+  /** Bonus de production donné aux membres. */
+  bonus: number;
+  myRank: ClanRank;
+  members: ClanMemberView[];
+  maxMembers: number;
+  warehouse: Record<string, number>;
+  warehouseKinds: number;
+  /** Or déjà versé au projet du niveau suivant, et son coût (null au niveau maximal). */
+  fund: number;
+  nextCost: number | null;
+  activeMembers: number;
+  log: { id: number; at: number; text: string }[];
+}
+
 /** Un joueur vu dans la scène du bourg (informations publiques seulement). */
 export interface TownPlayer {
   id: number;

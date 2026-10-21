@@ -42,7 +42,7 @@ export class NoCharacterError extends Error {}
  */
 export async function play(db: Db, content: Content, accountId: number, now: number, action?: Action): Promise<StateResponse> {
   return db.transaction(async (tx) => {
-    const loaded = await loadCharacterForUpdate(tx, accountId);
+    const loaded = await loadCharacterForUpdate(tx, accountId, content);
     if (!loaded) throw new NoCharacterError();
 
     const { state: advanced, summary } = advance(loaded.state, now, content);

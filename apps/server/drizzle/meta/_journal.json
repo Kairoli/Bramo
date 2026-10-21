@@ -50,6 +50,13 @@
       "when": 1792582960069,
       "tag": "0006_rangs",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1792583333494,
+      "tag": "0007_clans",
+      "breakpoints": true
     }
   ]
 }

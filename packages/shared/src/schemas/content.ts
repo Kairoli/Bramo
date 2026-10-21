@@ -60,6 +60,26 @@ export const settingsSchema = z.object({
   }),
   /** Commandes PNJ du Comptoir de la guilde : seul achat du PNJ, `perDay` par jour de jeu. */
   npcOrders: z.object({ perDay: z.number().int().min(0) }),
+  /** Clans : création, taille, projet de bonus de clan (docs/design/monde.md §3). */
+  clan: z.object({
+    creationCost: z.number().int().min(0),
+    nameMin: z.number().int().min(1),
+    nameMax: z.number().int().min(1),
+    maxMembers: z.number().int().min(2),
+    /** Le coût d'un niveau est proportionnel au nombre de membres actifs sur 14 jours, avec ce minimum. */
+    minMembersForCost: z.number().int().min(1),
+    /** Or par membre actif et par niveau à atteindre : coût du niveau N = N × ce montant × membres actifs. */
+    levelCostPerMember: z.number().int().min(1),
+    maxLevel: z.number().int().min(1),
+    /** Bonus de clan par niveau (0,02 = +2 %), plafonné par bonusCaps.clan. */
+    bonusPerLevel: ratio,
+    /** Bonus de la Guilde du bourg, donné à qui n'a pas de clan. */
+    townGuildBonus: ratio,
+    /** Types d'objets différents que l'entrepôt peut contenir. */
+    warehouseKinds: z.number().int().min(1),
+    logSize: z.number().int().min(1),
+    activeDays: z.number().int().min(1),
+  }),
   /** Bourg (accueil) : joueurs récemment actifs montrés dans la scène, fil du serveur. */
   town: z.object({
     activeWindowMin: z.number().positive(),

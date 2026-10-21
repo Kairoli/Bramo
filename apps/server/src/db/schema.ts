@@ -143,6 +143,56 @@ export const serverFirsts = pgTable('server_firsts', {
   at: ts('at').notNull().defaultNow(),
 });
 
+/** Clans : entrepôt commun et projet de bonus de clan (docs/design/monde.md §3). */
+export const clans = pgTable('clans', {
+  id: serial('id').primaryKey(),
+  name: text('name').notNull(),
+  /** Nom en minuscules, unique : « Les Braises » et « les braises » sont le même clan. */
+  nameKey: text('name_key').notNull().unique(),
+  description: text('description').notNull().default(''),
+  /** Niveau du projet « bonus de clan » (0 à clan.maxLevel). */
+  level: integer('level').notNull().default(0),
+  /** Or déjà versé au projet du niveau suivant. */
+  fund: integer('fund').notNull().default(0),
+  createdAt: ts('created_at').notNull().defaultNow(),
+});
+
+export const clanMembers = pgTable('clan_members', {
+  characterId: integer('character_id')
+    .primaryKey()
+    .references(() => characters.id, { onDelete: 'cascade' }),
+  clanId: integer('clan_id')
+    .notNull()
+    .references(() => clans.id, { onDelete: 'cascade' }),
+  rank: text('rank').$type<'leader' | 'officer' | 'member'>().notNull(),
+  joinedAt: ts('joined_at').notNull().defaultNow(),
+});
+
+export const clanItems = pgTable(
+  'clan_items',
+  {
+    clanId: integer('clan_id')
+      .notNull()
+      .references(() => clans.id, { onDelete: 'cascade' }),
+    itemId: text('item_id').notNull(),
+    qty: integer('qty').notNull(),
+  },
+  (t) => [primaryKey({ columns: [t.clanId, t.itemId] })],
+);
+
+export const clanLog = pgTable(
+  'clan_log',
+  {
+    id: serial('id').primaryKey(),
+    clanId: integer('clan_id')
+      .notNull()
+      .references(() => clans.id, { onDelete: 'cascade' }),
+    at: ts('at').notNull(),
+    text: text('text').notNull(),
+  },
+  (t) => [index('clan_log_clan').on(t.clanId, t.at)],
+);
+
 export const journal = pgTable(
   'journal',
   {

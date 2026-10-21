@@ -6,6 +6,7 @@ import { GameProvider, useGame } from './game/GameContext';
 import { LoginScreen } from './LoginScreen';
 import { TopBar } from './components/TopBar';
 import { AbsenceModal } from './components/AbsenceModal';
+import { ClanRoom } from './rooms/ClanRoom';
 import { MarketRoom } from './rooms/MarketRoom';
 import { ClassScreen } from './components/ClassChoice';
 import { Home } from './rooms/Home';
@@ -35,7 +36,7 @@ function Shell() {
       {room === 'home' && <Home />}
       {room === 'professions' && (professionId ? <ProfessionRoom key={professionId} id={professionId} /> : <Professions />)}
       {room === 'character' && <CharacterRoom />}
-      {room === 'clan' && <SoonRoom room="clan" />}
+      {room === 'clan' && <ClanRoom />}
       {room === 'market' && <MarketRoom />}
       {room === 'combat' && <SoonRoom room="combat" />}
       {absence && <AbsenceModal summary={absence} />}

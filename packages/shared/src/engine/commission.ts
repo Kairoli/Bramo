@@ -88,3 +88,14 @@ export function repairWithMaterials(input: CharacterState, itemId: string, conte
   takeCopy(state, itemId, 0);
   return state;
 }
+
+/** Bonus de production d'un clan de ce niveau (plafonné ailleurs par `bonusCaps.clan`). */
+export function clanBonusFor(level: number, content: Pick<Content, 'settings'>): number {
+  return Math.min(content.settings.bonusCaps.clan, level * content.settings.clan.bonusPerLevel);
+}
+
+/** Coût en or du niveau `level` du projet de clan, selon les membres actifs (au moins `minMembersForCost`). */
+export function clanLevelCost(level: number, activeMembers: number, content: Pick<Content, 'settings'>): number {
+  const { clan } = content.settings;
+  return level * clan.levelCostPerMember * Math.max(clan.minMembersForCost, activeMembers);
+}

@@ -1,10 +1,4 @@
 const ROOMS = {
-  clan: {
-    title: 'Clan',
-    place: 'la halle du clan',
-    color: 'var(--clan)',
-    text: 'Entrepôt commun, commandes internes, postes d’experts et grands projets de construction. Personne ne fait tout seul.',
-  },
   combat: {
     title: 'Combat',
     place: 'l’arène',

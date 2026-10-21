@@ -5,10 +5,13 @@ import {
   type Recipe,
   GameError,
   activeTool,
+  addStack,
   advance,
+  buildingNeeds,
   completeNpcOrder,
   copiesRemaining,
   levelForXp,
+  memberBonuses,
   newCharacterState,
   npcOrdersOfDay,
   recycleItem,
@@ -36,6 +39,10 @@ export interface WorldOptions {
   seed: number;
   /** Part des joueurs déjà là au jour 0 ; les autres arrivent régulièrement pendant `joinDays`. */
   initialShare?: number;
+  /** Part des joueurs qui font partie d'un clan (par groupes de 5 à 10). */
+  clanShare?: number;
+  /** Part de l'or au-dessus de la réserve qu'un membre de clan apporte aux bâtiments chaque jour. */
+  clanWillingness?: number;
   joinDays?: number;
 }
 
@@ -44,6 +51,8 @@ export type Archetype = 'xp' | 'marchand' | 'artisan';
 
 export interface BotView {
   id: number;
+  /** Clan du joueur (null = aucun). */
+  clanId: number | null;
   name: string;
   profession: string;
   archetype: Archetype;
@@ -79,7 +88,9 @@ export interface DayMetrics {
   day: number;
   players: number;
   goldSupply: number;
-  gold: { npc: number; tax: number; pnjRepair: number; stall: number };
+  gold: { npc: number; tax: number; pnjRepair: number; stall: number; clan: number };
+  /** Somme des niveaux de bâtiments construits par tous les clans. */
+  buildingLevels: number;
   volume: number;
   trades: number;
   /** Or mis en vente (au prix demandé) resté invendu en fin de journée. */
@@ -100,7 +111,16 @@ export interface ItemSeries {
   qty: number;
 }
 
+export interface ClanView {
+  id: number;
+  members: string[];
+  levels: Record<string, number>;
+  /** Or et objets déjà apportés au niveau en cours : part de l'avancement (0 à 1) par bâtiment. */
+  progress: Record<string, number>;
+}
+
 export interface WorldResult {
+  clans: ClanView[];
   options: Required<WorldOptions>;
   bots: BotView[];
   days: DayMetrics[];
@@ -146,7 +166,15 @@ const FEEDER: Record<string, string> = { smithing: 'mining', carpentry: 'woodcut
 const FIRST = ['Aldric', 'Brinn', 'Cora', 'Dagna', 'Eloi', 'Fenn', 'Garance', 'Hugo', 'Isaure', 'Jorun', 'Kaelo', 'Lise', 'Maelle', 'Nils', 'Orla', 'Pavel', 'Quentin', 'Rowan', 'Sacha', 'Thessa', 'Ulric', 'Vera', 'Wyatt', 'Xenia', 'Yann', 'Zelie'];
 const LAST = ['Cendre', 'Brume', 'Lanterne', 'Pierre', 'Mousse', 'Givre', 'Braise', 'Ecume', 'Sauge', 'Corbeau', 'Ronce', 'Argile'];
 
+interface SimClan {
+  id: number;
+  members: Bot[];
+  levels: Record<string, number>;
+  progress: Record<string, Record<string, number>>;
+}
+
 interface Bot extends Trader {
+  clan: SimClan | null;
   name: string;
   profession: string;
   archetype: Archetype;
@@ -176,7 +204,7 @@ function pick<T>(list: [T, number][], r: number): T {
 }
 
 export function runWorld(content: Content, input: WorldOptions): WorldResult {
-  const opts: Required<WorldOptions> = { initialShare: 0.6, joinDays: 60, ...input };
+  const opts: Required<WorldOptions> = { initialShare: 0.6, joinDays: 60, clanShare: 0.7, clanWillingness: 0.5, ...input };
   const rand = rng(opts.seed);
   const traders = new Map<number, Trader>();
   const exchange = new Exchange(content, traders);
@@ -212,6 +240,7 @@ export function runWorld(content: Content, input: WorldOptions): WorldResult {
     const archetype: Archetype = GATHER.has(profession) ? (rand() < 0.3 ? 'marchand' : 'xp') : 'artisan';
     bots.push({
       id: i + 1,
+      clan: null,
       name: `${FIRST[i % FIRST.length]} ${LAST[(i * 7 + 3) % LAST.length]}`,
       profession,
       archetype,
@@ -232,11 +261,26 @@ export function runWorld(content: Content, input: WorldOptions): WorldResult {
       totals: { npcGold: 0, salesNet: 0, purchases: 0, taxPaid: 0, pnjRepairs: 0, selfRepairs: 0, stallBuys: 0, recycled: 0, craftedUnits: 0 },
     });
   }
+  // Clans : une partie des joueurs, regroupés par 5 à 10 au hasard (les arrivants tardifs rejoignent à leur arrivée).
+  const clans: SimClan[] = [];
+  {
+    const order = bots.map((b) => b).sort(() => rand() - 0.5);
+    let next = 0;
+    const inClans = Math.round(opts.players * opts.clanShare);
+    while (next < inClans) {
+      const size = Math.min(inClans - next, 5 + Math.floor(rand() * 6));
+      const clan: SimClan = { id: clans.length + 1, members: order.slice(next, next + size), levels: {}, progress: {} };
+      for (const m of clan.members) m.clan = clan;
+      clans.push(clan);
+      next += size;
+    }
+  }
   const firstSession = (b: Bot) => Math.min(...b.presence.sessions.map((s) => s.at));
 
   let pnjRepairGold = 0;
   let stallGold = 0;
   let npcGoldToday = 0;
+  let clanGoldToday = 0;
   let workMin: Record<string, number> = {};
   const repairs = { pnj: 0, self: 0 };
   const priceHistory = new Map<string, [number, number][][]>();
@@ -271,6 +315,7 @@ export function runWorld(content: Content, input: WorldOptions): WorldResult {
     b.state.classId = Object.keys(content.classes)[0] ?? null;
     // Hypothèse du simulateur : les commandes du maître sont validées sans délai (voir les limites du tableau de bord).
     b.state.trials = Object.keys(content.trials);
+    b.state.clanBonuses = memberBonuses(b.clan?.levels ?? null, content);
     b.state.seed = b.id;
     b.started = true;
     traders.set(b.id, b);
@@ -456,11 +501,70 @@ export function runWorld(content: Content, input: WorldOptions): WorldResult {
     traders.get(b.id)!.state = s;
   };
 
+  /**
+   * Apports d'un membre de clan aux bâtiments : ses objets utiles d'abord, puis une part de son or au-dessus d'une réserve.
+   * Il commence par le bâtiment de son métier, puis la halle, puis les autres ; il achète au marché les matériaux qui manquent s'il est à l'aise.
+   */
+  const RESERVE = 300;
+  const contributeToClan = (b: Bot, day: number) => {
+    const clan = b.clan;
+    if (!clan) return;
+    const active = clan.members.filter((m) => m.started).length;
+    let budget = Math.max(0, b.state.gold - RESERVE) * opts.clanWillingness;
+    const own = Object.values(content.buildings).find((x) => x.boost.profession === b.profession)?.id;
+    const order = [own, 'hall', ...Object.keys(content.buildings).sort((x, y) => (clan.levels[x] ?? 0) - (clan.levels[y] ?? 0))].filter(
+      (id, i, all): id is string => !!id && all.indexOf(id) === i && !!content.buildings[id],
+    );
+    for (const id of order) {
+      const def = content.buildings[id]!;
+      const level = clan.levels[id] ?? 0;
+      if (level >= def.maxLevel) continue;
+      const needs = buildingNeeds(id, level + 1, active, content);
+      const prog = (clan.progress[id] ??= {});
+      for (const it of needs.items) {
+        const rem = it.qty - (prog[it.item] ?? 0);
+        if (rem <= 0) continue;
+        let give = Math.min(rem, b.state.inventory[it.item] ?? 0);
+        if (give <= 0 && budget > 0) {
+          // Achat immédiat si des joueurs en vendent ; sinon une demande qui reste affichée (les artisans la voient) jusqu'au prochain passage.
+          const want = Math.min(rem, 300);
+          const limit = Math.max(2, Math.round(ref(it.item) * 3));
+          const bought = exchange.buy(b, it.item, want, limit, true);
+          b.totals.purchases += bought.gold;
+          budget -= bought.gold;
+          b.wanted.set(it.item, want);
+          give = Math.min(rem, b.state.inventory[it.item] ?? 0);
+        }
+        if (give > 0) {
+          addStack(b.state.inventory, it.item, -give);
+          prog[it.item] = (prog[it.item] ?? 0) + give;
+        }
+      }
+      const remGold = needs.gold - (prog.gold ?? 0);
+      if (remGold > 0 && budget > 0) {
+        const g = Math.min(remGold, Math.floor(budget));
+        if (g > 0) {
+          b.state.gold -= g;
+          prog.gold = (prog.gold ?? 0) + g;
+          budget -= g;
+          clanGoldToday += g;
+        }
+      }
+      if ((prog.gold ?? 0) >= needs.gold && needs.items.every((i) => (prog[i.item] ?? 0) >= i.qty)) {
+        clan.levels[id] = level + 1;
+        clan.progress[id] = {};
+        for (const m of clan.members) if (m.started) m.state.clanBonuses = memberBonuses(clan.levels, content);
+        event(day, `Clan ${clan.id} : ${def.name} niveau ${level + 1}`);
+      }
+    }
+  };
+
   const act = (b: Bot, t: number, day: number) => {
     adaptPrices(b);
     exchange.cancelAll(b);
     npcOrders(b, t, day);
     toolUpkeep(b, day);
+    contributeToClan(b, day);
     meals(b);
     const tool = activeTool(b.profession, b.state, content);
     if (tool && b.firstToolDay === null) b.firstToolDay = day;
@@ -541,6 +645,7 @@ export function runWorld(content: Content, input: WorldOptions): WorldResult {
     const dayStart = SIM_START + day * DAY;
     exchange.day = day;
     npcGoldToday = 0;
+    clanGoldToday = 0;
     pnjRepairGold = 0;
     stallGold = 0;
     workMin = {};
@@ -592,7 +697,7 @@ export function runWorld(content: Content, input: WorldOptions): WorldResult {
       }
       if (!hasTool) idleNoTool++;
       if (b.firstToolDay === null && activeTool(b.profession, b.state, content)) b.firstToolDay = day;
-      if (b.day500 === null && b.state.gold >= 500) b.day500 = day;
+      if (b.day500 === null && b.totals.npcGold + b.totals.salesNet >= 500) b.day500 = day;
       b.goldHistory.push(Math.round(b.state.gold));
       b.levelHistory.push(lvl(b.state, b.profession));
     }
@@ -610,7 +715,8 @@ export function runWorld(content: Content, input: WorldOptions): WorldResult {
       day,
       players: active.length,
       goldSupply: Math.round(supply),
-      gold: { npc: npcGoldToday, tax: exchange.stats.tax - lastTax, pnjRepair: pnjRepairGold, stall: stallGold },
+      gold: { npc: npcGoldToday, tax: exchange.stats.tax - lastTax, pnjRepair: pnjRepairGold, stall: stallGold, clan: clanGoldToday },
+      buildingLevels: clans.reduce((s, c) => s + Object.values(c.levels).reduce((a, l) => a + l, 0), 0),
       volume: exchange.stats.volume - lastVolume,
       trades: exchange.stats.trades - lastTrades,
       unsoldValue: Math.round(unsold),
@@ -638,6 +744,7 @@ export function runWorld(content: Content, input: WorldOptions): WorldResult {
     if (s) for (const p of Object.keys(s.skills)) if (lvl(s, p) > 1) topLevels[p] = lvl(s, p);
     return {
       id: b.id,
+      clanId: b.clan?.id ?? null,
       name: b.name,
       profession: b.profession,
       archetype: b.archetype,
@@ -679,5 +786,20 @@ export function runWorld(content: Content, input: WorldOptions): WorldResult {
   const bronzeBar = ref('bronze_bar');
   const artisanFeeFloor = Math.round(3 * bronzeBar);
   const pnjPriceAvg = repairs.pnj ? Math.round(dayMetrics.reduce((s, d) => s + d.gold.pnjRepair, 0) / repairs.pnj) : 0;
-  return { options: opts, bots: views, days: dayMetrics, items, repairs: { ...repairs, artisanFeeFloor, pnjPriceAvg }, events, primeXp: exchange.stats.primeXp, gini };
+  const clanViews: ClanView[] = clans.map((c) => ({
+    id: c.id,
+    members: c.members.filter((m) => m.started).map((m) => m.name),
+    levels: c.levels,
+    progress: Object.fromEntries(
+      Object.entries(content.buildings).map(([id, def]) => {
+        const level = c.levels[id] ?? 0;
+        if (level >= def.maxLevel) return [id, 1];
+        const needs = buildingNeeds(id, level + 1, c.members.filter((m) => m.started).length, content);
+        const prog = c.progress[id] ?? {};
+        const parts = [needs.gold ? Math.min(1, (prog.gold ?? 0) / needs.gold) : 1, ...needs.items.map((i) => Math.min(1, (prog[i.item] ?? 0) / i.qty))];
+        return [id, parts.reduce((a, p) => a + p, 0) / parts.length];
+      }),
+    ),
+  }));
+  return { clans: clanViews, options: opts, bots: views, days: dayMetrics, items, repairs: { ...repairs, artisanFeeFloor, pnjPriceAvg }, events, primeXp: exchange.stats.primeXp, gini };
 }

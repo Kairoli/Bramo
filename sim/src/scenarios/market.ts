@@ -16,14 +16,14 @@ export function marketSim(opts: WorldOptions): WorldResult {
 /** Constats tirés des chiffres, dans l'ordre où on doit les lire. */
 function findings(s: Summary): DashboardInput['findings'] {
   const out: DashboardInput['findings'] = [];
-  const sinks = s.outflowTax + s.outflowPnj + s.outflowStall;
+  const sinks = s.outflowTax + s.outflowPnj + s.outflowStall + s.outflowClan;
   out.push({
-    level: s.netPerPlayerDay > 50 ? 'alerte' : s.netPerPlayerDay > 0 ? 'attention' : 'bon',
-    title: s.netPerPlayerDay > 0 ? 'L’or entre bien plus vite qu’il ne sort' : 'L’or est à peu près équilibré',
+    level: s.goldAlone > 10 * Math.max(1, s.goldClan) ? 'attention' : s.netPerPlayerDay > 50 ? 'alerte' : 'bon',
+    title: s.goldAlone > 10 * Math.max(1, s.goldClan) ? 'Les clans absorbent l’or, pas les joueurs seuls' : 'L’or est à peu près équilibré',
     text:
-      `Les commandes PNJ créent ${fmt(s.inflowNpc)} or par joueur et par jour ; la taxe, les réparations du PNJ et l’étal en retirent ${fmt(sinks)} (${fmt(s.outflowTax)} de taxe, ${fmt(s.outflowPnj + s.outflowStall)} de réparations et d’étal). ` +
-      `Solde : +${fmt(s.netPerPlayerDay)} or par joueur et par jour, soit ${fmt(s.goldPerPlayer)} or par joueur au bout de ${s.days} jours. ` +
-      'Les leviers : baisser les récompenses des commandes, ou ajouter de vrais postes de dépense (clan, construction, équipement de combat) avant l’ouverture.',
+      `Les commandes PNJ créent ${fmt(s.inflowNpc)} or par joueur et par jour ; ${fmt(sinks)} en sortent (${fmt(s.outflowTax)} de taxe, ${fmt(s.outflowPnj + s.outflowStall)} de réparations et d’étal, ${fmt(s.outflowClan)} de bâtiments de clan). ` +
+      `Un membre de clan finit avec ${fmt(s.goldClan)} or (il dépense son excédent en bâtiments) ; un joueur sans clan en accumule ${fmt(s.goldAlone)} : rien ne le dépense. Les ${s.clans} clans ont bâti en moyenne ${s.levelsPerClan.toFixed(1)} niveaux sur 24 possibles. ` +
+      'Le levier restant : donner aux joueurs sans clan un poste de dépense (atelier personnel avec le métier Construction, équipement de combat).',
   });
   out.push({
     level: s.priceRatio < 0.5 ? 'alerte' : s.priceRatio < 0.9 ? 'attention' : 'bon',
@@ -89,8 +89,8 @@ export function marketText(run: MarketRun): string {
   const s = summarize(run.result);
   return [
     `${s.players} joueurs, ${s.days} jours`,
-    `or créé par joueur et par jour : ${fmt(s.netPerPlayerDay)} (entrées ${fmt(s.inflowNpc)}, sorties ${fmt(s.outflowTax + s.outflowPnj + s.outflowStall)})`,
-    `or par joueur à la fin : ${fmt(s.goldPerPlayer)} · prix/référence : ${fmt1(s.priceRatio * 100)} % · sans outil : ${fmt1(s.noToolShare * 100)} % · Forge : ${fmt1(s.forgeShare * 100)} %`,
+    `or créé par joueur et par jour : ${fmt(s.netPerPlayerDay)} (entrées ${fmt(s.inflowNpc)}, sorties ${fmt(s.outflowTax + s.outflowPnj + s.outflowStall + s.outflowClan)} dont ${fmt(s.outflowClan)} de bâtiments de clan)`,
+    `or par joueur à la fin : ${fmt(s.goldPerPlayer)} (clan ${fmt(s.goldClan)}, sans clan ${fmt(s.goldAlone)}) · prix/référence : ${fmt1(s.priceRatio * 100)} % · sans outil : ${fmt1(s.noToolShare * 100)} % · Forge : ${fmt1(s.forgeShare * 100)} %`,
     `Écrit : sim/reports/marche.html et marche.json`,
   ].join('\n');
 }

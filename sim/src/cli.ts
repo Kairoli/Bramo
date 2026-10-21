@@ -8,6 +8,7 @@ import { milestonesReport, progressionReport } from './scenarios/progression.js'
 import { economyReport } from './scenarios/economy.js';
 import { chainsReport, consumablesReport } from './scenarios/chains.js';
 import { marketReport, marketText } from './scenarios/market.js';
+import { type GoldVariant, balanceMarkdown, runBalance, writeBalance } from './scenarios/balance.js';
 
 const [command = 'help', ...args] = process.argv.slice(2);
 const opt = (name: string, fallback: string) => {
@@ -16,6 +17,21 @@ const opt = (name: string, fallback: string) => {
 };
 
 const commands: Record<string, () => string> = {
+  balance: () => {
+    const opts = { players: Number(opt('players', '60')), days: Number(opt('days', '150')), seed: Number(opt('seed', '1')) };
+    const variants: GoldVariant[] = [
+      { id: 'before', name: 'Commandes PNJ ×1 (avant)', npc: 1 },
+      { id: 'now', name: 'Commandes PNJ ×0,75 (actuel)' },
+      { id: 'npc-60', name: 'Commandes PNJ ×0,6', npc: 0.6 },
+      { id: 'now-g15', name: 'Actuel, or des bâtiments ×1,5', buildingGold: 1.5 },
+      { id: 'now-all', name: 'Actuel, bâtiments ×1,5 (or et matériaux)', buildingGold: 1.5, buildingItems: 1.5 },
+    ];
+    const seeds = opt('seeds', '1,2,3').split(',').map(Number);
+    const md = balanceMarkdown(runBalance(variants, opts, seeds), opts);
+    return `${md}
+
+Écrit : ${writeBalance(md)}`;
+  },
   market: () => marketText(marketReport({ players: Number(opt('players', '60')), days: Number(opt('days', '120')), seed: Number(opt('seed', '1')) })),
   presence: () => presenceReport(),
   progression: () => progressionReport(opt('proposal', 'boucle-v0'), Number(opt('days', '520'))),

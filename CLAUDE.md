@@ -55,6 +55,12 @@ Bramo est un **idle-RPG multijoueur jouable dans le navigateur**, dans l'esprit 
 
 ## 5. État du projet (à jour au 21 octobre 2026)
 
+### Fait — équilibre de l'or (21 octobre)
+
+- **Demande de Louis : « équilibre l'or »**. Mesure : `pnpm --filter @bramo/sim sim balance` (compare des jeux de réglages sur 150 jours ; `GoldVariant` : commandes PNJ, prix des réparations, coûts des bâtiments, or de départ) et `sim market` (tableau de bord). Les bots du simulateur appartiennent à des clans (`clanShare`, `clanWillingness`) et apportent de l'or et des matériaux aux bâtiments ; ils placent des demandes au marché pour les matériaux manquants.
+- **Changements de données** : récompenses de `data/npc_orders.yaml` **×0,75** ; matériaux des bâtiments passés en matières premières par milliers (`data/buildings.yaml`) pour absorber le surplus des récolteurs.
+- **Constat** : les membres de clan dépensent leur excédent (quelques centaines d'or à la fin), pas les joueurs seuls (près de 20 000 en moyenne à 150 jours). Piste : atelier personnel (métier Construction). Détail et tableau : `docs/design/marche.md` §9. Louis doit valider les chiffres.
+
 ### Fait — clans : un clan à construire (21 octobre)
 
 - **Décision de Louis** : pas d'entrepôt (« pas sûr encore ») ; un clan se **construit** avec des **bâtiments qui donnent des boosts**, **construits par les membres**. Détail : `docs/design/monde.md` §3.

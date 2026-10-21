@@ -66,3 +66,21 @@ Résultats détaillés : `sim/reports/marche.html`. Louis a décidé de **report
 - **Réparations** : les bots choisissent toujours le PNJ (7 or contre ~15 or de matériaux pour un artisan). La réparation par un artisan n'est donc utilisée que par choix de rôle. À trancher quand on aura une vraie économie : renchérir le PNJ ou assumer l'artisan comme service secondaire.
 - **Forge** : 1,9 % du temps de travail, donc pas surchargée (minimum : les artisans simulés récoltent surtout). Le combat ajoutera de la demande.
 - **Débuts** : un nouveau joueur a son premier outil en moins d'un jour et 500 or en ~5 jours : le démarrage tient.
+
+## 9. Équilibre de l'or [Demandé par Louis : « équilibre l'or » ; chiffres choisis par Claude, à valider]
+
+Mesuré avec `pnpm --filter @bramo/sim sim balance` (60 joueurs, 150 jours, **moyenne de 3 graines**, 7 joueurs sur 10 en clan ; `sim/reports/equilibre.md`). Or par joueur et par jour sur les 30 derniers jours :
+
+| Réglage | Entrée (PNJ) | Taxe | Clans | Solde | Or d'un membre de clan | Or d'un joueur seul | Niveaux bâtis par clan (sur 24) | 500 or gagnés en |
+|---|---|---|---|---|---|---|---|---|
+| Commandes PNJ ×1 (avant) | 173 | 15 | 28 | +126 | 4 900 | 47 000 | 14 | 2 jours |
+| **Commandes PNJ ×0,75 (choisi)** | **96** | **12** | **39** | **+44** | **165** | **19 700** | **7** | **6,5 jours** |
+| Commandes PNJ ×0,6 | 84 | 11 | 27 | +44 | 133 | 16 900 | 5 | 8 jours |
+| Choisi + or des bâtiments ×1,5 | 102 | 13 | 57 | +30 | 165 | 17 000 | 6 | 7 jours |
+
+Avant les clans, la simulation donnait +120 or créés par joueur et par jour et 24 000 or par joueur au bout de 120 jours (`sim/reports/marche.html`, première version). Ce que les chiffres disent :
+- **Les clans règlent l'or de leurs membres** : ils apportent leur excédent aux bâtiments et finissent avec une centaine d'or. Le rythme est celui d'un objectif long : **le premier niveau de bâtiment vers le jour 19**, 7 niveaux sur 24 au bout de 150 jours (le double sans la baisse des commandes), donc un arbre complet en un an et demi pour un clan moyen. Si c'est trop lent, c'est le coût en or des bâtiments qu'il faut baisser, pas les commandes.
+- **Les joueurs sans clan n'ont rien à dépenser** : leur or s'accumule (près de 20 000 à 150 jours dans la simulation, où ils ne font que jouer). C'est le point faible restant. Pistes : un **atelier personnel** avec le métier Construction (puits d'or et de matériaux sans clan), de l'équipement de combat à payer, des services de joueurs. Aucun bonus de PNJ pour les solitaires (ce serait casser « personne ne fait tout seul »).
+- **Choix retenu** : récompenses des commandes PNJ **×0,75** (de ~170 à ~100 or par joueur et par jour réellement perçus), bâtiments inchangés. Un nouveau joueur gagne ses 500 premiers or en environ une semaine et son premier outil en quelques jours.
+- Les bâtiments demandent des **matières premières par milliers** (pierre, bois, poisson…) : c'est un débouché pour le surplus des récolteurs, dont les prix s'effondraient (40 à 50 % de la référence).
+- **Limites** : les bots donnent la moitié de leur excédent au-dessus de 300 or ; de vrais joueurs dépenseraient plus ou moins. Une seule graine est bruitée : toujours comparer des moyennes. À refaire quand le combat et la Construction existeront.

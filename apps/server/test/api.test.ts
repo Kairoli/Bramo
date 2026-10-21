@@ -322,9 +322,9 @@ describe('API', () => {
     const list = (await recrue('GET', '/api/clans')).json as import('@bramo/shared').ClanListItem[];
     expect(list).toHaveLength(1);
     await recrue('POST', '/api/clan/join', { clanId: list[0]!.id });
-    await grant('Recrue', 0, { stone_block: 200, iron_bar: 30, copper_ore: 5 });
+    await grant('Recrue', 0, { stone_block: 3000, pine_log: 1500, copper_ore: 5 });
 
-    // Galerie de mine, niveau 1 : 1 500 or, 120 blocs de pierre, 20 lingots de fer (2 membres actifs : coût de référence).
+    // Galerie de mine, niveau 1 : 1 500 or, 2 000 blocs de pierre, 1 000 bûches de pin (2 membres actifs : coût de référence).
     const gallery = view0.buildings.find((b) => b.id === 'mine_gallery')!;
     expect(gallery.next?.gold.need).toBe(1500);
     // L'or : l'apport est plafonné à ce qu'il manque ; un objet non demandé est refusé ; un non-membre ne peut rien apporter.
@@ -335,12 +335,12 @@ describe('API', () => {
     expect(capped.state.gold).toBe(3000 - content.settings.clan.creationCost - 1500);
     expect((await chef('POST', '/api/clan/contribute', { buildingId: 'mine_gallery', what: 'gold', qty: 1 })).status).toBe(400); // complet
     // Les membres apportent ensemble : le bâtiment monte quand tout est réuni.
-    await recrue('POST', '/api/clan/contribute', { buildingId: 'mine_gallery', what: 'stone_block', qty: 120 });
+    await recrue('POST', '/api/clan/contribute', { buildingId: 'mine_gallery', what: 'stone_block', qty: 2000 });
     const mid = (await chef('GET', '/api/clan')).json as import('@bramo/shared').ClanView;
     expect(mid.buildings.find((b) => b.id === 'mine_gallery')?.level).toBe(0);
-    const done = (await recrue('POST', '/api/clan/contribute', { buildingId: 'mine_gallery', what: 'iron_bar', qty: 20 })).json as StateResponse;
+    const done = (await recrue('POST', '/api/clan/contribute', { buildingId: 'mine_gallery', what: 'pine_log', qty: 1000 })).json as StateResponse;
     expect(done.journal.some((j) => j.text.includes('niveau 1'))).toBe(true);
-    expect(done.state.inventory.iron_bar).toBe(10);
+    expect(done.state.inventory.pine_log).toBe(500);
     const after = (await chef('GET', '/api/clan')).json as import('@bramo/shared').ClanView;
     expect(after.buildings.find((b) => b.id === 'mine_gallery')).toMatchObject({ level: 1, next: { gold: { need: 3000, have: 0 } } });
     expect(after.bonuses.mining).toBeCloseTo(0.02);

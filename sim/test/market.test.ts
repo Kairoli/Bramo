@@ -6,10 +6,10 @@ describe('simulation du marché', () => {
   const content = loadVariant();
   const r = runWorld(content, { players: 12, days: 20, seed: 3, initialShare: 0.5, joinDays: 8 });
 
-  it('l’or est conservé : départ + commandes PNJ − taxe − réparations PNJ − étal', () => {
+  it('l’or est conservé : départ + commandes PNJ − taxe − réparations PNJ − étal − bâtiments de clan', () => {
     const joined = r.bots.filter((b) => b.level > 0).length;
     const inflow = r.days.reduce((s, d) => s + d.gold.npc, 0);
-    const outflow = r.days.reduce((s, d) => s + d.gold.tax + d.gold.pnjRepair + d.gold.stall, 0);
+    const outflow = r.days.reduce((s, d) => s + d.gold.tax + d.gold.pnjRepair + d.gold.stall + d.gold.clan, 0);
     const expected = joined * content.settings.character.startingGold + inflow - outflow;
     expect(r.days.at(-1)!.goldSupply).toBeCloseTo(expected, -1);
   });

@@ -9,6 +9,11 @@ export interface Summary {
   outflowTax: number;
   outflowPnj: number;
   outflowStall: number;
+  outflowClan: number;
+  goldClan: number;
+  goldAlone: number;
+  clans: number;
+  levelsPerClan: number;
   netPerPlayerDay: number;
   noToolShare: number;
   idleShare: number;
@@ -40,6 +45,10 @@ export function summarize(r: WorldResult): Summary {
   const tax = per((d) => d.gold.tax);
   const pnj = per((d) => d.gold.pnjRepair);
   const stall = per((d) => d.gold.stall);
+  const clanSink = per((d) => d.gold.clan);
+  const played = r.bots.filter((b) => b.level > 0);
+  const avgGold = (list: typeof played) => (list.length ? mean(list.map((b) => b.gold)) : 0);
+  const liveClans = r.clans.filter((c) => c.members.length > 0);
   const totalWork = (d: (typeof win)[number]) => Object.values(d.workMin).reduce((s, x) => s + x, 0) || 1;
   const top = r.items.slice(0, 10);
   const ratios = top
@@ -62,7 +71,12 @@ export function summarize(r: WorldResult): Summary {
     outflowTax: tax,
     outflowPnj: pnj,
     outflowStall: stall,
-    netPerPlayerDay: inflow - tax - pnj - stall,
+    outflowClan: clanSink,
+    goldClan: avgGold(played.filter((b) => b.clanId !== null)),
+    goldAlone: avgGold(played.filter((b) => b.clanId === null)),
+    clans: liveClans.length,
+    levelsPerClan: liveClans.length ? mean(liveClans.map((c) => Object.values(c.levels).reduce((a, l) => a + l, 0))) : 0,
+    netPerPlayerDay: inflow - tax - pnj - stall - clanSink,
     noToolShare: mean(win.map((d) => d.idleNoTool / Math.max(1, d.players))),
     idleShare: mean(win.map((d) => d.idle / Math.max(1, d.players))),
     forgeShare: mean(win.map((d) => (d.workMin.smithing ?? 0) / totalWork(d))),
@@ -185,6 +199,7 @@ a { color: var(--market); }
           <li><b>Récolteur « XP »</b> : prend toujours la récolte qui rapporte le plus d’XP, vend ce qu’il a, répond aux commandes PNJ de son métier.</li>
           <li><b>Récolteur « marchand »</b> (3 sur 10) : choisit la récolte qui se vendrait le mieux à la seconde.</li>
           <li><b>Artisan</b> (Forge, Menuiserie, Cuisine) : prend la fabrication qui rapporte le plus d’XP sans perdre la moitié de sa mise, achète ses ingrédients au marché, récolte en attendant.</li>
+          <li><b>Clans</b> : 7 joueurs sur 10 sont dans un clan (par groupes de 5 à 10) et apportent chaque jour la moitié de leur or au-dessus de 300, plus leurs matériaux, aux bâtiments (le leur d’abord, puis la halle) ; ils achètent au marché les matériaux qui manquent.</li>
           <li>Tous : achètent ou entretiennent leur outil, mangent des repas s’ils valent leur prix, ajustent leurs prix chaque jour (vendu en entier : +6 %, presque rien : −12 %), recyclent un stock invendable.</li>
           <li>60 % sont là au jour 0, les autres arrivent au fil des deux premiers mois : on mesure leurs débuts.</li>
         </ul>
@@ -288,7 +303,7 @@ $('intro').textContent = 'Des joueurs simulés jouent chaque jour avec les règl
 const kpi = (cls, value, label) => '<div class="kpi ' + cls + '"><b>' + value + '</b><span>' + label + '</span></div>';
 $('kpis').innerHTML = [
   kpi(S.netPerPlayerDay > 50 ? 'alert' : '', n(S.netPerPlayerDay), 'or créé par joueur et par jour (entrées moins sorties)'),
-  kpi('', n(S.goldPerPlayer), 'or par joueur à la fin'),
+  kpi('', n(S.goldClan), 'or d’un membre de clan à la fin (sans clan : ' + n(S.goldAlone) + ')'),
   kpi(S.inflowNpc > 10 * (S.outflowTax + S.outflowPnj + S.outflowStall) ? 'alert' : 'warn', pct(S.inflowNpc / (S.inflowNpc + S.outflowTax)), 'de l’or du marché vient des commandes PNJ, pas des joueurs'),
   kpi(S.priceRatio < 0.5 ? 'alert' : 'good', nf2.format(S.priceRatio), 'prix moyen / prix de référence (médiane des 10 objets les plus échangés)'),
   kpi(S.noToolShare > 0.15 ? 'warn' : 'good', pct(S.noToolShare), 'des joueurs sans outil en état en fin de journée'),
@@ -335,6 +350,7 @@ lines('chFlows', [
   { name: 'Entrée : commandes PNJ', values: perP((d) => d.gold.npc), color: 'var(--good)' },
   { name: 'Sortie : taxe du marché', values: perP((d) => d.gold.tax), color: 'var(--copper)' },
   { name: 'Sortie : réparations PNJ et étal', values: perP((d) => d.gold.pnjRepair + d.gold.stall), color: 'var(--alert)' },
+  { name: 'Sortie : bâtiments de clan', values: perP((d) => d.gold.clan), color: 'var(--clan)' },
 ], { legend: 'lgFlows', label: 'Flux d’or par joueur et par jour' });
 lines('chSupply', [{ name: 'Or en circulation par joueur', values: days.map((d) => d.goldSupply / Math.max(1, d.players)), color: 'var(--gold)', area: true }], { legend: 'lgSupply', label: 'Or par joueur' });
 
@@ -385,7 +401,7 @@ $('newKpis').innerHTML = [
   kpi('', String(S.newcomers), 'joueurs arrivés après le jour 1'),
   kpi(S.firstToolDays === null ? 'alert' : S.firstToolDays > 3 ? 'warn' : 'good', S.firstToolDays === null ? '—' : nf1.format(S.firstToolDays) + ' j', 'avant le premier outil en état'),
   kpi(S.noToolEver ? 'warn' : 'good', String(S.noToolEver), 'jamais équipés'),
-  kpi('', S.day500 === null ? '—' : nf1.format(S.day500) + ' j', 'pour atteindre 500 or'),
+  kpi('', S.day500 === null ? '—' : nf1.format(S.day500) + ' j', 'pour avoir gagné 500 or (commandes et ventes)'),
 ].join('');
 
 // --- Taille du serveur ---

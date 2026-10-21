@@ -4,7 +4,8 @@
   "name": "Heaume de fantassin (Cendres persistantes)",
   "colorRoles": [
     "metal",
-    "trim"
+    "trim",
+    "coatDark"
   ],
   "anchor": [
     0,

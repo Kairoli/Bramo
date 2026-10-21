@@ -1,14 +1,14 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 760">
-  <!-- Épaulière proche : trois lames bombées, bord galonné. -->
+  <!-- Épaulière proche : trois lames bombées qui se recouvrent, bord galonné, rivets. -->
   <g id="pauldron">
-    <path d="M132 190 Q142 160 176 164 Q190 176 186 200 Q160 190 138 204 Z" fill="var(--c-metal)"/>
-    <path d="M132 190 Q142 160 176 164 Q190 176 186 200 Q160 190 138 204 Z" fill="url(#rig-light)"/>
-    <path d="M134 204 Q160 192 188 202 Q188 218 182 226 Q158 214 138 224 Z" fill="var(--c-metal)"/>
-    <path d="M134 204 Q160 192 188 202 Q188 218 182 226 Q158 214 138 224 Z" fill="#000" opacity=".34"/>
-    <path d="M136 222 Q158 210 182 224 L178 238 Q158 228 140 238 Z" fill="var(--c-metal)"/>
-    <path d="M136 222 Q158 210 182 224 L178 238 Q158 228 140 238 Z" fill="#000" opacity=".48"/>
-    <path d="M132 190 Q142 160 176 164" stroke="var(--c-trim)" stroke-width="2.4" fill="none"/>
-    <circle cx="156" cy="180" r="2" fill="#F1F0EC" opacity=".5"/>
+    <path d="M128 192 Q138 156 178 160 Q194 174 190 202 Q160 190 134 208 Z" fill="var(--c-metal)"/><path d="M128 192 Q138 156 178 160 Q194 174 190 202 Q160 190 134 208 Z" fill="url(#rig-sheen)"/><path d="M128 192 Q138 156 178 160 Q194 174 190 202 Q160 190 134 208 Z" fill="none" stroke="#000" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.5"/>
+    <path d="M134 190 Q144 168 172 166" fill="none" stroke="#F1F0EC" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.5"/>
+    <path d="M130 206 Q160 192 192 204 Q192 222 185 230 Q160 216 136 228 Z" fill="var(--c-metal)"/><path d="M130 206 Q160 192 192 204 Q192 222 185 230 Q160 216 136 228 Z" fill="url(#rig-sheen)"/><path d="M130 206 Q160 192 192 204 Q192 222 185 230 Q160 216 136 228 Z" fill="none" stroke="#000" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.45"/>
+    <path d="M130 206 Q160 192 192 204 L190 212 Q160 200 131 214 Z" fill="#000" opacity="0.3"/>
+    <path d="M133 226 Q160 212 186 228 L182 244 Q160 232 139 244 Z" fill="var(--c-metal)"/><path d="M133 226 Q160 212 186 228 L182 244 Q160 232 139 244 Z" fill="url(#rig-sheen)"/><path d="M133 226 Q160 212 186 228 L182 244 Q160 232 139 244 Z" fill="none" stroke="#000" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.45"/>
+    <path d="M133 226 Q160 212 186 228 L184 236 Q160 224 135 235 Z" fill="#000" opacity="0.3"/>
+    <path d="M128 192 Q138 156 178 160" fill="none" stroke="var(--c-trim)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="152" cy="178" r="1.9" fill="#F1F0EC" opacity="0.55"/><circle cx="170" cy="172" r="1.9" fill="#F1F0EC" opacity="0.55"/><circle cx="160" cy="220" r="1.9" fill="#F1F0EC" opacity="0.55"/>
     <path d="M136 192 Q146 168 174 168" stroke="#F1F0EC" stroke-opacity=".28" stroke-width="2" fill="none" stroke-linecap="round"/><circle cx="148" cy="182" r="1.8" fill="#F1F0EC"/><circle cx="168" cy="176" r="1.8" fill="#F1F0EC"/>
   </g>
 </svg>

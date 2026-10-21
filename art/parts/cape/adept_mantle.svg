@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 760">
+  <!-- Mantelet d'adepte : demi-cape de tissu sur les épaules, bord galonné, fermoir à gemme. -->
+  <g id="front">
+    <path d="M236 148 Q254 160 250 190 L226 238 L208 268 L184 300 L160 326 L146 302 L134 264 Q122 212 138 172 Q158 150 188 146 Z" fill="var(--c-mantle)"/><path d="M236 148 Q254 160 250 190 L226 238 L208 268 L184 300 L160 326 L146 302 L134 264 Q122 212 138 172 Q158 150 188 146 Z" fill="url(#rig-weave)"/><path d="M236 148 Q254 160 250 190 L226 238 L208 268 L184 300 L160 326 L146 302 L134 264 Q122 212 138 172 Q158 150 188 146 Z" fill="url(#rig-fold)"/><path d="M236 148 Q254 160 250 190 L226 238 L208 268 L184 300 L160 326 L146 302 L134 264 Q122 212 138 172 Q158 150 188 146 Z" fill="none" stroke="#000" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.35"/>
+    <path d="M138 172 Q122 212 134 264 L146 302 Q150 230 170 170 Z" fill="#000" opacity="0.28"/>
+    <path d="M146 200 Q172 184 208 190 M150 238 Q172 226 198 232 M160 280 Q178 268 200 272" fill="none" stroke="#000" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.24"/>
+    <path d="M250 190 L226 238 L208 268 L184 300 L160 326 L146 302 L134 264" fill="none" stroke="var(--c-trim)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="224" cy="170" r="8" fill="var(--c-metal)"/><circle cx="224" cy="170" r="8" fill="url(#rig-sheen)"/><circle cx="224" cy="170" r="3.5" fill="var(--c-glow)" class="fx-pulse"/>
+  </g>
+</svg>

@@ -1,0 +1,20 @@
+{
+  "id": "trail_mantlet",
+  "slot": "shoulder_near",
+  "name": "Épaulette de piste",
+  "colorRoles": [
+    "leather",
+    "trim"
+  ],
+  "anchor": [
+    0,
+    0
+  ],
+  "layers": [
+    {
+      "id": "pad",
+      "bone": "upperarm_near",
+      "z": 75
+    }
+  ]
+}

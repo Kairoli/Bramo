@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 760">
+  <!-- Bandes d'adepte : bandes de tissu enroulées au poignet, nœud et rune. -->
+  <g id="far">
+    <path d="M310 236 L325 220 L350 243 L335 260 Z" fill="var(--c-under)"/><path d="M310 236 L325 220 L350 243 L335 260 Z" fill="url(#rig-weave)"/><path d="M310 236 L325 220 L350 243 L335 260 Z" fill="url(#rig-fold)"/><path d="M310 236 L325 220 L350 243 L335 260 Z" fill="none" stroke="#000" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.35"/>
+    <path d="M316 242 L331 227 M322 249 L337 234" fill="none" stroke="#000" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.3"/>
+    <path d="M322 246 L324.4 241.2 L326.8 246 M323.2 243.6 L326.2 243.6" fill="none" stroke="var(--c-glow)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.9"/>
+  </g>
+  <g id="near">
+    <path d="M124 350 L160 355 L158 378 L121 372 Z" fill="var(--c-under)"/><path d="M124 350 L160 355 L158 378 L121 372 Z" fill="url(#rig-weave)"/><path d="M124 350 L160 355 L158 378 L121 372 Z" fill="url(#rig-fold)"/><path d="M124 350 L160 355 L158 378 L121 372 Z" fill="none" stroke="#000" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.35"/>
+    <path d="M126 358 L158 363 M125 366 L157 371" fill="none" stroke="#000" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.3"/>
+    <path d="M126 371 Q120 388 130 396 L152 395 Q159 385 156 371 Z" fill="var(--c-under)"/><path d="M126 371 Q120 388 130 396 L152 395 Q159 385 156 371 Z" fill="url(#rig-weave)"/><path d="M126 371 Q120 388 130 396 L152 395 Q159 385 156 371 Z" fill="url(#rig-fold)"/><path d="M126 371 Q120 388 130 396 L152 395 Q159 385 156 371 Z" fill="none" stroke="#000" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.35"/>
+    <path d="M128 380 L154 379 M129 388 L153 387" fill="none" stroke="#000" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.3"/>
+    <path d="M133 375 L135.4 370.2 L137.8 375 M134.2 372.6 L137.2 372.6" fill="none" stroke="var(--c-glow)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.9"/>
+  </g>
+</svg>

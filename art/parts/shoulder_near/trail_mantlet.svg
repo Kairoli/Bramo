@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 760">
+  <!-- Épaulette de piste : deux lames de cuir cousues. -->
+  <g id="pad">
+    <path d="M132 194 Q142 162 178 164 Q194 176 188 204 Q160 192 136 208 Z" fill="var(--c-leather)"/><path d="M132 194 Q142 162 178 164 Q194 176 188 204 Q160 192 136 208 Z" fill="url(#rig-grain)"/><path d="M132 194 Q142 162 178 164 Q194 176 188 204 Q160 192 136 208 Z" fill="none" stroke="#000" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.4"/>
+    <path d="M134 208 Q162 194 190 206 L186 230 Q160 216 140 230 Z" fill="var(--c-leather)"/><path d="M134 208 Q162 194 190 206 L186 230 Q160 216 140 230 Z" fill="url(#rig-grain)"/><path d="M134 208 Q162 194 190 206 L186 230 Q160 216 140 230 Z" fill="none" stroke="#000" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.4"/>
+    <path d="M140 196 Q150 174 174 172 M142 214 Q162 204 184 212" fill="none" stroke="#000" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.3" stroke-dasharray="3 3"/>
+    <path d="M132 194 Q142 162 178 164" fill="none" stroke="var(--c-trim)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="156" cy="182" r="1.5" fill="var(--c-trim)" opacity="0.9"/><circle cx="168" cy="178" r="1.5" fill="var(--c-trim)" opacity="0.9"/><circle cx="158" cy="218" r="1.5" fill="var(--c-trim)" opacity="0.9"/>
+  </g>
+</svg>

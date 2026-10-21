@@ -93,6 +93,10 @@ Pièges : pas de `--` dans un commentaire XML (le fichier entier serait refusé)
 
 Classes CSS utilisables dans les pièces : `fx-pulse` (lueur), `fx-hover` (flotte), `fx-spin`, `fx-spin-back`, `fx-orbit` (rotation sur soi ; pour une orbite, inclure un cercle invisible centré), `fx-rise` (particule qui monte). Elles se coupent avec « réduire les animations ». Les animations de repos (en images clés) continuent, à 40 % d'amplitude, avec ce réglage : une page web ne peut pas réactiver les effets d'animation de Windows, et un personnage totalement figé fait un jeu mort.
 
+## Jeux de base des trois classes (deuxième passe, 21 octobre)
+
+`art/draw.mjs` (aides de dessin : plaque, cuir, tissu, mailles, rivets, galon) et trois générateurs : `make_plate.mjs` (+ `make_plate_variants.mjs`) pour l'**Armure** du Forgefeu, `make_trail.mjs` pour la **Tenue de piste** du Traqueur (`trail_*`), `make_adept.mjs` pour la **Robe** du Runiste (`adept_*`). Les matières partagées (`rig-sheen`, `rig-fold`, `rig-grain`, `rig-weave`, `rig-mail`) sont définies dans `RigDefs` (`apps/web/src/rig/Character.tsx`) : une pièce les utilise par `url(#rig-…)` sans définir de dégradé. Tenues d'essai `sketch_trail` et `sketch_adept` (masquées du choix de tenue). Coût de rendu : environ le double des tenues de départ actuelles (dix copies : 14 à 16 images par seconde contre 29). Planche : `docs/design/catalogue/esquisses.html`.
+
 ## Esquisses d'équipement (famille Armure)
 
 `art/make_plate.mjs` génère les pièces de l'Armure (heaume, plastron, gantelets, jambières, solerets, tabard, ceinturon, épaulière) ; les fichiers générés se retouchent à la main ensuite. Elles introduisent l'emplacement **`legs`** (cuissots et grèves, os `thigh_*` et `shin_*`, z 16-22) pour les jambières. Trois tenues d'essai `sketch_armor_1/10/20` (bronze, fer, acier) dans `data/cosmetics.yaml` : seule la palette change avec le palier. Elles ne sont pas proposées au joueur (le choix de tenue masque les ids en `sketch_`). Planche : `docs/design/catalogue/esquisses.html`.

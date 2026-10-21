@@ -300,3 +300,50 @@ outfits:
       cape: battle_cloak
       shoulder_far: forge_pauldron
       shoulder_near: plate_pauldron_near
+
+  # Esquisse du jeu de base du Traqueur (Tenue de piste) : ne fait pas partie des tenues du jeu.
+  - id: sketch_trail
+    name: Tenue de piste (esquisse)
+    subtitle: Jeu de base du Traqueur
+    classes: [tracker]
+    palette:
+      coat: "#5C6A48"
+      coatDark: "#364030"
+      mantle: "#6A5638"
+      under: "#B9A77C"
+      trim: "#7ED6A2"
+      metal: "#98A39D"
+      beard: "#4A3426"
+    parts:
+      headwear: trail_hood
+      face: ranger_stubble
+      top: trail_jerkin
+      belt: trail_belt
+      legs: trail_trousers
+      gloves: trail_gloves
+      boots: trail_boots
+      cape: trail_cloak
+      shoulder_near: trail_mantlet
+
+  # Esquisse du jeu de base du Runiste (Robe) : ne fait pas partie des tenues du jeu.
+  - id: sketch_adept
+    name: Robe d'adepte (esquisse)
+    subtitle: Jeu de base du Runiste
+    classes: [runist]
+    palette:
+      coat: "#3E4C5A"
+      coatDark: "#26303A"
+      mantle: "#5A4636"
+      under: "#6B5A86"
+      trim: "#F08A4B"
+      metal: "#8C9497"
+      beard: "#3B2A22"
+    parts:
+      headwear: adept_cowl
+      face: bearded
+      top: adept_tunic
+      belt: adept_sash
+      robe: adept_skirt
+      gloves: adept_wraps
+      boots: adept_shoes
+      cape: adept_mantle

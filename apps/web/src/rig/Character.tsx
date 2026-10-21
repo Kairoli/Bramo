@@ -93,6 +93,32 @@ export function RigDefs({ uid }: { uid: string }) {
         <stop offset=".45" stopColor="var(--c-glow)" stopOpacity="0" />
         <stop offset="1" stopColor="var(--c-glow)" stopOpacity=".22" />
       </linearGradient>
+      {/* Matières partagées, sans couleur propre : reflet de métal (diagonale), grain de cuir, tissage, mailles. */}
+      <linearGradient id={`${uid}-rig-sheen`} x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stopColor="#fff" stopOpacity=".34" />
+        <stop offset=".3" stopColor="#fff" stopOpacity=".06" />
+        <stop offset=".62" stopColor="#000" stopOpacity="0" />
+        <stop offset="1" stopColor="#000" stopOpacity=".34" />
+      </linearGradient>
+      <linearGradient id={`${uid}-rig-fold`} x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0" stopColor="#000" stopOpacity=".3" />
+        <stop offset=".35" stopColor="#fff" stopOpacity=".08" />
+        <stop offset=".6" stopColor="#000" stopOpacity=".18" />
+        <stop offset="1" stopColor="#fff" stopOpacity=".06" />
+      </linearGradient>
+      <pattern id={`${uid}-rig-grain`} width="7" height="7" patternUnits="userSpaceOnUse">
+        <circle cx="1.4" cy="1.6" r=".8" fill="#000" fillOpacity=".2" />
+        <circle cx="5" cy="4.6" r=".7" fill="#fff" fillOpacity=".12" />
+        <circle cx="3" cy="6" r=".5" fill="#000" fillOpacity=".14" />
+      </pattern>
+      <pattern id={`${uid}-rig-weave`} width="5" height="5" patternUnits="userSpaceOnUse" patternTransform="rotate(32)">
+        <path d="M0 .5H5" stroke="#000" strokeOpacity=".2" strokeWidth=".8" />
+        <path d="M.5 0V5" stroke="#fff" strokeOpacity=".1" strokeWidth=".8" />
+      </pattern>
+      <pattern id={`${uid}-rig-mail`} width="6" height="5" patternUnits="userSpaceOnUse">
+        <path d="M0 3.6Q3 -.4 6 3.6" fill="none" stroke="#000" strokeOpacity=".32" strokeWidth=".9" />
+        <path d="M0 1.4Q3 -2.6 6 1.4" fill="none" stroke="#fff" strokeOpacity=".12" strokeWidth=".7" />
+      </pattern>
       <linearGradient id={`${uid}-rig-hood`} x1="0" y1="0" x2="0" y2="1">
         <stop offset="0" stopColor="#0B0D10" stopOpacity=".92" />
         <stop offset=".75" stopColor="#0B0D10" stopOpacity=".75" />

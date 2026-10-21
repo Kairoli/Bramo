@@ -5,7 +5,8 @@
   "colorRoles": [
     "metal",
     "coatDark",
-    "trim"
+    "trim",
+    "coat"
   ],
   "anchor": [
     0,

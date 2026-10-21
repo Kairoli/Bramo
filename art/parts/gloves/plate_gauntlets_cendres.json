@@ -4,7 +4,8 @@
   "name": "Gantelets de plates (Cendres persistantes)",
   "colorRoles": [
     "metal",
-    "trim"
+    "trim",
+    "leather"
   ],
   "anchor": [
     0,

@@ -1,0 +1,22 @@
+{
+  "id": "adept_mantle",
+  "slot": "cape",
+  "name": "Mantelet d'adepte",
+  "colorRoles": [
+    "mantle",
+    "trim",
+    "metal",
+    "glow"
+  ],
+  "anchor": [
+    0,
+    0
+  ],
+  "layers": [
+    {
+      "id": "front",
+      "bone": "cape",
+      "z": 74
+    }
+  ]
+}

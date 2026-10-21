@@ -1,0 +1,28 @@
+{
+  "id": "adept_sash",
+  "slot": "belt",
+  "name": "Cordon d'adepte",
+  "colorRoles": [
+    "leather",
+    "metal",
+    "trim",
+    "stone"
+  ],
+  "anchor": [
+    0,
+    0
+  ],
+  "layers": [
+    {
+      "id": "belt",
+      "bone": "pelvis",
+      "z": 40
+    },
+    {
+      "id": "stones",
+      "bone": "pelvis",
+      "z": 41,
+      "detail": 2
+    }
+  ]
+}

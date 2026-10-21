@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 760">
+  <!-- Cape de piste : tissu épais déchiqueté, plis, lanière de cuir à l'épaule. -->
+  <g id="back">
+    <path d="M166 160 Q146 230 138 330 L150 318 L156 350 L170 328 L182 360 L196 334 L210 362 L224 336 L238 352 L246 320 L248 168 Z" fill="var(--c-mantle)"/><path d="M166 160 Q146 230 138 330 L150 318 L156 350 L170 328 L182 360 L196 334 L210 362 L224 336 L238 352 L246 320 L248 168 Z" fill="url(#rig-weave)"/><path d="M166 160 Q146 230 138 330 L150 318 L156 350 L170 328 L182 360 L196 334 L210 362 L224 336 L238 352 L246 320 L248 168 Z" fill="url(#rig-fold)"/><path d="M166 160 Q146 230 138 330 L150 318 L156 350 L170 328 L182 360 L196 334 L210 362 L224 336 L238 352 L246 320 L248 168 Z" fill="none" stroke="#000" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.35"/>
+    <path d="M166 160 Q146 230 138 330 L150 318 L156 350 Q150 270 184 190 Z" fill="#000" opacity="0.28"/>
+    <path d="M178 210 Q170 280 166 340 M208 196 Q204 280 208 350 M232 220 Q230 290 236 340" fill="none" stroke="#000" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.24"/>
+    <path d="M138 330 L150 318 L156 350 L170 328 L182 360 L196 334 L210 362 L224 336 L238 352 L246 320" fill="none" stroke="var(--c-trim)" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.55"/>
+  </g>
+  <g id="front">
+    <path d="M170 164 L246 174 L246 182 L170 172 Z" fill="var(--c-leather)"/><path d="M170 164 L246 174 L246 182 L170 172 Z" fill="url(#rig-grain)"/><path d="M170 164 L246 174 L246 182 L170 172 Z" fill="none" stroke="#000" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.4"/>
+    <circle cx="178" cy="170" r="5" fill="var(--c-metal)"/><circle cx="178" cy="170" r="2" fill="var(--c-trim)"/>
+    <circle cx="200" cy="172" r="1.4" fill="#F1F0EC" opacity="0.55"/><circle cx="224" cy="176" r="1.4" fill="#F1F0EC" opacity="0.55"/>
+  </g>
+</svg>

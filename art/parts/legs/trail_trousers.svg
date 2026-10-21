@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 760">
+  <!-- Pantalon de piste : cuir souple, genouillères cousues, sangle de cuisse, lacets de côté. -->
+  <g id="thigh_far">
+    <path d="M208 330 L250 330 L254 562 L216 562 Z" fill="var(--c-coat-dark)"/><path d="M208 330 L250 330 L254 562 L216 562 Z" fill="url(#rig-weave)"/><path d="M208 330 L250 330 L254 562 L216 562 Z" fill="url(#rig-fold)"/><path d="M208 330 L250 330 L254 562 L216 562 Z" fill="none" stroke="#000" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.35"/>
+    <path d="M208 330 L250 330 L254 562 L216 562 Z" fill="#000" opacity="0.2"/>
+    <path d="M209 410 L252 408 L252 422 L210 424 Z" fill="var(--c-leather)"/><path d="M209 410 L252 408 L252 422 L210 424 Z" fill="url(#rig-grain)"/><path d="M209 410 L252 408 L252 422 L210 424 Z" fill="none" stroke="#000" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.4"/>
+    <path d="M212 336 L216 556" fill="none" stroke="#000" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.25" stroke-dasharray="3 3"/>
+  </g>
+  <g id="shin_far">
+    <path d="M214 552 L258 552 L260 612 L220 612 Z" fill="var(--c-coat-dark)"/><path d="M214 552 L258 552 L260 612 L220 612 Z" fill="url(#rig-weave)"/><path d="M214 552 L258 552 L260 612 L220 612 Z" fill="url(#rig-fold)"/><path d="M214 552 L258 552 L260 612 L220 612 Z" fill="none" stroke="#000" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.35"/>
+    <path d="M212 548 Q234 536 258 548 L256 580 Q234 590 214 580 Z" fill="var(--c-leather)"/><path d="M212 548 Q234 536 258 548 L256 580 Q234 590 214 580 Z" fill="url(#rig-grain)"/><path d="M212 548 Q234 536 258 548 L256 580 Q234 590 214 580 Z" fill="none" stroke="#000" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.4"/>
+    <circle cx="222" cy="556" r="1.5" fill="#F1F0EC" opacity="0.55"/><circle cx="248" cy="556" r="1.5" fill="#F1F0EC" opacity="0.55"/>
+  </g>
+  <g id="thigh_near">
+    <path d="M154 332 L210 332 L204 564 L162 564 Z" fill="var(--c-coat)"/><path d="M154 332 L210 332 L204 564 L162 564 Z" fill="url(#rig-weave)"/><path d="M154 332 L210 332 L204 564 L162 564 Z" fill="url(#rig-fold)"/><path d="M154 332 L210 332 L204 564 L162 564 Z" fill="none" stroke="#000" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.35"/>
+    <path d="M154 332 L172 332 L170 564 L162 564 Z" fill="#000" opacity="0.24"/>
+    <path d="M154 332 L210 332 L204 564 L162 564 Z" fill="url(#rig-light)"/>
+    <path d="M154 408 L209 406 L208 422 L156 424 Z" fill="var(--c-leather)"/><path d="M154 408 L209 406 L208 422 L156 424 Z" fill="url(#rig-grain)"/><path d="M154 408 L209 406 L208 422 L156 424 Z" fill="none" stroke="#000" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.4"/>
+    <circle cx="162" cy="414" r="1.5" fill="var(--c-trim)" opacity="0.9"/><circle cx="200" cy="412" r="1.5" fill="var(--c-trim)" opacity="0.9"/>
+    <path d="M200 338 L196 556" fill="none" stroke="var(--c-leather)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="4 3"/>
+    <path d="M160 338 L166 556" fill="none" stroke="#000" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.22"/>
+  </g>
+  <g id="shin_near">
+    <path d="M152 546 Q180 530 210 546 L206 584 Q180 596 156 584 Z" fill="var(--c-leather)"/><path d="M152 546 Q180 530 210 546 L206 584 Q180 596 156 584 Z" fill="url(#rig-grain)"/><path d="M152 546 Q180 530 210 546 L206 584 Q180 596 156 584 Z" fill="none" stroke="#000" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.4"/>
+    <path d="M158 552 Q180 540 204 552" fill="none" stroke="#000" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.3" stroke-dasharray="3 3"/>
+    <circle cx="166" cy="560" r="1.5" fill="var(--c-trim)" opacity="0.9"/><circle cx="194" cy="560" r="1.5" fill="var(--c-trim)" opacity="0.9"/>
+    <path d="M158 584 L208 586 L204 650 L164 648 Z" fill="var(--c-coat)"/><path d="M158 584 L208 586 L204 650 L164 648 Z" fill="url(#rig-weave)"/><path d="M158 584 L208 586 L204 650 L164 648 Z" fill="url(#rig-fold)"/><path d="M158 584 L208 586 L204 650 L164 648 Z" fill="none" stroke="#000" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.35"/>
+    <path d="M158 584 L170 584 L168 650 L164 648 Z" fill="#000" opacity="0.2"/>
+  </g>
+</svg>

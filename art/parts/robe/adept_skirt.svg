@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 760">
+  <!-- Jupe d'adepte : longs plis de tissu, ourlet galonné brodé de runes, fente de marche. -->
+  <g id="back">
+    <path d="M150 316 L258 316 L312 636 Q206 656 100 636 Z" fill="var(--c-coat-dark)"/><path d="M150 316 L258 316 L312 636 Q206 656 100 636 Z" fill="url(#rig-weave)"/><path d="M150 316 L258 316 L312 636 Q206 656 100 636 Z" fill="url(#rig-fold)"/><path d="M150 316 L258 316 L312 636 Q206 656 100 636 Z" fill="none" stroke="#000" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.35"/>
+    <path d="M170 330 L140 630 M206 330 L204 642 M242 330 L272 630" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.25"/>
+    <path d="M100 636 Q206 656 312 636" fill="none" stroke="var(--c-trim)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+  <g id="flap_far">
+    <path d="M250 298 L210 310 L234 624 Q284 640 326 614 Q296 450 250 298 Z" fill="var(--c-coat)"/><path d="M250 298 L210 310 L234 624 Q284 640 326 614 Q296 450 250 298 Z" fill="url(#rig-weave)"/><path d="M250 298 L210 310 L234 624 Q284 640 326 614 Q296 450 250 298 Z" fill="url(#rig-fold)"/><path d="M250 298 L210 310 L234 624 Q284 640 326 614 Q296 450 250 298 Z" fill="none" stroke="#000" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.35"/>
+    <path d="M250 298 L210 310 L234 624 Q284 640 326 614 Q296 450 250 298 Z" fill="url(#rig-light)"/>
+    <path d="M240 330 L248 618 M262 340 L284 620 M276 400 L308 612" fill="none" stroke="#000" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.22"/>
+    <path d="M246 330 L254 618 M268 340 L290 618" fill="none" stroke="#F1F0EC" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.08"/>
+    <path d="M234 624 Q284 640 326 614" fill="none" stroke="var(--c-trim)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M326 612 Q296 450 252 304" fill="none" stroke="var(--c-glow)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.55"/>
+    <path d="M246 598 L250.4 589.2 L254.8 598 M248.2 593.6 L253.7 593.6" fill="none" stroke="var(--c-glow)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.85"/>
+    <path d="M276 604 L280.4 595.2 L284.8 604 M278.2 599.6 L283.7 599.6" fill="none" stroke="var(--c-glow)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.85"/>
+    <path d="M304 594 L308.4 585.2 L312.8 594 M306.2 589.6 L311.7 589.6" fill="none" stroke="var(--c-glow)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.85"/>
+  </g>
+  <g id="flap_near">
+    <path d="M160 298 L202 310 L182 628 Q140 636 98 618 Q120 450 160 298 Z" fill="var(--c-coat)"/><path d="M160 298 L202 310 L182 628 Q140 636 98 618 Q120 450 160 298 Z" fill="url(#rig-weave)"/><path d="M160 298 L202 310 L182 628 Q140 636 98 618 Q120 450 160 298 Z" fill="url(#rig-fold)"/><path d="M160 298 L202 310 L182 628 Q140 636 98 618 Q120 450 160 298 Z" fill="none" stroke="#000" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.35"/>
+    <path d="M160 298 L202 310 L182 628 Q140 636 98 618 Q120 450 160 298 Z" fill="url(#rig-shade)"/>
+    <path d="M172 330 L130 612 M186 336 L160 622 M146 380 L112 604" fill="none" stroke="#000" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.24"/>
+    <path d="M202 310 L182 628 Q140 636 98 618" fill="none" stroke="var(--c-trim)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M196 330 L180 620" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.3"/>
+    <path d="M112 596 L116.4 587.2 L120.8 596 M114.2 591.6 L119.7 591.6" fill="none" stroke="var(--c-glow)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.85"/>
+    <path d="M140 606 L144.4 597.2 L148.8 606 M142.2 601.6 L147.7 601.6" fill="none" stroke="var(--c-glow)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.85"/>
+    <path d="M164 608 L168.4 599.2 L172.8 608 M166.2 603.6 L171.7 603.6" fill="none" stroke="var(--c-glow)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.85"/>
+  </g>
+</svg>

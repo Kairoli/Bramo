@@ -1,0 +1,27 @@
+{
+  "id": "trail_belt",
+  "slot": "belt",
+  "name": "Ceinture de piste",
+  "colorRoles": [
+    "leather",
+    "metal",
+    "trim"
+  ],
+  "anchor": [
+    0,
+    0
+  ],
+  "layers": [
+    {
+      "id": "belt",
+      "bone": "pelvis",
+      "z": 40
+    },
+    {
+      "id": "pouches",
+      "bone": "pelvis",
+      "z": 41,
+      "detail": 2
+    }
+  ]
+}

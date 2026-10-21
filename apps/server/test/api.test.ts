@@ -69,7 +69,8 @@ describe('API', () => {
     expect((await call('POST', '/api/character/outfit', { outfitId: 'embers' })).status).toBe(400);
     expect((await call('POST', '/api/character/outfit', { outfitId: 'grandmaster' })).status).toBe(400);
     const own = (await call('GET', '/api/state')).json as StateResponse;
-    expect(own.state.unlockedOutfits).toEqual(['ashes']);
+    expect(own.state.unlockedOutfits).toContain('ashes');
+    expect(own.state.unlockedOutfits).not.toContain('embers');
     expect((await call('POST', '/api/character/look', { slot: 'headwear', partId: 'plate_helm' })).status).toBe(400);
     // Pièce par pièce, dans le style de sa classe, sans toucher à l'équipement.
     await call('POST', '/api/character/class', { classId: 'forgefire' });

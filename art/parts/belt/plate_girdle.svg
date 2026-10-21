@@ -1,20 +1,26 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 760">
-  <!-- Ceinturon d'armes : sangle large à boucle de plaque, tassettes pendantes. -->
+  <!-- Ceinturon d'armes : sangle large cousue, boucle de plaque, tassettes en lames. -->
   <g id="belt">
-    <path d="M152 290 Q206 304 260 290 L260 316 Q206 330 152 316 Z" fill="var(--c-leather)"/>
-    <path d="M152 290 Q206 304 260 290" stroke="var(--c-metal)" stroke-width="3" fill="none"/>
-    <path d="M196 288 L228 290 L228 322 L196 320 Z" fill="var(--c-metal)"/>
-    <path d="M196 288 L228 290 L228 322 L196 320 Z" fill="url(#rig-light)"/>
-    <path d="M203 296 L221 297 L221 314 L203 313 Z" fill="none" stroke="var(--c-trim)" stroke-width="2.4"/>
+    <path d="M150 288 Q206 304 262 288 L262 318 Q206 334 150 318 Z" fill="var(--c-leather)"/><path d="M150 288 Q206 304 262 288 L262 318 Q206 334 150 318 Z" fill="url(#rig-grain)"/><path d="M150 288 Q206 304 262 288 L262 318 Q206 334 150 318 Z" fill="none" stroke="#000" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.4"/>
+    <path d="M152 296 Q206 312 260 296 M152 311 Q206 327 260 311" fill="none" stroke="#000" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.3" stroke-dasharray="3 3"/>
+    <path d="M194 286 L230 288 L230 324 L194 322 Z" fill="var(--c-metal)"/><path d="M194 286 L230 288 L230 324 L194 322 Z" fill="url(#rig-sheen)"/><path d="M194 286 L230 288 L230 324 L194 322 Z" fill="none" stroke="#000" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.5"/>
+    <path d="M201 294 L223 295 L223 316 L201 315 Z" fill="var(--c-trim)"/><path d="M201 294 L223 295 L223 316 L201 315 Z" fill="url(#rig-sheen)"/><path d="M201 294 L223 295 L223 316 L201 315 Z" fill="none" stroke="#000" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.5"/>
+    <path d="M201 294 L223 295 L223 316 L201 315 Z" fill="#000" opacity="0.2"/>
+    <circle cx="160" cy="300" r="1.8" fill="#F1F0EC" opacity="0.55"/><circle cx="250" cy="300" r="1.8" fill="#F1F0EC" opacity="0.55"/><circle cx="196" cy="290" r="1.8" fill="#F1F0EC" opacity="0.55"/><circle cx="228" cy="292" r="1.8" fill="#F1F0EC" opacity="0.55"/>
     <path d="M160 304 L170 308 M240 306 L252 302" stroke="#000" stroke-opacity=".3" stroke-width="1.4" fill="none"/><circle cx="168" cy="298" r="1.8" fill="#F1F0EC"/><circle cx="186" cy="304" r="1.8" fill="#F1F0EC"/><circle cx="238" cy="304" r="1.8" fill="#F1F0EC"/><circle cx="252" cy="298" r="1.8" fill="#F1F0EC"/>
   </g>
   <g id="tassets">
-    <path d="M154 314 L196 322 L190 372 L152 360 Z" fill="var(--c-metal)"/>
-    <path d="M154 314 L196 322 L190 372 L152 360 Z" fill="url(#rig-shade)"/>
-    <path d="M153 338 L193 346" stroke="#000" stroke-opacity=".35" stroke-width="1.6"/>
-    <path d="M230 322 L262 314 L268 364 L234 372 Z" fill="var(--c-metal)"/>
-    <path d="M230 322 L262 314 L268 364 L234 372 Z" fill="#000" opacity=".25"/>
-    <path d="M231 346 L265 338" stroke="#000" stroke-opacity=".35" stroke-width="1.6"/>
-    <path d="M154 314 L196 322 M230 322 L262 314" stroke="var(--c-trim)" stroke-width="2"/>
+    <path d="M152 316 L198 324 L194 352 L150 342 Z" fill="var(--c-metal)"/><path d="M152 316 L198 324 L194 352 L150 342 Z" fill="url(#rig-sheen)"/><path d="M152 316 L198 324 L194 352 L150 342 Z" fill="none" stroke="#000" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.5"/>
+    <path d="M150 340 L194 350 L190 378 L148 366 Z" fill="var(--c-metal)"/><path d="M150 340 L194 350 L190 378 L148 366 Z" fill="url(#rig-sheen)"/><path d="M150 340 L194 350 L190 378 L148 366 Z" fill="none" stroke="#000" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.5"/>
+    <path d="M150 340 L194 350 L192 358 L149 348 Z" fill="#000" opacity="0.25"/>
+    <path d="M148 364 L190 376 L186 408 L145 394 Z" fill="var(--c-metal)"/><path d="M148 364 L190 376 L186 408 L145 394 Z" fill="url(#rig-sheen)"/><path d="M148 364 L190 376 L186 408 L145 394 Z" fill="none" stroke="#000" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.5"/>
+    <path d="M148 364 L190 376 L189 384 L147 372 Z" fill="#000" opacity="0.25"/>
+    <path d="M228 324 L264 316 L270 342 L232 352 Z" fill="var(--c-metal)"/><path d="M228 324 L264 316 L270 342 L232 352 Z" fill="url(#rig-sheen)"/><path d="M228 324 L264 316 L270 342 L232 352 Z" fill="none" stroke="#000" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.5"/>
+    <path d="M232 350 L270 340 L274 366 L236 378 Z" fill="var(--c-metal)"/><path d="M232 350 L270 340 L274 366 L236 378 Z" fill="url(#rig-sheen)"/><path d="M232 350 L270 340 L274 366 L236 378 Z" fill="none" stroke="#000" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.5"/>
+    <path d="M232 350 L270 340 L271 348 L233 358 Z" fill="#000" opacity="0.25"/>
+    <path d="M236 376 L274 364 L278 392 L240 406 Z" fill="var(--c-metal)"/><path d="M236 376 L274 364 L278 392 L240 406 Z" fill="url(#rig-sheen)"/><path d="M236 376 L274 364 L278 392 L240 406 Z" fill="none" stroke="#000" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.5"/>
+    <path d="M236 376 L274 364 L275 372 L237 384 Z" fill="#000" opacity="0.25"/>
+    <path d="M152 316 L198 324 M228 324 L264 316" fill="none" stroke="var(--c-trim)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="160" cy="326" r="1.7" fill="#F1F0EC" opacity="0.55"/><circle cx="186" cy="332" r="1.7" fill="#F1F0EC" opacity="0.55"/><circle cx="240" cy="332" r="1.7" fill="#F1F0EC" opacity="0.55"/><circle cx="258" cy="326" r="1.7" fill="#F1F0EC" opacity="0.55"/>
   </g>
 </svg>

@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 760">
+  <!-- Chaussons d'adepte : feutre souple, bout relevé, bord galonné. -->
+  <g id="far">
+    <path d="M218 644 L254 644 L258 664 L286 676 Q254 692 214 688 L218 664 Z" fill="var(--c-boots)"/><path d="M218 644 L254 644 L258 664 L286 676 Q254 692 214 688 L218 664 Z" fill="url(#rig-weave)"/><path d="M218 644 L254 644 L258 664 L286 676 Q254 692 214 688 L218 664 Z" fill="url(#rig-fold)"/><path d="M218 644 L254 644 L258 664 L286 676 Q254 692 214 688 L218 664 Z" fill="none" stroke="#000" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.35"/>
+    <path d="M218 644 L254 644" fill="none" stroke="var(--c-trim)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M214 688 Q254 694 286 676" fill="none" stroke="#16130F" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+  <g id="near">
+    <path d="M161 646 L199 646 L201 664 L232 680 Q194 698 156 692 L160 666 Z" fill="var(--c-boots)"/><path d="M161 646 L199 646 L201 664 L232 680 Q194 698 156 692 L160 666 Z" fill="url(#rig-weave)"/><path d="M161 646 L199 646 L201 664 L232 680 Q194 698 156 692 L160 666 Z" fill="url(#rig-fold)"/><path d="M161 646 L199 646 L201 664 L232 680 Q194 698 156 692 L160 666 Z" fill="none" stroke="#000" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.35"/>
+    <path d="M161 646 L171 646 L166 670 L160 666 Z" fill="#000" opacity="0.2"/>
+    <path d="M161 646 L199 646" fill="none" stroke="var(--c-trim)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M156 692 Q194 700 232 680" fill="none" stroke="#16130F" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+</svg>

@@ -4,7 +4,8 @@
   "name": "Heaume de fantassin (ouvrage épique)",
   "colorRoles": [
     "metal",
-    "trim"
+    "trim",
+    "coatDark"
   ],
   "anchor": [
     0,

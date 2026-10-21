@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 760">
+  <!-- Cordon d'adepte : large ceinture de tissu nouée, sceaux de pierre qui pendent. -->
+  <g id="belt">
+    <path d="M152 292 Q206 306 260 292 L260 316 Q206 330 152 316 Z" fill="var(--c-under)"/><path d="M152 292 Q206 306 260 292 L260 316 Q206 330 152 316 Z" fill="url(#rig-weave)"/><path d="M152 292 Q206 306 260 292 L260 316 Q206 330 152 316 Z" fill="url(#rig-fold)"/><path d="M152 292 Q206 306 260 292 L260 316 Q206 330 152 316 Z" fill="none" stroke="#000" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.35"/>
+    <path d="M154 300 Q206 314 258 300" fill="none" stroke="#000" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.25"/>
+    <path d="M152 292 Q206 306 260 292" fill="none" stroke="var(--c-trim)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M200 296 L226 298 L222 322 L204 320 Z" fill="var(--c-coat-dark)"/><path d="M200 296 L226 298 L222 322 L204 320 Z" fill="url(#rig-weave)"/><path d="M200 296 L226 298 L222 322 L204 320 Z" fill="url(#rig-fold)"/><path d="M200 296 L226 298 L222 322 L204 320 Z" fill="none" stroke="#000" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.35"/>
+    <path d="M200 296 L226 298 L222 322 L204 320 Z" fill="#000" opacity="0.15"/>
+    <path d="M208 304 L218 305 L216 316 L209 315 Z" fill="var(--c-trim)"/>
+  </g>
+  <g id="stones">
+    <path d="M232 318 L240 372 M246 316 L254 366" fill="none" stroke="var(--c-leather)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+    <rect x="233" y="366" width="14" height="18" rx="3" fill="var(--c-stone)"/><rect x="233" y="366" width="14" height="18" rx="3" fill="url(#rig-sheen)"/>
+    <path d="M236 380 L239.2 373.6 L242.4 380 M237.6 376.8 L241.6 376.8" fill="none" stroke="var(--c-glow)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.9"/>
+    <rect x="248" y="360" width="12" height="16" rx="3" fill="var(--c-stone)"/><rect x="248" y="360" width="12" height="16" rx="3" fill="url(#rig-sheen)"/>
+    <path d="M250 373 L252.8 367.4 L255.6 373 M251.4 370.2 L254.9 370.2" fill="none" stroke="var(--c-glow)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.9"/>
+  </g>
+</svg>

@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 760">
+  <!-- Ceinture de piste : sangle large, boucle ronde, bourses et fourreau de couteau. -->
+  <g id="belt">
+    <path d="M150 290 Q206 304 262 290 L262 316 Q206 330 150 316 Z" fill="var(--c-leather)"/><path d="M150 290 Q206 304 262 290 L262 316 Q206 330 150 316 Z" fill="url(#rig-grain)"/><path d="M150 290 Q206 304 262 290 L262 316 Q206 330 150 316 Z" fill="none" stroke="#000" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.4"/>
+    <path d="M152 298 Q206 312 260 298" fill="none" stroke="#000" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.3" stroke-dasharray="3 3"/>
+    <circle cx="214" cy="306" r="10" fill="var(--c-metal)"/><circle cx="214" cy="306" r="10" fill="url(#rig-sheen)"/><circle cx="214" cy="306" r="5" fill="none" stroke="#000" stroke-opacity=".4" stroke-width="1.5"/>
+  </g>
+  <g id="pouches">
+    <path d="M156 314 L184 318 L182 352 Q168 358 156 350 Z" fill="var(--c-coat-dark)"/><path d="M156 314 L184 318 L182 352 Q168 358 156 350 Z" fill="url(#rig-grain)"/><path d="M156 314 L184 318 L182 352 Q168 358 156 350 Z" fill="none" stroke="#000" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.4"/>
+    <path d="M156 326 L183 330" fill="none" stroke="#000" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.3"/>
+    <circle cx="170" cy="330" r="1.6" fill="var(--c-trim)" opacity="0.9"/>
+    <path d="M234 316 L246 316 L250 372 L238 374 Z" fill="var(--c-leather)"/><path d="M234 316 L246 316 L250 372 L238 374 Z" fill="url(#rig-grain)"/><path d="M234 316 L246 316 L250 372 L238 374 Z" fill="none" stroke="#000" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.4"/>
+    <path d="M233 312 L247 312 L248 320 L234 320 Z" fill="var(--c-metal)"/>
+    <path d="M190 318 L208 322 L204 344 L188 340 Z" fill="var(--c-coat-dark)"/><path d="M190 318 L208 322 L204 344 L188 340 Z" fill="url(#rig-grain)"/><path d="M190 318 L208 322 L204 344 L188 340 Z" fill="none" stroke="#000" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.4"/>
+  </g>
+</svg>

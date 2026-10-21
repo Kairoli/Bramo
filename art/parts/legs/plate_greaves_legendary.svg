@@ -1,38 +1,47 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 760">
-  <!-- Jambières de plates : cuissots, genouillères en coupole, grèves. (ouvrage légendaire). -->
+  <!-- Jambières de plates : cuissots bombés, genouillères en éventail, grèves à arête, sangles de cuir. (ouvrage légendaire). -->
   <g id="thigh_far">
-    <path d="M212 330 L244 330 L248 556 L219 556 Z" fill="var(--c-metal)"/>
-    <path d="M212 330 L244 330 L248 556 L219 556 Z" fill="#000" opacity=".3"/>
-    <path d="M214 400 L246 398 M216 470 L248 468" stroke="#000" stroke-opacity=".35" stroke-width="1.6"/>
-    <path d="M244 330 L248 556" stroke="var(--c-glow)" stroke-opacity=".4" stroke-width="2"/>
+    <path d="M206 330 L252 330 L256 562 L214 562 Z" fill="var(--c-metal)"/><path d="M206 330 L252 330 L256 562 L214 562 Z" fill="url(#rig-sheen)"/><path d="M206 330 L252 330 L256 562 L214 562 Z" fill="none" stroke="#000" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.5"/>
+    <path d="M206 330 L252 330 L256 562 L214 562 Z" fill="#000" opacity="0.3"/>
+    <path d="M250 336 L254 552" fill="none" stroke="#F1F0EC" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.3"/>
+    <path d="M213 398 L249 396 M215 468 L251 466" fill="none" stroke="#000" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.34"/>
+    <path d="M212 392 L250 390 L250 400 L212 402 Z" fill="var(--c-leather)"/><path d="M212 392 L250 390 L250 400 L212 402 Z" fill="url(#rig-grain)"/><path d="M212 392 L250 390 L250 400 L212 402 Z" fill="none" stroke="#000" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.4"/>
+    <circle cx="218" cy="340" r="1.8" fill="#F1F0EC" opacity="0.55"/><circle cx="244" cy="340" r="1.8" fill="#F1F0EC" opacity="0.55"/>
     <path d="M226 340 Q224 440 228 548" stroke="var(--c-trim)" stroke-width="1.6" fill="none" stroke-linecap="round"/><path d="M238 348 Q236 440 240 548" stroke="var(--c-glow)" stroke-width="2" fill="none" stroke-linecap="round" class="fx-pulse"/>
   </g>
   <g id="shin_far">
-    <ellipse cx="234" cy="556" rx="17" ry="14" fill="var(--c-metal)"/>
-    <ellipse cx="234" cy="556" rx="17" ry="14" fill="#000" opacity=".28"/>
-    <circle cx="234" cy="556" r="3" fill="var(--c-trim)"/>
-    <path d="M220 568 L248 568 L252 634 L226 634 Z" fill="var(--c-metal)"/>
-    <path d="M220 568 L248 568 L252 634 L226 634 Z" fill="#000" opacity=".3"/>
-    <path d="M222 590 L250 590" stroke="var(--c-trim)" stroke-width="2"/>
+    <path d="M208 552 Q234 534 260 552 L258 578 Q234 590 210 578 Z" fill="var(--c-metal)"/><path d="M208 552 Q234 534 260 552 L258 578 Q234 590 210 578 Z" fill="url(#rig-sheen)"/><path d="M208 552 Q234 534 260 552 L258 578 Q234 590 210 578 Z" fill="none" stroke="#000" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.5"/>
+    <path d="M212 578 L256 578 L260 646 L218 648 Z" fill="var(--c-metal)"/><path d="M212 578 L256 578 L260 646 L218 648 Z" fill="url(#rig-sheen)"/><path d="M212 578 L256 578 L260 646 L218 648 Z" fill="none" stroke="#000" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.5"/>
+    <path d="M212 578 L256 578 L260 646 L218 648 Z" fill="#000" opacity="0.3"/>
+    <path d="M236 576 L238 642" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.3"/>
+    <path d="M219 600 L252 600 L252 610 L220 611 Z" fill="var(--c-leather)"/><path d="M219 600 L252 600 L252 610 L220 611 Z" fill="url(#rig-grain)"/><path d="M219 600 L252 600 L252 610 L220 611 Z" fill="none" stroke="#000" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.4"/>
+    <path d="M218 574 L250 574" fill="none" stroke="var(--c-trim)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="234" cy="556" r="1.7" fill="#F1F0EC" opacity="0.55"/><circle cx="226" cy="626" r="1.7" fill="#F1F0EC" opacity="0.55"/><circle cx="246" cy="626" r="1.7" fill="#F1F0EC" opacity="0.55"/>
     <path d="M232 576 L236 628" stroke="var(--c-trim)" stroke-width="1.6" fill="none" stroke-linecap="round"/><path d="M242 576 L244 628" stroke="var(--c-glow)" stroke-width="1.8" fill="none" stroke-linecap="round" class="fx-pulse"/>
   </g>
   <g id="thigh_near">
-    <path d="M162 332 L204 332 L198 562 L166 562 Z" fill="var(--c-metal)"/>
-    <path d="M162 332 L204 332 L198 562 L166 562 Z" fill="url(#rig-light)"/>
-    <path d="M164 332 L168 562" stroke="#000" stroke-opacity=".25" stroke-width="3"/>
-    <path d="M163 404 L202 402 M165 474 L200 472" stroke="#000" stroke-opacity=".35" stroke-width="1.8"/>
-    <path d="M162 332 L204 332" stroke="var(--c-trim)" stroke-width="2.4"/>
+    <path d="M150 332 L212 332 L206 566 L158 566 Z" fill="var(--c-metal)"/><path d="M150 332 L212 332 L206 566 L158 566 Z" fill="url(#rig-sheen)"/><path d="M150 332 L212 332 L206 566 L158 566 Z" fill="none" stroke="#000" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.5"/>
+    <path d="M150 332 L170 332 L168 566 L158 566 Z" fill="#000" opacity="0.24"/>
+    <path d="M172 338 L174 552" fill="none" stroke="#F1F0EC" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.4"/>
+    <path d="M160 404 L206 402 M163 476 L204 474" fill="none" stroke="#000" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.34"/>
+    <path d="M160 398 L207 396 L207 408 L161 410 Z" fill="var(--c-leather)"/><path d="M160 398 L207 396 L207 408 L161 410 Z" fill="url(#rig-grain)"/><path d="M160 398 L207 396 L207 408 L161 410 Z" fill="none" stroke="#000" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.4"/>
+    <path d="M158 332 L208 332" fill="none" stroke="var(--c-trim)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="166" cy="342" r="2" fill="#F1F0EC" opacity="0.55"/><circle cx="200" cy="342" r="2" fill="#F1F0EC" opacity="0.55"/><circle cx="170" cy="552" r="2" fill="#F1F0EC" opacity="0.55"/><circle cx="198" cy="552" r="2" fill="#F1F0EC" opacity="0.55"/>
     <path d="M164 340 L168 552" stroke="#F1F0EC" stroke-opacity=".28" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M178 420 L186 432 M170 494 L178 504" stroke="#000" stroke-opacity=".3" stroke-width="1.4" fill="none"/>
     <path d="M176 340 Q172 440 176 548" stroke="var(--c-trim)" stroke-width="1.6" fill="none" stroke-linecap="round"/><path d="M190 348 Q186 440 188 548" stroke="var(--c-glow)" stroke-width="2" fill="none" stroke-linecap="round" class="fx-pulse"/>
   </g>
   <g id="shin_near">
-    <ellipse cx="182" cy="562" rx="19" ry="16" fill="var(--c-metal)"/>
-    <ellipse cx="182" cy="562" rx="19" ry="16" fill="url(#rig-light)"/>
-    <circle cx="182" cy="562" r="3.4" fill="var(--c-trim)"/>
-    <path d="M165 576 L198 578 L192 650 L168 648 Z" fill="var(--c-metal)"/>
-    <path d="M165 576 L198 578 L192 650 L168 648 Z" fill="url(#rig-shade)"/>
-    <path d="M167 600 L196 602 M168 626 L194 628" stroke="#000" stroke-opacity=".35" stroke-width="1.6"/>
-    <path d="M165 576 L198 578" stroke="var(--c-trim)" stroke-width="2.2"/>
+    <path d="M152 556 Q180 534 210 556 L207 584 Q180 598 156 584 Z" fill="var(--c-metal)"/><path d="M152 556 Q180 534 210 556 L207 584 Q180 598 156 584 Z" fill="url(#rig-sheen)"/><path d="M152 556 Q180 534 210 556 L207 584 Q180 598 156 584 Z" fill="none" stroke="#000" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.5"/>
+    <path d="M162 562 Q180 550 202 562 L200 578 Q180 588 164 578 Z" fill="url(#rig-sheen)"/>
+    <path d="M152 556 Q180 534 210 556" fill="none" stroke="var(--c-trim)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="182" cy="560" r="2.6" fill="var(--c-trim)" opacity="0.9"/>
+    <path d="M156 586 L208 588 L200 660 L164 658 Z" fill="var(--c-metal)"/><path d="M156 586 L208 588 L200 660 L164 658 Z" fill="url(#rig-sheen)"/><path d="M156 586 L208 588 L200 660 L164 658 Z" fill="none" stroke="#000" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.5"/>
+    <path d="M183 584 L182 654" fill="none" stroke="#000" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.3"/>
+    <path d="M185 584 L184 654" fill="none" stroke="#F1F0EC" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.3"/>
+    <path d="M158 610 L206 612 L205 622 L160 621 Z" fill="var(--c-leather)"/><path d="M158 610 L206 612 L205 622 L160 621 Z" fill="url(#rig-grain)"/><path d="M158 610 L206 612 L205 622 L160 621 Z" fill="none" stroke="#000" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.4"/>
+    <path d="M162 636 L202 638 L201 647 L163 646 Z" fill="var(--c-leather)"/><path d="M162 636 L202 638 L201 647 L163 646 Z" fill="url(#rig-grain)"/><path d="M162 636 L202 638 L201 647 L163 646 Z" fill="none" stroke="#000" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.4"/>
+    <path d="M156 586 L208 588" fill="none" stroke="var(--c-trim)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="170" cy="590" r="1.7" fill="#F1F0EC" opacity="0.55"/><circle cx="196" cy="592" r="1.7" fill="#F1F0EC" opacity="0.55"/>
     <path d="M176 586 L182 646" stroke="var(--c-trim)" stroke-width="1.6" fill="none" stroke-linecap="round"/><path d="M188 584 L186 644" stroke="var(--c-glow)" stroke-width="1.8" fill="none" stroke-linecap="round" class="fx-pulse"/>
   </g>
 </svg>

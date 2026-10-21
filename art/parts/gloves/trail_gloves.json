@@ -1,0 +1,25 @@
+{
+  "id": "trail_gloves",
+  "slot": "gloves",
+  "name": "Mitaines de piste",
+  "colorRoles": [
+    "leather",
+    "trim"
+  ],
+  "anchor": [
+    0,
+    0
+  ],
+  "layers": [
+    {
+      "id": "far",
+      "bone": "hand_far",
+      "z": 28
+    },
+    {
+      "id": "near",
+      "bone": "hand_near",
+      "z": 71
+    }
+  ]
+}

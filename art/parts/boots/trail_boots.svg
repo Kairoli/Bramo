@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 760">
+  <!-- Bottes de piste : cuir souple, revers de tige, lacets, semelle épaisse. -->
+  <g id="far">
+    <path d="M217 612 L258 612 L262 660 L292 676 Q258 694 212 690 L216 664 Z" fill="var(--c-leather)"/><path d="M217 612 L258 612 L262 660 L292 676 Q258 694 212 690 L216 664 Z" fill="url(#rig-grain)"/><path d="M217 612 L258 612 L262 660 L292 676 Q258 694 212 690 L216 664 Z" fill="none" stroke="#000" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.4"/>
+    <path d="M215 610 L260 610 L260 626 L216 628 Z" fill="var(--c-coat-dark)"/><path d="M215 610 L260 610 L260 626 L216 628 Z" fill="url(#rig-grain)"/><path d="M215 610 L260 610 L260 626 L216 628 Z" fill="none" stroke="#000" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.4"/>
+    <path d="M222 636 L254 640 M222 644 L254 648" fill="none" stroke="var(--c-trim)" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.8"/>
+    <path d="M214 690 Q258 696 292 676" fill="none" stroke="#16130F" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+  <g id="near">
+    <path d="M158 614 L204 614 L206 660 L240 680 Q198 700 152 694 L156 664 Z" fill="var(--c-leather)"/><path d="M158 614 L204 614 L206 660 L240 680 Q198 700 152 694 L156 664 Z" fill="url(#rig-grain)"/><path d="M158 614 L204 614 L206 660 L240 680 Q198 700 152 694 L156 664 Z" fill="none" stroke="#000" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.4"/>
+    <path d="M156 612 L206 612 L206 628 L157 630 Z" fill="var(--c-coat-dark)"/><path d="M156 612 L206 612 L206 628 L157 630 Z" fill="url(#rig-grain)"/><path d="M156 612 L206 612 L206 628 L157 630 Z" fill="none" stroke="#000" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.4"/>
+    <path d="M164 638 L198 642 M164 646 L198 650" fill="none" stroke="var(--c-trim)" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.8"/>
+    <path d="M156 664 Q198 672 236 682 L240 680 L206 660 Z" fill="#000" opacity="0.15"/>
+    <path d="M152 694 Q198 702 240 680" fill="none" stroke="#16130F" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+</svg>

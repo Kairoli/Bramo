@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 760">
+  <!-- Pourpoint de piste : gilet de cuir lacé sur chemise, bandoulière, poches, brassards lacés, carquois dans le dos. -->
+  <g id="quiver">
+    <path d="M176 178 L196 170 L214 168 L212 262 L184 266 Z" fill="var(--c-wood)"/><path d="M176 178 L196 170 L214 168 L212 262 L184 266 Z" fill="url(#rig-grain)"/><path d="M176 178 L196 170 L214 168 L212 262 L184 266 Z" fill="none" stroke="#000" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.4"/>
+    <path d="M184 178 L204 172 M184 200 L206 196 M184 222 L206 220" fill="none" stroke="#000" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.3"/>
+    <path d="M186 150 L190 172 M198 146 L201 170 M208 148 L210 168" fill="none"/>
+    <path d="M188 170 L184 140 M199 170 L198 136 M210 168 L214 140" fill="none" stroke="var(--c-wood-light)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M180 140 L188 132 L190 144 Z" fill="var(--c-trim)"/>
+    <path d="M193 132 L201 124 L203 136 Z" fill="var(--c-trim)"/>
+    <path d="M209 136 L217 128 L219 140 Z" fill="var(--c-trim)"/>
+  </g>
+  <g id="sleeve_far_upper">
+    <path d="M240 182 L280 175 L306 276 L272 292 Z" fill="var(--c-under)"/><path d="M240 182 L280 175 L306 276 L272 292 Z" fill="url(#rig-weave)"/><path d="M240 182 L280 175 L306 276 L272 292 Z" fill="url(#rig-fold)"/><path d="M240 182 L280 175 L306 276 L272 292 Z" fill="none" stroke="#000" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.35"/>
+    <path d="M240 182 L256 180 L280 280 L272 292 Z" fill="#000" opacity="0.2"/>
+    <path d="M262 220 L292 214 M266 250 L296 244" fill="none" stroke="#000" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.25"/>
+    <path d="M268 274 L306 260 L312 282 L276 298 Z" fill="var(--c-leather)"/><path d="M268 274 L306 260 L312 282 L276 298 Z" fill="url(#rig-grain)"/><path d="M268 274 L306 260 L312 282 L276 298 Z" fill="none" stroke="#000" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.4"/>
+    <circle cx="280" cy="284" r="1.5" fill="#F1F0EC" opacity="0.55"/><circle cx="300" cy="270" r="1.5" fill="#F1F0EC" opacity="0.55"/>
+  </g>
+  <g id="forearm_far">
+    <path d="M278 292 L306 280 L343 240 L325 225 Z" fill="var(--c-under)"/><path d="M278 292 L306 280 L343 240 L325 225 Z" fill="url(#rig-weave)"/><path d="M278 292 L306 280 L343 240 L325 225 Z" fill="url(#rig-fold)"/><path d="M278 292 L306 280 L343 240 L325 225 Z" fill="none" stroke="#000" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.35"/>
+    <path d="M290 284 L316 270 L338 246 L326 232 L304 254 L284 270 Z" fill="var(--c-leather)"/><path d="M290 284 L316 270 L338 246 L326 232 L304 254 L284 270 Z" fill="url(#rig-grain)"/><path d="M290 284 L316 270 L338 246 L326 232 L304 254 L284 270 Z" fill="none" stroke="#000" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.4"/>
+    <path d="M296 282 L318 266 M304 272 L324 254 M312 262 L331 242" fill="none" stroke="var(--c-trim)" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.8"/>
+    <path d="M278 292 L306 280 L343 240 L325 225 Z" fill="#000" opacity="0.08"/>
+  </g>
+  <g id="torso">
+    <path d="M148 180 Q144 250 152 312 L260 316 Q270 250 266 172 Z" fill="var(--c-under)"/><path d="M148 180 Q144 250 152 312 L260 316 Q270 250 266 172 Z" fill="url(#rig-weave)"/><path d="M148 180 Q144 250 152 312 L260 316 Q270 250 266 172 Z" fill="url(#rig-fold)"/><path d="M148 180 Q144 250 152 312 L260 316 Q270 250 266 172 Z" fill="none" stroke="#000" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.35"/>
+    <path d="M154 176 Q200 158 252 168 Q264 216 256 304 Q206 320 158 304 Q148 240 154 176 Z" fill="var(--c-coat)"/><path d="M154 176 Q200 158 252 168 Q264 216 256 304 Q206 320 158 304 Q148 240 154 176 Z" fill="url(#rig-grain)"/><path d="M154 176 Q200 158 252 168 Q264 216 256 304 Q206 320 158 304 Q148 240 154 176 Z" fill="none" stroke="#000" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.4"/>
+    <path d="M154 176 Q200 158 252 168 Q264 216 256 304 Q206 320 158 304 Q148 240 154 176 Z" fill="url(#rig-light)"/>
+    <path d="M160 180 Q200 164 248 172" fill="none" stroke="#000" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.3" stroke-dasharray="3 3"/>
+    <path d="M222 174 L246 170 L252 296 L232 300 Z" fill="var(--c-coat-dark)"/><path d="M222 174 L246 170 L252 296 L232 300 Z" fill="url(#rig-grain)"/><path d="M222 174 L246 170 L252 296 L232 300 Z" fill="none" stroke="#000" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.4"/>
+    <path d="M228 186 L246 192 M228 204 L248 210 M229 222 L249 228 M230 240 L250 246 M231 258 L251 264 M232 276 L252 282" fill="none" stroke="var(--c-leather)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M240 176 L242 296" fill="none" stroke="var(--c-trim)" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.7"/>
+    <path d="M158 184 L174 178 L256 282 L238 292 Z" fill="var(--c-leather)"/><path d="M158 184 L174 178 L256 282 L238 292 Z" fill="url(#rig-grain)"/><path d="M158 184 L174 178 L256 282 L238 292 Z" fill="none" stroke="#000" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.4"/>
+    <circle cx="176" cy="190" r="1.6" fill="var(--c-trim)" opacity="0.9"/><circle cx="206" cy="224" r="1.6" fill="var(--c-trim)" opacity="0.9"/><circle cx="236" cy="262" r="1.6" fill="var(--c-trim)" opacity="0.9"/>
+    <path d="M166 252 L196 258 L194 288 L164 282 Z" fill="var(--c-coat-dark)"/><path d="M166 252 L196 258 L194 288 L164 282 Z" fill="url(#rig-grain)"/><path d="M166 252 L196 258 L194 288 L164 282 Z" fill="none" stroke="#000" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.4"/>
+    <path d="M166 262 L195 267" fill="none" stroke="#000" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.3"/>
+    <circle cx="170" cy="258" r="1.4" fill="#F1F0EC" opacity="0.55"/><circle cx="192" cy="262" r="1.4" fill="#F1F0EC" opacity="0.55"/>
+    <path d="M254 168 Q266 216 256 304" fill="none" stroke="var(--c-glow)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.5"/>
+    <path d="M160 298 Q206 312 254 298" fill="none" stroke="#000" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.3" stroke-dasharray="3 3"/>
+  </g>
+  <g id="under">
+    <path d="M196 152 Q216 144 240 154 L244 170 Q216 184 192 168 Z" fill="var(--c-under)"/><path d="M196 152 Q216 144 240 154 L244 170 Q216 184 192 168 Z" fill="url(#rig-weave)"/><path d="M196 152 Q216 144 240 154 L244 170 Q216 184 192 168 Z" fill="url(#rig-fold)"/><path d="M196 152 Q216 144 240 154 L244 170 Q216 184 192 168 Z" fill="none" stroke="#000" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.35"/>
+    <path d="M208 168 L226 168 L220 196 Z" fill="var(--c-trim)" opacity="0.9"/>
+    <path d="M208 168 L226 168 L222 180 L212 180 Z" fill="#000" opacity="0.2"/>
+    <path d="M196 160 Q216 170 240 160" fill="none" stroke="#000" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.3"/>
+  </g>
+  <g id="sleeve_near_upper">
+    <path d="M148 176 Q166 170 184 186 L176 282 L136 278 L138 196 Q140 182 148 176 Z" fill="var(--c-under)"/><path d="M148 176 Q166 170 184 186 L176 282 L136 278 L138 196 Q140 182 148 176 Z" fill="url(#rig-weave)"/><path d="M148 176 Q166 170 184 186 L176 282 L136 278 L138 196 Q140 182 148 176 Z" fill="url(#rig-fold)"/><path d="M148 176 Q166 170 184 186 L176 282 L136 278 L138 196 Q140 182 148 176 Z" fill="none" stroke="#000" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.35"/>
+    <path d="M148 176 L170 172 L184 186 L176 282 L160 280 Z" fill="#000" opacity="0.12"/>
+    <path d="M142 220 L174 226 M142 250 L173 256" fill="none" stroke="#000" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.25"/>
+    <path d="M146 178 Q162 172 180 184 L176 214 Q158 204 144 210 Z" fill="var(--c-coat)"/><path d="M146 178 Q162 172 180 184 L176 214 Q158 204 144 210 Z" fill="url(#rig-grain)"/><path d="M146 178 Q162 172 180 184 L176 214 Q158 204 144 210 Z" fill="none" stroke="#000" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.4"/>
+    <circle cx="160" cy="184" r="1.5" fill="var(--c-trim)" opacity="0.9"/><circle cx="170" cy="192" r="1.5" fill="var(--c-trim)" opacity="0.9"/>
+    <path d="M133 270 L178 278 L177 298 L131 292 Z" fill="var(--c-leather)"/><path d="M133 270 L178 278 L177 298 L131 292 Z" fill="url(#rig-grain)"/><path d="M133 270 L178 278 L177 298 L131 292 Z" fill="none" stroke="#000" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.4"/>
+    <path d="M136 276 L176 284" fill="none" stroke="var(--c-trim)" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.8"/>
+  </g>
+  <g id="forearm_near">
+    <path d="M136 288 L170 294 L158 370 L127 366 Z" fill="var(--c-under)"/><path d="M136 288 L170 294 L158 370 L127 366 Z" fill="url(#rig-weave)"/><path d="M136 288 L170 294 L158 370 L127 366 Z" fill="url(#rig-fold)"/><path d="M136 288 L170 294 L158 370 L127 366 Z" fill="none" stroke="#000" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.35"/>
+    <path d="M133 304 L168 310 L160 360 L130 354 Z" fill="var(--c-leather)"/><path d="M133 304 L168 310 L160 360 L130 354 Z" fill="url(#rig-grain)"/><path d="M133 304 L168 310 L160 360 L130 354 Z" fill="none" stroke="#000" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.4"/>
+    <path d="M136 312 L162 318 M135 324 L161 330 M134 336 L159 342 M133 348 L158 354" fill="none" stroke="var(--c-trim)" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.8"/>
+    <circle cx="140" cy="308" r="1.4" fill="#F1F0EC" opacity="0.55"/><circle cx="164" cy="314" r="1.4" fill="#F1F0EC" opacity="0.55"/>
+  </g>
+</svg>

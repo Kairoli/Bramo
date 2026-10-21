@@ -1,18 +1,19 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 760">
-  <!-- Tabard d'armes : grand manteau dans le dos, bord galonné, agrafe à chaînette sur le torse. (ouvrage épique). -->
+  <!-- Tabard d'armes : grand manteau dans le dos, plis, bord galonné, agrafe à chaînette sur le torse. (ouvrage épique). -->
   <g id="back">
-    <path d="M166 162 Q146 250 138 424 Q172 446 212 436 Q236 416 246 336 L246 168 Z" fill="var(--c-mantle)"/>
-    <path d="M166 162 Q146 250 138 424 Q172 446 212 436 Q236 416 246 336 L246 168 Z" fill="url(#rig-shade)"/>
-    <path d="M138 424 Q172 446 212 436 Q236 416 246 336" stroke="var(--c-trim)" stroke-width="3" fill="none"/>
-    <path d="M176 200 Q168 300 164 410 M206 190 Q202 300 204 420" stroke="#000" stroke-opacity=".22" stroke-width="2" fill="none"/>
+    <path d="M164 162 Q144 250 134 426 Q170 450 214 438 Q238 418 248 336 L248 168 Z" fill="var(--c-mantle)"/><path d="M164 162 Q144 250 134 426 Q170 450 214 438 Q238 418 248 336 L248 168 Z" fill="url(#rig-weave)"/><path d="M164 162 Q144 250 134 426 Q170 450 214 438 Q238 418 248 336 L248 168 Z" fill="url(#rig-fold)"/><path d="M164 162 Q144 250 134 426 Q170 450 214 438 Q238 418 248 336 L248 168 Z" fill="none" stroke="#000" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.35"/>
+    <path d="M164 162 Q144 250 134 426 Q148 432 160 432 Q160 300 188 190 Z" fill="#000" opacity="0.28"/>
+    <path d="M176 200 Q168 300 162 416 M206 190 Q202 300 206 428 M228 220 Q226 320 232 424" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.24"/>
+    <path d="M184 200 Q176 300 170 418 M214 190 Q210 300 214 430" fill="none" stroke="#F1F0EC" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.1"/>
+    <path d="M134 426 Q170 450 214 438 Q238 418 248 336" fill="none" stroke="var(--c-trim)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M142 414 Q172 436 212 426" fill="none" stroke="var(--c-trim)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.6" stroke-dasharray="4 3"/>
     <path d="M176 200 Q168 300 164 410" stroke="#F1F0EC" stroke-opacity=".08" stroke-width="3" fill="none"/>
     <path d="M142 408 Q172 428 210 420 M152 380 Q176 396 206 390" stroke="var(--c-trim)" stroke-width="1.6" fill="none" stroke-linecap="round"/>
   </g>
   <g id="front">
-    <path d="M176 168 Q210 182 244 170" stroke="var(--c-metal)" stroke-width="3.5" fill="none" stroke-dasharray="6 3"/>
-    <circle cx="178" cy="168" r="6" fill="var(--c-metal)"/>
-    <circle cx="178" cy="168" r="2.6" fill="var(--c-trim)"/>
-    <circle cx="244" cy="170" r="6" fill="var(--c-metal)"/>
-    <circle cx="244" cy="170" r="2.6" fill="var(--c-trim)"/>
+    <path d="M176 168 Q210 186 246 172" fill="none" stroke="var(--c-metal)" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="6 3"/>
+    <path d="M170 160 L186 160 L186 176 L170 176 Z" fill="var(--c-metal)"/><path d="M170 160 L186 160 L186 176 L170 176 Z" fill="url(#rig-sheen)"/><path d="M170 160 L186 160 L186 176 L170 176 Z" fill="none" stroke="#000" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.5"/>
+    <path d="M238 162 L254 164 L254 180 L238 178 Z" fill="var(--c-metal)"/><path d="M238 162 L254 164 L254 180 L238 178 Z" fill="url(#rig-sheen)"/><path d="M238 162 L254 164 L254 180 L238 178 Z" fill="none" stroke="#000" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.5"/>
+    <circle cx="178" cy="168" r="2" fill="var(--c-trim)" opacity="0.9"/><circle cx="246" cy="171" r="2" fill="var(--c-trim)" opacity="0.9"/>
   </g>
 </svg>

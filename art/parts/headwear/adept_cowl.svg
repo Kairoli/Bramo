@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 760">
+  <!-- Capuchon d'adepte : tissu souple, rabat sur la nuque, galon, rune brodée sur le front. Le visage reste dégagé. -->
+  <g id="back">
+    <path d="M184 98 Q162 134 168 176 L208 176 L206 120 Z" fill="var(--c-coat-dark)"/><path d="M184 98 Q162 134 168 176 L208 176 L206 120 Z" fill="url(#rig-weave)"/><path d="M184 98 Q162 134 168 176 L208 176 L206 120 Z" fill="url(#rig-fold)"/><path d="M184 98 Q162 134 168 176 L208 176 L206 120 Z" fill="none" stroke="#000" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.35"/>
+    <path d="M184 134 Q172 158 176 174 L196 176 Z" fill="#000" opacity="0.25"/>
+    <path d="M180 140 Q186 160 184 174" fill="none" stroke="#000" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.3"/>
+  </g>
+  <g id="front">
+    <path d="M176 116 Q166 62 212 48 Q256 52 258 94 Q259 93 251 93 Q228 82 204 92 Q196 110 199 146 Q188 154 180 142 Z" fill="var(--c-coat)"/><path d="M176 116 Q166 62 212 48 Q256 52 258 94 Q259 93 251 93 Q228 82 204 92 Q196 110 199 146 Q188 154 180 142 Z" fill="url(#rig-weave)"/><path d="M176 116 Q166 62 212 48 Q256 52 258 94 Q259 93 251 93 Q228 82 204 92 Q196 110 199 146 Q188 154 180 142 Z" fill="url(#rig-fold)"/><path d="M176 116 Q166 62 212 48 Q256 52 258 94 Q259 93 251 93 Q228 82 204 92 Q196 110 199 146 Q188 154 180 142 Z" fill="none" stroke="#000" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.35"/>
+    <path d="M176 116 Q166 62 212 48 L206 100 L199 146 Q188 154 180 142 Z" fill="#000" opacity="0.22"/>
+    <path d="M196 62 Q200 90 198 118 M226 54 Q238 70 240 92" fill="none" stroke="#000" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.25"/>
+    <path d="M184 104 Q188 74 210 58" fill="none" stroke="#F1F0EC" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.28"/>
+    <path d="M200 92 Q226 82 252 94 L252 100 Q226 91 204 102 Z" fill="#000" opacity="0.3"/>
+    <path d="M176 116 Q166 62 212 48" fill="none" stroke="var(--c-trim)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M199 146 Q196 110 204 92 Q228 82 251 93" fill="none" stroke="var(--c-trim)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M222 72 L226.8 62.4 L231.6 72 M224.4 67.2 L230.4 67.2" fill="none" stroke="var(--c-glow)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.9"/>
+    <path d="M214 78 Q230 74 246 80" fill="none" stroke="var(--c-trim)" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.7"/>
+    <path d="M230 50 Q250 60 258 92" fill="none" stroke="var(--c-glow)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.5"/>
+  </g>
+</svg>

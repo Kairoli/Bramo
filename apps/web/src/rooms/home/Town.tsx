@@ -1,19 +1,20 @@
-import { useId, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import type { TownEvent, TownPlayer } from '@bramo/shared';
 import { useGame } from '../../game/GameContext';
 import { useTown } from '../../game/useTown';
 import { Character } from '../../rig/Character';
 import { hhmm } from '../../format';
+import { Scene } from '../../components/Scene';
 
 /** Lieux de la scène : où se tient quelqu'un qui pratique ce métier (en % de la largeur). */
 const WORKPLACES: Record<string, { x: number; label: string }> = {
-  mining: { x: 8, label: 'Mines' },
+  mining: { x: 9, label: 'Mines' },
   woodcutting: { x: 21, label: 'Bois' },
-  herbalism: { x: 33, label: 'Jardins' },
-  smithing: { x: 46, label: 'Forge' },
+  herbalism: { x: 34, label: 'Jardins' },
+  smithing: { x: 45, label: 'Forge' },
   carpentry: { x: 57, label: 'Menuiserie' },
-  cooking: { x: 68, label: 'Cuisines' },
-  fishing: { x: 90, label: 'Port' },
+  cooking: { x: 69, label: 'Cuisines' },
+  fishing: { x: 92, label: 'Port' },
 };
 
 const KIND: Record<TownEvent['kind'], { label: string; color: string }> = {
@@ -27,103 +28,37 @@ const KIND: Record<TownEvent['kind'], { label: string; color: string }> = {
 /** Hachage stable d'un identifiant, pour des mouvements différents d'un joueur à l'autre. */
 const spread = (id: number, mod: number) => ((id * 2654435761) >>> 0) % mod;
 
-function Backdrop({ onGo }: { onGo: (profession: string) => void }) {
-  const uid = useId().replace(/[^a-zA-Z0-9]/g, '');
-  const place = (profession: string, children: React.ReactNode) => {
-    const info = WORKPLACES[profession]!;
-    return (
-      <g
-        className="town-place"
-        role="button"
-        tabIndex={0}
-        aria-label={info.label}
-        onClick={() => onGo(profession)}
-        onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && onGo(profession)}
-      >
-        {children}
-        <text x={info.x * 10} y={402} textAnchor="middle" className="town-label">
-          {info.label}
-        </text>
-      </g>
-    );
-  };
+/** Zones cliquables, en coordonnées de l'illustration (2172 × 724). */
+const HITS: Record<string, { x: number; y: number; w: number; h: number }> = {
+  mining: { x: 40, y: 292, w: 238, h: 217 },
+  woodcutting: { x: 278, y: 326, w: 319, h: 183 },
+  herbalism: { x: 597, y: 366, w: 245, h: 143 },
+  smithing: { x: 848, y: 122, w: 258, h: 394 },
+  carpentry: { x: 1106, y: 136, w: 265, h: 380 },
+  cooking: { x: 1371, y: 312, w: 251, h: 204 },
+  fishing: { x: 1873, y: 312, w: 299, h: 272 },
+};
+
+/** Les lieux du bourg : des zones au-dessus de l'illustration, qui s'éclairent au survol. */
+function Hits({ onGo }: { onGo: (profession: string) => void }) {
   return (
-    <svg className="town-bg" viewBox="0 0 1000 420" preserveAspectRatio="xMidYMax slice" aria-hidden="false">
-      <defs>
-        <linearGradient id={`${uid}-sky`} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor="var(--sunken)" />
-          <stop offset="1" stopColor="color-mix(in srgb, var(--event) 14%, var(--sunken))" />
-        </linearGradient>
-        <radialGradient id={`${uid}-glow`}>
-          <stop offset="0" stopColor="var(--action)" stopOpacity=".8" />
-          <stop offset="1" stopColor="var(--action)" stopOpacity="0" />
-        </radialGradient>
-      </defs>
-      <rect width="1000" height="420" fill={`url(#${uid}-sky)`} />
-      {/* Montagnes lointaines */}
-      <path d="M0 250 L90 170 L170 230 L260 150 L360 240 L450 190 L560 250 L640 180 L740 245 L840 160 L930 230 L1000 200 V300 H0Z" fill="var(--border)" opacity=".55" />
-      <path d="M0 290 L120 235 L230 280 L330 225 L440 285 L560 240 L680 290 L800 235 L910 285 L1000 250 V330 H0Z" fill="var(--panel)" opacity=".9" />
-      {/* Mer, à droite */}
-      <rect x="800" y="318" width="200" height="40" fill="color-mix(in srgb, var(--market) 28%, var(--sunken))" />
-      <path d="M800 330 q15 -6 30 0 t30 0 t30 0 t30 0 t30 0 t30 0 t20 0" fill="none" stroke="var(--market)" strokeOpacity=".5" strokeWidth="2" />
-      {/* Mines */}
-      {place('mining', <g>
-        <path d="M20 340 L35 270 H125 L140 340Z" fill="var(--panel)" stroke="var(--border)" strokeWidth="2" />
-        <path d="M55 340 V305 a25 25 0 0 1 50 0 V340Z" fill="var(--sunken)" />
-        <rect x="30" y="262" width="100" height="10" fill="var(--border)" />
-      </g>)}
-      {/* Bois */}
-      {place('woodcutting', <g>
-        {[185, 215, 245].map((x, i) => <path key={x} d={`M${x} 340 l-26 0 l22 -48 l-14 0 l24 -56 l24 56 l-14 0 l22 48z`} fill="color-mix(in srgb, var(--good) 35%, var(--panel))" opacity={0.7 + i * 0.1} />)}
-      </g>)}
-      {/* Jardins */}
-      {place('herbalism', <g>
-        <rect x="285" y="318" width="95" height="22" rx="4" fill="color-mix(in srgb, var(--good) 22%, var(--panel))" stroke="var(--border)" />
-        {[298, 318, 338, 358].map((x) => <circle key={x} cx={x} cy={314} r={9} fill="var(--good)" opacity=".6" />)}
-      </g>)}
-      {/* Forge : fenêtre qui rougeoie, fumée */}
-      {place('smithing', <g>
-        <rect x="410" y="268" width="110" height="72" fill="var(--panel)" stroke="var(--border)" strokeWidth="2" />
-        <path d="M400 270 L465 224 L530 270Z" fill="var(--border)" />
-        <rect x="498" y="212" width="14" height="40" fill="var(--border)" />
-        <circle className="town-smoke" cx="505" cy="200" r="7" fill="var(--text-muted)" opacity=".35" />
-        <circle className="town-smoke town-smoke-2" cx="508" cy="200" r="5" fill="var(--text-muted)" opacity=".3" />
-        <circle cx="438" cy="306" r="30" fill={`url(#${uid}-glow)`} />
-        <rect className="town-fire" x="426" y="292" width="24" height="26" rx="3" fill="var(--action)" />
-        <rect x="470" y="300" width="30" height="40" fill="var(--sunken)" />
-      </g>)}
-      {/* Menuiserie */}
-      {place('carpentry', <g>
-        <rect x="548" y="282" width="90" height="58" fill="var(--panel)" stroke="var(--border)" strokeWidth="2" />
-        <path d="M540 284 L593 246 L646 284Z" fill="color-mix(in srgb, var(--action) 25%, var(--border))" />
-        <rect x="580" y="304" width="26" height="36" fill="var(--sunken)" />
-      </g>)}
-      {/* Halle de la guilde, au centre : bannière de clan */}
-      <g>
-        <rect x="650" y="238" width="86" height="102" fill="var(--panel)" stroke="var(--clan)" strokeWidth="2" strokeOpacity=".7" />
-        <path d="M640 240 L693 196 L746 240Z" fill="var(--border)" />
-        <path d="M693 196 V170" stroke="var(--border)" strokeWidth="3" />
-        <path className="town-banner" d="M693 172 h30 l-8 10 l8 10 h-30z" fill="var(--clan)" />
-        <rect x="680" y="296" width="26" height="44" fill="var(--sunken)" />
-      </g>
-      {/* Cuisines */}
-      {place('cooking', <g>
-        <rect x="760" y="290" width="70" height="50" fill="var(--panel)" stroke="var(--border)" strokeWidth="2" />
-        <path d="M752 292 L795 262 L838 292Z" fill="var(--border)" />
-        <rect x="778" y="308" width="22" height="32" fill="var(--sunken)" />
-      </g>)}
-      {/* Port : mât et lanterne */}
-      {place('fishing', <g>
-        <path d="M870 342 h80 l-14 -18 h-52z" fill="color-mix(in srgb, var(--action) 20%, var(--panel))" stroke="var(--border)" />
-        <path d="M910 324 V262" stroke="var(--border)" strokeWidth="3" />
-        <path d="M910 268 l28 36 h-28z" fill="var(--text-muted)" opacity=".5" />
-        <circle cx="910" cy="258" r="6" fill="var(--event)" />
-        <circle cx="910" cy="258" r="16" fill="var(--event)" opacity=".18" />
-      </g>)}
-      {/* Sol pavé */}
-      <rect x="0" y="340" width="1000" height="80" fill="color-mix(in srgb, var(--panel) 80%, var(--bg))" />
-      <path d="M0 340 H1000" stroke="var(--border)" strokeWidth="2" />
-      {Array.from({ length: 16 }, (_, i) => <path key={i} d={`M${i * 66} 352 h40 M${i * 66 + 24} 372 h40`} stroke="var(--border)" strokeWidth="2" strokeLinecap="round" opacity=".6" />)}
+    <svg className="town-hits" viewBox="0 0 2172 724" preserveAspectRatio="xMidYMid slice">
+      {Object.entries(HITS).map(([profession, r]) => (
+        <g
+          key={profession}
+          className="town-place"
+          role="button"
+          tabIndex={0}
+          aria-label={WORKPLACES[profession]!.label}
+          onClick={() => onGo(profession)}
+          onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && onGo(profession)}
+        >
+          <rect x={r.x} y={r.y} width={r.w} height={r.h} rx={14} />
+          <text x={r.x + r.w / 2} y={r.y + 44} textAnchor="middle" className="town-label">
+            {WORKPLACES[profession]!.label}
+          </text>
+        </g>
+      ))}
     </svg>
   );
 }
@@ -167,7 +102,8 @@ export function Town() {
   return (
     <section className="panel world town">
       <div className="town-scene">
-        <Backdrop onGo={goWork} />
+        <Scene ids={['town']} position="50% 50%" shade={false} />
+        <Hits onGo={goWork} />
         <div className="town-walkers" aria-label="Joueurs dans le bourg">
           {others.map((p, i) => (
             <Walker key={p.id} p={p} slot={i} />

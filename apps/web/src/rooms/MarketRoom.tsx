@@ -4,6 +4,7 @@ import { api } from '../api';
 import { useGame } from '../game/GameContext';
 import { duration, num } from '../format';
 import { ItemIcon } from '../components/ui';
+import { Scene } from '../components/Scene';
 
 type Tab = 'book' | 'craft' | 'mine' | 'npc';
 
@@ -56,7 +57,7 @@ export function MarketRoom() {
   return (
     <main className="room market-room">
       <section className="panel band">
-        <div className="band-label">[Illustration : la place du marché]</div>
+        <Scene ids={['market']} />
       </section>
       <section className="panel market-panel">
         <header className="market-head">

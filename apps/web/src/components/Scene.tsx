@@ -40,6 +40,12 @@ const EFFECTS: Record<string, Kind[]> = {
   artificing: [SPARK, { ...STEAM, count: 4 }],
   construction: [{ ...DUST, count: 24, color: '#D8CBB4' }],
   exploration: [DUST, STAR],
+  // Accueil : fumée des cheminées, braises des forges, feuilles des arbres, lucioles.
+  town: [{ ...STEAM, count: 3, color: '#D5D8DC' }, { ...EMBER, count: 6, size: [2, 3] }, { ...LEAF, count: 7 }, { ...POLLEN, color: '#F2D98A', count: 12 }],
+  // Salles hors métiers.
+  clan: [{ ...DUST, color: '#E8D3A6', count: 22 }, { ...EMBER, count: 6, size: [2, 3] }],
+  market: [{ ...DUST, color: '#EBD9B8' }, { ...POLLEN, color: '#F2C078', count: 10 }],
+  combat: [{ ...EMBER, count: 14, color: '#D9A27A' }, { ...DUST, color: '#CDBFB0', count: 20 }, { ...MIST, count: 2 }],
 };
 
 /** Aléa déterministe : un décor a toujours les mêmes particules. */
@@ -87,7 +93,19 @@ function Particles({ id }: { id: string }) {
   );
 }
 
-export function Scene({ ids, interval = 9000 }: { ids: string[]; interval?: number }) {
+export function Scene({
+  ids,
+  interval = 9000,
+  position = '72% 60%',
+  shade = true,
+}: {
+  ids: string[];
+  interval?: number;
+  /** Cadrage de l'image (object-position). */
+  position?: string;
+  /** Ombrage gauche et bas d'une bande de salle ; sinon un simple voile sur les bords. */
+  shade?: boolean;
+}) {
   const root = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(0);
   const key = ids.join(',');
@@ -128,13 +146,13 @@ export function Scene({ ids, interval = 9000 }: { ids: string[]; interval?: numb
     <div className="scene" ref={root} aria-hidden>
       <div className="scene-back">
         {ids.map((id, i) => (
-          <img key={id} className={`scene-img${i === active ? ' on' : ''}`} src={`/scenes/${id}.webp`} alt="" draggable={false} decoding="async" />
+          <img key={id} className={`scene-img${i === active ? ' on' : ''}`} src={`/scenes/${id}.webp`} alt="" draggable={false} decoding="async" style={{ objectPosition: position }} />
         ))}
       </div>
       <div className="scene-front">
         <Particles key={current} id={current} />
       </div>
-      <div className="scene-shade" />
+      <div className={shade ? 'scene-shade' : 'scene-shade soft'} />
     </div>
   );
 }

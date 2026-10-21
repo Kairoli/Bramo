@@ -86,12 +86,14 @@
 }
 .town-scene {
   position: relative;
+  isolation: isolate;
   min-height: 0;
   border-radius: var(--radius-sm);
   overflow: hidden;
   background: var(--sunken);
 }
-.town-bg {
+/* Zones cliquables au-dessus de l'illustration (mêmes coordonnées que l'image, même recadrage). */
+.town-hits {
   position: absolute;
   inset: 0;
   width: 100%;
@@ -101,42 +103,26 @@
   cursor: pointer;
   outline: none;
 }
-.town-place:hover,
-.town-place:focus-visible {
-  filter: brightness(1.25);
+.town-place rect {
+  fill: rgb(255 255 255 / 0);
+  transition: fill 0.2s;
+}
+.town-place:hover rect,
+.town-place:focus-visible rect {
+  fill: rgb(255 255 255 / 0.1);
 }
 .town-label {
   fill: var(--text);
-  font: 600 13px var(--font);
+  font: 600 34px var(--font);
   paint-order: stroke;
   stroke: var(--bg);
-  stroke-width: 4px;
+  stroke-width: 9px;
+  opacity: 0;
+  transition: opacity 0.2s;
 }
-.town-fire {
-  animation: town-flicker 1.8s ease-in-out infinite;
-}
-.town-smoke {
-  animation: town-smoke 5s ease-out infinite;
-}
-.town-smoke-2 {
-  animation-delay: -2.5s;
-}
-.town-banner {
-  transform-origin: 693px 176px;
-  animation: town-wave 4s ease-in-out infinite;
-}
-@keyframes town-flicker {
-  0%, 100% { opacity: 0.95; }
-  40% { opacity: 0.7; }
-  70% { opacity: 1; }
-}
-@keyframes town-smoke {
-  from { transform: translate(0, 0) scale(1); opacity: 0.35; }
-  to { transform: translate(16px, -46px) scale(2.2); opacity: 0; }
-}
-@keyframes town-wave {
-  0%, 100% { transform: skewY(0); }
-  50% { transform: skewY(5deg); }
+.town-place:hover .town-label,
+.town-place:focus-visible .town-label {
+  opacity: 1;
 }
 .town-title {
   position: absolute;
@@ -235,7 +221,6 @@
 }
 @media (prefers-reduced-motion: reduce) {
   .walker-strolling { animation: none; }
-  .town-fire, .town-smoke, .town-banner { animation: none; }
 }
 
 /* ---------- Accueil : bas ---------- */

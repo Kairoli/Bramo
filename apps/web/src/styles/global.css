@@ -272,6 +272,9 @@ p {
     linear-gradient(0deg, rgb(26 31 34 / 0.82) 0%, rgb(26 31 34 / 0.4) 28%, transparent 55%),
     radial-gradient(ellipse at 50% 50%, transparent 55%, rgb(26 31 34 / 0.45) 100%);
 }
+.scene-shade.soft {
+  background: radial-gradient(ellipse at 50% 50%, transparent 62%, rgb(26 31 34 / 0.4) 100%);
+}
 .fx {
   position: absolute;
   display: block;

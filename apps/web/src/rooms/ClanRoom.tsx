@@ -4,6 +4,7 @@ import { api } from '../api';
 import { useGame } from '../game/GameContext';
 import { hhmm, num, signedPct } from '../format';
 import { Bar, ItemIcon } from '../components/ui';
+import { Scene } from '../components/Scene';
 
 type Tab = 'buildings' | 'members' | 'log';
 type Run = (call: () => ReturnType<typeof api.state>) => Promise<boolean>;
@@ -41,7 +42,7 @@ export function ClanRoom() {
   return (
     <main className="room market-room">
       <section className="panel band">
-        <div className="band-label">[Illustration : la halle du clan]</div>
+        <Scene ids={['clan']} />
       </section>
       {clan === undefined ? (
         <section className="panel market-panel">

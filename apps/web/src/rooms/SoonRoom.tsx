@@ -1,3 +1,5 @@
+import { Scene } from '../components/Scene';
+
 const ROOMS = {
   combat: {
     title: 'Combat',
@@ -12,7 +14,7 @@ export function SoonRoom({ room }: { room: keyof typeof ROOMS }) {
   return (
     <main className="room">
       <section className="panel band">
-        <div className="band-label">[Illustration : {r.place}]</div>
+        <Scene ids={[room]} />
       </section>
       <section className="panel soon-panel">
         <div className="eyebrow" style={{ color: r.color }}>

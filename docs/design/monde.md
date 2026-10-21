@@ -27,7 +27,7 @@ Règle : chaque voie a un **consommable ou un service signature** que son métie
 | Artificier (Artificerie) | Pétardier : **bombes** | Fumiste : **fumigènes** | Horloger : **automates** de soutien |
 | Alchimiste (Alchimie) | Transmutateur : **fioles acides** | Fiévreux : **poisons** | Élixirier : **potions de soin améliorées** |
 
-Passif de maître (85) : **qualitatif**, lié au métier (ex. Rémouleur : les objets qu'il répare perdent 10 % de durabilité maximale au lieu de 15 %). Pas de pourcentage de dégâts en plus.
+Passif au rang du niveau 80 du métier principal ([`rangs.md`](rangs.md)) : **qualitatif**, lié au métier (ex. Rémouleur : les objets qu'il répare perdent 10 % de durabilité maximale au lieu de 15 %). Pas de pourcentage de dégâts en plus.
 
 ### [Ouvert]
 - Changer de voie reste gratuit en ville (v1.0) : à confirmer avec les consommables signature (on garde ses stocks).
@@ -95,7 +95,7 @@ Le v1.0 annonce à la fois des « filons de clan à +5 % par membre présent, pl
 - **Projets** (Construction) : bâtiments de la halle, chacun avec une fonction :
   - Entrepôt agrandi (capacité) ; **champs du clan** (parcelles d'Agriculture en plus pour chaque membre) ; **ateliers** (postes qui ouvrent des recettes) ; **bonus de clan** par niveaux, +2 % par niveau jusqu'à +10 % ; bannières et décor (cosmétique).
   - Le coût d'un projet est proportionnel au nombre de membres **actifs sur 14 jours**, avec un minimum de 3 : un petit clan bâtit aussi vite par tête qu'un grand.
-- **Postes d'experts** : un membre Maître (85) d'un métier peut occuper le poste correspondant. Effet : il peut accepter les **commandes d'expert** du clan (recettes de qualité) et donne +2 % dans ce métier aux membres, **compté dans le plafond Clan de +10 %**. Au niveau Compagnon (60), un poste d'« adjoint » existe, sans bonus mais avec les commandes, pour que les clans jeunes aient aussi des rôles.
+- **Postes d'experts** : un membre qui a le surnom du niveau 80 d'un métier ([`rangs.md`](rangs.md)) peut occuper le poste correspondant. Effet : il peut accepter les **commandes d'expert** du clan (recettes de qualité) et donne +2 % dans ce métier aux membres, **compté dans le plafond Clan de +10 %**. Avec le surnom du niveau 60, un poste d'« adjoint » existe, sans bonus mais avec les commandes, pour que les clans jeunes aient aussi des rôles.
 
 ### Petites communautés, nouveaux et occasionnels [Recommandé]
 

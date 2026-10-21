@@ -8,7 +8,7 @@
 > - **[Ouvert]** — question sans réponse ;
 > - **[Prototype]** — ce que fait le code aujourd'hui, en attendant l'arbitrage.
 >
-> Conception détaillée (21 octobre 2026) : [`design/metiers.md`](design/metiers.md) (écosystème des métiers), [`design/progression.md`](design/progression.md), [`design/presence.md`](design/presence.md) (hors ligne et participation), [`design/economie.md`](design/economie.md), [`design/monde.md`](design/monde.md) (classes, événements, clans), [`design/arbitrages.md`](design/arbitrages.md). Les chiffres viennent du simulateur : [`../sim/reports/rapport.md`](../sim/reports/rapport.md).
+> Conception détaillée (21 octobre 2026) : [`design/metiers.md`](design/metiers.md) (écosystème des métiers), [`design/progression.md`](design/progression.md), [`design/presence.md`](design/presence.md) (hors ligne et participation), [`design/economie.md`](design/economie.md), [`design/monde.md`](design/monde.md) (classes, événements, clans), [`design/rangs.md`](design/rangs.md) (surnoms et commandes du maître), [`design/arbitrages.md`](design/arbitrages.md). Les chiffres viennent du simulateur : [`../sim/reports/rapport.md`](../sim/reports/rapport.md).
 
 ## 1. Vision [Décidé]
 
@@ -30,21 +30,26 @@ Le jeu est **casu dans l'ensemble** : on y passe quelques minutes plusieurs fois
 ## 3. Progression des métiers
 
 ### 3.1 Courbe d'XP
-- [Décidé] Niveaux 1 à 99, titres Novice / Apprenti (30) / Compagnon (60) / Maître (85) / Grand maître (99).
+- [Décidé] Niveaux 1 à 99. Les rangs sont des **surnoms propres à chaque métier** (§3.2), et non plus des titres génériques.
 - [Décidé, 21 octobre] **Courbe de RuneScape conservée** : `XP(L) = floor( Σ_{l=1}^{L-1} floor(l + 300 · 2^(l/7)) / 4 )`, niveau 99 = 13 034 431 XP. **Recettes recalibrées** : XP par heure effective `R(L) = 400 × 2^((L−1)/55)` pour la meilleure récolte d'un palier, artisanat ×1,75. **Pas d'XP doublée en début de métier.** Mesuré pour un spécialiste régulier : 30 en ~1 jour, 60 en ~2 semaines, 85 en ~3,3 mois, 90 en ~5,2 mois, 99 en ~11 mois ([`design/progression.md`](design/progression.md)). Appliqué dans `data/`.
 - Avant le 21 octobre (mesuré) : Minage 60 en ~1 jour, 90 en 18 jours avec 2 h de présence par jour. Jugé beaucoup trop rapide.
 
-### 3.2 Épreuves des maîtres [Décidé]
-À un palier de titre, le maître PNJ du métier confie une **épreuve** : remettre des objets (consommés). La réussir donne **le titre** et un peu d'or. Sans elle, le niveau continue de monter : seul le titre attend. On ne saute pas une épreuve.
-- Récolte : livrer des ressources ; artisanat : fabriquer un **chef-d'œuvre** (recette qui n'existe que pendant l'épreuve).
+### 3.2 Rangs : surnoms et commandes du maître [Décidé le 21 octobre, pas encore implémenté]
+Détail : [`design/rangs.md`](design/rangs.md). Remplace les titres Novice / Apprenti / Compagnon / Maître / Grand maître et les épreuves des niveaux 30 et 60.
+- Les rangs sont des **surnoms amusants propres à chaque métier** (Cuisine, pistes : « Remueur de marmites », « Fournisseur de siestes », « Terreur des buffets », « Celui qui régale les rois »).
+- Aux niveaux **20, 40, 60 et 80**, le maître du métier propose une **commande spéciale** ; la réussir accorde le surnom et **débloque la tranche de progression suivante**. Une **commande finale exceptionnelle** au niveau **99**.
+- Chaque commande raconte une **petite histoire, idéalement drôle**, qui explique le surnom (« Fournisseur de siestes » : un banquet si copieux que toute une délégation s'endort avant les discours).
+- Elle repose sur les **activités automatiques** : récolte ou fabrication spéciale, préparation, livraison. **Aucun mini-jeu manuel obligatoire.**
+- Le joueur **affiche le surnom de son choix** parmi ceux qu'il a débloqués.
 - Pas de quête journalière ni de chantier commun au serveur : les objectifs collectifs passent par les clans, les boosts par les événements.
-- [Prototype] Apprenti (30) et Compagnon (60) pour les quatre métiers jouables. [Recommandé] Réécrire leurs quantités avec la nouvelle progression ; Maître et Grand maître demandent des matières de plusieurs métiers.
+- [Ouvert] Les commandes, les noms définitifs et le **traitement de l'XP en attente de validation du palier**.
+- [Prototype, à remplacer] Le code applique encore l'ancienne règle : titres génériques, épreuves aux niveaux 30 et 60 (remise d'objets, chef-d'œuvre pour l'artisanat) qui donnent le titre sans jamais bloquer le niveau.
 
 ### 3.3 Maîtrise après 99 *(plus tard)*
 Paliers au rendement décroissant, plafonnés à **+10 %** au total.
 
 ### 3.4 Objets faits maison *(plus tard)*
-Signés par l'artisan, de meilleure qualité : Normale, Supérieure, Rare, Chef-d'œuvre. [Recommandé] La chance de qualité monte avec l'écart entre le niveau de l'artisan et celui de la recette, pour que les grands maîtres restent demandés sur les paliers moyens.
+Signés par l'artisan, de meilleure qualité : Normale, Supérieure, Rare, Chef-d'œuvre. [Recommandé] La chance de qualité monte avec l'écart entre le niveau de l'artisan et celui de la recette, pour que les artisans de haut niveau restent demandés sur les paliers moyens.
 
 ## 4. Métiers
 
@@ -54,7 +59,7 @@ Signés par l'artisan, de meilleure qualité : Normale, Supérieure, Rare, Chef-
   - Artisanat : Forge (outils de tous les métiers), Menuiserie (manches, archerie), Cuisine, Alchimie, **Tannerie** (séparée de la Couture), Couture, **Joaillerie**, Enchantement, Artificerie ;
   - Monde : **Construction** (le grand puits : atelier personnel et halle du clan), **Exploration** (cartes de gisement, curiosités, sites) ;
   - Extensions : Élevage, Archéologie, Dressage.
-- [Prototype] `data/professions.yaml` liste les 17 métiers proposés ; **6 sont jouables** (Minage, Bûcheronnage, Herboristerie, Forge, Menuiserie, Cuisine), avec un outil par métier (fer d'outil de la Forge + manche de la Menuiserie) et des épreuves 30 et 60 pour chacun. Le poisson reste vendu par le **marchand du port** (PNJ), qui rachète à 10 % de la valeur de référence.
+- [Prototype] `data/professions.yaml` liste les 17 métiers proposés ; **6 sont jouables** (Minage, Bûcheronnage, Herboristerie, Forge, Menuiserie, Cuisine), avec un outil par métier (fer d'outil de la Forge + manche de la Menuiserie) et des épreuves 30 et 60 pour chacun (ancienne règle de rangs, à remplacer : §3.2). Le poisson reste vendu par le **marchand du port** (PNJ), qui rachète à 10 % de la valeur de référence.
 - [Décidé] **Usure** : elle suit les heures d'usage réel ; un objet usé se répare et **ne perd jamais de durabilité maximale** (un objet qu'on aime ne se détruit pas). [Prototype] Pas encore dans le moteur, ni le garde-manger.
 
 ## 5. Boucle idle

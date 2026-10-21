@@ -3,7 +3,7 @@
 Bramo est un **idle-RPG multijoueur jouable dans le navigateur**, dans l'esprit de SimpleMMO, Melvor Idle et RuneScape : métiers, classes, clans, marché, saisons.
 
 - Game design complet : [`docs/game-design.md`](docs/game-design.md) — chaque point y est marqué **[Décidé]** (choix de Louis), **[Recommandé]** (proposition en attente), **[Ouvert]** ou **[Prototype]** (ce que fait le code). Ne jamais présenter une recommandation comme une décision.
-- Conception détaillée : [`docs/design/`](docs/design/) (métiers, progression, présence, économie, classes/événements/clans) et les **arbitrages en attente** : [`docs/design/arbitrages.md`](docs/design/arbitrages.md)
+- Conception détaillée : [`docs/design/`](docs/design/) (métiers, progression, présence, économie, classes/événements/clans, rangs) et les **arbitrages en attente** : [`docs/design/arbitrages.md`](docs/design/arbitrages.md)
 - Simulateur : [`sim/README.md`](sim/README.md), rapport généré [`sim/reports/rapport.md`](sim/reports/rapport.md)
 - Maquettes validées : [`docs/maquettes/`](docs/maquettes/) (1-2 accueil, 3-4 salle Métiers, 5 style du personnage)
 - Système des personnages : [`art/README.md`](art/README.md)
@@ -128,7 +128,7 @@ Bramo est un **idle-RPG multijoueur jouable dans le navigateur**, dans l'esprit 
 - Chiffres de `data/` encore provisoires (`# à équilibrer`), mais suivant des règles vérifiées par le simulateur. Le simulateur ne fait pas encore de prix de marché (bilan de flux seulement).
 - Animations de repos seulement (une par pose). Marée haute ne change que les couleurs. Une seule pose par classe (pas encore par voie).
 - Le choix de tenue n'a pas encore d'écran : `outfit` reste null (tenue de départ de la classe). Les niveaux de classe n'existent pas encore (combat en P4).
-- Les épreuves Maître (85) et Grand maître (99) ne sont pas écrites : ces titres restent automatiques. Pas d'épreuve pour les métiers « Bientôt ».
+- Les rangs décidés (surnoms, commandes aux niveaux 20/40/60/80/99) ne sont pas implémentés : le code garde les titres génériques et les épreuves 30 et 60 ; Maître (85) et Grand maître (99) restent automatiques.
 - L'écran de choix de classe est un contrôle du client : le serveur accepte les actions de jeu d'un personnage sans classe.
 - Pas de vrai système d'équipement : les emplacements montrent la tenue, l'arme de classe en aperçu, la meilleure pioche et le repas actif.
 - Les onglets Tout / Clan / Serveur du journal et la discussion sont désactivés.
@@ -145,7 +145,7 @@ Bramo est un **idle-RPG multijoueur jouable dans le navigateur**, dans l'esprit 
 2. **Accueil à refaire** (direction choisie par l'auteur le 21 octobre) : la carte du monde est remplacée par une **scène du bourg** où passent d'autres joueurs (vrais joueurs récemment actifs, avec leur classe et leur activité) et un **Panneau du bourg** dont le cœur est le **fil du serveur** (montées de titre, épreuves réussies, premières fabrications). Décisions : **pas de bonus du jour** (les boosts viennent des saisons et événements), **pas de chantier commun au serveur** (c'est le rôle des clans), commandes de PNJ non tranchées. La carte pourra revenir en popup « Voyager » avec l'Exploration.
 3. **Animation et vie de l'interface** (choix de l'auteur en attente) : « +1 objet » flottant à chaque fabrication, pulsation de l'anneau, célébration de montée de niveau et d'épreuve réussie, scènes animées dans les bandeaux (forge, mines, eau), entrées du journal qui glissent.
 4. **Personnages** : **une pose par voie** à terme, écran de choix de tenue, animations « travail » par famille de métier, une tenue Marée haute qui change aussi de forme. Couleurs cuivre #F08A4B (mêlée) et jade #7ED6A2 (tir) toujours à valider.
-5. **Épreuves** : Maître (85) et Grand maître (99), et une épreuve pour chaque métier qui ouvre.
+5. **Rangs** (décidés, `docs/design/rangs.md`) : concevoir les commandes du maître (20, 40, 60, 80, 99), les surnoms et le traitement de l'XP en attente, puis remplacer les titres et épreuves actuels (`settings.titles`, `trials.yaml`, `engine/trials.ts`, interface du maître).
 6. **Simulateur, suite** : bots qui passent des ordres au marché (prix, liquidité à 20 et 50 joueurs), usure et parcelles dans le moteur pour ne plus les modéliser à part, combat en P4.
 
 ### Feuille de route
@@ -178,7 +178,8 @@ Bramo est un **idle-RPG multijoueur jouable dans le navigateur**, dans l'esprit 
 - Bonus plafonnés : outil +30 %, repas +10 %, clan +10 %, saison +20 %.
 - Résumé d'absence à la connexion, puis dans le journal.
 - Classe choisie avant d'entrer, changeable à tout moment et gratuitement.
-- Titres : un palier qui a une épreuve de maître n'est acquis qu'une fois l'épreuve réussie (objets remis, consommés) ; on ne saute pas une épreuve ; le niveau, lui, n'attend jamais.
+- **Rangs [Décidé le 21 octobre, pas encore implémenté]** : des **surnoms amusants propres à chaque métier** remplacent Novice / Apprenti / Compagnon / Maître / Grand maître. Aux niveaux 20, 40, 60 et 80, une **commande spéciale du maître** (récolte ou fabrication spéciale, préparation, livraison ; aucun mini-jeu) accorde le surnom et **débloque la tranche de progression suivante** ; commande finale au 99 ; chaque commande raconte une petite histoire drôle ; le joueur affiche le surnom débloqué de son choix. Restent à concevoir : commandes, noms définitifs, XP en attente de validation (`docs/design/rangs.md`).
+- Titres **dans le code actuel** (ancienne règle, à remplacer) : un palier qui a une épreuve de maître n'est acquis qu'une fois l'épreuve réussie (objets remis, consommés) ; on ne saute pas une épreuve ; le niveau, lui, n'attend jamais.
 - XP des recettes (règle du simulateur, `sim/src/rules.ts`) : récolte `R(L) = 400 × 2^((L−1)/55)` XP par heure effective, durée 12 s + 2 s par dizaine de niveaux ; artisanat ×1,75. Pas d'XP doublée en début de métier (décision).
 - Plus tard (dans le game design) : maîtrise après 99 (paliers décroissants, +10 % max), affinité de métier (+1 % par tranche de 10 niveaux du métier lié, +10 % max), objets faits maison signés et de meilleure qualité, progression de classe (voie 30, spécialisation 60, éveil 75).
 

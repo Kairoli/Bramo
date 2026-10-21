@@ -1,6 +1,6 @@
 # Progression des métiers
 
-> **Statut : [Décidé] le 21 octobre et appliqué dans `data/`** (courbe conservée, taux recalibrés, sans XP doublée en début de métier, coups de fouet). Chiffres : `sim/reports/rapport.md`.
+> **Statut : [Décidé] le 21 octobre et appliqué dans `data/`.** Rangs : voir [`rangs.md`](rangs.md) (décidé, pas encore implémenté) (courbe conservée, taux recalibrés, sans XP doublée en début de métier, coups de fouet). Chiffres : `sim/reports/rapport.md`.
 > « Heure effective » = une heure d'activité à 100 % de rendement, bonus non compris.
 
 ## 1. Vérification de la mesure
@@ -33,7 +33,7 @@ Le simulateur rejoue le vrai moteur (`advance`) avec les données actuelles : Mi
 | XP des recettes | Règle unique **R(L) = 400 × 2^((L−1)/55) XP par heure effective** pour la meilleure récolte d'un palier : 400 au niveau 1, 580 au 30, 840 au 60, 1 230 au 90 | Chaque palier rapporte ~+13 % d'XP/h en plus d'objets de plus grande valeur. Fin de jeu 30 à 40 fois plus lente qu'aujourd'hui par heure effective. |
 | Durées | Récolte : **12 s + 2 s par dizaine de niveaux** (12 s au 1, 30 s au 90) | Volumes lisibles (300 à 120 unités par heure), matières rares plus lentes, sans changer l'XP/h. |
 | Artisanat | XP par heure de fabrication = **1,75 × R(L)** | L'artisan qui achète ses matériaux progresse ~1,75 fois plus vite qu'un récolteur ; celui qui récolte tout progresse ~2,5 fois moins vite dans son métier, mais monte aussi ses récoltes. C'est ce qui rend le commerce intéressant en temps économisé. |
-| Début | [Recommandé, **refusé par Louis**] Apprentissage : XP ×2 sous le niveau 20 | Sans lui, une première session de 20 min atteint le niveau 4 environ ; le niveau 10 vient au bout de ~2 h 30 effectives (le premier soir et la nuit), le 20 vers 10 h. Les premiers objectifs viennent donc des **épreuves, du premier outil et des premières ventes** plutôt que des niveaux. |
+| Début | [Recommandé, **refusé par Louis**] Apprentissage : XP ×2 sous le niveau 20 | Sans lui, une première session de 20 min atteint le niveau 4 environ ; le niveau 10 vient au bout de ~2 h 30 effectives (le premier soir et la nuit), le 20 vers 10 h. Les premiers objectifs viennent donc de la **première commande du maître (niveau 20)**, du premier outil et des premières ventes plutôt que des niveaux. |
 | Bonus | Outils +10 % (bronze) à +30 % (orichalque) ; repas +3 à +10 % | Inchangés en plafond. Ils sont désormais payés (usure, repas qui coûtent la moitié de ce qu'ils rapportent). |
 | Ingrédients | Quantités fortes sur les pièces finales (30 lingots pour une épée, 10 rouleaux de toile pour une robe) | Une pièce coûte 25 min à 2 h de travail autonome : l'équipement a une valeur, l'autonomie a un coût. |
 | Paliers | Une nouvelle ressource tous les 10 niveaux, des recettes aux 70, 80, 90 et des chefs-d'œuvre | Toujours un objectif à moins de deux semaines, même en fin de jeu (voir §6). |
@@ -55,15 +55,15 @@ Simulation avec le vrai moteur et la proposition `boucle-v0` (mêmes règles que
 | Forgeron qui achète le minerai | 13 h | 8 j | 2,3 mois | 3,5 mois | 7,7 mois |
 | Forgeron qui achète aussi ses lingots | 12 h | 7 j | 2,0 mois | 3,2 mois | 6,8 mois |
 
-**Durées cibles proposées** (spécialiste régulier) et leur raison :
+**Durées cibles proposées** (spécialiste régulier) et leur raison. Les paliers de rang sont désormais 20, 40, 60, 80 et 99 ([`rangs.md`](rangs.md)) : à revoir quand les commandes du maître seront conçues.
 
 | Niveau | Cible | Raison |
 |---|---|---|
-| 30 (Apprenti) | 1 jour | La première épreuve de maître tombe le deuxième soir : un objectif immédiat et une raison de revenir. |
-| 60 (Compagnon) | 2 semaines | Le nouveau venu devient utile au marché (paliers intermédiaires, gros volume) dans le mois de son arrivée. |
-| 85 (Maître) | 3 à 4 mois | Le titre qui ouvre les postes d'experts du clan doit être rare et respecté. |
+| 30 | 1 jour | Un premier vrai palier de ressources le deuxième soir ; la première commande du maître (20) est passée la veille. |
+| 60 (3e commande du maître) | 2 semaines | Le nouveau venu devient utile au marché (paliers intermédiaires, gros volume) dans le mois de son arrivée. |
+| 85 | 3 à 4 mois | Le dernier palier avant la fin de jeu ; le rang du niveau 80 (postes d'experts du clan) est passé quelques semaines plus tôt. |
 | 90 | 5 à 6 mois | Les dernières ressources (90) : un vrai investissement, une saison entière. |
-| 99 (Grand maître) | ~1 an | Un trophée, une annonce sur le fil du serveur. Un casu spécialisé y arrive aussi, en un an et demi environ. |
+| 99 (commande finale) | ~1 an | Un trophée, une annonce sur le fil du serveur. Un casu spécialisé y arrive aussi, en un an et demi environ. |
 
 Les forgerons qui achètent leurs matières montent plus vite que les récolteurs : c'est voulu, car ils paient en or le temps des autres. L'autonome reste possible (Forge 60 en 20 jours) mais **2,5 fois plus lent** que celui qui achète son minerai.
 
@@ -82,10 +82,10 @@ Niveau dans un métier (Minage, proposition `boucle-v0`) :
 
 Ce que ça représente pour un régulier qui a un métier principal et fait du combat :
 
-- **Après une semaine** : métier principal ~40, Apprenti (épreuve passée), outils de fer, premiers objets vendus au marché, un clan rejoint. Les métiers d'appoint vers 15–20.
-- **Après un mois** : Compagnon (60) dans son métier, équipement du palier 3–4 fait maison ou commandé, une place reconnue dans le clan (« le forgeron »).
+- **Après une semaine** : métier principal ~40, deux surnoms gagnés (commandes 20 et 40), outils de fer, premiers objets vendus au marché, un clan rejoint. Les métiers d'appoint vers 15–20.
+- **Après un mois** : le surnom du niveau 60 dans son métier, équipement du palier 3–4 fait maison ou commandé, une place reconnue dans le clan (« le forgeron »).
 - **Après trois mois** : 75 dans son métier, les ressources rares de son palier, un premier événement saisonnier complet, ses premières commandes régulières.
-- **Après six mois** : Maître (85) à portée, poste d'expert du clan, chefs-d'œuvre signés.
+- **Après six mois** : le surnom du niveau 80 obtenu, poste d'expert du clan, chefs-d'œuvre signés.
 - **Après un an** : 90+ dans son métier, 99 pour un spécialiste ; deux à quatre métiers d'appoint au-dessus de 60.
 
 **Arrivée tardive** : grâce à la courbe exponentielle, l'écart en niveaux reste petit. Un joueur qui arrive six mois après un régulier spécialisé est au niveau 70 au bout d'un mois, contre 91 pour le vétéran : il produit déjà des ressources de palier 7 sur 10, et le vétéran n'est « que » 20 niveaux devant. La règle de rattrapage du v1.0 (bonus d'XP sous la moyenne du serveur) n'est pas nécessaire au lancement ; à réévaluer quand le serveur aura un an.
@@ -94,8 +94,8 @@ Ce que ça représente pour un régulier qui a un métier principal et fait du c
 
 - **Une nouvelle ressource tous les 10 niveaux** jusqu'au 90 (Minage : cuivre et étain, fer, charbon, argent, mithril, or, orichalque, azurite, sombracier, astralite), et des recettes de qualité à 70, 80, 90.
 - **Les objets de haut niveau sont lents et chers** : la rareté se joue en unités par heure (30 s par action au 90), pas seulement en niveau.
-- **Qualité des objets faits maison** (prévu au v1.0) : un artisan au-dessus du niveau d'une recette a une chance de qualité Supérieure, Rare ou Chef-d'œuvre. Un Grand maître reste demandé pour des objets de palier moyen.
-- **Épreuves Maître (85) et Grand maître (99)** : chefs-d'œuvre qui demandent des matières de plusieurs métiers, donc du commerce.
+- **Qualité des objets faits maison** (prévu au v1.0) : un artisan au-dessus du niveau d'une recette a une chance de qualité Supérieure, Rare ou Chef-d'œuvre. Un artisan de niveau 99 reste demandé pour des objets de palier moyen.
+- **Commandes du maître aux niveaux 80 et 99** ([`rangs.md`](rangs.md)) : elles peuvent demander des matières de plusieurs métiers, donc du commerce.
 - **Maîtrise après 99** (v1.0, inchangée) : paliers décroissants, +10 % au total au plus.
 
 ## 7. Limites de ces chiffres

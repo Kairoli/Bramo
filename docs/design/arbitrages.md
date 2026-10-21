@@ -1,5 +1,7 @@
 # Arbitrages structurants et ordre d'implémentation
 
+> **Rangs de métier** : décision séparée du 21 octobre (surnoms et commandes du maître aux niveaux 20, 40, 60, 80 et 99), voir [`rangs.md`](rangs.md).
+>
 > **Tranchés le 21 octobre** : n° 1, 2, 4, 11 et 12 (marqués **[Décidé]**, avec les ajustements de Louis). Les autres attendent sa décision. Chacun donne la recommandation, l'alternative principale et ce que ça change. Une fois tranché, le point passe en **[Décidé]** dans le document concerné et dans `docs/game-design.md`.
 
 ## 1. Arbitrages
@@ -26,6 +28,7 @@
 
 ## 2. Points encore ouverts
 
+- **Rangs** : commandes du maître, surnoms définitifs et traitement de l'XP en attente de validation d'un palier ([`rangs.md`](rangs.md) §4).
 - **Coup de fouet derrière une publicité** (idée de Louis : regarder une pub pour l'obtenir, pub retirable par un abonnement, coup de fouet achetable plus tard). Point d'attention : un bonus de production obtenu contre de l'argent ou de l'attention publicitaire touche au pilier « le payant ne vend que du confort et du cosmétique, jamais de ressources » et à l'écart ×2–2,5. Piste compatible : la pub ou l'abonnement ne donnent **pas plus** de coups de fouet que le joueur gratuit, seulement un confort (par exemple l'activation automatique). Pour l'instant : deux charges gratuites pour tous.
 
 - Public visé et nom du jeu (v1.0).

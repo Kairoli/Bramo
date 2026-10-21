@@ -1,0 +1,1 @@
+ALTER TABLE "characters" ADD COLUMN "look" jsonb DEFAULT '{}'::jsonb NOT NULL;

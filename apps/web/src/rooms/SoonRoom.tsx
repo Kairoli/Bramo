@@ -3,7 +3,7 @@ const ROOMS = {
     title: 'Combat',
     place: 'l’arène',
     color: 'var(--magic)',
-    text: 'Forgefeu, Traqueur et Runiste, trois voies chacun, et le triangle mêlée > tir > magie > mêlée.',
+    text: 'Forgefeu, Traqueur et Runiste, trois voies chacun, un combat entièrement automatique : tout se joue dans la préparation.',
   },
 } as const;
 

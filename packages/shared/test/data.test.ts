@@ -35,6 +35,16 @@ describe('data/', () => {
     expect(shapes.size).toBeGreaterThan(1);
   });
 
+  it('chaque classe peut porter sa tenue de départ, et chaque tenue a une classe valide', () => {
+    for (const c of Object.values(content.classes)) {
+      const outfit = content.cosmetics.outfits.find((o) => o.id === c.startingOutfit);
+      expect(outfit, `${c.id} → ${c.startingOutfit}`).toBeDefined();
+      expect(outfit!.classes, c.startingOutfit).toContain(c.id);
+      expect(outfit!.locked, c.startingOutfit).toBeUndefined();
+    }
+    for (const o of content.cosmetics.outfits) for (const cl of o.classes) expect(content.classes[cl], `${o.id} → ${cl}`).toBeDefined();
+  });
+
   it('chaque ingrédient et chaque objet d’épreuve peut être obtenu (recette)', () => {
     const produced = new Set(Object.values(content.recipes).flatMap((r) => r.outputs.map((o) => o.item)));
     const obtainable = (item: string) => produced.has(item);

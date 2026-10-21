@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { advance } from '../src/engine/advance.js';
-import { chooseClass, chooseOutfit, startActivity, unlockedOutfits } from '../src/engine/actions.js';
+import { chooseClass, chooseOutfit, setLook, startActivity, unlockedOutfits } from '../src/engine/actions.js';
 import { completeTrial, effectiveLevel, heldXp, setNickname, skillLevel } from '../src/engine/trials.js';
 import { viewState } from '../src/engine/view.js';
 import { HOUR, T0, content, makeState, mining } from './fixture.js';
@@ -112,11 +112,41 @@ describe('classe', () => {
 });
 
 describe('tenue', () => {
-  it('se change librement parmi les tenues débloquées, avec n’importe quelle classe', () => {
+  it('se change librement parmi les tenues débloquées de sa classe', () => {
     const s = makeState({ classId: 'mage' });
-    expect(unlockedOutfits(s, content)).toEqual(['plain']);
+    expect(unlockedOutfits(s, content)).toEqual(['plain', 'plain_alt']);
     expect(chooseOutfit(s, 'plain', content).outfit).toBe('plain');
     expect(viewState(chooseOutfit(s, 'plain', content), T0, content).appearance).toEqual({ classId: 'mage', outfit: 'plain' });
     expect(() => chooseOutfit(s, 'nope', content)).toThrow('inconnue');
+  });
+
+  it('n’emprunte que les styles de sa classe, et pas les tenues verrouillées', () => {
+    const s = makeState({ classId: 'mage' });
+    expect(() => chooseOutfit(s, 'brute_garb', content)).toThrow('style de votre classe');
+    expect(() => chooseOutfit(s, 'season', content)).toThrow('pas encore débloquée');
+    // Changer de classe : la tenue qui ne va pas à la nouvelle classe est remplacée par sa tenue de départ.
+    const wearing = chooseOutfit(s, 'plain_alt', content);
+    const brute = chooseClass(wearing, 'brute', content);
+    expect(brute.outfit).toBeNull();
+    expect(viewState(brute, T0, content).appearance?.outfit).toBe('brute_garb');
+    // Un ancien personnage qui porte une tenue d'une autre classe est affiché avec sa tenue de départ.
+    const legacy = makeState({ classId: 'mage', outfit: 'brute_garb' });
+    expect(viewState(legacy, T0, content).appearance?.outfit).toBe('plain');
+  });
+
+  it('l’apparence pièce par pièce ne touche pas à l’équipement et reste dans le style de la classe', () => {
+    const s = makeState({ classId: 'mage', gold: 123, inventory: { ore: 5 } });
+    expect(viewState(s, T0, content).lookOptions.headwear).toEqual(['hood', 'crown']);
+    const changed = setLook(s, 'headwear', 'crown', content);
+    expect(changed.look).toEqual({ headwear: 'crown' });
+    expect(changed.gold).toBe(123);
+    expect(changed.inventory).toEqual({ ore: 5 });
+    expect(viewState(changed, T0, content).appearance?.overrides).toEqual({ headwear: 'crown' });
+    expect(setLook(changed, 'headwear', null, content).look).toEqual({});
+    expect(() => setLook(s, 'headwear', 'helm', content)).toThrow('pas disponible');
+    expect(() => setLook(s, 'headwear', 'tide', content)).toThrow('pas disponible');
+    expect(() => setLook(s, 'cape', 'x', content)).toThrow('pas d’apparence');
+    // Changer de tenue repart de zéro.
+    expect(chooseOutfit(changed, 'plain', content).look).toEqual({});
   });
 });

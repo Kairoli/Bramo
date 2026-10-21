@@ -47,6 +47,8 @@ export interface CharacterState {
   classId: string | null;
   /** Tenue choisie ; null = la tenue de départ de la classe. */
   outfit: string | null;
+  /** Apparence pièce par pièce : emplacement → pièce, au-dessus de la tenue. N'affecte jamais l'équipement réel. */
+  look: Record<string, string>;
   /** Bonus de clan par métier (clé « all » = toute production), renseignés au chargement par le serveur, jamais enregistrés. */
   clanBonuses: Record<string, number>;
   /** Commandes de maître réussies. */

@@ -55,6 +55,13 @@ Bramo est un **idle-RPG multijoueur jouable dans le navigateur**, dans l'esprit 
 
 ## 5. État du projet (à jour au 21 octobre 2026)
 
+### Fait — apparence limitée à la classe, mode Apparence (21 octobre)
+
+- **Décidé par Louis** : l'apparence n'emprunte que les styles de sa classe/voie (un Runiste ne porte plus la tenue du Forgefeu), et le joueur choisit l'**apparence de chaque pièce à la main** sans toucher à son build, via une **bascule Équipement / Apparence à côté du nom** dans la salle Personnage.
+- Données : chaque tenue de `data/cosmetics.yaml` a `classes` (et `locked` si elle se débloque plus tard). Moteur : `unlockedOutfits` (tenues de la classe non verrouillées), `lookOptions` (pièces posables par emplacement), `chooseOutfit` (refuse une tenue d'une autre classe, remet les retouches à zéro), `setLook` (une pièce, ou `null` pour revenir à la tenue), `chooseClass` (la tenue ne suit que si elle va à la nouvelle classe). `CharacterState.look`, colonne `look` (migration `0010`), `POST /api/character/look`, `StateView.lookOptions`. Un ancien personnage qui porte une tenue d'une autre classe est affiché avec sa tenue de départ.
+- Client : `components/AppearancePicker.tsx`, bascule dans `CharacterRoom.tsx`. Les tenues d'esquisse `sketch_*` (Armure, Forgefeu) sont masquées du choix de tenue mais leurs pièces sont posables pièce par pièce. Le texte « métier lié » est retiré.
+- **Limite** : la palette vient de la tenue choisie ; une pièce d'une autre tenue prend la palette de la tenue portée. Quand le moteur d'objets existera, les pièces posables viendront des objets possédés.
+
 ### Fait — conception du combat, des classes et de l'équipement (21 octobre)
 
 - **Document de référence : [`docs/design/combat-items.md`](docs/design/combat-items.md)** (issu du travail avec ChatGPT, relu par Louis). Décidé par Louis : niveau par classe (**XP de classe au combat seulement**, les métiers ne la font pas monter ; changer conserve tout ; les **voies sont la spécialisation**, le style vient du build et des sorts) ; combat **entièrement automatique** (la préparation est le jeu) ; raretés Commun/Rare/Épique/Légendaire **sans talent** ; **ligne variable** unique ; **Chef-d'œuvre** = exemplaire signé au jet maximal (remplace les qualités) ; **talents portés par des gemmes** (pierre angulaire des builds, façon *The Division 2*), craftables par les joailliers, achetables, dropables ; **apparence modifiable emplacement par emplacement** ; **l'équipement s'use** ; emplacements à la Dofus ; ensembles 2/3/4 pièces ; paliers 1, 10… 90 ; Chasse = métier de récolte sans combat ; triangle abandonné pour les monstres.
@@ -221,8 +228,8 @@ Bramo est un **idle-RPG multijoueur jouable dans le navigateur**, dans l'esprit 
 | P0 | Chiffrage et simulateur | **commencé** (conception chiffrée, `sim/`, proposition `boucle-v0`) |
 | P1 | Prototype solo | **fait** (reste : mise en service, animations) |
 | P2 | Marché (ordres achat/vente, taxe 5 %), commandes PNJ, usure | **fait en prototype** (reste : simulateur de marché, équilibrage) |
-| P3 | Clans : entrepôt, commandes internes, postes d'experts, projets de construction | **commencé** (fonder, rangs, entrepôt, projet de bonus) ; reste commandes internes, postes d'experts, Construction |
-| P4 | Combat et classes (Forgefeu mêlée, Traqueur tir, Runiste magie ; triangle mêlée > tir > magie > mêlée ; voies dégâts/contrôle/soutien) ; vrai système d'équipement | à faire |
+| P3 | Clans : bâtiments à boosts construits par les membres (pas d'entrepôt), commandes internes, postes d'experts | **commencé** (fonder, rangs, bâtiments) ; reste commandes internes, postes d'experts, Construction |
+| P4 | Combat et classes (Forgefeu mêlée, Traqueur tir, Runiste magie ; voies = spécialisations ; combat automatique ; triangle abandonné) ; vrai système d'équipement | à faire |
 | P5 | Saisons (6 semaines, une mutation chacune) et classes de métier (Artificier, Alchimiste au niveau 40 du métier) | à faire |
 | P6 | Arènes PvP et ouverture | à faire |
 

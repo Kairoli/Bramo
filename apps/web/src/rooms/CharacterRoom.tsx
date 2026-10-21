@@ -5,6 +5,7 @@ import { EnergyButton } from '../components/EnergyButton';
 import { useGame } from '../game/GameContext';
 import { duration, num, pct, signedPct } from '../format';
 import { Bar, FAMILY_COLOR, ItemIcon } from '../components/ui';
+import { AppearancePicker } from '../components/AppearancePicker';
 import { DOLL_LEFT, DOLL_RIGHT, PaperDoll, PartThumb, useEquipment } from '../components/equipment';
 
 const COMBAT_STATS = ['Points de vie', 'Attaque', 'Défense', 'Puissance magique', 'Précision', 'Esquive'];
@@ -16,9 +17,10 @@ export function CharacterRoom() {
   const { settings } = content;
   const [classOpen, setClassOpen] = useState(false);
   const [outfitOpen, setOutfitOpen] = useState(false);
+  /** « Équipement » : ce qui compte pour le build ; « Apparence » : l'aspect de chaque pièce, sans effet sur le build. */
+  const [mode, setMode] = useState<'gear' | 'look'>('gear');
   const outfit = content.cosmetics.outfits.find((o) => o.id === look?.outfit);
   const cls = look && content.classes[look.classId];
-  const linked = cls && content.professions.find((p) => p.id === cls.profession);
   const skills = content.professions.map((p) => ({ p, s: state.skills[p.id]! }));
   const best = skills.filter((x) => x.p.status === 'playable').sort((a, b) => b.s.xp - a.s.xp)[0]!;
   const totalLevel = skills.reduce((sum, x) => sum + x.s.level, 0);
@@ -47,8 +49,9 @@ export function CharacterRoom() {
   return (
     <main className="character-room">
       <section className="panel char-equipment">
-        <span className="eyebrow">Équipement et apparence</span>
-        <div className="equip-list">
+        <span className="eyebrow">{mode === 'look' ? 'Apparence' : 'Équipement'}</span>
+        {mode === 'look' && <AppearancePicker />}
+        <div className="equip-list" hidden={mode === 'look'}>
           {[...DOLL_LEFT, ...DOLL_RIGHT].map((id) => {
             const e = equipment[id];
             return (
@@ -162,10 +165,20 @@ export function CharacterRoom() {
         <header className="char-stage-head">
           {cls && (
             <div className="eyebrow" style={{ color: cls.affinityColor }}>
-              {cls.name} · {STYLE_NAMES[cls.style]} · métier lié {linked?.name}
+              {cls.name} · {STYLE_NAMES[cls.style]}
             </div>
           )}
-          <h1>{name}</h1>
+          <div className="char-name-row">
+            <h1>{name}</h1>
+            <div className="seg-toggle" role="group" aria-label="Affichage du personnage">
+              <button aria-pressed={mode === 'gear'} onClick={() => setMode('gear')}>
+                Équipement
+              </button>
+              <button aria-pressed={mode === 'look'} onClick={() => setMode('look')}>
+                Apparence
+              </button>
+            </div>
+          </div>
           <div style={{ color: 'var(--clan)' }}>
             {best.s.nickname} · {best.p.name} {best.s.level}
           </div>

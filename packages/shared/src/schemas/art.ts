@@ -129,6 +129,10 @@ export const outfitSchema = z.object({
   id,
   name: z.string(),
   subtitle: z.string(),
+  /** Classes qui peuvent la porter : l'apparence n'emprunte que les styles de sa classe (décision de Louis, 21 octobre). */
+  classes: z.array(id).min(1),
+  /** Condition de déblocage (saison, réalisation) ; absent = disponible. */
+  locked: z.string().optional(),
   palette: paletteSchema,
   parts: z.partialRecord(slotSchema.exclude(['body', 'weapon', 'effect']), id),
 });

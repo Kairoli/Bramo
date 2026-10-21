@@ -160,31 +160,66 @@ export function activateEnergy(input: CharacterState, now: number, content: Cont
 }
 
 /**
- * Choisir ou changer de classe : gratuit et à tout moment, puisque les classes s'appuient sur les métiers.
- * Une tenue choisie est gardée ; sinon le personnage prend la tenue de départ de sa nouvelle classe.
+ * Choisir ou changer de classe : gratuit et à tout moment (l'XP de classe vient du combat, le changement ne fait rien perdre).
+ * La tenue n'est gardée que si elle appartient aussi à la nouvelle classe ; sinon le personnage prend sa tenue de départ.
  */
 export function chooseClass(input: CharacterState, classId: string, content: Content): CharacterState {
   if (!content.classes[classId]) throw new GameError('unknown_class', 'Classe inconnue.');
   if (input.classId === classId) throw new GameError('same_class', 'C’est déjà votre classe.');
   const state = cloneState(input);
   state.classId = classId;
+  // La tenue ne suit que si elle appartient aussi à la nouvelle classe ; les retouches pièce par pièce repartent à zéro.
+  const current = state.outfit && content.cosmetics.outfits.find((o) => o.id === state.outfit);
+  if (!current || !current.classes.includes(classId) || current.locked) state.outfit = null;
+  state.look = {};
   return state;
 }
 
-/** Tenues que le joueur peut porter : les tenues de départ de toutes les classes ; les autres se débloquent plus tard (saisons, réalisations). */
-export function unlockedOutfits(_state: CharacterState, content: Content): string[] {
-  return content.cosmetics.outfits.filter((o) => Object.values(content.classes).some((c) => c.startingOutfit === o.id)).map((o) => o.id);
+/**
+ * Tenues que le joueur peut porter : celles de sa classe (l'apparence n'emprunte que les styles de sa classe),
+ * sauf celles qui se débloquent plus tard (saisons, réalisations).
+ */
+export function unlockedOutfits(state: CharacterState, content: Content): string[] {
+  return content.cosmetics.outfits.filter((o) => !!state.classId && o.classes.includes(state.classId) && !o.locked).map((o) => o.id);
 }
 
-/** Changer de tenue : gratuit, à tout moment, avec n'importe quelle classe (c'est un cosmétique). */
+/** Pièces qu'on peut poser sur chaque emplacement : celles des tenues débloquées de la classe. */
+export function lookOptions(state: CharacterState, content: Content): Record<string, string[]> {
+  const out: Record<string, Set<string>> = {};
+  for (const o of content.cosmetics.outfits) {
+    if (!unlockedOutfits(state, content).includes(o.id)) continue;
+    for (const [slot, part] of Object.entries(o.parts)) (out[slot] ??= new Set()).add(part);
+  }
+  return Object.fromEntries(Object.entries(out).map(([slot, ids]) => [slot, [...ids]]));
+}
+
+/** Changer de tenue : gratuit, à tout moment, parmi celles de sa classe. Les retouches pièce par pièce repartent à zéro. */
 export function chooseOutfit(input: CharacterState, outfitId: string, content: Content): CharacterState {
   const outfit = content.cosmetics.outfits.find((o) => o.id === outfitId);
   if (!outfit) throw new GameError('unknown_outfit', 'Tenue inconnue.');
-  if (!unlockedOutfits(input, content).includes(outfitId)) {
-    throw new GameError('locked_outfit', `Cette tenue n’est pas encore débloquée (${outfit.subtitle}).`);
+  if (!input.classId || !outfit.classes.includes(input.classId)) {
+    throw new GameError('wrong_class_outfit', 'Cette tenue n’appartient pas au style de votre classe.');
   }
+  if (outfit.locked) throw new GameError('locked_outfit', `Cette tenue n’est pas encore débloquée (${outfit.locked}).`);
   const state = cloneState(input);
   state.outfit = outfitId;
+  state.look = {};
+  return state;
+}
+
+/**
+ * Apparence d'une seule pièce (ou retour à la tenue avec partId = null). Ne touche jamais à l'équipement réel :
+ * l'apparence et le build sont deux choses séparées.
+ */
+export function setLook(input: CharacterState, slot: string, partId: string | null, content: Content): CharacterState {
+  const options = lookOptions(input, content)[slot];
+  if (!options) throw new GameError('unknown_slot', 'Cet emplacement n’a pas d’apparence à choisir.');
+  if (partId !== null && !options.includes(partId)) {
+    throw new GameError('unavailable_look', 'Cette apparence n’est pas disponible pour votre classe.');
+  }
+  const state = cloneState(input);
+  if (partId === null) delete state.look[slot];
+  else state.look[slot] = partId;
   return state;
 }
 
@@ -206,6 +241,7 @@ export function newCharacterState(now: number, content: Content): CharacterState
     prime: { dayKey: '', units: 0 },
     classId: null,
     outfit: null,
+    look: {},
     trials: [],
     shown: {},
     clanBonuses: {},

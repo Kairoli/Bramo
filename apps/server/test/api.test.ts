@@ -65,11 +65,23 @@ describe('API', () => {
     const changed = (await call('POST', '/api/character/class', { classId: 'runist' })).json as StateResponse;
     expect(changed.state.appearance).toEqual({ classId: 'runist', outfit: 'ashes' });
     expect((await call('POST', '/api/character/class', { classId: 'paladin' })).status).toBe(400);
-    // La tenue se change librement parmi les tenues débloquées ; les autres sont refusées.
-    const dressed = (await call('POST', '/api/character/outfit', { outfitId: 'embers' })).json as StateResponse;
-    expect(dressed.state.appearance).toEqual({ classId: 'runist', outfit: 'embers' });
-    expect(dressed.state.unlockedOutfits).toEqual(['ashes', 'embers', 'thicket']);
+    // L'apparence n'emprunte que les styles de sa classe : un Runiste ne porte pas la tenue du Forgefeu.
+    expect((await call('POST', '/api/character/outfit', { outfitId: 'embers' })).status).toBe(400);
     expect((await call('POST', '/api/character/outfit', { outfitId: 'grandmaster' })).status).toBe(400);
+    const own = (await call('GET', '/api/state')).json as StateResponse;
+    expect(own.state.unlockedOutfits).toEqual(['ashes']);
+    expect((await call('POST', '/api/character/look', { slot: 'headwear', partId: 'plate_helm' })).status).toBe(400);
+    // Pièce par pièce, dans le style de sa classe, sans toucher à l'équipement.
+    await call('POST', '/api/character/class', { classId: 'forgefire' });
+    const forge = (await call('GET', '/api/state')).json as StateResponse;
+    expect(forge.state.unlockedOutfits).toContain('embers');
+    expect(forge.state.lookOptions.headwear).toContain('plate_helm_legendary');
+    const dressed = (await call('POST', '/api/character/look', { slot: 'headwear', partId: 'plate_helm_legendary' })).json as StateResponse;
+    expect(dressed.state.appearance).toEqual({ classId: 'forgefire', outfit: 'embers', overrides: { headwear: 'plate_helm_legendary' } });
+    expect(dressed.state.gold).toBe(forge.state.gold);
+    const reset = (await call('POST', '/api/character/look', { slot: 'headwear', partId: null })).json as StateResponse;
+    expect(reset.state.appearance).toEqual({ classId: 'forgefire', outfit: 'embers' });
+    await call('POST', '/api/character/class', { classId: 'runist' });
   });
 
   it('refuse une commande de maître avant son niveau', async () => {

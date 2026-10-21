@@ -1742,3 +1742,91 @@
   align-items: center;
   min-width: 0;
 }
+
+/* Salle Personnage : bascule Équipement / Apparence à côté du nom, et choix de l'apparence pièce par pièce. */
+.char-name-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+.seg-toggle {
+  display: inline-flex;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  overflow: hidden;
+}
+.seg-toggle button {
+  background: var(--sunken);
+  color: var(--text-muted);
+  border: 0;
+  padding: 6px 12px;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.seg-toggle button[aria-pressed='true'] {
+  background: var(--action);
+  color: #1a1208;
+}
+.look-picker {
+  display: grid;
+  gap: 10px;
+  min-height: 0;
+}
+.look-rows {
+  display: grid;
+  gap: 6px;
+  max-height: 100%;
+  overflow-y: auto;
+}
+.look-row {
+  background: var(--sunken);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+.look-row.open {
+  border-color: var(--action);
+}
+.look-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  padding: 6px 8px;
+  cursor: pointer;
+  --slot: 42px;
+}
+.look-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 0 8px 8px;
+}
+.look-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: inherit;
+  font: inherit;
+  font-size: 12px;
+  padding: 4px 8px 4px 4px;
+  cursor: pointer;
+  --slot: 36px;
+}
+.look-option.active {
+  border-color: var(--action);
+}
+.equip-list[hidden] {
+  display: none;
+}

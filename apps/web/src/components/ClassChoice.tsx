@@ -24,7 +24,6 @@ function ClassCards({ onChosen }: { onChosen?: () => void }) {
     <div className="class-cards">
       {classes.map((c) => {
         const current = state.classId === c.id;
-        const profession = content.professions.find((p) => p.id === c.profession);
         return (
           <article key={c.id} className={`panel class-card${current ? ' current' : ''}`} style={{ '--affinity': c.affinityColor } as CSSProperties}>
             <div className="class-figure sunken">
@@ -37,10 +36,6 @@ function ClassCards({ onChosen }: { onChosen?: () => void }) {
               </span>
               <h2>{c.name}</h2>
               <p className="muted">{c.pitch}</p>
-              <p className="class-link">
-                Métier lié : <strong>{profession?.name}</strong>
-                <span className="muted"> · le monter renforcera votre classe</span>
-              </p>
             </div>
             <button className="btn btn-primary" disabled={current || busy !== null} onClick={() => choose(c)}>
               {current ? 'Votre classe' : busy === c.id ? 'Un instant…' : `Jouer ${c.name}`}
@@ -85,9 +80,9 @@ export function OutfitModal({ onClose }: { onClose: () => void }) {
           Fermer
         </button>
       </div>
-      <p className="muted">La tenue est un cosmétique : elle ne change ni vos statistiques ni votre classe, et se porte avec n’importe quelle classe.</p>
+      <p className="muted">La tenue est un cosmétique : elle ne change ni vos statistiques ni votre classe. Elle se limite aux styles de votre classe ; pièce par pièce, c’est le mode Apparence du personnage.</p>
       <div className="class-cards">
-        {content.cosmetics.outfits.filter((o) => !o.id.startsWith('sketch_')).map((o) => {
+        {content.cosmetics.outfits.filter((o) => !o.id.startsWith('sketch_') && (!look || o.classes.includes(look.classId))).map((o) => {
           const ok = unlocked.has(o.id);
           const current = look?.outfit === o.id;
           return (

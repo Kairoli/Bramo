@@ -53,6 +53,8 @@ export const characters = pgTable('characters', {
   classId: text('class_id'),
   /** Null = tenue de départ de la classe. */
   outfit: text('outfit'),
+  /** Apparence pièce par pièce (emplacement → pièce), au-dessus de la tenue. */
+  look: jsonb('look').$type<Record<string, string>>().notNull().default({}),
   trials: jsonb('trials').$type<string[]>().notNull().default([]),
   /** Surnom affiché par métier (rang choisi). */
   shown: jsonb('shown').$type<Record<string, number>>().notNull().default({}),
@@ -143,7 +145,7 @@ export const serverFirsts = pgTable('server_firsts', {
   at: ts('at').notNull().defaultNow(),
 });
 
-/** Clans : entrepôt commun et projet de bonus de clan (docs/design/monde.md §3). */
+/** Clans : bâtiments à boosts construits par les membres (docs/design/monde.md §3). */
 export const clans = pgTable('clans', {
   id: serial('id').primaryKey(),
   name: text('name').notNull(),

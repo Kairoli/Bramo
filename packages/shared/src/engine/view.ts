@@ -5,7 +5,7 @@ import { bonusMultiplier, energyChargesLeft, energyDurationMs, presenceAt } from
 import type { Activity, CharacterState, MealBuff, QueuedAction } from './state.js';
 import { bonusesFor } from './advance.js';
 import { copiesRemaining, durabilityMs, isDurable } from './gear.js';
-import { recycleYield, repairCost, unlockedOutfits } from './actions.js';
+import { lookOptions, recycleYield, repairCost, unlockedOutfits } from './actions.js';
 import { repairProblem } from './commission.js';
 import { npcDoneToday, npcOrdersOfDay } from './npc.js';
 import { type RankName, type TrialStatus, effectiveLevel, heldXp, nextTrial, ranksOf, shownNickname, skillLevel, trialStatus } from './trials.js';
@@ -62,6 +62,8 @@ export interface StateView {
   classId: string | null;
   /** Tenues que le personnage peut porter. */
   unlockedOutfits: string[];
+  /** Pièces qu'on peut poser sur chaque emplacement (apparence pièce par pièce). */
+  lookOptions: Record<string, string[]>;
   /** Apparence à afficher : classe et tenue (tenue de départ de la classe par défaut). */
   appearance: Appearance | null;
   trials: Record<string, TrialStatus>;
@@ -97,7 +99,12 @@ export function viewSkill(
 export function viewAppearance(state: CharacterState, content: Content): Appearance | null {
   const cls = state.classId ? content.classes[state.classId] : undefined;
   if (!cls) return null;
-  return { classId: cls.id, outfit: state.outfit ?? cls.startingOutfit };
+  // Une tenue qui n'est pas du style de la classe (anciens personnages) est remplacée par la tenue de départ.
+  const chosen = state.outfit ? content.cosmetics.outfits.find((o) => o.id === state.outfit) : undefined;
+  const compatible = !!chosen && chosen.classes.includes(cls.id);
+  const outfit = compatible ? chosen.id : cls.startingOutfit;
+  const look = compatible || !state.outfit ? state.look : {};
+  return { classId: cls.id, outfit, ...(Object.keys(look).length ? { overrides: look as Appearance['overrides'] } : {}) };
 }
 
 export function viewState(state: CharacterState, now: number, content: Content): StateView {
@@ -170,6 +177,7 @@ export function viewState(state: CharacterState, now: number, content: Content):
     npcOrders: npcOrdersOfDay(state, now, content).map((o) => ({ ...o, done: npcDoneToday(state, now, content).includes(o.id) })),
     classId: state.classId,
     unlockedOutfits: unlockedOutfits(state, content),
+    lookOptions: lookOptions(state, content),
     appearance: viewAppearance(state, content),
     trials,
   };

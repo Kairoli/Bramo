@@ -11,6 +11,7 @@ outfits:
   - id: ashes
     name: Cendres
     subtitle: Tenue de départ du Runiste
+    classes: [runist]
     palette:
       coat: "#34424A"
       coatDark: "#232D33"
@@ -34,6 +35,7 @@ outfits:
   - id: embers
     name: Braise
     subtitle: Tenue de départ du Forgefeu
+    classes: [forgefire]
     palette:
       coat: "#4E4038"
       coatDark: "#352A24"
@@ -56,6 +58,7 @@ outfits:
   - id: thicket
     name: Lisière
     subtitle: Tenue de départ du Traqueur
+    classes: [tracker]
     palette:
       coat: "#46513E"
       coatDark: "#2E382B"
@@ -76,6 +79,8 @@ outfits:
   - id: high_tide
     name: Marée haute
     subtitle: Saison des marées
+    classes: [runist]
+    locked: Saison des marées
     palette:
       coat: "#1F4652"
       coatDark: "#15313A"
@@ -99,6 +104,8 @@ outfits:
   - id: grandmaster
     name: Grand maître
     subtitle: Enchantement 99
+    classes: [runist]
+    locked: Enchantement 99
     palette:
       coat: "#2B2738"
       coatDark: "#1C1A26"
@@ -123,6 +130,7 @@ outfits:
   - id: sketch_armor_1
     name: Armure, palier 1 (esquisse)
     subtitle: Bronze
+    classes: [forgefire]
     palette:
       coat: "#5A4630"
       coatDark: "#3E3022"
@@ -147,6 +155,7 @@ outfits:
   - id: sketch_armor_10
     name: Armure, palier 10 (esquisse)
     subtitle: Fer
+    classes: [forgefire]
     palette:
       coat: "#4A4F55"
       coatDark: "#33373C"
@@ -171,6 +180,7 @@ outfits:
   - id: sketch_armor_20
     name: Armure, palier 20 (esquisse)
     subtitle: Acier
+    classes: [forgefire]
     palette:
       coat: "#2F3E52"
       coatDark: "#202B3A"
@@ -195,6 +205,7 @@ outfits:
   - id: sketch_armor_20_epic
     name: Armure épique, palier 20 (esquisse)
     subtitle: Épique
+    classes: [forgefire]
     palette:
       coat: "#2F3E52"
       coatDark: "#202B3A"
@@ -219,6 +230,7 @@ outfits:
   - id: sketch_armor_20_legendary
     name: Armure légendaire, palier 20 (esquisse)
     subtitle: Légendaire
+    classes: [forgefire]
     palette:
       coat: "#3A2F22"
       coatDark: "#26201A"
@@ -243,6 +255,7 @@ outfits:
   - id: sketch_set_cendres
     name: Cendres persistantes (esquisse)
     subtitle: Ensemble, 4 pièces + ceinturon et bottes de base
+    classes: [forgefire]
     palette:
       coat: "#2B2522"
       coatDark: "#1C1715"
@@ -267,6 +280,7 @@ outfits:
   - id: sketch_set_enclume
     name: L'Enclume patiente (esquisse)
     subtitle: Ensemble, 4 pièces + heaume et gants de base
+    classes: [forgefire]
     palette:
       coat: "#3A4350"
       coatDark: "#262C35"

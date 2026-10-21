@@ -27,6 +27,8 @@ import {
   cancelBody,
   chooseClass,
   chooseOutfit,
+  setLook,
+  lookBody,
   outfitBody,
   classBody,
   completeTrial,
@@ -342,6 +344,11 @@ export async function buildApp({ db, content, clock = Date.now, secureCookies = 
       state: chooseOutfit(state, outfitId, content),
       log: `Vous enfilez la tenue ${content.cosmetics.outfits.find((o) => o.id === outfitId)?.name}.`,
     }));
+  });
+
+  app.post('/api/character/look', (req) => {
+    const { slot, partId } = body(lookBody, req);
+    return playAs(req, (state) => ({ state: setLook(state, slot, partId, content), log: 'Vous changez d’apparence.' }));
   });
 
   app.post('/api/character/class', (req) => {

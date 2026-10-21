@@ -53,6 +53,15 @@ export function entriesFromSummary(
           : `Interrompu faute d’ingrédients : ${recipe(f.recipeId)} (${fmt(f.done)} faits).`,
     });
   }
+  for (const id of summary.worn) {
+    entries.push({ at, kind: 'info', text: `${item(id)} est usée : elle ne donne plus son bonus. Une réparation lui rend toute sa durabilité.` });
+  }
+  if (summary.autoMeals.length) {
+    const counts: Record<string, number> = {};
+    for (const id of summary.autoMeals) counts[id] = (counts[id] ?? 0) + 1;
+    const served = Object.entries(counts).map(([id, n]) => `${n} × ${item(id)}`);
+    entries.push({ at, kind: 'info', text: `Le garde-manger vous a servi : ${served.join(', ')}.` });
+  }
   for (const id of summary.started) entries.push({ at, kind: 'started', text: `La file enchaîne : ${recipe(id)}.` });
   for (const l of summary.levelUps) {
     const before = earnedTitle(l.skill, l.from, trials, content).name;

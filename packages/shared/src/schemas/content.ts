@@ -38,6 +38,13 @@ export const settingsSchema = z.object({
     clan: ratio,
     season: ratio,
   }),
+  /** Usure (outils) : la durabilité se compte en heures de travail effectif ; réparer rend tout, sans perte de maximum. */
+  wear: z.object({
+    /** Coût d'une réparation chez le PNJ : part de la valeur de l'objet, au prorata de l'usure. */
+    repairGoldShare: ratio,
+    /** Part des matériaux principaux rendue par le recyclage (arrondie vers le bas). */
+    recycleShare: z.number().min(0).max(1),
+  }),
   absence: z.object({
     minSummaryMin: z.number().min(0),
   }),
@@ -67,7 +74,14 @@ export const itemSchema = z.object({
   value: z.number().int().min(0),
   /** Prix d'achat au marchand PNJ ; absent = non vendu par le PNJ. */
   shopPrice: z.number().int().min(1).optional(),
-  tool: z.object({ profession: id, bonus: ratio }).optional(),
+  tool: z
+    .object({
+      profession: id,
+      bonus: ratio,
+      /** Heures de travail effectif avant d'être usé ; absent = ne s'use pas. */
+      durabilityHours: z.number().positive().optional(),
+    })
+    .optional(),
   meal: z.object({ bonus: ratio, durationMin: z.number().positive() }).optional(),
 });
 

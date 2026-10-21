@@ -1,4 +1,4 @@
-import type { Content, Recipe } from '../schemas/content.js';
+import type { Content, Item, Recipe } from '../schemas/content.js';
 import { levelForXp } from '../formulas/xp.js';
 import {
   type Bonuses,
@@ -26,22 +26,63 @@ export interface AdvanceSummary {
   xp: Record<string, number>;
   produced: Record<string, number>;
   consumed: Record<string, number>;
+  /** Usure ajoutée par objet, en ms de travail. */
+  wear: Record<string, number>;
+  /** Objets devenus usés pendant ce calcul. */
+  worn: string[];
+  /** Repas pris automatiquement dans le garde-manger. */
+  autoMeals: string[];
   levelUps: { skill: string; from: number; to: number }[];
   finished: FinishedActivity[];
   /** Recettes démarrées automatiquement depuis la file. */
   started: string[];
 }
 
-/** Bonus applicables à une recette selon l'état courant (outil possédé, repas actif). */
-export function bonusesFor(recipe: Recipe, state: CharacterState, t: number, content: Content): Bonuses {
-  let tool = 0;
+/** Durabilité totale d'un objet en ms de travail ; Infinity s'il ne s'use pas. */
+export function durabilityMs(item: Item | undefined): number {
+  const hours = item?.tool?.durabilityHours;
+  return hours === undefined ? Number.POSITIVE_INFINITY : hours * 3_600_000;
+}
+
+export function remainingMs(itemId: string, state: CharacterState, content: Content): number {
+  return durabilityMs(content.items[itemId]) - (state.wear[itemId] ?? 0);
+}
+
+/** Le meilleur outil du métier qui n'est pas usé (un outil usé ne donne rien mais n'est pas perdu). */
+export function activeTool(profession: string, state: CharacterState, content: Content): { itemId: string; bonus: number } | null {
+  let best: { itemId: string; bonus: number } | null = null;
   for (const [itemId, qty] of Object.entries(state.inventory)) {
     const item = content.items[itemId];
-    if (qty > 0 && item?.tool?.profession === recipe.profession) tool = Math.max(tool, item.tool.bonus);
+    if (qty <= 0 || item?.tool?.profession !== profession || remainingMs(itemId, state, content) <= 0) continue;
+    if (!best || item.tool.bonus > best.bonus) best = { itemId, bonus: item.tool.bonus };
   }
+  return best;
+}
+
+/** Bonus applicables à une recette selon l'état courant (outil en état, repas actif). */
+export function bonusesFor(recipe: Recipe, state: CharacterState, t: number, content: Content): Bonuses {
+  const tool = activeTool(recipe.profession, state, content)?.bonus ?? 0;
   const meal = state.buff && t < state.buff.until ? state.buff.bonus : 0;
   // Clan et saison : prévus dans le calcul, inactifs en P1.
   return { tool, meal, clan: 0, season: 0 };
+}
+
+/** Une activité tourne et peut fabriquer : c'est le moment de manger (pas de repas gâché sur un personnage à l'arrêt). */
+function canWork(state: CharacterState, content: Content): boolean {
+  const recipe = state.activity && content.recipes[state.activity.recipeId];
+  return !!recipe && maxAffordable(recipe, state.inventory) > 0 && state.activity!.done < state.activity!.quantity;
+}
+
+/** Retire du garde-manger le repas au meilleur bonus (le plus long en cas d'égalité). */
+function takeFromPantry(state: CharacterState, content: Content): Item | null {
+  let best: Item | null = null;
+  for (const [itemId, qty] of Object.entries(state.pantry)) {
+    const item = content.items[itemId];
+    if (qty <= 0 || !item?.meal) continue;
+    if (!best || item.meal.bonus > best.meal!.bonus || (item.meal.bonus === best.meal!.bonus && item.meal.durationMin > best.meal!.durationMin)) best = item;
+  }
+  if (best) addStack(state.pantry, best.id, -1);
+  return best;
 }
 
 export function maxAffordable(recipe: Recipe, inventory: Record<string, number>): number {
@@ -77,6 +118,9 @@ export function advance(
     xp: {},
     produced: {},
     consumed: {},
+    wear: {},
+    worn: [],
+    autoMeals: [],
     levelUps: [],
     finished: [],
     started: [],
@@ -95,6 +139,14 @@ export function advance(
   while (t < now) {
     const win = presenceAt(t, state.lastSeenAt, state.energy, settings);
     let end = Math.min(now, win.until);
+    if (state.buff && state.buff.until <= t) state.buff = null;
+    if (!state.buff && win.multiplier > 0 && canWork(state, content)) {
+      const meal = takeFromPantry(state, content);
+      if (meal) {
+        state.buff = { itemId: meal.id, bonus: meal.meal!.bonus, until: t + meal.meal!.durationMin * 60_000 };
+        summary.autoMeals.push(meal.id);
+      }
+    }
     if (state.buff && t < state.buff.until) end = Math.min(end, state.buff.until);
 
     const workStart = t;
@@ -120,18 +172,32 @@ export function advance(
 
       const rate = win.multiplier * bonusMultiplier(bonusesFor(recipe, state, t, content), settings.bonusCaps);
       const duration = recipe.durationSec * 1000;
-      const reachable = activity.progress + (end - t) * rate;
+      // L'outil utilisé s'use au temps réel de travail ; on s'arrête au moment où il est usé pour recalculer le rendement.
+      const tool = activeTool(recipe.profession, state, content);
+      const toolLeft = tool ? remainingMs(tool.itemId, state, content) : Number.POSITIVE_INFINITY;
+      const segEnd = Math.min(end, t + toolLeft);
+      const segStart = t;
+      const wearTool = () => {
+        if (!tool || !Number.isFinite(toolLeft)) return;
+        addTo(state.wear, tool.itemId, t - segStart);
+        addTo(summary.wear, tool.itemId, t - segStart);
+        if (remainingMs(tool.itemId, state, content) <= 0) summary.worn.push(tool.itemId);
+      };
+      const reachable = activity.progress + (segEnd - t) * rate;
       const n = Math.min(Math.floor(reachable / duration), remaining, affordable);
       if (n === 0) {
         activity.progress = reachable;
-        t = end;
-        break;
+        t = segEnd;
+        wearTool();
+        if (t >= end) break;
+        continue;
       }
 
       // Instant exact où la n-ième fabrication se termine.
       t += (n * duration - activity.progress) / rate;
       activity.progress = 0;
       activity.done += n;
+      wearTool();
       if (!(recipe.profession in levelsBefore)) {
         levelsBefore[recipe.profession] = levelForXp(state.skills[recipe.profession] ?? 0, content.xpTable);
       }

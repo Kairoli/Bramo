@@ -55,6 +55,13 @@ Bramo est un **idle-RPG multijoueur jouable dans le navigateur**, dans l'esprit 
 
 ## 5. État du projet (à jour au 21 octobre 2026)
 
+### Fait — usure, réparation, recyclage et garde-manger (21 octobre)
+
+- **Usure** : `item.tool.durabilityHours` (data/items.yaml : bronze 40 h, fer 60 h, acier 90 h). `CharacterState.wear[itemId]` compte les ms de travail effectif ; `advance` coupe ses segments au moment où l'outil se termine pour que le rendement change à l'instant exact (résultat identique en une ou plusieurs étapes). `activeTool` ignore un outil usé ; il reste dans le sac, le maximum ne baisse jamais.
+- **Réparation** (`repairItem`, `POST /api/shop/repair`) : PNJ, `settings.wear.repairGoldShare` × valeur × part d'usure ; remet l'usure à 0. **Recyclage** (`recycleItem`, `POST /api/items/recycle`) : `settings.wear.recycleShare` des intrants de la recette qui fabrique l'objet, arrondi vers le bas (les outils à 1 intrant ne rendent rien, donc non recyclables). **Garde-manger** (`state.pantry`, `POST /api/pantry/stock|unstock`) : `advance` mange le repas au meilleur bonus quand le précédent expire, seulement si une activité peut tourner.
+- Migration `0002_wear_pantry` (colonnes `wear` et `pantry`). Vue : `durability`, `recycle`, `pantry`. Interface : sac de la salle Personnage (reste X h, Réparer, Recycler, Garde-manger).
+- **Pas encore fait** : réparation par un artisan (marché), outils d'apprenti, usure des armures (combat), usure dans le simulateur (les bots ignorent encore l'usure et le garde-manger), équilibrage des durées et des prix (`# à équilibrer`).
+
 ### Fait — premières décisions appliquées : présence, progression, boucle à 6 métiers (21 octobre)
 
 - **Décisions de Louis** (arbitrages 1, 2, 4, 11, 12) : rendement unique 100 % et 16 h d'autonomie ; l'énergie quotidienne devient **deux coups de fouet de 30 min (×1,5) par jour, activés quand on veut** (en ligne comme hors ligne, un second s'ajoute au premier) ; courbe RuneScape avec les taux recalibrés, **sans XP doublée en début de métier** ; repas à ~2 fois leur coût et garde-manger ; usure **sans perte de durabilité maximale**. Idée de Louis à examiner : un coup de fouet derrière une publicité (`arbitrages.md` §2).
@@ -140,7 +147,7 @@ Bramo est un **idle-RPG multijoueur jouable dans le navigateur**, dans l'esprit 
 
 ### Prochaines étapes (ordre proposé)
 
-0. **Suite de `docs/design/arbitrages.md` §3** (étapes 1 et 2 faites) : (3) usure sans perte de durabilité maximale, réparation, recyclage, garde-manger et outils d'apprenti dans le moteur, (4) marché et Pêche, (5) clans, Construction, Agriculture, (6) combat et métiers d'équipement, (7) premier événement.
+0. **Suite de `docs/design/arbitrages.md` §3** (étapes 1 à 3 faites, reste les outils d'apprenti) : (4) marché et Pêche, (5) clans, Construction, Agriculture, (6) combat et métiers d'équipement, (7) premier événement.
 1. **Mise en service sur le homeserver** : Postgres (docker compose), `.env` avec `DATABASE_URL`, build du client (`pnpm --filter @bramo/web build`), le serveur Fastify sert `apps/web/dist` (ou un reverse proxy devant), HTTPS, `NODE_ENV=production`, service systemd ou conteneur, sauvegardes de la base. Limite de tentatives de connexion.
 2. **Accueil à refaire** (direction choisie par l'auteur le 21 octobre) : la carte du monde est remplacée par une **scène du bourg** où passent d'autres joueurs (vrais joueurs récemment actifs, avec leur classe et leur activité) et un **Panneau du bourg** dont le cœur est le **fil du serveur** (montées de titre, épreuves réussies, premières fabrications). Décisions : **pas de bonus du jour** (les boosts viennent des saisons et événements), **pas de chantier commun au serveur** (c'est le rôle des clans), commandes de PNJ non tranchées. La carte pourra revenir en popup « Voyager » avec l'Exploration.
 3. **Animation et vie de l'interface** (choix de l'auteur en attente) : « +1 objet » flottant à chaque fabrication, pulsation de l'anneau, célébration de montée de niveau et d'épreuve réussie, scènes animées dans les bandeaux (forge, mines, eau), entrées du journal qui glissent.

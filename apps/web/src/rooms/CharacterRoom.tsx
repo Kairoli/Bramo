@@ -30,6 +30,12 @@ export function CharacterRoom() {
     .filter((x) => x.item)
     .sort((a, b) => a.item.category.localeCompare(b.item.category) || a.item.name.localeCompare(b.item.name));
 
+  const { durability } = state;
+  const pantry = Object.entries(state.pantry)
+    .map(([id, qty]) => ({ item: content.items[id]!, qty }))
+    .filter((x) => x.item)
+    .sort((a, b) => a.item.name.localeCompare(b.item.name));
+
   const bonuses = [
     { label: 'Outil', value: rate?.tool ?? 0, cap: settings.bonusCaps.tool, soon: false },
     { label: 'Repas', value: rate?.meal ?? 0, cap: settings.bonusCaps.meal, soon: false },
@@ -75,17 +81,64 @@ export function CharacterRoom() {
             <div key={item.id} className="bag-item">
               <ItemIcon item={item} small />
               <span className="bag-name">{item.name}</span>
-              <span className="muted">×{num(qty)}</span>
-              {item.meal ? (
-                <button className="btn btn-sm" onClick={() => act(() => api.eat(item.id))}>
-                  Manger
-                </button>
-              ) : (
-                <span />
-              )}
+              <span className="muted">
+                ×{num(qty)}
+                {durability[item.id] && (
+                  <>
+                    {' · '}
+                    {durability[item.id]!.remainingMs > 0 ? `reste ${duration(durability[item.id]!.remainingMs)}` : 'usé'}
+                  </>
+                )}
+              </span>
+              <span className="bag-actions">
+                {item.meal && (
+                  <>
+                    <button className="btn btn-sm" onClick={() => act(() => api.eat(item.id))}>
+                      Manger
+                    </button>
+                    <button className="btn btn-sm" title="Le personnage en mange un dès que le précédent expire" onClick={() => act(() => api.stockPantry(item.id, qty))}>
+                      Garde-manger
+                    </button>
+                  </>
+                )}
+                {durability[item.id] && durability[item.id]!.repairCost > 0 && (
+                  <button
+                    className="btn btn-sm"
+                    disabled={state.gold < durability[item.id]!.repairCost}
+                    title="Rend toute la durabilité ; le maximum ne baisse jamais"
+                    onClick={() => act(() => api.repair(item.id))}
+                  >
+                    Réparer · {durability[item.id]!.repairCost} or
+                  </button>
+                )}
+                {state.recycle[item.id] && (
+                  <button
+                    className="btn btn-sm"
+                    title={`Rend ${state.recycle[item.id]!.map((y) => `${y.qty} × ${content.items[y.item]?.name ?? y.item}`).join(', ')} par exemplaire`}
+                    onClick={() => act(() => api.recycle(item.id, 1))}
+                  >
+                    Recycler
+                  </button>
+                )}
+              </span>
             </div>
           ))}
         </div>
+        {pantry.length > 0 && (
+          <div className="bag scroll">
+            <span className="eyebrow">Garde-manger</span>
+            {pantry.map(({ item, qty }) => (
+              <div key={item.id} className="bag-item">
+                <ItemIcon item={item} small />
+                <span className="bag-name">{item.name}</span>
+                <span className="muted">×{num(qty)}</span>
+                <button className="btn btn-sm" onClick={() => act(() => api.unstockPantry(item.id, qty))}>
+                  Reprendre
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
       </section>
 
       <section className="panel band char-stage">

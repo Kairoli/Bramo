@@ -28,7 +28,7 @@ Conséquences :
 | **des ressources** | Construction (éléments posés) ; consommables (repas, potions, flèches, runes de combat) ; recyclage (60 % perdus) ; épreuves des maîtres ; projets d'événement | Absorber le volume |
 | **des équipements** | Usure → réparations (chacune réduit la durabilité maximale) → recyclage ; montée de palier ; qualité recherchée | Renouveler la demande des artisans |
 
-## 3. Usure et réparation [Décidé le 21 octobre, pas encore dans le moteur]
+## 3. Usure et réparation [Décidé le 21 octobre ; dans le moteur pour les outils, réparation par un artisan avec le marché]
 
 - **La durabilité se compte en heures d'usage effectif** : chaque fabrication ou combat simulé, hors ligne compris, consomme sa durée. Un personnage arrêté (activité terminée, autonomie écoulée) n'use rien.
 - **Repères** : outil de fer ~60 h effectives (deux à trois jours pour un régulier), armure de palier ~150 h de combat. Toujours affichée (« reste 23 h »), jamais de surprise.

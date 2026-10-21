@@ -33,6 +33,10 @@ export interface CharacterState {
   lastSeenAt: number;
   energy: EnergyState;
   buff: MealBuff | null;
+  /** Usure des objets à durabilité, en ms de travail effectif (jamais de perte du maximum : réparer remet à 0). */
+  wear: Record<string, number>;
+  /** Garde-manger : repas rangés, mangés automatiquement dès que le précédent expire (hors ligne compris). */
+  pantry: Record<string, number>;
   /** Classe de base, choisie à la création (null tant qu'elle ne l'est pas) et changeable à tout moment. */
   classId: string | null;
   /** Tenue choisie ; null = la tenue de départ de la classe. */

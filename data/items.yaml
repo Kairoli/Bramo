@@ -53,19 +53,19 @@
 - {id: iron_sword, name: Épée de fer, category: weapon, value: 57}
 
 # Outils : un par métier et par métal. Bonus plafonné à +30 % (settings.bonusCaps.tool).
-- {id: bronze_pickaxe, name: Pioche de bronze, category: tool, value: 13, tool: {profession: mining, bonus: 0.10}}
-- {id: iron_pickaxe, name: Pioche de fer, category: tool, value: 61, tool: {profession: mining, bonus: 0.15}}
-- {id: steel_pickaxe, name: Pioche d'acier, category: tool, value: 108, tool: {profession: mining, bonus: 0.20}}
-- {id: bronze_axe, name: Hache de bronze, category: tool, value: 13, tool: {profession: woodcutting, bonus: 0.10}}
-- {id: iron_axe, name: Hache de fer, category: tool, value: 61, tool: {profession: woodcutting, bonus: 0.15}}
-- {id: bronze_sickle, name: Serpe de bronze, category: tool, value: 13, tool: {profession: herbalism, bonus: 0.10}}
-- {id: iron_sickle, name: Serpe de fer, category: tool, value: 61, tool: {profession: herbalism, bonus: 0.15}}
-- {id: bronze_hammer, name: Marteau de bronze, category: tool, value: 13, tool: {profession: smithing, bonus: 0.10}}
-- {id: iron_hammer, name: Marteau de fer, category: tool, value: 61, tool: {profession: smithing, bonus: 0.15}}
-- {id: bronze_saw, name: Scie de bronze, category: tool, value: 13, tool: {profession: carpentry, bonus: 0.10}}
-- {id: iron_saw, name: Scie de fer, category: tool, value: 61, tool: {profession: carpentry, bonus: 0.15}}
-- {id: bronze_knife, name: Couteau de bronze, category: tool, value: 13, tool: {profession: cooking, bonus: 0.10}}
-- {id: iron_knife, name: Couteau de fer, category: tool, value: 61, tool: {profession: cooking, bonus: 0.15}}
+- {id: bronze_pickaxe, name: Pioche de bronze, category: tool, value: 13, tool: {profession: mining, bonus: 0.10, durabilityHours: 40}}
+- {id: iron_pickaxe, name: Pioche de fer, category: tool, value: 61, tool: {profession: mining, bonus: 0.15, durabilityHours: 60}}
+- {id: steel_pickaxe, name: Pioche d'acier, category: tool, value: 108, tool: {profession: mining, bonus: 0.20, durabilityHours: 90}}
+- {id: bronze_axe, name: Hache de bronze, category: tool, value: 13, tool: {profession: woodcutting, bonus: 0.10, durabilityHours: 40}}
+- {id: iron_axe, name: Hache de fer, category: tool, value: 61, tool: {profession: woodcutting, bonus: 0.15, durabilityHours: 60}}
+- {id: bronze_sickle, name: Serpe de bronze, category: tool, value: 13, tool: {profession: herbalism, bonus: 0.10, durabilityHours: 40}}
+- {id: iron_sickle, name: Serpe de fer, category: tool, value: 61, tool: {profession: herbalism, bonus: 0.15, durabilityHours: 60}}
+- {id: bronze_hammer, name: Marteau de bronze, category: tool, value: 13, tool: {profession: smithing, bonus: 0.10, durabilityHours: 40}}
+- {id: iron_hammer, name: Marteau de fer, category: tool, value: 61, tool: {profession: smithing, bonus: 0.15, durabilityHours: 60}}
+- {id: bronze_saw, name: Scie de bronze, category: tool, value: 13, tool: {profession: carpentry, bonus: 0.10, durabilityHours: 40}}
+- {id: iron_saw, name: Scie de fer, category: tool, value: 61, tool: {profession: carpentry, bonus: 0.15, durabilityHours: 60}}
+- {id: bronze_knife, name: Couteau de bronze, category: tool, value: 13, tool: {profession: cooking, bonus: 0.10, durabilityHours: 40}}
+- {id: iron_knife, name: Couteau de fer, category: tool, value: 61, tool: {profession: cooking, bonus: 0.15, durabilityHours: 60}}
 
 # --- Menuiserie ---
 - {id: pine_plank, name: Planche de pin, category: plank, value: 1}

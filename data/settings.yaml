@@ -40,6 +40,11 @@ bonusCaps:
   clan: 0.10
   season: 0.20
 
+# Usure : un outil usé ne donne plus son bonus mais n'est jamais perdu ; réparer rend toute la durabilité.
+wear:
+  repairGoldShare: 0.5    # coût PNJ = 50 % de la valeur de l'objet, au prorata de l'usure ; à équilibrer
+  recycleShare: 0.4       # part des matériaux principaux rendue, arrondie vers le bas
+
 absence:
   minSummaryMin: 5        # en dessous, pas de fenêtre de résumé à la connexion
 

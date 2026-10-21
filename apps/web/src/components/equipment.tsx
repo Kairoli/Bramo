@@ -91,18 +91,19 @@ export function useEquipment(appearance?: Appearance): Record<EquipSlotId, Equip
 
   // Outil : le meilleur possédé pour le métier en cours (sinon le meilleur tout court).
   const activeProfession = state.activity && content.recipes[state.activity.recipeId]?.profession;
+  const isWorn = (i: Item) => state.durability[i.id]?.remainingMs === 0;
   const tools = Object.keys(state.inventory)
     .map((id) => content.items[id])
     .filter((i): i is Item => !!i?.tool)
-    .sort((a, b) => b.tool!.bonus - a.tool!.bonus);
-  const tool = tools.find((t) => t.tool!.profession === activeProfession) ?? tools[0] ?? null;
+    .sort((a, b) => Number(isWorn(a)) - Number(isWorn(b)) || b.tool!.bonus - a.tool!.bonus);
+  const tool = tools.find((t) => t.tool!.profession === activeProfession && !isWorn(t)) ?? tools[0] ?? null;
   const toolProfession = tool && content.professions.find((p) => p.id === tool.tool!.profession)?.name;
   out.tool = {
     id: 'tool',
     label: 'Outil',
     kind: 'gear',
     name: tool?.name ?? null,
-    detail: tool ? `${signedPct(tool.tool!.bonus)} de vitesse en ${toolProfession}` : 'Aucun outil : forgez-en un',
+    detail: tool ? (isWorn(tool) ? 'Usé : à réparer' : `${signedPct(tool.tool!.bonus)} de vitesse en ${toolProfession}`) : 'Aucun outil : forgez-en un',
     thumb: null,
     item: tool,
     highlight: [],

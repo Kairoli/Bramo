@@ -2,7 +2,7 @@ import type { Content } from '../schemas/content.js';
 import { levelForXp } from '../formulas/xp.js';
 import { NO_ENERGY, dayKey, energyChargesLeft, energyDurationMs } from '../formulas/rates.js';
 import { type CharacterState, GameError, addStack, cloneState } from './state.js';
-import { startNextFromQueue } from './advance.js';
+import { durabilityMs, startNextFromQueue } from './advance.js';
 import { recipeAvailable } from './trials.js';
 
 /**
@@ -91,6 +91,80 @@ export function sellItem(input: CharacterState, itemId: string, qty: number, con
   return state;
 }
 
+/** Part d'usure d'un objet entre 0 (neuf) et 1 (usé). */
+export function wornShare(itemId: string, state: CharacterState, content: Content): number {
+  const total = durabilityMs(content.items[itemId]);
+  return Number.isFinite(total) ? Math.min(1, (state.wear[itemId] ?? 0) / total) : 0;
+}
+
+/** Prix de la réparation chez le PNJ : proportionnel à l'usure, au moins 1 or dès qu'il y a de l'usure. */
+export function repairCost(itemId: string, state: CharacterState, content: Content): number {
+  const share = wornShare(itemId, state, content);
+  if (share <= 0) return 0;
+  return Math.max(1, Math.ceil(content.items[itemId]!.value * content.settings.wear.repairGoldShare * share));
+}
+
+/** Réparer chez le PNJ : rend toute la durabilité, la durabilité maximale ne baisse jamais. */
+export function repairItem(input: CharacterState, itemId: string, content: Content): CharacterState {
+  const item = content.items[itemId];
+  if (!item || !Number.isFinite(durabilityMs(item))) throw new GameError('not_repairable', 'Cet objet ne s’use pas.');
+  if ((input.inventory[itemId] ?? 0) < 1) throw new GameError('missing', 'Vous n’en avez pas.');
+  const cost = repairCost(itemId, input, content);
+  if (cost === 0) throw new GameError('not_worn', 'Cet objet est comme neuf.');
+  if (input.gold < cost) throw new GameError('gold', 'Pas assez d’or.');
+  const state = cloneState(input);
+  state.gold -= cost;
+  delete state.wear[itemId];
+  return state;
+}
+
+/** Ce que rend le recyclage d'un exemplaire : une part des matériaux de la recette qui le fabrique. */
+export function recycleYield(itemId: string, content: Content): { item: string; qty: number }[] {
+  const item = content.items[itemId];
+  if (!item || item.meal) return [];
+  const recipe = Object.values(content.recipes).find(
+    (r) => r.inputs.length > 0 && r.outputs.length === 1 && r.outputs[0]!.item === itemId,
+  );
+  if (!recipe) return [];
+  const out = recipe.outputs[0]!.qty;
+  return recipe.inputs
+    .map((i) => ({ item: i.item, qty: Math.floor((i.qty * content.settings.wear.recycleShare) / out) }))
+    .filter((y) => y.qty > 0);
+}
+
+/** Recycler : détruit des exemplaires et rend une part des matériaux, sans or. */
+export function recycleItem(input: CharacterState, itemId: string, qty: number, content: Content): CharacterState {
+  if (!Number.isInteger(qty) || qty < 1) throw new GameError('quantity', 'Quantité invalide.');
+  if ((input.inventory[itemId] ?? 0) < qty) throw new GameError('missing', 'Vous n’en avez pas assez.');
+  const yields = recycleYield(itemId, content);
+  if (!yields.length) throw new GameError('not_recyclable', 'Rien à récupérer dans cet objet.');
+  const state = cloneState(input);
+  addStack(state.inventory, itemId, -qty);
+  if (!state.inventory[itemId]) delete state.wear[itemId];
+  for (const y of yields) addStack(state.inventory, y.item, y.qty * qty);
+  return state;
+}
+
+/** Ranger des repas dans le garde-manger (ou les reprendre avec une quantité négative côté appelant). */
+export function stockPantry(input: CharacterState, itemId: string, qty: number, content: Content): CharacterState {
+  if (!content.items[itemId]?.meal) throw new GameError('not_meal', 'Seuls les repas se rangent au garde-manger.');
+  if (!Number.isInteger(qty) || qty < 1) throw new GameError('quantity', 'Quantité invalide.');
+  if ((input.inventory[itemId] ?? 0) < qty) throw new GameError('missing', 'Vous n’en avez pas assez.');
+  const state = cloneState(input);
+  addStack(state.inventory, itemId, -qty);
+  addStack(state.pantry, itemId, qty);
+  return state;
+}
+
+export function unstockPantry(input: CharacterState, itemId: string, qty: number): CharacterState {
+  if (!Number.isInteger(qty) || qty < 1) throw new GameError('quantity', 'Quantité invalide.');
+  if ((input.pantry[itemId] ?? 0) < qty) throw new GameError('missing', 'Il n’y en a pas autant au garde-manger.');
+  const state = cloneState(input);
+  addStack(state.pantry, itemId, -qty);
+  addStack(state.inventory, itemId, qty);
+  return state;
+}
+
 /**
  * Activer un coup de fouet : une charge du jour, effet immédiat pendant `durationMin`, en ligne comme hors ligne.
  * Activé pendant un autre, il s'ajoute à la suite (deux charges d'un coup = une heure).
@@ -130,6 +204,8 @@ export function newCharacterState(now: number, content: Content): CharacterState
     lastSeenAt: now,
     energy: { ...NO_ENERGY },
     buff: null,
+    wear: {},
+    pantry: {},
     classId: null,
     outfit: null,
     trials: [],

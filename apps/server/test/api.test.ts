@@ -115,6 +115,15 @@ describe('API', () => {
     expect(journal[0]!.text).toBe('Achat : 5 × Poisson frais.');
   });
 
+  it('refuse de ranger un non-repas au garde-manger et expose usure et garde-manger', async () => {
+    const res = await call('POST', '/api/pantry/stock', { itemId: 'raw_fish', qty: 1 });
+    expect(res.status).toBe(400);
+    const view = ((await call('GET', '/api/state')).json as StateResponse).state;
+    expect(view.pantry).toEqual({});
+    expect(view.durability).toEqual({});
+    expect((await call('POST', '/api/shop/repair', { itemId: 'raw_fish' })).status).toBe(400);
+  });
+
   it('se reconnecte avec le mot de passe', async () => {
     await call('POST', '/api/auth/logout');
     cookie = '';

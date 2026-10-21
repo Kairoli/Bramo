@@ -834,6 +834,12 @@
   gap: 10px;
   font-size: 13px;
 }
+.bag-actions {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
 .bag-head {
   margin-top: 4px;
 }

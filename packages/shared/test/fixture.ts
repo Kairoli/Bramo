@@ -16,6 +16,7 @@ export const settings = {
   rates: { active: 1, offline: 0.25, offlineCapHours: 12 },
   energy: { multiplier: 1.5, charges: 2, durationMin: 30, resetHourUtc: 4 },
   bonusCaps: { tool: 0.3, meal: 0.1, clan: 0.1, season: 0.2 },
+  wear: { repairGoldShare: 0.5, recycleShare: 0.4 },
   absence: { minSummaryMin: 5 },
   character: { startingGold: 100 },
 };
@@ -47,6 +48,9 @@ export const content = buildContent({
     { id: 'ore', name: 'Minerai', category: 'ore', value: 1 },
     { id: 'bar', name: 'Lingot', category: 'bar', value: 5 },
     { id: 'pick', name: 'Pioche', category: 'tool', value: 10, tool: { profession: 'mining', bonus: 0.5 } },
+    // Usée au bout de 36 s de travail (0,01 h) ; réparée 5 or au prorata de l'usure (valeur 10 × 50 %).
+    { id: 'frail_pick', name: 'Pioche fragile', category: 'tool', value: 10, tool: { profession: 'mining', bonus: 0.2, durabilityHours: 0.01 } },
+    { id: 'block', name: 'Bloc', category: 'bar', value: 8 },
     { id: 'stew', name: 'Ragoût', category: 'meal', value: 3, shopPrice: 10, meal: { bonus: 0.1, durationMin: 30 } },
   ],
   classes: [
@@ -78,6 +82,7 @@ export const content = buildContent({
         { id: 'mine_ore', name: 'Miner', profession: 'mining', category: 'ores', level: 1, durationSec: 10, xp: 10, outputs: [{ item: 'ore', qty: 1 }] },
         // 10 s, 2 minerais → 1 lingot.
         { id: 'smelt', name: 'Fondre', profession: 'smithing', category: 'bars', level: 1, durationSec: 10, xp: 20, inputs: [{ item: 'ore', qty: 2 }], outputs: [{ item: 'bar', qty: 1 }] },
+        { id: 'make_block', name: 'Bloc', profession: 'smithing', category: 'bars', level: 1, durationSec: 10, xp: 5, inputs: [{ item: 'ore', qty: 10 }], outputs: [{ item: 'block', qty: 1 }] },
         { id: 'hard', name: 'Difficile', profession: 'mining', category: 'ores', level: 50, durationSec: 10, xp: 10, outputs: [{ item: 'ore', qty: 1 }] },
         // Chef-d'œuvre : seulement pendant l'épreuve mining_30.
         { id: 'masterpiece', name: 'Chef-d’œuvre', profession: 'mining', category: 'ores', level: 30, durationSec: 10, xp: 10, trial: 'mining_30', outputs: [{ item: 'ore', qty: 1 }] },
@@ -104,6 +109,8 @@ export function makeState(over: Partial<CharacterState> = {}): CharacterState {
     // Aucun coup de fouet en cours par défaut, pour tester le rendement de base.
     energy: { dayKey: '', used: 0, activeUntil: 0 },
     buff: null,
+    wear: {},
+    pantry: {},
     classId: 'mage',
     outfit: null,
     trials: [],

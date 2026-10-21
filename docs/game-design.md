@@ -60,7 +60,7 @@ Signés par l'artisan, de meilleure qualité : Normale, Supérieure, Rare, Chef-
   - Monde : **Construction** (le grand puits : atelier personnel et halle du clan), **Exploration** (cartes de gisement, curiosités, sites) ;
   - Extensions : Élevage, Archéologie, Dressage.
 - [Prototype] `data/professions.yaml` liste les 17 métiers proposés ; **6 sont jouables** (Minage, Bûcheronnage, Herboristerie, Forge, Menuiserie, Cuisine), avec un outil par métier (fer d'outil de la Forge + manche de la Menuiserie) et des épreuves 30 et 60 pour chacun (ancienne règle de rangs, à remplacer : §3.2). Le poisson reste vendu par le **marchand du port** (PNJ), qui rachète à 10 % de la valeur de référence.
-- [Décidé] **Usure** : elle suit les heures d'usage réel ; un objet usé se répare et **ne perd jamais de durabilité maximale** (un objet qu'on aime ne se détruit pas). [Prototype] Pas encore dans le moteur, ni le garde-manger.
+- [Décidé] **Usure** : elle suit les heures d'usage réel ; un objet usé se répare et **ne perd jamais de durabilité maximale** (un objet qu'on aime ne se détruit pas). [Prototype] Dans le moteur depuis le 21 octobre : les outils s'usent au temps de travail effectif (40 / 60 / 90 h selon le métal), un outil usé ne donne plus son bonus mais reste dans le sac, réparation chez le PNJ (50 % de la valeur au prorata de l'usure), recyclage à 40 %, garde-manger automatique. Réparation par un artisan (30 % des matériaux, commande) : avec le marché.
 
 ## 5. Boucle idle
 
@@ -169,7 +169,7 @@ Toujours à gauche de la scène, de face mais tourné vers la droite, jamais en 
 | Phase | Contenu |
 |---|---|
 | P0 | Chiffrage et simulateur d'équilibrage — **commencé** (`sim/`) |
-| P1 | Prototype solo — fait ; présence, progression et boucle à 6 métiers appliquées le 21 octobre ; reste usure et garde-manger |
+| P1 | Prototype solo — fait ; présence, progression et boucle à 6 métiers appliquées le 21 octobre ; reste le marché (réparation par un artisan) |
 | P2 | Marché et commandes ; Pêche |
 | P3 | Clans, Construction, Agriculture |
 | P4 | Combat ; Chasse, Tannerie, Couture, Enchantement, Joaillerie, Alchimie |

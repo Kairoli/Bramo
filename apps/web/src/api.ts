@@ -40,6 +40,10 @@ export const api = {
   eat: (itemId: string) => request<StateResponse>('POST', '/items/eat', { itemId }),
   buy: (itemId: string, qty: number) => request<StateResponse>('POST', '/shop/buy', { itemId, qty }),
   sell: (itemId: string, qty: number) => request<StateResponse>('POST', '/shop/sell', { itemId, qty }),
+  repair: (itemId: string) => request<StateResponse>('POST', '/shop/repair', { itemId }),
+  recycle: (itemId: string, qty: number) => request<StateResponse>('POST', '/items/recycle', { itemId, qty }),
+  stockPantry: (itemId: string, qty: number) => request<StateResponse>('POST', '/pantry/stock', { itemId, qty }),
+  unstockPantry: (itemId: string, qty: number) => request<StateResponse>('POST', '/pantry/unstock', { itemId, qty }),
   chooseClass: (classId: string) => request<StateResponse>('POST', '/character/class', { classId }),
   completeTrial: (trialId: string) => request<StateResponse>('POST', '/trials/complete', { trialId }),
 };

@@ -3,7 +3,8 @@ import type { Appearance } from '../schemas/art.js';
 import { levelForXp, nextTitle } from '../formulas/xp.js';
 import { bonusMultiplier, energyChargesLeft, energyDurationMs, presenceAt } from '../formulas/rates.js';
 import type { Activity, CharacterState, MealBuff, QueuedAction } from './state.js';
-import { bonusesFor } from './advance.js';
+import { bonusesFor, durabilityMs, remainingMs } from './advance.js';
+import { recycleYield, repairCost } from './actions.js';
 import { type TrialStatus, earnedTitle, trialStatus, trialsOf } from './trials.js';
 
 /** Ce que le client reçoit. Tous les nombres sont calculés par le serveur. */
@@ -39,6 +40,11 @@ export interface StateView {
   /** Coups de fouet : charges restantes aujourd'hui, et fin de celui en cours (null = aucun). */
   energy: { chargesLeft: number; charges: number; activeUntil: number | null; durationMs: number; multiplier: number };
   buff: MealBuff | null;
+  /** Objets à durabilité possédés : temps de travail restant, durabilité totale, prix de réparation chez le PNJ. */
+  durability: Record<string, { remainingMs: number; totalMs: number; repairCost: number }>;
+  /** Ce que rend le recyclage d'un exemplaire, pour les objets recyclables possédés. */
+  recycle: Record<string, { item: string; qty: number }[]>;
+  pantry: Record<string, number>;
   /** null tant que le joueur n'a pas choisi sa classe (écran de choix). */
   classId: string | null;
   /** Apparence à afficher : classe et tenue (tenue de départ de la classe par défaut). */
@@ -120,6 +126,24 @@ export function viewState(state: CharacterState, now: number, content: Content):
       multiplier: settings.energy.multiplier,
     },
     buff: state.buff && state.buff.until > now ? state.buff : null,
+    durability: Object.fromEntries(
+      Object.keys(state.inventory)
+        .filter((id) => Number.isFinite(durabilityMs(content.items[id])))
+        .map((id) => [
+          id,
+          {
+            remainingMs: Math.max(0, remainingMs(id, state, content)),
+            totalMs: durabilityMs(content.items[id]),
+            repairCost: repairCost(id, state, content),
+          },
+        ]),
+    ),
+    recycle: Object.fromEntries(
+      Object.keys(state.inventory)
+        .map((id) => [id, recycleYield(id, content)] as const)
+        .filter(([, y]) => y.length > 0),
+    ),
+    pantry: state.pantry,
     classId: state.classId,
     appearance: viewAppearance(state, content),
     trials,

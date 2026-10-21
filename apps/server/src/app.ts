@@ -15,6 +15,11 @@ import {
   completeTrial,
   credentialsBody,
   eatMeal,
+  recycleItem,
+  repairCost,
+  repairItem,
+  stockPantry,
+  unstockPantry,
   itemBody,
   newCharacterState,
   sellItem,
@@ -193,6 +198,32 @@ export async function buildApp({ db, content, clock = Date.now, secureCookies = 
       state: eatMeal(state, itemId, now, content),
       log: `Vous mangez : ${itemName(itemId)}.`,
     }));
+  });
+
+  app.post('/api/shop/repair', (req) => {
+    const { itemId } = body(itemBody, req);
+    return playAs(req, (state) => ({
+      state: repairItem(state, itemId, content),
+      log: `Réparation : ${itemName(itemId)} (${repairCost(itemId, state, content)} or).`,
+    }));
+  });
+
+  app.post('/api/items/recycle', (req) => {
+    const { itemId, qty } = body(tradeBody, req);
+    return playAs(req, (state) => ({
+      state: recycleItem(state, itemId, qty, content),
+      log: `Recyclage : ${qty} × ${itemName(itemId)}.`,
+    }));
+  });
+
+  app.post('/api/pantry/stock', (req) => {
+    const { itemId, qty } = body(tradeBody, req);
+    return playAs(req, (state) => ({ state: stockPantry(state, itemId, qty, content) }));
+  });
+
+  app.post('/api/pantry/unstock', (req) => {
+    const { itemId, qty } = body(tradeBody, req);
+    return playAs(req, (state) => ({ state: unstockPantry(state, itemId, qty) }));
   });
 
   app.post('/api/energy/activate', (req) =>

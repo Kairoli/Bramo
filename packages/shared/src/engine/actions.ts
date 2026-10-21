@@ -171,6 +171,23 @@ export function chooseClass(input: CharacterState, classId: string, content: Con
   return state;
 }
 
+/** Tenues que le joueur peut porter : les tenues de départ de toutes les classes ; les autres se débloquent plus tard (saisons, réalisations). */
+export function unlockedOutfits(_state: CharacterState, content: Content): string[] {
+  return content.cosmetics.outfits.filter((o) => Object.values(content.classes).some((c) => c.startingOutfit === o.id)).map((o) => o.id);
+}
+
+/** Changer de tenue : gratuit, à tout moment, avec n'importe quelle classe (c'est un cosmétique). */
+export function chooseOutfit(input: CharacterState, outfitId: string, content: Content): CharacterState {
+  const outfit = content.cosmetics.outfits.find((o) => o.id === outfitId);
+  if (!outfit) throw new GameError('unknown_outfit', 'Tenue inconnue.');
+  if (!unlockedOutfits(input, content).includes(outfitId)) {
+    throw new GameError('locked_outfit', `Cette tenue n’est pas encore débloquée (${outfit.subtitle}).`);
+  }
+  const state = cloneState(input);
+  state.outfit = outfitId;
+  return state;
+}
+
 export function newCharacterState(now: number, content: Content): CharacterState {
   return {
     seed: 0,

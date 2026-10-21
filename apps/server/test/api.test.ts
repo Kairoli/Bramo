@@ -65,6 +65,11 @@ describe('API', () => {
     const changed = (await call('POST', '/api/character/class', { classId: 'runist' })).json as StateResponse;
     expect(changed.state.appearance).toEqual({ classId: 'runist', outfit: 'ashes' });
     expect((await call('POST', '/api/character/class', { classId: 'paladin' })).status).toBe(400);
+    // La tenue se change librement parmi les tenues débloquées ; les autres sont refusées.
+    const dressed = (await call('POST', '/api/character/outfit', { outfitId: 'embers' })).json as StateResponse;
+    expect(dressed.state.appearance).toEqual({ classId: 'runist', outfit: 'embers' });
+    expect(dressed.state.unlockedOutfits).toEqual(['ashes', 'embers', 'thicket']);
+    expect((await call('POST', '/api/character/outfit', { outfitId: 'grandmaster' })).status).toBe(400);
   });
 
   it('refuse une commande de maître avant son niveau', async () => {

@@ -70,6 +70,7 @@ export const api = {
   recycle: (itemId: string, qty: number) => request<StateResponse>('POST', '/items/recycle', { itemId, qty }),
   stockPantry: (itemId: string, qty: number) => request<StateResponse>('POST', '/pantry/stock', { itemId, qty }),
   unstockPantry: (itemId: string, qty: number) => request<StateResponse>('POST', '/pantry/unstock', { itemId, qty }),
+  chooseOutfit: (outfitId: string) => request<StateResponse>('POST', '/character/outfit', { outfitId }),
   chooseClass: (classId: string) => request<StateResponse>('POST', '/character/class', { classId }),
   setNickname: (profession: string, rank: number) => request<StateResponse>('POST', '/nickname', { profession, rank }),
   completeTrial: (trialId: string) => request<StateResponse>('POST', '/trials/complete', { trialId }),

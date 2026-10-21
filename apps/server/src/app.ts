@@ -21,6 +21,8 @@ import {
   cancelAction,
   cancelBody,
   chooseClass,
+  chooseOutfit,
+  outfitBody,
   classBody,
   completeTrial,
   credentialsBody,
@@ -324,6 +326,14 @@ export async function buildApp({ db, content, clock = Date.now, secureCookies = 
     return playAs(req, (state, now) => ({
       state: completeNpcOrder(state, orderId, now, content),
       log: `Commande honorée : ${content.npcOrders[orderId]?.client ?? orderId} (+${content.npcOrders[orderId]?.gold ?? 0} or).`,
+    }));
+  });
+
+  app.post('/api/character/outfit', (req) => {
+    const { outfitId } = body(outfitBody, req);
+    return playAs(req, (state) => ({
+      state: chooseOutfit(state, outfitId, content),
+      log: `Vous enfilez la tenue ${content.cosmetics.outfits.find((o) => o.id === outfitId)?.name}.`,
     }));
   });
 

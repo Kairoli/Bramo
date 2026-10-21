@@ -55,6 +55,11 @@ Bramo est un **idle-RPG multijoueur jouable dans le navigateur**, dans l'esprit 
 
 ## 5. État du projet (à jour au 21 octobre 2026)
 
+### Fait — choix de tenue (21 octobre)
+
+- Action `chooseOutfit` et `unlockedOutfits` (`engine/actions.ts`), `POST /api/character/outfit`, `StateView.unlockedOutfits`. Sont débloquées **les tenues de départ des trois classes** ; Marée haute (saison) et Grand maître (Enchantement 99) restent verrouillées, avec leur condition affichée. Fenêtre « Changer de tenue » dans la salle Personnage (`OutfitModal`). La tenue est un cosmétique gratuit, avec n'importe quelle classe.
+- **L'écran d'équipement (équiper / déséquiper) attend le combat (P4)** : sans armes ni armures, il n'y a rien à équiper (les outils s'utilisent tout seuls). Voir `docs/design/items.md` §3.
+
 ### Fait — rangs de métier : surnoms et commandes du maître (21 octobre)
 
 - Remplace les titres génériques et les épreuves 30/60. `settings.ranks.levels` = 20/40/60/80/99 ; chaque profession a un `nickname` de départ ; `data/trials.yaml` (35 commandes générées puis relues : `profession`, `rank`, `name`, `nickname`, `intro`, `outro`, `tasks`, `reward`). Les chefs-d'œuvre et leurs objets ont été supprimés des données (le champ `trial` des recettes subsiste).
@@ -165,7 +170,7 @@ Bramo est un **idle-RPG multijoueur jouable dans le navigateur**, dans l'esprit 
 - Pas de limite de tentatives de connexion, pas de changement de mot de passe, pas de suppression de compte.
 - Chiffres de `data/` encore provisoires (`# à équilibrer`), mais suivant des règles vérifiées par le simulateur. Le simulateur ne fait pas encore de prix de marché (bilan de flux seulement).
 - Animations de repos seulement (une par pose). Marée haute ne change que les couleurs. Une seule pose par classe (pas encore par voie).
-- Le choix de tenue n'a pas encore d'écran : `outfit` reste null (tenue de départ de la classe). Les niveaux de classe n'existent pas encore (combat en P4).
+- Les niveaux de classe n'existent pas encore (combat en P4).
 - L'écran de choix de classe est un contrôle du client : le serveur accepte les actions de jeu d'un personnage sans classe.
 - Pas de vrai système d'équipement : les emplacements montrent la tenue, l'arme de classe en aperçu, la meilleure pioche et le repas actif.
 - Les onglets Tout / Clan / Serveur du journal et la discussion sont désactivés.

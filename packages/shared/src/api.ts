@@ -22,6 +22,7 @@ export const cancelBody = z.object({ index: z.number().int().min(-1) });
 export const itemBody = z.object({ itemId: z.string() });
 export const tradeBody = z.object({ itemId: z.string(), qty: z.number().int().min(1) });
 export const classBody = z.object({ classId: z.string() });
+export const outfitBody = z.object({ outfitId: z.string() });
 export const trialBody = z.object({ trialId: z.string() });
 export const nicknameBody = z.object({ profession: z.string(), rank: z.number().int().min(0) });
 

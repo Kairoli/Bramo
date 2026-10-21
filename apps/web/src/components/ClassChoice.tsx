@@ -70,6 +70,52 @@ export function ClassScreen() {
   );
 }
 
+/** Choisir sa tenue : cosmétique, gratuite, avec n'importe quelle classe ; les tenues pas encore débloquées sont estompées. */
+export function OutfitModal({ onClose }: { onClose: () => void }) {
+  const { content, state, look, act } = useGame();
+  const unlocked = new Set(state.unlockedOutfits);
+  return (
+    <Modal onClose={onClose} className="class-modal">
+      <div className="class-modal-head">
+        <div>
+          <div className="eyebrow">Tenue</div>
+          <h2>Votre apparence</h2>
+        </div>
+        <button className="btn btn-sm" onClick={onClose}>
+          Fermer
+        </button>
+      </div>
+      <p className="muted">La tenue est un cosmétique : elle ne change ni vos statistiques ni votre classe, et se porte avec n’importe quelle classe.</p>
+      <div className="class-cards">
+        {content.cosmetics.outfits.map((o) => {
+          const ok = unlocked.has(o.id);
+          const current = look?.outfit === o.id;
+          return (
+            <article key={o.id} className={`panel class-card${current ? ' current' : ''}${ok ? '' : ' locked'}`}>
+              <div className="class-figure sunken" style={ok ? undefined : { opacity: 0.45 }}>
+                <Character appearance={{ classId: look?.classId ?? content.cosmetics.default.class, outfit: o.id }} lod="scene" title={o.name} />
+              </div>
+              <div className="class-text">
+                <h2>{o.name}</h2>
+                <p className="muted">{o.subtitle}</p>
+              </div>
+              <button
+                className="btn btn-primary"
+                disabled={!ok || current}
+                onClick={async () => {
+                  if (await act(() => api.chooseOutfit(o.id))) onClose();
+                }}
+              >
+                {current ? 'Portée' : ok ? 'Enfiler' : 'Pas encore débloquée'}
+              </button>
+            </article>
+          );
+        })}
+      </div>
+    </Modal>
+  );
+}
+
 /** Changer de classe depuis la salle Personnage. */
 export function ClassModal({ onClose }: { onClose: () => void }) {
   return (

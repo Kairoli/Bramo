@@ -5,7 +5,7 @@ import { bonusMultiplier, energyChargesLeft, energyDurationMs, presenceAt } from
 import type { Activity, CharacterState, MealBuff, QueuedAction } from './state.js';
 import { bonusesFor } from './advance.js';
 import { copiesRemaining, durabilityMs, isDurable } from './gear.js';
-import { recycleYield, repairCost } from './actions.js';
+import { recycleYield, repairCost, unlockedOutfits } from './actions.js';
 import { repairProblem } from './commission.js';
 import { npcDoneToday, npcOrdersOfDay } from './npc.js';
 import { type RankName, type TrialStatus, effectiveLevel, heldXp, nextTrial, ranksOf, shownNickname, skillLevel, trialStatus } from './trials.js';
@@ -58,6 +58,8 @@ export interface StateView {
   npcOrders: { id: string; profession: string; level: number; client: string; text: string; items: { item: string; qty: number }[]; gold: number; done: boolean }[];
   /** null tant que le joueur n'a pas choisi sa classe (écran de choix). */
   classId: string | null;
+  /** Tenues que le personnage peut porter. */
+  unlockedOutfits: string[];
   /** Apparence à afficher : classe et tenue (tenue de départ de la classe par défaut). */
   appearance: Appearance | null;
   trials: Record<string, TrialStatus>;
@@ -164,6 +166,7 @@ export function viewState(state: CharacterState, now: number, content: Content):
     pantry: state.pantry,
     npcOrders: npcOrdersOfDay(state, now, content).map((o) => ({ ...o, done: npcDoneToday(state, now, content).includes(o.id) })),
     classId: state.classId,
+    unlockedOutfits: unlockedOutfits(state, content),
     appearance: viewAppearance(state, content),
     trials,
   };

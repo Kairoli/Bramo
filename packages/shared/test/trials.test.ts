@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { advance } from '../src/engine/advance.js';
-import { chooseClass, startActivity } from '../src/engine/actions.js';
+import { chooseClass, chooseOutfit, startActivity, unlockedOutfits } from '../src/engine/actions.js';
 import { completeTrial, effectiveLevel, heldXp, setNickname, skillLevel } from '../src/engine/trials.js';
 import { viewState } from '../src/engine/view.js';
 import { HOUR, T0, content, makeState, mining } from './fixture.js';
@@ -93,5 +93,15 @@ describe('classe', () => {
     expect(chooseClass(chosen, 'brute', content).classId).toBe('brute');
     expect(() => chooseClass(chosen, 'mage', content)).toThrow('déjà');
     expect(() => chooseClass(chosen, 'nope', content)).toThrow('inconnue');
+  });
+});
+
+describe('tenue', () => {
+  it('se change librement parmi les tenues débloquées, avec n’importe quelle classe', () => {
+    const s = makeState({ classId: 'mage' });
+    expect(unlockedOutfits(s, content)).toEqual(['plain']);
+    expect(chooseOutfit(s, 'plain', content).outfit).toBe('plain');
+    expect(viewState(chooseOutfit(s, 'plain', content), T0, content).appearance).toEqual({ classId: 'mage', outfit: 'plain' });
+    expect(() => chooseOutfit(s, 'nope', content)).toThrow('inconnue');
   });
 });

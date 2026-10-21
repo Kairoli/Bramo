@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { api } from '../api';
-import { ClassModal, STYLE_NAMES } from '../components/ClassChoice';
+import { ClassModal, OutfitModal, STYLE_NAMES } from '../components/ClassChoice';
 import { EnergyButton } from '../components/EnergyButton';
 import { useGame } from '../game/GameContext';
 import { duration, num, pct, signedPct } from '../format';
@@ -15,6 +15,7 @@ export function CharacterRoom() {
   const equipment = useEquipment();
   const { settings } = content;
   const [classOpen, setClassOpen] = useState(false);
+  const [outfitOpen, setOutfitOpen] = useState(false);
   const outfit = content.cosmetics.outfits.find((o) => o.id === look?.outfit);
   const cls = look && content.classes[look.classId];
   const linked = cls && content.professions.find((p) => p.id === cls.profession);
@@ -174,10 +175,14 @@ export function CharacterRoom() {
           <button className="btn btn-sm" onClick={() => setClassOpen(true)}>
             Changer de classe
           </button>
+          <button className="btn btn-sm" onClick={() => setOutfitOpen(true)}>
+            Changer de tenue
+          </button>
           {outfit && <span className="chip">Tenue {outfit.name}</span>}
           <span className="chip">Niveau total {totalLevel}</span>
         </footer>
         {classOpen && <ClassModal onClose={() => setClassOpen(false)} />}
+        {outfitOpen && <OutfitModal onClose={() => setOutfitOpen(false)} />}
       </section>
 
       <section className="panel char-stats scroll">

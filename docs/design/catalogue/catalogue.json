@@ -69,11 +69,24 @@
     "d'acier"
    ],
    "names": [
-    "du Garde",
-    "du Fantassin",
-    "du Rempart",
-    "des Braises"
+    "du Bon Vivant",
+    "du Cogneur",
+    "du Sergent boiteux",
+    "du Tapageur"
    ],
+   "epicNames": [
+    "du Veilleur de braise",
+    "du Briseur de serments"
+   ],
+   "legendNames": {
+    "head": "Couronne du Roi sans feu",
+    "torso": "Cœur de la Forge-Mère",
+    "hands": "Gantelets du Dernier Serment",
+    "legs": "Jambières du Colosse boiteux",
+    "feet": "Solerets du Pas de fer",
+    "cape": "Tabard du Régiment fantôme",
+    "belt": "Ceinturon du Fondeur maudit"
+   },
    "slotNames": {
     "head": "Heaume",
     "torso": "Plastron",
@@ -103,11 +116,24 @@
     "de cuir durci"
    ],
    "names": [
-    "de Patrouille",
-    "d'Éclaireur",
-    "de la Garde",
-    "du Rôdeur"
+    "du Colporteur bourru",
+    "du Guetteur pressé",
+    "du Dernier Relais",
+    "du Rôdeur patient"
    ],
+   "epicNames": [
+    "du Contrebandier",
+    "de la Louve grise"
+   ],
+   "legendNames": {
+    "head": "Cervelière du Louvetier",
+    "torso": "Pourpoint de la Mère-louve",
+    "hands": "Mitaines du Chasseur de têtes",
+    "legs": "Chausses du Fugitif",
+    "feet": "Bottes du Dernier Pardon",
+    "cape": "Cape du Convoi perdu",
+    "belt": "Ceinture du Bourreau pensif"
+   },
    "slotNames": {
     "head": "Cervelière",
     "torso": "Pourpoint",
@@ -136,11 +162,24 @@
     "de cuir fin"
    ],
    "names": [
-    "de Piste",
-    "de Traque",
-    "du Veilleur",
-    "du Traqueur"
+    "du Chat maigre",
+    "du Voleur de lune",
+    "de la Pie-grièche",
+    "du Braconnier repenti"
    ],
+   "epicNames": [
+    "du Braconnier pardonné",
+    "de la Corneille"
+   ],
+   "legendNames": {
+    "head": "Capuche de la Veuve {p}",
+    "torso": "Veste du Spectre de la lisière",
+    "hands": "Gants de la Veuve {p}",
+    "legs": "Pantalon du Funambule",
+    "feet": "Bottes du Chat sans ombre",
+    "cape": "Cape de la Pie-grièche noire",
+    "belt": "Ceinture du Braconnier des étoiles"
+   },
    "slotNames": {
     "head": "Capuche",
     "torso": "Veste",
@@ -170,11 +209,24 @@
     "de soie"
    ],
    "names": [
-    "de Novice",
-    "d'Apprenti",
-    "du Sceau",
-    "de l'Aube"
+    "de l'Apprenti distrait",
+    "du Somnambule",
+    "de l'Encrier",
+    "du Griffonneur d'orage"
    ],
+   "epicNames": [
+    "de l'Encrier sans fond",
+    "du Penseur d'orage"
+   ],
+   "legendNames": {
+    "head": "Capuchon du Songe-creux",
+    "torso": "Robe du Grand Silence",
+    "hands": "Mitaines de l'Encre vive",
+    "legs": "Jupe des Marées mortes",
+    "feet": "Chaussons du Somnambule royal",
+    "cape": "Mantelet de l'Orage endormi",
+    "belt": "Cordon du Sceau brisé"
+   },
    "slotNames": {
     "head": "Capuchon",
     "torso": "Tunique",
@@ -256,7 +308,7 @@
  "items": [
   {
    "id": "i1",
-   "name": "Heaume du Garde",
+   "name": "Heaume du Bon Vivant",
    "kind": "clothing",
    "slot": "head",
    "family": "armor",
@@ -307,7 +359,7 @@
   },
   {
    "id": "i2",
-   "name": "Heaume du Fantassin",
+   "name": "Heaume du Cogneur",
    "kind": "clothing",
    "slot": "head",
    "family": "armor",
@@ -358,7 +410,7 @@
   },
   {
    "id": "i3",
-   "name": "Heaume du Rempart",
+   "name": "Heaume du Sergent boiteux",
    "kind": "clothing",
    "slot": "head",
    "family": "armor",
@@ -414,7 +466,7 @@
   },
   {
    "id": "i4",
-   "name": "Heaume des Braises",
+   "name": "Heaume du Tapageur",
    "kind": "clothing",
    "slot": "head",
    "family": "armor",
@@ -470,7 +522,7 @@
   },
   {
    "id": "i5",
-   "name": "Heaume du Garde de maître",
+   "name": "Heaume du Veilleur de braise",
    "kind": "clothing",
    "slot": "head",
    "family": "armor",
@@ -526,7 +578,7 @@
   },
   {
    "id": "i6",
-   "name": "Heaume du Fantassin de maître",
+   "name": "Heaume du Briseur de serments",
    "kind": "clothing",
    "slot": "head",
    "family": "armor",
@@ -582,7 +634,7 @@
   },
   {
    "id": "i7",
-   "name": "Heaume du Rempart d'exception",
+   "name": "Couronne du Roi sans feu",
    "kind": "clothing",
    "slot": "head",
    "family": "armor",
@@ -637,7 +689,7 @@
   },
   {
    "id": "i8",
-   "name": "Heaume du Garde",
+   "name": "Heaume du Bon Vivant",
    "kind": "clothing",
    "slot": "head",
    "family": "armor",
@@ -688,7 +740,7 @@
   },
   {
    "id": "i9",
-   "name": "Heaume du Fantassin",
+   "name": "Heaume du Cogneur",
    "kind": "clothing",
    "slot": "head",
    "family": "armor",
@@ -739,7 +791,7 @@
   },
   {
    "id": "i10",
-   "name": "Heaume du Rempart",
+   "name": "Heaume du Sergent boiteux",
    "kind": "clothing",
    "slot": "head",
    "family": "armor",
@@ -795,7 +847,7 @@
   },
   {
    "id": "i11",
-   "name": "Heaume des Braises",
+   "name": "Heaume du Tapageur",
    "kind": "clothing",
    "slot": "head",
    "family": "armor",
@@ -851,7 +903,7 @@
   },
   {
    "id": "i12",
-   "name": "Heaume du Garde de maître",
+   "name": "Heaume du Veilleur de braise",
    "kind": "clothing",
    "slot": "head",
    "family": "armor",
@@ -907,7 +959,7 @@
   },
   {
    "id": "i13",
-   "name": "Heaume du Fantassin de maître",
+   "name": "Heaume du Briseur de serments",
    "kind": "clothing",
    "slot": "head",
    "family": "armor",
@@ -963,7 +1015,7 @@
   },
   {
    "id": "i14",
-   "name": "Heaume du Rempart d'exception",
+   "name": "Couronne du Roi sans feu",
    "kind": "clothing",
    "slot": "head",
    "family": "armor",
@@ -1018,7 +1070,7 @@
   },
   {
    "id": "i15",
-   "name": "Heaume du Garde",
+   "name": "Heaume du Bon Vivant",
    "kind": "clothing",
    "slot": "head",
    "family": "armor",
@@ -1069,7 +1121,7 @@
   },
   {
    "id": "i16",
-   "name": "Heaume du Fantassin",
+   "name": "Heaume du Cogneur",
    "kind": "clothing",
    "slot": "head",
    "family": "armor",
@@ -1120,7 +1172,7 @@
   },
   {
    "id": "i17",
-   "name": "Heaume du Rempart",
+   "name": "Heaume du Sergent boiteux",
    "kind": "clothing",
    "slot": "head",
    "family": "armor",
@@ -1176,7 +1228,7 @@
   },
   {
    "id": "i18",
-   "name": "Heaume des Braises",
+   "name": "Heaume du Tapageur",
    "kind": "clothing",
    "slot": "head",
    "family": "armor",
@@ -1232,7 +1284,7 @@
   },
   {
    "id": "i19",
-   "name": "Heaume du Garde de maître",
+   "name": "Heaume du Veilleur de braise",
    "kind": "clothing",
    "slot": "head",
    "family": "armor",
@@ -1288,7 +1340,7 @@
   },
   {
    "id": "i20",
-   "name": "Heaume du Fantassin de maître",
+   "name": "Heaume du Briseur de serments",
    "kind": "clothing",
    "slot": "head",
    "family": "armor",
@@ -1344,7 +1396,7 @@
   },
   {
    "id": "i21",
-   "name": "Heaume du Rempart d'exception",
+   "name": "Couronne du Roi sans feu",
    "kind": "clothing",
    "slot": "head",
    "family": "armor",
@@ -1399,7 +1451,7 @@
   },
   {
    "id": "i22",
-   "name": "Plastron du Garde",
+   "name": "Plastron du Bon Vivant",
    "kind": "clothing",
    "slot": "torso",
    "family": "armor",
@@ -1450,7 +1502,7 @@
   },
   {
    "id": "i23",
-   "name": "Plastron du Fantassin",
+   "name": "Plastron du Cogneur",
    "kind": "clothing",
    "slot": "torso",
    "family": "armor",
@@ -1501,7 +1553,7 @@
   },
   {
    "id": "i24",
-   "name": "Plastron du Rempart",
+   "name": "Plastron du Sergent boiteux",
    "kind": "clothing",
    "slot": "torso",
    "family": "armor",
@@ -1557,7 +1609,7 @@
   },
   {
    "id": "i25",
-   "name": "Plastron des Braises",
+   "name": "Plastron du Tapageur",
    "kind": "clothing",
    "slot": "torso",
    "family": "armor",
@@ -1613,7 +1665,7 @@
   },
   {
    "id": "i26",
-   "name": "Plastron du Garde de maître",
+   "name": "Plastron du Veilleur de braise",
    "kind": "clothing",
    "slot": "torso",
    "family": "armor",
@@ -1669,7 +1721,7 @@
   },
   {
    "id": "i27",
-   "name": "Plastron du Fantassin de maître",
+   "name": "Plastron du Briseur de serments",
    "kind": "clothing",
    "slot": "torso",
    "family": "armor",
@@ -1725,7 +1777,7 @@
   },
   {
    "id": "i28",
-   "name": "Plastron des Braises d'exception",
+   "name": "Cœur de la Forge-Mère",
    "kind": "clothing",
    "slot": "torso",
    "family": "armor",
@@ -1780,7 +1832,7 @@
   },
   {
    "id": "i29",
-   "name": "Plastron du Garde",
+   "name": "Plastron du Bon Vivant",
    "kind": "clothing",
    "slot": "torso",
    "family": "armor",
@@ -1831,7 +1883,7 @@
   },
   {
    "id": "i30",
-   "name": "Plastron du Fantassin",
+   "name": "Plastron du Cogneur",
    "kind": "clothing",
    "slot": "torso",
    "family": "armor",
@@ -1882,7 +1934,7 @@
   },
   {
    "id": "i31",
-   "name": "Plastron du Rempart",
+   "name": "Plastron du Sergent boiteux",
    "kind": "clothing",
    "slot": "torso",
    "family": "armor",
@@ -1938,7 +1990,7 @@
   },
   {
    "id": "i32",
-   "name": "Plastron des Braises",
+   "name": "Plastron du Tapageur",
    "kind": "clothing",
    "slot": "torso",
    "family": "armor",
@@ -1994,7 +2046,7 @@
   },
   {
    "id": "i33",
-   "name": "Plastron du Garde de maître",
+   "name": "Plastron du Veilleur de braise",
    "kind": "clothing",
    "slot": "torso",
    "family": "armor",
@@ -2050,7 +2102,7 @@
   },
   {
    "id": "i34",
-   "name": "Plastron du Fantassin de maître",
+   "name": "Plastron du Briseur de serments",
    "kind": "clothing",
    "slot": "torso",
    "family": "armor",
@@ -2106,7 +2158,7 @@
   },
   {
    "id": "i35",
-   "name": "Plastron des Braises d'exception",
+   "name": "Cœur de la Forge-Mère",
    "kind": "clothing",
    "slot": "torso",
    "family": "armor",
@@ -2161,7 +2213,7 @@
   },
   {
    "id": "i36",
-   "name": "Plastron du Garde",
+   "name": "Plastron du Bon Vivant",
    "kind": "clothing",
    "slot": "torso",
    "family": "armor",
@@ -2212,7 +2264,7 @@
   },
   {
    "id": "i37",
-   "name": "Plastron du Fantassin",
+   "name": "Plastron du Cogneur",
    "kind": "clothing",
    "slot": "torso",
    "family": "armor",
@@ -2263,7 +2315,7 @@
   },
   {
    "id": "i38",
-   "name": "Plastron du Rempart",
+   "name": "Plastron du Sergent boiteux",
    "kind": "clothing",
    "slot": "torso",
    "family": "armor",
@@ -2319,7 +2371,7 @@
   },
   {
    "id": "i39",
-   "name": "Plastron des Braises",
+   "name": "Plastron du Tapageur",
    "kind": "clothing",
    "slot": "torso",
    "family": "armor",
@@ -2375,7 +2427,7 @@
   },
   {
    "id": "i40",
-   "name": "Plastron du Garde de maître",
+   "name": "Plastron du Veilleur de braise",
    "kind": "clothing",
    "slot": "torso",
    "family": "armor",
@@ -2431,7 +2483,7 @@
   },
   {
    "id": "i41",
-   "name": "Plastron du Fantassin de maître",
+   "name": "Plastron du Briseur de serments",
    "kind": "clothing",
    "slot": "torso",
    "family": "armor",
@@ -2487,7 +2539,7 @@
   },
   {
    "id": "i42",
-   "name": "Plastron des Braises d'exception",
+   "name": "Cœur de la Forge-Mère",
    "kind": "clothing",
    "slot": "torso",
    "family": "armor",
@@ -2542,7 +2594,7 @@
   },
   {
    "id": "i43",
-   "name": "Gantelets du Garde",
+   "name": "Gantelets du Bon Vivant",
    "kind": "clothing",
    "slot": "hands",
    "family": "armor",
@@ -2593,7 +2645,7 @@
   },
   {
    "id": "i44",
-   "name": "Gantelets du Fantassin",
+   "name": "Gantelets du Cogneur",
    "kind": "clothing",
    "slot": "hands",
    "family": "armor",
@@ -2644,7 +2696,7 @@
   },
   {
    "id": "i45",
-   "name": "Gantelets du Rempart",
+   "name": "Gantelets du Sergent boiteux",
    "kind": "clothing",
    "slot": "hands",
    "family": "armor",
@@ -2700,7 +2752,7 @@
   },
   {
    "id": "i46",
-   "name": "Gantelets des Braises",
+   "name": "Gantelets du Tapageur",
    "kind": "clothing",
    "slot": "hands",
    "family": "armor",
@@ -2756,7 +2808,7 @@
   },
   {
    "id": "i47",
-   "name": "Gantelets du Garde de maître",
+   "name": "Gantelets du Veilleur de braise",
    "kind": "clothing",
    "slot": "hands",
    "family": "armor",
@@ -2812,7 +2864,7 @@
   },
   {
    "id": "i48",
-   "name": "Gantelets du Fantassin de maître",
+   "name": "Gantelets du Briseur de serments",
    "kind": "clothing",
    "slot": "hands",
    "family": "armor",
@@ -2868,7 +2920,7 @@
   },
   {
    "id": "i49",
-   "name": "Gantelets des Braises d'exception",
+   "name": "Gantelets du Dernier Serment",
    "kind": "clothing",
    "slot": "hands",
    "family": "armor",
@@ -2923,7 +2975,7 @@
   },
   {
    "id": "i50",
-   "name": "Gantelets du Garde",
+   "name": "Gantelets du Bon Vivant",
    "kind": "clothing",
    "slot": "hands",
    "family": "armor",
@@ -2974,7 +3026,7 @@
   },
   {
    "id": "i51",
-   "name": "Gantelets du Fantassin",
+   "name": "Gantelets du Cogneur",
    "kind": "clothing",
    "slot": "hands",
    "family": "armor",
@@ -3025,7 +3077,7 @@
   },
   {
    "id": "i52",
-   "name": "Gantelets du Rempart",
+   "name": "Gantelets du Sergent boiteux",
    "kind": "clothing",
    "slot": "hands",
    "family": "armor",
@@ -3081,7 +3133,7 @@
   },
   {
    "id": "i53",
-   "name": "Gantelets des Braises",
+   "name": "Gantelets du Tapageur",
    "kind": "clothing",
    "slot": "hands",
    "family": "armor",
@@ -3137,7 +3189,7 @@
   },
   {
    "id": "i54",
-   "name": "Gantelets du Garde de maître",
+   "name": "Gantelets du Veilleur de braise",
    "kind": "clothing",
    "slot": "hands",
    "family": "armor",
@@ -3193,7 +3245,7 @@
   },
   {
    "id": "i55",
-   "name": "Gantelets du Fantassin de maître",
+   "name": "Gantelets du Briseur de serments",
    "kind": "clothing",
    "slot": "hands",
    "family": "armor",
@@ -3249,7 +3301,7 @@
   },
   {
    "id": "i56",
-   "name": "Gantelets des Braises d'exception",
+   "name": "Gantelets du Dernier Serment",
    "kind": "clothing",
    "slot": "hands",
    "family": "armor",
@@ -3304,7 +3356,7 @@
   },
   {
    "id": "i57",
-   "name": "Gantelets du Garde",
+   "name": "Gantelets du Bon Vivant",
    "kind": "clothing",
    "slot": "hands",
    "family": "armor",
@@ -3355,7 +3407,7 @@
   },
   {
    "id": "i58",
-   "name": "Gantelets du Fantassin",
+   "name": "Gantelets du Cogneur",
    "kind": "clothing",
    "slot": "hands",
    "family": "armor",
@@ -3406,7 +3458,7 @@
   },
   {
    "id": "i59",
-   "name": "Gantelets du Rempart",
+   "name": "Gantelets du Sergent boiteux",
    "kind": "clothing",
    "slot": "hands",
    "family": "armor",
@@ -3462,7 +3514,7 @@
   },
   {
    "id": "i60",
-   "name": "Gantelets des Braises",
+   "name": "Gantelets du Tapageur",
    "kind": "clothing",
    "slot": "hands",
    "family": "armor",
@@ -3518,7 +3570,7 @@
   },
   {
    "id": "i61",
-   "name": "Gantelets du Garde de maître",
+   "name": "Gantelets du Veilleur de braise",
    "kind": "clothing",
    "slot": "hands",
    "family": "armor",
@@ -3574,7 +3626,7 @@
   },
   {
    "id": "i62",
-   "name": "Gantelets du Fantassin de maître",
+   "name": "Gantelets du Briseur de serments",
    "kind": "clothing",
    "slot": "hands",
    "family": "armor",
@@ -3630,7 +3682,7 @@
   },
   {
    "id": "i63",
-   "name": "Gantelets des Braises d'exception",
+   "name": "Gantelets du Dernier Serment",
    "kind": "clothing",
    "slot": "hands",
    "family": "armor",
@@ -3685,7 +3737,7 @@
   },
   {
    "id": "i64",
-   "name": "Jambières du Garde",
+   "name": "Jambières du Bon Vivant",
    "kind": "clothing",
    "slot": "legs",
    "family": "armor",
@@ -3736,7 +3788,7 @@
   },
   {
    "id": "i65",
-   "name": "Jambières du Fantassin",
+   "name": "Jambières du Cogneur",
    "kind": "clothing",
    "slot": "legs",
    "family": "armor",
@@ -3787,7 +3839,7 @@
   },
   {
    "id": "i66",
-   "name": "Jambières du Rempart",
+   "name": "Jambières du Sergent boiteux",
    "kind": "clothing",
    "slot": "legs",
    "family": "armor",
@@ -3843,7 +3895,7 @@
   },
   {
    "id": "i67",
-   "name": "Jambières des Braises",
+   "name": "Jambières du Tapageur",
    "kind": "clothing",
    "slot": "legs",
    "family": "armor",
@@ -3899,7 +3951,7 @@
   },
   {
    "id": "i68",
-   "name": "Jambières du Garde de maître",
+   "name": "Jambières du Veilleur de braise",
    "kind": "clothing",
    "slot": "legs",
    "family": "armor",
@@ -3955,7 +4007,7 @@
   },
   {
    "id": "i69",
-   "name": "Jambières du Fantassin de maître",
+   "name": "Jambières du Briseur de serments",
    "kind": "clothing",
    "slot": "legs",
    "family": "armor",
@@ -4011,7 +4063,7 @@
   },
   {
    "id": "i70",
-   "name": "Jambières du Rempart d'exception",
+   "name": "Jambières du Colosse boiteux",
    "kind": "clothing",
    "slot": "legs",
    "family": "armor",
@@ -4066,7 +4118,7 @@
   },
   {
    "id": "i71",
-   "name": "Jambières du Garde",
+   "name": "Jambières du Bon Vivant",
    "kind": "clothing",
    "slot": "legs",
    "family": "armor",
@@ -4117,7 +4169,7 @@
   },
   {
    "id": "i72",
-   "name": "Jambières du Fantassin",
+   "name": "Jambières du Cogneur",
    "kind": "clothing",
    "slot": "legs",
    "family": "armor",
@@ -4168,7 +4220,7 @@
   },
   {
    "id": "i73",
-   "name": "Jambières du Rempart",
+   "name": "Jambières du Sergent boiteux",
    "kind": "clothing",
    "slot": "legs",
    "family": "armor",
@@ -4224,7 +4276,7 @@
   },
   {
    "id": "i74",
-   "name": "Jambières des Braises",
+   "name": "Jambières du Tapageur",
    "kind": "clothing",
    "slot": "legs",
    "family": "armor",
@@ -4280,7 +4332,7 @@
   },
   {
    "id": "i75",
-   "name": "Jambières du Garde de maître",
+   "name": "Jambières du Veilleur de braise",
    "kind": "clothing",
    "slot": "legs",
    "family": "armor",
@@ -4336,7 +4388,7 @@
   },
   {
    "id": "i76",
-   "name": "Jambières du Fantassin de maître",
+   "name": "Jambières du Briseur de serments",
    "kind": "clothing",
    "slot": "legs",
    "family": "armor",
@@ -4392,7 +4444,7 @@
   },
   {
    "id": "i77",
-   "name": "Jambières du Rempart d'exception",
+   "name": "Jambières du Colosse boiteux",
    "kind": "clothing",
    "slot": "legs",
    "family": "armor",
@@ -4447,7 +4499,7 @@
   },
   {
    "id": "i78",
-   "name": "Jambières du Garde",
+   "name": "Jambières du Bon Vivant",
    "kind": "clothing",
    "slot": "legs",
    "family": "armor",
@@ -4498,7 +4550,7 @@
   },
   {
    "id": "i79",
-   "name": "Jambières du Fantassin",
+   "name": "Jambières du Cogneur",
    "kind": "clothing",
    "slot": "legs",
    "family": "armor",
@@ -4549,7 +4601,7 @@
   },
   {
    "id": "i80",
-   "name": "Jambières du Rempart",
+   "name": "Jambières du Sergent boiteux",
    "kind": "clothing",
    "slot": "legs",
    "family": "armor",
@@ -4605,7 +4657,7 @@
   },
   {
    "id": "i81",
-   "name": "Jambières des Braises",
+   "name": "Jambières du Tapageur",
    "kind": "clothing",
    "slot": "legs",
    "family": "armor",
@@ -4661,7 +4713,7 @@
   },
   {
    "id": "i82",
-   "name": "Jambières du Garde de maître",
+   "name": "Jambières du Veilleur de braise",
    "kind": "clothing",
    "slot": "legs",
    "family": "armor",
@@ -4717,7 +4769,7 @@
   },
   {
    "id": "i83",
-   "name": "Jambières du Fantassin de maître",
+   "name": "Jambières du Briseur de serments",
    "kind": "clothing",
    "slot": "legs",
    "family": "armor",
@@ -4773,7 +4825,7 @@
   },
   {
    "id": "i84",
-   "name": "Jambières du Rempart d'exception",
+   "name": "Jambières du Colosse boiteux",
    "kind": "clothing",
    "slot": "legs",
    "family": "armor",
@@ -4828,7 +4880,7 @@
   },
   {
    "id": "i85",
-   "name": "Solerets du Garde",
+   "name": "Solerets du Bon Vivant",
    "kind": "clothing",
    "slot": "feet",
    "family": "armor",
@@ -4879,7 +4931,7 @@
   },
   {
    "id": "i86",
-   "name": "Solerets du Fantassin",
+   "name": "Solerets du Cogneur",
    "kind": "clothing",
    "slot": "feet",
    "family": "armor",
@@ -4930,7 +4982,7 @@
   },
   {
    "id": "i87",
-   "name": "Solerets du Rempart",
+   "name": "Solerets du Sergent boiteux",
    "kind": "clothing",
    "slot": "feet",
    "family": "armor",
@@ -4986,7 +5038,7 @@
   },
   {
    "id": "i88",
-   "name": "Solerets des Braises",
+   "name": "Solerets du Tapageur",
    "kind": "clothing",
    "slot": "feet",
    "family": "armor",
@@ -5042,7 +5094,7 @@
   },
   {
    "id": "i89",
-   "name": "Solerets du Garde de maître",
+   "name": "Solerets du Veilleur de braise",
    "kind": "clothing",
    "slot": "feet",
    "family": "armor",
@@ -5098,7 +5150,7 @@
   },
   {
    "id": "i90",
-   "name": "Solerets du Fantassin de maître",
+   "name": "Solerets du Briseur de serments",
    "kind": "clothing",
    "slot": "feet",
    "family": "armor",
@@ -5154,7 +5206,7 @@
   },
   {
    "id": "i91",
-   "name": "Solerets du Rempart d'exception",
+   "name": "Solerets du Pas de fer",
    "kind": "clothing",
    "slot": "feet",
    "family": "armor",
@@ -5209,7 +5261,7 @@
   },
   {
    "id": "i92",
-   "name": "Solerets du Garde",
+   "name": "Solerets du Bon Vivant",
    "kind": "clothing",
    "slot": "feet",
    "family": "armor",
@@ -5260,7 +5312,7 @@
   },
   {
    "id": "i93",
-   "name": "Solerets du Fantassin",
+   "name": "Solerets du Cogneur",
    "kind": "clothing",
    "slot": "feet",
    "family": "armor",
@@ -5311,7 +5363,7 @@
   },
   {
    "id": "i94",
-   "name": "Solerets du Rempart",
+   "name": "Solerets du Sergent boiteux",
    "kind": "clothing",
    "slot": "feet",
    "family": "armor",
@@ -5367,7 +5419,7 @@
   },
   {
    "id": "i95",
-   "name": "Solerets des Braises",
+   "name": "Solerets du Tapageur",
    "kind": "clothing",
    "slot": "feet",
    "family": "armor",
@@ -5423,7 +5475,7 @@
   },
   {
    "id": "i96",
-   "name": "Solerets du Garde de maître",
+   "name": "Solerets du Veilleur de braise",
    "kind": "clothing",
    "slot": "feet",
    "family": "armor",
@@ -5479,7 +5531,7 @@
   },
   {
    "id": "i97",
-   "name": "Solerets du Fantassin de maître",
+   "name": "Solerets du Briseur de serments",
    "kind": "clothing",
    "slot": "feet",
    "family": "armor",
@@ -5535,7 +5587,7 @@
   },
   {
    "id": "i98",
-   "name": "Solerets du Rempart d'exception",
+   "name": "Solerets du Pas de fer",
    "kind": "clothing",
    "slot": "feet",
    "family": "armor",
@@ -5590,7 +5642,7 @@
   },
   {
    "id": "i99",
-   "name": "Solerets du Garde",
+   "name": "Solerets du Bon Vivant",
    "kind": "clothing",
    "slot": "feet",
    "family": "armor",
@@ -5641,7 +5693,7 @@
   },
   {
    "id": "i100",
-   "name": "Solerets du Fantassin",
+   "name": "Solerets du Cogneur",
    "kind": "clothing",
    "slot": "feet",
    "family": "armor",
@@ -5692,7 +5744,7 @@
   },
   {
    "id": "i101",
-   "name": "Solerets du Rempart",
+   "name": "Solerets du Sergent boiteux",
    "kind": "clothing",
    "slot": "feet",
    "family": "armor",
@@ -5748,7 +5800,7 @@
   },
   {
    "id": "i102",
-   "name": "Solerets des Braises",
+   "name": "Solerets du Tapageur",
    "kind": "clothing",
    "slot": "feet",
    "family": "armor",
@@ -5804,7 +5856,7 @@
   },
   {
    "id": "i103",
-   "name": "Solerets du Garde de maître",
+   "name": "Solerets du Veilleur de braise",
    "kind": "clothing",
    "slot": "feet",
    "family": "armor",
@@ -5860,7 +5912,7 @@
   },
   {
    "id": "i104",
-   "name": "Solerets du Fantassin de maître",
+   "name": "Solerets du Briseur de serments",
    "kind": "clothing",
    "slot": "feet",
    "family": "armor",
@@ -5916,7 +5968,7 @@
   },
   {
    "id": "i105",
-   "name": "Solerets du Rempart d'exception",
+   "name": "Solerets du Pas de fer",
    "kind": "clothing",
    "slot": "feet",
    "family": "armor",
@@ -5971,7 +6023,7 @@
   },
   {
    "id": "i106",
-   "name": "Tabard d'armes du Garde",
+   "name": "Tabard d'armes du Bon Vivant",
    "kind": "clothing",
    "slot": "cape",
    "family": "armor",
@@ -6022,7 +6074,7 @@
   },
   {
    "id": "i107",
-   "name": "Tabard d'armes du Fantassin",
+   "name": "Tabard d'armes du Cogneur",
    "kind": "clothing",
    "slot": "cape",
    "family": "armor",
@@ -6073,7 +6125,7 @@
   },
   {
    "id": "i108",
-   "name": "Tabard d'armes du Rempart",
+   "name": "Tabard d'armes du Sergent boiteux",
    "kind": "clothing",
    "slot": "cape",
    "family": "armor",
@@ -6129,7 +6181,7 @@
   },
   {
    "id": "i109",
-   "name": "Tabard d'armes des Braises",
+   "name": "Tabard d'armes du Tapageur",
    "kind": "clothing",
    "slot": "cape",
    "family": "armor",
@@ -6185,7 +6237,7 @@
   },
   {
    "id": "i110",
-   "name": "Tabard d'armes du Garde de maître",
+   "name": "Tabard d'armes du Veilleur de braise",
    "kind": "clothing",
    "slot": "cape",
    "family": "armor",
@@ -6241,7 +6293,7 @@
   },
   {
    "id": "i111",
-   "name": "Tabard d'armes du Fantassin de maître",
+   "name": "Tabard d'armes du Briseur de serments",
    "kind": "clothing",
    "slot": "cape",
    "family": "armor",
@@ -6297,7 +6349,7 @@
   },
   {
    "id": "i112",
-   "name": "Tabard d'armes du Rempart d'exception",
+   "name": "Tabard du Régiment fantôme",
    "kind": "clothing",
    "slot": "cape",
    "family": "armor",
@@ -6352,7 +6404,7 @@
   },
   {
    "id": "i113",
-   "name": "Tabard d'armes du Garde",
+   "name": "Tabard d'armes du Bon Vivant",
    "kind": "clothing",
    "slot": "cape",
    "family": "armor",
@@ -6403,7 +6455,7 @@
   },
   {
    "id": "i114",
-   "name": "Tabard d'armes du Fantassin",
+   "name": "Tabard d'armes du Cogneur",
    "kind": "clothing",
    "slot": "cape",
    "family": "armor",
@@ -6454,7 +6506,7 @@
   },
   {
    "id": "i115",
-   "name": "Tabard d'armes du Rempart",
+   "name": "Tabard d'armes du Sergent boiteux",
    "kind": "clothing",
    "slot": "cape",
    "family": "armor",
@@ -6510,7 +6562,7 @@
   },
   {
    "id": "i116",
-   "name": "Tabard d'armes des Braises",
+   "name": "Tabard d'armes du Tapageur",
    "kind": "clothing",
    "slot": "cape",
    "family": "armor",
@@ -6566,7 +6618,7 @@
   },
   {
    "id": "i117",
-   "name": "Tabard d'armes du Garde de maître",
+   "name": "Tabard d'armes du Veilleur de braise",
    "kind": "clothing",
    "slot": "cape",
    "family": "armor",
@@ -6622,7 +6674,7 @@
   },
   {
    "id": "i118",
-   "name": "Tabard d'armes du Fantassin de maître",
+   "name": "Tabard d'armes du Briseur de serments",
    "kind": "clothing",
    "slot": "cape",
    "family": "armor",
@@ -6678,7 +6730,7 @@
   },
   {
    "id": "i119",
-   "name": "Tabard d'armes du Rempart d'exception",
+   "name": "Tabard du Régiment fantôme",
    "kind": "clothing",
    "slot": "cape",
    "family": "armor",
@@ -6733,7 +6785,7 @@
   },
   {
    "id": "i120",
-   "name": "Tabard d'armes du Garde",
+   "name": "Tabard d'armes du Bon Vivant",
    "kind": "clothing",
    "slot": "cape",
    "family": "armor",
@@ -6784,7 +6836,7 @@
   },
   {
    "id": "i121",
-   "name": "Tabard d'armes du Fantassin",
+   "name": "Tabard d'armes du Cogneur",
    "kind": "clothing",
    "slot": "cape",
    "family": "armor",
@@ -6835,7 +6887,7 @@
   },
   {
    "id": "i122",
-   "name": "Tabard d'armes du Rempart",
+   "name": "Tabard d'armes du Sergent boiteux",
    "kind": "clothing",
    "slot": "cape",
    "family": "armor",
@@ -6891,7 +6943,7 @@
   },
   {
    "id": "i123",
-   "name": "Tabard d'armes des Braises",
+   "name": "Tabard d'armes du Tapageur",
    "kind": "clothing",
    "slot": "cape",
    "family": "armor",
@@ -6947,7 +6999,7 @@
   },
   {
    "id": "i124",
-   "name": "Tabard d'armes du Garde de maître",
+   "name": "Tabard d'armes du Veilleur de braise",
    "kind": "clothing",
    "slot": "cape",
    "family": "armor",
@@ -7003,7 +7055,7 @@
   },
   {
    "id": "i125",
-   "name": "Tabard d'armes du Fantassin de maître",
+   "name": "Tabard d'armes du Briseur de serments",
    "kind": "clothing",
    "slot": "cape",
    "family": "armor",
@@ -7059,7 +7111,7 @@
   },
   {
    "id": "i126",
-   "name": "Tabard d'armes du Rempart d'exception",
+   "name": "Tabard du Régiment fantôme",
    "kind": "clothing",
    "slot": "cape",
    "family": "armor",
@@ -7114,7 +7166,7 @@
   },
   {
    "id": "i127",
-   "name": "Ceinturon du Garde",
+   "name": "Ceinturon du Bon Vivant",
    "kind": "clothing",
    "slot": "belt",
    "family": "armor",
@@ -7165,7 +7217,7 @@
   },
   {
    "id": "i128",
-   "name": "Ceinturon du Fantassin",
+   "name": "Ceinturon du Cogneur",
    "kind": "clothing",
    "slot": "belt",
    "family": "armor",
@@ -7216,7 +7268,7 @@
   },
   {
    "id": "i129",
-   "name": "Ceinturon du Rempart",
+   "name": "Ceinturon du Sergent boiteux",
    "kind": "clothing",
    "slot": "belt",
    "family": "armor",
@@ -7272,7 +7324,7 @@
   },
   {
    "id": "i130",
-   "name": "Ceinturon des Braises",
+   "name": "Ceinturon du Tapageur",
    "kind": "clothing",
    "slot": "belt",
    "family": "armor",
@@ -7328,7 +7380,7 @@
   },
   {
    "id": "i131",
-   "name": "Ceinturon du Garde de maître",
+   "name": "Ceinturon du Veilleur de braise",
    "kind": "clothing",
    "slot": "belt",
    "family": "armor",
@@ -7384,7 +7436,7 @@
   },
   {
    "id": "i132",
-   "name": "Ceinturon du Fantassin de maître",
+   "name": "Ceinturon du Briseur de serments",
    "kind": "clothing",
    "slot": "belt",
    "family": "armor",
@@ -7440,7 +7492,7 @@
   },
   {
    "id": "i133",
-   "name": "Ceinturon du Rempart d'exception",
+   "name": "Ceinturon du Fondeur maudit",
    "kind": "clothing",
    "slot": "belt",
    "family": "armor",
@@ -7495,7 +7547,7 @@
   },
   {
    "id": "i134",
-   "name": "Ceinturon du Garde",
+   "name": "Ceinturon du Bon Vivant",
    "kind": "clothing",
    "slot": "belt",
    "family": "armor",
@@ -7546,7 +7598,7 @@
   },
   {
    "id": "i135",
-   "name": "Ceinturon du Fantassin",
+   "name": "Ceinturon du Cogneur",
    "kind": "clothing",
    "slot": "belt",
    "family": "armor",
@@ -7597,7 +7649,7 @@
   },
   {
    "id": "i136",
-   "name": "Ceinturon du Rempart",
+   "name": "Ceinturon du Sergent boiteux",
    "kind": "clothing",
    "slot": "belt",
    "family": "armor",
@@ -7653,7 +7705,7 @@
   },
   {
    "id": "i137",
-   "name": "Ceinturon des Braises",
+   "name": "Ceinturon du Tapageur",
    "kind": "clothing",
    "slot": "belt",
    "family": "armor",
@@ -7709,7 +7761,7 @@
   },
   {
    "id": "i138",
-   "name": "Ceinturon du Garde de maître",
+   "name": "Ceinturon du Veilleur de braise",
    "kind": "clothing",
    "slot": "belt",
    "family": "armor",
@@ -7765,7 +7817,7 @@
   },
   {
    "id": "i139",
-   "name": "Ceinturon du Fantassin de maître",
+   "name": "Ceinturon du Briseur de serments",
    "kind": "clothing",
    "slot": "belt",
    "family": "armor",
@@ -7821,7 +7873,7 @@
   },
   {
    "id": "i140",
-   "name": "Ceinturon du Rempart d'exception",
+   "name": "Ceinturon du Fondeur maudit",
    "kind": "clothing",
    "slot": "belt",
    "family": "armor",
@@ -7876,7 +7928,7 @@
   },
   {
    "id": "i141",
-   "name": "Ceinturon du Garde",
+   "name": "Ceinturon du Bon Vivant",
    "kind": "clothing",
    "slot": "belt",
    "family": "armor",
@@ -7927,7 +7979,7 @@
   },
   {
    "id": "i142",
-   "name": "Ceinturon du Fantassin",
+   "name": "Ceinturon du Cogneur",
    "kind": "clothing",
    "slot": "belt",
    "family": "armor",
@@ -7978,7 +8030,7 @@
   },
   {
    "id": "i143",
-   "name": "Ceinturon du Rempart",
+   "name": "Ceinturon du Sergent boiteux",
    "kind": "clothing",
    "slot": "belt",
    "family": "armor",
@@ -8034,7 +8086,7 @@
   },
   {
    "id": "i144",
-   "name": "Ceinturon des Braises",
+   "name": "Ceinturon du Tapageur",
    "kind": "clothing",
    "slot": "belt",
    "family": "armor",
@@ -8090,7 +8142,7 @@
   },
   {
    "id": "i145",
-   "name": "Ceinturon du Garde de maître",
+   "name": "Ceinturon du Veilleur de braise",
    "kind": "clothing",
    "slot": "belt",
    "family": "armor",
@@ -8146,7 +8198,7 @@
   },
   {
    "id": "i146",
-   "name": "Ceinturon du Fantassin de maître",
+   "name": "Ceinturon du Briseur de serments",
    "kind": "clothing",
    "slot": "belt",
    "family": "armor",
@@ -8202,7 +8254,7 @@
   },
   {
    "id": "i147",
-   "name": "Ceinturon du Rempart d'exception",
+   "name": "Ceinturon du Fondeur maudit",
    "kind": "clothing",
    "slot": "belt",
    "family": "armor",
@@ -8257,7 +8309,7 @@
   },
   {
    "id": "i148",
-   "name": "Cervelière de Patrouille",
+   "name": "Cervelière du Colporteur bourru",
    "kind": "clothing",
    "slot": "head",
    "family": "cuirass",
@@ -8309,7 +8361,7 @@
   },
   {
    "id": "i149",
-   "name": "Cervelière d'Éclaireur",
+   "name": "Cervelière du Guetteur pressé",
    "kind": "clothing",
    "slot": "head",
    "family": "cuirass",
@@ -8361,7 +8413,7 @@
   },
   {
    "id": "i150",
-   "name": "Cervelière de la Garde",
+   "name": "Cervelière du Dernier Relais",
    "kind": "clothing",
    "slot": "head",
    "family": "cuirass",
@@ -8418,7 +8470,7 @@
   },
   {
    "id": "i151",
-   "name": "Cervelière du Rôdeur",
+   "name": "Cervelière du Rôdeur patient",
    "kind": "clothing",
    "slot": "head",
    "family": "cuirass",
@@ -8475,7 +8527,7 @@
   },
   {
    "id": "i152",
-   "name": "Cervelière de Patrouille de maître",
+   "name": "Cervelière du Contrebandier",
    "kind": "clothing",
    "slot": "head",
    "family": "cuirass",
@@ -8532,7 +8584,7 @@
   },
   {
    "id": "i153",
-   "name": "Cervelière d'Éclaireur de maître",
+   "name": "Cervelière de la Louve grise",
    "kind": "clothing",
    "slot": "head",
    "family": "cuirass",
@@ -8589,7 +8641,7 @@
   },
   {
    "id": "i154",
-   "name": "Cervelière de la Garde d'exception",
+   "name": "Cervelière du Louvetier",
    "kind": "clothing",
    "slot": "head",
    "family": "cuirass",
@@ -8645,7 +8697,7 @@
   },
   {
    "id": "i155",
-   "name": "Cervelière de Patrouille",
+   "name": "Cervelière du Colporteur bourru",
    "kind": "clothing",
    "slot": "head",
    "family": "cuirass",
@@ -8697,7 +8749,7 @@
   },
   {
    "id": "i156",
-   "name": "Cervelière d'Éclaireur",
+   "name": "Cervelière du Guetteur pressé",
    "kind": "clothing",
    "slot": "head",
    "family": "cuirass",
@@ -8749,7 +8801,7 @@
   },
   {
    "id": "i157",
-   "name": "Cervelière de la Garde",
+   "name": "Cervelière du Dernier Relais",
    "kind": "clothing",
    "slot": "head",
    "family": "cuirass",
@@ -8806,7 +8858,7 @@
   },
   {
    "id": "i158",
-   "name": "Cervelière du Rôdeur",
+   "name": "Cervelière du Rôdeur patient",
    "kind": "clothing",
    "slot": "head",
    "family": "cuirass",
@@ -8863,7 +8915,7 @@
   },
   {
    "id": "i159",
-   "name": "Cervelière de Patrouille de maître",
+   "name": "Cervelière du Contrebandier",
    "kind": "clothing",
    "slot": "head",
    "family": "cuirass",
@@ -8920,7 +8972,7 @@
   },
   {
    "id": "i160",
-   "name": "Cervelière d'Éclaireur de maître",
+   "name": "Cervelière de la Louve grise",
    "kind": "clothing",
    "slot": "head",
    "family": "cuirass",
@@ -8977,7 +9029,7 @@
   },
   {
    "id": "i161",
-   "name": "Cervelière de la Garde d'exception",
+   "name": "Cervelière du Louvetier",
    "kind": "clothing",
    "slot": "head",
    "family": "cuirass",
@@ -9033,7 +9085,7 @@
   },
   {
    "id": "i162",
-   "name": "Cervelière de Patrouille",
+   "name": "Cervelière du Colporteur bourru",
    "kind": "clothing",
    "slot": "head",
    "family": "cuirass",
@@ -9085,7 +9137,7 @@
   },
   {
    "id": "i163",
-   "name": "Cervelière d'Éclaireur",
+   "name": "Cervelière du Guetteur pressé",
    "kind": "clothing",
    "slot": "head",
    "family": "cuirass",
@@ -9137,7 +9189,7 @@
   },
   {
    "id": "i164",
-   "name": "Cervelière de la Garde",
+   "name": "Cervelière du Dernier Relais",
    "kind": "clothing",
    "slot": "head",
    "family": "cuirass",
@@ -9194,7 +9246,7 @@
   },
   {
    "id": "i165",
-   "name": "Cervelière du Rôdeur",
+   "name": "Cervelière du Rôdeur patient",
    "kind": "clothing",
    "slot": "head",
    "family": "cuirass",
@@ -9251,7 +9303,7 @@
   },
   {
    "id": "i166",
-   "name": "Cervelière de Patrouille de maître",
+   "name": "Cervelière du Contrebandier",
    "kind": "clothing",
    "slot": "head",
    "family": "cuirass",
@@ -9308,7 +9360,7 @@
   },
   {
    "id": "i167",
-   "name": "Cervelière d'Éclaireur de maître",
+   "name": "Cervelière de la Louve grise",
    "kind": "clothing",
    "slot": "head",
    "family": "cuirass",
@@ -9365,7 +9417,7 @@
   },
   {
    "id": "i168",
-   "name": "Cervelière de la Garde d'exception",
+   "name": "Cervelière du Louvetier",
    "kind": "clothing",
    "slot": "head",
    "family": "cuirass",
@@ -9421,7 +9473,7 @@
   },
   {
    "id": "i169",
-   "name": "Pourpoint de Patrouille",
+   "name": "Pourpoint du Colporteur bourru",
    "kind": "clothing",
    "slot": "torso",
    "family": "cuirass",
@@ -9473,7 +9525,7 @@
   },
   {
    "id": "i170",
-   "name": "Pourpoint d'Éclaireur",
+   "name": "Pourpoint du Guetteur pressé",
    "kind": "clothing",
    "slot": "torso",
    "family": "cuirass",
@@ -9525,7 +9577,7 @@
   },
   {
    "id": "i171",
-   "name": "Pourpoint de la Garde",
+   "name": "Pourpoint du Dernier Relais",
    "kind": "clothing",
    "slot": "torso",
    "family": "cuirass",
@@ -9582,7 +9634,7 @@
   },
   {
    "id": "i172",
-   "name": "Pourpoint du Rôdeur",
+   "name": "Pourpoint du Rôdeur patient",
    "kind": "clothing",
    "slot": "torso",
    "family": "cuirass",
@@ -9639,7 +9691,7 @@
   },
   {
    "id": "i173",
-   "name": "Pourpoint de Patrouille de maître",
+   "name": "Pourpoint du Contrebandier",
    "kind": "clothing",
    "slot": "torso",
    "family": "cuirass",
@@ -9696,7 +9748,7 @@
   },
   {
    "id": "i174",
-   "name": "Pourpoint d'Éclaireur de maître",
+   "name": "Pourpoint de la Louve grise",
    "kind": "clothing",
    "slot": "torso",
    "family": "cuirass",
@@ -9753,7 +9805,7 @@
   },
   {
    "id": "i175",
-   "name": "Pourpoint du Rôdeur d'exception",
+   "name": "Pourpoint de la Mère-louve",
    "kind": "clothing",
    "slot": "torso",
    "family": "cuirass",
@@ -9809,7 +9861,7 @@
   },
   {
    "id": "i176",
-   "name": "Pourpoint de Patrouille",
+   "name": "Pourpoint du Colporteur bourru",
    "kind": "clothing",
    "slot": "torso",
    "family": "cuirass",
@@ -9861,7 +9913,7 @@
   },
   {
    "id": "i177",
-   "name": "Pourpoint d'Éclaireur",
+   "name": "Pourpoint du Guetteur pressé",
    "kind": "clothing",
    "slot": "torso",
    "family": "cuirass",
@@ -9913,7 +9965,7 @@
   },
   {
    "id": "i178",
-   "name": "Pourpoint de la Garde",
+   "name": "Pourpoint du Dernier Relais",
    "kind": "clothing",
    "slot": "torso",
    "family": "cuirass",
@@ -9970,7 +10022,7 @@
   },
   {
    "id": "i179",
-   "name": "Pourpoint du Rôdeur",
+   "name": "Pourpoint du Rôdeur patient",
    "kind": "clothing",
    "slot": "torso",
    "family": "cuirass",
@@ -10027,7 +10079,7 @@
   },
   {
    "id": "i180",
-   "name": "Pourpoint de Patrouille de maître",
+   "name": "Pourpoint du Contrebandier",
    "kind": "clothing",
    "slot": "torso",
    "family": "cuirass",
@@ -10084,7 +10136,7 @@
   },
   {
    "id": "i181",
-   "name": "Pourpoint d'Éclaireur de maître",
+   "name": "Pourpoint de la Louve grise",
    "kind": "clothing",
    "slot": "torso",
    "family": "cuirass",
@@ -10141,7 +10193,7 @@
   },
   {
    "id": "i182",
-   "name": "Pourpoint du Rôdeur d'exception",
+   "name": "Pourpoint de la Mère-louve",
    "kind": "clothing",
    "slot": "torso",
    "family": "cuirass",
@@ -10197,7 +10249,7 @@
   },
   {
    "id": "i183",
-   "name": "Pourpoint de Patrouille",
+   "name": "Pourpoint du Colporteur bourru",
    "kind": "clothing",
    "slot": "torso",
    "family": "cuirass",
@@ -10249,7 +10301,7 @@
   },
   {
    "id": "i184",
-   "name": "Pourpoint d'Éclaireur",
+   "name": "Pourpoint du Guetteur pressé",
    "kind": "clothing",
    "slot": "torso",
    "family": "cuirass",
@@ -10301,7 +10353,7 @@
   },
   {
    "id": "i185",
-   "name": "Pourpoint de la Garde",
+   "name": "Pourpoint du Dernier Relais",
    "kind": "clothing",
    "slot": "torso",
    "family": "cuirass",
@@ -10358,7 +10410,7 @@
   },
   {
    "id": "i186",
-   "name": "Pourpoint du Rôdeur",
+   "name": "Pourpoint du Rôdeur patient",
    "kind": "clothing",
    "slot": "torso",
    "family": "cuirass",
@@ -10415,7 +10467,7 @@
   },
   {
    "id": "i187",
-   "name": "Pourpoint de Patrouille de maître",
+   "name": "Pourpoint du Contrebandier",
    "kind": "clothing",
    "slot": "torso",
    "family": "cuirass",
@@ -10472,7 +10524,7 @@
   },
   {
    "id": "i188",
-   "name": "Pourpoint d'Éclaireur de maître",
+   "name": "Pourpoint de la Louve grise",
    "kind": "clothing",
    "slot": "torso",
    "family": "cuirass",
@@ -10529,7 +10581,7 @@
   },
   {
    "id": "i189",
-   "name": "Pourpoint du Rôdeur d'exception",
+   "name": "Pourpoint de la Mère-louve",
    "kind": "clothing",
    "slot": "torso",
    "family": "cuirass",
@@ -10585,7 +10637,7 @@
   },
   {
    "id": "i190",
-   "name": "Mitaines cloutées de Patrouille",
+   "name": "Mitaines cloutées du Colporteur bourru",
    "kind": "clothing",
    "slot": "hands",
    "family": "cuirass",
@@ -10637,7 +10689,7 @@
   },
   {
    "id": "i191",
-   "name": "Mitaines cloutées d'Éclaireur",
+   "name": "Mitaines cloutées du Guetteur pressé",
    "kind": "clothing",
    "slot": "hands",
    "family": "cuirass",
@@ -10689,7 +10741,7 @@
   },
   {
    "id": "i192",
-   "name": "Mitaines cloutées de la Garde",
+   "name": "Mitaines cloutées du Dernier Relais",
    "kind": "clothing",
    "slot": "hands",
    "family": "cuirass",
@@ -10746,7 +10798,7 @@
   },
   {
    "id": "i193",
-   "name": "Mitaines cloutées du Rôdeur",
+   "name": "Mitaines cloutées du Rôdeur patient",
    "kind": "clothing",
    "slot": "hands",
    "family": "cuirass",
@@ -10803,7 +10855,7 @@
   },
   {
    "id": "i194",
-   "name": "Mitaines cloutées de Patrouille de maître",
+   "name": "Mitaines cloutées du Contrebandier",
    "kind": "clothing",
    "slot": "hands",
    "family": "cuirass",
@@ -10860,7 +10912,7 @@
   },
   {
    "id": "i195",
-   "name": "Mitaines cloutées d'Éclaireur de maître",
+   "name": "Mitaines cloutées de la Louve grise",
    "kind": "clothing",
    "slot": "hands",
    "family": "cuirass",
@@ -10917,7 +10969,7 @@
   },
   {
    "id": "i196",
-   "name": "Mitaines cloutées du Rôdeur d'exception",
+   "name": "Mitaines du Chasseur de têtes",
    "kind": "clothing",
    "slot": "hands",
    "family": "cuirass",
@@ -10973,7 +11025,7 @@
   },
   {
    "id": "i197",
-   "name": "Mitaines cloutées de Patrouille",
+   "name": "Mitaines cloutées du Colporteur bourru",
    "kind": "clothing",
    "slot": "hands",
    "family": "cuirass",
@@ -11025,7 +11077,7 @@
   },
   {
    "id": "i198",
-   "name": "Mitaines cloutées d'Éclaireur",
+   "name": "Mitaines cloutées du Guetteur pressé",
    "kind": "clothing",
    "slot": "hands",
    "family": "cuirass",
@@ -11077,7 +11129,7 @@
   },
   {
    "id": "i199",
-   "name": "Mitaines cloutées de la Garde",
+   "name": "Mitaines cloutées du Dernier Relais",
    "kind": "clothing",
    "slot": "hands",
    "family": "cuirass",
@@ -11134,7 +11186,7 @@
   },
   {
    "id": "i200",
-   "name": "Mitaines cloutées du Rôdeur",
+   "name": "Mitaines cloutées du Rôdeur patient",
    "kind": "clothing",
    "slot": "hands",
    "family": "cuirass",
@@ -11191,7 +11243,7 @@
   },
   {
    "id": "i201",
-   "name": "Mitaines cloutées de Patrouille de maître",
+   "name": "Mitaines cloutées du Contrebandier",
    "kind": "clothing",
    "slot": "hands",
    "family": "cuirass",
@@ -11248,7 +11300,7 @@
   },
   {
    "id": "i202",
-   "name": "Mitaines cloutées d'Éclaireur de maître",
+   "name": "Mitaines cloutées de la Louve grise",
    "kind": "clothing",
    "slot": "hands",
    "family": "cuirass",
@@ -11305,7 +11357,7 @@
   },
   {
    "id": "i203",
-   "name": "Mitaines cloutées du Rôdeur d'exception",
+   "name": "Mitaines du Chasseur de têtes",
    "kind": "clothing",
    "slot": "hands",
    "family": "cuirass",
@@ -11361,7 +11413,7 @@
   },
   {
    "id": "i204",
-   "name": "Mitaines cloutées de Patrouille",
+   "name": "Mitaines cloutées du Colporteur bourru",
    "kind": "clothing",
    "slot": "hands",
    "family": "cuirass",
@@ -11413,7 +11465,7 @@
   },
   {
    "id": "i205",
-   "name": "Mitaines cloutées d'Éclaireur",
+   "name": "Mitaines cloutées du Guetteur pressé",
    "kind": "clothing",
    "slot": "hands",
    "family": "cuirass",
@@ -11465,7 +11517,7 @@
   },
   {
    "id": "i206",
-   "name": "Mitaines cloutées de la Garde",
+   "name": "Mitaines cloutées du Dernier Relais",
    "kind": "clothing",
    "slot": "hands",
    "family": "cuirass",
@@ -11522,7 +11574,7 @@
   },
   {
    "id": "i207",
-   "name": "Mitaines cloutées du Rôdeur",
+   "name": "Mitaines cloutées du Rôdeur patient",
    "kind": "clothing",
    "slot": "hands",
    "family": "cuirass",
@@ -11579,7 +11631,7 @@
   },
   {
    "id": "i208",
-   "name": "Mitaines cloutées de Patrouille de maître",
+   "name": "Mitaines cloutées du Contrebandier",
    "kind": "clothing",
    "slot": "hands",
    "family": "cuirass",
@@ -11636,7 +11688,7 @@
   },
   {
    "id": "i209",
-   "name": "Mitaines cloutées d'Éclaireur de maître",
+   "name": "Mitaines cloutées de la Louve grise",
    "kind": "clothing",
    "slot": "hands",
    "family": "cuirass",
@@ -11693,7 +11745,7 @@
   },
   {
    "id": "i210",
-   "name": "Mitaines cloutées du Rôdeur d'exception",
+   "name": "Mitaines du Chasseur de têtes",
    "kind": "clothing",
    "slot": "hands",
    "family": "cuirass",
@@ -11749,7 +11801,7 @@
   },
   {
    "id": "i211",
-   "name": "Chausses de Patrouille",
+   "name": "Chausses du Colporteur bourru",
    "kind": "clothing",
    "slot": "legs",
    "family": "cuirass",
@@ -11801,7 +11853,7 @@
   },
   {
    "id": "i212",
-   "name": "Chausses d'Éclaireur",
+   "name": "Chausses du Guetteur pressé",
    "kind": "clothing",
    "slot": "legs",
    "family": "cuirass",
@@ -11853,7 +11905,7 @@
   },
   {
    "id": "i213",
-   "name": "Chausses de la Garde",
+   "name": "Chausses du Dernier Relais",
    "kind": "clothing",
    "slot": "legs",
    "family": "cuirass",
@@ -11910,7 +11962,7 @@
   },
   {
    "id": "i214",
-   "name": "Chausses du Rôdeur",
+   "name": "Chausses du Rôdeur patient",
    "kind": "clothing",
    "slot": "legs",
    "family": "cuirass",
@@ -11967,7 +12019,7 @@
   },
   {
    "id": "i215",
-   "name": "Chausses de Patrouille de maître",
+   "name": "Chausses du Contrebandier",
    "kind": "clothing",
    "slot": "legs",
    "family": "cuirass",
@@ -12024,7 +12076,7 @@
   },
   {
    "id": "i216",
-   "name": "Chausses d'Éclaireur de maître",
+   "name": "Chausses de la Louve grise",
    "kind": "clothing",
    "slot": "legs",
    "family": "cuirass",
@@ -12081,7 +12133,7 @@
   },
   {
    "id": "i217",
-   "name": "Chausses de la Garde d'exception",
+   "name": "Chausses du Fugitif",
    "kind": "clothing",
    "slot": "legs",
    "family": "cuirass",
@@ -12137,7 +12189,7 @@
   },
   {
    "id": "i218",
-   "name": "Chausses de Patrouille",
+   "name": "Chausses du Colporteur bourru",
    "kind": "clothing",
    "slot": "legs",
    "family": "cuirass",
@@ -12189,7 +12241,7 @@
   },
   {
    "id": "i219",
-   "name": "Chausses d'Éclaireur",
+   "name": "Chausses du Guetteur pressé",
    "kind": "clothing",
    "slot": "legs",
    "family": "cuirass",
@@ -12241,7 +12293,7 @@
   },
   {
    "id": "i220",
-   "name": "Chausses de la Garde",
+   "name": "Chausses du Dernier Relais",
    "kind": "clothing",
    "slot": "legs",
    "family": "cuirass",
@@ -12298,7 +12350,7 @@
   },
   {
    "id": "i221",
-   "name": "Chausses du Rôdeur",
+   "name": "Chausses du Rôdeur patient",
    "kind": "clothing",
    "slot": "legs",
    "family": "cuirass",
@@ -12355,7 +12407,7 @@
   },
   {
    "id": "i222",
-   "name": "Chausses de Patrouille de maître",
+   "name": "Chausses du Contrebandier",
    "kind": "clothing",
    "slot": "legs",
    "family": "cuirass",
@@ -12412,7 +12464,7 @@
   },
   {
    "id": "i223",
-   "name": "Chausses d'Éclaireur de maître",
+   "name": "Chausses de la Louve grise",
    "kind": "clothing",
    "slot": "legs",
    "family": "cuirass",
@@ -12469,7 +12521,7 @@
   },
   {
    "id": "i224",
-   "name": "Chausses de la Garde d'exception",
+   "name": "Chausses du Fugitif",
    "kind": "clothing",
    "slot": "legs",
    "family": "cuirass",
@@ -12525,7 +12577,7 @@
   },
   {
    "id": "i225",
-   "name": "Chausses de Patrouille",
+   "name": "Chausses du Colporteur bourru",
    "kind": "clothing",
    "slot": "legs",
    "family": "cuirass",
@@ -12577,7 +12629,7 @@
   },
   {
    "id": "i226",
-   "name": "Chausses d'Éclaireur",
+   "name": "Chausses du Guetteur pressé",
    "kind": "clothing",
    "slot": "legs",
    "family": "cuirass",
@@ -12629,7 +12681,7 @@
   },
   {
    "id": "i227",
-   "name": "Chausses de la Garde",
+   "name": "Chausses du Dernier Relais",
    "kind": "clothing",
    "slot": "legs",
    "family": "cuirass",
@@ -12686,7 +12738,7 @@
   },
   {
    "id": "i228",
-   "name": "Chausses du Rôdeur",
+   "name": "Chausses du Rôdeur patient",
    "kind": "clothing",
    "slot": "legs",
    "family": "cuirass",
@@ -12743,7 +12795,7 @@
   },
   {
    "id": "i229",
-   "name": "Chausses de Patrouille de maître",
+   "name": "Chausses du Contrebandier",
    "kind": "clothing",
    "slot": "legs",
    "family": "cuirass",
@@ -12800,7 +12852,7 @@
   },
   {
    "id": "i230",
-   "name": "Chausses d'Éclaireur de maître",
+   "name": "Chausses de la Louve grise",
    "kind": "clothing",
    "slot": "legs",
    "family": "cuirass",
@@ -12857,7 +12909,7 @@
   },
   {
    "id": "i231",
-   "name": "Chausses de la Garde d'exception",
+   "name": "Chausses du Fugitif",
    "kind": "clothing",
    "slot": "legs",
    "family": "cuirass",
@@ -12913,7 +12965,7 @@
   },
   {
    "id": "i232",
-   "name": "Bottes ferrées de Patrouille",
+   "name": "Bottes ferrées du Colporteur bourru",
    "kind": "clothing",
    "slot": "feet",
    "family": "cuirass",
@@ -12965,7 +13017,7 @@
   },
   {
    "id": "i233",
-   "name": "Bottes ferrées d'Éclaireur",
+   "name": "Bottes ferrées du Guetteur pressé",
    "kind": "clothing",
    "slot": "feet",
    "family": "cuirass",
@@ -13017,7 +13069,7 @@
   },
   {
    "id": "i234",
-   "name": "Bottes ferrées de la Garde",
+   "name": "Bottes ferrées du Dernier Relais",
    "kind": "clothing",
    "slot": "feet",
    "family": "cuirass",
@@ -13074,7 +13126,7 @@
   },
   {
    "id": "i235",
-   "name": "Bottes ferrées du Rôdeur",
+   "name": "Bottes ferrées du Rôdeur patient",
    "kind": "clothing",
    "slot": "feet",
    "family": "cuirass",
@@ -13131,7 +13183,7 @@
   },
   {
    "id": "i236",
-   "name": "Bottes ferrées de Patrouille de maître",
+   "name": "Bottes ferrées du Contrebandier",
    "kind": "clothing",
    "slot": "feet",
    "family": "cuirass",
@@ -13188,7 +13240,7 @@
   },
   {
    "id": "i237",
-   "name": "Bottes ferrées d'Éclaireur de maître",
+   "name": "Bottes ferrées de la Louve grise",
    "kind": "clothing",
    "slot": "feet",
    "family": "cuirass",
@@ -13245,7 +13297,7 @@
   },
   {
    "id": "i238",
-   "name": "Bottes ferrées de la Garde d'exception",
+   "name": "Bottes du Dernier Pardon",
    "kind": "clothing",
    "slot": "feet",
    "family": "cuirass",
@@ -13301,7 +13353,7 @@
   },
   {
    "id": "i239",
-   "name": "Bottes ferrées de Patrouille",
+   "name": "Bottes ferrées du Colporteur bourru",
    "kind": "clothing",
    "slot": "feet",
    "family": "cuirass",
@@ -13353,7 +13405,7 @@
   },
   {
    "id": "i240",
-   "name": "Bottes ferrées d'Éclaireur",
+   "name": "Bottes ferrées du Guetteur pressé",
    "kind": "clothing",
    "slot": "feet",
    "family": "cuirass",
@@ -13405,7 +13457,7 @@
   },
   {
    "id": "i241",
-   "name": "Bottes ferrées de la Garde",
+   "name": "Bottes ferrées du Dernier Relais",
    "kind": "clothing",
    "slot": "feet",
    "family": "cuirass",
@@ -13462,7 +13514,7 @@
   },
   {
    "id": "i242",
-   "name": "Bottes ferrées du Rôdeur",
+   "name": "Bottes ferrées du Rôdeur patient",
    "kind": "clothing",
    "slot": "feet",
    "family": "cuirass",
@@ -13519,7 +13571,7 @@
   },
   {
    "id": "i243",
-   "name": "Bottes ferrées de Patrouille de maître",
+   "name": "Bottes ferrées du Contrebandier",
    "kind": "clothing",
    "slot": "feet",
    "family": "cuirass",
@@ -13576,7 +13628,7 @@
   },
   {
    "id": "i244",
-   "name": "Bottes ferrées d'Éclaireur de maître",
+   "name": "Bottes ferrées de la Louve grise",
    "kind": "clothing",
    "slot": "feet",
    "family": "cuirass",
@@ -13633,7 +13685,7 @@
   },
   {
    "id": "i245",
-   "name": "Bottes ferrées de la Garde d'exception",
+   "name": "Bottes du Dernier Pardon",
    "kind": "clothing",
    "slot": "feet",
    "family": "cuirass",
@@ -13689,7 +13741,7 @@
   },
   {
    "id": "i246",
-   "name": "Bottes ferrées de Patrouille",
+   "name": "Bottes ferrées du Colporteur bourru",
    "kind": "clothing",
    "slot": "feet",
    "family": "cuirass",
@@ -13741,7 +13793,7 @@
   },
   {
    "id": "i247",
-   "name": "Bottes ferrées d'Éclaireur",
+   "name": "Bottes ferrées du Guetteur pressé",
    "kind": "clothing",
    "slot": "feet",
    "family": "cuirass",
@@ -13793,7 +13845,7 @@
   },
   {
    "id": "i248",
-   "name": "Bottes ferrées de la Garde",
+   "name": "Bottes ferrées du Dernier Relais",
    "kind": "clothing",
    "slot": "feet",
    "family": "cuirass",
@@ -13850,7 +13902,7 @@
   },
   {
    "id": "i249",
-   "name": "Bottes ferrées du Rôdeur",
+   "name": "Bottes ferrées du Rôdeur patient",
    "kind": "clothing",
    "slot": "feet",
    "family": "cuirass",
@@ -13907,7 +13959,7 @@
   },
   {
    "id": "i250",
-   "name": "Bottes ferrées de Patrouille de maître",
+   "name": "Bottes ferrées du Contrebandier",
    "kind": "clothing",
    "slot": "feet",
    "family": "cuirass",
@@ -13964,7 +14016,7 @@
   },
   {
    "id": "i251",
-   "name": "Bottes ferrées d'Éclaireur de maître",
+   "name": "Bottes ferrées de la Louve grise",
    "kind": "clothing",
    "slot": "feet",
    "family": "cuirass",
@@ -14021,7 +14073,7 @@
   },
   {
    "id": "i252",
-   "name": "Bottes ferrées de la Garde d'exception",
+   "name": "Bottes du Dernier Pardon",
    "kind": "clothing",
    "slot": "feet",
    "family": "cuirass",
@@ -14077,7 +14129,7 @@
   },
   {
    "id": "i253",
-   "name": "Cape de cuir de Patrouille",
+   "name": "Cape de cuir du Colporteur bourru",
    "kind": "clothing",
    "slot": "cape",
    "family": "cuirass",
@@ -14129,7 +14181,7 @@
   },
   {
    "id": "i254",
-   "name": "Cape de cuir d'Éclaireur",
+   "name": "Cape de cuir du Guetteur pressé",
    "kind": "clothing",
    "slot": "cape",
    "family": "cuirass",
@@ -14181,7 +14233,7 @@
   },
   {
    "id": "i255",
-   "name": "Cape de cuir de la Garde",
+   "name": "Cape de cuir du Dernier Relais",
    "kind": "clothing",
    "slot": "cape",
    "family": "cuirass",
@@ -14238,7 +14290,7 @@
   },
   {
    "id": "i256",
-   "name": "Cape de cuir du Rôdeur",
+   "name": "Cape de cuir du Rôdeur patient",
    "kind": "clothing",
    "slot": "cape",
    "family": "cuirass",
@@ -14295,7 +14347,7 @@
   },
   {
    "id": "i257",
-   "name": "Cape de cuir de Patrouille de maître",
+   "name": "Cape de cuir du Contrebandier",
    "kind": "clothing",
    "slot": "cape",
    "family": "cuirass",
@@ -14352,7 +14404,7 @@
   },
   {
    "id": "i258",
-   "name": "Cape de cuir d'Éclaireur de maître",
+   "name": "Cape de cuir de la Louve grise",
    "kind": "clothing",
    "slot": "cape",
    "family": "cuirass",
@@ -14409,7 +14461,7 @@
   },
   {
    "id": "i259",
-   "name": "Cape de cuir de la Garde d'exception",
+   "name": "Cape du Convoi perdu",
    "kind": "clothing",
    "slot": "cape",
    "family": "cuirass",
@@ -14465,7 +14517,7 @@
   },
   {
    "id": "i260",
-   "name": "Cape de cuir de Patrouille",
+   "name": "Cape de cuir du Colporteur bourru",
    "kind": "clothing",
    "slot": "cape",
    "family": "cuirass",
@@ -14517,7 +14569,7 @@
   },
   {
    "id": "i261",
-   "name": "Cape de cuir d'Éclaireur",
+   "name": "Cape de cuir du Guetteur pressé",
    "kind": "clothing",
    "slot": "cape",
    "family": "cuirass",
@@ -14569,7 +14621,7 @@
   },
   {
    "id": "i262",
-   "name": "Cape de cuir de la Garde",
+   "name": "Cape de cuir du Dernier Relais",
    "kind": "clothing",
    "slot": "cape",
    "family": "cuirass",
@@ -14626,7 +14678,7 @@
   },
   {
    "id": "i263",
-   "name": "Cape de cuir du Rôdeur",
+   "name": "Cape de cuir du Rôdeur patient",
    "kind": "clothing",
    "slot": "cape",
    "family": "cuirass",
@@ -14683,7 +14735,7 @@
   },
   {
    "id": "i264",
-   "name": "Cape de cuir de Patrouille de maître",
+   "name": "Cape de cuir du Contrebandier",
    "kind": "clothing",
    "slot": "cape",
    "family": "cuirass",
@@ -14740,7 +14792,7 @@
   },
   {
    "id": "i265",
-   "name": "Cape de cuir d'Éclaireur de maître",
+   "name": "Cape de cuir de la Louve grise",
    "kind": "clothing",
    "slot": "cape",
    "family": "cuirass",
@@ -14797,7 +14849,7 @@
   },
   {
    "id": "i266",
-   "name": "Cape de cuir de la Garde d'exception",
+   "name": "Cape du Convoi perdu",
    "kind": "clothing",
    "slot": "cape",
    "family": "cuirass",
@@ -14853,7 +14905,7 @@
   },
   {
    "id": "i267",
-   "name": "Cape de cuir de Patrouille",
+   "name": "Cape de cuir du Colporteur bourru",
    "kind": "clothing",
    "slot": "cape",
    "family": "cuirass",
@@ -14905,7 +14957,7 @@
   },
   {
    "id": "i268",
-   "name": "Cape de cuir d'Éclaireur",
+   "name": "Cape de cuir du Guetteur pressé",
    "kind": "clothing",
    "slot": "cape",
    "family": "cuirass",
@@ -14957,7 +15009,7 @@
   },
   {
    "id": "i269",
-   "name": "Cape de cuir de la Garde",
+   "name": "Cape de cuir du Dernier Relais",
    "kind": "clothing",
    "slot": "cape",
    "family": "cuirass",
@@ -15014,7 +15066,7 @@
   },
   {
    "id": "i270",
-   "name": "Cape de cuir du Rôdeur",
+   "name": "Cape de cuir du Rôdeur patient",
    "kind": "clothing",
    "slot": "cape",
    "family": "cuirass",
@@ -15071,7 +15123,7 @@
   },
   {
    "id": "i271",
-   "name": "Cape de cuir de Patrouille de maître",
+   "name": "Cape de cuir du Contrebandier",
    "kind": "clothing",
    "slot": "cape",
    "family": "cuirass",
@@ -15128,7 +15180,7 @@
   },
   {
    "id": "i272",
-   "name": "Cape de cuir d'Éclaireur de maître",
+   "name": "Cape de cuir de la Louve grise",
    "kind": "clothing",
    "slot": "cape",
    "family": "cuirass",
@@ -15185,7 +15237,7 @@
   },
   {
    "id": "i273",
-   "name": "Cape de cuir de la Garde d'exception",
+   "name": "Cape du Convoi perdu",
    "kind": "clothing",
    "slot": "cape",
    "family": "cuirass",
@@ -15241,7 +15293,7 @@
   },
   {
    "id": "i274",
-   "name": "Ceinture à plaques de Patrouille",
+   "name": "Ceinture à plaques du Colporteur bourru",
    "kind": "clothing",
    "slot": "belt",
    "family": "cuirass",
@@ -15293,7 +15345,7 @@
   },
   {
    "id": "i275",
-   "name": "Ceinture à plaques d'Éclaireur",
+   "name": "Ceinture à plaques du Guetteur pressé",
    "kind": "clothing",
    "slot": "belt",
    "family": "cuirass",
@@ -15345,7 +15397,7 @@
   },
   {
    "id": "i276",
-   "name": "Ceinture à plaques de la Garde",
+   "name": "Ceinture à plaques du Dernier Relais",
    "kind": "clothing",
    "slot": "belt",
    "family": "cuirass",
@@ -15402,7 +15454,7 @@
   },
   {
    "id": "i277",
-   "name": "Ceinture à plaques du Rôdeur",
+   "name": "Ceinture à plaques du Rôdeur patient",
    "kind": "clothing",
    "slot": "belt",
    "family": "cuirass",
@@ -15459,7 +15511,7 @@
   },
   {
    "id": "i278",
-   "name": "Ceinture à plaques de Patrouille de maître",
+   "name": "Ceinture à plaques du Contrebandier",
    "kind": "clothing",
    "slot": "belt",
    "family": "cuirass",
@@ -15516,7 +15568,7 @@
   },
   {
    "id": "i279",
-   "name": "Ceinture à plaques d'Éclaireur de maître",
+   "name": "Ceinture à plaques de la Louve grise",
    "kind": "clothing",
    "slot": "belt",
    "family": "cuirass",
@@ -15573,7 +15625,7 @@
   },
   {
    "id": "i280",
-   "name": "Ceinture à plaques de la Garde d'exception",
+   "name": "Ceinture du Bourreau pensif",
    "kind": "clothing",
    "slot": "belt",
    "family": "cuirass",
@@ -15629,7 +15681,7 @@
   },
   {
    "id": "i281",
-   "name": "Ceinture à plaques de Patrouille",
+   "name": "Ceinture à plaques du Colporteur bourru",
    "kind": "clothing",
    "slot": "belt",
    "family": "cuirass",
@@ -15681,7 +15733,7 @@
   },
   {
    "id": "i282",
-   "name": "Ceinture à plaques d'Éclaireur",
+   "name": "Ceinture à plaques du Guetteur pressé",
    "kind": "clothing",
    "slot": "belt",
    "family": "cuirass",
@@ -15733,7 +15785,7 @@
   },
   {
    "id": "i283",
-   "name": "Ceinture à plaques de la Garde",
+   "name": "Ceinture à plaques du Dernier Relais",
    "kind": "clothing",
    "slot": "belt",
    "family": "cuirass",
@@ -15790,7 +15842,7 @@
   },
   {
    "id": "i284",
-   "name": "Ceinture à plaques du Rôdeur",
+   "name": "Ceinture à plaques du Rôdeur patient",
    "kind": "clothing",
    "slot": "belt",
    "family": "cuirass",
@@ -15847,7 +15899,7 @@
   },
   {
    "id": "i285",
-   "name": "Ceinture à plaques de Patrouille de maître",
+   "name": "Ceinture à plaques du Contrebandier",
    "kind": "clothing",
    "slot": "belt",
    "family": "cuirass",
@@ -15904,7 +15956,7 @@
   },
   {
    "id": "i286",
-   "name": "Ceinture à plaques d'Éclaireur de maître",
+   "name": "Ceinture à plaques de la Louve grise",
    "kind": "clothing",
    "slot": "belt",
    "family": "cuirass",
@@ -15961,7 +16013,7 @@
   },
   {
    "id": "i287",
-   "name": "Ceinture à plaques de la Garde d'exception",
+   "name": "Ceinture du Bourreau pensif",
    "kind": "clothing",
    "slot": "belt",
    "family": "cuirass",
@@ -16017,7 +16069,7 @@
   },
   {
    "id": "i288",
-   "name": "Ceinture à plaques de Patrouille",
+   "name": "Ceinture à plaques du Colporteur bourru",
    "kind": "clothing",
    "slot": "belt",
    "family": "cuirass",
@@ -16069,7 +16121,7 @@
   },
   {
    "id": "i289",
-   "name": "Ceinture à plaques d'Éclaireur",
+   "name": "Ceinture à plaques du Guetteur pressé",
    "kind": "clothing",
    "slot": "belt",
    "family": "cuirass",
@@ -16121,7 +16173,7 @@
   },
   {
    "id": "i290",
-   "name": "Ceinture à plaques de la Garde",
+   "name": "Ceinture à plaques du Dernier Relais",
    "kind": "clothing",
    "slot": "belt",
    "family": "cuirass",
@@ -16178,7 +16230,7 @@
   },
   {
    "id": "i291",
-   "name": "Ceinture à plaques du Rôdeur",
+   "name": "Ceinture à plaques du Rôdeur patient",
    "kind": "clothing",
    "slot": "belt",
    "family": "cuirass",
@@ -16235,7 +16287,7 @@
   },
   {
    "id": "i292",
-   "name": "Ceinture à plaques de Patrouille de maître",
+   "name": "Ceinture à plaques du Contrebandier",
    "kind": "clothing",
    "slot": "belt",
    "family": "cuirass",
@@ -16292,7 +16344,7 @@
   },
   {
    "id": "i293",
-   "name": "Ceinture à plaques d'Éclaireur de maître",
+   "name": "Ceinture à plaques de la Louve grise",
    "kind": "clothing",
    "slot": "belt",
    "family": "cuirass",
@@ -16349,7 +16401,7 @@
   },
   {
    "id": "i294",
-   "name": "Ceinture à plaques de la Garde d'exception",
+   "name": "Ceinture du Bourreau pensif",
    "kind": "clothing",
    "slot": "belt",
    "family": "cuirass",
@@ -16405,7 +16457,7 @@
   },
   {
    "id": "i295",
-   "name": "Capuche de Piste",
+   "name": "Capuche du Chat maigre",
    "kind": "clothing",
    "slot": "head",
    "family": "trail",
@@ -16457,7 +16509,7 @@
   },
   {
    "id": "i296",
-   "name": "Capuche de Traque",
+   "name": "Capuche du Voleur de lune",
    "kind": "clothing",
    "slot": "head",
    "family": "trail",
@@ -16509,7 +16561,7 @@
   },
   {
    "id": "i297",
-   "name": "Capuche du Veilleur",
+   "name": "Capuche de la Pie-grièche",
    "kind": "clothing",
    "slot": "head",
    "family": "trail",
@@ -16566,7 +16618,7 @@
   },
   {
    "id": "i298",
-   "name": "Capuche du Traqueur",
+   "name": "Capuche du Braconnier repenti",
    "kind": "clothing",
    "slot": "head",
    "family": "trail",
@@ -16623,7 +16675,7 @@
   },
   {
    "id": "i299",
-   "name": "Capuche de Piste de maître",
+   "name": "Capuche du Braconnier pardonné",
    "kind": "clothing",
    "slot": "head",
    "family": "trail",
@@ -16680,7 +16732,7 @@
   },
   {
    "id": "i300",
-   "name": "Capuche de Traque de maître",
+   "name": "Capuche de la Corneille",
    "kind": "clothing",
    "slot": "head",
    "family": "trail",
@@ -16737,7 +16789,7 @@
   },
   {
    "id": "i301",
-   "name": "Capuche du Veilleur d'exception",
+   "name": "Capuche de la Veuve des Murmures",
    "kind": "clothing",
    "slot": "head",
    "family": "trail",
@@ -16793,7 +16845,7 @@
   },
   {
    "id": "i302",
-   "name": "Capuche de Piste",
+   "name": "Capuche du Chat maigre",
    "kind": "clothing",
    "slot": "head",
    "family": "trail",
@@ -16845,7 +16897,7 @@
   },
   {
    "id": "i303",
-   "name": "Capuche de Traque",
+   "name": "Capuche du Voleur de lune",
    "kind": "clothing",
    "slot": "head",
    "family": "trail",
@@ -16897,7 +16949,7 @@
   },
   {
    "id": "i304",
-   "name": "Capuche du Veilleur",
+   "name": "Capuche de la Pie-grièche",
    "kind": "clothing",
    "slot": "head",
    "family": "trail",
@@ -16954,7 +17006,7 @@
   },
   {
    "id": "i305",
-   "name": "Capuche du Traqueur",
+   "name": "Capuche du Braconnier repenti",
    "kind": "clothing",
    "slot": "head",
    "family": "trail",
@@ -17011,7 +17063,7 @@
   },
   {
    "id": "i306",
-   "name": "Capuche de Piste de maître",
+   "name": "Capuche du Braconnier pardonné",
    "kind": "clothing",
    "slot": "head",
    "family": "trail",
@@ -17068,7 +17120,7 @@
   },
   {
    "id": "i307",
-   "name": "Capuche de Traque de maître",
+   "name": "Capuche de la Corneille",
    "kind": "clothing",
    "slot": "head",
    "family": "trail",
@@ -17125,7 +17177,7 @@
   },
   {
    "id": "i308",
-   "name": "Capuche du Veilleur d'exception",
+   "name": "Capuche de la Veuve de Maldefer",
    "kind": "clothing",
    "slot": "head",
    "family": "trail",
@@ -17181,7 +17233,7 @@
   },
   {
    "id": "i309",
-   "name": "Capuche de Piste",
+   "name": "Capuche du Chat maigre",
    "kind": "clothing",
    "slot": "head",
    "family": "trail",
@@ -17233,7 +17285,7 @@
   },
   {
    "id": "i310",
-   "name": "Capuche de Traque",
+   "name": "Capuche du Voleur de lune",
    "kind": "clothing",
    "slot": "head",
    "family": "trail",
@@ -17285,7 +17337,7 @@
   },
   {
    "id": "i311",
-   "name": "Capuche du Veilleur",
+   "name": "Capuche de la Pie-grièche",
    "kind": "clothing",
    "slot": "head",
    "family": "trail",
@@ -17342,7 +17394,7 @@
   },
   {
    "id": "i312",
-   "name": "Capuche du Traqueur",
+   "name": "Capuche du Braconnier repenti",
    "kind": "clothing",
    "slot": "head",
    "family": "trail",
@@ -17399,7 +17451,7 @@
   },
   {
    "id": "i313",
-   "name": "Capuche de Piste de maître",
+   "name": "Capuche du Braconnier pardonné",
    "kind": "clothing",
    "slot": "head",
    "family": "trail",
@@ -17456,7 +17508,7 @@
   },
   {
    "id": "i314",
-   "name": "Capuche de Traque de maître",
+   "name": "Capuche de la Corneille",
    "kind": "clothing",
    "slot": "head",
    "family": "trail",
@@ -17513,7 +17565,7 @@
   },
   {
    "id": "i315",
-   "name": "Capuche du Veilleur d'exception",
+   "name": "Capuche de la Veuve des cimes",
    "kind": "clothing",
    "slot": "head",
    "family": "trail",
@@ -17569,7 +17621,7 @@
   },
   {
    "id": "i316",
-   "name": "Veste de Piste",
+   "name": "Veste du Chat maigre",
    "kind": "clothing",
    "slot": "torso",
    "family": "trail",
@@ -17621,7 +17673,7 @@
   },
   {
    "id": "i317",
-   "name": "Veste de Traque",
+   "name": "Veste du Voleur de lune",
    "kind": "clothing",
    "slot": "torso",
    "family": "trail",
@@ -17673,7 +17725,7 @@
   },
   {
    "id": "i318",
-   "name": "Veste du Veilleur",
+   "name": "Veste de la Pie-grièche",
    "kind": "clothing",
    "slot": "torso",
    "family": "trail",
@@ -17730,7 +17782,7 @@
   },
   {
    "id": "i319",
-   "name": "Veste du Traqueur",
+   "name": "Veste du Braconnier repenti",
    "kind": "clothing",
    "slot": "torso",
    "family": "trail",
@@ -17787,7 +17839,7 @@
   },
   {
    "id": "i320",
-   "name": "Veste de Piste de maître",
+   "name": "Veste du Braconnier pardonné",
    "kind": "clothing",
    "slot": "torso",
    "family": "trail",
@@ -17844,7 +17896,7 @@
   },
   {
    "id": "i321",
-   "name": "Veste de Traque de maître",
+   "name": "Veste de la Corneille",
    "kind": "clothing",
    "slot": "torso",
    "family": "trail",
@@ -17901,7 +17953,7 @@
   },
   {
    "id": "i322",
-   "name": "Veste du Traqueur d'exception",
+   "name": "Veste du Spectre de la lisière",
    "kind": "clothing",
    "slot": "torso",
    "family": "trail",
@@ -17957,7 +18009,7 @@
   },
   {
    "id": "i323",
-   "name": "Veste de Piste",
+   "name": "Veste du Chat maigre",
    "kind": "clothing",
    "slot": "torso",
    "family": "trail",
@@ -18009,7 +18061,7 @@
   },
   {
    "id": "i324",
-   "name": "Veste de Traque",
+   "name": "Veste du Voleur de lune",
    "kind": "clothing",
    "slot": "torso",
    "family": "trail",
@@ -18061,7 +18113,7 @@
   },
   {
    "id": "i325",
-   "name": "Veste du Veilleur",
+   "name": "Veste de la Pie-grièche",
    "kind": "clothing",
    "slot": "torso",
    "family": "trail",
@@ -18118,7 +18170,7 @@
   },
   {
    "id": "i326",
-   "name": "Veste du Traqueur",
+   "name": "Veste du Braconnier repenti",
    "kind": "clothing",
    "slot": "torso",
    "family": "trail",
@@ -18175,7 +18227,7 @@
   },
   {
    "id": "i327",
-   "name": "Veste de Piste de maître",
+   "name": "Veste du Braconnier pardonné",
    "kind": "clothing",
    "slot": "torso",
    "family": "trail",
@@ -18232,7 +18284,7 @@
   },
   {
    "id": "i328",
-   "name": "Veste de Traque de maître",
+   "name": "Veste de la Corneille",
    "kind": "clothing",
    "slot": "torso",
    "family": "trail",
@@ -18289,7 +18341,7 @@
   },
   {
    "id": "i329",
-   "name": "Veste du Traqueur d'exception",
+   "name": "Veste du Spectre de la lisière",
    "kind": "clothing",
    "slot": "torso",
    "family": "trail",
@@ -18345,7 +18397,7 @@
   },
   {
    "id": "i330",
-   "name": "Veste de Piste",
+   "name": "Veste du Chat maigre",
    "kind": "clothing",
    "slot": "torso",
    "family": "trail",
@@ -18397,7 +18449,7 @@
   },
   {
    "id": "i331",
-   "name": "Veste de Traque",
+   "name": "Veste du Voleur de lune",
    "kind": "clothing",
    "slot": "torso",
    "family": "trail",
@@ -18449,7 +18501,7 @@
   },
   {
    "id": "i332",
-   "name": "Veste du Veilleur",
+   "name": "Veste de la Pie-grièche",
    "kind": "clothing",
    "slot": "torso",
    "family": "trail",
@@ -18506,7 +18558,7 @@
   },
   {
    "id": "i333",
-   "name": "Veste du Traqueur",
+   "name": "Veste du Braconnier repenti",
    "kind": "clothing",
    "slot": "torso",
    "family": "trail",
@@ -18563,7 +18615,7 @@
   },
   {
    "id": "i334",
-   "name": "Veste de Piste de maître",
+   "name": "Veste du Braconnier pardonné",
    "kind": "clothing",
    "slot": "torso",
    "family": "trail",
@@ -18620,7 +18672,7 @@
   },
   {
    "id": "i335",
-   "name": "Veste de Traque de maître",
+   "name": "Veste de la Corneille",
    "kind": "clothing",
    "slot": "torso",
    "family": "trail",
@@ -18677,7 +18729,7 @@
   },
   {
    "id": "i336",
-   "name": "Veste du Traqueur d'exception",
+   "name": "Veste du Spectre de la lisière",
    "kind": "clothing",
    "slot": "torso",
    "family": "trail",
@@ -18733,7 +18785,7 @@
   },
   {
    "id": "i337",
-   "name": "Gants souples de Piste",
+   "name": "Gants souples du Chat maigre",
    "kind": "clothing",
    "slot": "hands",
    "family": "trail",
@@ -18785,7 +18837,7 @@
   },
   {
    "id": "i338",
-   "name": "Gants souples de Traque",
+   "name": "Gants souples du Voleur de lune",
    "kind": "clothing",
    "slot": "hands",
    "family": "trail",
@@ -18837,7 +18889,7 @@
   },
   {
    "id": "i339",
-   "name": "Gants souples du Veilleur",
+   "name": "Gants souples de la Pie-grièche",
    "kind": "clothing",
    "slot": "hands",
    "family": "trail",
@@ -18894,7 +18946,7 @@
   },
   {
    "id": "i340",
-   "name": "Gants souples du Traqueur",
+   "name": "Gants souples du Braconnier repenti",
    "kind": "clothing",
    "slot": "hands",
    "family": "trail",
@@ -18951,7 +19003,7 @@
   },
   {
    "id": "i341",
-   "name": "Gants souples de Piste de maître",
+   "name": "Gants souples du Braconnier pardonné",
    "kind": "clothing",
    "slot": "hands",
    "family": "trail",
@@ -19008,7 +19060,7 @@
   },
   {
    "id": "i342",
-   "name": "Gants souples de Traque de maître",
+   "name": "Gants souples de la Corneille",
    "kind": "clothing",
    "slot": "hands",
    "family": "trail",
@@ -19065,7 +19117,7 @@
   },
   {
    "id": "i343",
-   "name": "Gants souples du Traqueur d'exception",
+   "name": "Gants de la Veuve des Murmures",
    "kind": "clothing",
    "slot": "hands",
    "family": "trail",
@@ -19121,7 +19173,7 @@
   },
   {
    "id": "i344",
-   "name": "Gants souples de Piste",
+   "name": "Gants souples du Chat maigre",
    "kind": "clothing",
    "slot": "hands",
    "family": "trail",
@@ -19173,7 +19225,7 @@
   },
   {
    "id": "i345",
-   "name": "Gants souples de Traque",
+   "name": "Gants souples du Voleur de lune",
    "kind": "clothing",
    "slot": "hands",
    "family": "trail",
@@ -19225,7 +19277,7 @@
   },
   {
    "id": "i346",
-   "name": "Gants souples du Veilleur",
+   "name": "Gants souples de la Pie-grièche",
    "kind": "clothing",
    "slot": "hands",
    "family": "trail",
@@ -19282,7 +19334,7 @@
   },
   {
    "id": "i347",
-   "name": "Gants souples du Traqueur",
+   "name": "Gants souples du Braconnier repenti",
    "kind": "clothing",
    "slot": "hands",
    "family": "trail",
@@ -19339,7 +19391,7 @@
   },
   {
    "id": "i348",
-   "name": "Gants souples de Piste de maître",
+   "name": "Gants souples du Braconnier pardonné",
    "kind": "clothing",
    "slot": "hands",
    "family": "trail",
@@ -19396,7 +19448,7 @@
   },
   {
    "id": "i349",
-   "name": "Gants souples de Traque de maître",
+   "name": "Gants souples de la Corneille",
    "kind": "clothing",
    "slot": "hands",
    "family": "trail",
@@ -19453,7 +19505,7 @@
   },
   {
    "id": "i350",
-   "name": "Gants souples du Traqueur d'exception",
+   "name": "Gants de la Veuve de Maldefer",
    "kind": "clothing",
    "slot": "hands",
    "family": "trail",
@@ -19509,7 +19561,7 @@
   },
   {
    "id": "i351",
-   "name": "Gants souples de Piste",
+   "name": "Gants souples du Chat maigre",
    "kind": "clothing",
    "slot": "hands",
    "family": "trail",
@@ -19561,7 +19613,7 @@
   },
   {
    "id": "i352",
-   "name": "Gants souples de Traque",
+   "name": "Gants souples du Voleur de lune",
    "kind": "clothing",
    "slot": "hands",
    "family": "trail",
@@ -19613,7 +19665,7 @@
   },
   {
    "id": "i353",
-   "name": "Gants souples du Veilleur",
+   "name": "Gants souples de la Pie-grièche",
    "kind": "clothing",
    "slot": "hands",
    "family": "trail",
@@ -19670,7 +19722,7 @@
   },
   {
    "id": "i354",
-   "name": "Gants souples du Traqueur",
+   "name": "Gants souples du Braconnier repenti",
    "kind": "clothing",
    "slot": "hands",
    "family": "trail",
@@ -19727,7 +19779,7 @@
   },
   {
    "id": "i355",
-   "name": "Gants souples de Piste de maître",
+   "name": "Gants souples du Braconnier pardonné",
    "kind": "clothing",
    "slot": "hands",
    "family": "trail",
@@ -19784,7 +19836,7 @@
   },
   {
    "id": "i356",
-   "name": "Gants souples de Traque de maître",
+   "name": "Gants souples de la Corneille",
    "kind": "clothing",
    "slot": "hands",
    "family": "trail",
@@ -19841,7 +19893,7 @@
   },
   {
    "id": "i357",
-   "name": "Gants souples du Traqueur d'exception",
+   "name": "Gants de la Veuve des cimes",
    "kind": "clothing",
    "slot": "hands",
    "family": "trail",
@@ -19897,7 +19949,7 @@
   },
   {
    "id": "i358",
-   "name": "Pantalon de Piste",
+   "name": "Pantalon du Chat maigre",
    "kind": "clothing",
    "slot": "legs",
    "family": "trail",
@@ -19949,7 +20001,7 @@
   },
   {
    "id": "i359",
-   "name": "Pantalon de Traque",
+   "name": "Pantalon du Voleur de lune",
    "kind": "clothing",
    "slot": "legs",
    "family": "trail",
@@ -20001,7 +20053,7 @@
   },
   {
    "id": "i360",
-   "name": "Pantalon du Veilleur",
+   "name": "Pantalon de la Pie-grièche",
    "kind": "clothing",
    "slot": "legs",
    "family": "trail",
@@ -20058,7 +20110,7 @@
   },
   {
    "id": "i361",
-   "name": "Pantalon du Traqueur",
+   "name": "Pantalon du Braconnier repenti",
    "kind": "clothing",
    "slot": "legs",
    "family": "trail",
@@ -20115,7 +20167,7 @@
   },
   {
    "id": "i362",
-   "name": "Pantalon de Piste de maître",
+   "name": "Pantalon du Braconnier pardonné",
    "kind": "clothing",
    "slot": "legs",
    "family": "trail",
@@ -20172,7 +20224,7 @@
   },
   {
    "id": "i363",
-   "name": "Pantalon de Traque de maître",
+   "name": "Pantalon de la Corneille",
    "kind": "clothing",
    "slot": "legs",
    "family": "trail",
@@ -20229,7 +20281,7 @@
   },
   {
    "id": "i364",
-   "name": "Pantalon du Veilleur d'exception",
+   "name": "Pantalon du Funambule",
    "kind": "clothing",
    "slot": "legs",
    "family": "trail",
@@ -20285,7 +20337,7 @@
   },
   {
    "id": "i365",
-   "name": "Pantalon de Piste",
+   "name": "Pantalon du Chat maigre",
    "kind": "clothing",
    "slot": "legs",
    "family": "trail",
@@ -20337,7 +20389,7 @@
   },
   {
    "id": "i366",
-   "name": "Pantalon de Traque",
+   "name": "Pantalon du Voleur de lune",
    "kind": "clothing",
    "slot": "legs",
    "family": "trail",
@@ -20389,7 +20441,7 @@
   },
   {
    "id": "i367",
-   "name": "Pantalon du Veilleur",
+   "name": "Pantalon de la Pie-grièche",
    "kind": "clothing",
    "slot": "legs",
    "family": "trail",
@@ -20446,7 +20498,7 @@
   },
   {
    "id": "i368",
-   "name": "Pantalon du Traqueur",
+   "name": "Pantalon du Braconnier repenti",
    "kind": "clothing",
    "slot": "legs",
    "family": "trail",
@@ -20503,7 +20555,7 @@
   },
   {
    "id": "i369",
-   "name": "Pantalon de Piste de maître",
+   "name": "Pantalon du Braconnier pardonné",
    "kind": "clothing",
    "slot": "legs",
    "family": "trail",
@@ -20560,7 +20612,7 @@
   },
   {
    "id": "i370",
-   "name": "Pantalon de Traque de maître",
+   "name": "Pantalon de la Corneille",
    "kind": "clothing",
    "slot": "legs",
    "family": "trail",
@@ -20617,7 +20669,7 @@
   },
   {
    "id": "i371",
-   "name": "Pantalon du Veilleur d'exception",
+   "name": "Pantalon du Funambule",
    "kind": "clothing",
    "slot": "legs",
    "family": "trail",
@@ -20673,7 +20725,7 @@
   },
   {
    "id": "i372",
-   "name": "Pantalon de Piste",
+   "name": "Pantalon du Chat maigre",
    "kind": "clothing",
    "slot": "legs",
    "family": "trail",
@@ -20725,7 +20777,7 @@
   },
   {
    "id": "i373",
-   "name": "Pantalon de Traque",
+   "name": "Pantalon du Voleur de lune",
    "kind": "clothing",
    "slot": "legs",
    "family": "trail",
@@ -20777,7 +20829,7 @@
   },
   {
    "id": "i374",
-   "name": "Pantalon du Veilleur",
+   "name": "Pantalon de la Pie-grièche",
    "kind": "clothing",
    "slot": "legs",
    "family": "trail",
@@ -20834,7 +20886,7 @@
   },
   {
    "id": "i375",
-   "name": "Pantalon du Traqueur",
+   "name": "Pantalon du Braconnier repenti",
    "kind": "clothing",
    "slot": "legs",
    "family": "trail",
@@ -20891,7 +20943,7 @@
   },
   {
    "id": "i376",
-   "name": "Pantalon de Piste de maître",
+   "name": "Pantalon du Braconnier pardonné",
    "kind": "clothing",
    "slot": "legs",
    "family": "trail",
@@ -20948,7 +21000,7 @@
   },
   {
    "id": "i377",
-   "name": "Pantalon de Traque de maître",
+   "name": "Pantalon de la Corneille",
    "kind": "clothing",
    "slot": "legs",
    "family": "trail",
@@ -21005,7 +21057,7 @@
   },
   {
    "id": "i378",
-   "name": "Pantalon du Veilleur d'exception",
+   "name": "Pantalon du Funambule",
    "kind": "clothing",
    "slot": "legs",
    "family": "trail",
@@ -21061,7 +21113,7 @@
   },
   {
    "id": "i379",
-   "name": "Bottes souples de Piste",
+   "name": "Bottes souples du Chat maigre",
    "kind": "clothing",
    "slot": "feet",
    "family": "trail",
@@ -21113,7 +21165,7 @@
   },
   {
    "id": "i380",
-   "name": "Bottes souples de Traque",
+   "name": "Bottes souples du Voleur de lune",
    "kind": "clothing",
    "slot": "feet",
    "family": "trail",
@@ -21165,7 +21217,7 @@
   },
   {
    "id": "i381",
-   "name": "Bottes souples du Veilleur",
+   "name": "Bottes souples de la Pie-grièche",
    "kind": "clothing",
    "slot": "feet",
    "family": "trail",
@@ -21222,7 +21274,7 @@
   },
   {
    "id": "i382",
-   "name": "Bottes souples du Traqueur",
+   "name": "Bottes souples du Braconnier repenti",
    "kind": "clothing",
    "slot": "feet",
    "family": "trail",
@@ -21279,7 +21331,7 @@
   },
   {
    "id": "i383",
-   "name": "Bottes souples de Piste de maître",
+   "name": "Bottes souples du Braconnier pardonné",
    "kind": "clothing",
    "slot": "feet",
    "family": "trail",
@@ -21336,7 +21388,7 @@
   },
   {
    "id": "i384",
-   "name": "Bottes souples de Traque de maître",
+   "name": "Bottes souples de la Corneille",
    "kind": "clothing",
    "slot": "feet",
    "family": "trail",
@@ -21393,7 +21445,7 @@
   },
   {
    "id": "i385",
-   "name": "Bottes souples du Veilleur d'exception",
+   "name": "Bottes du Chat sans ombre",
    "kind": "clothing",
    "slot": "feet",
    "family": "trail",
@@ -21449,7 +21501,7 @@
   },
   {
    "id": "i386",
-   "name": "Bottes souples de Piste",
+   "name": "Bottes souples du Chat maigre",
    "kind": "clothing",
    "slot": "feet",
    "family": "trail",
@@ -21501,7 +21553,7 @@
   },
   {
    "id": "i387",
-   "name": "Bottes souples de Traque",
+   "name": "Bottes souples du Voleur de lune",
    "kind": "clothing",
    "slot": "feet",
    "family": "trail",
@@ -21553,7 +21605,7 @@
   },
   {
    "id": "i388",
-   "name": "Bottes souples du Veilleur",
+   "name": "Bottes souples de la Pie-grièche",
    "kind": "clothing",
    "slot": "feet",
    "family": "trail",
@@ -21610,7 +21662,7 @@
   },
   {
    "id": "i389",
-   "name": "Bottes souples du Traqueur",
+   "name": "Bottes souples du Braconnier repenti",
    "kind": "clothing",
    "slot": "feet",
    "family": "trail",
@@ -21667,7 +21719,7 @@
   },
   {
    "id": "i390",
-   "name": "Bottes souples de Piste de maître",
+   "name": "Bottes souples du Braconnier pardonné",
    "kind": "clothing",
    "slot": "feet",
    "family": "trail",
@@ -21724,7 +21776,7 @@
   },
   {
    "id": "i391",
-   "name": "Bottes souples de Traque de maître",
+   "name": "Bottes souples de la Corneille",
    "kind": "clothing",
    "slot": "feet",
    "family": "trail",
@@ -21781,7 +21833,7 @@
   },
   {
    "id": "i392",
-   "name": "Bottes souples du Veilleur d'exception",
+   "name": "Bottes du Chat sans ombre",
    "kind": "clothing",
    "slot": "feet",
    "family": "trail",
@@ -21837,7 +21889,7 @@
   },
   {
    "id": "i393",
-   "name": "Bottes souples de Piste",
+   "name": "Bottes souples du Chat maigre",
    "kind": "clothing",
    "slot": "feet",
    "family": "trail",
@@ -21889,7 +21941,7 @@
   },
   {
    "id": "i394",
-   "name": "Bottes souples de Traque",
+   "name": "Bottes souples du Voleur de lune",
    "kind": "clothing",
    "slot": "feet",
    "family": "trail",
@@ -21941,7 +21993,7 @@
   },
   {
    "id": "i395",
-   "name": "Bottes souples du Veilleur",
+   "name": "Bottes souples de la Pie-grièche",
    "kind": "clothing",
    "slot": "feet",
    "family": "trail",
@@ -21998,7 +22050,7 @@
   },
   {
    "id": "i396",
-   "name": "Bottes souples du Traqueur",
+   "name": "Bottes souples du Braconnier repenti",
    "kind": "clothing",
    "slot": "feet",
    "family": "trail",
@@ -22055,7 +22107,7 @@
   },
   {
    "id": "i397",
-   "name": "Bottes souples de Piste de maître",
+   "name": "Bottes souples du Braconnier pardonné",
    "kind": "clothing",
    "slot": "feet",
    "family": "trail",
@@ -22112,7 +22164,7 @@
   },
   {
    "id": "i398",
-   "name": "Bottes souples de Traque de maître",
+   "name": "Bottes souples de la Corneille",
    "kind": "clothing",
    "slot": "feet",
    "family": "trail",
@@ -22169,7 +22221,7 @@
   },
   {
    "id": "i399",
-   "name": "Bottes souples du Veilleur d'exception",
+   "name": "Bottes du Chat sans ombre",
    "kind": "clothing",
    "slot": "feet",
    "family": "trail",
@@ -22225,7 +22277,7 @@
   },
   {
    "id": "i400",
-   "name": "Cape déchiquetée de Piste",
+   "name": "Cape déchiquetée du Chat maigre",
    "kind": "clothing",
    "slot": "cape",
    "family": "trail",
@@ -22277,7 +22329,7 @@
   },
   {
    "id": "i401",
-   "name": "Cape déchiquetée de Traque",
+   "name": "Cape déchiquetée du Voleur de lune",
    "kind": "clothing",
    "slot": "cape",
    "family": "trail",
@@ -22329,7 +22381,7 @@
   },
   {
    "id": "i402",
-   "name": "Cape déchiquetée du Veilleur",
+   "name": "Cape déchiquetée de la Pie-grièche",
    "kind": "clothing",
    "slot": "cape",
    "family": "trail",
@@ -22386,7 +22438,7 @@
   },
   {
    "id": "i403",
-   "name": "Cape déchiquetée du Traqueur",
+   "name": "Cape déchiquetée du Braconnier repenti",
    "kind": "clothing",
    "slot": "cape",
    "family": "trail",
@@ -22443,7 +22495,7 @@
   },
   {
    "id": "i404",
-   "name": "Cape déchiquetée de Piste de maître",
+   "name": "Cape déchiquetée du Braconnier pardonné",
    "kind": "clothing",
    "slot": "cape",
    "family": "trail",
@@ -22500,7 +22552,7 @@
   },
   {
    "id": "i405",
-   "name": "Cape déchiquetée de Traque de maître",
+   "name": "Cape déchiquetée de la Corneille",
    "kind": "clothing",
    "slot": "cape",
    "family": "trail",
@@ -22557,7 +22609,7 @@
   },
   {
    "id": "i406",
-   "name": "Cape déchiquetée du Veilleur d'exception",
+   "name": "Cape de la Pie-grièche noire",
    "kind": "clothing",
    "slot": "cape",
    "family": "trail",
@@ -22613,7 +22665,7 @@
   },
   {
    "id": "i407",
-   "name": "Cape déchiquetée de Piste",
+   "name": "Cape déchiquetée du Chat maigre",
    "kind": "clothing",
    "slot": "cape",
    "family": "trail",
@@ -22665,7 +22717,7 @@
   },
   {
    "id": "i408",
-   "name": "Cape déchiquetée de Traque",
+   "name": "Cape déchiquetée du Voleur de lune",
    "kind": "clothing",
    "slot": "cape",
    "family": "trail",
@@ -22717,7 +22769,7 @@
   },
   {
    "id": "i409",
-   "name": "Cape déchiquetée du Veilleur",
+   "name": "Cape déchiquetée de la Pie-grièche",
    "kind": "clothing",
    "slot": "cape",
    "family": "trail",
@@ -22774,7 +22826,7 @@
   },
   {
    "id": "i410",
-   "name": "Cape déchiquetée du Traqueur",
+   "name": "Cape déchiquetée du Braconnier repenti",
    "kind": "clothing",
    "slot": "cape",
    "family": "trail",
@@ -22831,7 +22883,7 @@
   },
   {
    "id": "i411",
-   "name": "Cape déchiquetée de Piste de maître",
+   "name": "Cape déchiquetée du Braconnier pardonné",
    "kind": "clothing",
    "slot": "cape",
    "family": "trail",
@@ -22888,7 +22940,7 @@
   },
   {
    "id": "i412",
-   "name": "Cape déchiquetée de Traque de maître",
+   "name": "Cape déchiquetée de la Corneille",
    "kind": "clothing",
    "slot": "cape",
    "family": "trail",
@@ -22945,7 +22997,7 @@
   },
   {
    "id": "i413",
-   "name": "Cape déchiquetée du Veilleur d'exception",
+   "name": "Cape de la Pie-grièche noire",
    "kind": "clothing",
    "slot": "cape",
    "family": "trail",
@@ -23001,7 +23053,7 @@
   },
   {
    "id": "i414",
-   "name": "Cape déchiquetée de Piste",
+   "name": "Cape déchiquetée du Chat maigre",
    "kind": "clothing",
    "slot": "cape",
    "family": "trail",
@@ -23053,7 +23105,7 @@
   },
   {
    "id": "i415",
-   "name": "Cape déchiquetée de Traque",
+   "name": "Cape déchiquetée du Voleur de lune",
    "kind": "clothing",
    "slot": "cape",
    "family": "trail",
@@ -23105,7 +23157,7 @@
   },
   {
    "id": "i416",
-   "name": "Cape déchiquetée du Veilleur",
+   "name": "Cape déchiquetée de la Pie-grièche",
    "kind": "clothing",
    "slot": "cape",
    "family": "trail",
@@ -23162,7 +23214,7 @@
   },
   {
    "id": "i417",
-   "name": "Cape déchiquetée du Traqueur",
+   "name": "Cape déchiquetée du Braconnier repenti",
    "kind": "clothing",
    "slot": "cape",
    "family": "trail",
@@ -23219,7 +23271,7 @@
   },
   {
    "id": "i418",
-   "name": "Cape déchiquetée de Piste de maître",
+   "name": "Cape déchiquetée du Braconnier pardonné",
    "kind": "clothing",
    "slot": "cape",
    "family": "trail",
@@ -23276,7 +23328,7 @@
   },
   {
    "id": "i419",
-   "name": "Cape déchiquetée de Traque de maître",
+   "name": "Cape déchiquetée de la Corneille",
    "kind": "clothing",
    "slot": "cape",
    "family": "trail",
@@ -23333,7 +23385,7 @@
   },
   {
    "id": "i420",
-   "name": "Cape déchiquetée du Veilleur d'exception",
+   "name": "Cape de la Pie-grièche noire",
    "kind": "clothing",
    "slot": "cape",
    "family": "trail",
@@ -23389,7 +23441,7 @@
   },
   {
    "id": "i421",
-   "name": "Ceinture à poches de Piste",
+   "name": "Ceinture à poches du Chat maigre",
    "kind": "clothing",
    "slot": "belt",
    "family": "trail",
@@ -23441,7 +23493,7 @@
   },
   {
    "id": "i422",
-   "name": "Ceinture à poches de Traque",
+   "name": "Ceinture à poches du Voleur de lune",
    "kind": "clothing",
    "slot": "belt",
    "family": "trail",
@@ -23493,7 +23545,7 @@
   },
   {
    "id": "i423",
-   "name": "Ceinture à poches du Veilleur",
+   "name": "Ceinture à poches de la Pie-grièche",
    "kind": "clothing",
    "slot": "belt",
    "family": "trail",
@@ -23550,7 +23602,7 @@
   },
   {
    "id": "i424",
-   "name": "Ceinture à poches du Traqueur",
+   "name": "Ceinture à poches du Braconnier repenti",
    "kind": "clothing",
    "slot": "belt",
    "family": "trail",
@@ -23607,7 +23659,7 @@
   },
   {
    "id": "i425",
-   "name": "Ceinture à poches de Piste de maître",
+   "name": "Ceinture à poches du Braconnier pardonné",
    "kind": "clothing",
    "slot": "belt",
    "family": "trail",
@@ -23664,7 +23716,7 @@
   },
   {
    "id": "i426",
-   "name": "Ceinture à poches de Traque de maître",
+   "name": "Ceinture à poches de la Corneille",
    "kind": "clothing",
    "slot": "belt",
    "family": "trail",
@@ -23721,7 +23773,7 @@
   },
   {
    "id": "i427",
-   "name": "Ceinture à poches du Veilleur d'exception",
+   "name": "Ceinture du Braconnier des étoiles",
    "kind": "clothing",
    "slot": "belt",
    "family": "trail",
@@ -23777,7 +23829,7 @@
   },
   {
    "id": "i428",
-   "name": "Ceinture à poches de Piste",
+   "name": "Ceinture à poches du Chat maigre",
    "kind": "clothing",
    "slot": "belt",
    "family": "trail",
@@ -23829,7 +23881,7 @@
   },
   {
    "id": "i429",
-   "name": "Ceinture à poches de Traque",
+   "name": "Ceinture à poches du Voleur de lune",
    "kind": "clothing",
    "slot": "belt",
    "family": "trail",
@@ -23881,7 +23933,7 @@
   },
   {
    "id": "i430",
-   "name": "Ceinture à poches du Veilleur",
+   "name": "Ceinture à poches de la Pie-grièche",
    "kind": "clothing",
    "slot": "belt",
    "family": "trail",
@@ -23938,7 +23990,7 @@
   },
   {
    "id": "i431",
-   "name": "Ceinture à poches du Traqueur",
+   "name": "Ceinture à poches du Braconnier repenti",
    "kind": "clothing",
    "slot": "belt",
    "family": "trail",
@@ -23995,7 +24047,7 @@
   },
   {
    "id": "i432",
-   "name": "Ceinture à poches de Piste de maître",
+   "name": "Ceinture à poches du Braconnier pardonné",
    "kind": "clothing",
    "slot": "belt",
    "family": "trail",
@@ -24052,7 +24104,7 @@
   },
   {
    "id": "i433",
-   "name": "Ceinture à poches de Traque de maître",
+   "name": "Ceinture à poches de la Corneille",
    "kind": "clothing",
    "slot": "belt",
    "family": "trail",
@@ -24109,7 +24161,7 @@
   },
   {
    "id": "i434",
-   "name": "Ceinture à poches du Veilleur d'exception",
+   "name": "Ceinture du Braconnier des étoiles",
    "kind": "clothing",
    "slot": "belt",
    "family": "trail",
@@ -24165,7 +24217,7 @@
   },
   {
    "id": "i435",
-   "name": "Ceinture à poches de Piste",
+   "name": "Ceinture à poches du Chat maigre",
    "kind": "clothing",
    "slot": "belt",
    "family": "trail",
@@ -24217,7 +24269,7 @@
   },
   {
    "id": "i436",
-   "name": "Ceinture à poches de Traque",
+   "name": "Ceinture à poches du Voleur de lune",
    "kind": "clothing",
    "slot": "belt",
    "family": "trail",
@@ -24269,7 +24321,7 @@
   },
   {
    "id": "i437",
-   "name": "Ceinture à poches du Veilleur",
+   "name": "Ceinture à poches de la Pie-grièche",
    "kind": "clothing",
    "slot": "belt",
    "family": "trail",
@@ -24326,7 +24378,7 @@
   },
   {
    "id": "i438",
-   "name": "Ceinture à poches du Traqueur",
+   "name": "Ceinture à poches du Braconnier repenti",
    "kind": "clothing",
    "slot": "belt",
    "family": "trail",
@@ -24383,7 +24435,7 @@
   },
   {
    "id": "i439",
-   "name": "Ceinture à poches de Piste de maître",
+   "name": "Ceinture à poches du Braconnier pardonné",
    "kind": "clothing",
    "slot": "belt",
    "family": "trail",
@@ -24440,7 +24492,7 @@
   },
   {
    "id": "i440",
-   "name": "Ceinture à poches de Traque de maître",
+   "name": "Ceinture à poches de la Corneille",
    "kind": "clothing",
    "slot": "belt",
    "family": "trail",
@@ -24497,7 +24549,7 @@
   },
   {
    "id": "i441",
-   "name": "Ceinture à poches du Veilleur d'exception",
+   "name": "Ceinture du Braconnier des étoiles",
    "kind": "clothing",
    "slot": "belt",
    "family": "trail",
@@ -24553,7 +24605,7 @@
   },
   {
    "id": "i442",
-   "name": "Capuchon de Novice",
+   "name": "Capuchon de l'Apprenti distrait",
    "kind": "clothing",
    "slot": "head",
    "family": "robe",
@@ -24604,7 +24656,7 @@
   },
   {
    "id": "i443",
-   "name": "Capuchon d'Apprenti",
+   "name": "Capuchon du Somnambule",
    "kind": "clothing",
    "slot": "head",
    "family": "robe",
@@ -24655,7 +24707,7 @@
   },
   {
    "id": "i444",
-   "name": "Capuchon du Sceau",
+   "name": "Capuchon de l'Encrier",
    "kind": "clothing",
    "slot": "head",
    "family": "robe",
@@ -24711,7 +24763,7 @@
   },
   {
    "id": "i445",
-   "name": "Capuchon de l'Aube",
+   "name": "Capuchon du Griffonneur d'orage",
    "kind": "clothing",
    "slot": "head",
    "family": "robe",
@@ -24767,7 +24819,7 @@
   },
   {
    "id": "i446",
-   "name": "Capuchon de Novice de maître",
+   "name": "Capuchon de l'Encrier sans fond",
    "kind": "clothing",
    "slot": "head",
    "family": "robe",
@@ -24823,7 +24875,7 @@
   },
   {
    "id": "i447",
-   "name": "Capuchon d'Apprenti de maître",
+   "name": "Capuchon du Penseur d'orage",
    "kind": "clothing",
    "slot": "head",
    "family": "robe",
@@ -24879,7 +24931,7 @@
   },
   {
    "id": "i448",
-   "name": "Capuchon du Sceau d'exception",
+   "name": "Capuchon du Songe-creux",
    "kind": "clothing",
    "slot": "head",
    "family": "robe",
@@ -24934,7 +24986,7 @@
   },
   {
    "id": "i449",
-   "name": "Capuchon de Novice",
+   "name": "Capuchon de l'Apprenti distrait",
    "kind": "clothing",
    "slot": "head",
    "family": "robe",
@@ -24985,7 +25037,7 @@
   },
   {
    "id": "i450",
-   "name": "Capuchon d'Apprenti",
+   "name": "Capuchon du Somnambule",
    "kind": "clothing",
    "slot": "head",
    "family": "robe",
@@ -25036,7 +25088,7 @@
   },
   {
    "id": "i451",
-   "name": "Capuchon du Sceau",
+   "name": "Capuchon de l'Encrier",
    "kind": "clothing",
    "slot": "head",
    "family": "robe",
@@ -25092,7 +25144,7 @@
   },
   {
    "id": "i452",
-   "name": "Capuchon de l'Aube",
+   "name": "Capuchon du Griffonneur d'orage",
    "kind": "clothing",
    "slot": "head",
    "family": "robe",
@@ -25148,7 +25200,7 @@
   },
   {
    "id": "i453",
-   "name": "Capuchon de Novice de maître",
+   "name": "Capuchon de l'Encrier sans fond",
    "kind": "clothing",
    "slot": "head",
    "family": "robe",
@@ -25204,7 +25256,7 @@
   },
   {
    "id": "i454",
-   "name": "Capuchon d'Apprenti de maître",
+   "name": "Capuchon du Penseur d'orage",
    "kind": "clothing",
    "slot": "head",
    "family": "robe",
@@ -25260,7 +25312,7 @@
   },
   {
    "id": "i455",
-   "name": "Capuchon du Sceau d'exception",
+   "name": "Capuchon du Songe-creux",
    "kind": "clothing",
    "slot": "head",
    "family": "robe",
@@ -25315,7 +25367,7 @@
   },
   {
    "id": "i456",
-   "name": "Capuchon de Novice",
+   "name": "Capuchon de l'Apprenti distrait",
    "kind": "clothing",
    "slot": "head",
    "family": "robe",
@@ -25366,7 +25418,7 @@
   },
   {
    "id": "i457",
-   "name": "Capuchon d'Apprenti",
+   "name": "Capuchon du Somnambule",
    "kind": "clothing",
    "slot": "head",
    "family": "robe",
@@ -25417,7 +25469,7 @@
   },
   {
    "id": "i458",
-   "name": "Capuchon du Sceau",
+   "name": "Capuchon de l'Encrier",
    "kind": "clothing",
    "slot": "head",
    "family": "robe",
@@ -25473,7 +25525,7 @@
   },
   {
    "id": "i459",
-   "name": "Capuchon de l'Aube",
+   "name": "Capuchon du Griffonneur d'orage",
    "kind": "clothing",
    "slot": "head",
    "family": "robe",
@@ -25529,7 +25581,7 @@
   },
   {
    "id": "i460",
-   "name": "Capuchon de Novice de maître",
+   "name": "Capuchon de l'Encrier sans fond",
    "kind": "clothing",
    "slot": "head",
    "family": "robe",
@@ -25585,7 +25637,7 @@
   },
   {
    "id": "i461",
-   "name": "Capuchon d'Apprenti de maître",
+   "name": "Capuchon du Penseur d'orage",
    "kind": "clothing",
    "slot": "head",
    "family": "robe",
@@ -25641,7 +25693,7 @@
   },
   {
    "id": "i462",
-   "name": "Capuchon du Sceau d'exception",
+   "name": "Capuchon du Songe-creux",
    "kind": "clothing",
    "slot": "head",
    "family": "robe",
@@ -25696,7 +25748,7 @@
   },
   {
    "id": "i463",
-   "name": "Tunique de Novice",
+   "name": "Tunique de l'Apprenti distrait",
    "kind": "clothing",
    "slot": "torso",
    "family": "robe",
@@ -25747,7 +25799,7 @@
   },
   {
    "id": "i464",
-   "name": "Tunique d'Apprenti",
+   "name": "Tunique du Somnambule",
    "kind": "clothing",
    "slot": "torso",
    "family": "robe",
@@ -25798,7 +25850,7 @@
   },
   {
    "id": "i465",
-   "name": "Tunique du Sceau",
+   "name": "Tunique de l'Encrier",
    "kind": "clothing",
    "slot": "torso",
    "family": "robe",
@@ -25854,7 +25906,7 @@
   },
   {
    "id": "i466",
-   "name": "Tunique de l'Aube",
+   "name": "Tunique du Griffonneur d'orage",
    "kind": "clothing",
    "slot": "torso",
    "family": "robe",
@@ -25910,7 +25962,7 @@
   },
   {
    "id": "i467",
-   "name": "Tunique de Novice de maître",
+   "name": "Tunique de l'Encrier sans fond",
    "kind": "clothing",
    "slot": "torso",
    "family": "robe",
@@ -25966,7 +26018,7 @@
   },
   {
    "id": "i468",
-   "name": "Tunique d'Apprenti de maître",
+   "name": "Tunique du Penseur d'orage",
    "kind": "clothing",
    "slot": "torso",
    "family": "robe",
@@ -26022,7 +26074,7 @@
   },
   {
    "id": "i469",
-   "name": "Tunique de l'Aube d'exception",
+   "name": "Robe du Grand Silence",
    "kind": "clothing",
    "slot": "torso",
    "family": "robe",
@@ -26077,7 +26129,7 @@
   },
   {
    "id": "i470",
-   "name": "Tunique de Novice",
+   "name": "Tunique de l'Apprenti distrait",
    "kind": "clothing",
    "slot": "torso",
    "family": "robe",
@@ -26128,7 +26180,7 @@
   },
   {
    "id": "i471",
-   "name": "Tunique d'Apprenti",
+   "name": "Tunique du Somnambule",
    "kind": "clothing",
    "slot": "torso",
    "family": "robe",
@@ -26179,7 +26231,7 @@
   },
   {
    "id": "i472",
-   "name": "Tunique du Sceau",
+   "name": "Tunique de l'Encrier",
    "kind": "clothing",
    "slot": "torso",
    "family": "robe",
@@ -26235,7 +26287,7 @@
   },
   {
    "id": "i473",
-   "name": "Tunique de l'Aube",
+   "name": "Tunique du Griffonneur d'orage",
    "kind": "clothing",
    "slot": "torso",
    "family": "robe",
@@ -26291,7 +26343,7 @@
   },
   {
    "id": "i474",
-   "name": "Tunique de Novice de maître",
+   "name": "Tunique de l'Encrier sans fond",
    "kind": "clothing",
    "slot": "torso",
    "family": "robe",
@@ -26347,7 +26399,7 @@
   },
   {
    "id": "i475",
-   "name": "Tunique d'Apprenti de maître",
+   "name": "Tunique du Penseur d'orage",
    "kind": "clothing",
    "slot": "torso",
    "family": "robe",
@@ -26403,7 +26455,7 @@
   },
   {
    "id": "i476",
-   "name": "Tunique de l'Aube d'exception",
+   "name": "Robe du Grand Silence",
    "kind": "clothing",
    "slot": "torso",
    "family": "robe",
@@ -26458,7 +26510,7 @@
   },
   {
    "id": "i477",
-   "name": "Tunique de Novice",
+   "name": "Tunique de l'Apprenti distrait",
    "kind": "clothing",
    "slot": "torso",
    "family": "robe",
@@ -26509,7 +26561,7 @@
   },
   {
    "id": "i478",
-   "name": "Tunique d'Apprenti",
+   "name": "Tunique du Somnambule",
    "kind": "clothing",
    "slot": "torso",
    "family": "robe",
@@ -26560,7 +26612,7 @@
   },
   {
    "id": "i479",
-   "name": "Tunique du Sceau",
+   "name": "Tunique de l'Encrier",
    "kind": "clothing",
    "slot": "torso",
    "family": "robe",
@@ -26616,7 +26668,7 @@
   },
   {
    "id": "i480",
-   "name": "Tunique de l'Aube",
+   "name": "Tunique du Griffonneur d'orage",
    "kind": "clothing",
    "slot": "torso",
    "family": "robe",
@@ -26672,7 +26724,7 @@
   },
   {
    "id": "i481",
-   "name": "Tunique de Novice de maître",
+   "name": "Tunique de l'Encrier sans fond",
    "kind": "clothing",
    "slot": "torso",
    "family": "robe",
@@ -26728,7 +26780,7 @@
   },
   {
    "id": "i482",
-   "name": "Tunique d'Apprenti de maître",
+   "name": "Tunique du Penseur d'orage",
    "kind": "clothing",
    "slot": "torso",
    "family": "robe",
@@ -26784,7 +26836,7 @@
   },
   {
    "id": "i483",
-   "name": "Tunique de l'Aube d'exception",
+   "name": "Robe du Grand Silence",
    "kind": "clothing",
    "slot": "torso",
    "family": "robe",
@@ -26839,7 +26891,7 @@
   },
   {
    "id": "i484",
-   "name": "Mitaines brodées de Novice",
+   "name": "Mitaines brodées de l'Apprenti distrait",
    "kind": "clothing",
    "slot": "hands",
    "family": "robe",
@@ -26890,7 +26942,7 @@
   },
   {
    "id": "i485",
-   "name": "Mitaines brodées d'Apprenti",
+   "name": "Mitaines brodées du Somnambule",
    "kind": "clothing",
    "slot": "hands",
    "family": "robe",
@@ -26941,7 +26993,7 @@
   },
   {
    "id": "i486",
-   "name": "Mitaines brodées du Sceau",
+   "name": "Mitaines brodées de l'Encrier",
    "kind": "clothing",
    "slot": "hands",
    "family": "robe",
@@ -26997,7 +27049,7 @@
   },
   {
    "id": "i487",
-   "name": "Mitaines brodées de l'Aube",
+   "name": "Mitaines brodées du Griffonneur d'orage",
    "kind": "clothing",
    "slot": "hands",
    "family": "robe",
@@ -27053,7 +27105,7 @@
   },
   {
    "id": "i488",
-   "name": "Mitaines brodées de Novice de maître",
+   "name": "Mitaines brodées de l'Encrier sans fond",
    "kind": "clothing",
    "slot": "hands",
    "family": "robe",
@@ -27109,7 +27161,7 @@
   },
   {
    "id": "i489",
-   "name": "Mitaines brodées d'Apprenti de maître",
+   "name": "Mitaines brodées du Penseur d'orage",
    "kind": "clothing",
    "slot": "hands",
    "family": "robe",
@@ -27165,7 +27217,7 @@
   },
   {
    "id": "i490",
-   "name": "Mitaines brodées de l'Aube d'exception",
+   "name": "Mitaines de l'Encre vive",
    "kind": "clothing",
    "slot": "hands",
    "family": "robe",
@@ -27220,7 +27272,7 @@
   },
   {
    "id": "i491",
-   "name": "Mitaines brodées de Novice",
+   "name": "Mitaines brodées de l'Apprenti distrait",
    "kind": "clothing",
    "slot": "hands",
    "family": "robe",
@@ -27271,7 +27323,7 @@
   },
   {
    "id": "i492",
-   "name": "Mitaines brodées d'Apprenti",
+   "name": "Mitaines brodées du Somnambule",
    "kind": "clothing",
    "slot": "hands",
    "family": "robe",
@@ -27322,7 +27374,7 @@
   },
   {
    "id": "i493",
-   "name": "Mitaines brodées du Sceau",
+   "name": "Mitaines brodées de l'Encrier",
    "kind": "clothing",
    "slot": "hands",
    "family": "robe",
@@ -27378,7 +27430,7 @@
   },
   {
    "id": "i494",
-   "name": "Mitaines brodées de l'Aube",
+   "name": "Mitaines brodées du Griffonneur d'orage",
    "kind": "clothing",
    "slot": "hands",
    "family": "robe",
@@ -27434,7 +27486,7 @@
   },
   {
    "id": "i495",
-   "name": "Mitaines brodées de Novice de maître",
+   "name": "Mitaines brodées de l'Encrier sans fond",
    "kind": "clothing",
    "slot": "hands",
    "family": "robe",
@@ -27490,7 +27542,7 @@
   },
   {
    "id": "i496",
-   "name": "Mitaines brodées d'Apprenti de maître",
+   "name": "Mitaines brodées du Penseur d'orage",
    "kind": "clothing",
    "slot": "hands",
    "family": "robe",
@@ -27546,7 +27598,7 @@
   },
   {
    "id": "i497",
-   "name": "Mitaines brodées de l'Aube d'exception",
+   "name": "Mitaines de l'Encre vive",
    "kind": "clothing",
    "slot": "hands",
    "family": "robe",
@@ -27601,7 +27653,7 @@
   },
   {
    "id": "i498",
-   "name": "Mitaines brodées de Novice",
+   "name": "Mitaines brodées de l'Apprenti distrait",
    "kind": "clothing",
    "slot": "hands",
    "family": "robe",
@@ -27652,7 +27704,7 @@
   },
   {
    "id": "i499",
-   "name": "Mitaines brodées d'Apprenti",
+   "name": "Mitaines brodées du Somnambule",
    "kind": "clothing",
    "slot": "hands",
    "family": "robe",
@@ -27703,7 +27755,7 @@
   },
   {
    "id": "i500",
-   "name": "Mitaines brodées du Sceau",
+   "name": "Mitaines brodées de l'Encrier",
    "kind": "clothing",
    "slot": "hands",
    "family": "robe",
@@ -27759,7 +27811,7 @@
   },
   {
    "id": "i501",
-   "name": "Mitaines brodées de l'Aube",
+   "name": "Mitaines brodées du Griffonneur d'orage",
    "kind": "clothing",
    "slot": "hands",
    "family": "robe",
@@ -27815,7 +27867,7 @@
   },
   {
    "id": "i502",
-   "name": "Mitaines brodées de Novice de maître",
+   "name": "Mitaines brodées de l'Encrier sans fond",
    "kind": "clothing",
    "slot": "hands",
    "family": "robe",
@@ -27871,7 +27923,7 @@
   },
   {
    "id": "i503",
-   "name": "Mitaines brodées d'Apprenti de maître",
+   "name": "Mitaines brodées du Penseur d'orage",
    "kind": "clothing",
    "slot": "hands",
    "family": "robe",
@@ -27927,7 +27979,7 @@
   },
   {
    "id": "i504",
-   "name": "Mitaines brodées de l'Aube d'exception",
+   "name": "Mitaines de l'Encre vive",
    "kind": "clothing",
    "slot": "hands",
    "family": "robe",
@@ -27982,7 +28034,7 @@
   },
   {
    "id": "i505",
-   "name": "Jupe de tissu de Novice",
+   "name": "Jupe de tissu de l'Apprenti distrait",
    "kind": "clothing",
    "slot": "legs",
    "family": "robe",
@@ -28033,7 +28085,7 @@
   },
   {
    "id": "i506",
-   "name": "Jupe de tissu d'Apprenti",
+   "name": "Jupe de tissu du Somnambule",
    "kind": "clothing",
    "slot": "legs",
    "family": "robe",
@@ -28084,7 +28136,7 @@
   },
   {
    "id": "i507",
-   "name": "Jupe de tissu du Sceau",
+   "name": "Jupe de tissu de l'Encrier",
    "kind": "clothing",
    "slot": "legs",
    "family": "robe",
@@ -28140,7 +28192,7 @@
   },
   {
    "id": "i508",
-   "name": "Jupe de tissu de l'Aube",
+   "name": "Jupe de tissu du Griffonneur d'orage",
    "kind": "clothing",
    "slot": "legs",
    "family": "robe",
@@ -28196,7 +28248,7 @@
   },
   {
    "id": "i509",
-   "name": "Jupe de tissu de Novice de maître",
+   "name": "Jupe de tissu de l'Encrier sans fond",
    "kind": "clothing",
    "slot": "legs",
    "family": "robe",
@@ -28252,7 +28304,7 @@
   },
   {
    "id": "i510",
-   "name": "Jupe de tissu d'Apprenti de maître",
+   "name": "Jupe de tissu du Penseur d'orage",
    "kind": "clothing",
    "slot": "legs",
    "family": "robe",
@@ -28308,7 +28360,7 @@
   },
   {
    "id": "i511",
-   "name": "Jupe de tissu du Sceau d'exception",
+   "name": "Jupe des Marées mortes",
    "kind": "clothing",
    "slot": "legs",
    "family": "robe",
@@ -28363,7 +28415,7 @@
   },
   {
    "id": "i512",
-   "name": "Jupe de tissu de Novice",
+   "name": "Jupe de tissu de l'Apprenti distrait",
    "kind": "clothing",
    "slot": "legs",
    "family": "robe",
@@ -28414,7 +28466,7 @@
   },
   {
    "id": "i513",
-   "name": "Jupe de tissu d'Apprenti",
+   "name": "Jupe de tissu du Somnambule",
    "kind": "clothing",
    "slot": "legs",
    "family": "robe",
@@ -28465,7 +28517,7 @@
   },
   {
    "id": "i514",
-   "name": "Jupe de tissu du Sceau",
+   "name": "Jupe de tissu de l'Encrier",
    "kind": "clothing",
    "slot": "legs",
    "family": "robe",
@@ -28521,7 +28573,7 @@
   },
   {
    "id": "i515",
-   "name": "Jupe de tissu de l'Aube",
+   "name": "Jupe de tissu du Griffonneur d'orage",
    "kind": "clothing",
    "slot": "legs",
    "family": "robe",
@@ -28577,7 +28629,7 @@
   },
   {
    "id": "i516",
-   "name": "Jupe de tissu de Novice de maître",
+   "name": "Jupe de tissu de l'Encrier sans fond",
    "kind": "clothing",
    "slot": "legs",
    "family": "robe",
@@ -28633,7 +28685,7 @@
   },
   {
    "id": "i517",
-   "name": "Jupe de tissu d'Apprenti de maître",
+   "name": "Jupe de tissu du Penseur d'orage",
    "kind": "clothing",
    "slot": "legs",
    "family": "robe",
@@ -28689,7 +28741,7 @@
   },
   {
    "id": "i518",
-   "name": "Jupe de tissu du Sceau d'exception",
+   "name": "Jupe des Marées mortes",
    "kind": "clothing",
    "slot": "legs",
    "family": "robe",
@@ -28744,7 +28796,7 @@
   },
   {
    "id": "i519",
-   "name": "Jupe de tissu de Novice",
+   "name": "Jupe de tissu de l'Apprenti distrait",
    "kind": "clothing",
    "slot": "legs",
    "family": "robe",
@@ -28795,7 +28847,7 @@
   },
   {
    "id": "i520",
-   "name": "Jupe de tissu d'Apprenti",
+   "name": "Jupe de tissu du Somnambule",
    "kind": "clothing",
    "slot": "legs",
    "family": "robe",
@@ -28846,7 +28898,7 @@
   },
   {
    "id": "i521",
-   "name": "Jupe de tissu du Sceau",
+   "name": "Jupe de tissu de l'Encrier",
    "kind": "clothing",
    "slot": "legs",
    "family": "robe",
@@ -28902,7 +28954,7 @@
   },
   {
    "id": "i522",
-   "name": "Jupe de tissu de l'Aube",
+   "name": "Jupe de tissu du Griffonneur d'orage",
    "kind": "clothing",
    "slot": "legs",
    "family": "robe",
@@ -28958,7 +29010,7 @@
   },
   {
    "id": "i523",
-   "name": "Jupe de tissu de Novice de maître",
+   "name": "Jupe de tissu de l'Encrier sans fond",
    "kind": "clothing",
    "slot": "legs",
    "family": "robe",
@@ -29014,7 +29066,7 @@
   },
   {
    "id": "i524",
-   "name": "Jupe de tissu d'Apprenti de maître",
+   "name": "Jupe de tissu du Penseur d'orage",
    "kind": "clothing",
    "slot": "legs",
    "family": "robe",
@@ -29070,7 +29122,7 @@
   },
   {
    "id": "i525",
-   "name": "Jupe de tissu du Sceau d'exception",
+   "name": "Jupe des Marées mortes",
    "kind": "clothing",
    "slot": "legs",
    "family": "robe",
@@ -29125,7 +29177,7 @@
   },
   {
    "id": "i526",
-   "name": "Chaussons de Novice",
+   "name": "Chaussons de l'Apprenti distrait",
    "kind": "clothing",
    "slot": "feet",
    "family": "robe",
@@ -29176,7 +29228,7 @@
   },
   {
    "id": "i527",
-   "name": "Chaussons d'Apprenti",
+   "name": "Chaussons du Somnambule",
    "kind": "clothing",
    "slot": "feet",
    "family": "robe",
@@ -29227,7 +29279,7 @@
   },
   {
    "id": "i528",
-   "name": "Chaussons du Sceau",
+   "name": "Chaussons de l'Encrier",
    "kind": "clothing",
    "slot": "feet",
    "family": "robe",
@@ -29283,7 +29335,7 @@
   },
   {
    "id": "i529",
-   "name": "Chaussons de l'Aube",
+   "name": "Chaussons du Griffonneur d'orage",
    "kind": "clothing",
    "slot": "feet",
    "family": "robe",
@@ -29339,7 +29391,7 @@
   },
   {
    "id": "i530",
-   "name": "Chaussons de Novice de maître",
+   "name": "Chaussons de l'Encrier sans fond",
    "kind": "clothing",
    "slot": "feet",
    "family": "robe",
@@ -29395,7 +29447,7 @@
   },
   {
    "id": "i531",
-   "name": "Chaussons d'Apprenti de maître",
+   "name": "Chaussons du Penseur d'orage",
    "kind": "clothing",
    "slot": "feet",
    "family": "robe",
@@ -29451,7 +29503,7 @@
   },
   {
    "id": "i532",
-   "name": "Chaussons du Sceau d'exception",
+   "name": "Chaussons du Somnambule royal",
    "kind": "clothing",
    "slot": "feet",
    "family": "robe",
@@ -29506,7 +29558,7 @@
   },
   {
    "id": "i533",
-   "name": "Chaussons de Novice",
+   "name": "Chaussons de l'Apprenti distrait",
    "kind": "clothing",
    "slot": "feet",
    "family": "robe",
@@ -29557,7 +29609,7 @@
   },
   {
    "id": "i534",
-   "name": "Chaussons d'Apprenti",
+   "name": "Chaussons du Somnambule",
    "kind": "clothing",
    "slot": "feet",
    "family": "robe",
@@ -29608,7 +29660,7 @@
   },
   {
    "id": "i535",
-   "name": "Chaussons du Sceau",
+   "name": "Chaussons de l'Encrier",
    "kind": "clothing",
    "slot": "feet",
    "family": "robe",
@@ -29664,7 +29716,7 @@
   },
   {
    "id": "i536",
-   "name": "Chaussons de l'Aube",
+   "name": "Chaussons du Griffonneur d'orage",
    "kind": "clothing",
    "slot": "feet",
    "family": "robe",
@@ -29720,7 +29772,7 @@
   },
   {
    "id": "i537",
-   "name": "Chaussons de Novice de maître",
+   "name": "Chaussons de l'Encrier sans fond",
    "kind": "clothing",
    "slot": "feet",
    "family": "robe",
@@ -29776,7 +29828,7 @@
   },
   {
    "id": "i538",
-   "name": "Chaussons d'Apprenti de maître",
+   "name": "Chaussons du Penseur d'orage",
    "kind": "clothing",
    "slot": "feet",
    "family": "robe",
@@ -29832,7 +29884,7 @@
   },
   {
    "id": "i539",
-   "name": "Chaussons du Sceau d'exception",
+   "name": "Chaussons du Somnambule royal",
    "kind": "clothing",
    "slot": "feet",
    "family": "robe",
@@ -29887,7 +29939,7 @@
   },
   {
    "id": "i540",
-   "name": "Chaussons de Novice",
+   "name": "Chaussons de l'Apprenti distrait",
    "kind": "clothing",
    "slot": "feet",
    "family": "robe",
@@ -29938,7 +29990,7 @@
   },
   {
    "id": "i541",
-   "name": "Chaussons d'Apprenti",
+   "name": "Chaussons du Somnambule",
    "kind": "clothing",
    "slot": "feet",
    "family": "robe",
@@ -29989,7 +30041,7 @@
   },
   {
    "id": "i542",
-   "name": "Chaussons du Sceau",
+   "name": "Chaussons de l'Encrier",
    "kind": "clothing",
    "slot": "feet",
    "family": "robe",
@@ -30045,7 +30097,7 @@
   },
   {
    "id": "i543",
-   "name": "Chaussons de l'Aube",
+   "name": "Chaussons du Griffonneur d'orage",
    "kind": "clothing",
    "slot": "feet",
    "family": "robe",
@@ -30101,7 +30153,7 @@
   },
   {
    "id": "i544",
-   "name": "Chaussons de Novice de maître",
+   "name": "Chaussons de l'Encrier sans fond",
    "kind": "clothing",
    "slot": "feet",
    "family": "robe",
@@ -30157,7 +30209,7 @@
   },
   {
    "id": "i545",
-   "name": "Chaussons d'Apprenti de maître",
+   "name": "Chaussons du Penseur d'orage",
    "kind": "clothing",
    "slot": "feet",
    "family": "robe",
@@ -30213,7 +30265,7 @@
   },
   {
    "id": "i546",
-   "name": "Chaussons du Sceau d'exception",
+   "name": "Chaussons du Somnambule royal",
    "kind": "clothing",
    "slot": "feet",
    "family": "robe",
@@ -30268,7 +30320,7 @@
   },
   {
    "id": "i547",
-   "name": "Mantelet de Novice",
+   "name": "Mantelet de l'Apprenti distrait",
    "kind": "clothing",
    "slot": "cape",
    "family": "robe",
@@ -30319,7 +30371,7 @@
   },
   {
    "id": "i548",
-   "name": "Mantelet d'Apprenti",
+   "name": "Mantelet du Somnambule",
    "kind": "clothing",
    "slot": "cape",
    "family": "robe",
@@ -30370,7 +30422,7 @@
   },
   {
    "id": "i549",
-   "name": "Mantelet du Sceau",
+   "name": "Mantelet de l'Encrier",
    "kind": "clothing",
    "slot": "cape",
    "family": "robe",
@@ -30426,7 +30478,7 @@
   },
   {
    "id": "i550",
-   "name": "Mantelet de l'Aube",
+   "name": "Mantelet du Griffonneur d'orage",
    "kind": "clothing",
    "slot": "cape",
    "family": "robe",
@@ -30482,7 +30534,7 @@
   },
   {
    "id": "i551",
-   "name": "Mantelet de Novice de maître",
+   "name": "Mantelet de l'Encrier sans fond",
    "kind": "clothing",
    "slot": "cape",
    "family": "robe",
@@ -30538,7 +30590,7 @@
   },
   {
    "id": "i552",
-   "name": "Mantelet d'Apprenti de maître",
+   "name": "Mantelet du Penseur d'orage",
    "kind": "clothing",
    "slot": "cape",
    "family": "robe",
@@ -30594,7 +30646,7 @@
   },
   {
    "id": "i553",
-   "name": "Mantelet du Sceau d'exception",
+   "name": "Mantelet de l'Orage endormi",
    "kind": "clothing",
    "slot": "cape",
    "family": "robe",
@@ -30649,7 +30701,7 @@
   },
   {
    "id": "i554",
-   "name": "Mantelet de Novice",
+   "name": "Mantelet de l'Apprenti distrait",
    "kind": "clothing",
    "slot": "cape",
    "family": "robe",
@@ -30700,7 +30752,7 @@
   },
   {
    "id": "i555",
-   "name": "Mantelet d'Apprenti",
+   "name": "Mantelet du Somnambule",
    "kind": "clothing",
    "slot": "cape",
    "family": "robe",
@@ -30751,7 +30803,7 @@
   },
   {
    "id": "i556",
-   "name": "Mantelet du Sceau",
+   "name": "Mantelet de l'Encrier",
    "kind": "clothing",
    "slot": "cape",
    "family": "robe",
@@ -30807,7 +30859,7 @@
   },
   {
    "id": "i557",
-   "name": "Mantelet de l'Aube",
+   "name": "Mantelet du Griffonneur d'orage",
    "kind": "clothing",
    "slot": "cape",
    "family": "robe",
@@ -30863,7 +30915,7 @@
   },
   {
    "id": "i558",
-   "name": "Mantelet de Novice de maître",
+   "name": "Mantelet de l'Encrier sans fond",
    "kind": "clothing",
    "slot": "cape",
    "family": "robe",
@@ -30919,7 +30971,7 @@
   },
   {
    "id": "i559",
-   "name": "Mantelet d'Apprenti de maître",
+   "name": "Mantelet du Penseur d'orage",
    "kind": "clothing",
    "slot": "cape",
    "family": "robe",
@@ -30975,7 +31027,7 @@
   },
   {
    "id": "i560",
-   "name": "Mantelet du Sceau d'exception",
+   "name": "Mantelet de l'Orage endormi",
    "kind": "clothing",
    "slot": "cape",
    "family": "robe",
@@ -31030,7 +31082,7 @@
   },
   {
    "id": "i561",
-   "name": "Mantelet de Novice",
+   "name": "Mantelet de l'Apprenti distrait",
    "kind": "clothing",
    "slot": "cape",
    "family": "robe",
@@ -31081,7 +31133,7 @@
   },
   {
    "id": "i562",
-   "name": "Mantelet d'Apprenti",
+   "name": "Mantelet du Somnambule",
    "kind": "clothing",
    "slot": "cape",
    "family": "robe",
@@ -31132,7 +31184,7 @@
   },
   {
    "id": "i563",
-   "name": "Mantelet du Sceau",
+   "name": "Mantelet de l'Encrier",
    "kind": "clothing",
    "slot": "cape",
    "family": "robe",
@@ -31188,7 +31240,7 @@
   },
   {
    "id": "i564",
-   "name": "Mantelet de l'Aube",
+   "name": "Mantelet du Griffonneur d'orage",
    "kind": "clothing",
    "slot": "cape",
    "family": "robe",
@@ -31244,7 +31296,7 @@
   },
   {
    "id": "i565",
-   "name": "Mantelet de Novice de maître",
+   "name": "Mantelet de l'Encrier sans fond",
    "kind": "clothing",
    "slot": "cape",
    "family": "robe",
@@ -31300,7 +31352,7 @@
   },
   {
    "id": "i566",
-   "name": "Mantelet d'Apprenti de maître",
+   "name": "Mantelet du Penseur d'orage",
    "kind": "clothing",
    "slot": "cape",
    "family": "robe",
@@ -31356,7 +31408,7 @@
   },
   {
    "id": "i567",
-   "name": "Mantelet du Sceau d'exception",
+   "name": "Mantelet de l'Orage endormi",
    "kind": "clothing",
    "slot": "cape",
    "family": "robe",
@@ -31411,7 +31463,7 @@
   },
   {
    "id": "i568",
-   "name": "Cordon à sceaux de Novice",
+   "name": "Cordon à sceaux de l'Apprenti distrait",
    "kind": "clothing",
    "slot": "belt",
    "family": "robe",
@@ -31462,7 +31514,7 @@
   },
   {
    "id": "i569",
-   "name": "Cordon à sceaux d'Apprenti",
+   "name": "Cordon à sceaux du Somnambule",
    "kind": "clothing",
    "slot": "belt",
    "family": "robe",
@@ -31513,7 +31565,7 @@
   },
   {
    "id": "i570",
-   "name": "Cordon à sceaux du Sceau",
+   "name": "Cordon à sceaux de l'Encrier",
    "kind": "clothing",
    "slot": "belt",
    "family": "robe",
@@ -31569,7 +31621,7 @@
   },
   {
    "id": "i571",
-   "name": "Cordon à sceaux de l'Aube",
+   "name": "Cordon à sceaux du Griffonneur d'orage",
    "kind": "clothing",
    "slot": "belt",
    "family": "robe",
@@ -31625,7 +31677,7 @@
   },
   {
    "id": "i572",
-   "name": "Cordon à sceaux de Novice de maître",
+   "name": "Cordon à sceaux de l'Encrier sans fond",
    "kind": "clothing",
    "slot": "belt",
    "family": "robe",
@@ -31681,7 +31733,7 @@
   },
   {
    "id": "i573",
-   "name": "Cordon à sceaux d'Apprenti de maître",
+   "name": "Cordon à sceaux du Penseur d'orage",
    "kind": "clothing",
    "slot": "belt",
    "family": "robe",
@@ -31737,7 +31789,7 @@
   },
   {
    "id": "i574",
-   "name": "Cordon à sceaux du Sceau d'exception",
+   "name": "Cordon du Sceau brisé",
    "kind": "clothing",
    "slot": "belt",
    "family": "robe",
@@ -31792,7 +31844,7 @@
   },
   {
    "id": "i575",
-   "name": "Cordon à sceaux de Novice",
+   "name": "Cordon à sceaux de l'Apprenti distrait",
    "kind": "clothing",
    "slot": "belt",
    "family": "robe",
@@ -31843,7 +31895,7 @@
   },
   {
    "id": "i576",
-   "name": "Cordon à sceaux d'Apprenti",
+   "name": "Cordon à sceaux du Somnambule",
    "kind": "clothing",
    "slot": "belt",
    "family": "robe",
@@ -31894,7 +31946,7 @@
   },
   {
    "id": "i577",
-   "name": "Cordon à sceaux du Sceau",
+   "name": "Cordon à sceaux de l'Encrier",
    "kind": "clothing",
    "slot": "belt",
    "family": "robe",
@@ -31950,7 +32002,7 @@
   },
   {
    "id": "i578",
-   "name": "Cordon à sceaux de l'Aube",
+   "name": "Cordon à sceaux du Griffonneur d'orage",
    "kind": "clothing",
    "slot": "belt",
    "family": "robe",
@@ -32006,7 +32058,7 @@
   },
   {
    "id": "i579",
-   "name": "Cordon à sceaux de Novice de maître",
+   "name": "Cordon à sceaux de l'Encrier sans fond",
    "kind": "clothing",
    "slot": "belt",
    "family": "robe",
@@ -32062,7 +32114,7 @@
   },
   {
    "id": "i580",
-   "name": "Cordon à sceaux d'Apprenti de maître",
+   "name": "Cordon à sceaux du Penseur d'orage",
    "kind": "clothing",
    "slot": "belt",
    "family": "robe",
@@ -32118,7 +32170,7 @@
   },
   {
    "id": "i581",
-   "name": "Cordon à sceaux du Sceau d'exception",
+   "name": "Cordon du Sceau brisé",
    "kind": "clothing",
    "slot": "belt",
    "family": "robe",
@@ -32173,7 +32225,7 @@
   },
   {
    "id": "i582",
-   "name": "Cordon à sceaux de Novice",
+   "name": "Cordon à sceaux de l'Apprenti distrait",
    "kind": "clothing",
    "slot": "belt",
    "family": "robe",
@@ -32224,7 +32276,7 @@
   },
   {
    "id": "i583",
-   "name": "Cordon à sceaux d'Apprenti",
+   "name": "Cordon à sceaux du Somnambule",
    "kind": "clothing",
    "slot": "belt",
    "family": "robe",
@@ -32275,7 +32327,7 @@
   },
   {
    "id": "i584",
-   "name": "Cordon à sceaux du Sceau",
+   "name": "Cordon à sceaux de l'Encrier",
    "kind": "clothing",
    "slot": "belt",
    "family": "robe",
@@ -32331,7 +32383,7 @@
   },
   {
    "id": "i585",
-   "name": "Cordon à sceaux de l'Aube",
+   "name": "Cordon à sceaux du Griffonneur d'orage",
    "kind": "clothing",
    "slot": "belt",
    "family": "robe",
@@ -32387,7 +32439,7 @@
   },
   {
    "id": "i586",
-   "name": "Cordon à sceaux de Novice de maître",
+   "name": "Cordon à sceaux de l'Encrier sans fond",
    "kind": "clothing",
    "slot": "belt",
    "family": "robe",
@@ -32443,7 +32495,7 @@
   },
   {
    "id": "i587",
-   "name": "Cordon à sceaux d'Apprenti de maître",
+   "name": "Cordon à sceaux du Penseur d'orage",
    "kind": "clothing",
    "slot": "belt",
    "family": "robe",
@@ -32499,7 +32551,7 @@
   },
   {
    "id": "i588",
-   "name": "Cordon à sceaux du Sceau d'exception",
+   "name": "Cordon du Sceau brisé",
    "kind": "clothing",
    "slot": "belt",
    "family": "robe",
@@ -32554,7 +32606,7 @@
   },
   {
    "id": "i589",
-   "name": "Anneau de l'Étincelle",
+   "name": "Anneau du Joueur de dés",
    "kind": "jewel",
    "slot": "ring",
    "family": "jewel",
@@ -32612,7 +32664,7 @@
   },
   {
    "id": "i590",
-   "name": "Anneau du Veilleur",
+   "name": "Anneau du Veilleur têtu",
    "kind": "jewel",
    "slot": "ring",
    "family": "jewel",
@@ -32675,7 +32727,7 @@
   },
   {
    "id": "i591",
-   "name": "Anneau du Fléau",
+   "name": "Anneau du Serment brisé",
    "kind": "jewel",
    "slot": "ring",
    "family": "jewel",
@@ -32738,7 +32790,7 @@
   },
   {
    "id": "i592",
-   "name": "Anneau de la Marée",
+   "name": "Anneau de la Dernière Marée",
    "kind": "jewel",
    "slot": "ring",
    "family": "jewel",
@@ -32800,7 +32852,7 @@
   },
   {
    "id": "i593",
-   "name": "Anneau de l'Étincelle",
+   "name": "Anneau du Joueur de dés",
    "kind": "jewel",
    "slot": "ring",
    "family": "jewel",
@@ -32858,7 +32910,7 @@
   },
   {
    "id": "i594",
-   "name": "Anneau du Veilleur",
+   "name": "Anneau du Veilleur têtu",
    "kind": "jewel",
    "slot": "ring",
    "family": "jewel",
@@ -32921,7 +32973,7 @@
   },
   {
    "id": "i595",
-   "name": "Anneau du Fléau",
+   "name": "Anneau du Serment brisé",
    "kind": "jewel",
    "slot": "ring",
    "family": "jewel",
@@ -32984,7 +33036,7 @@
   },
   {
    "id": "i596",
-   "name": "Anneau de la Marée",
+   "name": "Anneau de la Dernière Marée",
    "kind": "jewel",
    "slot": "ring",
    "family": "jewel",
@@ -33046,7 +33098,7 @@
   },
   {
    "id": "i597",
-   "name": "Anneau de l'Étincelle",
+   "name": "Anneau du Joueur de dés",
    "kind": "jewel",
    "slot": "ring",
    "family": "jewel",
@@ -33104,7 +33156,7 @@
   },
   {
    "id": "i598",
-   "name": "Anneau du Veilleur",
+   "name": "Anneau du Veilleur têtu",
    "kind": "jewel",
    "slot": "ring",
    "family": "jewel",
@@ -33167,7 +33219,7 @@
   },
   {
    "id": "i599",
-   "name": "Anneau du Fléau",
+   "name": "Anneau du Serment brisé",
    "kind": "jewel",
    "slot": "ring",
    "family": "jewel",
@@ -33230,7 +33282,7 @@
   },
   {
    "id": "i600",
-   "name": "Anneau de la Marée",
+   "name": "Anneau de la Dernière Marée",
    "kind": "jewel",
    "slot": "ring",
    "family": "jewel",
@@ -33292,7 +33344,7 @@
   },
   {
    "id": "i601",
-   "name": "Collier de la Marée",
+   "name": "Collier du Pèlerin",
    "kind": "jewel",
    "slot": "necklace",
    "family": "jewel",
@@ -33345,7 +33397,7 @@
   },
   {
    "id": "i602",
-   "name": "Collier de l'Aube",
+   "name": "Collier de l'Aube rousse",
    "kind": "jewel",
    "slot": "necklace",
    "family": "jewel",
@@ -33403,7 +33455,7 @@
   },
   {
    "id": "i603",
-   "name": "Collier du Sceau",
+   "name": "Collier du Sceau tenu",
    "kind": "jewel",
    "slot": "necklace",
    "family": "jewel",
@@ -33461,7 +33513,7 @@
   },
   {
    "id": "i604",
-   "name": "Collier de la Tempête",
+   "name": "Collier de la Tempête captive",
    "kind": "jewel",
    "slot": "necklace",
    "family": "jewel",
@@ -33518,7 +33570,7 @@
   },
   {
    "id": "i605",
-   "name": "Collier de la Marée",
+   "name": "Collier du Pèlerin",
    "kind": "jewel",
    "slot": "necklace",
    "family": "jewel",
@@ -33571,7 +33623,7 @@
   },
   {
    "id": "i606",
-   "name": "Collier de l'Aube",
+   "name": "Collier de l'Aube rousse",
    "kind": "jewel",
    "slot": "necklace",
    "family": "jewel",
@@ -33629,7 +33681,7 @@
   },
   {
    "id": "i607",
-   "name": "Collier du Sceau",
+   "name": "Collier du Sceau tenu",
    "kind": "jewel",
    "slot": "necklace",
    "family": "jewel",
@@ -33687,7 +33739,7 @@
   },
   {
    "id": "i608",
-   "name": "Collier de la Tempête",
+   "name": "Collier de la Tempête captive",
    "kind": "jewel",
    "slot": "necklace",
    "family": "jewel",
@@ -33744,7 +33796,7 @@
   },
   {
    "id": "i609",
-   "name": "Collier de la Marée",
+   "name": "Collier du Pèlerin",
    "kind": "jewel",
    "slot": "necklace",
    "family": "jewel",
@@ -33797,7 +33849,7 @@
   },
   {
    "id": "i610",
-   "name": "Collier de l'Aube",
+   "name": "Collier de l'Aube rousse",
    "kind": "jewel",
    "slot": "necklace",
    "family": "jewel",
@@ -33855,7 +33907,7 @@
   },
   {
    "id": "i611",
-   "name": "Collier du Sceau",
+   "name": "Collier du Sceau tenu",
    "kind": "jewel",
    "slot": "necklace",
    "family": "jewel",
@@ -33913,7 +33965,7 @@
   },
   {
    "id": "i612",
-   "name": "Collier de la Tempête",
+   "name": "Collier de la Tempête captive",
    "kind": "jewel",
    "slot": "necklace",
    "family": "jewel",
@@ -33970,7 +34022,7 @@
   },
   {
    "id": "i613",
-   "name": "Marteau de guerre de bronze",
+   "name": "Marteau de chantier de bronze",
    "kind": "weapon",
    "slot": "weapon",
    "family": "hammer",
@@ -34022,7 +34074,7 @@
   },
   {
    "id": "i614",
-   "name": "Marteau de guerre de bronze ouvragé",
+   "name": "Cogne-tout de bronze",
    "kind": "weapon",
    "slot": "weapon",
    "family": "hammer",
@@ -34079,7 +34131,7 @@
   },
   {
    "id": "i615",
-   "name": "Marteau de guerre de bronze de maître",
+   "name": "Faiseur de silences",
    "kind": "weapon",
    "slot": "weapon",
    "family": "hammer",
@@ -34136,7 +34188,7 @@
   },
   {
    "id": "i616",
-   "name": "Marteau de guerre de bronze d'exception",
+   "name": "La Rancune",
    "kind": "weapon",
    "slot": "weapon",
    "family": "hammer",
@@ -34192,7 +34244,7 @@
   },
   {
    "id": "i617",
-   "name": "Marteau de guerre de fer",
+   "name": "Marteau de chantier de fer",
    "kind": "weapon",
    "slot": "weapon",
    "family": "hammer",
@@ -34244,7 +34296,7 @@
   },
   {
    "id": "i618",
-   "name": "Marteau de guerre de fer ouvragé",
+   "name": "Cogne-tout de fer",
    "kind": "weapon",
    "slot": "weapon",
    "family": "hammer",
@@ -34301,7 +34353,7 @@
   },
   {
    "id": "i619",
-   "name": "Marteau de guerre de fer de maître",
+   "name": "Faiseur de silences",
    "kind": "weapon",
    "slot": "weapon",
    "family": "hammer",
@@ -34358,7 +34410,7 @@
   },
   {
    "id": "i620",
-   "name": "Marteau de guerre de fer d'exception",
+   "name": "La Rancune",
    "kind": "weapon",
    "slot": "weapon",
    "family": "hammer",
@@ -34414,7 +34466,7 @@
   },
   {
    "id": "i621",
-   "name": "Marteau de guerre d'acier",
+   "name": "Marteau de chantier d'acier",
    "kind": "weapon",
    "slot": "weapon",
    "family": "hammer",
@@ -34466,7 +34518,7 @@
   },
   {
    "id": "i622",
-   "name": "Marteau de guerre d'acier ouvragé",
+   "name": "Cogne-tout d'acier",
    "kind": "weapon",
    "slot": "weapon",
    "family": "hammer",
@@ -34523,7 +34575,7 @@
   },
   {
    "id": "i623",
-   "name": "Marteau de guerre d'acier de maître",
+   "name": "Faiseur de silences",
    "kind": "weapon",
    "slot": "weapon",
    "family": "hammer",
@@ -34580,7 +34632,7 @@
   },
   {
    "id": "i624",
-   "name": "Marteau de guerre d'acier d'exception",
+   "name": "La Rancune",
    "kind": "weapon",
    "slot": "weapon",
    "family": "hammer",
@@ -34636,7 +34688,7 @@
   },
   {
    "id": "i625",
-   "name": "Épée et bouclier de bronze",
+   "name": "Épée et rondache de garde de bronze",
    "kind": "weapon",
    "slot": "weapon",
    "family": "sword_shield",
@@ -34688,7 +34740,7 @@
   },
   {
    "id": "i626",
-   "name": "Épée et bouclier de bronze ouvragé",
+   "name": "Épée du Mur de fer de bronze",
    "kind": "weapon",
    "slot": "weapon",
    "family": "sword_shield",
@@ -34745,7 +34797,7 @@
   },
   {
    "id": "i627",
-   "name": "Épée et bouclier de bronze de maître",
+   "name": "Serment et Rempart",
    "kind": "weapon",
    "slot": "weapon",
    "family": "sword_shield",
@@ -34802,7 +34854,7 @@
   },
   {
    "id": "i628",
-   "name": "Épée et bouclier de bronze d'exception",
+   "name": "Le Dernier Mot",
    "kind": "weapon",
    "slot": "weapon",
    "family": "sword_shield",
@@ -34858,7 +34910,7 @@
   },
   {
    "id": "i629",
-   "name": "Épée et bouclier de fer",
+   "name": "Épée et rondache de garde de fer",
    "kind": "weapon",
    "slot": "weapon",
    "family": "sword_shield",
@@ -34910,7 +34962,7 @@
   },
   {
    "id": "i630",
-   "name": "Épée et bouclier de fer ouvragé",
+   "name": "Épée du Mur de fer de fer",
    "kind": "weapon",
    "slot": "weapon",
    "family": "sword_shield",
@@ -34967,7 +35019,7 @@
   },
   {
    "id": "i631",
-   "name": "Épée et bouclier de fer de maître",
+   "name": "Serment et Rempart",
    "kind": "weapon",
    "slot": "weapon",
    "family": "sword_shield",
@@ -35024,7 +35076,7 @@
   },
   {
    "id": "i632",
-   "name": "Épée et bouclier de fer d'exception",
+   "name": "Le Dernier Mot",
    "kind": "weapon",
    "slot": "weapon",
    "family": "sword_shield",
@@ -35080,7 +35132,7 @@
   },
   {
    "id": "i633",
-   "name": "Épée et bouclier d'acier",
+   "name": "Épée et rondache de garde d'acier",
    "kind": "weapon",
    "slot": "weapon",
    "family": "sword_shield",
@@ -35132,7 +35184,7 @@
   },
   {
    "id": "i634",
-   "name": "Épée et bouclier d'acier ouvragé",
+   "name": "Épée du Mur de fer d'acier",
    "kind": "weapon",
    "slot": "weapon",
    "family": "sword_shield",
@@ -35189,7 +35241,7 @@
   },
   {
    "id": "i635",
-   "name": "Épée et bouclier d'acier de maître",
+   "name": "Serment et Rempart",
    "kind": "weapon",
    "slot": "weapon",
    "family": "sword_shield",
@@ -35246,7 +35298,7 @@
   },
   {
    "id": "i636",
-   "name": "Épée et bouclier d'acier d'exception",
+   "name": "Le Dernier Mot",
    "kind": "weapon",
    "slot": "weapon",
    "family": "sword_shield",
@@ -35302,7 +35354,7 @@
   },
   {
    "id": "i637",
-   "name": "Hache à deux mains de bronze",
+   "name": "Hache de bûcheron-soldat de bronze",
    "kind": "weapon",
    "slot": "weapon",
    "family": "axe",
@@ -35354,7 +35406,7 @@
   },
   {
    "id": "i638",
-   "name": "Hache à deux mains de bronze ouvragé",
+   "name": "Fend-crâne de bronze",
    "kind": "weapon",
    "slot": "weapon",
    "family": "axe",
@@ -35411,7 +35463,7 @@
   },
   {
    "id": "i639",
-   "name": "Hache à deux mains de bronze de maître",
+   "name": "Hache des Veillées rouges",
    "kind": "weapon",
    "slot": "weapon",
    "family": "axe",
@@ -35468,7 +35520,7 @@
   },
   {
    "id": "i640",
-   "name": "Hache à deux mains de bronze d'exception",
+   "name": "Mâchoire de Vorn",
    "kind": "weapon",
    "slot": "weapon",
    "family": "axe",
@@ -35524,7 +35576,7 @@
   },
   {
    "id": "i641",
-   "name": "Hache à deux mains de fer",
+   "name": "Hache de bûcheron-soldat de fer",
    "kind": "weapon",
    "slot": "weapon",
    "family": "axe",
@@ -35576,7 +35628,7 @@
   },
   {
    "id": "i642",
-   "name": "Hache à deux mains de fer ouvragé",
+   "name": "Fend-crâne de fer",
    "kind": "weapon",
    "slot": "weapon",
    "family": "axe",
@@ -35633,7 +35685,7 @@
   },
   {
    "id": "i643",
-   "name": "Hache à deux mains de fer de maître",
+   "name": "Hache des Veillées rouges",
    "kind": "weapon",
    "slot": "weapon",
    "family": "axe",
@@ -35690,7 +35742,7 @@
   },
   {
    "id": "i644",
-   "name": "Hache à deux mains de fer d'exception",
+   "name": "Mâchoire de Vorn",
    "kind": "weapon",
    "slot": "weapon",
    "family": "axe",
@@ -35746,7 +35798,7 @@
   },
   {
    "id": "i645",
-   "name": "Hache à deux mains d'acier",
+   "name": "Hache de bûcheron-soldat d'acier",
    "kind": "weapon",
    "slot": "weapon",
    "family": "axe",
@@ -35798,7 +35850,7 @@
   },
   {
    "id": "i646",
-   "name": "Hache à deux mains d'acier ouvragé",
+   "name": "Fend-crâne d'acier",
    "kind": "weapon",
    "slot": "weapon",
    "family": "axe",
@@ -35855,7 +35907,7 @@
   },
   {
    "id": "i647",
-   "name": "Hache à deux mains d'acier de maître",
+   "name": "Hache des Veillées rouges",
    "kind": "weapon",
    "slot": "weapon",
    "family": "axe",
@@ -35912,7 +35964,7 @@
   },
   {
    "id": "i648",
-   "name": "Hache à deux mains d'acier d'exception",
+   "name": "Mâchoire de Vorn",
    "kind": "weapon",
    "slot": "weapon",
    "family": "axe",
@@ -35968,7 +36020,7 @@
   },
   {
    "id": "i649",
-   "name": "Arc long de frêne",
+   "name": "Arc de chasse de frêne",
    "kind": "weapon",
    "slot": "weapon",
    "family": "longbow",
@@ -36020,7 +36072,7 @@
   },
   {
    "id": "i650",
-   "name": "Arc long de frêne ouvragé",
+   "name": "Arc de la Haie vive de frêne",
    "kind": "weapon",
    "slot": "weapon",
    "family": "longbow",
@@ -36077,7 +36129,7 @@
   },
   {
    "id": "i651",
-   "name": "Arc long de frêne de maître",
+   "name": "Sifflerelle",
    "kind": "weapon",
    "slot": "weapon",
    "family": "longbow",
@@ -36134,7 +36186,7 @@
   },
   {
    "id": "i652",
-   "name": "Arc long de frêne d'exception",
+   "name": "Murmure-d'épine",
    "kind": "weapon",
    "slot": "weapon",
    "family": "longbow",
@@ -36190,7 +36242,7 @@
   },
   {
    "id": "i653",
-   "name": "Arc long d'if",
+   "name": "Arc de chasse d'if",
    "kind": "weapon",
    "slot": "weapon",
    "family": "longbow",
@@ -36242,7 +36294,7 @@
   },
   {
    "id": "i654",
-   "name": "Arc long d'if ouvragé",
+   "name": "Arc de la Haie vive d'if",
    "kind": "weapon",
    "slot": "weapon",
    "family": "longbow",
@@ -36299,7 +36351,7 @@
   },
   {
    "id": "i655",
-   "name": "Arc long d'if de maître",
+   "name": "Sifflerelle",
    "kind": "weapon",
    "slot": "weapon",
    "family": "longbow",
@@ -36356,7 +36408,7 @@
   },
   {
    "id": "i656",
-   "name": "Arc long d'if d'exception",
+   "name": "Murmure-d'épine",
    "kind": "weapon",
    "slot": "weapon",
    "family": "longbow",
@@ -36412,7 +36464,7 @@
   },
   {
    "id": "i657",
-   "name": "Arc long de bois de lune",
+   "name": "Arc de chasse de bois de lune",
    "kind": "weapon",
    "slot": "weapon",
    "family": "longbow",
@@ -36464,7 +36516,7 @@
   },
   {
    "id": "i658",
-   "name": "Arc long de bois de lune ouvragé",
+   "name": "Arc de la Haie vive de bois de lune",
    "kind": "weapon",
    "slot": "weapon",
    "family": "longbow",
@@ -36521,7 +36573,7 @@
   },
   {
    "id": "i659",
-   "name": "Arc long de bois de lune de maître",
+   "name": "Sifflerelle",
    "kind": "weapon",
    "slot": "weapon",
    "family": "longbow",
@@ -36578,7 +36630,7 @@
   },
   {
    "id": "i660",
-   "name": "Arc long de bois de lune d'exception",
+   "name": "Murmure-d'épine",
    "kind": "weapon",
    "slot": "weapon",
    "family": "longbow",
@@ -36634,7 +36686,7 @@
   },
   {
    "id": "i661",
-   "name": "Arbalète de frêne",
+   "name": "Arbalète de rempart de frêne",
    "kind": "weapon",
    "slot": "weapon",
    "family": "crossbow",
@@ -36686,7 +36738,7 @@
   },
   {
    "id": "i662",
-   "name": "Arbalète de frêne ouvragé",
+   "name": "Claque-neuf de frêne",
    "kind": "weapon",
    "slot": "weapon",
    "family": "crossbow",
@@ -36743,7 +36795,7 @@
   },
   {
    "id": "i663",
-   "name": "Arbalète de frêne de maître",
+   "name": "Arbalète du Percepteur",
    "kind": "weapon",
    "slot": "weapon",
    "family": "crossbow",
@@ -36800,7 +36852,7 @@
   },
   {
    "id": "i664",
-   "name": "Arbalète de frêne d'exception",
+   "name": "Le Verdict",
    "kind": "weapon",
    "slot": "weapon",
    "family": "crossbow",
@@ -36856,7 +36908,7 @@
   },
   {
    "id": "i665",
-   "name": "Arbalète d'if",
+   "name": "Arbalète de rempart d'if",
    "kind": "weapon",
    "slot": "weapon",
    "family": "crossbow",
@@ -36908,7 +36960,7 @@
   },
   {
    "id": "i666",
-   "name": "Arbalète d'if ouvragé",
+   "name": "Claque-neuf d'if",
    "kind": "weapon",
    "slot": "weapon",
    "family": "crossbow",
@@ -36965,7 +37017,7 @@
   },
   {
    "id": "i667",
-   "name": "Arbalète d'if de maître",
+   "name": "Arbalète du Percepteur",
    "kind": "weapon",
    "slot": "weapon",
    "family": "crossbow",
@@ -37022,7 +37074,7 @@
   },
   {
    "id": "i668",
-   "name": "Arbalète d'if d'exception",
+   "name": "Le Verdict",
    "kind": "weapon",
    "slot": "weapon",
    "family": "crossbow",
@@ -37078,7 +37130,7 @@
   },
   {
    "id": "i669",
-   "name": "Arbalète de bois de lune",
+   "name": "Arbalète de rempart de bois de lune",
    "kind": "weapon",
    "slot": "weapon",
    "family": "crossbow",
@@ -37130,7 +37182,7 @@
   },
   {
    "id": "i670",
-   "name": "Arbalète de bois de lune ouvragé",
+   "name": "Claque-neuf de bois de lune",
    "kind": "weapon",
    "slot": "weapon",
    "family": "crossbow",
@@ -37187,7 +37239,7 @@
   },
   {
    "id": "i671",
-   "name": "Arbalète de bois de lune de maître",
+   "name": "Arbalète du Percepteur",
    "kind": "weapon",
    "slot": "weapon",
    "family": "crossbow",
@@ -37244,7 +37296,7 @@
   },
   {
    "id": "i672",
-   "name": "Arbalète de bois de lune d'exception",
+   "name": "Le Verdict",
    "kind": "weapon",
    "slot": "weapon",
    "family": "crossbow",
@@ -37300,7 +37352,7 @@
   },
   {
    "id": "i673",
-   "name": "Dagues jumelles de bronze",
+   "name": "Couteaux de poche de bronze",
    "kind": "weapon",
    "slot": "weapon",
    "family": "daggers",
@@ -37352,7 +37404,7 @@
   },
   {
    "id": "i674",
-   "name": "Dagues jumelles de bronze ouvragé",
+   "name": "Dagues du Chat maigre de bronze",
    "kind": "weapon",
    "slot": "weapon",
    "family": "daggers",
@@ -37409,7 +37461,7 @@
   },
   {
    "id": "i675",
-   "name": "Dagues jumelles de bronze de maître",
+   "name": "Dagues de la Pie-grièche",
    "kind": "weapon",
    "slot": "weapon",
    "family": "daggers",
@@ -37466,7 +37518,7 @@
   },
   {
    "id": "i676",
-   "name": "Dagues jumelles de bronze d'exception",
+   "name": "Les Sœurs silencieuses",
    "kind": "weapon",
    "slot": "weapon",
    "family": "daggers",
@@ -37522,7 +37574,7 @@
   },
   {
    "id": "i677",
-   "name": "Dagues jumelles de fer",
+   "name": "Couteaux de poche de fer",
    "kind": "weapon",
    "slot": "weapon",
    "family": "daggers",
@@ -37574,7 +37626,7 @@
   },
   {
    "id": "i678",
-   "name": "Dagues jumelles de fer ouvragé",
+   "name": "Dagues du Chat maigre de fer",
    "kind": "weapon",
    "slot": "weapon",
    "family": "daggers",
@@ -37631,7 +37683,7 @@
   },
   {
    "id": "i679",
-   "name": "Dagues jumelles de fer de maître",
+   "name": "Dagues de la Pie-grièche",
    "kind": "weapon",
    "slot": "weapon",
    "family": "daggers",
@@ -37688,7 +37740,7 @@
   },
   {
    "id": "i680",
-   "name": "Dagues jumelles de fer d'exception",
+   "name": "Les Sœurs silencieuses",
    "kind": "weapon",
    "slot": "weapon",
    "family": "daggers",
@@ -37744,7 +37796,7 @@
   },
   {
    "id": "i681",
-   "name": "Dagues jumelles d'acier",
+   "name": "Couteaux de poche d'acier",
    "kind": "weapon",
    "slot": "weapon",
    "family": "daggers",
@@ -37796,7 +37848,7 @@
   },
   {
    "id": "i682",
-   "name": "Dagues jumelles d'acier ouvragé",
+   "name": "Dagues du Chat maigre d'acier",
    "kind": "weapon",
    "slot": "weapon",
    "family": "daggers",
@@ -37853,7 +37905,7 @@
   },
   {
    "id": "i683",
-   "name": "Dagues jumelles d'acier de maître",
+   "name": "Dagues de la Pie-grièche",
    "kind": "weapon",
    "slot": "weapon",
    "family": "daggers",
@@ -37910,7 +37962,7 @@
   },
   {
    "id": "i684",
-   "name": "Dagues jumelles d'acier d'exception",
+   "name": "Les Sœurs silencieuses",
    "kind": "weapon",
    "slot": "weapon",
    "family": "daggers",
@@ -37966,7 +38018,7 @@
   },
   {
    "id": "i685",
-   "name": "Bâton runique de frêne",
+   "name": "Bâton de marche runique de frêne",
    "kind": "weapon",
    "slot": "weapon",
    "family": "staff",
@@ -38018,7 +38070,7 @@
   },
   {
    "id": "i686",
-   "name": "Bâton runique de frêne ouvragé",
+   "name": "Bâton de l'Encrier de frêne",
    "kind": "weapon",
    "slot": "weapon",
    "family": "staff",
@@ -38075,7 +38127,7 @@
   },
   {
    "id": "i687",
-   "name": "Bâton runique de frêne de maître",
+   "name": "Éclat d'orage têtu",
    "kind": "weapon",
    "slot": "weapon",
    "family": "staff",
@@ -38132,7 +38184,7 @@
   },
   {
    "id": "i688",
-   "name": "Bâton runique de frêne d'exception",
+   "name": "Plume de Foudre",
    "kind": "weapon",
    "slot": "weapon",
    "family": "staff",
@@ -38188,7 +38240,7 @@
   },
   {
    "id": "i689",
-   "name": "Bâton runique d'if",
+   "name": "Bâton de marche runique d'if",
    "kind": "weapon",
    "slot": "weapon",
    "family": "staff",
@@ -38240,7 +38292,7 @@
   },
   {
    "id": "i690",
-   "name": "Bâton runique d'if ouvragé",
+   "name": "Bâton de l'Encrier d'if",
    "kind": "weapon",
    "slot": "weapon",
    "family": "staff",
@@ -38297,7 +38349,7 @@
   },
   {
    "id": "i691",
-   "name": "Bâton runique d'if de maître",
+   "name": "Éclat d'orage têtu",
    "kind": "weapon",
    "slot": "weapon",
    "family": "staff",
@@ -38354,7 +38406,7 @@
   },
   {
    "id": "i692",
-   "name": "Bâton runique d'if d'exception",
+   "name": "Plume de Foudre",
    "kind": "weapon",
    "slot": "weapon",
    "family": "staff",
@@ -38410,7 +38462,7 @@
   },
   {
    "id": "i693",
-   "name": "Bâton runique de bois de lune",
+   "name": "Bâton de marche runique de bois de lune",
    "kind": "weapon",
    "slot": "weapon",
    "family": "staff",
@@ -38462,7 +38514,7 @@
   },
   {
    "id": "i694",
-   "name": "Bâton runique de bois de lune ouvragé",
+   "name": "Bâton de l'Encrier de bois de lune",
    "kind": "weapon",
    "slot": "weapon",
    "family": "staff",
@@ -38519,7 +38571,7 @@
   },
   {
    "id": "i695",
-   "name": "Bâton runique de bois de lune de maître",
+   "name": "Éclat d'orage têtu",
    "kind": "weapon",
    "slot": "weapon",
    "family": "staff",
@@ -38576,7 +38628,7 @@
   },
   {
    "id": "i696",
-   "name": "Bâton runique de bois de lune d'exception",
+   "name": "Plume de Foudre",
    "kind": "weapon",
    "slot": "weapon",
    "family": "staff",
@@ -38632,7 +38684,7 @@
   },
   {
    "id": "i697",
-   "name": "Sceptre de bronze",
+   "name": "Sceptre de notaire de bronze",
    "kind": "weapon",
    "slot": "weapon",
    "family": "scepter",
@@ -38684,7 +38736,7 @@
   },
   {
    "id": "i698",
-   "name": "Sceptre de bronze ouvragé",
+   "name": "Sceptre fêlé de bronze",
    "kind": "weapon",
    "slot": "weapon",
    "family": "scepter",
@@ -38741,7 +38793,7 @@
   },
   {
    "id": "i699",
-   "name": "Sceptre de bronze de maître",
+   "name": "Sceptre du Sceau brisé",
    "kind": "weapon",
    "slot": "weapon",
    "family": "scepter",
@@ -38798,7 +38850,7 @@
   },
   {
    "id": "i700",
-   "name": "Sceptre de bronze d'exception",
+   "name": "Le Dernier Décret",
    "kind": "weapon",
    "slot": "weapon",
    "family": "scepter",
@@ -38854,7 +38906,7 @@
   },
   {
    "id": "i701",
-   "name": "Sceptre d'argent",
+   "name": "Sceptre de notaire d'argent",
    "kind": "weapon",
    "slot": "weapon",
    "family": "scepter",
@@ -38906,7 +38958,7 @@
   },
   {
    "id": "i702",
-   "name": "Sceptre d'argent ouvragé",
+   "name": "Sceptre fêlé d'argent",
    "kind": "weapon",
    "slot": "weapon",
    "family": "scepter",
@@ -38963,7 +39015,7 @@
   },
   {
    "id": "i703",
-   "name": "Sceptre d'argent de maître",
+   "name": "Sceptre du Sceau brisé",
    "kind": "weapon",
    "slot": "weapon",
    "family": "scepter",
@@ -39020,7 +39072,7 @@
   },
   {
    "id": "i704",
-   "name": "Sceptre d'argent d'exception",
+   "name": "Le Dernier Décret",
    "kind": "weapon",
    "slot": "weapon",
    "family": "scepter",
@@ -39076,7 +39128,7 @@
   },
   {
    "id": "i705",
-   "name": "Sceptre d'orichalque",
+   "name": "Sceptre de notaire d'orichalque",
    "kind": "weapon",
    "slot": "weapon",
    "family": "scepter",
@@ -39128,7 +39180,7 @@
   },
   {
    "id": "i706",
-   "name": "Sceptre d'orichalque ouvragé",
+   "name": "Sceptre fêlé d'orichalque",
    "kind": "weapon",
    "slot": "weapon",
    "family": "scepter",
@@ -39185,7 +39237,7 @@
   },
   {
    "id": "i707",
-   "name": "Sceptre d'orichalque de maître",
+   "name": "Sceptre du Sceau brisé",
    "kind": "weapon",
    "slot": "weapon",
    "family": "scepter",
@@ -39242,7 +39294,7 @@
   },
   {
    "id": "i708",
-   "name": "Sceptre d'orichalque d'exception",
+   "name": "Le Dernier Décret",
    "kind": "weapon",
    "slot": "weapon",
    "family": "scepter",
@@ -39298,7 +39350,7 @@
   },
   {
    "id": "i709",
-   "name": "Grimoire de toile",
+   "name": "Carnet de runes de toile",
    "kind": "weapon",
    "slot": "weapon",
    "family": "grimoire",
@@ -39350,7 +39402,7 @@
   },
   {
    "id": "i710",
-   "name": "Grimoire de toile ouvragé",
+   "name": "Grimoire des marges de toile",
    "kind": "weapon",
    "slot": "weapon",
    "family": "grimoire",
@@ -39407,7 +39459,7 @@
   },
   {
    "id": "i711",
-   "name": "Grimoire de toile de maître",
+   "name": "Le Livre des ratures",
    "kind": "weapon",
    "slot": "weapon",
    "family": "grimoire",
@@ -39464,7 +39516,7 @@
   },
   {
    "id": "i712",
-   "name": "Grimoire de toile d'exception",
+   "name": "Livre-qui-murmure",
    "kind": "weapon",
    "slot": "weapon",
    "family": "grimoire",
@@ -39520,7 +39572,7 @@
   },
   {
    "id": "i713",
-   "name": "Grimoire de lin",
+   "name": "Carnet de runes de lin",
    "kind": "weapon",
    "slot": "weapon",
    "family": "grimoire",
@@ -39572,7 +39624,7 @@
   },
   {
    "id": "i714",
-   "name": "Grimoire de lin ouvragé",
+   "name": "Grimoire des marges de lin",
    "kind": "weapon",
    "slot": "weapon",
    "family": "grimoire",
@@ -39629,7 +39681,7 @@
   },
   {
    "id": "i715",
-   "name": "Grimoire de lin de maître",
+   "name": "Le Livre des ratures",
    "kind": "weapon",
    "slot": "weapon",
    "family": "grimoire",
@@ -39686,7 +39738,7 @@
   },
   {
    "id": "i716",
-   "name": "Grimoire de lin d'exception",
+   "name": "Livre-qui-murmure",
    "kind": "weapon",
    "slot": "weapon",
    "family": "grimoire",
@@ -39742,7 +39794,7 @@
   },
   {
    "id": "i717",
-   "name": "Grimoire de soie",
+   "name": "Carnet de runes de soie",
    "kind": "weapon",
    "slot": "weapon",
    "family": "grimoire",
@@ -39794,7 +39846,7 @@
   },
   {
    "id": "i718",
-   "name": "Grimoire de soie ouvragé",
+   "name": "Grimoire des marges de soie",
    "kind": "weapon",
    "slot": "weapon",
    "family": "grimoire",
@@ -39851,7 +39903,7 @@
   },
   {
    "id": "i719",
-   "name": "Grimoire de soie de maître",
+   "name": "Le Livre des ratures",
    "kind": "weapon",
    "slot": "weapon",
    "family": "grimoire",
@@ -39908,7 +39960,7 @@
   },
   {
    "id": "i720",
-   "name": "Grimoire de soie d'exception",
+   "name": "Livre-qui-murmure",
    "kind": "weapon",
    "slot": "weapon",
    "family": "grimoire",
@@ -39964,7 +40016,7 @@
   },
   {
    "id": "i721",
-   "name": "Heaume des Cendres",
+   "name": "Couronne de charbon",
    "kind": "clothing",
    "slot": "head",
    "family": "armor",
@@ -40020,7 +40072,7 @@
   },
   {
    "id": "i722",
-   "name": "Harnais des Braises",
+   "name": "Harnais de la Ville qui brûle",
    "kind": "clothing",
    "slot": "torso",
    "family": "armor",
@@ -40076,7 +40128,7 @@
   },
   {
    "id": "i723",
-   "name": "Gantelets de cendre",
+   "name": "Gantelets de l'incendiaire poli",
    "kind": "clothing",
    "slot": "hands",
    "family": "armor",
@@ -40132,7 +40184,7 @@
   },
   {
    "id": "i724",
-   "name": "Jambières incandescentes",
+   "name": "Jambières du dernier pas chaud",
    "kind": "clothing",
    "slot": "legs",
    "family": "armor",
@@ -40188,7 +40240,7 @@
   },
   {
    "id": "i725",
-   "name": "Cuirasse du Rempart",
+   "name": "Cuirasse de la longue patience",
    "kind": "clothing",
    "slot": "torso",
    "family": "armor",
@@ -40244,7 +40296,7 @@
   },
   {
    "id": "i726",
-   "name": "Jambières de l'Enclume",
+   "name": "Jambières du Têtu de fer",
    "kind": "clothing",
    "slot": "legs",
    "family": "armor",
@@ -40300,7 +40352,7 @@
   },
   {
    "id": "i727",
-   "name": "Solerets patients",
+   "name": "Solerets qui ne reculent pas",
    "kind": "clothing",
    "slot": "feet",
    "family": "armor",
@@ -40356,7 +40408,7 @@
   },
   {
    "id": "i728",
-   "name": "Ceinturon de forge",
+   "name": "Ceinturon du contremaître sourd",
    "kind": "clothing",
    "slot": "belt",
    "family": "armor",
@@ -40469,7 +40521,7 @@
   },
   {
    "id": "i730",
-   "name": "Veste du pisteur",
+   "name": "Veste du Pisteur sans retour",
    "kind": "clothing",
    "slot": "torso",
    "family": "trail",
@@ -40526,7 +40578,7 @@
   },
   {
    "id": "i731",
-   "name": "Gants de visée",
+   "name": "Gants du Tireur patient",
    "kind": "clothing",
    "slot": "hands",
    "family": "trail",
@@ -40583,7 +40635,7 @@
   },
   {
    "id": "i732",
-   "name": "Cape de l'affût",
+   "name": "Cape de l'affût perpétuel",
    "kind": "clothing",
    "slot": "cape",
    "family": "trail",
@@ -40640,7 +40692,7 @@
   },
   {
    "id": "i733",
-   "name": "Cervelière d'épines",
+   "name": "Cervelière de la Louve des ronces",
    "kind": "clothing",
    "slot": "head",
    "family": "cuirass",
@@ -40697,7 +40749,7 @@
   },
   {
    "id": "i734",
-   "name": "Pourpoint de ronces",
+   "name": "Pourpoint des Ronces cousues",
    "kind": "clothing",
    "slot": "torso",
    "family": "cuirass",
@@ -40754,7 +40806,7 @@
   },
   {
    "id": "i735",
-   "name": "Chausses d'épines",
+   "name": "Chausses du Braconnier pardonné",
    "kind": "clothing",
    "slot": "legs",
    "family": "cuirass",
@@ -40811,7 +40863,7 @@
   },
   {
    "id": "i736",
-   "name": "Bottes de la lisière",
+   "name": "Bottes de la Lisière noire",
    "kind": "clothing",
    "slot": "feet",
    "family": "cuirass",
@@ -40868,7 +40920,7 @@
   },
   {
    "id": "i737",
-   "name": "Capuchon de l'Orage",
+   "name": "Capuchon de l'Orage qui dort",
    "kind": "clothing",
    "slot": "head",
    "family": "robe",
@@ -40924,7 +40976,7 @@
   },
   {
    "id": "i738",
-   "name": "Robe de l'Orage",
+   "name": "Robe de l'Orage contenu",
    "kind": "clothing",
    "slot": "torso",
    "family": "robe",
@@ -40980,7 +41032,7 @@
   },
   {
    "id": "i739",
-   "name": "Mitaines d'étincelles",
+   "name": "Mitaines d'étincelles volées",
    "kind": "clothing",
    "slot": "hands",
    "family": "robe",
@@ -41036,7 +41088,7 @@
   },
   {
    "id": "i740",
-   "name": "Mantelet contenu",
+   "name": "Mantelet des Éclairs en cage",
    "kind": "clothing",
    "slot": "cape",
    "family": "robe",
@@ -41092,7 +41144,7 @@
   },
   {
    "id": "i741",
-   "name": "Capuchon du Veilleur",
+   "name": "Capuchon du Veilleur d'encre",
    "kind": "clothing",
    "slot": "head",
    "family": "robe",
@@ -41148,7 +41200,7 @@
   },
   {
    "id": "i742",
-   "name": "Robe du Veilleur",
+   "name": "Robe des Veilleurs",
    "kind": "clothing",
    "slot": "torso",
    "family": "robe",
@@ -41204,7 +41256,7 @@
   },
   {
    "id": "i743",
-   "name": "Chaussons du sceau",
+   "name": "Chaussons du Sceau tenu",
    "kind": "clothing",
    "slot": "feet",
    "family": "robe",
@@ -41260,7 +41312,7 @@
   },
   {
    "id": "i744",
-   "name": "Cordon des sceaux",
+   "name": "Cordon des Sceaux jurés",
    "kind": "clothing",
    "slot": "belt",
    "family": "robe",
@@ -41316,7 +41368,7 @@
   },
   {
    "id": "i745",
-   "name": "Capuche des cimes",
+   "name": "Capuche des Cimes muettes",
    "kind": "clothing",
    "slot": "head",
    "family": "trail",
@@ -41373,7 +41425,7 @@
   },
   {
    "id": "i746",
-   "name": "Manteau de givre",
+   "name": "Manteau de la Wyverne",
    "kind": "clothing",
    "slot": "torso",
    "family": "trail",
@@ -41430,7 +41482,7 @@
   },
   {
    "id": "i747",
-   "name": "Gants frimas",
+   "name": "Gants du Froid têtu",
    "kind": "clothing",
    "slot": "hands",
    "family": "trail",
@@ -41487,7 +41539,7 @@
   },
   {
    "id": "i748",
-   "name": "Bottes de neige",
+   "name": "Bottes de neige creuse",
    "kind": "clothing",
    "slot": "feet",
    "family": "trail",
@@ -41798,7 +41850,7 @@
     }
    ],
    "named": true,
-   "name": "Cuirasse du Rempart",
+   "name": "Cuirasse du Mur vivant",
    "kind": "clothing",
    "slot": "torso",
    "family": "armor",
@@ -42041,19 +42093,19 @@
    "pieces": [
     [
      "head",
-     "Heaume des Cendres"
+     "Couronne de charbon"
     ],
     [
      "torso",
-     "Harnais des Braises"
+     "Harnais de la Ville qui brûle"
     ],
     [
      "hands",
-     "Gantelets de cendre"
+     "Gantelets de l'incendiaire poli"
     ],
     [
      "legs",
-     "Jambières incandescentes"
+     "Jambières du dernier pas chaud"
     ]
    ],
    "bonuses": [
@@ -42073,19 +42125,19 @@
    "pieces": [
     [
      "torso",
-     "Cuirasse du Rempart"
+     "Cuirasse de la longue patience"
     ],
     [
      "legs",
-     "Jambières de l'Enclume"
+     "Jambières du Têtu de fer"
     ],
     [
      "feet",
-     "Solerets patients"
+     "Solerets qui ne reculent pas"
     ],
     [
      "belt",
-     "Ceinturon de forge"
+     "Ceinturon du contremaître sourd"
     ]
    ],
    "bonuses": [
@@ -42109,15 +42161,15 @@
     ],
     [
      "torso",
-     "Veste du pisteur"
+     "Veste du Pisteur sans retour"
     ],
     [
      "hands",
-     "Gants de visée"
+     "Gants du Tireur patient"
     ],
     [
      "cape",
-     "Cape de l'affût"
+     "Cape de l'affût perpétuel"
     ]
    ],
    "bonuses": [
@@ -42137,19 +42189,19 @@
    "pieces": [
     [
      "head",
-     "Cervelière d'épines"
+     "Cervelière de la Louve des ronces"
     ],
     [
      "torso",
-     "Pourpoint de ronces"
+     "Pourpoint des Ronces cousues"
     ],
     [
      "legs",
-     "Chausses d'épines"
+     "Chausses du Braconnier pardonné"
     ],
     [
      "feet",
-     "Bottes de la lisière"
+     "Bottes de la Lisière noire"
     ]
    ],
    "bonuses": [
@@ -42169,19 +42221,19 @@
    "pieces": [
     [
      "head",
-     "Capuchon de l'Orage"
+     "Capuchon de l'Orage qui dort"
     ],
     [
      "torso",
-     "Robe de l'Orage"
+     "Robe de l'Orage contenu"
     ],
     [
      "hands",
-     "Mitaines d'étincelles"
+     "Mitaines d'étincelles volées"
     ],
     [
      "cape",
-     "Mantelet contenu"
+     "Mantelet des Éclairs en cage"
     ]
    ],
    "bonuses": [
@@ -42201,19 +42253,19 @@
    "pieces": [
     [
      "head",
-     "Capuchon du Veilleur"
+     "Capuchon du Veilleur d'encre"
     ],
     [
      "torso",
-     "Robe du Veilleur"
+     "Robe des Veilleurs"
     ],
     [
      "feet",
-     "Chaussons du sceau"
+     "Chaussons du Sceau tenu"
     ],
     [
      "belt",
-     "Cordon des sceaux"
+     "Cordon des Sceaux jurés"
     ]
    ],
    "bonuses": [
@@ -42233,19 +42285,19 @@
    "pieces": [
     [
      "head",
-     "Capuche des cimes"
+     "Capuche des Cimes muettes"
     ],
     [
      "torso",
-     "Manteau de givre"
+     "Manteau de la Wyverne"
     ],
     [
      "hands",
-     "Gants frimas"
+     "Gants du Froid têtu"
     ],
     [
      "feet",
-     "Bottes de neige"
+     "Bottes de neige creuse"
     ]
    ],
    "bonuses": [
@@ -42491,7 +42543,7 @@
   },
   {
    "id": "s2",
-   "name": "Mines de Brisefer",
+   "name": "Fosses de Maldefer",
    "tier": 10,
    "kind": "Donjon",
    "boss": "Le Golem de schiste",

@@ -61,7 +61,9 @@ export const FAMILIES = [
     classes: ['forgefire'],
     color: 'var(--copper)',
     material: ['de bronze', 'de fer', 'd\'acier'],
-    names: ['du Garde', 'du Fantassin', 'du Rempart', 'des Braises'],
+    names: ['du Bon Vivant', 'du Cogneur', 'du Sergent boiteux', 'du Tapageur'],
+    epicNames: ['du Veilleur de braise', 'du Briseur de serments'],
+    legendNames: { head: 'Couronne du Roi sans feu', torso: 'Cœur de la Forge-Mère', hands: 'Gantelets du Dernier Serment', legs: 'Jambières du Colosse boiteux', feet: 'Solerets du Pas de fer', cape: 'Tabard du Régiment fantôme', belt: 'Ceinturon du Fondeur maudit' },
     slotNames: { head: 'Heaume', torso: 'Plastron', hands: 'Gantelets', legs: 'Jambières', feet: 'Solerets', cape: 'Tabard d\'armes', belt: 'Ceinturon' },
     bias: { defense: 1.25, haste: 0.8 },
   },
@@ -72,7 +74,9 @@ export const FAMILIES = [
     classes: ['forgefire', 'tracker'],
     color: 'var(--teal)',
     material: ['de cuir bouilli', 'de cuir tanné', 'de cuir durci'],
-    names: ['de Patrouille', 'd\'Éclaireur', 'de la Garde', 'du Rôdeur'],
+    names: ['du Colporteur bourru', 'du Guetteur pressé', 'du Dernier Relais', 'du Rôdeur patient'],
+    epicNames: ['du Contrebandier', 'de la Louve grise'],
+    legendNames: { head: 'Cervelière du Louvetier', torso: 'Pourpoint de la Mère-louve', hands: 'Mitaines du Chasseur de têtes', legs: 'Chausses du Fugitif', feet: 'Bottes du Dernier Pardon', cape: 'Cape du Convoi perdu', belt: 'Ceinture du Bourreau pensif' },
     slotNames: { head: 'Cervelière', torso: 'Pourpoint', hands: 'Mitaines cloutées', legs: 'Chausses', feet: 'Bottes ferrées', cape: 'Cape de cuir', belt: 'Ceinture à plaques' },
     bias: { vitality: 1.1 },
   },
@@ -83,7 +87,9 @@ export const FAMILIES = [
     classes: ['tracker', 'runist'],
     color: 'var(--good)',
     material: ['de peau', 'de daim', 'de cuir fin'],
-    names: ['de Piste', 'de Traque', 'du Veilleur', 'du Traqueur'],
+    names: ['du Chat maigre', 'du Voleur de lune', 'de la Pie-grièche', 'du Braconnier repenti'],
+    epicNames: ['du Braconnier pardonné', 'de la Corneille'],
+    legendNames: { head: 'Capuche de la Veuve {p}', torso: 'Veste du Spectre de la lisière', hands: 'Gants de la Veuve {p}', legs: 'Pantalon du Funambule', feet: 'Bottes du Chat sans ombre', cape: 'Cape de la Pie-grièche noire', belt: 'Ceinture du Braconnier des étoiles' },
     slotNames: { head: 'Capuche', torso: 'Veste', hands: 'Gants souples', legs: 'Pantalon', feet: 'Bottes souples', cape: 'Cape déchiquetée', belt: 'Ceinture à poches' },
     bias: { haste: 1.2, crit: 1.1, defense: 0.85 },
   },
@@ -94,7 +100,9 @@ export const FAMILIES = [
     classes: ['runist'],
     color: 'var(--magic)',
     material: ['de toile', 'de lin', 'de soie'],
-    names: ['de Novice', 'd\'Apprenti', 'du Sceau', 'de l\'Aube'],
+    names: ['de l\'Apprenti distrait', 'du Somnambule', 'de l\'Encrier', 'du Griffonneur d\'orage'],
+    epicNames: ['de l\'Encrier sans fond', 'du Penseur d\'orage'],
+    legendNames: { head: 'Capuchon du Songe-creux', torso: 'Robe du Grand Silence', hands: 'Mitaines de l\'Encre vive', legs: 'Jupe des Marées mortes', feet: 'Chaussons du Somnambule royal', cape: 'Mantelet de l\'Orage endormi', belt: 'Cordon du Sceau brisé' },
     slotNames: { head: 'Capuchon', torso: 'Tunique', hands: 'Mitaines brodées', legs: 'Jupe de tissu', feet: 'Chaussons', cape: 'Mantelet', belt: 'Cordon à sceaux' },
     bias: { power: 1.2, defense: 0.6, vitality: 0.9 },
   },
@@ -135,6 +143,7 @@ export const VARIABLE_LINES = {
   weapon: [['Dégâts critiques', 4, 9], ['Cadence', 2, 4], ['Pénétration', 2, 5], ['Dégâts de l\'élément de l\'arme', 3, 6]],
 };
 
+const WEAPON_NAMES = {"hammer":["Marteau de chantier","Cogne-tout","Faiseur de silences","La Rancune"],"sword_shield":["Épée et rondache de garde","Épée du Mur de fer","Serment et Rempart","Le Dernier Mot"],"axe":["Hache de bûcheron-soldat","Fend-crâne","Hache des Veillées rouges","Mâchoire de Vorn"],"longbow":["Arc de chasse","Arc de la Haie vive","Sifflerelle","Murmure-d'épine"],"crossbow":["Arbalète de rempart","Claque-neuf","Arbalète du Percepteur","Le Verdict"],"daggers":["Couteaux de poche","Dagues du Chat maigre","Dagues de la Pie-grièche","Les Sœurs silencieuses"],"staff":["Bâton de marche runique","Bâton de l'Encrier","Éclat d'orage têtu","Plume de Foudre"],"scepter":["Sceptre de notaire","Sceptre fêlé","Sceptre du Sceau brisé","Le Dernier Décret"],"grimoire":["Carnet de runes","Grimoire des marges","Le Livre des ratures","Livre-qui-murmure"]};
 const WEAPONS = [
   { id: 'hammer', name: 'Marteau de guerre', cls: 'forgefire', speed: 'lent', stats: { power: 1.35, haste: 0.6, crit: 0.4 }, mat: ['de bronze', 'de fer', 'd\'acier'] },
   { id: 'sword_shield', name: 'Épée et bouclier', cls: 'forgefire', speed: 'équilibré', stats: { power: 0.9, defense: 0.8, haste: 0.7 }, mat: ['de bronze', 'de fer', 'd\'acier'] },
@@ -148,7 +157,12 @@ const WEAPONS = [
 ];
 
 const RARITY_IDS = ['common', 'rare', 'epic', 'legendary'];
-const RARITY_SUFFIX = { common: '', rare: '', epic: ' de maître', legendary: " d'exception" };
+const PLACES = ['des Murmures', 'de Maldefer', 'des cimes'];
+function clothingName(fam, slotId, rar, ri, oi, ti) {
+  if (rar === 'legendary') return fam.legendNames[slotId].replace('{p}', PLACES[ti]);
+  if (rar === 'epic') return `${fam.slotNames[slotId]} ${fam.epicNames[oi]}`;
+  return `${fam.slotNames[slotId]} ${fam.names[ri * 2 + oi]}`;
+}
 const SOURCE_BY_RARITY = { common: ['craft', 'loot'], rare: ['craft', 'loot', 'plan'], epic: ['craft', 'loot', 'plan'], legendary: ['dungeon', 'plan'] };
 
 const round = (n) => Math.max(1, Math.round(n));
@@ -172,7 +186,7 @@ const add = (it) => {
 };
 
 /** Chef-d'œuvre [Proposé par Claude, à valider] : tirage séparé à la fabrication seulement, jamais par retouche. */
-export const MASTERPIECE = { chance: [0.02, 0.05], dailyCap: 1, lineBand: [0.5, 1], bonusLine: true, stockCeiling: 0.03 };
+export const MASTERPIECE = { chance: [0.02, 0.05], dailyCap: 1, linesChosen: true, linesAtMax: true, bonusLine: true, stockCeiling: 0.03 };
 
 // --- Vêtements : par famille, emplacement, palier ; deux modèles Communs et deux Rares (protecteur, offensif) ---
 for (const fam of FAMILIES) {
@@ -183,7 +197,7 @@ for (const fam of FAMILIES) {
           if (rar === 'legendary' && oi !== slot.id.length % 2) return; // un seul modèle légendaire par emplacement
           const rarity = RARITIES.find((r) => r.id === rar);
           add({
-            name: `${fam.slotNames[slot.id]} ${fam.names[(ri % 2) * 2 + oi]}${RARITY_SUFFIX[rar]}`,
+            name: clothingName(fam, slot.id, rar, ri, oi, ti),
             kind: 'clothing',
             slot: slot.id,
             family: fam.id,
@@ -205,8 +219,8 @@ for (const fam of FAMILIES) {
 
 // --- Bijoux : universels ---
 const JEWEL = {
-  ring: [['de l\'Étincelle', 'offensive', { crit: 1, power: 0.6 }], ['du Veilleur', 'protective', { defense: 0.8, tenacity: 0.8 }], ['du Fléau', 'offensive', { power: 1, haste: 0.7 }], ['de la Marée', 'protective', { vitality: 1, tenacity: 0.6 }]],
-  necklace: [['de la Marée', 'protective', { vitality: 1, tenacity: 0.7 }], ['de l\'Aube', 'offensive', { power: 1, crit: 0.8 }], ['du Sceau', 'protective', { defense: 1, vitality: 0.7 }], ['de la Tempête', 'offensive', { crit: 1, haste: 0.8 }]],
+  ring: [['du Joueur de dés', 'offensive', { crit: 1, power: 0.6 }], ['du Veilleur têtu', 'protective', { defense: 0.8, tenacity: 0.8 }], ['du Serment brisé', 'offensive', { power: 1, haste: 0.7 }], ['de la Dernière Marée', 'protective', { vitality: 1, tenacity: 0.6 }]],
+  necklace: [['du Pèlerin', 'protective', { vitality: 1, tenacity: 0.7 }], ['de l\'Aube rousse', 'offensive', { power: 1, crit: 0.8 }], ['du Sceau tenu', 'protective', { defense: 1, vitality: 0.7 }], ['de la Tempête captive', 'offensive', { crit: 1, haste: 0.8 }]],
 };
 const JEWEL_MAT = ['d\'étain', 'd\'argent', 'd\'or'];
 for (const [slotId, models] of Object.entries(JEWEL)) {
@@ -241,7 +255,7 @@ for (const w of WEAPONS) {
     RARITY_IDS.forEach((rar) => {
       const rarity = RARITIES.find((r) => r.id === rar);
       add({
-        name: `${w.name} ${w.mat[ti]}${{ common: '', rare: ' ouvragé', epic: ' de maître', legendary: " d'exception" }[rar]}`,
+        name: `${WEAPON_NAMES[w.id][RARITY_IDS.indexOf(rar)]}${rar === 'common' || rar === 'rare' ? ' ' + w.mat[ti] : ''}`,
         kind: 'weapon',
         slot: 'weapon',
         family: w.id,
@@ -270,7 +284,7 @@ export const SETS = [
     family: 'armor',
     theme: 'Brûlures qui se propagent entre les ennemis',
     event: false,
-    pieces: [['head', 'Heaume des Cendres'], ['torso', 'Harnais des Braises'], ['hands', 'Gantelets de cendre'], ['legs', 'Jambières incandescentes']],
+    pieces: [['head', 'Couronne de charbon'], ['torso', 'Harnais de la Ville qui brûle'], ['hands', 'Gantelets de l\'incendiaire poli'], ['legs', 'Jambières du dernier pas chaud']],
     bonuses: ['Les brûlures durent 25 % plus longtemps.', '+15 % de dégâts contre une cible qui brûle.', 'À la mort d\'une cible brûlée, la brûlure passe à un ennemi proche (délai 4 s).'],
     note: 'Le 4 pièces brille contre les groupes ; contre un boss seul, un assemblage à 3 pièces peut être préférable.',
   },
@@ -281,7 +295,7 @@ export const SETS = [
     family: 'armor',
     theme: 'Protections et ripostes',
     event: false,
-    pieces: [['torso', 'Cuirasse du Rempart'], ['legs', 'Jambières de l\'Enclume'], ['feet', 'Solerets patients'], ['belt', 'Ceinturon de forge']],
+    pieces: [['torso', 'Cuirasse de la longue patience'], ['legs', 'Jambières du Têtu de fer'], ['feet', 'Solerets qui ne reculent pas'], ['belt', 'Ceinturon du contremaître sourd']],
     bonuses: ['+10 % de Défense.', 'Chaque coup reçu charge un bouclier (jusqu\'à 20 % de la Vitalité).', 'Quand le bouclier se brise, une riposte frappe l\'attaquant.'],
     note: 'Endurance et boss qui frappent fort.',
   },
@@ -292,7 +306,7 @@ export const SETS = [
     family: 'trail',
     theme: 'Marquage et cible unique',
     event: false,
-    pieces: [['head', 'Capuche de la Dernière empreinte'], ['torso', 'Veste du pisteur'], ['hands', 'Gants de visée'], ['cape', 'Cape de l\'affût']],
+    pieces: [['head', 'Capuche de la Dernière empreinte'], ['torso', 'Veste du Pisteur sans retour'], ['hands', 'Gants du Tireur patient'], ['cape', 'Cape de l\'affût perpétuel']],
     bonuses: ['+10 % de critique sur une cible marquée.', 'La marque dure 50 % plus longtemps.', 'Le premier tir sur une cible marquée frappe deux fois.'],
     note: 'Pensé pour les cibles uniques et les boss.',
   },
@@ -303,7 +317,7 @@ export const SETS = [
     family: 'cuirass',
     theme: 'Ralentissements et groupes',
     event: false,
-    pieces: [['head', 'Cervelière d\'épines'], ['torso', 'Pourpoint de ronces'], ['legs', 'Chausses d\'épines'], ['feet', 'Bottes de la lisière']],
+    pieces: [['head', 'Cervelière de la Louve des ronces'], ['torso', 'Pourpoint des Ronces cousues'], ['legs', 'Chausses du Braconnier pardonné'], ['feet', 'Bottes de la Lisière noire']],
     bonuses: ['Les ralentissements durent 20 % plus longtemps.', 'Les ennemis ralentis subissent 10 % de dégâts en plus.', 'Toutes les 6 s, les ennemis proches de la cible sont ralentis.'],
     note: 'Efficace contre les groupes.',
   },
@@ -314,7 +328,7 @@ export const SETS = [
     family: 'robe',
     theme: 'Dégâts directs et critiques',
     event: false,
-    pieces: [['head', 'Capuchon de l\'Orage'], ['torso', 'Robe de l\'Orage'], ['hands', 'Mitaines d\'étincelles'], ['cape', 'Mantelet contenu']],
+    pieces: [['head', 'Capuchon de l\'Orage qui dort'], ['torso', 'Robe de l\'Orage contenu'], ['hands', 'Mitaines d\'étincelles volées'], ['cape', 'Mantelet des Éclairs en cage']],
     bonuses: ['+12 % de dégâts critiques.', 'Chaque critique charge un point de Surtension (5 au maximum).', 'À 5 points, le prochain sort frappe un second ennemi à pleine puissance.'],
     note: 'Fonctionne avec n\'importe quel élément : le nom est un thème, pas un verrou.',
   },
@@ -325,7 +339,7 @@ export const SETS = [
     family: 'robe',
     theme: 'Boucliers et soutien',
     event: false,
-    pieces: [['head', 'Capuchon du Veilleur'], ['torso', 'Robe du Veilleur'], ['feet', 'Chaussons du sceau'], ['belt', 'Cordon des sceaux']],
+    pieces: [['head', 'Capuchon du Veilleur d\'encre'], ['torso', 'Robe des Veilleurs'], ['feet', 'Chaussons du Sceau tenu'], ['belt', 'Cordon des Sceaux jurés']],
     bonuses: ['+10 % de puissance des boucliers.', 'Un bouclier qui expire soigne légèrement.', 'Au début du combat, un sceau protège l\'allié le plus fragile.'],
     note: 'Soutien et endurance.',
   },
@@ -336,7 +350,7 @@ export const SETS = [
     family: 'trail',
     theme: 'Ralentissement et sécurité',
     event: true,
-    pieces: [['head', 'Capuche des cimes'], ['torso', 'Manteau de givre'], ['hands', 'Gants frimas'], ['feet', 'Bottes de neige']],
+    pieces: [['head', 'Capuche des Cimes muettes'], ['torso', 'Manteau de la Wyverne'], ['hands', 'Gants du Froid têtu'], ['feet', 'Bottes de neige creuse']],
     bonuses: ['+10 % de résistance au ralentissement.', 'Les ennemis ralentis ont 10 % de chances de gelures.', 'Le ralentissement le plus fort du combat gèle brièvement la cible.'],
     note: 'Ensemble d\'événement (la Wyverne des cimes) : jamais indispensable, rerun chaque année.',
   },
@@ -372,7 +386,7 @@ const named = [
   { name: 'Arc de la Dernière flèche', kind: 'weapon', slot: 'weapon', family: 'longbow', classes: ['tracker'], tier: 20, rarity: 'legendary', orientation: 'offensive', material: 'de bois de lune', conditional: 'Le dernier tir d\'un combat contre une cible marquée inflige le double de dégâts.', stats: [{ stat: 'power', value: 170 }, { stat: 'crit', value: 90 }, { stat: 'haste', value: 24 }, { stat: 'tenacity', value: 20 }], socket: 'majeur', source: ['dungeon'] },
   { name: 'Le Paratonnerre', kind: 'weapon', slot: 'weapon', family: 'staff', classes: ['runist'], tier: 20, rarity: 'legendary', orientation: 'offensive', material: 'd\'orichalque', conditional: 'Les sorts critiques de Foudre frappent un second ennemi à moitié de puissance.', stats: [{ stat: 'power', value: 200 }, { stat: 'crit', value: 60 }, { stat: 'vitality', value: 40 }, { stat: 'haste', value: 26 }], socket: 'majeur', source: ['dungeon'] },
   { name: 'Anneau de l\'Étincelle', kind: 'jewel', slot: 'ring', family: 'jewel', classes: ['forgefire', 'tracker', 'runist'], tier: 20, rarity: 'epic', orientation: 'offensive', material: 'd\'or', stats: [{ stat: 'crit', value: 62 }, { stat: 'power', value: 38 }, { stat: 'haste', value: 22 }], socket: 'oui', source: ['dungeon', 'craft'] },
-  { name: 'Cuirasse du Rempart', kind: 'clothing', slot: 'torso', family: 'armor', classes: ['forgefire'], tier: 20, rarity: 'legendary', orientation: 'protective', material: 'd\'acier', conditional: 'Un bouclier se forme au début de chaque combat et dure tant que vous êtes au-dessus de 50 % de vie.', stats: [{ stat: 'defense', value: 210 }, { stat: 'vitality', value: 150 }, { stat: 'tenacity', value: 70 }, { stat: 'power', value: 28 }], socket: 'majeur', source: ['dungeon'] },
+  { name: 'Cuirasse du Mur vivant', kind: 'clothing', slot: 'torso', family: 'armor', classes: ['forgefire'], tier: 20, rarity: 'legendary', orientation: 'protective', material: 'd\'acier', conditional: 'Un bouclier se forme au début de chaque combat et dure tant que vous êtes au-dessus de 50 % de vie.', stats: [{ stat: 'defense', value: 210 }, { stat: 'vitality', value: 150 }, { stat: 'tenacity', value: 70 }, { stat: 'power', value: 28 }], socket: 'majeur', source: ['dungeon'] },
   { name: 'Tunique de l\'Aube', kind: 'clothing', slot: 'torso', family: 'robe', classes: ['runist'], tier: 20, rarity: 'epic', orientation: 'offensive', material: 'de soie', stats: [{ stat: 'power', value: 160 }, { stat: 'crit', value: 76 }, { stat: 'vitality', value: 70 }], socket: 'majeur', source: ['craft', 'plan'], masterpieceExample: true },
 ];
 for (const n of named) add({ lines: lineRange(n.slot, 2), named: true, ...n });
@@ -446,7 +460,7 @@ export const GEM_TIER_SCALE = { 1: 1, 10: 1.6, 20: 2.2 };
 // --- Sources de butin ---
 export const SOURCES = [
   { id: 's1', name: 'Clairière des Murmures', tier: 1, kind: 'Région et boss', boss: 'Le Loup-garou des fourrés', blurb: 'Première région de combat : peu de risques, beaucoup d\'objets de départ.' },
-  { id: 's2', name: 'Mines de Brisefer', tier: 10, kind: 'Donjon', boss: 'Le Golem de schiste', blurb: 'Des galeries à plusieurs rencontres : un boss unique, puis un groupe.' },
+  { id: 's2', name: 'Fosses de Maldefer', tier: 10, kind: 'Donjon', boss: 'Le Golem de schiste', blurb: 'Des galeries à plusieurs rencontres : un boss unique, puis un groupe.' },
   { id: 's3', name: 'Falaises du Givre', tier: 20, kind: 'Donjon', boss: 'La Wyverne des cimes', blurb: 'Un boss qui se soigne et des renforts : cible unique et groupes comptent.' },
 ];
 

@@ -120,7 +120,7 @@ Un Forgefeu, guerrier, **ne porte pas de tunique** : chaque classe a une silhoue
 | **Tenue de piste** | Cuir léger, capes, capuches | Traqueur, Runiste |
 | **Robe** | Tissu, robes, tuniques, ornements runiques | Runiste |
 
-Les recoupements (Cuirasse, Tenue de piste) donnent des pièces qui s'échangent entre classes sans trahir les silhouettes. Un objet indique en clair les classes qui peuvent le porter ; les autres ne peuvent pas l'équiper. L'**apparence** suit la même règle : on choisit sa tenue parmi les pièces de **sa** classe, emplacement par emplacement (personnalisation à l'intérieur du style, pas hors du style). *À confirmer avec Louis : l'apparence est-elle libre entre classes, ou limitée aux familles compatibles ?*
+Les recoupements (Cuirasse, Tenue de piste) donnent des pièces qui s'échangent entre classes sans trahir les silhouettes. Un objet indique en clair les classes qui peuvent le porter ; les autres ne peuvent pas l'équiper. L'**apparence** suit la même règle : on choisit sa tenue parmi les pièces de **sa** classe, emplacement par emplacement (personnalisation à l'intérieur du style, pas hors du style). **[Décidé par Louis, 21 octobre]** : l’apparence n’emprunte que les styles de sa classe/voie (familles compatibles), jamais hors style.
 
 Tout objet fabriqué ou dropé appartient à une famille. Un loot « pour une autre classe » reste utile : on le vend, on le garde pour une autre classe du même compte, ou on l'offre à un ami.
 

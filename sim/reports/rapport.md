@@ -28,11 +28,11 @@
 | Repas | Bonus | Cuisson | Chaîne complète | Or PNJ | h de bonus / h de cuisson | h de bonus / h de chaîne | Rendement autonome |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | Tisane de menthe | +3 % × 1 h 00 | 15 s | 1 min | 0 | 240 | 71 | ×2,1 |
-| Poisson grillé au thym | +4 % × 45 min | 20 s | 1 min | 24 | 135 | 56 | ×2,3 |
+| Poisson grillé au thym | +4 % × 1 h 00 | 20 s | 1 min | 0 | 180 | 50 | ×2,0 |
 | Bouillon d'ortie | +5 % × 1 h 15 | 25 s | 2 min | 0 | 180 | 38 | ×1,9 |
-| Truite à la sauge | +7 % × 45 min | 30 s | 2 min | 100 | 90 | 26 | ×1,9 |
-| Soupe aux lys-lanternes | +8 % × 1 h 00 | 40 s | 2 min | 48 | 90 | 26 | ×2,1 |
-| Festin du givre | +10 % × 1 h 30 | 60 s | 4 min | 100 | 90 | 21 | ×2,1 |
+| Truite à la sauge | +7 % × 1 h 15 | 30 s | 3 min | 0 | 150 | 27 | ×1,9 |
+| Soupe aux lys-lanternes | +8 % × 1 h 15 | 40 s | 3 min | 0 | 113 | 24 | ×1,9 |
+| Festin du givre | +10 % × 1 h 45 | 60 s | 5 min | 0 | 105 | 20 | ×2,0 |
 
 ## Progression (boucle-v0, mêmes règles que data/)
 

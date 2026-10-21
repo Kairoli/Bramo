@@ -7,7 +7,9 @@ import {
   advance,
   viewState,
 } from '@bramo/shared';
-import type { Db } from './db/index.js';
+import type { Db, Tx } from './db/index.js';
+import { claimOrders } from './market.js';
+import { claimRepairs } from './repairs.js';
 import { loadCharacterForUpdate, saveCharacter } from './characters.js';
 import { entriesFromSummary, insertEntries } from './journal.js';
 
@@ -18,7 +20,14 @@ export interface ActionResult {
   logKind?: JournalEntry['kind'];
 }
 
-export type Action = (state: CharacterState, now: number) => ActionResult;
+/** Contexte d'une action : la transaction en cours et le personnage (le marché lit et écrit d'autres lignes). */
+export interface ActionContext {
+  tx: Tx;
+  characterId: number;
+  characterName: string;
+}
+
+export type Action = (state: CharacterState, now: number, ctx: ActionContext) => ActionResult | Promise<ActionResult>;
 
 export class NoCharacterError extends Error {}
 
@@ -40,9 +49,16 @@ export async function play(db: Db, content: Content, accountId: number, now: num
       (summary.workedMs > 0 || summary.finished.length > 0);
     const entries = entriesFromSummary(summary, content, isAbsence, loaded.state.trials);
 
-    let state = advanced;
+    // Ventes et achats du marché conclus pendant l'absence : l'or et les objets arrivent maintenant.
+    const claimed = await claimOrders(tx, loaded.id, advanced, content);
+    for (const text of claimed.lines) entries.push({ at: now, kind: 'info', text });
+
+    const repaired = await claimRepairs(tx, loaded.id, claimed.state, content);
+    for (const text of repaired.lines) entries.push({ at: now, kind: 'info', text });
+
+    let state = repaired.state;
     if (action) {
-      const result = action(advanced, now);
+      const result = await action(repaired.state, now, { tx, characterId: loaded.id, characterName: loaded.name });
       state = result.state;
       if (result.log) entries.push({ at: now, kind: result.logKind ?? 'info', text: result.log });
     }

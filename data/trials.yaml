@@ -131,3 +131,24 @@
     - { item: journeyman_feast, qty: 1 }
     - { item: lantern_soup, qty: 10 }
   reward: { gold: 1500 }
+
+# --- Pêche · Maître Naël ---
+- id: fishing_apprentice
+  profession: fishing
+  rank: 30
+  name: Le fond de la baie
+  intro: "« Une truite, ça se prend au calme. Cent cinquante, ça se prend à la patience. Rapporte-moi les deux. »"
+  tasks:
+    - { item: trout, qty: 150 }
+    - { item: raw_fish, qty: 100 }
+  reward: { gold: 300 }
+
+- id: fishing_journeyman
+  profession: fishing
+  rank: 60
+  name: Les eaux profondes
+  intro: "« Les lanternes ne mordent que la nuit. Montre-moi que tu sais veiller. »"
+  tasks:
+    - { item: lantern_fish, qty: 400 }
+    - { item: pike, qty: 250 }
+  reward: { gold: 1200 }

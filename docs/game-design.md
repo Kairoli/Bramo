@@ -59,7 +59,7 @@ Signés par l'artisan, de meilleure qualité : Normale, Supérieure, Rare, Chef-
   - Artisanat : Forge (outils de tous les métiers), Menuiserie (manches, archerie), Cuisine, Alchimie, **Tannerie** (séparée de la Couture), Couture, **Joaillerie**, Enchantement, Artificerie ;
   - Monde : **Construction** (le grand puits : atelier personnel et halle du clan), **Exploration** (cartes de gisement, curiosités, sites) ;
   - Extensions : Élevage, Archéologie, Dressage.
-- [Prototype] `data/professions.yaml` liste les 17 métiers proposés ; **6 sont jouables** (Minage, Bûcheronnage, Herboristerie, Forge, Menuiserie, Cuisine), avec un outil par métier (fer d'outil de la Forge + manche de la Menuiserie) et des épreuves 30 et 60 pour chacun (ancienne règle de rangs, à remplacer : §3.2). Le poisson reste vendu par le **marchand du port** (PNJ), qui rachète à 10 % de la valeur de référence.
+- [Prototype] `data/professions.yaml` liste les 17 métiers proposés ; **6 sont jouables** (Minage, Bûcheronnage, Herboristerie, Forge, Menuiserie, Cuisine), avec un outil par métier (fer d'outil de la Forge + manche de la Menuiserie) et des épreuves 30 et 60 pour chacun (ancienne règle de rangs, à remplacer : §3.2). **La Pêche est jouable depuis le 21 octobre** (7 métiers jouables) : il n'y a plus de marchand PNJ.
 - [Décidé] **Usure** : elle suit les heures d'usage réel ; un objet usé se répare et **ne perd jamais de durabilité maximale** (un objet qu'on aime ne se détruit pas). [Prototype] Dans le moteur depuis le 21 octobre : les outils s'usent au temps de travail effectif (40 / 60 / 90 h selon le métal), un outil usé ne donne plus son bonus mais reste dans le sac, réparation chez le PNJ (50 % de la valeur au prorata de l'usure), recyclage à 40 %, garde-manger automatique. Réparation par un artisan (30 % des matériaux, commande) : avec le marché.
 
 ## 5. Boucle idle
@@ -121,8 +121,8 @@ Mêlée > Tir > Magie > Mêlée.
 ## 8. Économie et social
 
 ### 8.1 Marché (P2) [Décidé]
-Marché entre joueurs : ordres d'achat et de vente, **taxe de 5 %**, commandes artisanales. Rôle limité des PNJ.
-- [Recommandé] L'usure renouvelle la demande mais **n'est pas le puits principal** (elle ne retire que quelques pour cent du travail) ; les puits de volume sont la **Construction**, les consommables et le **recyclage** ; le robinet d'or à tenir est le **rachat du PNJ** (10 %, plafonné par semaine) ; un **Comptoir de la guilde** donne trois commandes PNJ par semaine ([`design/economie.md`](design/economie.md)).
+Marché entre joueurs : ordres d'achat et de vente, **taxe de 5 %**, commandes artisanales. [Décidé le 21 octobre] **Pas de PNJ qui rachète** ; le PNJ ne passe que X commandes par jour, **propres à chaque joueur et adaptées à ses niveaux** (Comptoir de la guilde), et un **Étal de la guilde** vend les objets de palier 1 seulement quand aucun joueur n'en propose. [Prototype] dans le code : [`design/marche.md`](design/marche.md).
+- [Recommandé] L'usure renouvelle la demande mais **n'est pas le puits principal** (elle ne retire que quelques pour cent du travail) ; les puits de volume sont la **Construction**, les consommables et le **recyclage** ; le robinet d'or à tenir est le **Comptoir de la guilde** (X commandes PNJ par jour, [Décidé]) ; il n'y a **aucun rachat PNJ** ([`design/economie.md`](design/economie.md), [`design/marche.md`](design/marche.md)).
 
 ### 8.2 Clans (P3)
 - [Décidé] Axe social important ; fonctionnement à construire. Pas de chantier commun au serveur.
@@ -150,7 +150,7 @@ Maquettes de référence : `docs/maquettes/`
 - Police unique **Bricolage Grotesque**, palette « Anthracite et cuivre » (voir `CLAUDE.md`).
 
 ### 9.2 Accueil
-- Direction choisie le 21 octobre : **scène du bourg** où passent d'autres joueurs et **Panneau du bourg** centré sur le **fil du serveur** ; pas de bonus du jour ; commandes de PNJ non tranchées ([Recommandé] : Comptoir hebdomadaire). La carte du monde pourra revenir en popup « Voyager » avec l'Exploration.
+- Direction choisie le 21 octobre : **scène du bourg** où passent d'autres joueurs et **Panneau du bourg** centré sur le **fil du serveur** ; pas de bonus du jour ; commandes de PNJ : [Décidé] X par jour au maximum (Comptoir de la guilde, dans la salle Marché). La carte du monde pourra revenir en popup « Voyager » avec l'Exploration.
 - **En bas, trois colonnes** : journal et discussion (Tout / Journal / Clan / Serveur) ; le personnage **en entier** au centre, entouré de ses emplacements ; activité en cours (anneau, gains, file) à droite.
 
 ### 9.2 bis Salle Personnage

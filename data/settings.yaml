@@ -44,6 +44,24 @@ bonusCaps:
 wear:
   repairGoldShare: 0.5    # coût PNJ = 50 % de la valeur de l'objet, au prorata de l'usure ; à équilibrer
   recycleShare: 0.4       # part des matériaux principaux rendue, arrondie vers le bas
+  repairXpShare: 0.5      # XP d'une réparation par matériaux : part de l'XP de la recette de l'objet
+
+# Prime de commande : livrer un ordre d'achat d'un objet qu'on sait fabriquer rapporte un peu d'XP en plus,
+# plafonné par jour pour que des échanges de complaisance entre deux comptes ne servent à rien.
+commissions:
+  primeShare: 0.2         # +20 % de l'XP de la recette ; à équilibrer
+  primeUnitsPerDay: 100   # unités concernées par jour de jeu
+
+# Marché entre joueurs (décision du 21 octobre : pas de PNJ qui rachète ; le PNJ ne passe que des commandes).
+market:
+  taxShare: 0.05          # prélevée sur le produit de chaque vente, détruite (puits d'or)
+  maxOpenOrders: 20       # ordres ouverts par joueur
+  maxPrice: 10000000      # prix unitaire maximal
+  maxQuantity: 10000      # quantité maximale par ordre
+
+# Comptoir de la guilde : commandes PNJ du jour (data/npc_orders.yaml), les mêmes pour tous, une fois chacune.
+npcOrders:
+  perDay: 3
 
 absence:
   minSummaryMin: 5        # en dessous, pas de fenêtre de résumé à la connexion

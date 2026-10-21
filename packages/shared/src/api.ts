@@ -24,6 +24,62 @@ export const tradeBody = z.object({ itemId: z.string(), qty: z.number().int().mi
 export const classBody = z.object({ classId: z.string() });
 export const trialBody = z.object({ trialId: z.string() });
 
+export const placeOrderBody = z.object({
+  side: z.enum(['buy', 'sell']),
+  itemId: z.string(),
+  qty: z.number().int(),
+  price: z.number().int(),
+  /** Objets durables : rang de l'exemplaire proposé (0 = le plus usé), tel que le sac les liste. */
+  copy: z.number().int().min(0).optional(),
+});
+export const fillOrderBody = z.object({ orderId: z.number().int(), qty: z.number().int().min(1) });
+export const orderIdBody = z.object({ orderId: z.number().int() });
+export const npcOrderBody = z.object({ orderId: z.string() });
+
+export const requestRepairBody = z.object({ itemId: z.string(), copy: z.number().int().min(0), fee: z.number().int() });
+export const repairIdBody = z.object({ requestId: z.number().int() });
+export const stallBody = z.object({ itemId: z.string(), qty: z.number().int().min(1) });
+
+/** Demande de réparation confiée aux artisans. */
+export interface RepairRequestView {
+  id: number;
+  itemId: string;
+  /** Usure de l'outil confié, en ms de travail. */
+  wear: number;
+  /** Or mis de côté pour l'artisan (avant taxe). */
+  fee: number;
+  ownerName: string;
+  mine: boolean;
+}
+
+/** Un ordre du marché tel que le client le voit. */
+export interface MarketOrderView {
+  id: number;
+  side: 'buy' | 'sell';
+  itemId: string;
+  qty: number;
+  price: number;
+  /** Usure de l'exemplaire (objets durables) en ms de travail ; 0 sinon. */
+  wear: number;
+  ownerName: string;
+  mine: boolean;
+}
+
+/** Résumé d'un objet sur le marché : meilleurs prix et profondeur. */
+export interface MarketItemSummary {
+  itemId: string;
+  bestSell: number | null;
+  bestBuy: number | null;
+  sellQty: number;
+  buyQty: number;
+}
+
+export interface MyOrderView extends MarketOrderView {
+  /** À récupérer : or net des ventes ou objets achetés, versés au prochain passage. */
+  waitingGold: number;
+  waitingQty: number;
+}
+
 export interface JournalEntry {
   id: number;
   at: number;

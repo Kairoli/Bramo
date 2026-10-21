@@ -4,6 +4,7 @@ import {
   itemsFileSchema,
   professionsFileSchema,
   recipesFileSchema,
+  npcOrdersFileSchema,
   settingsSchema,
   trialsFileSchema,
 } from './schemas/content.js';
@@ -19,6 +20,7 @@ export interface RawContent {
   classes: unknown;
   cosmetics: unknown;
   trials: unknown;
+  npcOrders: unknown;
   /** Un fichier de recettes par entrée : [nom du fichier, contenu]. */
   recipes: [string, unknown][];
 }
@@ -37,6 +39,7 @@ export function buildContent(raw: RawContent): Content {
   const classList = parse(classesFileSchema, raw.classes, 'classes.yaml');
   const cosmetics = parse(cosmeticsFileSchema, raw.cosmetics, 'cosmetics.yaml');
   const trialList = parse(trialsFileSchema, raw.trials, 'trials.yaml');
+  const npcOrderList = parse(npcOrdersFileSchema, raw.npcOrders ?? [], 'npc_orders.yaml');
   const errors: string[] = [];
 
   const unique = <T extends { id: string }>(list: T[], file: string) => {
@@ -58,6 +61,12 @@ export function buildContent(raw: RawContent): Content {
     if (item.tool && !professionMap[item.tool.profession]) {
       errors.push(`items.yaml : ${item.id} est l'outil d'un métier inconnu « ${item.tool.profession} »`);
     }
+  }
+  for (const item of itemList) {
+    if (!item.repair) continue;
+    if (!item.tool?.durabilityHours) errors.push(`items.yaml : ${item.id} a une réparation mais ne s'use pas`);
+    if (!professionMap[item.repair.profession]) errors.push(`items.yaml : réparation de ${item.id} : métier inconnu « ${item.repair.profession} »`);
+    for (const m of item.repair.materials) if (!items[m.item]) errors.push(`items.yaml : réparation de ${item.id} : objet inconnu « ${m.item} »`);
   }
   for (const r of Object.values(recipes)) {
     const profession = professionMap[r.profession];
@@ -93,6 +102,11 @@ export function buildContent(raw: RawContent): Content {
     if (!t) errors.push(`recette ${r.id} : épreuve inconnue « ${r.trial} »`);
     else if (t.profession !== r.profession) errors.push(`recette ${r.id} : l'épreuve ${t.id} est d'un autre métier`);
   }
+  const npcOrders = unique(npcOrderList, 'npc_orders.yaml');
+  for (const o of npcOrderList) {
+    if (!professionMap[o.profession]) errors.push(`npc_orders.yaml : ${o.id} est d'un métier inconnu « ${o.profession} »`);
+    for (const s of o.items) if (!items[s.item]) errors.push(`npc_orders.yaml : ${o.id} demande un objet inconnu « ${s.item} »`);
+  }
   const classes = unique(classList, 'classes.yaml');
   unique(cosmetics.outfits, 'cosmetics.yaml');
   for (const c of classList) {
@@ -107,5 +121,5 @@ export function buildContent(raw: RawContent): Content {
   }
   if (errors.length) throw new ContentError(`Données incohérentes :\n- ${errors.join('\n- ')}`);
 
-  return { settings, professions, items, recipes, trials, classes, cosmetics, xpTable: buildXpTable(settings.xp.maxLevel) };
+  return { settings, professions, items, recipes, trials, npcOrders, classes, cosmetics, xpTable: buildXpTable(settings.xp.maxLevel) };
 }

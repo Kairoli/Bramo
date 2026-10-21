@@ -91,7 +91,7 @@ export function useEquipment(appearance?: Appearance): Record<EquipSlotId, Equip
 
   // Outil : le meilleur possédé pour le métier en cours (sinon le meilleur tout court).
   const activeProfession = state.activity && content.recipes[state.activity.recipeId]?.profession;
-  const isWorn = (i: Item) => state.durability[i.id]?.remainingMs === 0;
+  const isWorn = (i: Item) => !!state.durability[i.id] && state.durability[i.id]!.copies.every((r) => r <= 0);
   const tools = Object.keys(state.inventory)
     .map((id) => content.items[id])
     .filter((i): i is Item => !!i?.tool)

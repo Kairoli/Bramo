@@ -1,0 +1,39 @@
+# Commandes PNJ du Comptoir de la guilde. Le PNJ n'achète pas à la demande : chaque joueur reçoit chaque jour
+# `settings.npcOrders.perDay` commandes, tirées pour lui parmi des métiers au hasard, en s'adaptant à son niveau dans
+# chacun (une commande n'est proposée que si `level` ≤ son niveau ; on tire parmi les trois plus hautes accessibles).
+# Un joueur haut en Minage mais niveau 1 en Pêche reçoit donc une commande de pêche de niveau 1.
+# Généré par un script de calibrage puis ajusté à la main : récolte = 15 min de travail à 10 or la minute × 2^((L−1)/55). # à équilibrer
+
+- {id: mining_copper_ore, profession: mining, level: 1, client: Maître Orvald, text: "« La forge réclame de la matière. Rien de plus, rien de moins. »", items: [{item: copper_ore, qty: 75}], gold: 150}
+- {id: mining_iron_ore, profession: mining, level: 10, client: Maître Orvald, text: "« Rapporte-moi ça avant que la galerie ne ferme. »", items: [{item: iron_ore, qty: 65}], gold: 170}
+- {id: mining_coal, profession: mining, level: 20, client: Maître Orvald, text: "« La forge réclame de la matière. Rien de plus, rien de moins. »", items: [{item: coal, qty: 55}], gold: 190}
+- {id: mining_silver_ore, profession: mining, level: 30, client: Maître Orvald, text: "« Rapporte-moi ça avant que la galerie ne ferme. »", items: [{item: silver_ore, qty: 50}], gold: 215}
+- {id: mining_mithril_ore, profession: mining, level: 40, client: Maître Orvald, text: "« La forge réclame de la matière. Rien de plus, rien de moins. »", items: [{item: mithril_ore, qty: 45}], gold: 245}
+- {id: mining_gold_ore, profession: mining, level: 50, client: Maître Orvald, text: "« Rapporte-moi ça avant que la galerie ne ferme. »", items: [{item: gold_ore, qty: 40}], gold: 280}
+- {id: woodcutting_pine_log, profession: woodcutting, level: 1, client: Maîtresse Aldra, text: "« Le bois sec ne se commande pas, il se mérite. »", items: [{item: pine_log, qty: 75}], gold: 150}
+- {id: woodcutting_oak_log, profession: woodcutting, level: 10, client: Maîtresse Aldra, text: "« Les charpentiers font la queue devant ma porte. »", items: [{item: oak_log, qty: 65}], gold: 170}
+- {id: woodcutting_ash_log, profession: woodcutting, level: 20, client: Maîtresse Aldra, text: "« Le bois sec ne se commande pas, il se mérite. »", items: [{item: ash_log, qty: 55}], gold: 190}
+- {id: woodcutting_yew_log, profession: woodcutting, level: 30, client: Maîtresse Aldra, text: "« Les charpentiers font la queue devant ma porte. »", items: [{item: yew_log, qty: 50}], gold: 215}
+- {id: woodcutting_moonwood_log, profession: woodcutting, level: 40, client: Maîtresse Aldra, text: "« Le bois sec ne se commande pas, il se mérite. »", items: [{item: moonwood_log, qty: 45}], gold: 245}
+- {id: herbalism_mint, profession: herbalism, level: 1, client: Maîtresse Ysolde, text: "« À cueillir à l’aube, de préférence. »", items: [{item: mint, qty: 75}], gold: 150}
+- {id: herbalism_thyme, profession: herbalism, level: 10, client: Maîtresse Ysolde, text: "« Les herbes n’attendent pas, et moi non plus. »", items: [{item: thyme, qty: 65}], gold: 170}
+- {id: herbalism_nettle_root, profession: herbalism, level: 20, client: Maîtresse Ysolde, text: "« À cueillir à l’aube, de préférence. »", items: [{item: nettle_root, qty: 55}], gold: 190}
+- {id: herbalism_sage, profession: herbalism, level: 30, client: Maîtresse Ysolde, text: "« Les herbes n’attendent pas, et moi non plus. »", items: [{item: sage, qty: 50}], gold: 215}
+- {id: herbalism_lantern_lily, profession: herbalism, level: 40, client: Maîtresse Ysolde, text: "« À cueillir à l’aube, de préférence. »", items: [{item: lantern_lily, qty: 45}], gold: 245}
+- {id: herbalism_frost_flower, profession: herbalism, level: 60, client: Maîtresse Ysolde, text: "« Les herbes n’attendent pas, et moi non plus. »", items: [{item: frost_flower, qty: 40}], gold: 315}
+- {id: fishing_raw_fish, profession: fishing, level: 1, client: Maître Naël, text: "« La mer a donné. À toi de la remercier. »", items: [{item: raw_fish, qty: 75}], gold: 150}
+- {id: fishing_trout, profession: fishing, level: 20, client: Maître Naël, text: "« Pas de poisson, pas de dîner. C’est la loi. »", items: [{item: trout, qty: 55}], gold: 190}
+- {id: fishing_pike, profession: fishing, level: 35, client: Maître Naël, text: "« La mer a donné. À toi de la remercier. »", items: [{item: pike, qty: 50}], gold: 230}
+- {id: fishing_lantern_fish, profession: fishing, level: 50, client: Maître Naël, text: "« Pas de poisson, pas de dîner. C’est la loi. »", items: [{item: lantern_fish, qty: 40}], gold: 280}
+- {id: fishing_abyss_ray, profession: fishing, level: 70, client: Maître Naël, text: "« La mer a donné. À toi de la remercier. »", items: [{item: abyss_ray, qty: 35}], gold: 360}
+- {id: smithing_bronze_bar, profession: smithing, level: 1, client: Maître Brunhild, text: "« Des lingots propres, sans scories. Je regarde. »", items: [{item: bronze_bar, qty: 10}], gold: 100}
+- {id: smithing_iron_bar, profession: smithing, level: 10, client: Maître Brunhild, text: "« L’enclume est vide, ça se voit. »", items: [{item: iron_bar, qty: 10}], gold: 220}
+- {id: smithing_steel_bar, profession: smithing, level: 25, client: Maître Brunhild, text: "« Des lingots propres, sans scories. Je regarde. »", items: [{item: steel_bar, qty: 10}], gold: 420}
+- {id: carpentry_pine_plank, profession: carpentry, level: 1, client: Maître Joris, text: "« Des planches droites, s’il te plaît. Droites. »", items: [{item: pine_plank, qty: 20}], gold: 100}
+- {id: carpentry_pine_handle, profession: carpentry, level: 1, client: Maître Joris, text: "« Le comptoir se remplit de sciure, mais pas de bois. »", items: [{item: pine_handle, qty: 20}], gold: 70}
+- {id: carpentry_oak_plank, profession: carpentry, level: 10, client: Maître Joris, text: "« Des planches droites, s’il te plaît. Droites. »", items: [{item: oak_plank, qty: 20}], gold: 170}
+- {id: carpentry_oak_handle, profession: carpentry, level: 10, client: Maître Joris, text: "« Le comptoir se remplit de sciure, mais pas de bois. »", items: [{item: oak_handle, qty: 20}], gold: 130}
+- {id: cooking_mint_tea, profession: cooking, level: 1, client: Maître Bertin, text: "« Le service de ce soir ne se fera pas tout seul. »", items: [{item: mint_tea, qty: 8}], gold: 90}
+- {id: cooking_grilled_fish, profession: cooking, level: 5, client: Maître Bertin, text: "« Un bon plat, c’est de bons produits. Apporte-les. »", items: [{item: grilled_fish, qty: 8}], gold: 200}
+- {id: cooking_nettle_broth, profession: cooking, level: 15, client: Maître Bertin, text: "« Le service de ce soir ne se fera pas tout seul. »", items: [{item: nettle_broth, qty: 6}], gold: 300}
+- {id: cooking_sage_trout, profession: cooking, level: 30, client: Maître Bertin, text: "« Un bon plat, c’est de bons produits. Apporte-les. »", items: [{item: sage_trout, qty: 5}], gold: 420}

@@ -44,7 +44,23 @@ export const settingsSchema = z.object({
     repairGoldShare: ratio,
     /** Part des matériaux principaux rendue par le recyclage (arrondie vers le bas). */
     recycleShare: z.number().min(0).max(1),
+    /** XP d'une réparation par matériaux (soi-même ou pour un autre) : part de l'XP de la recette de l'objet. */
+    repairXpShare: ratio,
   }),
+  /** Prime de commande : en livrant un ordre d'achat d'un objet qu'on sait fabriquer, on gagne un peu d'XP en plus (protégée par un plafond quotidien). */
+  commissions: z.object({
+    primeShare: ratio,
+    primeUnitsPerDay: z.number().int().min(0),
+  }),
+  /** Marché entre joueurs : ordres d'achat et de vente, taxe sur les ventes (puits d'or). */
+  market: z.object({
+    taxShare: z.number().min(0).max(1),
+    maxOpenOrders: z.number().int().min(1),
+    maxPrice: z.number().int().min(1),
+    maxQuantity: z.number().int().min(1),
+  }),
+  /** Commandes PNJ du Comptoir de la guilde : seul achat du PNJ, `perDay` par jour de jeu. */
+  npcOrders: z.object({ perDay: z.number().int().min(0) }),
   absence: z.object({
     minSummaryMin: z.number().min(0),
   }),
@@ -70,10 +86,14 @@ export const itemSchema = z.object({
   id,
   name: z.string(),
   category: id,
-  /** Prix de revente au marchand PNJ, en or. */
+  /** Valeur de référence en or (réparations, repères d'équilibrage) ; il n'y a plus de marchand PNJ qui rachète. */
   value: z.number().int().min(0),
-  /** Prix d'achat au marchand PNJ ; absent = non vendu par le PNJ. */
-  shopPrice: z.number().int().min(1).optional(),
+  /** Étal de la guilde : prix auquel le PNJ vend cet objet de palier 1 tant qu'aucun joueur n'en propose. Absent = jamais vendu par le PNJ. */
+  stallPrice: z.number().int().min(1).optional(),
+  /** Réparation par un artisan ou soi-même : métier et niveau requis, matériaux consommés (≈ 30 % des matériaux principaux). */
+  repair: z
+    .object({ profession: id, level: z.number().int().min(1), materials: z.array(z.object({ item: id, qty: z.number().int().min(1) })).min(1) })
+    .optional(),
   tool: z
     .object({
       profession: id,
@@ -118,10 +138,22 @@ export const trialSchema = z.object({
   reward: z.object({ gold: z.number().int().min(0) }),
 });
 
+export const npcOrderSchema = z.object({
+  id,
+  profession: id,
+  /** Niveau minimum dans le métier pour que la commande soit proposée. */
+  level: z.number().int().min(1),
+  client: z.string(),
+  text: z.string(),
+  items: z.array(stackSchema).min(1),
+  gold: z.number().int().min(1),
+});
+
 export const professionsFileSchema = z.array(professionSchema);
 export const itemsFileSchema = z.array(itemSchema);
 export const recipesFileSchema = z.array(recipeSchema);
 export const trialsFileSchema = z.array(trialSchema);
+export const npcOrdersFileSchema = z.array(npcOrderSchema);
 
 export type Settings = z.infer<typeof settingsSchema>;
 export type ProfessionFamily = z.infer<typeof professionFamilySchema>;
@@ -130,6 +162,7 @@ export type Item = z.infer<typeof itemSchema>;
 export type Recipe = z.infer<typeof recipeSchema>;
 export type Stack = z.infer<typeof stackSchema>;
 export type Trial = z.infer<typeof trialSchema>;
+export type NpcOrder = z.infer<typeof npcOrderSchema>;
 
 /** Contenu chargé, validé et indexé. Construit par `buildContent`. */
 export interface Content {
@@ -139,6 +172,8 @@ export interface Content {
   recipes: Record<string, Recipe>;
   /** Épreuves de maître, dans l'ordre des paliers pour chaque métier. */
   trials: Record<string, Trial>;
+  /** Liste des commandes PNJ possibles ; chaque jour en tire `settings.npcOrders.perDay`. */
+  npcOrders: Record<string, NpcOrder>;
   classes: Record<string, CharacterClass>;
   cosmetics: Cosmetics;
   /** xpTable[L] = XP totale pour atteindre le niveau L (index 0 inutilisé). */

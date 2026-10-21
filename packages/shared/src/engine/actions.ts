@@ -2,7 +2,8 @@ import type { Content } from '../schemas/content.js';
 import { levelForXp } from '../formulas/xp.js';
 import { NO_ENERGY, dayKey, energyChargesLeft, energyDurationMs } from '../formulas/rates.js';
 import { type CharacterState, GameError, addStack, cloneState } from './state.js';
-import { durabilityMs, startNextFromQueue } from './advance.js';
+import { startNextFromQueue } from './advance.js';
+import { copiesWear, durabilityMs, isDurable, takeCopy } from './gear.js';
 import { recipeAvailable } from './trials.js';
 
 /**
@@ -68,53 +69,30 @@ export function eatMeal(input: CharacterState, itemId: string, now: number, cont
   return state;
 }
 
-export function buyItem(input: CharacterState, itemId: string, qty: number, content: Content): CharacterState {
-  const item = content.items[itemId];
-  if (!item?.shopPrice) throw new GameError('not_sold', 'Le marchand ne vend pas cet objet.');
-  if (!Number.isInteger(qty) || qty < 1) throw new GameError('quantity', 'Quantité invalide.');
-  const cost = item.shopPrice * qty;
-  if (input.gold < cost) throw new GameError('gold', 'Pas assez d’or.');
-  const state = cloneState(input);
-  state.gold -= cost;
-  addStack(state.inventory, itemId, qty);
-  return state;
-}
-
-export function sellItem(input: CharacterState, itemId: string, qty: number, content: Content): CharacterState {
-  const item = content.items[itemId];
-  if (!item) throw new GameError('unknown_item', 'Objet inconnu.');
-  if (!Number.isInteger(qty) || qty < 1) throw new GameError('quantity', 'Quantité invalide.');
-  if ((input.inventory[itemId] ?? 0) < qty) throw new GameError('missing', 'Vous n’en avez pas assez.');
-  const state = cloneState(input);
-  state.gold += item.value * qty;
-  addStack(state.inventory, itemId, -qty);
-  return state;
-}
-
-/** Part d'usure d'un objet entre 0 (neuf) et 1 (usé). */
-export function wornShare(itemId: string, state: CharacterState, content: Content): number {
+/** Part d'usure d'un exemplaire entre 0 (neuf) et 1 (usé). */
+function wornShare(wear: number, itemId: string, content: Content): number {
   const total = durabilityMs(content.items[itemId]);
-  return Number.isFinite(total) ? Math.min(1, (state.wear[itemId] ?? 0) / total) : 0;
+  return Number.isFinite(total) ? Math.min(1, wear / total) : 0;
 }
 
-/** Prix de la réparation chez le PNJ : proportionnel à l'usure, au moins 1 or dès qu'il y a de l'usure. */
+/** Prix de la réparation (chez le PNJ) de l'exemplaire le plus usé : proportionnel à l'usure, au moins 1 or. */
 export function repairCost(itemId: string, state: CharacterState, content: Content): number {
-  const share = wornShare(itemId, state, content);
+  const share = wornShare(copiesWear(state, itemId)[0] ?? 0, itemId, content);
   if (share <= 0) return 0;
   return Math.max(1, Math.ceil(content.items[itemId]!.value * content.settings.wear.repairGoldShare * share));
 }
 
-/** Réparer chez le PNJ : rend toute la durabilité, la durabilité maximale ne baisse jamais. */
+/** Réparer chez le PNJ l'exemplaire le plus usé : il retrouve toute sa durabilité, le maximum ne baisse jamais. */
 export function repairItem(input: CharacterState, itemId: string, content: Content): CharacterState {
   const item = content.items[itemId];
-  if (!item || !Number.isFinite(durabilityMs(item))) throw new GameError('not_repairable', 'Cet objet ne s’use pas.');
+  if (!item || !isDurable(item)) throw new GameError('not_repairable', 'Cet objet ne s’use pas.');
   if ((input.inventory[itemId] ?? 0) < 1) throw new GameError('missing', 'Vous n’en avez pas.');
   const cost = repairCost(itemId, input, content);
   if (cost === 0) throw new GameError('not_worn', 'Cet objet est comme neuf.');
   if (input.gold < cost) throw new GameError('gold', 'Pas assez d’or.');
   const state = cloneState(input);
   state.gold -= cost;
-  delete state.wear[itemId];
+  takeCopy(state, itemId, 0);
   return state;
 }
 
@@ -140,7 +118,8 @@ export function recycleItem(input: CharacterState, itemId: string, qty: number, 
   if (!yields.length) throw new GameError('not_recyclable', 'Rien à récupérer dans cet objet.');
   const state = cloneState(input);
   addStack(state.inventory, itemId, -qty);
-  if (!state.inventory[itemId]) delete state.wear[itemId];
+  // Les exemplaires les plus usés partent d'abord.
+  for (let i = 0; i < qty; i++) takeCopy(state, itemId, 0);
   for (const y of yields) addStack(state.inventory, y.item, y.qty * qty);
   return state;
 }
@@ -195,6 +174,7 @@ export function chooseClass(input: CharacterState, classId: string, content: Con
 
 export function newCharacterState(now: number, content: Content): CharacterState {
   return {
+    seed: 0,
     gold: content.settings.character.startingGold,
     skills: {},
     inventory: {},
@@ -206,6 +186,8 @@ export function newCharacterState(now: number, content: Content): CharacterState
     buff: null,
     wear: {},
     pantry: {},
+    npc: { dayKey: '', done: [] },
+    prime: { dayKey: '', units: 0 },
     classId: null,
     outfit: null,
     trials: [],

@@ -7,7 +7,15 @@ import {
   type ContentResponse,
   GameError,
   activateEnergy,
-  buyItem,
+  completeNpcOrder,
+  repairIdBody,
+  repairWithMaterials,
+  requestRepairBody,
+  stallBody,
+  fillOrderBody,
+  npcOrderBody,
+  orderIdBody,
+  placeOrderBody,
   cancelAction,
   cancelBody,
   chooseClass,
@@ -22,7 +30,6 @@ import {
   unstockPantry,
   itemBody,
   newCharacterState,
-  sellItem,
   startActivity,
   startBody,
   tradeBody,
@@ -41,6 +48,8 @@ import {
 } from './auth.js';
 import { type Action, NoCharacterError, play } from './game.js';
 import { recentEntries } from './journal.js';
+import { cancelRepair, openRepairs, requestRepair, takeRepair } from './repairs.js';
+import { buyFromStall, cancelOrder, fillOrder, marketBook, marketSummary, myOrders, placeOrder } from './market.js';
 
 export interface AppOptions {
   db: Db;
@@ -99,6 +108,13 @@ export async function buildApp({ db, content, clock = Date.now, secureCookies = 
     }
   }
 
+  async function myCharacter(req: FastifyRequest) {
+    const accountId = await requireAccount(req);
+    const [me] = await db.select().from(characters).where(eq(characters.accountId, accountId));
+    if (!me) throw new HttpError(404, 'no_character', 'Aucun personnage.');
+    return me;
+  }
+
   const body = <T>(schema: z.ZodType<T>, req: FastifyRequest): T => schema.parse(req.body);
   const recipeName = (id: string) => content.recipes[id]?.name ?? id;
   const itemName = (id: string) => content.items[id]?.name ?? id;
@@ -109,6 +125,7 @@ export async function buildApp({ db, content, clock = Date.now, secureCookies = 
     settings: content.settings,
     professions: content.professions,
     items: content.items,
+    npcOrders: content.npcOrders,
     recipes: content.recipes,
     trials: content.trials,
     classes: content.classes,
@@ -233,19 +250,76 @@ export async function buildApp({ db, content, clock = Date.now, secureCookies = 
     })),
   );
 
-  app.post('/api/shop/buy', (req) => {
-    const { itemId, qty } = body(tradeBody, req);
+  app.post('/api/market/order', (req) => {
+    const p = body(placeOrderBody, req);
+    return playAs(req, async (state, now, { tx, characterId }) => placeOrder(tx, content, characterId, state, p, now));
+  });
+
+  app.post('/api/market/fill', (req) => {
+    const { orderId, qty } = body(fillOrderBody, req);
+    return playAs(req, async (state, _now, { tx, characterId }) => fillOrder(tx, content, characterId, state, orderId, qty));
+  });
+
+  app.post('/api/market/cancel', (req) => {
+    const { orderId } = body(orderIdBody, req);
+    return playAs(req, async (state, _now, { tx, characterId }) => cancelOrder(tx, content, characterId, state, orderId));
+  });
+
+  app.get('/api/market', async (req) => {
+    await requireAccount(req);
+    return marketSummary(db);
+  });
+
+  app.get('/api/market/mine', async (req) => {
+    const me = await myCharacter(req);
+    return myOrders(db, me.id, me.name);
+  });
+
+  app.get('/api/market/item/:itemId', async (req) => {
+    const me = await myCharacter(req);
+    const { itemId } = req.params as { itemId: string };
+    if (!content.items[itemId]) throw new HttpError(404, 'unknown_item', 'Objet inconnu.');
+    return marketBook(db, itemId, me.id);
+  });
+
+  app.post('/api/stall/buy', (req) => {
+    const { itemId, qty } = body(stallBody, req);
+    return playAs(req, async (state, _now, { tx }) => buyFromStall(tx, content, state, itemId, qty));
+  });
+
+  app.post('/api/items/repair-self', (req) => {
+    const { itemId } = body(itemBody, req);
     return playAs(req, (state) => ({
-      state: buyItem(state, itemId, qty, content),
-      log: `Achat : ${qty} × ${itemName(itemId)}.`,
+      state: repairWithMaterials(state, itemId, content),
+      log: `Réparation avec vos matériaux : ${itemName(itemId)}.`,
     }));
   });
 
-  app.post('/api/shop/sell', (req) => {
-    const { itemId, qty } = body(tradeBody, req);
-    return playAs(req, (state) => ({
-      state: sellItem(state, itemId, qty, content),
-      log: `Vente : ${qty} × ${itemName(itemId)}.`,
+  app.post('/api/repairs/request', (req) => {
+    const p = body(requestRepairBody, req);
+    return playAs(req, async (state, _now, { tx, characterId }) => requestRepair(tx, content, characterId, state, p));
+  });
+
+  app.post('/api/repairs/take', (req) => {
+    const { requestId } = body(repairIdBody, req);
+    return playAs(req, async (state, now, { tx, characterId }) => takeRepair(tx, content, characterId, state, requestId, now));
+  });
+
+  app.post('/api/repairs/cancel', (req) => {
+    const { requestId } = body(repairIdBody, req);
+    return playAs(req, async (state, _now, { tx, characterId }) => cancelRepair(tx, content, characterId, state, requestId));
+  });
+
+  app.get('/api/repairs', async (req) => {
+    const me = await myCharacter(req);
+    return openRepairs(db, me.id);
+  });
+
+  app.post('/api/npc/complete', (req) => {
+    const { orderId } = body(npcOrderBody, req);
+    return playAs(req, (state, now) => ({
+      state: completeNpcOrder(state, orderId, now, content),
+      log: `Commande honorée : ${content.npcOrders[orderId]?.client ?? orderId} (+${content.npcOrders[orderId]?.gold ?? 0} or).`,
     }));
   });
 

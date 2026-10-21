@@ -1,4 +1,13 @@
-import type { ApiError, ContentResponse, JournalEntry, StateResponse } from '@bramo/shared';
+import type {
+  ApiError,
+  ContentResponse,
+  JournalEntry,
+  MarketItemSummary,
+  MarketOrderView,
+  MyOrderView,
+  RepairRequestView,
+  StateResponse,
+} from '@bramo/shared';
 
 export class RequestError extends Error {
   constructor(
@@ -40,6 +49,21 @@ export const api = {
   eat: (itemId: string) => request<StateResponse>('POST', '/items/eat', { itemId }),
   buy: (itemId: string, qty: number) => request<StateResponse>('POST', '/shop/buy', { itemId, qty }),
   sell: (itemId: string, qty: number) => request<StateResponse>('POST', '/shop/sell', { itemId, qty }),
+  marketSummary: () => request<MarketItemSummary[]>('GET', '/market'),
+  marketItem: (itemId: string) => request<MarketOrderView[]>('GET', `/market/item/${itemId}`),
+  myOrders: () => request<MyOrderView[]>('GET', '/market/mine'),
+  placeOrder: (p: { side: 'buy' | 'sell'; itemId: string; qty: number; price: number; copy?: number }) =>
+    request<StateResponse>('POST', '/market/order', p),
+  fillOrder: (orderId: number, qty: number) => request<StateResponse>('POST', '/market/fill', { orderId, qty }),
+  cancelOrder: (orderId: number) => request<StateResponse>('POST', '/market/cancel', { orderId }),
+  npcComplete: (orderId: string) => request<StateResponse>('POST', '/npc/complete', { orderId }),
+  stallBuy: (itemId: string, qty: number) => request<StateResponse>('POST', '/stall/buy', { itemId, qty }),
+  repairSelf: (itemId: string) => request<StateResponse>('POST', '/items/repair-self', { itemId }),
+  openRepairs: () => request<RepairRequestView[]>('GET', '/repairs'),
+  requestRepair: (itemId: string, copy: number, fee: number) =>
+    request<StateResponse>('POST', '/repairs/request', { itemId, copy, fee }),
+  takeRepair: (requestId: number) => request<StateResponse>('POST', '/repairs/take', { requestId }),
+  cancelRepair: (requestId: number) => request<StateResponse>('POST', '/repairs/cancel', { requestId }),
   repair: (itemId: string) => request<StateResponse>('POST', '/shop/repair', { itemId }),
   recycle: (itemId: string, qty: number) => request<StateResponse>('POST', '/items/recycle', { itemId, qty }),
   stockPantry: (itemId: string, qty: number) => request<StateResponse>('POST', '/pantry/stock', { itemId, qty }),

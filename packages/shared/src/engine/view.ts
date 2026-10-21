@@ -3,8 +3,11 @@ import type { Appearance } from '../schemas/art.js';
 import { levelForXp, nextTitle } from '../formulas/xp.js';
 import { bonusMultiplier, energyChargesLeft, energyDurationMs, presenceAt } from '../formulas/rates.js';
 import type { Activity, CharacterState, MealBuff, QueuedAction } from './state.js';
-import { bonusesFor, durabilityMs, remainingMs } from './advance.js';
+import { bonusesFor } from './advance.js';
+import { copiesRemaining, durabilityMs, isDurable } from './gear.js';
 import { recycleYield, repairCost } from './actions.js';
+import { repairProblem } from './commission.js';
+import { npcDoneToday, npcOrdersOfDay } from './npc.js';
 import { type TrialStatus, earnedTitle, trialStatus, trialsOf } from './trials.js';
 
 /** Ce que le client reçoit. Tous les nombres sont calculés par le serveur. */
@@ -40,11 +43,13 @@ export interface StateView {
   /** Coups de fouet : charges restantes aujourd'hui, et fin de celui en cours (null = aucun). */
   energy: { chargesLeft: number; charges: number; activeUntil: number | null; durationMs: number; multiplier: number };
   buff: MealBuff | null;
-  /** Objets à durabilité possédés : temps de travail restant, durabilité totale, prix de réparation chez le PNJ. */
-  durability: Record<string, { remainingMs: number; totalMs: number; repairCost: number }>;
+  /** Objets à durabilité possédés : durabilité totale, temps restant de chaque exemplaire (le plus usé d'abord), prix de réparation du plus usé chez le PNJ. */
+  durability: Record<string, { totalMs: number; copies: number[]; repairCost: number; repair: { materials: { item: string; qty: number }[]; problem: string | null } | null }>;
   /** Ce que rend le recyclage d'un exemplaire, pour les objets recyclables possédés. */
   recycle: Record<string, { item: string; qty: number }[]>;
   pantry: Record<string, number>;
+  /** Commandes PNJ du jour, avec ce que le joueur a déjà remis. */
+  npcOrders: { id: string; profession: string; level: number; client: string; text: string; items: { item: string; qty: number }[]; gold: number; done: boolean }[];
   /** null tant que le joueur n'a pas choisi sa classe (écran de choix). */
   classId: string | null;
   /** Apparence à afficher : classe et tenue (tenue de départ de la classe par défaut). */
@@ -128,13 +133,16 @@ export function viewState(state: CharacterState, now: number, content: Content):
     buff: state.buff && state.buff.until > now ? state.buff : null,
     durability: Object.fromEntries(
       Object.keys(state.inventory)
-        .filter((id) => Number.isFinite(durabilityMs(content.items[id])))
+        .filter((id) => isDurable(content.items[id]))
         .map((id) => [
           id,
           {
-            remainingMs: Math.max(0, remainingMs(id, state, content)),
             totalMs: durabilityMs(content.items[id]),
+            copies: copiesRemaining(state, id, content),
             repairCost: repairCost(id, state, content),
+            repair: content.items[id]?.repair
+              ? { materials: content.items[id]!.repair!.materials, problem: repairProblem(state, id, content) }
+              : null,
           },
         ]),
     ),
@@ -144,6 +152,7 @@ export function viewState(state: CharacterState, now: number, content: Content):
         .filter(([, y]) => y.length > 0),
     ),
     pantry: state.pantry,
+    npcOrders: npcOrdersOfDay(state, now, content).map((o) => ({ ...o, done: npcDoneToday(state, now, content).includes(o.id) })),
     classId: state.classId,
     appearance: viewAppearance(state, content),
     trials,

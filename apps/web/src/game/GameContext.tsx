@@ -23,8 +23,9 @@ interface Game {
   room: Room;
   professionId: string | null;
   go: (room: Room, professionId?: string | null) => void;
-  shopOpen: boolean;
-  setShopOpen: (open: boolean) => void;
+  /** Objet à afficher en ouvrant le Marché (depuis le sac, une recette…). */
+  marketItem: string | null;
+  openMarket: (itemId?: string | null) => void;
   logout: () => void;
 }
 
@@ -53,7 +54,7 @@ export function GameProvider({
   const [error, setError] = useState<string | null>(null);
   const [room, setRoom] = useState<Room>('home');
   const [professionId, setProfessionId] = useState<string | null>(null);
-  const [shopOpen, setShopOpen] = useState(false);
+  const [marketItem, setMarketItem] = useState<string | null>(null);
   const errorTimer = useRef<number | undefined>(undefined);
 
   const apply = useCallback((res: StateResponse) => {
@@ -114,6 +115,12 @@ export function GameProvider({
     setProfessionId(p);
   }, []);
 
+  const openMarket = useCallback((itemId: string | null = null) => {
+    setMarketItem(itemId);
+    setRoom('market');
+    setProfessionId(null);
+  }, []);
+
   const logout = useCallback(() => {
     api.logout().finally(onLogout);
   }, [onLogout]);
@@ -133,8 +140,8 @@ export function GameProvider({
     room,
     professionId,
     go,
-    shopOpen,
-    setShopOpen,
+    marketItem,
+    openMarket,
     logout,
   };
   return <GameCtx.Provider value={value}>{children}</GameCtx.Provider>;

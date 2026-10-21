@@ -21,6 +21,8 @@ export interface MealBuff {
 
 /** État complet d'un personnage, tel que le moteur le manipule. Horodatages en ms epoch. */
 export interface CharacterState {
+  /** Graine propre au personnage (son identifiant en base) : sert aux tirages déterministes, comme les commandes PNJ. */
+  seed: number;
   gold: number;
   /** XP par métier. */
   skills: Record<string, number>;
@@ -33,10 +35,14 @@ export interface CharacterState {
   lastSeenAt: number;
   energy: EnergyState;
   buff: MealBuff | null;
-  /** Usure des objets à durabilité, en ms de travail effectif (jamais de perte du maximum : réparer remet à 0). */
-  wear: Record<string, number>;
+  /** Usure des exemplaires usés de chaque objet durable, en ms de travail, du plus usé au moins usé (voir gear.ts). */
+  wear: Record<string, number[]>;
   /** Garde-manger : repas rangés, mangés automatiquement dès que le précédent expire (hors ligne compris). */
   pantry: Record<string, number>;
+  /** Unités déjà primées aujourd'hui (prime de commande). */
+  prime: { dayKey: string; units: number };
+  /** Commandes PNJ remises pendant le jour de jeu en cours. */
+  npc: { dayKey: string; done: string[] };
   /** Classe de base, choisie à la création (null tant qu'elle ne l'est pas) et changeable à tout moment. */
   classId: string | null;
   /** Tenue choisie ; null = la tenue de départ de la classe. */

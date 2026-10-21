@@ -4,18 +4,22 @@ import type { StateResponse } from '@bramo/shared';
 import { loadContent } from '@bramo/shared/node';
 import { buildApp } from '../src/app.js';
 import { createDb } from '../src/db/index.js';
+import { characterItems, characters } from '../src/db/schema.js';
+import { eq } from 'drizzle-orm';
 
 process.env.LOG_LEVEL ??= 'silent';
 const content = loadContent(fileURLToPath(new URL('../../../data', import.meta.url)));
 let now = Date.UTC(2026, 0, 10, 12);
 let app: Awaited<ReturnType<typeof buildApp>>;
 let close: () => Promise<void>;
+let db: Awaited<ReturnType<typeof createDb>>['db'];
 let cookie = '';
 
 beforeAll(async () => {
   // PGlite en mémoire : aucune base externe nécessaire pour les tests.
   const created = await createDb(undefined, 'memory://');
   close = created.close;
+  db = created.db;
   app = await buildApp({ db: created.db, content, clock: () => now });
 });
 afterAll(async () => {
@@ -27,6 +31,14 @@ const call = async (method: 'GET' | 'POST', url: string, payload?: object) => {
   const res = await app.inject({ method, url, payload, headers: { cookie } });
   const set = res.headers['set-cookie'];
   if (set) cookie = String(Array.isArray(set) ? set[0] : set).split(';')[0]!;
+  return { status: res.statusCode, json: res.json() };
+};
+
+/** Un joueur à part, avec son propre cookie. */
+const player = (cookieOf: { value: string }) => async (method: 'GET' | 'POST', url: string, payload?: object) => {
+  const res = await app.inject({ method, url, payload, headers: { cookie: cookieOf.value } });
+  const set = res.headers['set-cookie'];
+  if (set) cookieOf.value = String(Array.isArray(set) ? set[0] : set).split(';')[0]!;
   return { status: res.statusCode, json: res.json() };
 };
 
@@ -108,20 +120,13 @@ describe('API', () => {
     expect(((await call('GET', '/api/state')).json as StateResponse).absence).toBeNull();
   });
 
-  it('achète au marchand et garde le journal', async () => {
-    const res = await call('POST', '/api/shop/buy', { itemId: 'raw_fish', qty: 5 });
-    expect((res.json as StateResponse).state.inventory.raw_fish).toBe(5);
-    const journal = (await call('GET', '/api/journal')).json as { text: string }[];
-    expect(journal[0]!.text).toBe('Achat : 5 × Poisson frais.');
-  });
-
   it('refuse de ranger un non-repas au garde-manger et expose usure et garde-manger', async () => {
-    const res = await call('POST', '/api/pantry/stock', { itemId: 'raw_fish', qty: 1 });
+    const res = await call('POST', '/api/pantry/stock', { itemId: 'copper_ore', qty: 1 });
     expect(res.status).toBe(400);
     const view = ((await call('GET', '/api/state')).json as StateResponse).state;
     expect(view.pantry).toEqual({});
     expect(view.durability).toEqual({});
-    expect((await call('POST', '/api/shop/repair', { itemId: 'raw_fish' })).status).toBe(400);
+    expect((await call('POST', '/api/shop/repair', { itemId: 'copper_ore' })).status).toBe(400);
   });
 
   it('se reconnecte avec le mot de passe', async () => {
@@ -130,5 +135,147 @@ describe('API', () => {
     expect((await call('POST', '/api/auth/login', { username: 'BRANN', password: 'mauvais!!' })).status).toBe(401);
     expect((await call('POST', '/api/auth/login', { username: 'BRANN', password: 'motdepasse' })).status).toBe(200);
     expect((await call('GET', '/api/state')).status).toBe(200);
+  });
+
+  it('marché : deux joueurs, ordres croisés, taxe, récupération au passage', async () => {
+    const a = player({ value: '' });
+    const b = player({ value: '' });
+    await a('POST', '/api/auth/register', { username: 'Vendeuse', password: 'motdepasse' });
+    await b('POST', '/api/auth/register', { username: 'Acheteur', password: 'motdepasse' });
+    // A mine 50 cuivre (10 min), puis passe plus tard pour les récupérer.
+    await a('POST', '/api/activity/start', { recipeId: 'mine_copper', quantity: 50, mode: 'replace' });
+    now += 15 * 60_000;
+    const mined = (await a('GET', '/api/state')).json as StateResponse;
+    expect(mined.state.inventory.copper_ore).toBe(50);
+    const gold0 = mined.state.gold;
+
+    // A propose 20 cuivre à 5 or l'unité : l'ordre attend.
+    const sell = (await a('POST', '/api/market/order', { side: 'sell', itemId: 'copper_ore', qty: 20, price: 5 })).json as StateResponse;
+    expect(sell.state.inventory.copper_ore).toBe(30);
+    // B achète 10 à 6 : exécuté au prix de l'offre (5), B paie 50.
+    const buy = (await b('POST', '/api/market/order', { side: 'buy', itemId: 'copper_ore', qty: 10, price: 6 })).json as StateResponse;
+    expect(buy.state.inventory.copper_ore).toBe(10);
+    expect(buy.state.gold).toBe(content.settings.character.startingGold - 50);
+    // A récupère son or net (50 − 5 % arrondi à l'avantage de la taxe = 47) au passage suivant.
+    const after = (await a('GET', '/api/state')).json as StateResponse;
+    expect(after.state.gold).toBe(gold0 + 47);
+    expect(after.journal.some((j) => j.text.startsWith('Vente conclue'))).toBe(true);
+    // Achat direct du reste de l'offre.
+    const book = (await b('GET', '/api/market/item/copper_ore')).json as { id: number; qty: number; mine: boolean }[];
+    expect(book).toHaveLength(1);
+    expect(book[0]!.qty).toBe(10);
+    const fill = await b('POST', '/api/market/fill', { orderId: book[0]!.id, qty: 10 });
+    expect((fill.json as StateResponse).state.inventory.copper_ore).toBe(20);
+    expect((await b('GET', '/api/market/item/copper_ore')).json).toEqual([]);
+    // Ni acheter à soi-même, ni dépasser son or.
+    await a('POST', '/api/market/order', { side: 'sell', itemId: 'copper_ore', qty: 5, price: 9 });
+    const mineOrders = (await a('GET', '/api/market/mine')).json as { id: number; qty: number }[];
+    expect(mineOrders).toHaveLength(1);
+    expect((await a('POST', '/api/market/fill', { orderId: mineOrders[0]!.id, qty: 1 })).status).toBe(400);
+    expect((await a('POST', '/api/market/order', { side: 'buy', itemId: 'copper_ore', qty: 1, price: 9 })).status).toBe(400);
+    expect((await b('POST', '/api/market/order', { side: 'buy', itemId: 'copper_ore', qty: 100, price: 900 })).status).toBe(400);
+    // Annuler rend les objets.
+    const cancelled = (await a('POST', '/api/market/cancel', { orderId: mineOrders[0]!.id })).json as StateResponse;
+    expect(cancelled.state.inventory.copper_ore).toBe(30);
+    expect(((await a('GET', '/api/market')).json as unknown[]).length).toBe(0);
+  });
+
+  it('commandes PNJ : trois par jour, une fois chacune', async () => {
+    const a = player({ value: '' });
+    await a('POST', '/api/auth/register', { username: 'Livreur', password: 'motdepasse' });
+    const view = (await a('GET', '/api/state')).json as StateResponse;
+    expect(view.state.npcOrders).toHaveLength(content.settings.npcOrders.perDay);
+    // Sans les objets demandés, la remise échoue.
+    expect((await a('POST', '/api/npc/complete', { orderId: view.state.npcOrders[0]!.id })).status).toBe(400);
+    expect((await a('POST', '/api/npc/complete', { orderId: 'inconnue' })).status).toBe(400);
+  });
+
+  /** Donne de l'or, des objets et un métier à un joueur (le test saute le temps de jeu). */
+  const grant = async (name: string, gold: number, items: Record<string, number>, wear: Record<string, number[]> = {}, skills: Record<string, number> = {}) => {
+    const [me] = await db.select().from(characters).where(eq(characters.name, name));
+    await db.update(characters).set({ gold, wear }).where(eq(characters.id, me!.id));
+    for (const [itemId, qty] of Object.entries(items)) await db.insert(characterItems).values({ characterId: me!.id, itemId, qty });
+    for (const [skill, xp] of Object.entries(skills)) {
+      const { characterSkills } = await import('../src/db/schema.js');
+      await db.insert(characterSkills).values({ characterId: me!.id, skill, xp }).onConflictDoUpdate({ target: [characterSkills.characterId, characterSkills.skill], set: { xp } });
+    }
+  };
+
+  it('étal de la guilde : palier 1 seulement, et seulement si aucun joueur n’en vend', async () => {
+    const a = player({ value: '' });
+    const b = player({ value: '' });
+    await a('POST', '/api/auth/register', { username: 'Eleveur', password: 'motdepasse' });
+    await b('POST', '/api/auth/register', { username: 'Forgeur', password: 'motdepasse' });
+    await grant('Eleveur', 500, {});
+    expect((await a('POST', '/api/stall/buy', { itemId: 'iron_pickaxe', qty: 1 })).status).toBe(400); // pas de palier 1
+    const bought = await a('POST', '/api/stall/buy', { itemId: 'bronze_pickaxe', qty: 1 });
+    expect((bought.json as StateResponse).state.inventory.bronze_pickaxe).toBe(1);
+    expect((bought.json as StateResponse).state.gold).toBe(500 - 150);
+    // Un joueur met une pioche en vente : l'étal ferme pour cet objet.
+    await grant('Forgeur', 0, { bronze_pickaxe: 1 });
+    await b('POST', '/api/market/order', { side: 'sell', itemId: 'bronze_pickaxe', qty: 1, price: 120, copy: 0 });
+    const closed = await a('POST', '/api/stall/buy', { itemId: 'bronze_pickaxe', qty: 1 });
+    expect(closed.status).toBe(400);
+    expect((closed.json as { code: string }).code).toBe('players_sell');
+  });
+
+  it('réparation par un artisan : outil et or mis de côté, matériaux et or échangés, outil rendu comme neuf', async () => {
+    const owner = player({ value: '' });
+    const smith = player({ value: '' });
+    await owner('POST', '/api/auth/register', { username: 'Mineur', password: 'motdepasse' });
+    await smith('POST', '/api/auth/register', { username: 'Artisan', password: 'motdepasse' });
+    const half = 20 * 3_600_000; // 20 h d'usure sur 40 h
+    await grant('Mineur', 200, { bronze_pickaxe: 1 }, { bronze_pickaxe: [half] });
+    // Niveau 5 de Forge (XP suffisante) et 3 lingots de bronze pour l'artisan.
+    await grant('Artisan', 0, { bronze_bar: 3 }, {}, { smithing: Math.round(content.xpTable[5]!) });
+
+    const asked = (await owner('POST', '/api/repairs/request', { itemId: 'bronze_pickaxe', copy: 0, fee: 60 })).json as StateResponse;
+    expect(asked.state.inventory.bronze_pickaxe).toBeUndefined();
+    expect(asked.state.gold).toBe(140);
+    const board = (await smith('GET', '/api/repairs')).json as { id: number; fee: number; mine: boolean }[];
+    expect(board).toHaveLength(1);
+    expect(board[0]!.mine).toBe(false);
+    expect(((await owner('GET', '/api/repairs')).json as { mine: boolean }[])[0]!.mine).toBe(true);
+
+    const done = (await smith('POST', '/api/repairs/take', { requestId: board[0]!.id })).json as StateResponse;
+    expect(done.state.inventory.bronze_bar).toBeUndefined();
+    expect(done.state.gold).toBe(60 - 3); // taxe 5 % arrondie à l'avantage de la taxe
+    expect((await smith('POST', '/api/repairs/take', { requestId: board[0]!.id })).status).toBe(400);
+
+    const back = (await owner('GET', '/api/state')).json as StateResponse;
+    expect(back.state.inventory.bronze_pickaxe).toBe(1);
+    expect(back.state.durability.bronze_pickaxe!.copies[0]).toBe(40 * 3_600_000);
+    expect(back.journal.some((j) => j.text.includes('comme neuf'))).toBe(true);
+    expect((await owner('GET', '/api/repairs')).json).toEqual([]);
+  });
+
+  it('réparation par un artisan : refuse sans niveau ou sans matériaux, et rend l’outil si on annule', async () => {
+    const owner = player({ value: '' });
+    const novice = player({ value: '' });
+    await owner('POST', '/api/auth/register', { username: 'Client', password: 'motdepasse' });
+    await novice('POST', '/api/auth/register', { username: 'Apprenti', password: 'motdepasse' });
+    await grant('Client', 100, { bronze_pickaxe: 1 }, { bronze_pickaxe: [10 * 3_600_000] });
+    await grant('Apprenti', 0, { bronze_bar: 3 });
+    expect((await owner('POST', '/api/repairs/request', { itemId: 'copper_ore', copy: 0, fee: 10 })).status).toBe(400);
+    expect((await owner('POST', '/api/repairs/request', { itemId: 'bronze_pickaxe', copy: 0, fee: 500 })).status).toBe(400);
+    await owner('POST', '/api/repairs/request', { itemId: 'bronze_pickaxe', copy: 0, fee: 30 });
+    const [req] = (await novice('GET', '/api/repairs')).json as { id: number }[];
+    expect((await novice('POST', '/api/repairs/take', { requestId: req!.id })).status).toBe(400); // niveau 5 de Forge requis
+    const back = (await owner('POST', '/api/repairs/cancel', { requestId: req!.id })).json as StateResponse;
+    expect(back.state.gold).toBe(100);
+    expect(back.state.durability.bronze_pickaxe!.copies[0]).toBe(30 * 3_600_000);
+  });
+
+  it('prime de commande : livrer un ordre d’achat d’un objet qu’on sait fabriquer rapporte de l’XP', async () => {
+    const client = player({ value: '' });
+    const maker = player({ value: '' });
+    await client('POST', '/api/auth/register', { username: 'Commanditaire', password: 'motdepasse' });
+    await maker('POST', '/api/auth/register', { username: 'Fondeur', password: 'motdepasse' });
+    await grant('Fondeur', 0, { bronze_bar: 5 });
+    await client('POST', '/api/market/order', { side: 'buy', itemId: 'bronze_bar', qty: 5, price: 5 });
+    const res = (await maker('POST', '/api/market/order', { side: 'sell', itemId: 'bronze_bar', qty: 5, price: 5 })).json as StateResponse;
+    // « Lingot de bronze » : 1,6 XP par lingot × 5 × prime de 20 % = 1,6 XP.
+    expect(res.state.skills.smithing!.xp).toBeCloseTo(1.6);
+    expect(res.journal.some((j) => j.text.includes('Prime de commande'))).toBe(true);
   });
 });

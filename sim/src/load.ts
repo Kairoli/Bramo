@@ -31,6 +31,8 @@ export function readProposalRaw(name: string): RawContent {
   const dir = join(PROPOSALS_DIR, name);
   if (!existsSync(dir)) throw new Error(`Proposition inconnue : ${name}`);
   const raw = readRawContent(DATA_DIR);
+  // Les commandes PNJ de data/ parlent d'objets que la proposition peut ne pas avoir : le simulateur n'en a pas besoin.
+  raw.npcOrders = [];
   const read = (file: string): unknown => parse(readFileSync(join(dir, file), 'utf8'));
   if (existsSync(join(dir, 'settings.yaml'))) raw.settings = deepMerge(raw.settings, read('settings.yaml'));
   for (const key of ['professions', 'items', 'trials'] as const) {

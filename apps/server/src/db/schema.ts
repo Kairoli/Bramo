@@ -45,7 +45,9 @@ export const characters = pgTable('characters', {
   queue: jsonb('queue').$type<QueuedAction[]>().notNull().default([]),
   energy: jsonb('energy').$type<EnergyState>().notNull(),
   buff: jsonb('buff').$type<MealBuff | null>(),
-  wear: jsonb('wear').$type<Record<string, number>>().notNull().default({}),
+  wear: jsonb('wear').$type<Record<string, number[]>>().notNull().default({}),
+  prime: jsonb('prime').$type<{ dayKey: string; units: number }>().notNull().default({ dayKey: '', units: 0 }),
+  npc: jsonb('npc').$type<{ dayKey: string; done: string[] }>().notNull().default({ dayKey: '', done: [] }),
   pantry: jsonb('pantry').$type<Record<string, number>>().notNull().default({}),
   /** Null tant que le joueur n'a pas choisi sa classe. */
   classId: text('class_id'),
@@ -79,6 +81,49 @@ export const characterItems = pgTable(
     qty: integer('qty').notNull(),
   },
   (t) => [primaryKey({ columns: [t.characterId, t.itemId] })],
+);
+
+export const marketOrders = pgTable(
+  'market_orders',
+  {
+    id: serial('id').primaryKey(),
+    characterId: integer('character_id')
+      .notNull()
+      .references(() => characters.id, { onDelete: 'cascade' }),
+    side: text('side').$type<'buy' | 'sell'>().notNull(),
+    itemId: text('item_id').notNull(),
+    /** Quantité restante à échanger. */
+    qty: integer('qty').notNull(),
+    price: integer('price').notNull(),
+    /** Usure de l'exemplaire proposé (objets durables), en ms. */
+    wear: integer('wear').notNull().default(0),
+    /** Or net des ventes déjà conclues, que le propriétaire récupère à son prochain passage. */
+    collectGold: integer('collect_gold').notNull().default(0),
+    /** Objets déjà achetés par un ordre d'achat, à récupérer. */
+    collectQty: integer('collect_qty').notNull().default(0),
+    createdAt: ts('created_at').notNull().defaultNow(),
+  },
+  (t) => [index('market_orders_book').on(t.itemId, t.side, t.price), index('market_orders_owner').on(t.characterId)],
+);
+
+/** Demandes de réparation à un artisan : l'outil et l'or sont mis de côté ; réparé, l'outil attend son propriétaire. */
+export const repairRequests = pgTable(
+  'repair_requests',
+  {
+    id: serial('id').primaryKey(),
+    characterId: integer('character_id')
+      .notNull()
+      .references(() => characters.id, { onDelete: 'cascade' }),
+    itemId: text('item_id').notNull(),
+    /** Usure de l'exemplaire confié, en ms. */
+    wear: integer('wear').notNull(),
+    /** Or mis de côté, versé (moins la taxe) à l'artisan. */
+    fee: integer('fee').notNull(),
+    /** Renseigné quand un artisan a réparé : l'outil est à récupérer par son propriétaire. */
+    doneAt: ts('done_at'),
+    createdAt: ts('created_at').notNull().defaultNow(),
+  },
+  (t) => [index('repair_requests_open').on(t.doneAt), index('repair_requests_owner').on(t.characterId)],
 );
 
 export const journal = pgTable(

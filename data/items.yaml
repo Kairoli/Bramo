@@ -38,8 +38,11 @@
 - {id: frost_flower, name: Fleur de givre, category: herb, value: 1}
 
 # --- Pêche (le marchand du port vend encore le poisson) ---
-- {id: raw_fish, name: Poisson frais, category: fish, value: 1, shopPrice: 12}
-- {id: trout, name: Truite, category: fish, value: 3, shopPrice: 25}
+- {id: raw_fish, name: Poisson frais, category: fish, value: 1}
+- {id: trout, name: Truite, category: fish, value: 1}
+- {id: pike, name: Brochet, category: fish, value: 1}
+- {id: lantern_fish, name: Poisson-lanterne, category: fish, value: 1}
+- {id: abyss_ray, name: Raie des abysses, category: fish, value: 1}
 
 # --- Forge ---
 - {id: bronze_bar, name: Lingot de bronze, category: bar, value: 1}
@@ -52,20 +55,22 @@
 - {id: iron_arrowhead, name: Pointes de flèche en fer, category: hardware, value: 1}
 - {id: iron_sword, name: Épée de fer, category: weapon, value: 57}
 
-# Outils : un par métier et par métal. Bonus plafonné à +30 % (settings.bonusCaps.tool).
-- {id: bronze_pickaxe, name: Pioche de bronze, category: tool, value: 13, tool: {profession: mining, bonus: 0.10, durabilityHours: 40}}
-- {id: iron_pickaxe, name: Pioche de fer, category: tool, value: 61, tool: {profession: mining, bonus: 0.15, durabilityHours: 60}}
-- {id: steel_pickaxe, name: Pioche d'acier, category: tool, value: 108, tool: {profession: mining, bonus: 0.20, durabilityHours: 90}}
-- {id: bronze_axe, name: Hache de bronze, category: tool, value: 13, tool: {profession: woodcutting, bonus: 0.10, durabilityHours: 40}}
-- {id: iron_axe, name: Hache de fer, category: tool, value: 61, tool: {profession: woodcutting, bonus: 0.15, durabilityHours: 60}}
-- {id: bronze_sickle, name: Serpe de bronze, category: tool, value: 13, tool: {profession: herbalism, bonus: 0.10, durabilityHours: 40}}
-- {id: iron_sickle, name: Serpe de fer, category: tool, value: 61, tool: {profession: herbalism, bonus: 0.15, durabilityHours: 60}}
-- {id: bronze_hammer, name: Marteau de bronze, category: tool, value: 13, tool: {profession: smithing, bonus: 0.10, durabilityHours: 40}}
-- {id: iron_hammer, name: Marteau de fer, category: tool, value: 61, tool: {profession: smithing, bonus: 0.15, durabilityHours: 60}}
-- {id: bronze_saw, name: Scie de bronze, category: tool, value: 13, tool: {profession: carpentry, bonus: 0.10, durabilityHours: 40}}
-- {id: iron_saw, name: Scie de fer, category: tool, value: 61, tool: {profession: carpentry, bonus: 0.15, durabilityHours: 60}}
-- {id: bronze_knife, name: Couteau de bronze, category: tool, value: 13, tool: {profession: cooking, bonus: 0.10, durabilityHours: 40}}
-- {id: iron_knife, name: Couteau de fer, category: tool, value: 61, tool: {profession: cooking, bonus: 0.15, durabilityHours: 60}}
+# Outils : un par métier et par métal. Les outils de bronze sont aussi vendus à l'Étal de la guilde (stallPrice), mais seulement tant qu'aucun joueur n'en propose. Bonus plafonné à +30 % (settings.bonusCaps.tool).
+- {id: bronze_pickaxe, name: Pioche de bronze, category: tool, value: 13, tool: {profession: mining, bonus: 0.10, durabilityHours: 40}, stallPrice: 150, repair: {profession: smithing, level: 5, materials: [{item: bronze_bar, qty: 3}]}}
+- {id: iron_pickaxe, name: Pioche de fer, category: tool, value: 61, tool: {profession: mining, bonus: 0.15, durabilityHours: 60}, repair: {profession: smithing, level: 15, materials: [{item: iron_bar, qty: 3}]}}
+- {id: steel_pickaxe, name: Pioche d'acier, category: tool, value: 108, tool: {profession: mining, bonus: 0.20, durabilityHours: 90}, repair: {profession: smithing, level: 35, materials: [{item: steel_bar, qty: 3}]}}
+- {id: bronze_axe, name: Hache de bronze, category: tool, value: 13, tool: {profession: woodcutting, bonus: 0.10, durabilityHours: 40}, stallPrice: 150, repair: {profession: smithing, level: 5, materials: [{item: bronze_bar, qty: 3}]}}
+- {id: iron_axe, name: Hache de fer, category: tool, value: 61, tool: {profession: woodcutting, bonus: 0.15, durabilityHours: 60}, repair: {profession: smithing, level: 15, materials: [{item: iron_bar, qty: 3}]}}
+- {id: bronze_sickle, name: Serpe de bronze, category: tool, value: 13, tool: {profession: herbalism, bonus: 0.10, durabilityHours: 40}, stallPrice: 150, repair: {profession: smithing, level: 5, materials: [{item: bronze_bar, qty: 3}]}}
+- {id: iron_sickle, name: Serpe de fer, category: tool, value: 61, tool: {profession: herbalism, bonus: 0.15, durabilityHours: 60}, repair: {profession: smithing, level: 15, materials: [{item: iron_bar, qty: 3}]}}
+- {id: bronze_rod, name: Canne de bronze, category: tool, value: 13, tool: {profession: fishing, bonus: 0.10, durabilityHours: 40}, stallPrice: 150, repair: {profession: smithing, level: 5, materials: [{item: bronze_bar, qty: 3}]}}
+- {id: iron_rod, name: Canne de fer, category: tool, value: 61, tool: {profession: fishing, bonus: 0.15, durabilityHours: 60}, repair: {profession: smithing, level: 15, materials: [{item: iron_bar, qty: 3}]}}
+- {id: bronze_hammer, name: Marteau de bronze, category: tool, value: 13, tool: {profession: smithing, bonus: 0.10, durabilityHours: 40}, stallPrice: 150, repair: {profession: smithing, level: 5, materials: [{item: bronze_bar, qty: 3}]}}
+- {id: iron_hammer, name: Marteau de fer, category: tool, value: 61, tool: {profession: smithing, bonus: 0.15, durabilityHours: 60}, repair: {profession: smithing, level: 15, materials: [{item: iron_bar, qty: 3}]}}
+- {id: bronze_saw, name: Scie de bronze, category: tool, value: 13, tool: {profession: carpentry, bonus: 0.10, durabilityHours: 40}, stallPrice: 150, repair: {profession: smithing, level: 5, materials: [{item: bronze_bar, qty: 3}]}}
+- {id: iron_saw, name: Scie de fer, category: tool, value: 61, tool: {profession: carpentry, bonus: 0.15, durabilityHours: 60}, repair: {profession: smithing, level: 15, materials: [{item: iron_bar, qty: 3}]}}
+- {id: bronze_knife, name: Couteau de bronze, category: tool, value: 13, tool: {profession: cooking, bonus: 0.10, durabilityHours: 40}, stallPrice: 150, repair: {profession: smithing, level: 5, materials: [{item: bronze_bar, qty: 3}]}}
+- {id: iron_knife, name: Couteau de fer, category: tool, value: 61, tool: {profession: cooking, bonus: 0.15, durabilityHours: 60}, repair: {profession: smithing, level: 15, materials: [{item: iron_bar, qty: 3}]}}
 
 # --- Menuiserie ---
 - {id: pine_plank, name: Planche de pin, category: plank, value: 1}
@@ -77,11 +82,11 @@
 
 # --- Cuisine : repas (un seul actif, bonus plafonné à +10 %) ---
 - {id: mint_tea, name: Tisane de menthe, category: meal, value: 1, meal: {bonus: 0.03, durationMin: 60}}
-- {id: grilled_fish, name: Poisson grillé au thym, category: meal, value: 4, meal: {bonus: 0.04, durationMin: 45}}
+- {id: grilled_fish, name: Poisson grillé au thym, category: meal, value: 2, meal: {bonus: 0.04, durationMin: 60}}
 - {id: nettle_broth, name: Bouillon d'ortie, category: meal, value: 3, meal: {bonus: 0.05, durationMin: 75}}
-- {id: sage_trout, name: Truite à la sauge, category: meal, value: 13, meal: {bonus: 0.07, durationMin: 45}}
-- {id: lantern_soup, name: Soupe aux lys-lanternes, category: meal, value: 9, meal: {bonus: 0.08, durationMin: 60}}
-- {id: frost_feast, name: Festin du givre, category: meal, value: 17, meal: {bonus: 0.10, durationMin: 90}}
+- {id: sage_trout, name: Truite à la sauge, category: meal, value: 5, meal: {bonus: 0.07, durationMin: 75}}
+- {id: lantern_soup, name: Soupe aux lys-lanternes, category: meal, value: 5, meal: {bonus: 0.08, durationMin: 75}}
+- {id: frost_feast, name: Festin du givre, category: meal, value: 9, meal: {bonus: 0.10, durationMin: 105}}
 
 # --- Chefs-d'œuvre : fabriqués pendant une épreuve de maître, remis au maître ---
 - {id: apprentice_blade, name: Lame d'épreuve, category: masterwork, value: 1}

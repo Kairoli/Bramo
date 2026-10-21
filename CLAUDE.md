@@ -55,10 +55,24 @@ Bramo est un **idle-RPG multijoueur jouable dans le navigateur**, dans l'esprit 
 
 ## 5. État du projet (à jour au 21 octobre 2026)
 
+### Fait — marché entre joueurs, commandes PNJ, Pêche, exemplaires (21 octobre)
+
+- **Décision de Louis** : **aucun PNJ qui rachète** ; le PNJ ne passe que X commandes par jour ; tout le reste est entre joueurs. Le marchand du port est supprimé (engine, routes, `ShopModal`, `shopPrice`). Conception : [`docs/design/marche.md`](docs/design/marche.md) (avec les questions pour Louis) et [`docs/design/items.md`](docs/design/items.md).
+- **Exemplaires** (`engine/gear.ts`) : `state.wear[itemId]` = usure de chaque exemplaire usé, du plus usé au moins usé ; on finit le plus usé d'abord. Réparer remet le plus usé à neuf, recycler jette les plus usés. Vue : `durability[itemId] = { totalMs, copies[], repairCost }`.
+- **Marché** (`engine/market.ts` pur : `match`, `netProceeds`, `validateOrder` ; `apps/server/src/market.ts` : `placeOrder`, `fillOrder`, `cancelOrder`, `claimOrders`, lectures). Table `market_orders` (migration `0003_market_npc`). Ordres limites croisés au prix de l'ordre en attente, or/objets mis de côté, taxe 5 % détruite, produits versés au prochain passage du propriétaire (`play()` appelle `claimOrders` avant l'action ; `Action` reçoit `{ tx, characterId }` et peut être asynchrone). Objets durables : offres à l'unité, pas d'ordre d'achat. Routes : `POST /api/market/order|fill|cancel`, `GET /api/market`, `/api/market/item/:id`, `/api/market/mine`.
+- **Commandes PNJ** (`engine/npc.ts`, `data/npc_orders.yaml` : 33 commandes avec `profession` et `level`, `settings.npcOrders.perDay`) : **propres à chaque joueur** (`state.seed` = id du personnage, haché avec le jour) : des métiers jouables au hasard, et dans chacun une commande adaptée à son niveau (parmi les 3 plus hautes accessibles) ; une fois par jour chacune ; `state.npc`, `POST /api/npc/complete`, `StateView.npcOrders`.
+- **Étal de la guilde** (`item.stallPrice`, outils de bronze à 150 or ; `buyFromStall`, `POST /api/stall/buy`) : vend du neuf seulement s'il n'y a aucune offre de joueur pour l'objet.
+- **Prime de commande** (`engine/commission.ts`, `settings.commissions`) : vendre dans un ordre d'achat qui attendait un objet qu'on sait fabriquer donne +20 % de l'XP de la recette, 100 unités par jour (`state.prime`).
+- **Réparation** par matériaux (`item.repair`, `repairWithMaterials`, `POST /api/items/repair-self`) et **par un artisan** (table `repair_requests`, `apps/server/src/repairs.ts` : `requestRepair`, `takeRepair`, `cancelRepair`, `claimRepairs`, `POST /api/repairs/request|take|cancel`, `GET /api/repairs`) ; migration `0004_repair_prime`. Salle Marché : onglet **Artisans**.
+- **Pêche jouable** : 5 poissons (frais, truite, brochet, poisson-lanterne, raie), cannes de bronze et de fer (recettes de Forge), maître Naël, épreuves 30 et 60. `sim calibrate --data --write` a recalculé les repas et les valeurs.
+- **Client** : salle **Marché** (`rooms/MarketRoom.tsx`) : livre d'ordres par objet, achat direct, formulaire d'ordre avec taxe affichée, `Mes ordres`, `Comptoir de la guilde` ; le sac propose « Vendre » (ouvre le Marché sur l'objet) ; une recette à ingrédient manquant renvoie au Marché.
+- Tests : 79 dans `packages/shared`, 17 d'API (scénarios à deux joueurs : marché, étal, réparation par un artisan, prime), 10 du simulateur. Vérifié dans le navigateur : livre, achat, onglets Comptoir et Artisans.
+- **Décidé : pas de commandes à matériaux fournis, pas de frais de dépôt** (`docs/design/marche.md` §7, avec la mesure de la demande de Forge). **Pas encore fait** : simulateur avec ordres de marché, équilibrage des commandes PNJ, de l'étal et de la prime.
+
 ### Fait — usure, réparation, recyclage et garde-manger (21 octobre)
 
 - **Usure** : `item.tool.durabilityHours` (data/items.yaml : bronze 40 h, fer 60 h, acier 90 h). `CharacterState.wear[itemId]` compte les ms de travail effectif ; `advance` coupe ses segments au moment où l'outil se termine pour que le rendement change à l'instant exact (résultat identique en une ou plusieurs étapes). `activeTool` ignore un outil usé ; il reste dans le sac, le maximum ne baisse jamais.
-- **Réparation** (`repairItem`, `POST /api/shop/repair`) : PNJ, `settings.wear.repairGoldShare` × valeur × part d'usure ; remet l'usure à 0. **Recyclage** (`recycleItem`, `POST /api/items/recycle`) : `settings.wear.recycleShare` des intrants de la recette qui fabrique l'objet, arrondi vers le bas (les outils à 1 intrant ne rendent rien, donc non recyclables). **Garde-manger** (`state.pantry`, `POST /api/pantry/stock|unstock`) : `advance` mange le repas au meilleur bonus quand le précédent expire, seulement si une activité peut tourner.
+- **Réparation** (`repairItem`, `POST /api/shop/repair`) : PNJ (l'exemplaire le plus usé), `settings.wear.repairGoldShare` × valeur × part d'usure ; remet l'usure à 0. **Recyclage** (`recycleItem`, `POST /api/items/recycle`) : `settings.wear.recycleShare` des intrants de la recette qui fabrique l'objet, arrondi vers le bas (les outils à 1 intrant ne rendent rien, donc non recyclables). **Garde-manger** (`state.pantry`, `POST /api/pantry/stock|unstock`) : `advance` mange le repas au meilleur bonus quand le précédent expire, seulement si une activité peut tourner.
 - Migration `0002_wear_pantry` (colonnes `wear` et `pantry`). Vue : `durability`, `recycle`, `pantry`. Interface : sac de la salle Personnage (reste X h, Réparer, Recycler, Garde-manger).
 - **Pas encore fait** : réparation par un artisan (marché), outils d'apprenti, usure des armures (combat), usure dans le simulateur (les bots ignorent encore l'usure et le garde-manger), équilibrage des durées et des prix (`# à équilibrer`).
 
@@ -98,13 +112,13 @@ Bramo est un **idle-RPG multijoueur jouable dans le navigateur**, dans l'esprit 
 **Moteur de jeu** (`packages/shared`, 44 tests)
 - Courbe d'XP RuneScape 1–99 (test : niveau 99 = 13 034 431 XP), titres Novice / Apprenti (30) / Compagnon (60) / Maître (85) / Grand maître (99).
 - `engine/advance.ts` : `advance(state, now, content)` fait avancer un personnage à partir de `lastTickAt` et `lastSeenAt`. Fenêtres successives : actif pendant `activeTimeoutSec` après le dernier signe de vie, puis hors ligne pendant l'autonomie (`offlineCapHours`), puis plus rien (rien n'est perdu) ; les taux viennent de `settings.rates` (100 % et 16 h depuis le 21 octobre), ×1,5 pendant un coup de fouet. Les bonus plafonnés (outil 30 %, repas 10 %, clan 10 %, saison 20 % ; clan et saison valent 0 en P1) multiplient la vitesse. Calculer en une fois ou en plusieurs fois donne le même résultat (testé).
-- `engine/actions.ts` : lancer (remplacer ou mettre en file, file de 3), annuler, manger un repas (un seul bonus actif), acheter et vendre au marchand PNJ. Erreurs = `GameError` avec message français.
+- `engine/actions.ts` : lancer (remplacer ou mettre en file, file de 3), annuler, manger un repas (un seul bonus actif), manger, réparer, recycler, garde-manger, commandes PNJ (le marché, lui, est côté serveur). Erreurs = `GameError` avec message français.
 - `engine/view.ts` : ce que le client reçoit (niveaux, titres, rendement détaillé, coups de fouet).
 
 **Données** (`data/`)
-- 17 métiers (voir `docs/design/metiers.md`). **Jouables depuis le 21 octobre : Minage, Bûcheronnage, Herboristerie, Forge, Menuiserie, Cuisine.** Les autres sont `status: soon`.
+- 17 métiers (voir `docs/design/metiers.md`). **Jouables depuis le 21 octobre : Minage, Bûcheronnage, Herboristerie, Pêche, Forge, Menuiserie, Cuisine.** Les autres sont `status: soon`.
 - Chaînes : minerai → lingot → fer d'outil + manche → outil de chaque métier ; bois → planches, manches, hampes, douelles ; herbes + poisson → repas longs (rendement ~2 fois leur coût).
-- Le poisson est vendu par le **marchand du port** (PNJ) tant que la Pêche n'existe pas ; le marchand rachète à `value` (10 % de la valeur de référence).
+- Le poisson vient de la **Pêche**. Plus de marchand PNJ (voir le chantier marché).
 - 3 classes (`classes.yaml`) : Runiste, Forgefeu et Traqueur complets (tenue de départ, pose, arme, effet, animation de repos).
 - 5 tenues (`cosmetics.yaml`) : Cendres (départ du Runiste), Braise (départ du Forgefeu), Lisière (départ du Traqueur), Marée haute (saison), Grand maître (Enchantement 99, change la silhouette).
 
@@ -117,9 +131,9 @@ Bramo est un **idle-RPG multijoueur jouable dans le navigateur**, dans l'esprit 
 - Connexion / création de compte. Barre du haut (6 onglets, or, bouton Coup de fouet, lien « Atelier » en dev).
 - **Accueil** : carte du monde (lieux cliquables + volet d'infos ; provisoire, à repenser) ; en bas, journal à gauche (seul l'onglet Journal fonctionne), **personnage en entier au centre** entouré de ses emplacements, **activité en cours à droite** (anneau, XP/h, rendement, file).
 - **Salle Métiers** : grille groupée, « Bientôt » en pointillés, maîtres PNJ ; **salle d'un métier** : scène avec le personnage et le maître, recettes 2×3 paginées avec filtres et recettes verrouillées, détail (niveau, temps, XP, ingrédients, quantité −/+/Max, Lancer / Lancer à la place de / Ajouter à la file), file.
-- **Salle Personnage** (trois colonnes) : équipement détaillé et sac (Manger, marchand) · personnage centré entouré de ses emplacements · caractéristiques (progression, rendement et bonus plafonnés, coups de fouet, 17 métiers, bloc Combat grisé).
-- Clan, Marché, Combat : pages « Bientôt » (le Marché ouvre le marchand du port).
-- Popups : résumé d'absence (auto à la connexion, « Revoir » dans le journal), marchand.
+- **Salle Personnage** (trois colonnes) : équipement détaillé et sac (Manger, Garde-manger, Réparer, Recycler, Vendre) · personnage centré entouré de ses emplacements · caractéristiques (progression, rendement et bonus plafonnés, coups de fouet, 17 métiers, bloc Combat grisé).
+- Clan, Combat : pages « Bientôt ». **Marché** : salle complète (livre d'ordres, mes ordres, Comptoir de la guilde).
+- Popups : résumé d'absence (auto à la connexion, « Revoir » dans le journal).
 - Aucun scroll de page, vérifié à 1440×900 et 1280×720.
 
 **Personnages** (`art/`, `apps/web/src/rig/`)
@@ -147,9 +161,9 @@ Bramo est un **idle-RPG multijoueur jouable dans le navigateur**, dans l'esprit 
 
 ### Prochaines étapes (ordre proposé)
 
-0. **Suite de `docs/design/arbitrages.md` §3** (étapes 1 à 3 faites, reste les outils d'apprenti) : (4) marché et Pêche, (5) clans, Construction, Agriculture, (6) combat et métiers d'équipement, (7) premier événement.
+0. **Suite de `docs/design/arbitrages.md` §3** (étapes 1 à 4 faites pour l'essentiel ; reste les outils d'apprenti, les commandes artisanales et le simulateur de marché) : (5) clans, Construction, Agriculture, (6) combat et métiers d'équipement, (7) premier événement.
 1. **Mise en service sur le homeserver** : Postgres (docker compose), `.env` avec `DATABASE_URL`, build du client (`pnpm --filter @bramo/web build`), le serveur Fastify sert `apps/web/dist` (ou un reverse proxy devant), HTTPS, `NODE_ENV=production`, service systemd ou conteneur, sauvegardes de la base. Limite de tentatives de connexion.
-2. **Accueil à refaire** (direction choisie par l'auteur le 21 octobre) : la carte du monde est remplacée par une **scène du bourg** où passent d'autres joueurs (vrais joueurs récemment actifs, avec leur classe et leur activité) et un **Panneau du bourg** dont le cœur est le **fil du serveur** (montées de titre, épreuves réussies, premières fabrications). Décisions : **pas de bonus du jour** (les boosts viennent des saisons et événements), **pas de chantier commun au serveur** (c'est le rôle des clans), commandes de PNJ non tranchées. La carte pourra revenir en popup « Voyager » avec l'Exploration.
+2. **Accueil à refaire** (direction choisie par l'auteur le 21 octobre) : la carte du monde est remplacée par une **scène du bourg** où passent d'autres joueurs (vrais joueurs récemment actifs, avec leur classe et leur activité) et un **Panneau du bourg** dont le cœur est le **fil du serveur** (montées de titre, épreuves réussies, premières fabrications). Décisions : **pas de bonus du jour** (les boosts viennent des saisons et événements), **pas de chantier commun au serveur** (c'est le rôle des clans), commandes de PNJ : X par jour au maximum (Comptoir, déjà dans la salle Marché). La carte pourra revenir en popup « Voyager » avec l'Exploration.
 3. **Animation et vie de l'interface** (choix de l'auteur en attente) : « +1 objet » flottant à chaque fabrication, pulsation de l'anneau, célébration de montée de niveau et d'épreuve réussie, scènes animées dans les bandeaux (forge, mines, eau), entrées du journal qui glissent.
 4. **Personnages** : **une pose par voie** à terme, écran de choix de tenue, animations « travail » par famille de métier, une tenue Marée haute qui change aussi de forme. Couleurs cuivre #F08A4B (mêlée) et jade #7ED6A2 (tir) toujours à valider.
 5. **Rangs** (décidés, `docs/design/rangs.md`) : concevoir les commandes du maître (20, 40, 60, 80, 99), les surnoms et le traitement de l'XP en attente, puis remplacer les titres et épreuves actuels (`settings.titles`, `trials.yaml`, `engine/trials.ts`, interface du maître).
@@ -170,7 +184,7 @@ Bramo est un **idle-RPG multijoueur jouable dans le navigateur**, dans l'esprit 
 ### Décisions en attente de l'auteur
 
 - **Les 12 arbitrages de conception restants** (les n° 1, 2, 4, 11 et 12 sont tranchés) : `docs/design/arbitrages.md` (hors ligne, énergie, progression, liste des métiers, Agriculture en parallèle, Construction, Exploration, plafonds de bonus, PNJ, repas, usure, affinité, événements, classes de métier, Guilde du bourg, file).
-- Animations prioritaires ; commandes de PNJ pour le Panneau du bourg (recommandation : Comptoir de la guilde, trois commandes par semaine).
+- Animations prioritaires. Questions du marché et des objets : `docs/design/marche.md` §6 et `docs/design/items.md` §4 (serveur peu peuplé, or de départ, qualité, sets).
 - **Équipement en deux couches** (proposé) : l'équipement porte les statistiques, s'use et passe par le marché ; l'apparence (tenue cosmétique) le recouvre visuellement. L'emplacement affiche l'apparence, l'infobulle les deux.
 - Couleurs d'affinité mêlée et tir.
 - Questions ouvertes du game design : public visé, arrivée du PvP, durée exacte des saisons, longueur de la file pour les abonnés.

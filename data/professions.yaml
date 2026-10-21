@@ -28,9 +28,10 @@
 - id: fishing
   name: Pêche
   family: gathering
-  status: soon
+  status: playable
   place: Mer des Lanternes
   description: Poissons, coquillages et perles.
+  master: { name: Maître Naël, line: "« La mer ne se presse pas. Toi non plus, mais tu peux ramer. »" }
   categories:
     - { id: fish, name: Poissons }
 

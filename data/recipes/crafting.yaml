@@ -21,12 +21,14 @@
 - {id: make_bronze_hammer, name: Marteau de bronze, profession: smithing, category: tools, level: 5, durationSec: 20, xp: 4.1, inputs: [{item: bronze_tool_head, qty: 1}, {item: pine_handle, qty: 1}], outputs: [{item: bronze_hammer, qty: 1}]}
 - {id: make_bronze_saw, name: Scie de bronze, profession: smithing, category: tools, level: 5, durationSec: 20, xp: 4.1, inputs: [{item: bronze_tool_head, qty: 1}, {item: pine_handle, qty: 1}], outputs: [{item: bronze_saw, qty: 1}]}
 - {id: make_bronze_knife, name: Couteau de bronze, profession: smithing, category: tools, level: 5, durationSec: 20, xp: 4.1, inputs: [{item: bronze_tool_head, qty: 1}, {item: pine_handle, qty: 1}], outputs: [{item: bronze_knife, qty: 1}]}
+- {id: make_bronze_rod, name: Canne de bronze, profession: smithing, category: tools, level: 5, durationSec: 20, xp: 4.1, inputs: [{item: bronze_tool_head, qty: 1}, {item: pine_handle, qty: 1}], outputs: [{item: bronze_rod, qty: 1}]}
 - {id: make_iron_pickaxe, name: Pioche de fer, profession: smithing, category: tools, level: 15, durationSec: 60, xp: 13.9, inputs: [{item: iron_tool_head, qty: 1}, {item: oak_handle, qty: 1}], outputs: [{item: iron_pickaxe, qty: 1}]}
 - {id: make_iron_axe, name: Hache de fer, profession: smithing, category: tools, level: 15, durationSec: 60, xp: 13.9, inputs: [{item: iron_tool_head, qty: 1}, {item: oak_handle, qty: 1}], outputs: [{item: iron_axe, qty: 1}]}
 - {id: make_iron_sickle, name: Serpe de fer, profession: smithing, category: tools, level: 15, durationSec: 60, xp: 13.9, inputs: [{item: iron_tool_head, qty: 1}, {item: oak_handle, qty: 1}], outputs: [{item: iron_sickle, qty: 1}]}
 - {id: make_iron_hammer, name: Marteau de fer, profession: smithing, category: tools, level: 15, durationSec: 60, xp: 13.9, inputs: [{item: iron_tool_head, qty: 1}, {item: oak_handle, qty: 1}], outputs: [{item: iron_hammer, qty: 1}]}
 - {id: make_iron_saw, name: Scie de fer, profession: smithing, category: tools, level: 15, durationSec: 60, xp: 13.9, inputs: [{item: iron_tool_head, qty: 1}, {item: oak_handle, qty: 1}], outputs: [{item: iron_saw, qty: 1}]}
 - {id: make_iron_knife, name: Couteau de fer, profession: smithing, category: tools, level: 15, durationSec: 60, xp: 13.9, inputs: [{item: iron_tool_head, qty: 1}, {item: oak_handle, qty: 1}], outputs: [{item: iron_knife, qty: 1}]}
+- {id: make_iron_rod, name: Canne de fer, profession: smithing, category: tools, level: 15, durationSec: 60, xp: 13.9, inputs: [{item: iron_tool_head, qty: 1}, {item: oak_handle, qty: 1}], outputs: [{item: iron_rod, qty: 1}]}
 - {id: make_steel_pickaxe, name: Pioche d'acier, profession: smithing, category: tools, level: 35, durationSec: 90, xp: 26.9, inputs: [{item: steel_tool_head, qty: 1}, {item: oak_handle, qty: 1}], outputs: [{item: steel_pickaxe, qty: 1}]}
 
 # --- Menuiserie ---

@@ -11,7 +11,7 @@ const COMBAT_STATS = ['Points de vie', 'Attaque', 'Défense', 'Puissance magique
 
 /** Salle Personnage : le personnage au centre, tout ce qu'il porte, ses caractéristiques. */
 export function CharacterRoom() {
-  const { name, content, state, look, act, setShopOpen } = useGame();
+  const { name, content, state, look, act, openMarket } = useGame();
   const equipment = useEquipment();
   const { settings } = content;
   const [classOpen, setClassOpen] = useState(false);
@@ -71,8 +71,8 @@ export function CharacterRoom() {
 
         <header className="bag-head">
           <span className="eyebrow">Sac</span>
-          <button className="btn btn-sm" onClick={() => setShopOpen(true)}>
-            Marchand du port
+          <button className="btn btn-sm" onClick={() => openMarket()}>
+            Marché
           </button>
         </header>
         <div className="bag scroll">
@@ -86,7 +86,10 @@ export function CharacterRoom() {
                 {durability[item.id] && (
                   <>
                     {' · '}
-                    {durability[item.id]!.remainingMs > 0 ? `reste ${duration(durability[item.id]!.remainingMs)}` : 'usé'}
+                    {(() => {
+                      const left = durability[item.id]!.copies.find((r) => r > 0);
+                      return left === undefined ? 'usé' : `reste ${duration(left)}`;
+                    })()}
                   </>
                 )}
               </span>
@@ -101,6 +104,16 @@ export function CharacterRoom() {
                     </button>
                   </>
                 )}
+                {durability[item.id]?.repair && durability[item.id]!.repairCost > 0 && (
+                  <button
+                    className="btn btn-sm"
+                    disabled={durability[item.id]!.repair!.problem !== null}
+                    title={durability[item.id]!.repair!.problem ?? 'Gratuit en or ; un peu d’XP'}
+                    onClick={() => act(() => api.repairSelf(item.id))}
+                  >
+                    Réparer · {durability[item.id]!.repair!.materials.map((m) => `${m.qty} × ${content.items[m.item]?.name ?? m.item}`).join(', ')}
+                  </button>
+                )}
                 {durability[item.id] && durability[item.id]!.repairCost > 0 && (
                   <button
                     className="btn btn-sm"
@@ -108,9 +121,12 @@ export function CharacterRoom() {
                     title="Rend toute la durabilité ; le maximum ne baisse jamais"
                     onClick={() => act(() => api.repair(item.id))}
                   >
-                    Réparer · {durability[item.id]!.repairCost} or
+                    PNJ · {durability[item.id]!.repairCost} or
                   </button>
                 )}
+                <button className="btn btn-sm" title="Proposer aux autres joueurs" onClick={() => openMarket(item.id)}>
+                  Vendre
+                </button>
                 {state.recycle[item.id] && (
                   <button
                     className="btn btn-sm"

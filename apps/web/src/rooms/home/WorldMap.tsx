@@ -83,14 +83,14 @@ const PLACES: Place[] = [
     x: 64,
     y: 72,
     color: 'var(--market)',
-    description: 'Le port de la Mer des Lanternes. Le marchand y vend du poisson frais et rachète vos surplus.',
+    description: 'Le port de la Mer des Lanternes. On y pêche, et la place du marché est toute proche.',
     professions: ['fishing'],
     shop: true,
   },
 ];
 
 export function WorldMap() {
-  const { content, state, go, setShopOpen } = useGame();
+  const { content, state, go, openMarket } = useGame();
   const [selected, setSelected] = useState('camp');
   const place = PLACES.find((p) => p.id === selected)!;
   const activeProfession = state.activity && content.recipes[state.activity.recipeId]?.profession;
@@ -144,8 +144,8 @@ export function WorldMap() {
             );
           })}
           {place.shop && (
-            <button className="btn btn-primary" onClick={() => setShopOpen(true)}>
-              Voir le marchand
+            <button className="btn btn-primary" onClick={() => openMarket()}>
+              Aller au marché
             </button>
           )}
           {place.room && (

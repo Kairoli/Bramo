@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { buyItem, cancelAction, eatMeal, sellItem, startActivity } from '../src/engine/actions.js';
+import { cancelAction, eatMeal, startActivity } from '../src/engine/actions.js';
 import { MIN, T0, content, makeState, mining } from './fixture.js';
 
 describe('actions du joueur', () => {
@@ -34,15 +34,5 @@ describe('actions du joueur', () => {
     const s = eatMeal(makeState({ inventory: { stew: 2 } }), 'stew', T0, content);
     expect(s.inventory.stew).toBe(1);
     expect(s.buff).toEqual({ itemId: 'stew', bonus: 0.1, until: T0 + 30 * MIN });
-  });
-
-  it('achète et revend au marchand', () => {
-    const bought = buyItem(makeState(), 'stew', 3, content);
-    expect(bought.gold).toBe(70);
-    expect(() => buyItem(makeState(), 'stew', 11, content)).toThrow('Pas assez');
-    expect(() => buyItem(makeState(), 'ore', 1, content)).toThrow('ne vend pas');
-    const sold = sellItem(bought, 'stew', 3, content);
-    expect(sold.gold).toBe(79);
-    expect(sold.inventory.stew).toBeUndefined();
   });
 });

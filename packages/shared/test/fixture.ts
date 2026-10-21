@@ -16,7 +16,10 @@ export const settings = {
   rates: { active: 1, offline: 0.25, offlineCapHours: 12 },
   energy: { multiplier: 1.5, charges: 2, durationMin: 30, resetHourUtc: 4 },
   bonusCaps: { tool: 0.3, meal: 0.1, clan: 0.1, season: 0.2 },
-  wear: { repairGoldShare: 0.5, recycleShare: 0.4 },
+  wear: { repairGoldShare: 0.5, recycleShare: 0.4, repairXpShare: 0.5 },
+  commissions: { primeShare: 0.2, primeUnitsPerDay: 10 },
+  market: { taxShare: 0.05, maxOpenOrders: 3, maxPrice: 1000, maxQuantity: 100 },
+  npcOrders: { perDay: 2 },
   absence: { minSummaryMin: 5 },
   character: { startingGold: 100 },
 };
@@ -49,13 +52,19 @@ export const content = buildContent({
     { id: 'bar', name: 'Lingot', category: 'bar', value: 5 },
     { id: 'pick', name: 'Pioche', category: 'tool', value: 10, tool: { profession: 'mining', bonus: 0.5 } },
     // Usée au bout de 36 s de travail (0,01 h) ; réparée 5 or au prorata de l'usure (valeur 10 × 50 %).
-    { id: 'frail_pick', name: 'Pioche fragile', category: 'tool', value: 10, tool: { profession: 'mining', bonus: 0.2, durabilityHours: 0.01 } },
+    { id: 'frail_pick', name: 'Pioche fragile', category: 'tool', value: 10, tool: { profession: 'mining', bonus: 0.2, durabilityHours: 0.01 }, repair: { profession: 'smithing', level: 1, materials: [{ item: 'bar', qty: 2 }] } },
     { id: 'block', name: 'Bloc', category: 'bar', value: 8 },
-    { id: 'stew', name: 'Ragoût', category: 'meal', value: 3, shopPrice: 10, meal: { bonus: 0.1, durationMin: 30 } },
+    { id: 'stew', name: 'Ragoût', category: 'meal', value: 3, meal: { bonus: 0.1, durationMin: 30 } },
   ],
   classes: [
     { id: 'mage', name: 'Mage', style: 'magic', profession: 'mining', affinityColor: '#B39DF5', pitch: '', startingOutfit: 'plain', pose: 'mage' },
     { id: 'brute', name: 'Brute', style: 'melee', profession: 'smithing', affinityColor: '#F08A4B', pitch: '', startingOutfit: 'plain', pose: 'brute' },
+  ],
+  npcOrders: [
+    { id: 'ore_easy', profession: 'mining', level: 1, client: 'Guilde', text: '', items: [{ item: 'ore', qty: 10 }], gold: 30 },
+    { id: 'ore_hard', profession: 'mining', level: 20, client: 'Guilde', text: '', items: [{ item: 'ore', qty: 50 }], gold: 90 },
+    { id: 'bars_easy', profession: 'smithing', level: 1, client: 'Guilde', text: '', items: [{ item: 'bar', qty: 2 }], gold: 50 },
+    { id: 'fish_easy', profession: 'fishing', level: 1, client: 'Guilde', text: '', items: [{ item: 'ore', qty: 1 }], gold: 10 },
   ],
   trials: [
     // Minage 30 puis 60 : remettre du minerai, puis un lingot.
@@ -99,6 +108,7 @@ export const HOUR = 60 * MIN;
 
 export function makeState(over: Partial<CharacterState> = {}): CharacterState {
   return {
+    seed: 1,
     gold: 100,
     skills: {},
     inventory: {},
@@ -111,6 +121,8 @@ export function makeState(over: Partial<CharacterState> = {}): CharacterState {
     buff: null,
     wear: {},
     pantry: {},
+    npc: { dayKey: '', done: [] },
+    prime: { dayKey: '', units: 0 },
     classId: 'mage',
     outfit: null,
     trials: [],

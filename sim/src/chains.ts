@@ -72,14 +72,7 @@ export function unitCost(itemId: string, content: Content, opts: ChainOptions = 
     return c;
   }
   const producers = Object.values(content.recipes).filter((r) => !r.trial && r.outputs.some((o) => o.item === itemId));
-  const item = content.items[itemId];
   const options: ChainCost[] = producers.map((r) => recipeCost(r, itemId, content, opts, [...stack, itemId]));
-  // Le marchand PNJ ne sert que s'il n'existe aucune recette (ex. le poisson tant que la Pêche n'a pas de recette).
-  if (item?.shopPrice && !options.length) {
-    const c = empty();
-    c.gold = item.shopPrice;
-    options.push(c);
-  }
   if (!options.length) throw new Error(`Aucune source pour ${itemId}`);
   // Le temps prime ; à temps égal (achat), l'or départage.
   return options.sort((a, b) => workSec(a) - workSec(b) || a.gold - b.gold)[0]!;

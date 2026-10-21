@@ -9,3 +9,7 @@ export * from './engine/actions.js';
 export * from './engine/trials.js';
 export * from './engine/view.js';
 export * from './api.js';
+export * from './engine/gear.js';
+export * from './engine/market.js';
+export * from './engine/commission.js';
+export * from './engine/npc.js';

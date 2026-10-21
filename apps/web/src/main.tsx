@@ -6,7 +6,7 @@ import { GameProvider, useGame } from './game/GameContext';
 import { LoginScreen } from './LoginScreen';
 import { TopBar } from './components/TopBar';
 import { AbsenceModal } from './components/AbsenceModal';
-import { ShopModal } from './components/ShopModal';
+import { MarketRoom } from './rooms/MarketRoom';
 import { ClassScreen } from './components/ClassChoice';
 import { Home } from './rooms/Home';
 import { Professions } from './rooms/Professions';
@@ -19,7 +19,7 @@ import './styles/global.css';
 import './styles/rooms.css';
 
 function Shell() {
-  const { state, room, professionId, absence, shopOpen, error } = useGame();
+  const { state, room, professionId, absence, error } = useGame();
   // Chaque personnage choisit sa classe avant d'entrer, même fraîchement créé.
   if (!state.classId) {
     return (
@@ -36,10 +36,9 @@ function Shell() {
       {room === 'professions' && (professionId ? <ProfessionRoom key={professionId} id={professionId} /> : <Professions />)}
       {room === 'character' && <CharacterRoom />}
       {room === 'clan' && <SoonRoom room="clan" />}
-      {room === 'market' && <SoonRoom room="market" />}
+      {room === 'market' && <MarketRoom />}
       {room === 'combat' && <SoonRoom room="combat" />}
       {absence && <AbsenceModal summary={absence} />}
-      {shopOpen && <ShopModal />}
       {error && <div className="toast">{error}</div>}
     </div>
   );

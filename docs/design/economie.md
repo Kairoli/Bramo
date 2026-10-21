@@ -56,13 +56,14 @@ Le simulateur règle seul la durée de chaque repas à partir du coût de sa cha
 - **Volume** : ~0,4 h de chaîne par joueur et par jour (≈2 % du travail), soit ~150 repas par jour à 20 joueurs et ~1 500 à 200.
 - **Potions et flèches** suivent le temps de combat : 60 flèches et 2 potions par heure de combat dans les hypothèses, soit ~1 900 flèches par jour à 20 joueurs.
 
-## 5. Le marchand PNJ : un rôle limité [Recommandé]
+## 5. Le PNJ : commandes seulement [Décidé le 21 octobre]
 
 Le marchand ne doit être ni un débouché ni une source infinie d'or.
 
-- **Vend** : outils d'apprenti (gratuits), graines de base, appâts simples, fioles vides au prix fort. Le poisson disparaît de sa boutique quand la Pêche ouvre.
-- **Rachète** : à **10 % de la valeur de référence**, plafonné à **2 000 or par personnage et par semaine** (plafond hebdomadaire : pas de geste quotidien obligé). C'est un plancher de prix, pas un revenu.
-- **Comptoir de la guilde** *(tranche la question des commandes de PNJ)* : trois commandes par semaine et par personnage, adaptées à ses niveaux, payées en or et en Renom. Elles injectent l'or **de façon maîtrisée** et donnent un débouché aux produits de bas niveau. Pas de quête quotidienne.
+- **Plus de marchand PNJ** : il ne vend plus (le poisson vient de la Pêche) et ne rachète plus rien (décision de Louis : « un PNJ qui rachète tout, c'est non »). Le rachat à 10 % plafonné de la recommandation d'origine est **abandonné**.
+- **Comptoir de la guilde** : **X commandes par jour** (3 aujourd'hui), les mêmes pour tous, une fois chacune par joueur, payées en or. C'est le seul robinet d'or du PNJ ; tout le reste du commerce est entre joueurs ([`marche.md`](marche.md)).
+- Le PNJ répare encore les outils contre de l'or (puits d'or), en attendant la réparation par un artisan.
+- Les tableaux du §1 et du §6 ont été chiffrés avec le rachat PNJ : leur ligne « rachat du PNJ » n'existe plus. À refaire avec le simulateur une fois le marché peuplé.
 - **Valeur de référence** : 1 000 or par heure de travail autonome (outils d'apprenti). Un minerai de cuivre vaut ~3 or, une pioche de fer ~600, une robe runée ~2 600.
 
 ## 6. Sources et sorties d'or (variante recommandée, par joueur et par jour)
@@ -81,7 +82,7 @@ Le solde doit rester **proche de zéro et légèrement positif** pour que les no
 
 ## 7. Marché et commandes
 
-- **Ordres d'achat et de vente** [Décidé], taxe de 5 % sur la vente, petits frais de dépôt remboursés si l'ordre est exécuté.
+- **Ordres d'achat et de vente** [Décidé, en prototype : voir [`marche.md`](marche.md)], taxe de 5 % sur la vente. Les petits frais de dépôt remboursés si l'ordre est exécuté ne sont pas implémentés.
 - **Commandes artisanales** [Décidé] : le client fournit tout ou partie des matériaux, l'artisan fabrique dans sa file et livre. Prime de commande (+20 % d'XP sur la fabrication, plafonnée) : servir les autres rapporte un peu plus que fabriquer pour soi, ce qui transforme une partie du surplus en demande réelle.
 - **Signature et qualité** (v1.0) : les objets faits maison portent le nom de l'artisan. La réputation se construit par la qualité.
 

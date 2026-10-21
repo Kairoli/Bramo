@@ -35,9 +35,9 @@ describe('data/', () => {
     expect(shapes.size).toBeGreaterThan(1);
   });
 
-  it('chaque ingrédient et chaque objet d’épreuve peut être obtenu (recette ou marchand)', () => {
+  it('chaque ingrédient et chaque objet d’épreuve peut être obtenu (recette)', () => {
     const produced = new Set(Object.values(content.recipes).flatMap((r) => r.outputs.map((o) => o.item)));
-    const obtainable = (item: string) => produced.has(item) || content.items[item]?.shopPrice !== undefined;
+    const obtainable = (item: string) => produced.has(item);
     for (const r of Object.values(content.recipes)) {
       for (const i of r.inputs) expect(obtainable(i.item), `${r.id} → ${i.item}`).toBe(true);
     }

@@ -284,7 +284,7 @@ function RecipeList({
 }
 
 function RecipeDetail({ recipe, level }: { recipe: Recipe; level: number }) {
-  const { content, state, act, setShopOpen } = useGame();
+  const { content, state, act, openMarket } = useGame();
   const live = useLiveActivity();
   const { maxQuantity, queueLength } = content.settings.activity;
   const affordable = Math.min(maxQuantity, maxAffordable(recipe, state.inventory));
@@ -294,7 +294,7 @@ function RecipeDetail({ recipe, level }: { recipe: Recipe; level: number }) {
   const running = live && live.recipe.id === recipe.id ? live : null;
   const currentName = state.activity && content.recipes[state.activity.recipeId]?.name;
   const queueFull = state.queue.length >= queueLength;
-  const missingShopItem = recipe.inputs.some((i) => (state.inventory[i.item] ?? 0) < i.qty && content.items[i.item]?.shopPrice);
+  const missingInput = recipe.inputs.find((i) => (state.inventory[i.item] ?? 0) < i.qty);
   const clamp = (n: number) => Math.max(1, Math.min(maxQuantity, Math.floor(n) || 1));
 
   const start = (mode: 'replace' | 'queue') => act(() => api.start(recipe.id, qty, mode));
@@ -350,9 +350,9 @@ function RecipeDetail({ recipe, level }: { recipe: Recipe; level: number }) {
             </div>
           );
         })}
-        {missingShopItem && (
-          <button className="link" style={{ color: 'var(--market)', justifySelf: 'start' }} onClick={() => setShopOpen(true)}>
-            Acheter au marchand du port →
+        {missingInput && (
+          <button className="link" style={{ color: 'var(--market)', justifySelf: 'start' }} onClick={() => openMarket(missingInput.item)}>
+            Chercher {content.items[missingInput.item]?.name.toLowerCase()} sur le marché →
           </button>
         )}
       </div>

@@ -11,7 +11,7 @@
 - **Des outils pour un seul métier.** Seul le Minage a un outil. Les autres récolteurs n'ont aucune raison d'acheter quoi que ce soit.
 - **Construction et Exploration sans fonction.** Construction « bâtit les projets du clan » sans dire ce qu'elle consomme ni ce qu'elle produit ; Exploration « découvre des lieux » sans débouché.
 - **Les repas sont absurdement rentables.** Le Festin du givre se cuit en 10 s pour 1 h de bonus : **360 h de bonus par heure de cuisson**, et ×14 de rendement net pour un joueur autonome (rapport du simulateur, « Repas actuels »). Une heure de cuisine nourrit un serveur entier pendant des jours : la Cuisine n'a pas de demande.
-- **Le poisson vient d'un PNJ**, ce qui est une béquille acceptable pour le prototype seulement.
+- **Le poisson vient de la Pêche** (jouable depuis le 21 octobre) ; le marchand PNJ n'existe plus.
 
 ## 2. Principes de l'écosystème [Recommandé]
 

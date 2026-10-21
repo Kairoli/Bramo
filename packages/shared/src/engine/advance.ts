@@ -7,6 +7,7 @@ import {
   presenceAt,
 } from '../formulas/rates.js';
 import { type CharacterState, addStack, addTo, cloneState } from './state.js';
+import { activeCopy, isDurable, wearCopy } from './gear.js';
 
 export interface FinishedActivity {
   recipeId: string;
@@ -38,23 +39,19 @@ export interface AdvanceSummary {
   started: string[];
 }
 
-/** Durabilité totale d'un objet en ms de travail ; Infinity s'il ne s'use pas. */
-export function durabilityMs(item: Item | undefined): number {
-  const hours = item?.tool?.durabilityHours;
-  return hours === undefined ? Number.POSITIVE_INFINITY : hours * 3_600_000;
-}
-
-export function remainingMs(itemId: string, state: CharacterState, content: Content): number {
-  return durabilityMs(content.items[itemId]) - (state.wear[itemId] ?? 0);
-}
-
 /** Le meilleur outil du métier qui n'est pas usé (un outil usé ne donne rien mais n'est pas perdu). */
-export function activeTool(profession: string, state: CharacterState, content: Content): { itemId: string; bonus: number } | null {
-  let best: { itemId: string; bonus: number } | null = null;
+export function activeTool(
+  profession: string,
+  state: CharacterState,
+  content: Content,
+): { itemId: string; bonus: number; index: number; remaining: number } | null {
+  let best: { itemId: string; bonus: number; index: number; remaining: number } | null = null;
   for (const [itemId, qty] of Object.entries(state.inventory)) {
     const item = content.items[itemId];
-    if (qty <= 0 || item?.tool?.profession !== profession || remainingMs(itemId, state, content) <= 0) continue;
-    if (!best || item.tool.bonus > best.bonus) best = { itemId, bonus: item.tool.bonus };
+    if (qty <= 0 || item?.tool?.profession !== profession) continue;
+    const copy = isDurable(item) ? activeCopy(state, itemId, content) : { index: 0, remaining: Number.POSITIVE_INFINITY };
+    if (!copy) continue;
+    if (!best || item.tool.bonus > best.bonus) best = { itemId, bonus: item.tool.bonus, ...copy };
   }
   return best;
 }
@@ -174,14 +171,14 @@ export function advance(
       const duration = recipe.durationSec * 1000;
       // L'outil utilisé s'use au temps réel de travail ; on s'arrête au moment où il est usé pour recalculer le rendement.
       const tool = activeTool(recipe.profession, state, content);
-      const toolLeft = tool ? remainingMs(tool.itemId, state, content) : Number.POSITIVE_INFINITY;
+      const toolLeft = tool ? tool.remaining : Number.POSITIVE_INFINITY;
       const segEnd = Math.min(end, t + toolLeft);
       const segStart = t;
       const wearTool = () => {
         if (!tool || !Number.isFinite(toolLeft)) return;
-        addTo(state.wear, tool.itemId, t - segStart);
+        wearCopy(state, tool.itemId, tool.index, t - segStart, content);
         addTo(summary.wear, tool.itemId, t - segStart);
-        if (remainingMs(tool.itemId, state, content) <= 0) summary.worn.push(tool.itemId);
+        if (tool.remaining - (t - segStart) <= 0) summary.worn.push(tool.itemId);
       };
       const reachable = activity.progress + (segEnd - t) * rate;
       const n = Math.min(Math.floor(reachable / duration), remaining, affordable);

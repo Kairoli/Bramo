@@ -22,6 +22,20 @@
       "when": 1792577817297,
       "tag": "0002_wear_pantry",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1792578764774,
+      "tag": "0003_market_npc",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1792580425544,
+      "tag": "0004_repair_prime",
+      "breakpoints": true
     }
   ]
 }

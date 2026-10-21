@@ -15,6 +15,10 @@
 9. **Accessibilité** : un **plan automatique conseillé** permet de commencer ; les réglages fins optimisent, sans précision à la seconde pour le contenu ordinaire.
 10. **Réponse à Q1, ouverture** : le build a un **minuteur** (sort 1 immédiat, sort 2 après 3 s…, **10 s au plus**) ; une fois ce minuteur exécuté, les sorts partent en automatique selon leur cooldown, simplement. Règle « séquence » dans `rules.yaml` (`maxFirstUse: 10`).
 11. **Réponse à Q2, nommés** : les gemmes sont des talents à mettre sur les builds ; les armes et objets nommés ont aussi des capacités uniques, **traitées comme des talents** (une capacité nommée occupe la place d'une gemme majeure).
+12. **Réponse à Q3, récompenses de la progression solo** : « un peu tout », mais **pas à chaque palier** : à des **checkpoints conséquents**. Bonus de combat plafonnés, titres et cosmétiques, caches de butin ponctuelles, matériaux de perfectionnement.
+13. **Réponse à Q4, forme** : un **mélange** entre une progression classique par étapes et chapitres (à la *Legend of Mushroom*) et une couche **saisonnière à mutations**. *[Proposé par Claude, à valider]* : une échelle permanente d'étapes groupées en chapitres, jamais remise à zéro, avec un checkpoint de récompenses en fin de chapitre ; chaque saison de 6 semaines applique une **mutation** (règle de rencontre qui change) sur des étapes de saison, avec leurs propres récompenses cosmétiques et de collection.
+14. **Réponse à Q5, recyclage** : l'équipement de combat, dropé ou fabriqué, se recycle en **poudres et fragments d'atelier**, pas en matières premières.
+15. **Réponse à Q6** : second élément du Traqueur = **Foudre**.
 
 ## 2. Ce que le dossier suppose et ce que le code fait
 
@@ -35,10 +39,10 @@
 | C4 | **Hors ligne** | `combat-items.md` §3.1 [Proposé par Claude] : échantillon de 20 combats puis extrapolation | §17 : un échantillon ne suffit pas pour attribuer le butin | Je retire ma proposition : résolution déterministe complète, à la demande, avec reprise ; coût mesuré à l'étape 4 |
 | C5 | **Pas de temps** | `combat-items.md` §3.1 : 1 pas par seconde | Banc : 0,25 s | Horloge entière en millisecondes, pas de 250 ms réglable (`combat.tickMs`) |
 | C6 | **Rareté Légendaire** | `combat-items.md` §5.2 [Proposé par Claude] : un attribut conditionnel unique | Rareté sans talent ni attribut conditionnel | Le dossier suit la décision de Louis du 21 octobre (lignes 1+0-1 / 2+1-2 / 2+2-3 / 2+3-4) ; §5.2 est dépassé |
-| C7 | **Recyclage** | `settings.wear.recycleShare: 0.4` pour les outils | Équipement de combat recyclé en poudres et fragments, pas 40 % de la recette | Rejoint la précision 7 (pas de combattant meilleur producteur). **Choix de Louis** (Q5) |
+| C7 | **Recyclage** | `settings.wear.recycleShare: 0.4` pour les outils | Équipement de combat recyclé en poudres et fragments, pas 40 % de la recette | **Tranché par Louis le 22 octobre** : poudres et fragments (§1, point 14) |
 | C8 | **Ralentissement des boss** | Précision 3 | §7 et banc : ralentissement des boss plafonné à 15 %, sur les attaques ordinaires seulement | Compatible. Le moteur sépare **cadence ordinaire** (ralentissable) et **calendrier de phases** (jamais ralenti) |
 | C9 | **Protections de groupe** | Précision 2 | « Une plaque, un bénéficiaire » ; budget total fixé en groupe | Compatible. Le moteur choisit un **bénéficiaire** par protection, selon la priorité du plan (soi en solo) |
-| C10 | **Second élément du Traqueur** | `combat-items.md` §4.2 : « nature/foudre à décider » | Foudre, provisoirement | Foudre en attendant (Q6) |
+| C10 | **Second élément du Traqueur** | `combat-items.md` §4.2 : « nature/foudre à décider » | Foudre, provisoirement | **Tranché par Louis le 22 octobre** : Foudre |
 | C11 | **Sorts de voie et ultime** | `combat-items.md` §2.2 : deux sorts de voie au 30, l'ultime « entre dans le plan » | Trois sorts de voie (30, 50, 70) ; l'ultime **prend une des cinq places** | Le dossier précise sans contredire ; je suis le dossier |
 
 ## 4. Ce que disent déjà les résultats du banc sur les voies
@@ -103,7 +107,4 @@ Prochaine étape : **3, équilibrage des voies** (propositions mesurées dans `s
 
 - ~~Q1 — Ouverture~~ : tranché (§1, point 10).
 - ~~Q2 — Nommés à talent fixe~~ : tranché (§1, point 11).
-- **Q3 — Récompenses de la progression solo** : titres et cosmétiques seuls ; petits bonus permanents **de combat seulement**, plafonnés ; ou caches de butin ponctuelles ? *Recommandation : bonus de combat plafonnés (jamais de rendement de métier ni d'or) + titres.*
-- **Q4 — Nom et forme** de cette progression (tour, épreuves des veilles, profondeurs…) : un parcours de paliers indépendant des régions, rejouable, sans perte.
-- **Q5 — Recyclage de l'équipement de combat** (C7) : poudres et fragments d'atelier, ou 40 % de la recette avec des taux de butin plus bas ?
-- **Q6 — Second élément du Traqueur** : Foudre (provisoire) ou Nature ?
+- ~~Q3 à Q6~~ : tranchées (§1, points 12 à 15). Reste à valider la forme précise de la progression solo (point 13), au moment de l'étape 5.

@@ -32,7 +32,7 @@
 | Herboristerie | Récolte | Socle A (jouable) | Herbes sauvages pour la cuisine et l'alchimie, réactifs rares. |
 | Pêche | Récolte | Socle B | Poissons, puis coquillages et perles pour la joaillerie. |
 | Agriculture | Récolte | Socle B | **Parcelles qui poussent en temps réel** : lin, blé, légumes, plantes tinctoriales. |
-| Chasse | Récolte | Socle C (avec le combat) | Peaux, viandes, plumes, trophées. Métier du Traqueur. |
+| Chasse | Récolte | Socle C | Peaux, viandes, plumes, trophées. Métier du Traqueur. **Un métier de récolte comme les autres, sans combat** (pistage, pièges) : à ne pas confondre avec l'activité générale de combat (décision de Louis, 21 octobre). |
 | Forge | Artisanat | Socle A (jouable) | Fonte des métaux communs, **outils de tous les métiers**, armes et armures de métal. Métier du Forgefeu. |
 | Menuiserie | Artisanat | Socle A | Planches, **manches de tous les outils**, arcs, flèches, bâtons, bois de charpente. |
 | Cuisine | Artisanat | Socle A (jouable) | Repas longs qui accélèrent le travail, vivres de combat, provisions d'expédition. |

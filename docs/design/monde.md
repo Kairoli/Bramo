@@ -11,7 +11,7 @@
 
 ### Budget de puissance [Recommandé]
 
-Le v1.0 répartit la puissance en niveau de classe (~40 %), équipement (~35 %) et build (~25 %). Écarts typiques à l'intérieur de l'équipement : un palier d'équipement ≈ +15 %, une qualité (Normale → Supérieure) ≈ +5 %, un enchantement ≈ +5 à 8 %, un repas de combat ≈ +5 %.
+Le v1.0 répartit la puissance en niveau de classe (~40 %), équipement (~35 %) et build (~25 %). Écarts typiques à l'intérieur de l'équipement : un palier ≈ +10 %, une rareté ≈ +5 %, la ligne variable ±3 %, les gemmes et ensembles apportant de la puissance **conditionnelle** ([`combat-items.md`](combat-items.md) §5.2 et §6) ; un repas de combat ≈ +5 %. L'ancienne qualité et l'enchantement posé sont remplacés par les raretés et les gemmes.
 
 Avec l'affinité du v1.0 (+1 % par tranche de 10 niveaux, **jusqu'à +10 %**), ne pas monter son métier coûterait l'équivalent de deux qualités d'équipement : le métier deviendrait obligatoire. **Proposition : plafonner l'affinité à +5 %** (+0,5 % par tranche de 10 niveaux), soit l'équivalent d'une qualité, et mettre l'essentiel de la valeur du métier dans **ce qu'il permet de fabriquer** pour sa voie.
 

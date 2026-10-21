@@ -260,16 +260,16 @@ describe('API', () => {
     const novice = player({ value: '' });
     await owner('POST', '/api/auth/register', { username: 'Client', password: 'motdepasse' });
     await novice('POST', '/api/auth/register', { username: 'Apprenti', password: 'motdepasse' });
-    await grant('Client', 100, { bronze_pickaxe: 1 }, { bronze_pickaxe: [10 * 3_600_000] });
-    await grant('Apprenti', 0, { bronze_bar: 3 });
+    await grant('Client', 100, { iron_pickaxe: 1 }, { iron_pickaxe: [10 * 3_600_000] });
+    await grant('Apprenti', 0, { iron_bar: 3 });
     expect((await owner('POST', '/api/repairs/request', { itemId: 'copper_ore', copy: 0, fee: 10 })).status).toBe(400);
-    expect((await owner('POST', '/api/repairs/request', { itemId: 'bronze_pickaxe', copy: 0, fee: 500 })).status).toBe(400);
-    await owner('POST', '/api/repairs/request', { itemId: 'bronze_pickaxe', copy: 0, fee: 30 });
+    expect((await owner('POST', '/api/repairs/request', { itemId: 'iron_pickaxe', copy: 0, fee: 500 })).status).toBe(400);
+    await owner('POST', '/api/repairs/request', { itemId: 'iron_pickaxe', copy: 0, fee: 30 });
     const [req] = (await novice('GET', '/api/repairs')).json as { id: number }[];
-    expect((await novice('POST', '/api/repairs/take', { requestId: req!.id })).status).toBe(400); // niveau 5 de Forge requis
+    expect((await novice('POST', '/api/repairs/take', { requestId: req!.id })).status).toBe(400); // niveau 10 de Forge requis
     const back = (await owner('POST', '/api/repairs/cancel', { requestId: req!.id })).json as StateResponse;
     expect(back.state.gold).toBe(100);
-    expect(back.state.durability.bronze_pickaxe!.copies[0]).toBe(30 * 3_600_000);
+    expect(back.state.durability.iron_pickaxe!.copies[0]).toBe(50 * 3_600_000);
   });
 
   it('prime de commande : livrer un ordre d’achat d’un objet qu’on sait fabriquer rapporte de l’XP', async () => {

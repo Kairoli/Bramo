@@ -55,6 +55,13 @@ Bramo est un **idle-RPG multijoueur jouable dans le navigateur**, dans l'esprit 
 
 ## 5. État du projet (à jour au 21 octobre 2026)
 
+### Fait — conception du combat, des classes et de l'équipement (21 octobre)
+
+- **Document de référence : [`docs/design/combat-items.md`](docs/design/combat-items.md)** (issu du travail avec ChatGPT, relu par Louis). Décidé par Louis : niveau par classe (toutes les activités productives donnent de l'XP à la classe sélectionnée, changer conserve tout) ; combat **entièrement automatique** (la préparation est le jeu) ; raretés Commun/Rare/Épique/Légendaire **sans talent** ; **ligne variable** unique ; **Chef-d'œuvre** = exemplaire signé au jet maximal (remplace les qualités) ; **talents portés par des gemmes** (pierre angulaire des builds, façon *The Division 2*), craftables par les joailliers, achetables, dropables ; **apparence modifiable emplacement par emplacement** ; **l'équipement s'use** ; emplacements à la Dofus ; ensembles 2/3/4 pièces ; paliers 1, 10… 90 ; Chasse = métier de récolte sans combat ; triangle abandonné pour les monstres.
+- **Proposé par Claude, à valider** : XP de classe au temps de travail (courbe R(L)), combat ×1,25, rattrapage +50 % jusqu'à 80 % de la meilleure classe ; voie 30 / spécialisation 60 (deux doctrines par voie) / éveil 75 (ultime) ; 11 emplacements de statistiques (coiffe, torse, gants, jambes, bottes, cape, ceinture, collier, 2 anneaux, arme) + épaulières cosmétiques ; quatre talents majeurs (arme, torse, coiffe, collier) ; langage de talents (déclencheurs, conditions, effets, délais internes, profondeur 1) ; simulation à pas fixes, hors ligne par échantillon ; test automatique de diversité des builds.
+- **Recettes recalées sur l'échelle des paliers** : outils de bronze au niveau de Forge 1, fer 10, acier 20 (lingot d'acier 20), réparation par artisan aux mêmes niveaux ; XP recalculée par `sim calibrate`.
+- **Prochaine étape (§10 du document)** : moteur d'objets à exemplaires (identifiant propre), apparence par emplacement, vitrine du marché, catalogue minimal des paliers 1/10/20, gemmes, combat automatique, ensembles.
+
 ### Fait — équilibre de l'or (21 octobre)
 
 - **Demande de Louis : « équilibre l'or »**. Mesure : `pnpm --filter @bramo/sim sim balance` (compare des jeux de réglages sur 150 jours ; `GoldVariant` : commandes PNJ, prix des réparations, coûts des bâtiments, or de départ) et `sim market` (tableau de bord). Les bots du simulateur appartiennent à des clans (`clanShare`, `clanWillingness`) et apportent de l'or et des matériaux aux bâtiments ; ils placent des demandes au marché pour les matériaux manquants.

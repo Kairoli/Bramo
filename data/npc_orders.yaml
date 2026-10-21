@@ -29,7 +29,7 @@
 - {id: fishing_abyss_ray, profession: fishing, level: 70, client: Maître Naël, text: "« La mer a donné. À toi de la remercier. »", items: [{item: abyss_ray, qty: 35}], gold: 270}
 - {id: smithing_bronze_bar, profession: smithing, level: 1, client: Maître Brunhild, text: "« Des lingots propres, sans scories. Je regarde. »", items: [{item: bronze_bar, qty: 10}], gold: 75}
 - {id: smithing_iron_bar, profession: smithing, level: 10, client: Maître Brunhild, text: "« L’enclume est vide, ça se voit. »", items: [{item: iron_bar, qty: 10}], gold: 165}
-- {id: smithing_steel_bar, profession: smithing, level: 25, client: Maître Brunhild, text: "« Des lingots propres, sans scories. Je regarde. »", items: [{item: steel_bar, qty: 10}], gold: 315}
+- {id: smithing_steel_bar, profession: smithing, level: 20, client: Maître Brunhild, text: "« Des lingots propres, sans scories. Je regarde. »", items: [{item: steel_bar, qty: 10}], gold: 315}
 - {id: carpentry_pine_plank, profession: carpentry, level: 1, client: Maître Joris, text: "« Des planches droites, s’il te plaît. Droites. »", items: [{item: pine_plank, qty: 20}], gold: 75}
 - {id: carpentry_pine_handle, profession: carpentry, level: 1, client: Maître Joris, text: "« Le comptoir se remplit de sciure, mais pas de bois. »", items: [{item: pine_handle, qty: 20}], gold: 55}
 - {id: carpentry_oak_plank, profession: carpentry, level: 10, client: Maître Joris, text: "« Des planches droites, s’il te plaît. Droites. »", items: [{item: oak_plank, qty: 20}], gold: 130}

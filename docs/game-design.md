@@ -48,7 +48,7 @@ Détail : [`design/rangs.md`](design/rangs.md). Remplace les titres Novice / App
 Paliers au rendement décroissant, plafonnés à **+10 %** au total.
 
 ### 3.4 Objets faits maison *(plus tard)*
-Signés par l'artisan, de meilleure qualité : Normale, Supérieure, Rare, Chef-d'œuvre. [Recommandé] La chance de qualité monte avec l'écart entre le niveau de l'artisan et celui de la recette, pour que les artisans de haut niveau restent demandés sur les paliers moyens.
+Signés par l'artisan. [Décidé par Louis, 21 octobre] **Plus de qualité Normale / Supérieure / Rare** : quatre raretés propres au modèle d'objet, une ligne variable par exemplaire, et un exemplaire **Chef-d'œuvre** (jet maximal, signé) rare. La chance d'en fabriquer monte avec l'écart entre le niveau de l'artisan et celui de la recette. Détail : [`design/combat-items.md`](design/combat-items.md) §5.
 
 ## 4. Métiers
 
@@ -105,8 +105,8 @@ Pseudo et mot de passe, un personnage par compte.
 
 Chaque classe a **trois voies** (dégâts, contrôle, soutien) qui partagent le même métier principal. Le bonus de métier reste modeste et s'évalue avec les autres sources de puissance. Choix de la classe à la création, changeable à tout moment et gratuitement. Chaque classe a sa **tenue de départ** et sa **pose** ; à terme, chaque voie aura sa pose.
 
-### 7.2 Progression de classe
-Niveau 30 : voie ; 60 : spécialisation ; 75 : éveil.
+### 7.2 Progression de classe [Décidé par Louis : un niveau par classe ; sens des paliers proposé]
+Chaque classe a **son niveau** ; toutes les activités productives donnent de l'XP à la classe sélectionnée ; changer de classe conserve tous les niveaux. Niveau 30 : **voie** ; 60 : **spécialisation** (deux doctrines par voie) ; 75 : **éveil** (compétence ultime). Taux d'XP, rattrapage, plan de combat : [`design/combat-items.md`](design/combat-items.md) §2.
 
 ### 7.3 Classes de métier [Décidé]
 **Artificier** (Artificerie), **Alchimiste** (Alchimie). [Prototype du v1.0] Déblocage au niveau 40. [Recommandé] Au niveau 60 avec la nouvelle progression.
@@ -115,7 +115,7 @@ Niveau 30 : voie ; 60 : spécialisation ; 75 : éveil.
 Affinité plafonnée à **+5 %** (au lieu de +10 %) ; chaque voie a un **consommable ou service signature** fabriqué par son métier principal, aussi achetable. Aucune voie n'exige un second métier à haut niveau ([`design/monde.md`](design/monde.md) §1).
 
 ### 7.5 Triangle de combat
-Mêlée > Tir > Magie > Mêlée.
+Mêlée > Tir > Magie > Mêlée. [Décidé par Louis, 21 octobre] **Abandonné pour les monstres** (il obligerait à changer de classe selon la rencontre) ; réservé à un éventuel PvP.
 
 ## 8. Économie et social
 

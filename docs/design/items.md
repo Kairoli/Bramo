@@ -1,5 +1,7 @@
 # Modèle des objets : exemplaires, paliers, équipement
 
+> **Remplacé en grande partie par [`combat-items.md`](combat-items.md)** (21 octobre 2026) pour tout ce qui touche à l'équipement, aux raretés, à la qualité, aux gemmes et aux ensembles. Ce document garde le modèle technique des exemplaires et de l'usure.
+>
 > **[Prototype]** pour les exemplaires et l'usure des outils ; le reste est **[Recommandé]** et prépare le combat (P4). Rien ci-dessous n'est décidé par Louis, sauf la **durabilité maximale qui ne baisse jamais** et l'**équipement qui s'use sans disparaître**.
 
 ## 1. Deux sortes d'objets

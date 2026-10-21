@@ -69,7 +69,7 @@ La classe ne doit être **ni une obligation ni un goulot** pour eux :
 ### 3.1 Cadre technique [Proposé par Claude]
 - Un combat est une **simulation à pas fixes** (1 pas par seconde de jeu), déterministe pour une graine donnée, résolue **côté serveur** (le client n'affiche que le journal et un résumé).
 - **Hors ligne** : on ne simule pas des milliers de combats. On simule un petit échantillon (par exemple 20 combats) par couple (build, rencontre) pour estimer taux de victoire, durée et gains, puis on **extrapole** sur la durée d'autonomie. L'estimation est mise en cache tant que le build ne change pas.
-- **Statistiques** : Vitalité (PV), Défense (réduction), Puissance, Cadence, Critique, Dégâts critiques, Ténacité (durée des statuts subis), Pénétration. Trois types de dégâts (Physique, Feu, Foudre, plus Givre) pour que les résistances des ennemis diversifient les builds.
+- **Statistiques** : Vitalité (PV), Défense (réduction), Puissance, Cadence, Critique, Dégâts critiques, Ténacité (durée des statuts subis), Pénétration. Quatre types de dégâts (Physique, Feu, Givre, Foudre) pour que les résistances des ennemis diversifient les builds ; le type vient des sorts (§4.2).
 - **Statuts** (mots-clés partagés par les gemmes, les ensembles et les compétences) : Brûlure, Saignement, Marque, Ralentissement, Étourdissement, Vulnérabilité, Bouclier, Régénération, Charge.
 
 ### 3.3 Événements et boss mondiaux : tout le monde y participe [Proposé par Claude, à valider]
@@ -103,11 +103,32 @@ Le boss mondial (le gardien d'un événement, [`monde.md`](monde.md) §2) a une 
 
 | Catégorie | Emplacements | Remarques |
 |---|---|---|
-| Vêtements | **Coiffe, Torse, Gants, Jambes, Bottes, Cape, Ceinture** (7) | Quatre grandes familles : métal (mêlée), cuir (tir), tissu (magie), plus des pièces universelles ; une même robe ou un même plastron peut servir plusieurs voies. |
+| Vêtements | **Coiffe, Torse, Gants, Jambes, Bottes, Cape, Ceinture** (7) | Organisés en **familles de style** compatibles avec certaines classes (§4.1). |
 | Bijoux | **Collier, Anneau 1, Anneau 2** (3) | Largement universels (Joaillerie). |
 | Arme | **Arme** (1) | Catégories d'armes par classe, à fixer (§5.4). |
 | Utilitaires | **Outil, Repas** | Déjà dans le jeu. |
 | Apparence seule | **Épaulières** | Pas de statistiques : un emplacement purement cosmétique (Couture, événements). |
+
+### 4.1 Familles de vêtements et classes compatibles [Décidé par Louis : l'identité visuelle de la classe compte ; familles proposées par Claude]
+
+Un Forgefeu, guerrier, **ne porte pas de tunique** : chaque classe a une silhouette et un style, donc **les vêtements sont des familles liées à des classes**. Les **bijoux sont universels**, les **armes sont liées à la classe**.
+
+| Famille (style) | Allure | Classes compatibles |
+|---|---|---|
+| **Armure** | Plaques, mailles, grosses épaulières | Forgefeu |
+| **Cuirasse** | Cuir renforcé, boucles, pièces de métal | Forgefeu, Traqueur |
+| **Tenue de piste** | Cuir léger, capes, capuches | Traqueur, Runiste |
+| **Robe** | Tissu, robes, tuniques, ornements runiques | Runiste |
+
+Les recoupements (Cuirasse, Tenue de piste) donnent des pièces qui s'échangent entre classes sans trahir les silhouettes. Un objet indique en clair les classes qui peuvent le porter ; les autres ne peuvent pas l'équiper. L'**apparence** suit la même règle : on choisit sa tenue parmi les pièces de **sa** classe, emplacement par emplacement (personnalisation à l'intérieur du style, pas hors du style). *À confirmer avec Louis : l'apparence est-elle libre entre classes, ou limitée aux familles compatibles ?*
+
+Tout objet fabriqué ou dropé appartient à une famille. Un loot « pour une autre classe » reste utile : on le vend, on le garde pour une autre classe du même compte, ou on l'offre à un ami.
+
+### 4.2 Les éléments ne dépendent pas de la classe [Décidé par Louis]
+Un Runiste n'est pas « foudre » : **l'élément vient des sorts choisis, pas de la classe.** Un Runiste voie contrôle peut très bien bâtir un build de **givre**. De même pour les deux autres classes. Conséquences :
+- Quatre types de dégâts : **Physique, Feu, Givre, Foudre**. Chaque **sort** a son type ; une classe a un répertoire qui en mêle deux ou trois (par exemple Runiste : feu, givre, foudre ; Forgefeu : physique et feu ; Traqueur : physique et nature/foudre à décider).
+- Les **vêtements portent des statistiques générales** (Vitalité, Défense, Puissance, Cadence, Critique, Ténacité…), **pas** d'élément propre. L'orientation élémentaire se règle par les **lignes variables compatibles** (« +x % de dégâts de Givre »), les **gemmes** et les **bonus d'ensemble**.
+- Les noms illustratifs du récapitulatif (« Robe de l'Orage », « Givre des cimes ») sont des **thèmes de sets**, pas des verrous : l'Orage contenu peut très bien accompagner un build de foudre, mais rien n'oblige un Runiste à le porter.
 
 Dix emplacements de statistiques en combat (sept vêtements, trois bijoux) plus l'arme : onze au total. Les ensembles de 2, 3 et 4 pièces se répartissent sur les sept vêtements.
 

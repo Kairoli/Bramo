@@ -26,3 +26,15 @@ describe('combat : moteur réel et banc du dossier', () => {
     expect(Math.max(...deltas)).toBeLessThan(0.08);
   });
 });
+
+describe('combat : propositions', () => {
+  it('une proposition ne change que ce qu’elle écrit (paramètres de voie, plans ajoutés) et reste validée', () => {
+    const base = loadVariant().combat!;
+    const p = loadVariant('combat-voies-v1').combat!;
+    expect(p.paths.red_temper!.params.perHeat).toBe(0.22);
+    expect(p.paths.red_temper!.params.hits).toBe(base.paths.red_temper!.params.hits);
+    expect(p.paths.fulgurant).toEqual(base.paths.fulgurant);
+    expect(p.plans.fulgurant_advised?.levels['80']).toHaveLength(5);
+    expect(Object.keys(p.plans).length).toBe(Object.keys(base.plans).length + 9);
+  });
+});

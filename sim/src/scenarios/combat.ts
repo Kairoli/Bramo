@@ -174,7 +174,7 @@ interface BancRow {
   medianHp: number;
 }
 
-function provenance(): Record<string, string> {
+function provenance(proposal?: string): Record<string, string> {
   const h = (files: string[]) => {
     const hash = createHash('sha256');
     for (const f of files) hash.update(readFileSync(f));
@@ -186,18 +186,62 @@ function provenance(): Record<string, string> {
     data: h(readdirSync(dataDir).sort().map((f) => join(dataDir, f))),
     engine: h(readdirSync(engineDir).sort().map((f) => join(engineDir, f))),
     bench: h([join(ROOT, 'sim', 'src', 'scenarios', 'combat.ts')]),
+    ...(proposal ? { proposal: h([join(ROOT, 'sim', 'proposals', proposal, 'combat.yaml')]) } : {}),
   };
 }
 
-export function combatReport(content: Content, o: CombatOptions = defaultCombatOptions): string {
+/** Tableau avant / après : meilleur plan de chaque voie par profil, écart au DPS, victoires à danger accru. */
+function beforeAfter(before: CombatContent, after: CombatContent, b: CombatSummary[], a: CombatSummary[], o: CombatOptions): string[] {
+  const top = Math.max(...o.levels);
+  const encounters = Object.values(after.encounters);
+  const opening = after.rules.opening;
+  const best = (combat: CombatContent, rows: CombatSummary[], path: string, enc: string, danger: number) => {
+    const list = rows.filter((s) => s.path === path && s.encounter === enc && s.danger === danger && s.level === top && s.variant === 'plan' && s.opening === opening);
+    if (danger !== 1) return list.reduce<CombatSummary | null>((x, s) => (!x || s.winRate > x.winRate ? s : x), null);
+    return list.filter((s) => s.winRate === 1).reduce<CombatSummary | null>((x, s) => (!x || s.medianTime! < x.medianTime! ? s : x), null);
+  };
+  const md: string[] = [`## 0. Avant / après (répertoire ${top}, ouverture « ${opening} »)`, ''];
+  md.push('« Avant » = `data/`, « après » = la proposition, mêmes graines. Temps · PV du **meilleur plan de la voie** pour ce profil (PV du même plan) ; entre parenthèses, l\'écart au meilleur plan de dégâts de la classe.', '');
+  md.push(`| Voie | ${encounters.map((e) => e.name).join(' | ')} |`, `|---|${encounters.map(() => '---').join('|')}|`);
+  const cell = (combat: CombatContent, rows: CombatSummary[], path: string, enc: string) => {
+    const s = best(combat, rows, path, enc, 1);
+    const kit = combat.kits[combat.paths[path]!.class]!;
+    const d = best(combat, rows, kit.paths.find((p) => p.role === 'damage')!.id, enc, 1);
+    if (!s) return 'aucun plan sûr';
+    const gap = combat.paths[path]!.role !== 'damage' && d?.medianTime ? ` (${s.medianTime! >= d.medianTime ? '+' : ''}${pct(s.medianTime! / d.medianTime - 1)})` : '';
+    return `${fr(s.medianTime)} s${gap} · ${pct(s.medianHp)}`;
+  };
+  for (const path of Object.values(after.paths)) {
+    md.push(`| ${path.name} | ${encounters.map((e) => `${cell(before, b, path.id, e.id)} → **${cell(after, a, path.id, e.id)}**`).join(' | ')} |`);
+  }
+  md.push('');
+  for (const danger of o.dangers.filter((d) => d > 1)) {
+    md.push(`**Danger ×${fr(danger, 1)}** : meilleur taux de victoire parmi les plans de la voie, avant → après.`, '');
+    md.push(`| Voie | ${encounters.map((e) => e.name).join(' | ')} |`, `|---|${encounters.map(() => '---').join('|')}|`);
+    for (const path of Object.values(after.paths)) {
+      md.push(`| ${path.name} | ${encounters.map((e) => `${pct(best(before, b, path.id, e.id, danger)?.winRate ?? null)} → **${pct(best(after, a, path.id, e.id, danger)?.winRate ?? null)}**`).join(' | ')} |`);
+    }
+    md.push('');
+  }
+  return md;
+}
+
+export interface ReportTarget {
+  /** Proposition mesurée (sinon : data/). */
+  proposal?: string;
+  /** Données d'avant, pour le tableau avant / après. */
+  baseline?: Content;
+}
+
+export function combatReport(content: Content, o: CombatOptions = defaultCombatOptions, target: ReportTarget = {}): string {
   const combat = content.combat;
   if (!combat) throw new Error('data/combat/ absent');
   const started = Date.now();
   const rows = runCombat(combat, o);
   const elapsed = (Date.now() - started) / 1000;
   const summary = summarize(combat, rows);
-  const prov = provenance();
-  const dir = join(ROOT, 'sim', 'reports', 'combat');
+  const prov = provenance(target.proposal);
+  const dir = join(ROOT, 'sim', 'reports', 'combat', ...(target.proposal ? [target.proposal] : []));
   mkdirSync(dir, { recursive: true });
 
   // Résultats bruts : une ligne par combat, colonnes nommées (échecs compris).
@@ -219,8 +263,8 @@ export function combatReport(content: Content, o: CombatOptions = defaultCombatO
   const top = Math.max(...o.levels);
   const defOpening = combat.rules.opening;
   const md: string[] = [];
-  md.push('# Banc de combat sur le moteur réel', '');
-  md.push('> Généré par `pnpm --filter @bramo/sim sim combat`. Ne pas modifier à la main.', '');
+  md.push(`# Banc de combat sur le moteur réel${target.proposal ? ` : proposition \`${target.proposal}\`` : ''}`, '');
+  md.push(`> Généré par \`pnpm --filter @bramo/sim sim combat${target.proposal ? ` --proposal ${target.proposal}` : ''}\`. Ne pas modifier à la main.`, '');
   md.push(`**${rows.length} combats** en ${fr(elapsed)} s (${o.seeds} graines par cas). Empreintes : données \`${prov.data}\`, moteur \`${prov.engine}\`, banc \`${prov.bench}\`.`, '');
   md.push('**Portée.** Kit de classe seul : sorts, mécanique de classe et passif de voie. Statistiques normalisées du dossier (P = 100, 2 800 PV, 25 % de réduction, 20 % de critique, 12 % de Cadence) : **pas encore d\'équipement, d\'ensembles, de gemmes ni de nommés**, ni de résistances élémentaires (reportées). Les répertoires 40 et 80 changent les sorts accessibles, pas les statistiques. Rencontres isolées, solo. Les fichiers `combats.json` (un combat par ligne) et `resume.json` (une ligne par cas) gardent tout, échecs compris.', '');
   md.push('**Lecture.** Dans chaque cellule « temps · PV », le temps est la médiane des **victoires** et les PV la médiane de **tous les combats de la même ligne** (même plan, même profil, mêmes graines). Quand une cellule retient « le meilleur plan de la voie », le PV affiché est celui **de ce plan-là**, pas une moyenne d\'autres plans.', '');
@@ -228,7 +272,8 @@ export function combatReport(content: Content, o: CombatOptions = defaultCombatO
   // 1. Comparaison au banc du dossier.
   const bancFile = join(ROOT, 'sim', 'reference', 'banc-coeur-v0.2.json');
   const banc = JSON.parse(readFileSync(bancFile, 'utf8')) as { baselines: BancRow[] };
-  if (o.openings.includes('sequence') && o.dangers.includes(1)) {
+  if (target.baseline?.combat) md.push(...beforeAfter(target.baseline.combat, combat, summarize(target.baseline.combat, runCombat(target.baseline.combat, o)), summary, o));
+  if (!target.proposal && o.openings.includes('sequence') && o.dangers.includes(1)) {
     md.push('## 1. Moteur réel et banc du dossier (kit seul, ouverture « séquence »)', '');
     md.push('Le banc Python a joué les mêmes plans en kit seul avec la règle d\'ouverture « séquence ». Les tirages ne sont pas les mêmes (générateurs différents) : on attend des écarts de quelques pour cent, pas une égalité.', '');
     md.push('| Niveau | Plan | Rencontre | Banc : temps · PV | Moteur : temps · PV | Écart de temps |', '|---|---|---|---|---|---|');

@@ -39,6 +39,7 @@ export function readProposalRaw(name: string): RawContent {
   for (const key of ['professions', 'items', 'trials'] as const) {
     if (existsSync(join(dir, `${key}.yaml`))) raw[key] = read(`${key}.yaml`);
   }
+  if (existsSync(join(dir, 'combat.yaml'))) raw.combat = patchCombat(raw.combat, read('combat.yaml') as CombatPatch);
   if (existsSync(join(dir, 'recipes'))) {
     raw.recipes = readdirSync(join(dir, 'recipes'))
       .filter((f) => f.endsWith('.yaml'))
@@ -53,6 +54,58 @@ export function loadVariant(proposal?: string, settingsPatch?: unknown): Content
   const raw = proposal ? readProposalRaw(proposal) : readRawContent(DATA_DIR);
   if (settingsPatch) raw.settings = deepMerge(raw.settings, settingsPatch);
   return buildContent(raw);
+}
+
+/**
+ * Modifications d'une proposition sur `data/combat/` (fichier `combat.yaml` d'une proposition) : on n'écrit que ce qui change.
+ * - `rules` : fusionné avec rules.yaml ;
+ * - `classes.<id>.params` et `paths.<id>.params` : paramètres de mécanique ou de passif fusionnés ;
+ * - `spells.<id>` : champs d'un sort fusionnés ;
+ * - `plans.<id>.levels.<niveau>` : répertoire du plan remplacé pour ce niveau.
+ */
+export interface CombatPatch {
+  note?: string;
+  rules?: Record<string, unknown>;
+  classes?: Record<string, { params?: Record<string, number> }>;
+  paths?: Record<string, { params?: Record<string, number> }>;
+  spells?: Record<string, Record<string, unknown>>;
+  plans?: Record<string, { levels?: Record<string, unknown[]> }>;
+  /** Plans ajoutés (même format que plans.yaml), par exemple les plans conseillés trouvés par `sim combat-search`. */
+  addPlans?: unknown[];
+}
+
+type RawCombatFiles = NonNullable<RawContent['combat']>;
+interface RawKit {
+  id: string;
+  params: Record<string, number>;
+  paths: { id: string; params: Record<string, number> }[];
+}
+
+export function patchCombat(base: RawCombatFiles | undefined, patch: CombatPatch): RawCombatFiles {
+  if (!base) throw new Error('data/combat/ absent : rien à modifier');
+  const out = structuredClone(base);
+  const fail = (what: string): never => {
+    throw new Error(`combat.yaml : ${what} inconnu`);
+  };
+  if (patch.rules) out.rules = deepMerge(out.rules, patch.rules);
+  const kits = (out.kits as { classes: RawKit[] }).classes;
+  for (const [id, p] of Object.entries(patch.classes ?? {})) {
+    const k = kits.find((x) => x.id === id) ?? fail(`classe « ${id} »`);
+    k.params = { ...k.params, ...p.params };
+  }
+  for (const [id, p] of Object.entries(patch.paths ?? {})) {
+    const path = kits.flatMap((k) => k.paths).find((x) => x.id === id) ?? fail(`voie « ${id} »`);
+    path.params = { ...path.params, ...p.params };
+  }
+  const spells = out.spells as { id: string }[];
+  for (const [id, p] of Object.entries(patch.spells ?? {})) Object.assign(spells.find((s) => s.id === id) ?? fail(`sort « ${id} »`), p);
+  const plans = (out.plans ?? []) as { id: string; levels: Record<string, unknown[]> }[];
+  for (const [id, p] of Object.entries(patch.plans ?? {})) {
+    const plan = plans.find((x) => x.id === id) ?? fail(`plan « ${id} »`);
+    plan.levels = { ...plan.levels, ...p.levels };
+  }
+  if (patch.addPlans) out.plans = [...plans, ...structuredClone(patch.addPlans)];
+  return out;
 }
 
 /** Paramètres propres au simulateur (usure, demande…) qui n'existent pas encore dans le jeu. */

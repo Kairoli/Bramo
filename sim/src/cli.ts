@@ -1,7 +1,9 @@
-import { mkdirSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
+import { parse, stringify } from 'yaml';
 import { calibrate } from './calibrate.js';
-import { ROOT, loadVariant } from './load.js';
+import { type CombatPatch, ROOT, loadVariant } from './load.js';
+import { type SearchedPlan, defaultSearchOptions, recommendedPlan, searchMarkdown, searchPlans } from './scenarios/combat-search.js';
 import { miningProgression } from './scenarios/baseline.js';
 import { presenceReport } from './scenarios/presence.js';
 import { milestonesReport, progressionReport } from './scenarios/progression.js';
@@ -33,7 +35,38 @@ const commands: Record<string, () => string> = {
 
 Écrit : ${writeBalance(md)}`;
   },
-  combat: () => combatReport(loadVariant(opt('proposal', '') || undefined), { ...defaultCombatOptions, seeds: Number(opt('seeds', String(defaultCombatOptions.seeds))) }),
+  combat: () => {
+    const proposal = opt('proposal', '') || undefined;
+    const o = { ...defaultCombatOptions, seeds: Number(opt('seeds', String(defaultCombatOptions.seeds))) };
+    return combatReport(loadVariant(proposal), o, proposal ? { proposal, baseline: loadVariant() } : {});
+  },
+  'combat-search': () => {
+    const proposal = opt('proposal', '') || undefined;
+    const combat = loadVariant(proposal).combat!;
+    const levels = opt('levels', '40,80').split(',').map(Number);
+    const byLevel: Record<string, Record<string, SearchedPlan[]>> = {};
+    const o = { ...defaultSearchOptions };
+    for (const level of levels) byLevel[level] = searchPlans(combat, { ...o, level });
+    const dir = join(ROOT, 'sim', 'reports', 'combat', ...(proposal ? [proposal] : []));
+    mkdirSync(dir, { recursive: true });
+    writeFileSync(join(dir, 'recherche.md'), `${searchMarkdown(combat, byLevel, o)}\n`);
+    writeFileSync(join(dir, 'recherche.json'), `${JSON.stringify({ options: o, levels: byLevel })}\n`);
+    const out = [`Écrit : ${join(dir, 'recherche.md')}, recherche.json`];
+    // --write <proposition> : ajoute à cette proposition un plan conseillé par voie (le plus rapide en moyenne de chaque répertoire).
+    const target = opt('write', '');
+    if (target) {
+      const file = join(ROOT, 'sim', 'proposals', target, 'combat.yaml');
+      const patch: CombatPatch = existsSync(file) ? (parse(readFileSync(file, 'utf8')) as CombatPatch) : {};
+      patch.addPlans = Object.values(combat.paths).map((p) => {
+        const recs = levels.map((level) => recommendedPlan(combat, byLevel[level]![p.id]!, level));
+        return { id: `${p.id}_advised`, name: `Plan conseillé ${p.name}`, class: p.class, path: p.id, weapon: recs[0]!.weapon, levels: Object.fromEntries(recs.map((r) => [String(r.level), r.spells.map((spell) => ({ spell, at: 0 }))])) };
+      });
+      mkdirSync(dirname(file), { recursive: true });
+      writeFileSync(file, `# Proposition de combat (voir sim/README.md). addPlans est réécrit par \`sim combat-search --write ${target}\`.\n${stringify(patch, { lineWidth: 0 })}`);
+      out.push(`Plans conseillés écrits dans ${file}`);
+    }
+    return out.join('\n');
+  },
   market: () => marketText(marketReport({ players: Number(opt('players', '60')), days: Number(opt('days', '120')), seed: Number(opt('seed', '1')) })),
   presence: () => presenceReport(),
   progression: () => progressionReport(opt('proposal', 'boucle-v0'), Number(opt('days', '520'))),

@@ -56,6 +56,10 @@ export const combatRulesSchema = z.object({
     recovery: seconds,
     breakDamageTaken: z.number().min(0),
     breakNextHitReduction: z.number().min(0).max(1),
+    /** Stabilité d'un ennemi ordinaire (pas un boss) ; par défaut `max`. */
+    ordinaryMax: z.number().positive().optional(),
+    /** Étourdissement d'un ennemi ordinaire à sa Rupture (s) ; 0 par défaut. */
+    ordinaryBreakStun: seconds.optional(),
   }),
   cleanse: z.object({ auraImmunity: seconds }),
   dotTick: z.number().positive(),

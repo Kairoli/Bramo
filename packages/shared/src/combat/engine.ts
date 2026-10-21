@@ -183,6 +183,8 @@ interface Combatant {
   angle: { until: number; target: number } | null;
   orderUntil: number;
   rune: Spell['form'] | null;
+  /** Dernières runes écrites (les trois plus récentes). */
+  forms: NonNullable<Spell['form']>[];
   runeElement: Element;
   ink: number;
   rebattue: { amount: number; hits: number; until: number };
@@ -253,6 +255,7 @@ export function fight(combat: CombatContent, setups: CombatantSetup[], encounter
       angle: null,
       orderUntil: -1,
       rune: null,
+      forms: [],
       runeElement: 'lightning',
       ink: 0,
       rebattue: { amount: 0, hits: 0, until: -1 },
@@ -276,7 +279,7 @@ export function fight(combat: CombatContent, setups: CombatantSetup[], encounter
     weaken: [],
     vuln: [],
     dots: new Map(),
-    stability: R.stability.max,
+    stability: encounter.enemies === 1 ? R.stability.max : (R.stability.ordinaryMax ?? R.stability.max),
     breakUntil: -1,
     breakRecover: -1,
     nextHit: ms(R.enemy.firstAttackAt + i * R.enemy.attackStagger),
@@ -388,7 +391,9 @@ export function fight(combat: CombatContent, setups: CombatantSetup[], encounter
     e.stability -= loss;
     c.contrib.pressure += loss;
     if (e.stability <= 0) {
-      e.stability = R.stability.max;
+      e.stability = e.boss ? R.stability.max : (R.stability.ordinaryMax ?? R.stability.max);
+      // Un ennemi ordinaire peut être brièvement étourdi par sa Rupture ; un boss jamais.
+      if (!e.boss && R.stability.ordinaryBreakStun) e.stunUntil = Math.max(e.stunUntil, t + ms(R.stability.ordinaryBreakStun));
       e.breakUntil = t + ms(R.stability.breakDuration);
       e.breakRecover = t + ms(R.stability.recovery);
       weaken(c, e, R.stability.breakNextHitReduction, R.stability.breakDuration, true);
@@ -397,8 +402,15 @@ export function fight(combat: CombatContent, setups: CombatantSetup[], encounter
     }
     return loss > 0;
   };
-  /** Ralentit les attaques ordinaires (plafond pour un boss). Vrai si le ralentissement est posé. */
-  const slow = (e: Enemy, amount: number, duration: number): boolean => {
+  /**
+   * Ralentit les attaques ordinaires (plafond pour un boss). Vrai si le ralentissement est posé.
+   * Une voie peut renforcer ses ralentissements : `slowAmount` (en plus) et `slowDuration` (multiplicateur).
+   * Paramètre de voie `weakenAll` : l'Affaiblissement de son passif vaut pour toutes les attaques de la cible pendant sa durée,
+   * au lieu de la prochaine seulement.
+   */
+  const slow = (c: Combatant, e: Enemy, amount: number, duration: number): boolean => {
+    amount += param(c, 'slowAmount');
+    duration *= c.path?.params.slowDuration ?? 1;
     if (e.boss) amount = Math.min(R.caps.bossSlow, amount);
     if (e.slowUntil <= t || amount >= e.slow) {
       e.slow = amount;
@@ -415,7 +427,7 @@ export function fight(combat: CombatContent, setups: CombatantSetup[], encounter
     if (rune === 'trait') damage(c, e, kp(c, 'trait') * c.P, 'class', c.runeElement);
     else if (rune === 'circle') {
       for (const x of aliveEnemies().slice(0, kp(c, 'circleTargets'))) damage(c, x, kp(c, 'circle') * c.P, 'class', c.runeElement);
-      if (e.hp > 0) return slow(e, kp(c, 'circleSlow'), kp(c, 'circleSlowDuration'));
+      if (e.hp > 0) return slow(c, e, kp(c, 'circleSlow'), kp(c, 'circleSlowDuration'));
     } else shield(c, beneficiary(c), kp(c, 'seal') * c.P, 'native_rune', true, kp(c, 'sealDuration'));
     return false;
   };
@@ -469,7 +481,7 @@ export function fight(combat: CombatContent, setups: CombatantSetup[], encounter
         if (id === 'red_temper') c.rebattue = { amount: param(c, 'perHeat') * c.P * heat, hits: param(c, 'hits'), until: t + ms(param(c, 'duration')) };
         else if (id === 'anvil' && heat) {
           control = pressure(c, e, param(c, 'pressurePerHeat') * heat) || control;
-          weaken(c, e, param(c, 'weakenPerHeat') * heat, param(c, 'weakenDuration'), true);
+          weaken(c, e, param(c, 'weakenPerHeat') * heat, param(c, 'weakenDuration'), !param(c, 'weakenAll'));
           prepare(c, 'assise', param(c, 'followupPerHeat') * heat * c.P, param(c, 'followupDuration'), 'heat');
         } else if (id === 'whetter' && heat) {
           shield(c, beneficiary(c), param(c, 'shieldPerHeat') * heat * c.P, 'plate', false, param(c, 'duration'), param(c, 'ripostePerHeat') * heat * c.P);
@@ -485,7 +497,7 @@ export function fight(combat: CombatContent, setups: CombatantSetup[], encounter
         const id = c.path?.id;
         if (id === 'beastslayer') dot(c, e, 'morsure', param(c, 'bleed'), 'bleed', param(c, 'duration'));
         else if (id === 'trapper') {
-          weaken(c, e, param(c, 'weaken'), param(c, 'duration'), true);
+          weaken(c, e, param(c, 'weaken'), param(c, 'duration'), !param(c, 'weakenAll'));
           e.countertraps.set(c, { amount: param(c, 'damage') * c.P, until: t + ms(param(c, 'duration')) });
           control = pressure(c, e, param(c, 'pressure')) || control;
         } else if (id === 'packleader') c.orderUntil = t + ms(param(c, 'duration'));
@@ -503,6 +515,12 @@ export function fight(combat: CombatContent, setups: CombatantSetup[], encounter
         }
         if (id === 'fulgurant' && counter(c, 'last_word', param(c, 'every'))) {
           let extra = param(c, 'damage') * c.P;
+          // Phrase complète : les deux runes écrites avant et celle de ce sort sont toutes différentes.
+          const phrase = [...c.forms.slice(-2), spell.form];
+          if (param(c, 'fullPhrase') && phrase.length === 3 && new Set(phrase).size === 3) {
+            extra += param(c, 'fullPhrase') * c.P;
+            inc(c, 'fullPhrases');
+          }
           if (oldRune === 'seal') {
             extra -= param(c, 'sealShare') * c.P;
             shield(c, beneficiary(c), param(c, 'sealShare') * c.P, 'last_word', false, 6);
@@ -545,7 +563,7 @@ export function fight(combat: CombatContent, setups: CombatantSetup[], encounter
       if (spell.shield) shield(c, who, spell.shield * c.P, `spell:${spell.id}`, true, spell.duration ?? 6);
       for (const v of targets) {
         if (v.hp <= 0) continue;
-        if (spell.slow) control = slow(v, spell.slow, spell.duration ?? 4) || control;
+        if (spell.slow) control = slow(c, v, spell.slow, spell.duration ?? 4) || control;
         if (spell.stun) {
           if (v.boss) control = pressure(c, v, spell.stun * R.stability.stunPressurePerSecond) || control;
           else {
@@ -575,12 +593,14 @@ export function fight(combat: CombatContent, setups: CombatantSetup[], encounter
       if (c.kit.mechanic === 'angle' && tags.includes('setup')) c.angle = { until: t + ms(kp(c, 'duration')), target: e.i };
       if (c.kit.mechanic === 'rune') {
         c.rune = spell.form ?? null;
+        if (spell.form) c.forms = [...c.forms.slice(-2), spell.form];
         c.runeElement = element;
       }
       // Sigillaire : une action de classe qui contrôle réellement pose un Scellé ; à trois, Interdit.
       if (c.path?.id === 'sigilbinder' && control && counter(c, 'seals', param(c, 'seals'))) {
         damage(c, e, param(c, 'damage') * c.P, 'class', element);
-        weaken(c, e, param(c, 'weaken'), param(c, 'duration'), true);
+        weaken(c, e, param(c, 'weaken'), param(c, 'duration'), !param(c, 'weakenAll'));
+        if (param(c, 'vulnerability')) e.vuln.push({ amount: param(c, 'vulnerability'), until: t + ms(param(c, 'duration')) });
         inc(c, 'interdicts');
         notes.push('Interdit');
       }

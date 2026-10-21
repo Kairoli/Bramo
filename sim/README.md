@@ -21,7 +21,9 @@ pnpm --filter @bramo/sim sim report
 | `consumables [--proposal p]` | Rapport bonus / coût de chaque repas |
 | `economy [--proposal p]` | Flux de travail et d'or par joueur, variantes, sensibilité, taille du serveur, débouchés du bas niveau |
 | `market [--players n] [--days n] [--seed n]` | **Simulation du marché** : des bots (récolteurs, artisans, présences variées) jouent avec le vrai moteur et le marché du jeu ; écrit `reports/marche.html` (tableau de bord visuel) et `marche.json` |
-| `combat [--seeds n] [--proposal p]` | **Banc de combat sur le moteur réel** (`fight` de `@bramo/shared`, données `data/combat/`) : les plans d'exemple × six profils de rencontre × graines, deux règles d'ouverture, danger ×1 / ×1,5 / ×2, tolérance des horaires. Écrit `reports/combat/rapport.md`, `resume.json` (une ligne par cas) et `combats.json` (une ligne par combat, échecs compris). Compare au banc Python du dossier (`reference/banc-coeur-v0.2.json`) |
+| `combat [--seeds n] [--proposal p]` | Avec `--proposal`, le rapport va dans `reports/combat/<p>/` et commence par un tableau **avant / après** (données actuelles contre la proposition, mêmes graines). |
+| `combat [--seeds n]` | **Banc de combat sur le moteur réel** (`fight` de `@bramo/shared`, données `data/combat/`) : les plans d'exemple × six profils de rencontre × graines, deux règles d'ouverture, danger ×1 / ×1,5 / ×2, tolérance des horaires. Écrit `reports/combat/rapport.md`, `resume.json` (une ligne par cas) et `combats.json` (une ligne par combat, échecs compris). Compare au banc Python du dossier (`reference/banc-coeur-v0.2.json`) |
+| `combat-search [--levels 40,80] [--proposal p] [--write p]` | **Recherche de plans** : toutes les combinaisons de sorts de chaque voie, rejouées aux dangers ×1 à ×4 ; écrit `reports/combat/[p/]recherche.md` et `recherche.json` (meilleur plan, écart au DPS, **murs**). `--write p` ajoute à la proposition `p` un plan conseillé par voie (`addPlans` de son `combat.yaml`) |
 | `calibrate [--proposal p] [--write]` | Recalcule l'XP des recettes, la durée des repas et la valeur des objets d'une proposition à partir des règles (`src/rules.ts`) |
 
 `pnpm --filter @bramo/sim test` vérifie entre autres que la mesure de référence est reproduite et que la proposition respecte ses règles.
@@ -47,6 +49,8 @@ reports/         rapports générés (ne pas modifier à la main)
 ## Propositions
 
 Un dossier de `proposals/` remplace tout ou partie de `data/` : `settings.yaml` y est **fusionné** (on n'écrit que ce qui change) ; `professions.yaml`, `items.yaml`, `trials.yaml` et le dossier `recipes/` y **remplacent** ceux de `data/`. Le résultat passe par la même validation que le serveur. Une proposition adoptée se recopie dans `data/`.
+
+**Combat** : un fichier `combat.yaml` modifie `data/combat/` sans le recopier : `rules` (fusionné), `classes.<id>.params` et `paths.<id>.params` (paramètres fusionnés), `spells.<id>` (champs d'un sort), `plans.<id>.levels` (répertoire remplacé), `addPlans` (plans ajoutés). Propositions : `combat-plans-v1` (plans conseillés seuls), `combat-voies-v1` (équilibrage des voies, voir `docs/design/coeur-du-jeu/integration.md`).
 
 Fichiers propres au simulateur (pas encore dans le moteur) : `plots.yaml` (parcelles d'Agriculture) et `economy.yaml` (hypothèses économiques, chacune discutable).
 

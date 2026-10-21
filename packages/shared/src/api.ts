@@ -80,6 +80,39 @@ export interface MyOrderView extends MarketOrderView {
   waitingQty: number;
 }
 
+/** Un joueur vu dans la scène du bourg (informations publiques seulement). */
+export interface TownPlayer {
+  id: number;
+  name: string;
+  classId: string;
+  outfit: string;
+  /** Recette en cours, ou null s'il ne fait rien. */
+  doing: string | null;
+  doingProfession: string | null;
+  /** Son métier le plus haut, avec son niveau et son titre. */
+  profession: string | null;
+  level: number;
+  title: string;
+  self: boolean;
+}
+
+/** Une ligne du fil du serveur. */
+export interface TownEvent {
+  id: number;
+  at: number;
+  kind: 'level' | 'trial' | 'first' | 'join';
+  text: string;
+}
+
+export interface TownView {
+  /** Joueurs actifs récemment (au-delà de ceux montrés). */
+  online: number;
+  /** Personnages sur le serveur. */
+  total: number;
+  players: TownPlayer[];
+  feed: TownEvent[];
+}
+
 export interface JournalEntry {
   id: number;
   at: number;

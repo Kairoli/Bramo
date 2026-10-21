@@ -48,6 +48,7 @@ import {
 } from './auth.js';
 import { type Action, NoCharacterError, play } from './game.js';
 import { recentEntries } from './journal.js';
+import { joinEvent, recordEvents, townView } from './town.js';
 import { cancelRepair, openRepairs, requestRepair, takeRepair } from './repairs.js';
 import { buyFromStall, cancelOrder, fillOrder, marketBook, marketSummary, myOrders, placeOrder } from './market.js';
 
@@ -162,6 +163,7 @@ export async function buildApp({ db, content, clock = Date.now, secureCookies = 
         lastTickAt: new Date(s.lastTickAt),
         lastSeenAt: new Date(s.lastSeenAt),
       });
+      await recordEvents(tx, now, [joinEvent(username)]);
       return account!.id;
     });
     setSessionCookie(reply, await createSession(db, accountId, new Date(now)));
@@ -333,7 +335,7 @@ export async function buildApp({ db, content, clock = Date.now, secureCookies = 
 
   app.post('/api/trials/complete', (req) => {
     const { trialId } = body(trialBody, req);
-    return playAs(req, (state) => {
+    return playAs(req, (state, _now, ctx) => {
       const trial = content.trials[trialId];
       const next = completeTrial(state, trialId, content);
       const title = trial && content.settings.titles.find((t) => t.level === trial.rank)?.name;
@@ -342,8 +344,16 @@ export async function buildApp({ db, content, clock = Date.now, secureCookies = 
         state: next,
         log: `Épreuve réussie : « ${trial?.name} ». Vous devenez ${title} en ${profession?.name}, +${trial?.reward.gold} or.`,
         logKind: 'trial',
+        serverEvents: [
+          { kind: 'trial', text: `${ctx.characterName} réussit l’épreuve « ${trial?.name} » et devient ${title} en ${profession?.name}.` },
+        ],
       };
     });
+  });
+
+  app.get('/api/town', async (req) => {
+    const me = await myCharacter(req);
+    return townView(db, content, clock(), me.id);
   });
 
   app.get('/api/journal', async (req) => {

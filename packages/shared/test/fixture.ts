@@ -20,6 +20,7 @@ export const settings = {
   commissions: { primeShare: 0.2, primeUnitsPerDay: 10 },
   market: { taxShare: 0.05, maxOpenOrders: 3, maxPrice: 1000, maxQuantity: 100 },
   npcOrders: { perDay: 2 },
+  town: { activeWindowMin: 15, maxWalkers: 10, feedSize: 30, milestoneLevels: [20, 40] },
   absence: { minSummaryMin: 5 },
   character: { startingGold: 100 },
 };

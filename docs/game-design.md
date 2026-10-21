@@ -150,7 +150,7 @@ Maquettes de référence : `docs/maquettes/`
 - Police unique **Bricolage Grotesque**, palette « Anthracite et cuivre » (voir `CLAUDE.md`).
 
 ### 9.2 Accueil
-- Direction choisie le 21 octobre : **scène du bourg** où passent d'autres joueurs et **Panneau du bourg** centré sur le **fil du serveur** ; pas de bonus du jour ; commandes de PNJ : [Décidé] X par jour au maximum (Comptoir de la guilde, dans la salle Marché). La carte du monde pourra revenir en popup « Voyager » avec l'Exploration.
+- [Prototype, fait le 21 octobre] Scène du bourg (décor SVG cliquable, autres joueurs actifs en promenade ou au travail) et Panneau du bourg (fil du serveur : arrivées, niveaux 20/40/60/80/99, épreuves, premières fabrications). Direction choisie : **scène du bourg** où passent d'autres joueurs et **Panneau du bourg** centré sur le **fil du serveur** ; pas de bonus du jour ; commandes de PNJ : [Décidé] X par jour au maximum (Comptoir de la guilde, dans la salle Marché). La carte du monde pourra revenir en popup « Voyager » avec l'Exploration.
 - **En bas, trois colonnes** : journal et discussion (Tout / Journal / Clan / Serveur) ; le personnage **en entier** au centre, entouré de ses emplacements ; activité en cours (anneau, gains, file) à droite.
 
 ### 9.2 bis Salle Personnage

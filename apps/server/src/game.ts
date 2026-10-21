@@ -10,6 +10,7 @@ import {
 import type { Db, Tx } from './db/index.js';
 import { claimOrders } from './market.js';
 import { claimRepairs } from './repairs.js';
+import { type NewServerEvent, eventsFromSummary, recordEvents } from './town.js';
 import { loadCharacterForUpdate, saveCharacter } from './characters.js';
 import { entriesFromSummary, insertEntries } from './journal.js';
 
@@ -18,6 +19,8 @@ export interface ActionResult {
   /** Ligne de journal à ajouter pour l'action du joueur. */
   log?: string;
   logKind?: JournalEntry['kind'];
+  /** Annonces pour le fil du serveur (public). */
+  serverEvents?: NewServerEvent[];
 }
 
 /** Contexte d'une action : la transaction en cours et le personnage (le marché lit et écrit d'autres lignes). */
@@ -56,13 +59,17 @@ export async function play(db: Db, content: Content, accountId: number, now: num
     const repaired = await claimRepairs(tx, loaded.id, claimed.state, content);
     for (const text of repaired.lines) entries.push({ at: now, kind: 'info', text });
 
+    const announce = await eventsFromSummary(tx, loaded.name, summary, content);
+
     let state = repaired.state;
     if (action) {
       const result = await action(repaired.state, now, { tx, characterId: loaded.id, characterName: loaded.name });
       state = result.state;
+      announce.push(...(result.serverEvents ?? []));
       if (result.log) entries.push({ at: now, kind: result.logKind ?? 'info', text: result.log });
     }
     state.lastSeenAt = now;
+    await recordEvents(tx, now, announce);
 
     await saveCharacter(tx, loaded.id, loaded.state, state);
     const journal = await insertEntries(tx, loaded.id, entries);

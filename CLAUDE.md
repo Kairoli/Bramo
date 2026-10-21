@@ -55,6 +55,14 @@ Bramo est un **idle-RPG multijoueur jouable dans le navigateur**, dans l'esprit 
 
 ## 5. État du projet (à jour au 21 octobre 2026)
 
+### Fait — accueil du bourg (21 octobre)
+
+- **Scène du bourg** (`rooms/home/Town.tsx`) remplace la carte du monde : décor SVG (mines, bois, jardins, forge qui rougeoie, menuiserie, halle de la guilde, cuisines, port ; chaque lieu cliquable ouvre la salle du métier) et **les autres joueurs récemment actifs** (`settings.town.activeWindowMin`, 15 min), avec leur classe et leur tenue : au travail devant le lieu de leur activité, en promenade sinon (toujours vers la droite, pas de miroir) ; une carte au survol (titre, niveau, ce qu'ils font). `prefers-reduced-motion` : tout reste immobile.
+- **Panneau du bourg** : fil du serveur (annonces publiques) ; filtre « mes annonces », lien vers le Marché.
+- **Serveur** (`apps/server/src/town.ts`) : tables `server_events` et `server_firsts` (migration `0005_town`), `GET /api/town` (`TownView` : joueurs actifs, total, fil). Événements : arrivée d'un joueur, niveau de métier annoncé (`settings.town.milestoneLevels`, 20/40/60/80/99), épreuve de maître réussie, première fabrication d'un objet sur le serveur. `play()` collecte les annonces (`ActionResult.serverEvents` pour une action) et les enregistre dans la transaction.
+- Tests : 18 d'API (dont le bourg). Vérifié dans le navigateur à 800×500 et 1440×900, sans scroll de page.
+- **Pas encore fait** : onglets Tout / Clan / Serveur du journal (le fil est dans le Panneau), discussion, commandes PNJ affichées sur le Panneau (elles sont dans la salle Marché), mini-annonces de saison. La carte du monde pourra revenir en popup « Voyager » avec l'Exploration.
+
 ### Fait — marché entre joueurs, commandes PNJ, Pêche, exemplaires (21 octobre)
 
 - **Décision de Louis** : **aucun PNJ qui rachète** ; le PNJ ne passe que X commandes par jour ; tout le reste est entre joueurs. Le marchand du port est supprimé (engine, routes, `ShopModal`, `shopPrice`). Conception : [`docs/design/marche.md`](docs/design/marche.md) (avec les questions pour Louis) et [`docs/design/items.md`](docs/design/items.md).
@@ -164,7 +172,7 @@ Bramo est un **idle-RPG multijoueur jouable dans le navigateur**, dans l'esprit 
 
 0. **Suite de `docs/design/arbitrages.md` §3** (étapes 1 à 4 faites pour l'essentiel ; reste les outils d'apprenti, les commandes artisanales et le simulateur de marché) : (5) clans, Construction, Agriculture, (6) combat et métiers d'équipement, (7) premier événement.
 1. **Mise en service sur le homeserver** : Postgres (docker compose), `.env` avec `DATABASE_URL`, build du client (`pnpm --filter @bramo/web build`), le serveur Fastify sert `apps/web/dist` (ou un reverse proxy devant), HTTPS, `NODE_ENV=production`, service systemd ou conteneur, sauvegardes de la base. Limite de tentatives de connexion.
-2. **Accueil à refaire** (direction choisie par l'auteur le 21 octobre) : la carte du monde est remplacée par une **scène du bourg** où passent d'autres joueurs (vrais joueurs récemment actifs, avec leur classe et leur activité) et un **Panneau du bourg** dont le cœur est le **fil du serveur** (montées de titre, épreuves réussies, premières fabrications). Décisions : **pas de bonus du jour** (les boosts viennent des saisons et événements), **pas de chantier commun au serveur** (c'est le rôle des clans), commandes de PNJ : X par jour au maximum (Comptoir, déjà dans la salle Marché). La carte pourra revenir en popup « Voyager » avec l'Exploration.
+2. ~~Accueil à refaire~~ **Fait le 21 octobre** (scène du bourg et fil du serveur). Reste : annonces de saison, discussion, popup « Voyager ».
 3. **Animation et vie de l'interface** (choix de l'auteur en attente) : « +1 objet » flottant à chaque fabrication, pulsation de l'anneau, célébration de montée de niveau et d'épreuve réussie, scènes animées dans les bandeaux (forge, mines, eau), entrées du journal qui glissent.
 4. **Personnages** : **une pose par voie** à terme, écran de choix de tenue, animations « travail » par famille de métier, une tenue Marée haute qui change aussi de forme. Couleurs cuivre #F08A4B (mêlée) et jade #7ED6A2 (tir) toujours à valider.
 5. **Rangs** (décidés, `docs/design/rangs.md`) : concevoir les commandes du maître (20, 40, 60, 80, 99), les surnoms et le traitement de l'XP en attente, puis remplacer les titres et épreuves actuels (`settings.titles`, `trials.yaml`, `engine/trials.ts`, interface du maître).

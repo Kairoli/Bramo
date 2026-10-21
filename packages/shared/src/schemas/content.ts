@@ -61,6 +61,14 @@ export const settingsSchema = z.object({
   }),
   /** Commandes PNJ du Comptoir de la guilde : seul achat du PNJ, `perDay` par jour de jeu. */
   npcOrders: z.object({ perDay: z.number().int().min(0) }),
+  /** Bourg (accueil) : joueurs récemment actifs montrés dans la scène, fil du serveur. */
+  town: z.object({
+    activeWindowMin: z.number().positive(),
+    maxWalkers: z.number().int().min(0),
+    feedSize: z.number().int().min(1),
+    /** Niveaux de métier annoncés sur le fil du serveur. */
+    milestoneLevels: z.array(z.number().int().min(2)),
+  }),
   absence: z.object({
     minSummaryMin: z.number().min(0),
   }),

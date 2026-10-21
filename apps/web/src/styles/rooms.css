@@ -59,88 +59,13 @@
   font-size: 13px;
 }
 
-/* ---------- Accueil : carte ---------- */
+/* ---------- Accueil : bourg ---------- */
 
 .world {
   display: grid;
   grid-template-columns: minmax(0, 1fr) clamp(260px, 24%, 330px);
   gap: 12px;
   padding: 12px;
-}
-.world-map {
-  position: relative;
-  min-height: 0;
-  border-radius: var(--radius-sm);
-  overflow: hidden;
-}
-.world-bg {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-}
-.world-region {
-  fill: var(--text-muted);
-  font-size: 13px;
-  font-family: var(--font);
-  opacity: 0.8;
-}
-.world-title {
-  position: absolute;
-  top: 0;
-  left: 0;
-  padding: 6px 12px;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  background: var(--panel);
-}
-.place {
-  position: absolute;
-  transform: translate(-50%, -50%);
-  display: grid;
-  justify-items: center;
-  gap: 2px;
-  background: none;
-  border: none;
-  padding: 0;
-}
-.place-dot {
-  display: grid;
-  place-items: center;
-  width: 46px;
-  height: 46px;
-  border-radius: 50%;
-  border: 3px solid currentColor;
-  background: var(--sunken);
-  font-weight: 700;
-  font-size: 15px;
-  box-shadow: 0 0 0 6px rgb(0 0 0 / 0.2);
-  transition: transform 0.15s;
-}
-.place:hover .place-dot,
-.place.selected .place-dot {
-  transform: scale(1.1);
-}
-.place.selected .place-dot {
-  box-shadow: 0 0 0 6px color-mix(in srgb, currentColor 25%, transparent);
-}
-.place-name {
-  padding: 1px 7px;
-  border-radius: 5px;
-  background: var(--sunken);
-  color: var(--text);
-  font-size: 12px;
-  font-weight: 600;
-}
-.place-busy {
-  position: absolute;
-  top: 2px;
-  right: -4px;
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: var(--action);
-  box-shadow: 0 0 8px var(--action);
 }
 .world-info {
   padding: 18px;
@@ -158,6 +83,159 @@
   margin-top: auto;
   display: grid;
   gap: 8px;
+}
+.town-scene {
+  position: relative;
+  min-height: 0;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  background: var(--sunken);
+}
+.town-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.town-place {
+  cursor: pointer;
+  outline: none;
+}
+.town-place:hover,
+.town-place:focus-visible {
+  filter: brightness(1.25);
+}
+.town-label {
+  fill: var(--text);
+  font: 600 13px var(--font);
+  paint-order: stroke;
+  stroke: var(--bg);
+  stroke-width: 4px;
+}
+.town-fire {
+  animation: town-flicker 1.8s ease-in-out infinite;
+}
+.town-smoke {
+  animation: town-smoke 5s ease-out infinite;
+}
+.town-smoke-2 {
+  animation-delay: -2.5s;
+}
+.town-banner {
+  transform-origin: 693px 176px;
+  animation: town-wave 4s ease-in-out infinite;
+}
+@keyframes town-flicker {
+  0%, 100% { opacity: 0.95; }
+  40% { opacity: 0.7; }
+  70% { opacity: 1; }
+}
+@keyframes town-smoke {
+  from { transform: translate(0, 0) scale(1); opacity: 0.35; }
+  to { transform: translate(16px, -46px) scale(2.2); opacity: 0; }
+}
+@keyframes town-wave {
+  0%, 100% { transform: skewY(0); }
+  50% { transform: skewY(5deg); }
+}
+.town-title {
+  position: absolute;
+  top: 8px;
+  left: 10px;
+  display: grid;
+  padding: 5px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--panel) 88%, transparent);
+  font-size: 13px;
+}
+.town-title strong {
+  font-size: 15px;
+}
+.town-walkers {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.walker {
+  position: absolute;
+  bottom: calc(9% - var(--dy, 0px));
+  height: 46%;
+  left: var(--x);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  pointer-events: auto;
+}
+.walker svg {
+  height: 100%;
+  width: auto;
+  aspect-ratio: 400 / 750;
+  filter: drop-shadow(0 6px 4px rgb(0 0 0 / 0.35));
+}
+.walker-strolling {
+  animation: town-stroll var(--dur) linear var(--delay) infinite;
+}
+@keyframes town-stroll {
+  from { left: -8%; }
+  to { left: 104%; }
+}
+.walker-name {
+  position: absolute;
+  top: -4px;
+  padding: 0 6px;
+  border-radius: 5px;
+  background: color-mix(in srgb, var(--panel) 85%, transparent);
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+  max-width: 110px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.walker-card {
+  display: none;
+  position: absolute;
+  bottom: 102%;
+  z-index: 5;
+  padding: 8px 10px;
+  gap: 2px;
+  min-width: 150px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--panel);
+  font-size: 12px;
+}
+.walker:hover .walker-card {
+  display: grid;
+}
+.walker:hover {
+  z-index: 6 !important;
+}
+.town-board {
+  gap: 8px;
+}
+.town-board h2 {
+  font-size: 20px;
+}
+.town-feed {
+  display: grid;
+  gap: 6px;
+  align-content: start;
+  min-height: 0;
+  font-size: 13px;
+}
+.town-line {
+  margin: 0;
+}
+.town-filter {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+@media (prefers-reduced-motion: reduce) {
+  .walker-strolling { animation: none; }
+  .town-fire, .town-smoke, .town-banner { animation: none; }
 }
 
 /* ---------- Accueil : bas ---------- */
@@ -1222,10 +1300,6 @@
   .topbar .tabs button {
     padding: 6px 12px;
     font-size: 14px;
-  }
-  .place-dot {
-    width: 38px;
-    height: 38px;
   }
   .ring-center strong {
     font-size: 22px;

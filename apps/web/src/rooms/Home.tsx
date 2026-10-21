@@ -1,4 +1,4 @@
-import { WorldMap } from './home/WorldMap';
+import { Town } from './home/Town';
 import { JournalPanel } from './home/JournalPanel';
 import { ActivityPanel } from './home/ActivityPanel';
 import { CharacterCard } from './home/CharacterCard';
@@ -6,7 +6,7 @@ import { CharacterCard } from './home/CharacterCard';
 export function Home() {
   return (
     <main className="room">
-      <WorldMap />
+      <Town />
       <div className="home-bottom">
         <JournalPanel />
         <CharacterCard />

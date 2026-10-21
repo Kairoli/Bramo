@@ -63,6 +63,13 @@ market:
 npcOrders:
   perDay: 3
 
+# Bourg (accueil) : qui on voit passer, ce que le fil du serveur annonce.
+town:
+  activeWindowMin: 15     # un joueur vu depuis moins de 15 min passe dans la scène
+  maxWalkers: 10
+  feedSize: 30
+  milestoneLevels: [20, 40, 60, 80, 99]   # niveaux de métier annoncés au serveur
+
 absence:
   minSummaryMin: 5        # en dessous, pas de fenêtre de résumé à la connexion
 

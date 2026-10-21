@@ -7,6 +7,7 @@ import type {
   MyOrderView,
   RepairRequestView,
   StateResponse,
+  TownView,
 } from '@bramo/shared';
 
 export class RequestError extends Error {
@@ -49,6 +50,7 @@ export const api = {
   eat: (itemId: string) => request<StateResponse>('POST', '/items/eat', { itemId }),
   buy: (itemId: string, qty: number) => request<StateResponse>('POST', '/shop/buy', { itemId, qty }),
   sell: (itemId: string, qty: number) => request<StateResponse>('POST', '/shop/sell', { itemId, qty }),
+  town: () => request<TownView>('GET', '/town'),
   marketSummary: () => request<MarketItemSummary[]>('GET', '/market'),
   marketItem: (itemId: string) => request<MarketOrderView[]>('GET', `/market/item/${itemId}`),
   myOrders: () => request<MyOrderView[]>('GET', '/market/mine'),

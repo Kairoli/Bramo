@@ -278,4 +278,21 @@ describe('API', () => {
     expect(res.state.skills.smithing!.xp).toBeCloseTo(1.6);
     expect(res.journal.some((j) => j.text.includes('Prime de commande'))).toBe(true);
   });
+
+  it('bourg : les joueurs actifs passent dans la scène et le fil annonce les arrivées', async () => {
+    const a = player({ value: '' });
+    await a('POST', '/api/auth/register', { username: 'Passant', password: 'motdepasse' });
+    await a('POST', '/api/character/class', { classId: 'tracker' });
+    const town = (await a('GET', '/api/town')).json as import('@bramo/shared').TownView;
+    const me = town.players.find((p) => p.name === 'Passant');
+    expect(me?.self).toBe(true);
+    expect(me?.classId).toBe('tracker');
+    expect(town.total).toBeGreaterThan(0);
+    expect(town.feed.some((e) => e.kind === 'join' && e.text.includes('Passant'))).toBe(true);
+    // Une heure plus tard, plus personne n'est actif : la scène est vide mais le fil reste.
+    now += 3_600_000;
+    const later = (await a('GET', '/api/town')).json as import('@bramo/shared').TownView;
+    expect(later.players.find((p) => p.name === 'Passant')).toBeUndefined(); // consulter le bourg n’est pas une visite
+    expect(later.feed.some((e) => e.text.includes('Passant'))).toBe(true);
+  });
 });

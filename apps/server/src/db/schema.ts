@@ -126,6 +126,21 @@ export const repairRequests = pgTable(
   (t) => [index('repair_requests_open').on(t.doneAt), index('repair_requests_owner').on(t.characterId)],
 );
 
+/** Fil du serveur : annonces publiques (paliers de niveau, épreuves, premières fabrications, arrivées). */
+export const serverEvents = pgTable('server_events', {
+  id: serial('id').primaryKey(),
+  at: ts('at').notNull(),
+  kind: text('kind').notNull(),
+  text: text('text').notNull(),
+});
+
+/** Premier personnage à avoir fabriqué chaque objet sur ce serveur. */
+export const serverFirsts = pgTable('server_firsts', {
+  itemId: text('item_id').primaryKey(),
+  characterName: text('character_name').notNull(),
+  at: ts('at').notNull().defaultNow(),
+});
+
 export const journal = pgTable(
   'journal',
   {

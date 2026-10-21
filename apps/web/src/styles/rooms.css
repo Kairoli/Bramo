@@ -114,7 +114,7 @@
 .walker {
   position: absolute;
   bottom: calc(9% - var(--dy, 0px));
-  height: 46%;
+  height: calc(46% - var(--shrink, 0%));
   left: var(--x);
   display: flex;
   flex-direction: column;
@@ -129,6 +129,16 @@
 }
 .walker-strolling {
   animation: town-stroll var(--dur) linear var(--delay) infinite;
+}
+/* Flâneur qui s'arrête un moment en chemin (--stop). */
+.walker-pause {
+  animation-name: town-stroll-stop;
+}
+@keyframes town-stroll-stop {
+  0% { left: -8%; }
+  38% { left: var(--stop); }
+  52% { left: var(--stop); }
+  100% { left: 104%; }
 }
 @keyframes town-stroll {
   from { left: -8%; }
@@ -1916,4 +1926,188 @@
 .atelier-crowd .rig {
   height: 150px;
   width: 90px;
+}
+
+/* ---------- Combat ---------- */
+
+.combat-room {
+  grid-template-rows: minmax(0, 16fr) minmax(0, 84fr);
+}
+.combat-panel {
+  display: grid;
+  grid-template-columns: minmax(240px, 1fr) minmax(320px, 1.35fr) minmax(280px, 1.15fr);
+  gap: 18px;
+  min-height: 0;
+  padding: 14px 16px;
+}
+.combat-col {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 0;
+  min-width: 0;
+}
+.combat-col .small,
+.combat-panel .small {
+  font-size: 12.5px;
+  line-height: 1.4;
+}
+.combat-col p {
+  margin: 0;
+}
+.combat-class,
+.combat-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.combat-class h2 {
+  margin: 0;
+  font-size: 20px;
+}
+.combat-mechanic {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--sunken);
+}
+.combat-paths {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+}
+.combat-path {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  padding: 8px;
+  text-align: left;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--sunken);
+  color: var(--text);
+}
+.combat-path:disabled {
+  cursor: default;
+}
+.combat-path:not(.on):disabled {
+  opacity: 0.55;
+}
+.combat-path.on {
+  border-color: var(--alert);
+  box-shadow: inset 0 0 0 1px var(--alert);
+}
+.combat-path-role {
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--alert);
+}
+.chip-own {
+  border-color: var(--action);
+  color: var(--action);
+}
+.combat-plan {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-height: 0;
+  flex: 1 1 auto;
+}
+.combat-slot {
+  display: grid;
+  grid-template-columns: 18px minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 4px 8px;
+  padding: 6px 8px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--sunken);
+}
+.combat-slot-n {
+  font-weight: 700;
+  color: var(--text-muted);
+}
+.combat-slot select,
+.combat-at input {
+  background: var(--panel);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  padding: 4px 6px;
+  font: inherit;
+  font-size: 13px;
+  min-width: 0;
+}
+.combat-at {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+.combat-at input {
+  width: 52px;
+}
+.combat-slot-moves {
+  display: flex;
+  gap: 4px;
+}
+.combat-slot-text {
+  grid-column: 2 / -1;
+}
+.combat-spells summary {
+  cursor: pointer;
+}
+.combat-spell-list {
+  max-height: 140px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 6px;
+}
+.combat-spell.locked {
+  opacity: 0.5;
+}
+.combat-activity {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 8px 10px;
+  border: 1px solid var(--alert);
+  border-radius: 10px;
+  background: var(--sunken);
+}
+.combat-encounters {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-height: 0;
+  max-height: 40%;
+}
+.combat-encounter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 6px 8px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+.combat-log {
+  flex: 1 1 0;
+  min-height: 60px;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--sunken);
+}
+.combat-line {
+  padding: 1px 0;
 }

@@ -136,7 +136,19 @@ Ce qui reste insatisfaisant, à arbitrer :
 - **Le groupe compact à ×2 reste un mur** pour presque toutes les voies (seuls Glyphiste et, dans `combat-voies-v1`, Sigillaire à 67 % le franchissent). C'est un réglage de contenu (étape 5), pas de voie.
 - Les sorts de voie d'Enclumier et de Rémouleur restent inutilisés : il faudra les revoir un par un, avec Louis, plutôt que de monter leurs chiffres à l'aveugle.
 
-Prochaine étape : **4, niveau de classe et activité de combat**. À l'étape 5, les paliers solo seront conçus pour **faire alterner** la voie la mieux adaptée (un profil qui demande du contrôle, un autre du débit, un autre de la survie), et le banc mesurera que chaque voie a ses profils favorables.
+### Étape 4 faite (22 octobre) : niveau de classe et activité de combat
+
+- **XP de classe au combat seulement** [Décidé par Louis] : chaque classe a son niveau (même courbe que les métiers), ses voies le partagent. `R(L) = 400 × 2^((L−1)/55)` XP par heure de combat **crédité** (le temps de la rencontre, pas le repos), +50 % pour une classe sous 80 % du niveau de la meilleure. Une défaite crédite la moitié de son temps ; trois défaites de suite mettent l'activité **en pause**, rien n'est perdu. Chiffres dans `data/combat/rules.yaml` (`progression`), à équilibrer.
+- **Le combat est une activité** : une seule à la fois (lancer une recette arrête le combat et inversement), 100 % en ligne comme hors ligne pendant l'autonomie, accélérée par les coups de fouet. Une rencontre se rejoue en boucle, avec 5 s de repos entre deux.
+- **Déterminisme** : chaque rencontre est résolue par `fight()` au moment où elle commence, avec le build figé et une graine tirée du personnage et du numéro de rencontre. Avancer en une ou plusieurs fois donne exactement le même état (testé). Le journal du dernier combat est **rejoué** à la demande (rien de plus à enregistrer).
+- **Terrain d'entraînement** [Validé par Louis] : 40 % de l'XP, sans combat réel ni butin, jusqu'au niveau 40.
+- **Plan** : enregistré par classe et par voie, validé (sorts accessibles, places, un ultime, **minuteur de 10 s au plus**) ; sans plan enregistré, le **plan conseillé** (issu de la recherche du simulateur, réduit aux sorts accessibles et complété). **Voie** choisie à partir du niveau 30, gratuitement, à tout moment ; elle s'applique à la rencontre suivante.
+- **Arme** : la famille de l'arme portée règle la cadence de l'attaque de base (le set de départ donne la sienne).
+- **Code** : `packages/shared/src/combat/progress.ts` (état, XP, plan conseillé, `runCombat` appelé par `advance`, actions) et `combat/view.ts` (ce que reçoit le client) ; colonne `combat` (migration `0013_combat`) ; routes `POST /api/combat/start|stop|path|plan` ; journal et résumé d'absence ; salle **Combat** (`apps/web/src/rooms/CombatRoom.tsx` : classe et voie, plan à cinq places avec minuteur, rencontres, activité, journal du dernier combat) ; l'accueil montre le combat en cours.
+- **Vérifié** : 9 tests de progression, un scénario d'API (une heure de combat côté serveur), et dans le navigateur à 1440×900 et 1280×720 sur une base de test séparée (premier combat gagné en 65 s, journal « 1 Braise dépensée », plan enregistré avec un horaire).
+- **Limites assumées** : les rencontres jouables sont les **six profils du banc** (« rencontres d'essai »), avec les statistiques normalisées : pas encore de zones ni de paliers, ni de statistiques venant de l'équipement, ni de butin, ni d'usure de l'équipement en combat. Le niveau de classe ne fait encore qu'ouvrir des sorts et la voie.
+
+Prochaine étape : **5, statistiques réelles et progression solo** (zones et paliers qui font alterner la voie la mieux adaptée, murs franchis par le niveau, l'équipement et le build).
 
 ## 7. Questions pour Louis
 

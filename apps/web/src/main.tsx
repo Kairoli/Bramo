@@ -13,7 +13,7 @@ import { Home } from './rooms/Home';
 import { Professions } from './rooms/Professions';
 import { ProfessionRoom } from './rooms/ProfessionRoom';
 import { CharacterRoom } from './rooms/CharacterRoom';
-import { SoonRoom } from './rooms/SoonRoom';
+import { CombatRoom } from './rooms/CombatRoom';
 import { Atelier } from './rooms/Atelier';
 import { ContentContext } from './game/ContentContext';
 import './styles/global.css';
@@ -38,7 +38,7 @@ function Shell() {
       {room === 'character' && <CharacterRoom />}
       {room === 'clan' && <ClanRoom />}
       {room === 'market' && <MarketRoom />}
-      {room === 'combat' && <SoonRoom room="combat" />}
+      {room === 'combat' && <CombatRoom />}
       {absence && <AbsenceModal summary={absence} />}
       {error && <div className="toast">{error}</div>}
     </div>

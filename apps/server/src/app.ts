@@ -34,6 +34,13 @@ import {
   lookBody,
   outfitBody,
   classBody,
+  choosePath,
+  combatPathBody,
+  combatPlanBody,
+  combatStartBody,
+  setPlan,
+  startCombat,
+  stopCombat,
   completeTrial,
   credentialsBody,
   eatMeal,
@@ -358,6 +365,31 @@ export async function buildApp({ db, content, clock = Date.now, secureCookies = 
   app.post('/api/character/look', (req) => {
     const { slot, partId } = body(lookBody, req);
     return playAs(req, (state) => ({ state: setLook(state, slot, partId, content), log: 'Vous changez d’apparence.' }));
+  });
+
+  // --- Combat ---
+
+  const encounterName = (id: string | null) => (id === null ? 'Terrain d’entraînement' : (content.combat?.encounters[id]?.name ?? id));
+  app.post('/api/combat/start', (req) => {
+    const { encounter } = body(combatStartBody, req);
+    return playAs(req, (state, now) => ({
+      state: startCombat(state, encounter, now, content),
+      log: `Vous partez au combat : ${encounterName(encounter)}.`,
+    }));
+  });
+  app.post('/api/combat/stop', (req) =>
+    playAs(req, (state) => ({ state: stopCombat(state), log: 'Vous arrêtez le combat.' })),
+  );
+  app.post('/api/combat/path', (req) => {
+    const { pathId } = body(combatPathBody, req);
+    return playAs(req, (state) => ({
+      state: choosePath(state, pathId, content),
+      log: `Vous suivez la voie : ${content.combat?.paths[pathId]?.name ?? pathId}.`,
+    }));
+  });
+  app.post('/api/combat/plan', (req) => {
+    const { plan } = body(combatPlanBody, req);
+    return playAs(req, (state) => ({ state: setPlan(state, plan, content), log: plan ? 'Plan de combat enregistré.' : 'Retour au plan conseillé.' }));
   });
 
   app.post('/api/character/class', (req) => {

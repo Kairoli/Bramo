@@ -8,6 +8,7 @@ import {
 import { type CharacterState, addStack, addTo, cloneState } from './state.js';
 import { activeCopy, isDurable, wearCopy } from './gear.js';
 import { skillLevel } from './trials.js';
+import { type CombatSummary, emptyCombatSummary, runCombat } from '../combat/progress.js';
 
 export interface FinishedActivity {
   recipeId: string;
@@ -37,6 +38,8 @@ export interface AdvanceSummary {
   finished: FinishedActivity[];
   /** Recettes démarrées automatiquement depuis la file. */
   started: string[];
+  /** Combat : rencontres jouées, XP de classe, niveaux, pause éventuelle. */
+  combat: CombatSummary;
 }
 
 /** Le meilleur outil du métier qui n'est pas usé (un outil usé ne donne rien mais n'est pas perdu). */
@@ -122,6 +125,7 @@ export function advance(
     levelUps: [],
     finished: [],
     started: [],
+    combat: emptyCombatSummary(),
   };
   const levelsBefore: Record<string, number> = {};
 
@@ -211,13 +215,18 @@ export function advance(
       }
     }
 
+    // Combat : une activité comme une autre (jamais en même temps qu'une recette).
+    if (!state.activity && state.combat.activity && win.multiplier > 0) {
+      t = runCombat(state, t, end, win.multiplier, content, summary.combat);
+    }
+
     const worked = t - workStart;
     if (worked > 0) {
       summary.workedMs += worked;
       if (win.energized) summary.energyUsedMs += worked;
     }
     // Plus d'activité : le reste de l'intervalle s'écoule sans rien produire.
-    if (!state.activity) break;
+    if (!state.activity && !state.combat.activity) break;
     t = end;
   }
 

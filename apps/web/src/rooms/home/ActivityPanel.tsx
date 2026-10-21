@@ -28,7 +28,21 @@ export function ActivityPanel() {
         </div>
       </header>
 
-      {!live || !a || !profession ? (
+      {state.combat?.activity ? (
+        <div className="activity-empty">
+          <p>
+            <strong>Combat : {state.combat.activity.name}</strong>
+          </p>
+          <p className="muted">
+            {state.combat.activity.encounter === null
+              ? `${state.combat.classId ? content.classes[state.combat.classId]?.name : ''} niveau ${state.combat.level}`
+              : `${num(state.combat.activity.wins)} victoire${state.combat.activity.wins > 1 ? 's' : ''} · niveau ${state.combat.level}`}
+          </p>
+          <button className="btn btn-primary" onClick={() => go('combat')}>
+            Voir le combat
+          </button>
+        </div>
+      ) : !live || !a || !profession ? (
         <div className="activity-empty">
           <p className="muted">Aucune activité. Vos métiers attendent.</p>
           <button className="btn btn-primary" onClick={() => go('professions')}>

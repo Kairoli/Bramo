@@ -20,6 +20,7 @@ const rules = {
   stability: { max: 80, stunPressurePerSecond: 15, breakDuration: 6, recovery: 8, breakDamageTaken: 0.08, breakNextHitReduction: 0.25 },
   cleanse: { auraImmunity: 6 },
   dotTick: 1,
+  progression: { xpPerHour: 400, xpDoubling: 55, catchUpBonus: 0.5, catchUpBelow: 0.8, rest: 5, lossXpShare: 0.5, maxConsecutiveLosses: 3, training: { xpShare: 0.4, maxLevel: 40 } },
 };
 const path = (id: string, role: string, params: Record<string, number> = {}) => ({ id, name: id, role, passive: id, params });
 const kits = {

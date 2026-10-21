@@ -1,0 +1,1 @@
+ALTER TABLE "characters" ADD COLUMN "combat" jsonb DEFAULT '{}'::jsonb NOT NULL;

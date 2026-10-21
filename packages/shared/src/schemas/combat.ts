@@ -63,6 +63,16 @@ export const combatRulesSchema = z.object({
   }),
   cleanse: z.object({ auraImmunity: seconds }),
   dotTick: z.number().positive(),
+  progression: z.object({
+    xpPerHour: z.number().positive(),
+    xpDoubling: z.number().positive(),
+    catchUpBonus: z.number().min(0),
+    catchUpBelow: z.number().min(0).max(1),
+    rest: seconds,
+    lossXpShare: z.number().min(0).max(1),
+    maxConsecutiveLosses: z.number().int().min(1),
+    training: z.object({ xpShare: z.number().min(0).max(1), maxLevel: z.number().int().min(1).max(99) }),
+  }),
 });
 
 const params = z.record(z.string(), z.number());

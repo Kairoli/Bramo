@@ -10,6 +10,7 @@ const KIND: Record<JournalEntry['kind'], { label: string; color: string }> = {
   started: { label: 'File', color: 'var(--action)' },
   info: { label: '', color: 'var(--action)' },
   trial: { label: 'Épreuve', color: 'var(--clan)' },
+  combat: { label: 'Combat', color: 'var(--alert)' },
 };
 
 export function JournalPanel() {

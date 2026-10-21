@@ -1,4 +1,5 @@
 import type { EnergyState } from '../formulas/rates.js';
+import type { CombatState } from '../combat/progress.js';
 
 export interface QueuedAction {
   recipeId: string;
@@ -55,6 +56,10 @@ export interface CharacterState {
   trials: string[];
   /** Surnom affiché par métier : rang choisi (0 = surnom de départ). Absent = le plus haut débloqué. */
   shown: Record<string, number>;
+  /** Combat : XP par classe, voies, plans, activité de combat (voir combat/progress.ts). */
+  combat: CombatState;
+  /** Famille de l'arme portée (renseignée au chargement depuis l'équipement, jamais enregistrée). */
+  weaponFamily: string | null;
 }
 
 export class GameError extends Error {

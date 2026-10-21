@@ -44,3 +44,17 @@ stability:
 cleanse:
   auraImmunity: 6             # une purification protège de l'aura pendant 6 s
 dotTick: 1
+
+# Progression de classe et activité de combat (étape 4). [Décidé par Louis : XP de classe au combat seulement ;
+# Terrain d'entraînement validé.] Chiffres proposés par Claude, à équilibrer.
+progression:
+  xpPerHour: 400          # XP de classe par heure de combat crédité au niveau 1 : R(L) = 400 × 2^((L−1)/55), comme les métiers
+  xpDoubling: 55
+  catchUpBonus: 0.5       # +50 % pour une classe sous 80 % du niveau de la meilleure classe du personnage
+  catchUpBelow: 0.8
+  rest: 5                 # repos fixe entre deux rencontres (s), non crédité
+  lossXpShare: 0.5        # une défaite crédite la moitié de son temps
+  maxConsecutiveLosses: 3 # puis l'activité se met en pause (rien n'est perdu)
+  training:               # Terrain d'entraînement : sans butin ni risque
+    xpShare: 0.4
+    maxLevel: 40

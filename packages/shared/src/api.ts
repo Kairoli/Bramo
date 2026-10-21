@@ -22,6 +22,11 @@ export const cancelBody = z.object({ index: z.number().int().min(-1) });
 export const itemBody = z.object({ itemId: z.string() });
 export const tradeBody = z.object({ itemId: z.string(), qty: z.number().int().min(1) });
 export const classBody = z.object({ classId: z.string() });
+/** Combat : une rencontre en boucle, ou null pour le Terrain d'entraînement. */
+export const combatStartBody = z.object({ encounter: z.string().nullable() });
+export const combatPathBody = z.object({ pathId: z.string() });
+/** Plan de combat : sorts et première utilisation (s) ; null revient au plan conseillé. */
+export const combatPlanBody = z.object({ plan: z.array(z.object({ spell: z.string(), at: z.number().min(0) })).max(10).nullable() });
 export const outfitBody = z.object({ outfitId: z.string() });
 export const gearIdBody = z.object({ id: z.number().int() });
 export const gearGrantBody = z.object({ modelId: z.string(), masterpiece: z.boolean().optional(), count: z.number().int().min(1).max(20).optional() });
@@ -175,7 +180,7 @@ export interface TownView {
 export interface JournalEntry {
   id: number;
   at: number;
-  kind: 'absence' | 'levelup' | 'finished' | 'started' | 'info' | 'trial';
+  kind: 'absence' | 'levelup' | 'finished' | 'started' | 'info' | 'trial' | 'combat';
   text: string;
   data?: AdvanceSummary;
 }

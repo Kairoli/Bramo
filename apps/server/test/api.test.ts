@@ -421,4 +421,35 @@ describe('API', () => {
     expect((await chef('POST', '/api/clan/leave')).status).toBe(200);
     expect(((await recrue('GET', '/api/clan')).json as import('@bramo/shared').ClanView).myRank).toBe('leader');
   });
+
+  it('combat : plan conseillé, rencontres en boucle côté serveur, XP de classe, journal du combat', async () => {
+    const f = player({ value: '' });
+    await f('POST', '/api/auth/register', { username: 'Combattante', password: 'motdepasse' });
+    const chosen = (await f('POST', '/api/character/class', { classId: 'forgefire' })).json as StateResponse;
+    const view = chosen.state.combat!;
+    expect(view.level).toBe(1);
+    expect(view.advised).toBe(true);
+    expect(view.plan.length).toBeGreaterThan(0);
+    // Le set de départ donne un marteau : sa cadence est celle de l'attaque de base.
+    expect((await f('POST', '/api/combat/path', { pathId: 'anvil' })).status).toBe(400);
+    expect((await f('POST', '/api/combat/plan', { plan: [{ spell: 'fg_workshop', at: 11 }] })).status).toBe(400);
+    const planned = (await f('POST', '/api/combat/plan', { plan: [{ spell: 'fg_quench', at: 0 }, { spell: 'fg_workshop', at: 2 }] })).json as StateResponse;
+    expect(planned.state.combat!.advised).toBe(false);
+    const started = (await f('POST', '/api/combat/start', { encounter: 'duel' })).json as StateResponse;
+    expect(started.state.combat!.activity?.name).toBe('Cible durable');
+    now += 3_600_000;
+    const after = (await f('GET', '/api/state')).json as StateResponse;
+    const c = after.state.combat!;
+    expect(c.activity!.wins).toBeGreaterThan(20);
+    expect(c.xp).toBeGreaterThan(0);
+    expect(c.lastFight?.win).toBe(true);
+    expect(c.lastFight!.lines.some((l) => l.text.includes('Braise'))).toBe(true);
+    expect(after.state.skills.mining?.xp ?? 0).toBe(0);
+    expect(after.absence?.combat.fights).toBeGreaterThan(20);
+    expect(after.journal.some((e) => e.kind === 'combat')).toBe(true);
+    // Une seule activité à la fois : lancer une recette arrête le combat.
+    const mining = (await f('POST', '/api/activity/start', { recipeId: 'mine_copper', quantity: 10, mode: 'replace' })).json as StateResponse;
+    expect(mining.state.combat!.activity).toBeNull();
+    expect((await f('POST', '/api/combat/stop')).status).toBe(400);
+  });
 });

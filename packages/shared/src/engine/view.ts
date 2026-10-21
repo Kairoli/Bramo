@@ -8,6 +8,7 @@ import { copiesRemaining, durabilityMs, isDurable } from './gear.js';
 import { lookOptions, recycleYield, repairCost, unlockedOutfits } from './actions.js';
 import { repairProblem } from './commission.js';
 import { npcDoneToday, npcOrdersOfDay } from './npc.js';
+import { type CombatView, viewCombat } from '../combat/view.js';
 import { type RankName, type TrialStatus, effectiveLevel, heldXp, nextTrial, ranksOf, shownNickname, skillLevel, trialStatus } from './trials.js';
 
 /** Ce que le client reçoit. Tous les nombres sont calculés par le serveur. */
@@ -67,6 +68,8 @@ export interface StateView {
   /** Apparence à afficher : classe et tenue (tenue de départ de la classe par défaut). */
   appearance: Appearance | null;
   trials: Record<string, TrialStatus>;
+  /** Combat de la classe actuelle (null sans classe ou sans data/combat/). */
+  combat: CombatView | null;
 }
 
 export function viewSkill(
@@ -180,5 +183,6 @@ export function viewState(state: CharacterState, now: number, content: Content):
     lookOptions: lookOptions(state, content),
     appearance: viewAppearance(state, content),
     trials,
+    combat: viewCombat(state, content),
   };
 }

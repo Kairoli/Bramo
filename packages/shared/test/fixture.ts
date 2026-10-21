@@ -1,5 +1,6 @@
 import { buildContent } from '../src/content.js';
 import type { CharacterState } from '../src/engine/state.js';
+import { emptyCombat } from '../src/combat/progress.js';
 
 /** Contenu de test figé : les tests ne dépendent pas de l'équilibrage de data/. */
 export const settings = {
@@ -158,6 +159,8 @@ export function makeState(over: Partial<CharacterState> = {}): CharacterState {
     outfit: null,
     look: {},
     trials: [],
+    combat: emptyCombat(),
+    weaponFamily: null,
     ...over,
   };
 }

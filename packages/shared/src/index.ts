@@ -5,6 +5,8 @@ export * from './schemas/combat.js';
 export * from './combat/content.js';
 export * from './combat/engine.js';
 export * from './combat/rng.js';
+export * from './combat/progress.js';
+export * from './combat/view.js';
 export * from './content.js';
 export * from './formulas/xp.js';
 export * from './formulas/rates.js';

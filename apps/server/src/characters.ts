@@ -1,8 +1,8 @@
 import { and, eq, inArray } from 'drizzle-orm';
-import { type CharacterState, type Content, readEnergy } from '@bramo/shared';
+import { type CharacterState, type Content, readCombat, readEnergy } from '@bramo/shared';
 import { bonusesOfCharacter } from './clans.js';
 import type { Tx } from './db/index.js';
-import { characterItems, characterSkills, characters } from './db/schema.js';
+import { characterItems, characterSkills, characters, gearItems } from './db/schema.js';
 
 export interface LoadedCharacter {
   id: number;
@@ -18,6 +18,9 @@ export async function loadCharacterForUpdate(tx: Tx, accountId: number, content:
   const items = await tx.select().from(characterItems).where(eq(characterItems.characterId, row.id));
   // Bonus de clan : ceux des bâtiments du clan, sinon ceux de la Guilde du bourg.
   const clanBonuses = await bonusesOfCharacter(tx, row.id, content);
+  // Famille de l'arme portée : elle règle la cadence de l'attaque de base en combat.
+  const [weapon] = await tx.select().from(gearItems).where(and(eq(gearItems.characterId, row.id), eq(gearItems.equipped, 'weapon')));
+  const weaponFamily = weapon ? (content.gearModels[weapon.modelId]?.family ?? null) : null;
   return {
     id: row.id,
     name: row.name,
@@ -44,6 +47,8 @@ export async function loadCharacterForUpdate(tx: Tx, accountId: number, content:
       look: row.look,
       trials: row.trials,
       shown: row.shown,
+      combat: readCombat(row.combat),
+      weaponFamily,
     },
   };
 }
@@ -67,6 +72,7 @@ export async function saveCharacter(tx: Tx, id: number, before: CharacterState, 
       look: after.look,
       trials: after.trials,
       shown: after.shown,
+      combat: after.combat,
       lastTickAt: new Date(after.lastTickAt),
       lastSeenAt: new Date(after.lastSeenAt),
     })

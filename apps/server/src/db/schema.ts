@@ -10,7 +10,7 @@ import {
   text,
   timestamp,
 } from 'drizzle-orm/pg-core';
-import type { Activity, AdvanceSummary, EnergyState, MealBuff, QueuedAction, RolledLine } from '@bramo/shared';
+import type { Activity, AdvanceSummary, CombatState, EnergyState, MealBuff, QueuedAction, RolledLine } from '@bramo/shared';
 
 /** Postgres standard uniquement : le schéma doit rester compatible Supabase. */
 
@@ -61,6 +61,8 @@ export const characters = pgTable('characters', {
   trials: jsonb('trials').$type<string[]>().notNull().default([]),
   /** Surnom affiché par métier (rang choisi). */
   shown: jsonb('shown').$type<Record<string, number>>().notNull().default({}),
+  /** Combat : XP par classe, voies, plans, activité de combat (CombatState de @bramo/shared). */
+  combat: jsonb('combat').$type<Partial<CombatState>>().notNull().default({}),
   lastTickAt: ts('last_tick_at').notNull(),
   lastSeenAt: ts('last_seen_at').notNull(),
   createdAt: ts('created_at').notNull().defaultNow(),

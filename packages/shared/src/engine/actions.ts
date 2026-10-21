@@ -4,6 +4,7 @@ import { type CharacterState, GameError, addStack, cloneState } from './state.js
 import { startNextFromQueue } from './advance.js';
 import { copiesWear, durabilityMs, isDurable, takeCopy } from './gear.js';
 import { recipeAvailable, skillLevel } from './trials.js';
+import { emptyCombat } from '../combat/progress.js';
 
 /**
  * Actions du joueur. Toutes pures : elles reçoivent un état déjà avancé jusqu'à `now`
@@ -38,6 +39,8 @@ export function startActivity(
   const action = { recipeId, quantity };
   if (mode === 'replace' || !state.activity) {
     state.activity = { ...action, done: 0, progress: 0, startedAt: now };
+    // Une seule activité à la fois : un métier arrête le combat.
+    state.combat.activity = null;
   } else {
     if (state.queue.length >= queueLength) throw new GameError('queue_full', 'La file est pleine.');
     state.queue.push(action);
@@ -245,5 +248,7 @@ export function newCharacterState(now: number, content: Content): CharacterState
     trials: [],
     shown: {},
     clanBonuses: {},
+    combat: emptyCombat(),
+    weaponFamily: null,
   };
 }

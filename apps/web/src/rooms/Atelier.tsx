@@ -13,6 +13,7 @@ const SLOT_NAMES: Record<Slot, string> = {
   top: 'Haut et manches',
   belt: 'Ceinture',
   robe: 'Bas de robe',
+  legs: 'Jambières',
   gloves: 'Gants',
   boots: 'Bottes',
   cape: 'Cape',

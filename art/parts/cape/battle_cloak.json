@@ -1,0 +1,27 @@
+{
+  "id": "battle_cloak",
+  "slot": "cape",
+  "name": "Tabard d'armes",
+  "colorRoles": [
+    "mantle",
+    "trim",
+    "metal"
+  ],
+  "anchor": [
+    0,
+    0
+  ],
+  "layers": [
+    {
+      "id": "back",
+      "bone": "cape",
+      "z": 8
+    },
+    {
+      "id": "front",
+      "bone": "cape",
+      "z": 74,
+      "detail": 2
+    }
+  ]
+}

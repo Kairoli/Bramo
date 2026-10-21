@@ -93,6 +93,10 @@ Pièges : pas de `--` dans un commentaire XML (le fichier entier serait refusé)
 
 Classes CSS utilisables dans les pièces : `fx-pulse` (lueur), `fx-hover` (flotte), `fx-spin`, `fx-spin-back`, `fx-orbit` (rotation sur soi ; pour une orbite, inclure un cercle invisible centré), `fx-rise` (particule qui monte). Elles se coupent avec « réduire les animations ». Les animations de repos (en images clés) continuent, à 40 % d'amplitude, avec ce réglage : une page web ne peut pas réactiver les effets d'animation de Windows, et un personnage totalement figé fait un jeu mort.
 
+## Esquisses d'équipement (famille Armure)
+
+`art/make_plate.mjs` génère les pièces de l'Armure (heaume, plastron, gantelets, jambières, solerets, tabard, ceinturon, épaulière) ; les fichiers générés se retouchent à la main ensuite. Elles introduisent l'emplacement **`legs`** (cuissots et grèves, os `thigh_*` et `shin_*`, z 16-22) pour les jambières. Trois tenues d'essai `sketch_armor_1/10/20` (bronze, fer, acier) dans `data/cosmetics.yaml` : seule la palette change avec le palier. Elles ne sont pas proposées au joueur (le choix de tenue masque les ids en `sketch_`). Planche : `docs/design/catalogue/esquisses.html`.
+
 ## Ajouter une tenue ou une pièce
 
 1. Dessiner la pièce dans `parts/<emplacement>/<id>.svg`, sur la pose de repos, avec les variables de couleur.

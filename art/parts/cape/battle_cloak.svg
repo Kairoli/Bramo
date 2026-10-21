@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 760">
+  <!-- Tabard d'armes : grand manteau dans le dos, bord galonné, agrafe à chaînette sur le torse. -->
+  <g id="back">
+    <path d="M166 162 Q146 250 138 424 Q172 446 212 436 Q236 416 246 336 L246 168 Z" fill="var(--c-mantle)"/>
+    <path d="M166 162 Q146 250 138 424 Q172 446 212 436 Q236 416 246 336 L246 168 Z" fill="url(#rig-shade)"/>
+    <path d="M138 424 Q172 446 212 436 Q236 416 246 336" stroke="var(--c-trim)" stroke-width="3" fill="none"/>
+    <path d="M176 200 Q168 300 164 410 M206 190 Q202 300 204 420" stroke="#000" stroke-opacity=".22" stroke-width="2" fill="none"/>
+  </g>
+  <g id="front">
+    <path d="M176 168 Q210 182 244 170" stroke="var(--c-metal)" stroke-width="3.5" fill="none" stroke-dasharray="6 3"/>
+    <circle cx="178" cy="168" r="6" fill="var(--c-metal)"/>
+    <circle cx="178" cy="168" r="2.6" fill="var(--c-trim)"/>
+    <circle cx="244" cy="170" r="6" fill="var(--c-metal)"/>
+    <circle cx="244" cy="170" r="2.6" fill="var(--c-trim)"/>
+  </g>
+</svg>

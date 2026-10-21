@@ -118,3 +118,75 @@ outfits:
       cape: grand_cape
       shoulder_near: crest_pauldron
       shoulder_far: rune_pauldron
+
+  # Esquisse de la famille Armure (équipement), ne fait pas partie des tenues du jeu : Bronze
+  - id: sketch_armor_1
+    name: Armure, palier 1 (esquisse)
+    subtitle: Bronze
+    palette:
+      coat: "#5A4630"
+      coatDark: "#3E3022"
+      mantle: "#7A2E2A"
+      under: "#3A302A"
+      trim: "#E0A55C"
+      metal: "#B07A44"
+      beard: "#6B321F"
+    parts:
+      headwear: plate_helm
+      face: forge_beard
+      top: plate_cuirass
+      belt: plate_girdle
+      legs: plate_greaves
+      gloves: plate_gauntlets
+      boots: plate_sabatons
+      cape: battle_cloak
+      shoulder_far: forge_pauldron
+      shoulder_near: plate_pauldron_near
+
+  # Esquisse de la famille Armure (équipement), ne fait pas partie des tenues du jeu : Fer
+  - id: sketch_armor_10
+    name: Armure, palier 10 (esquisse)
+    subtitle: Fer
+    palette:
+      coat: "#4A4F55"
+      coatDark: "#33373C"
+      mantle: "#8A3A2E"
+      under: "#2C3235"
+      trim: "#D8D2C4"
+      metal: "#8C9497"
+      beard: "#6B321F"
+    parts:
+      headwear: plate_helm
+      face: forge_beard
+      top: plate_cuirass
+      belt: plate_girdle
+      legs: plate_greaves
+      gloves: plate_gauntlets
+      boots: plate_sabatons
+      cape: battle_cloak
+      shoulder_far: forge_pauldron
+      shoulder_near: plate_pauldron_near
+
+  # Esquisse de la famille Armure (équipement), ne fait pas partie des tenues du jeu : Acier
+  - id: sketch_armor_20
+    name: Armure, palier 20 (esquisse)
+    subtitle: Acier
+    palette:
+      coat: "#2F3E52"
+      coatDark: "#202B3A"
+      mantle: "#2B4A6B"
+      under: "#1C2430"
+      trim: "#4CC9D6"
+      metal: "#C7D4DC"
+      beard: "#6B321F"
+    parts:
+      headwear: plate_helm
+      face: forge_beard
+      top: plate_cuirass
+      belt: plate_girdle
+      legs: plate_greaves
+      gloves: plate_gauntlets
+      boots: plate_sabatons
+      cape: battle_cloak
+      shoulder_far: forge_pauldron
+      shoulder_near: plate_pauldron_near

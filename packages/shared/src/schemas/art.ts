@@ -19,6 +19,7 @@ export const slots = [
   'top',
   'belt',
   'robe',
+  'legs',
   'gloves',
   'boots',
   'cape',

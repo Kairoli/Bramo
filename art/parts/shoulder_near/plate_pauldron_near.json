@@ -1,0 +1,20 @@
+{
+  "id": "plate_pauldron_near",
+  "slot": "shoulder_near",
+  "name": "Épaulière de plates",
+  "colorRoles": [
+    "metal",
+    "trim"
+  ],
+  "anchor": [
+    0,
+    0
+  ],
+  "layers": [
+    {
+      "id": "pauldron",
+      "bone": "upperarm_near",
+      "z": 75
+    }
+  ]
+}

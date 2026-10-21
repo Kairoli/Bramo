@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { type Appearance, type Lod, type Slot, slots } from '@bramo/shared';
 import { useContent } from '../game/ContentContext';
 import { Character, resolveParts } from '../rig/Character';
@@ -29,6 +29,28 @@ const LODS: { id: Lod; name: string; size: string }[] = [
 
 const STYLE_NAMES = { melee: 'Mêlée', ranged: 'Tir', magic: 'Magie' } as const;
 
+/** Images par seconde mesurées (moyenne sur une seconde) : sert à juger le coût d'un style de pièces. */
+function useFps(): number {
+  const [fps, setFps] = useState(0);
+  useEffect(() => {
+    let frames = 0;
+    let last = performance.now();
+    let raf = 0;
+    const tick = (now: number) => {
+      frames++;
+      if (now - last >= 1000) {
+        setFps(Math.round((frames * 1000) / (now - last)));
+        frames = 0;
+        last = now;
+      }
+      raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, []);
+  return fps;
+}
+
 /** Page de développement : tester tenues, pièces, os et animation de repos. */
 export function Atelier() {
   const content = useContent();
@@ -42,7 +64,10 @@ export function Atelier() {
   const [explode, setExplode] = useState(false);
   const cls = content.classes[look.classId]!;
   const worn = resolveParts(content, look);
-  const editable = slots.filter((s) => s !== 'body');
+  // Le corps se change aussi : une livraison peut fournir son propre corps (sous-couches des articulations).
+  const editable = [...slots];
+  const [copies, setCopies] = useState(1);
+  const fps = useFps();
 
   const setPart = (slot: Slot, id: string) =>
     setLook((l) => ({ ...l, overrides: { ...l.overrides, [slot]: id === '' ? null : id } }));
@@ -57,8 +82,12 @@ export function Atelier() {
             </button>
           ))}
         </div>
-        <div className={`atelier-frame atelier-${lod}`}>
-          <Character appearance={look} lod={lod} animate={animate} showBones={bones} explode={explode} />
+        <div className={`atelier-frame atelier-${lod}${copies > 1 ? ' atelier-crowd' : ''}`}>
+          {copies === 1 ? (
+            <Character appearance={look} lod={lod} animate={animate} showBones={bones} explode={explode} />
+          ) : (
+            Array.from({ length: copies }, (_, i) => <Character key={i} appearance={look} lod="scene" animate={animate} />)
+          )}
         </div>
         <div className="atelier-chips">
           <span className="chip">Trois quarts vers la droite, jamais en miroir</span>
@@ -126,6 +155,19 @@ export function Atelier() {
         </div>
 
         <div className="atelier-toggles">
+          <label className="chip">
+            Copies
+            <select value={copies} onChange={(e) => setCopies(Number(e.target.value))}>
+              {[1, 5, 10, 20, 40].map((n) => (
+                <option key={n} value={n}>
+                  {n}
+                </option>
+              ))}
+            </select>
+          </label>
+          <span className="chip" title="Images par seconde mesurées sur cette page">
+            {fps} i/s
+          </span>
           <button className={`btn${bones ? ' btn-primary' : ''}`} onClick={() => setBones(!bones)}>
             Os
           </button>

@@ -1951,3 +1951,16 @@
   -webkit-line-clamp: 4;
   -webkit-box-orient: vertical;
 }
+
+/* Atelier : plusieurs copies du personnage pour juger le coût de rendu. */
+.atelier-frame.atelier-crowd {
+  display: flex;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  gap: 4px;
+  overflow: auto;
+}
+.atelier-crowd .rig {
+  height: 150px;
+  width: 90px;
+}

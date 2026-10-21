@@ -42,7 +42,7 @@ bonusCaps:
 
 # Usure : un outil usé ne donne plus son bonus mais n'est jamais perdu ; réparer rend toute la durabilité.
 wear:
-  repairGoldShare: 0.5    # coût PNJ = 50 % de la valeur de l'objet, au prorata de l'usure ; à équilibrer
+  repairGoldShare: 1.5    # coût PNJ = 150 % de la valeur de l objet au prorata de l usure (décision de Louis : le PNJ coûte plus cher qu un artisan) ; à équilibrer
   recycleShare: 0.4       # part des matériaux principaux rendue, arrondie vers le bas
   repairXpShare: 0.5      # XP d'une réparation par matériaux : part de l'XP de la recette de l'objet
 

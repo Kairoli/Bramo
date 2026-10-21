@@ -7,6 +7,7 @@ import { decimal, duration, num, seconds } from '../format';
 import { Bar, ItemIcon, Ring } from '../components/ui';
 import { Character } from '../rig/Character';
 import { QueueChips } from '../components/QueueChips';
+import { Scene } from '../components/Scene';
 
 const PAGE = 6;
 
@@ -30,7 +31,7 @@ export function ProfessionRoom({ id }: { id: string }) {
   return (
     <main className="room">
       <section className="panel band">
-        <div className="band-label">[Illustration animée : {profession.place}]</div>
+        <Scene ids={[id]} />
         <Character appearance={look} className="band-figure profession-figure" />
         <div className="sunken skill-card">
           <button className="btn btn-sm" onClick={() => go('professions')}>

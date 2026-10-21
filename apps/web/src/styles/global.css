@@ -216,6 +216,196 @@ p {
   height: 86%;
 }
 
+/* ---------- Décor animé d'une bande (components/Scene.tsx) ---------- */
+
+.band {
+  isolation: isolate;
+}
+.scene {
+  --px: 0;
+  --py: 0;
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+}
+/* Fond : un peu plus grand que la bande pour pouvoir bouger sans montrer de bord. */
+.scene-back {
+  position: absolute;
+  inset: -4% -3%;
+  transform: translate3d(calc(var(--px) * -14px), calc(var(--py) * -5px), 0);
+  transition: transform 700ms cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.scene-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 72% 60%;
+  opacity: 0;
+  transition: opacity 1600ms ease;
+  animation: scene-drift 48s ease-in-out infinite alternate;
+}
+.scene-img.on {
+  opacity: 1;
+}
+/* Premier plan : bouge plus que le fond, pour la profondeur. */
+.scene-front {
+  position: absolute;
+  inset: 0;
+  transform: translate3d(calc(var(--px) * 26px), calc(var(--py) * 9px), 0);
+  transition: transform 700ms cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.scene-fx {
+  position: absolute;
+  inset: 0;
+  animation: scene-in 1600ms ease both;
+}
+/* Assombrit la gauche (personnage et titre) et le bas (cartes) pour garder le texte lisible. */
+.scene-shade {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, rgb(26 31 34 / 0.78) 0%, rgb(26 31 34 / 0.35) 22%, transparent 45%),
+    linear-gradient(0deg, rgb(26 31 34 / 0.82) 0%, rgb(26 31 34 / 0.4) 28%, transparent 55%),
+    radial-gradient(ellipse at 50% 50%, transparent 55%, rgb(26 31 34 / 0.45) 100%);
+}
+.fx {
+  position: absolute;
+  display: block;
+  border-radius: 50%;
+  background: currentColor;
+  filter: blur(var(--blur, 0px));
+  opacity: 0;
+  animation-delay: var(--delay);
+  animation-duration: var(--t);
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+  will-change: transform, opacity;
+}
+.fx-rise {
+  box-shadow: 0 0 8px 1px currentColor;
+  animation-name: fx-rise;
+}
+.fx-fall {
+  border-radius: 80% 0 80% 0;
+  animation-name: fx-fall;
+}
+.fx-drift {
+  animation-name: fx-drift;
+  animation-timing-function: ease-in-out;
+}
+.fx-twinkle {
+  box-shadow: 0 0 10px 2px currentColor;
+  animation-name: fx-twinkle;
+  animation-timing-function: ease-in-out;
+}
+.fx-mist {
+  border-radius: 50%;
+  background: radial-gradient(closest-side, currentColor, transparent);
+  filter: blur(18px);
+  animation-name: fx-mist;
+  animation-direction: alternate;
+  animation-timing-function: ease-in-out;
+}
+@keyframes scene-drift {
+  from {
+    transform: scale(1.04) translate3d(-1.2%, 0, 0);
+  }
+  to {
+    transform: scale(1.04) translate3d(1.2%, 0.6%, 0);
+  }
+}
+@keyframes scene-in {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes fx-rise {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  15% {
+    opacity: 0.95;
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(var(--dx), -180px, 0) scale(0.4);
+  }
+}
+@keyframes fx-fall {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 0, 0) rotate(0deg);
+  }
+  12% {
+    opacity: 0.8;
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(var(--dx), 360px, 0) rotate(240deg);
+  }
+}
+@keyframes fx-drift {
+  0%,
+  100% {
+    opacity: 0;
+    transform: translate3d(0, 0, 0);
+  }
+  30%,
+  70% {
+    opacity: 0.55;
+  }
+  50% {
+    transform: translate3d(var(--dx), -22px, 0);
+  }
+}
+@keyframes fx-twinkle {
+  0%,
+  100% {
+    opacity: 0;
+    transform: scale(0.4);
+  }
+  50% {
+    opacity: 0.95;
+    transform: scale(1);
+  }
+}
+@keyframes fx-mist {
+  from {
+    opacity: 0.08;
+    transform: translate3d(-12%, 0, 0);
+  }
+  to {
+    opacity: 0.26;
+    transform: translate3d(12%, -4%, 0);
+  }
+}
+/* « Réduire les animations » : comme pour les personnages, la vie continue en plus discret
+   (une page web ne peut pas réactiver les animations coupées dans Windows) : plus de dérive du fond,
+   parallaxe réduite de moitié, particules deux fois plus lentes et plus discrètes. */
+@media (prefers-reduced-motion: reduce) {
+  .scene-img {
+    animation: none;
+  }
+  .scene-fx {
+    opacity: 0.6;
+  }
+  .fx {
+    animation-duration: calc(var(--t) * 2);
+  }
+  .scene-back,
+  .scene-front {
+    transform: translate3d(calc(var(--px) * -7px), calc(var(--py) * -2px), 0);
+  }
+  .scene-front {
+    transform: translate3d(calc(var(--px) * 13px), calc(var(--py) * 4px), 0);
+  }
+}
+
 /* ---------- Barre du haut ---------- */
 
 .topbar {

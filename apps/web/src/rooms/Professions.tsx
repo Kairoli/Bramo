@@ -2,8 +2,11 @@ import type { ProfessionFamily } from '@bramo/shared';
 import { useGame } from '../game/GameContext';
 import { Bar, FAMILY_COLOR, FAMILY_NAME } from '../components/ui';
 import { Character } from '../rig/Character';
+import { Scene } from '../components/Scene';
 
 const FAMILIES: ProfessionFamily[] = ['gathering', 'crafting', 'world'];
+/** Le quartier des artisans : les ateliers défilent en fondu. */
+const ARTISAN_SCENES = ['smithing', 'carpentry', 'tailoring', 'cooking', 'tanning', 'alchemy', 'jewelcrafting', 'enchanting', 'artificing'];
 
 export function Professions() {
   const { content, state, look, go } = useGame();
@@ -15,7 +18,7 @@ export function Professions() {
   return (
     <main className="room">
       <section className="panel band professions-band">
-        <div className="band-label">[Illustration animée : le quartier des artisans]</div>
+        <Scene ids={ARTISAN_SCENES} />
         <Character appearance={look} className="band-figure" />
         <div className="professions-title">
           <h1>Métiers</h1>

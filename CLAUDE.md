@@ -55,6 +55,12 @@ Bramo est un **idle-RPG multijoueur jouable dans le navigateur**, dans l'esprit 
 
 ## 5. État du projet (à jour au 22 octobre 2026)
 
+### Fait — décors des métiers (22 octobre)
+
+- **17 illustrations 3200 × 640 px** (livrées par Louis via ChatGPT, une par métier, sans personnage ni texte) converties en WebP (≈ 2 Mo au total) dans `apps/web/public/scenes/<id du métier>.webp`. Originaux PNG non versionnés (gardés dans les téléchargements de Louis : `Bramo-17-metiers-v3.zip`).
+- `components/Scene.tsx` : premier enfant d'une `.band`. Fond avec dérive lente et parallaxe à la souris, premier plan de **particules propres au lieu** (braises à la forge, brume au bois, runes à l'enchantement, bulles à l'alchimie…, table `EFFECTS`), ombrage à gauche (personnage, titre) et en bas (cartes). Plusieurs identifiants = fondu enchaîné : la salle Métiers montre **le quartier des artisans** (9 ateliers, 9 s chacun). CSS dans `global.css` (« Décor animé »). Avec « réduire les animations » : pas de dérive du fond, parallaxe et particules atténuées, jamais coupées (même choix que pour les personnages).
+- Le cadrage met le sujet à droite : le personnage est à gauche, les maîtres en bas.
+
 ### Fait — moteur de combat partagé, kit seul (22 octobre)
 
 - **Dossier de conception** de Louis : [`docs/design/coeur-du-jeu/`](docs/design/coeur-du-jeu/) (`Bramo-coeur-du-jeu.md` v0.2 : classes, voies, 66 sorts, ensembles, nommés, gemmes, régions, butin ; banc Python indépendant dans le ZIP). **Tout y est proposé**, coefficients provisoires. **Plan d'intégration, contradictions et questions pour Louis : [`integration.md`](docs/design/coeur-du-jeu/integration.md)** (à lire avant toute suite du combat).
@@ -224,7 +230,7 @@ Bramo est un **idle-RPG multijoueur jouable dans le navigateur**, dans l'esprit 
 - L'écran de choix de classe est un contrôle du client : le serveur accepte les actions de jeu d'un personnage sans classe.
 - Pas de vrai système d'équipement : les emplacements montrent la tenue, l'arme de classe en aperçu, la meilleure pioche et le repas actif.
 - Les onglets Tout / Clan / Serveur du journal et la discussion sont désactivés.
-- Bandeaux des salles : textes provisoires « [Illustration animée : …] » à la place des scènes.
+- Bandeaux des salles : les métiers ont leurs décors (voir « Décors des métiers » ci-dessus) ; Clan, Marché et Combat gardent le texte provisoire « [Illustration animée : …] ».
 
 ---
 

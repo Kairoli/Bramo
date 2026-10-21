@@ -4,7 +4,7 @@ Idle-RPG multijoueur jouable dans le navigateur : métiers, classes, clans, marc
 Ce dépôt contient le **prototype solo (P1)** : comptes, quatre métiers jouables (Minage, Forge, Herboristerie, Cuisine), activité idle avec file d'actions, gains hors ligne et résumé d'absence.
 
 - Vision, principes et conventions : [`CLAUDE.md`](CLAUDE.md)
-- Game design : [`docs/game-design.md`](docs/game-design.md)
+- Game design : [`docs/game-design.md`](docs/game-design.md), conception détaillée dans [`docs/design/`](docs/design/)
 - Maquettes : [`docs/maquettes/`](docs/maquettes/)
 
 ## Installation
@@ -43,6 +43,7 @@ Les migrations SQL (`apps/server/drizzle/`) s'appliquent au démarrage. La même
 | `pnpm dev` | Lance le serveur et le client en mode développement |
 | `pnpm test` | Tests vitest (formules, moteur, données, API) |
 | `pnpm typecheck` | Vérification TypeScript de tous les paquets |
+| `pnpm --filter @bramo/sim sim report` | Simulateur : régénère `sim/reports/rapport.md` (voir `sim/README.md`) |
 | `pnpm db:generate` | Génère une migration SQL après une modification de `apps/server/src/db/schema.ts` |
 
 ## Organisation
@@ -52,7 +53,7 @@ apps/server      API Fastify : comptes, sessions, routes de jeu, persistance Dri
 apps/web         client React + Vite (affichage uniquement)
 packages/shared  schémas zod, formules et moteur de progression, purs et testés
 data/            tout le contenu et l'équilibrage, en YAML
-sim/             simulateur d'équilibrage (à venir)
+sim/             simulateur d'équilibrage (même moteur que le serveur)
 docs/            game design et maquettes
 ```
 

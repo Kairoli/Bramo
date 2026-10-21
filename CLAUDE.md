@@ -2,7 +2,9 @@
 
 Bramo est un **idle-RPG multijoueur jouable dans le navigateur**, dans l'esprit de SimpleMMO, Melvor Idle et RuneScape : métiers, classes, clans, marché, saisons.
 
-- Game design complet : [`docs/game-design.md`](docs/game-design.md)
+- Game design complet : [`docs/game-design.md`](docs/game-design.md) — chaque point y est marqué **[Décidé]** (choix de Louis), **[Recommandé]** (proposition en attente), **[Ouvert]** ou **[Prototype]** (ce que fait le code). Ne jamais présenter une recommandation comme une décision.
+- Conception détaillée : [`docs/design/`](docs/design/) (métiers, progression, présence, économie, classes/événements/clans) et les **arbitrages en attente** : [`docs/design/arbitrages.md`](docs/design/arbitrages.md)
+- Simulateur : [`sim/README.md`](sim/README.md), rapport généré [`sim/reports/rapport.md`](sim/reports/rapport.md)
 - Maquettes validées : [`docs/maquettes/`](docs/maquettes/) (1-2 accueil, 3-4 salle Métiers, 5 style du personnage)
 - Système des personnages : [`art/README.md`](art/README.md)
 - Installation et commandes : [`README.md`](README.md)
@@ -26,7 +28,7 @@ Bramo est un **idle-RPG multijoueur jouable dans le navigateur**, dans l'esprit 
 - Chargés et **validés au démarrage avec zod** (schémas dans `packages/shared/src/schemas/`), y compris les références croisées (recette → objet, tenue → pièce de `art/`…). Un fichier invalide empêche le démarrage avec un message clair.
 - **Aucun chiffre de jeu codé en dur.** Les formules (forme mathématique) sont dans `packages/shared`, leurs paramètres dans `data/`.
 - Valeurs provisoires marquées **`# à équilibrer`**.
-- `sim/` accueillera le simulateur d'équilibrage (bots casu, régulier, tryhard, marchand) qui lira **les mêmes fichiers et formules**. Vide pour l'instant.
+- `sim/` (`@bramo/sim`) : simulateur d'équilibrage qui lit **les mêmes fichiers et le même moteur** (`advance`, `startActivity`). Les propositions de données vivent dans `sim/proposals/<nom>/` (même format que `data/`) tant qu'elles ne sont pas arbitrées. Après tout changement d'équilibrage : `pnpm --filter @bramo/sim sim report` et relire les écarts ; `sim calibrate --write` recalcule XP, durées des repas et valeurs d'une proposition depuis `sim/src/rules.ts`.
 
 ## 3. Technique
 
@@ -52,6 +54,14 @@ Bramo est un **idle-RPG multijoueur jouable dans le navigateur**, dans l'esprit 
 ---
 
 ## 5. État du projet (à jour au 21 octobre 2026)
+
+### Fait — refonte de la conception et simulateur (21 octobre)
+
+- **Conception** (`docs/design/`, tout en **[Recommandé]** sauf mention) : écosystème de 18 métiers + 3 extensions ouverts par phases (Agriculture à parcelles en temps réel, Tannerie séparée de la Couture, Joaillerie, Construction comme métier-puits, Exploration qui produit des cartes de gisement), chaînes chiffrées, progression recalibrée, présence (rendement unique 100 % + autonomie 16 h, participation récompensée à part), économie (surplus structurel, puits, robinet d'or du PNJ), classes et voies, événements récurrents sans remise à zéro, clans et plafonds de bonus. `docs/game-design.md` réécrit avec les statuts.
+- **Constats mesurés** : Minage 60 en ~1 jour et 90 en 18 jours confirmés ; ×7,04 de production entre 20 min/jour et un onglet ouvert jour et nuit ; Festin du givre à 360 h de bonus par heure de cuisson ; dans le prototype, seuls ~5 % du travail ont un usage réel et le rachat PNJ crée ~1 500 or par joueur et par jour.
+- **Simulateur** `sim/` (9 tests) : bots joués par le vrai moteur selon des profils de présence, coût complet des chaînes, rapport des repas, bilan économique (variantes, sensibilité, 20/50/200 joueurs), recalibrage automatique d'une proposition. Proposition **`sim/proposals/boucle-v0/`** : la boucle de test à 6 métiers jouables (Minage, Bûcheronnage, Herboristerie, Forge, Menuiserie, Cuisine) et les recettes des chaînes d'exemple des autres métiers.
+- **Moteur** : apprentissage optionnel (`xp.apprenticeship` : XP multipliée sous un niveau, passage du seuil exact), absent de `data/` donc sans effet sur le jeu ; `readRawContent` dans `@bramo/shared/node`. Tests : 54 dans `packages/shared`.
+- **`data/` n'a pas changé** : rien n'est appliqué avant l'arbitrage de Louis.
 
 ### Fait — le Traqueur (21 octobre)
 
@@ -107,7 +117,7 @@ Bramo est un **idle-RPG multijoueur jouable dans le navigateur**, dans l'esprit 
 
 - **Pas de déploiement** : le serveur tourne avec `tsx`, il n'y a ni build de production du serveur, ni service des fichiers statiques du client, ni reverse proxy, ni HTTPS. `secureCookies` s'active avec `NODE_ENV=production`.
 - Pas de limite de tentatives de connexion, pas de changement de mot de passe, pas de suppression de compte.
-- Chiffres non équilibrés (`# à équilibrer`), simulateur absent.
+- Chiffres de `data/` non équilibrés (`# à équilibrer`) : la proposition `boucle-v0` attend l'arbitrage. Le simulateur ne fait pas encore de prix de marché (bilan de flux seulement).
 - Animations de repos seulement (une par pose). Marée haute ne change que les couleurs. Une seule pose par classe (pas encore par voie).
 - Le choix de tenue n'a pas encore d'écran : `outfit` reste null (tenue de départ de la classe). Les niveaux de classe n'existent pas encore (combat en P4).
 - Les épreuves Maître (85) et Grand maître (99) ne sont pas écrites : ces titres restent automatiques. Pas d'épreuve pour les métiers « Bientôt ».
@@ -122,18 +132,19 @@ Bramo est un **idle-RPG multijoueur jouable dans le navigateur**, dans l'esprit 
 
 ### Prochaines étapes (ordre proposé)
 
+0. **Arbitrages de Louis** sur `docs/design/arbitrages.md` (17 points), puis l'ordre d'implémentation de son §3 : (1) présence et progression dans `data/` depuis `boucle-v0`, (2) Bûcheronnage, Menuiserie et un outil par métier, (3) usure, réparation, recyclage et garde-manger dans le moteur, (4) marché et Pêche, (5) clans, Construction, Agriculture, (6) combat et métiers d'équipement, (7) premier événement.
 1. **Mise en service sur le homeserver** : Postgres (docker compose), `.env` avec `DATABASE_URL`, build du client (`pnpm --filter @bramo/web build`), le serveur Fastify sert `apps/web/dist` (ou un reverse proxy devant), HTTPS, `NODE_ENV=production`, service systemd ou conteneur, sauvegardes de la base. Limite de tentatives de connexion.
 2. **Accueil à refaire** (direction choisie par l'auteur le 21 octobre) : la carte du monde est remplacée par une **scène du bourg** où passent d'autres joueurs (vrais joueurs récemment actifs, avec leur classe et leur activité) et un **Panneau du bourg** dont le cœur est le **fil du serveur** (montées de titre, épreuves réussies, premières fabrications). Décisions : **pas de bonus du jour** (les boosts viennent des saisons et événements), **pas de chantier commun au serveur** (c'est le rôle des clans), commandes de PNJ non tranchées. La carte pourra revenir en popup « Voyager » avec l'Exploration.
 3. **Animation et vie de l'interface** (choix de l'auteur en attente) : « +1 objet » flottant à chaque fabrication, pulsation de l'anneau, célébration de montée de niveau et d'épreuve réussie, scènes animées dans les bandeaux (forge, mines, eau), entrées du journal qui glissent.
 4. **Personnages** : **une pose par voie** à terme, écran de choix de tenue, animations « travail » par famille de métier, une tenue Marée haute qui change aussi de forme. Couleurs cuivre #F08A4B (mêlée) et jade #7ED6A2 (tir) toujours à valider.
 5. **Épreuves** : Maître (85) et Grand maître (99), et une épreuve pour chaque métier qui ouvre.
-6. **P0 — chiffrage et simulateur** dans `sim/` : bots par profil sur les mêmes formules, vérifier le ratio tryhard / casu (2 à 2,5).
+6. **Simulateur, suite** : bots qui passent des ordres au marché (prix, liquidité à 20 et 50 joueurs), usure et parcelles dans le moteur pour ne plus les modéliser à part, combat en P4.
 
 ### Feuille de route
 
 | Phase | Contenu | État |
 |---|---|---|
-| P0 | Chiffrage et simulateur | à faire |
+| P0 | Chiffrage et simulateur | **commencé** (conception chiffrée, `sim/`, proposition `boucle-v0`) |
 | P1 | Prototype solo | **fait** (reste : mise en service, carte, animations) |
 | P2 | Marché (ordres achat/vente, taxe 5 %) et commandes ; usure des objets comme puits | à faire |
 | P3 | Clans : entrepôt, commandes internes, postes d'experts, projets de construction | à faire |
@@ -143,7 +154,8 @@ Bramo est un **idle-RPG multijoueur jouable dans le navigateur**, dans l'esprit 
 
 ### Décisions en attente de l'auteur
 
-- Animations prioritaires ; commandes de PNJ (oui ou non) pour le Panneau du bourg.
+- **Les 17 arbitrages de conception** : `docs/design/arbitrages.md` (hors ligne, énergie, progression, liste des métiers, Agriculture en parallèle, Construction, Exploration, plafonds de bonus, PNJ, repas, usure, affinité, événements, classes de métier, Guilde du bourg, file).
+- Animations prioritaires ; commandes de PNJ pour le Panneau du bourg (recommandation : Comptoir de la guilde, trois commandes par semaine).
 - **Équipement en deux couches** (proposé) : l'équipement porte les statistiques, s'use et passe par le marché ; l'apparence (tenue cosmétique) le recouvre visuellement. L'emplacement affiche l'apparence, l'infobulle les deux.
 - Couleurs d'affinité mêlée et tir.
 - Questions ouvertes du game design : public visé, arrivée du PvP, durée exacte des saisons, longueur de la file pour les abonnés.
@@ -159,6 +171,7 @@ Bramo est un **idle-RPG multijoueur jouable dans le navigateur**, dans l'esprit 
 - Résumé d'absence à la connexion, puis dans le journal.
 - Classe choisie avant d'entrer, changeable à tout moment et gratuitement.
 - Titres : un palier qui a une épreuve de maître n'est acquis qu'une fois l'épreuve réussie (objets remis, consommés) ; on ne saute pas une épreuve ; le niveau, lui, n'attend jamais.
+- Apprentissage (`xp.apprenticeship`, optionnel, absent de `data/`) : XP multipliée sous un niveau ; le gain qui franchit le seuil est découpé exactement (`gainXp`).
 - Plus tard (dans le game design) : maîtrise après 99 (paliers décroissants, +10 % max), affinité de métier (+1 % par tranche de 10 niveaux du métier lié, +10 % max), objets faits maison signés et de meilleure qualité, progression de classe (voie 30, spécialisation 60, éveil 75).
 
 ## 8. Interface
@@ -221,8 +234,8 @@ packages/shared/src/
   node/             loadContent(dataDir, artDir), loadArt
 data/               contenu et équilibrage (YAML)
 art/                gabarit, animations, poses, pièces des personnages
-docs/               game design et maquettes
-sim/                simulateur (à venir)
+docs/               game design, conception détaillée (design/) et maquettes
+sim/                simulateur : src/ (bot, chains, economy, rules, calibrate, scenarios), proposals/, reports/
 ```
 
 ## 11. Pièges connus

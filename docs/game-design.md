@@ -1,150 +1,133 @@
 # Bramo — game design
 
-> Document de référence. Les chiffres ici sont des intentions ; les valeurs qui font foi sont dans `data/` (marquées `# à équilibrer` tant qu'elles sont provisoires).
+> Document de référence. Les valeurs qui font foi pour le jeu sont dans `data/` (marquées `# à équilibrer` tant qu'elles sont provisoires).
+>
+> **Chaque point porte son statut** :
+> - **[Décidé]** — choix de Louis, à respecter ;
+> - **[Recommandé]** — proposition argumentée et chiffrée, en attente d'arbitrage (liste dans [`design/arbitrages.md`](design/arbitrages.md)) ;
+> - **[Ouvert]** — question sans réponse ;
+> - **[Prototype]** — ce que fait le code aujourd'hui, en attendant l'arbitrage.
+>
+> Conception détaillée (21 octobre 2026) : [`design/metiers.md`](design/metiers.md) (écosystème des métiers), [`design/progression.md`](design/progression.md), [`design/presence.md`](design/presence.md) (hors ligne et participation), [`design/economie.md`](design/economie.md), [`design/monde.md`](design/monde.md) (classes, événements, clans), [`design/arbitrages.md`](design/arbitrages.md). Les chiffres viennent du simulateur : [`../sim/reports/rapport.md`](../sim/reports/rapport.md).
 
-## 1. Vision
+## 1. Vision [Décidé]
 
-Idle-RPG multijoueur dans le navigateur, dans l'esprit de SimpleMMO, Melvor Idle et RuneScape. On monte des métiers, on choisit une classe, on rejoint un clan, on commerce sur un marché, on vit des saisons.
+Idle-RPG multijoueur dans le navigateur, dans l'esprit de SimpleMMO, Melvor Idle et RuneScape, sur un **serveur persistant unique**. On monte des métiers, on choisit une classe, on rejoint un clan, on commerce sur un marché, on vit des événements. Cible : plusieurs dizaines, potentiellement plusieurs centaines de joueurs. Une personne qui arrive plusieurs mois après l'ouverture doit pouvoir commencer normalement et trouver sa place.
 
 Le jeu est **casu dans l'ensemble** : on y passe quelques minutes plusieurs fois par jour, et l'absence ne coûte jamais rien.
 
-## 2. Piliers
+## 2. Piliers [Décidé]
 
 | Pilier | Ce que ça veut dire concrètement |
 |---|---|
-| Personne n'est bloqué, personne ne fait tout seul | Tout métier peut se monter seul, mais le temps nécessaire pousse à se spécialiser et à échanger (marché, clan). |
-| Casu d'abord | Écart tryhard / casu visé : **×2 à ×2,5**, jamais ×10. Pas de course au niveau max. |
-| Récompenser le présent, ne jamais punir l'absent | Le hors ligne rapporte moins (~25 %) mais ne fait rien perdre. Bonus d'énergie pour la présence. |
+| Personne n'est bloqué, personne ne fait tout seul | Tout métier peut se monter seul, mais le temps nécessaire pousse à se spécialiser et à échanger (marché, clan). Tout reste praticable en solo avec suffisamment de temps. |
+| Casu d'abord | Écart tryhard / casu visé : **×2 à ×2,5**, jamais ×10. Indicateurs auxquels il s'applique : [`design/presence.md`](design/presence.md) §5 (pas à la richesse du commerce). |
+| Récompenser le présent, ne jamais punir l'absent | Aucune perte, pénalité ou dégradation pendant l'absence. L'usure suit les actions réellement réalisées (hors ligne compris) ; un personnage arrêté ne se dégrade pas. |
 | Payant = confort et cosmétique | Jamais de statistiques ni de ressources à vendre. |
 | Serveur autoritaire | Tous les calculs côté serveur ; le client affiche. |
+| Progression permanente | Personnages, métiers, stocks, or et réalisations ne sont jamais remis à zéro. |
 
 ## 3. Progression des métiers
 
 ### 3.1 Courbe d'XP
-Courbe de RuneScape, niveaux 1 à 99 :
+- [Décidé] Niveaux 1 à 99, titres Novice / Apprenti (30) / Compagnon (60) / Maître (85) / Grand maître (99).
+- [Prototype] Courbe de RuneScape : `XP(L) = floor( Σ_{l=1}^{L-1} floor(l + 300 · 2^(l/7)) / 4 )`, niveau 99 = 13 034 431 XP.
+- [Recommandé] **Conserver cette courbe** et recalibrer les recettes : XP par heure effective `R(L) = 400 × 2^((L−1)/55)`, artisanat ×1,75, **apprentissage ×2 sous le niveau 20** (déjà codé : `xp.apprenticeship`). Cibles pour un spécialiste régulier : 30 en 1 jour, 60 en 2 semaines, 85 en 3 à 4 mois, 90 en 5 à 6 mois, 99 en ~1 an ([`design/progression.md`](design/progression.md)).
+- [Prototype] Aujourd'hui (mesuré) : Minage 60 en ~1 jour, 90 en 18 jours avec 2 h de présence par jour. **Beaucoup trop rapide** [Décidé].
 
-```
-XP(L) = floor( Σ_{l=1}^{L-1} floor(l + 300 · 2^(l/7)) / 4 )
-```
-
-Repères : niveau 2 = 83 XP, niveau 99 = **13 034 431 XP**.
-
-### 3.2 Titres
-| Niveau | Titre |
-|---|---|
-| 1 | Novice |
-| 30 | Apprenti |
-| 60 | Compagnon |
-| 85 | Maître |
-| 99 | Grand maître |
-
-### 3.2 bis Épreuves des maîtres
-À un palier de titre, le maître PNJ du métier confie une **épreuve** : remettre des objets (consommés). La réussir donne **le titre** et un peu d'or. Sans elle, le niveau continue de monter : seul le titre attend (personne n'est bloqué). On ne saute pas une épreuve.
-- Récolte : livrer des ressources (ex. Minage 30 : 60 minerais de fer et 30 charbons).
-- Artisanat : fabriquer un **chef-d'œuvre** avec une recette qui n'existe que pendant l'épreuve, puis le remettre avec quelques objets courants.
-- Prototype : Apprenti (30) et Compagnon (60) pour les quatre métiers jouables ; Maître et Grand maître restent automatiques tant qu'ils n'ont pas d'épreuve.
-- Pas de quête journalière ni de chantier commun au serveur : les objectifs collectifs passent par les clans, les boosts par les saisons et les événements.
+### 3.2 Épreuves des maîtres [Décidé]
+À un palier de titre, le maître PNJ du métier confie une **épreuve** : remettre des objets (consommés). La réussir donne **le titre** et un peu d'or. Sans elle, le niveau continue de monter : seul le titre attend. On ne saute pas une épreuve.
+- Récolte : livrer des ressources ; artisanat : fabriquer un **chef-d'œuvre** (recette qui n'existe que pendant l'épreuve).
+- Pas de quête journalière ni de chantier commun au serveur : les objectifs collectifs passent par les clans, les boosts par les événements.
+- [Prototype] Apprenti (30) et Compagnon (60) pour les quatre métiers jouables. [Recommandé] Réécrire leurs quantités avec la nouvelle progression ; Maître et Grand maître demandent des matières de plusieurs métiers.
 
 ### 3.3 Maîtrise après 99 *(plus tard)*
 Paliers au rendement décroissant, plafonnés à **+10 %** au total.
 
-### 3.4 Affinité de métier *(plus tard, avec les classes)*
-+1 % par tranche de 10 niveaux du métier lié à la classe, plafonnée à **+10 %**.
+### 3.4 Objets faits maison *(plus tard)*
+Signés par l'artisan, de meilleure qualité : Normale, Supérieure, Rare, Chef-d'œuvre. [Recommandé] La chance de qualité monte avec l'écart entre le niveau de l'artisan et celui de la recette, pour que les grands maîtres restent demandés sur les paliers moyens.
 
-### 3.5 Objets faits maison *(plus tard)*
-Les objets fabriqués par un joueur sont **signés** de son nom et de **meilleure qualité** que ceux trouvés ou achetés aux PNJ. Paliers de qualité visibles sur la maquette : Normale, Supérieure, Rare, Chef-d'œuvre.
+## 4. Métiers
 
-## 4. Métiers (14 au lancement)
-
-| Famille | Métiers |
-|---|---|
-| Récolte | Minage, Bûcheronnage, Pêche, Herboristerie, Chasse |
-| Artisanat | Forge, Menuiserie, Cuisine, Alchimie, Couture, Artificerie, Enchantement |
-| Monde et clan | Construction, Exploration |
-
-**Prototype (P1)** : Minage, Forge, Herboristerie et Cuisine jouables, 5 à 6 recettes chacun, avec des chaînes :
-- minerai (Minage) → lingot (Forge) → lame / outil (Forge) ;
-- herbes (Herboristerie) + poisson → repas (Cuisine).
-
-Le poisson venant de la Pêche (« bientôt »), le prototype le fait vendre par le **marchand du port** (PNJ) à prix fixe, ce qui donne aussi un usage à l'or. Le marchand rachète tous les objets à leur valeur. Il disparaîtra ou changera de rôle quand la Pêche et le marché arriveront.
-
-Les repas donnent un bonus de vitesse temporaire (un seul actif à la fois, plafonné à +10 %). Les pioches forgées donnent le bonus d'outil du Minage (plafonné à +30 %).
-
-Les autres métiers existent dans les données et apparaissent « Bientôt » (en pointillés) dans l'interface.
+- [Décidé] Ouvert à 20–30 métiers **si chacun apporte une activité intéressante et une utilité réelle**. Agriculture et Joaillerie intéressent particulièrement Louis.
+- [Recommandé] **18 métiers et 3 extensions, ouverts par phases** ([`design/metiers.md`](design/metiers.md)) :
+  - Récolte : Minage, Bûcheronnage, Herboristerie, Pêche, **Agriculture** (parcelles en temps réel), Chasse ;
+  - Artisanat : Forge (outils de tous les métiers), Menuiserie (manches, archerie), Cuisine, Alchimie, **Tannerie** (séparée de la Couture), Couture, **Joaillerie**, Enchantement, Artificerie ;
+  - Monde : **Construction** (le grand puits : atelier personnel et halle du clan), **Exploration** (cartes de gisement, curiosités, sites) ;
+  - Extensions : Élevage, Archéologie, Dressage.
+- [Prototype] 14 métiers dans `data/professions.yaml`, dont 4 jouables (Minage, Forge, Herboristerie, Cuisine) ; chaînes minerai → lingot → lame ou pioche, herbes + poisson → repas ; le poisson vendu par le **marchand du port** (PNJ), qui rachète tout à la valeur de l'objet.
+- [Recommandé] **Boucle de test** à implémenter d'abord : Minage, Bûcheronnage, Herboristerie, Forge, Menuiserie, Cuisine, avec un outil par métier qui s'use et se répare. Données prêtes dans `sim/proposals/boucle-v0/`.
 
 ## 5. Boucle idle
 
-### 5.1 Une activité à la fois
-- Une seule activité en cours (un métier, une recette, une quantité).
-- Une **file d'actions** à suivre, longueur **3** (réglage). Une fois l'activité finie, la suivante démarre automatiquement.
-- Lancer une recette alors qu'une autre tourne : « Lancer à la place de [activité] » (remplace) ou « Ajouter à la file ».
+### 5.1 Une activité à la fois [Décidé]
+- Une seule activité en cours (un métier, une recette, une quantité) et une **file d'actions** (longueur 3 en réglage). Lancer une recette alors qu'une autre tourne : « Lancer à la place de » ou « Ajouter à la file ».
+- [Recommandé] Seule exception : les **parcelles d'Agriculture**, qui poussent en temps réel et sont bornées par leur nombre.
 
 ### 5.2 Rendement
-| Situation | Rendement |
-|---|---|
-| Actif (joueur présent) | 100 % |
-| Hors ligne | ~25 %, accumulation plafonnée à **12 h** |
-| Énergie quotidienne | 150 % sur les **2 premières heures actives** de la journée |
-
-Quand le plafond hors ligne est atteint, la progression s'arrête simplement : rien n'est perdu de ce qui a été acquis.
+- [Prototype] Actif 100 % ; hors ligne 25 % plafonné à 12 h ; énergie quotidienne ×1,5 sur les 2 premières heures actives. Mesure : ×7 de production entre 20 min par jour et un onglet ouvert jour et nuit.
+- [Décidé] Le système actuel récompense trop le simple fait de garder une fenêtre visible. Le passage à 100 % n'est pas acquis : comparer les solutions.
+- [Recommandé] **Rendement unique 100 %, autonomie de 16 h après la dernière visite, plus d'énergie** ; la participation (commandes, marché, clan, rencontres) est récompensée à part, surtout hors production ([`design/presence.md`](design/presence.md)). Rien n'est perdu au-delà du plafond.
 
 ### 5.3 Bonus (plafonnés, dans les réglages)
-| Source | Plafond |
-|---|---|
-| Outil | +30 % |
-| Potion ou repas | +10 % |
-| Clan | +10 % |
-| Saison | +20 % |
+| Source | [Prototype] | [Recommandé] |
+|---|---|---|
+| Outil | +30 % | +30 % (bronze +10 % … orichalque +30 %) |
+| Repas | +10 % | +10 %, garde-manger automatique |
+| Lieu | — | **+25 %** : carte de gisement ou filon de clan (la meilleure) |
+| Clan | +10 % | **+10 % toutes sources confondues** (bâtiments, experts), pour tous les membres |
+| Saison | +20 % | +20 % (mutation d'événement, pour tous) |
 
-En P1, seuls l'outil et le repas sont actifs ; clan et saison valent 0 mais existent dans le calcul.
+Les « filons de clan à +5 % par membre présent, plafonnés à +40 % » du v1.0 sont remplacés (ils contredisaient le plafond de clan et dépendaient de la présence simultanée) : voir [`design/monde.md`](design/monde.md) §3.
 
-### 5.4 Calcul à la demande
-Aucune boucle serveur permanente. À chaque interaction ou connexion, le serveur recalcule la progression à partir des horodatages (début de l'activité, dernière visite, énergie consommée), applique les rendements et les bonus, puis enregistre le nouvel état.
+### 5.4 Calcul à la demande [Décidé]
+Aucune boucle serveur permanente. À chaque interaction ou connexion, le serveur recalcule la progression à partir des horodatages, applique les rendements et les bonus, puis enregistre le nouvel état.
 
-### 5.5 Résumé d'absence
-À la connexion, une popup s'ouvre seule : durée d'absence, XP gagnée, objets produits, niveaux pris, et une phrase d'explication (ex. « Votre forge a tourné au quart de sa vitesse. Le plafond de 12 h n'est pas atteint : rien n'a été perdu. »). Le résumé reste ensuite consultable dans le journal.
+### 5.5 Résumé d'absence [Décidé]
+À la connexion, une popup s'ouvre seule : durée d'absence, XP gagnée, objets produits, niveaux pris, et une phrase d'explication. Le résumé reste ensuite consultable dans le journal.
 
-## 6. Comptes
+## 6. Comptes [Décidé]
 Pseudo et mot de passe, un personnage par compte.
 
 ## 7. Classes *(combat en P4–P5)*
 
-### 7.1 Classes de base
-| Classe | Style | Métier lié |
+### 7.1 Classes de base [Décidé]
+| Classe | Style | Métier principal |
 |---|---|---|
 | Forgefeu | Mêlée | Forge |
 | Traqueur | Tir | Chasse |
 | Runiste | Magie | Enchantement |
 
-Chaque classe a **trois voies** : dégâts, contrôle, soutien.
-
-**Choix** : tout personnage, même niveau 1 et fraîchement créé, choisit sa classe avant d'entrer dans le jeu. Il en change **quand il veut, gratuitement** (les classes s'appuient sur les métiers ; rien n'est perdu).
-
-**Visuel** : chaque classe a sa **tenue de départ** et sa **pose** (Runiste : bâton et main du sort levée ; Forgefeu : campé, une main sur la hanche, le marteau sur l'épaule) pour qu'on voie tout de suite qui joue quoi. À terme, chaque voie aura aussi sa pose. Les tenues cosmétiques se changent ensuite librement par-dessus : elles suivent les os, donc toutes les poses.
+Chaque classe a **trois voies** (dégâts, contrôle, soutien) qui partagent le même métier principal. Le bonus de métier reste modeste et s'évalue avec les autres sources de puissance. Choix de la classe à la création, changeable à tout moment et gratuitement. Chaque classe a sa **tenue de départ** et sa **pose** ; à terme, chaque voie aura sa pose.
 
 ### 7.2 Progression de classe
-- Niveau 30 : choix de la **voie**.
-- Niveau 60 : **spécialisation**.
-- Niveau 75 : **éveil**.
+Niveau 30 : voie ; 60 : spécialisation ; 75 : éveil.
 
-### 7.3 Classes de métier
-Débloquées au **niveau 40** du métier lié : **Artificier** (Artificerie), **Alchimiste** (Alchimie).
+### 7.3 Classes de métier [Décidé]
+**Artificier** (Artificerie), **Alchimiste** (Alchimie). [Prototype du v1.0] Déblocage au niveau 40. [Recommandé] Au niveau 60 avec la nouvelle progression.
 
-### 7.4 Triangle de combat
+### 7.4 Affinité et voies [Recommandé]
+Affinité plafonnée à **+5 %** (au lieu de +10 %) ; chaque voie a un **consommable ou service signature** fabriqué par son métier principal, aussi achetable. Aucune voie n'exige un second métier à haut niveau ([`design/monde.md`](design/monde.md) §1).
+
+### 7.5 Triangle de combat
 Mêlée > Tir > Magie > Mêlée.
 
-## 8. Économie et social *(plus tard)*
+## 8. Économie et social
 
-### 8.1 Marché (P2)
-Ordres d'achat et de vente, **taxe de 5 %**. L'**usure des objets** est le principal puits de ressources.
+### 8.1 Marché (P2) [Décidé]
+Marché entre joueurs : ordres d'achat et de vente, **taxe de 5 %**, commandes artisanales. Rôle limité des PNJ.
+- [Recommandé] L'usure renouvelle la demande mais **n'est pas le puits principal** (elle ne retire que quelques pour cent du travail) ; les puits de volume sont la **Construction**, les consommables et le **recyclage** ; le robinet d'or à tenir est le **rachat du PNJ** (10 %, plafonné par semaine) ; un **Comptoir de la guilde** donne trois commandes PNJ par semaine ([`design/economie.md`](design/economie.md)).
 
 ### 8.2 Clans (P3)
-Entrepôt commun, commandes internes, postes d'experts, projets de construction.
+- [Décidé] Axe social important ; fonctionnement à construire. Pas de chantier commun au serveur.
+- [Recommandé] Entrepôt à droits par rang, commandes internes sans taxe, projets de halle (champs, ateliers, bonus jusqu'à +10 %), postes d'experts comptés dans le plafond de clan, **Guilde du bourg** pour les joueurs sans clan ([`design/monde.md`](design/monde.md) §3).
 
-### 8.3 Saisons (P5)
-Durée **6 semaines**, une **mutation** par saison (ex. « Saison des marées : Pêche +20 % »).
+### 8.3 Saisons → événements récurrents (P5)
+- [Décidé] Progression permanente conservée ; contenus qui reviennent en rerun ; pas d'exclusivité définitive.
+- [Recommandé] Quatre événements de 4 semaines par an (Givre, Marées, Moisson, Braises), ressources et recettes thématiques, rencontres asynchrones, ensembles **latéraux** jamais indispensables, jetons conservés d'une édition à l'autre ([`design/monde.md`](design/monde.md) §2).
+- [Prototype du v1.0, abandonné] Saisons de 6 semaines avec remise à zéro du classement, de la monnaie et des bâtiments de saison.
 
-## 9. Interface
+## 9. Interface [Décidé]
 
 Maquettes de référence : `docs/maquettes/`
 - `1-accueil-resume-absence.png` — accueil avec la popup de résumé d'absence
@@ -157,44 +140,40 @@ Maquettes de référence : `docs/maquettes/`
 - Un accueil et cinq salles : **Accueil, Métiers, Personnage, Clan, Marché, Combat** (six onglets en haut). Tout le reste s'ouvre en popup ou en volet.
 - **Aucun scroll de page** : cible 1440×900, correct à 1280×720.
 - Squelette commun : **bande visuelle du lieu en haut, contenu en bas**.
-- Barre du haut : nom du jeu, onglets, puis à droite l'événement en cours, l'or, la jauge d'énergie, la recherche.
+- Barre du haut : nom du jeu, onglets, puis à droite l'événement en cours, l'or, la jauge d'énergie ([Recommandé] retirée avec l'énergie), la recherche.
 - Police unique **Bricolage Grotesque**, palette « Anthracite et cuivre » (voir `CLAUDE.md`).
 
 ### 9.2 Accueil
-- **En haut** : carte du monde avec des lieux cliquables (Mines, Bois, Halle du clan, Arène…) et un volet d'infos à droite.
-- **En bas, trois colonnes** (colonnes latérales de même largeur, le personnage au centre de l'écran) :
-  - gauche : journal et discussion, onglets Tout / Journal / Clan / Serveur (P1 : seul Journal fonctionne) ;
-  - droite : activité en cours (anneau de progression, gains, file d'actions) et lien « Changer d'activité » ;
-  - centre : le personnage **en entier**, entouré de ses emplacements (cosmétiques, arme, outil, repas), avec nom, titre, classe et voie, sans alertes d'équipement. Lien « Ouvrir le personnage ».
+- Direction choisie le 21 octobre : **scène du bourg** où passent d'autres joueurs et **Panneau du bourg** centré sur le **fil du serveur** ; pas de bonus du jour ; commandes de PNJ non tranchées ([Recommandé] : Comptoir hebdomadaire). La carte du monde pourra revenir en popup « Voyager » avec l'Exploration.
+- **En bas, trois colonnes** : journal et discussion (Tout / Journal / Clan / Serveur) ; le personnage **en entier** au centre, entouré de ses emplacements ; activité en cours (anneau, gains, file) à droite.
 
 ### 9.2 bis Salle Personnage
-- Trois colonnes : équipement et apparence (détail de chaque emplacement) et sac ; le personnage centré, entouré de ses emplacements ; les caractéristiques (progression, rendement et bonus plafonnés, énergie, métiers, combat à venir).
-- Emplacements : Coiffe, Épaules, Haut, Gants, Ceinture, Cape, Bas, Bottes (cosmétiques) ; Arme (de classe) ; Outil et Repas (objets qui donnent un bonus). Un vrai système d'équipement avec statistiques arrivera avec le combat (P4).
+- Trois colonnes : équipement et apparence et sac ; le personnage centré, entouré de ses emplacements ; les caractéristiques.
+- Emplacements : Coiffe, Épaules, Haut, Gants, Ceinture, Cape, Bas, Bottes (cosmétiques) ; Arme (de classe) ; Outil et Repas. [Recommandé] Avec le combat : deux emplacements de bijou (anneau, amulette) et un équipement en deux couches (statistiques et usure ; apparence par-dessus).
 
 ### 9.3 Salle Métiers
 - Grille de tous les métiers, groupés (Récolte, Artisanat, Monde et clan). Les métiers « Bientôt » en pointillés.
-- Un clic ouvre la **salle du métier** :
-  - en haut : la scène, avec le maître PNJ (et le niveau, le titre, la barre d'XP du métier) ;
-  - en bas à gauche : recettes paginées en **2×3**, filtres par catégorie, recettes verrouillées en gris ;
-  - à droite : la recette choisie — niveau requis, temps, XP, ingrédients, quantité −/+/Max, bouton « Lancer » (ou « Lancer à la place de [activité] »), et la file.
+- Un clic ouvre la **salle du métier** : la scène et le maître PNJ en haut ; recettes paginées en **2×3** à gauche ; la recette choisie, sa quantité et la file à droite.
 
 ### 9.4 Personnages
-Toujours à gauche de la scène, de face mais tourné vers la droite, jamais en miroir. Proportions réalistes. Placeholders pour l'instant ; plus tard 2D vectorielle en pièces (squelette + tenue), ambiance sombre et lumière colorée des sorts.
+Toujours à gauche de la scène, de face mais tourné vers la droite, jamais en miroir. Proportions réalistes. 2D vectorielle en pièces (squelette + tenue), ambiance sombre et lumière colorée des sorts.
 
 ## 10. Feuille de route
 
 | Phase | Contenu |
 |---|---|
-| P0 | Chiffrage et simulateur d'équilibrage |
-| P1 | Prototype solo (métiers, idle, hors ligne, résumé d'absence) |
-| P2 | Marché et commandes |
-| P3 | Clans |
-| P4 | Combat |
-| P5 | Saisons et classes de métier |
+| P0 | Chiffrage et simulateur d'équilibrage — **commencé** (`sim/`) |
+| P1 | Prototype solo — fait ; [Recommandé] recalage présence et progression, boucle de test à 6 métiers, usure et garde-manger |
+| P2 | Marché et commandes ; Pêche |
+| P3 | Clans, Construction, Agriculture |
+| P4 | Combat ; Chasse, Tannerie, Couture, Enchantement, Joaillerie, Alchimie |
+| P5 | Événements récurrents, Artificerie, Exploration, classes de métier |
 | P6 | Arènes PvP et ouverture |
 
+Ordre détaillé : [`design/arbitrages.md`](design/arbitrages.md) §3.
+
 ## 11. Questions ouvertes
-- Public visé.
+- Public visé ; nom du jeu.
 - Arrivée du PvP (quand, sous quelle forme).
-- Durée exacte des saisons (6 semaines à confirmer).
 - Longueur de la file pour les abonnés (confort payant).
+- Arbitrages en attente : [`design/arbitrages.md`](design/arbitrages.md).

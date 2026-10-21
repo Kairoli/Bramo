@@ -14,7 +14,7 @@ export const settings = {
   commissions: { primeShare: 0.2, primeUnitsPerDay: 10 },
   market: { taxShare: 0.05, maxOpenOrders: 3, maxPrice: 1000, maxQuantity: 100 },
   npcOrders: { perDay: 2 },
-  clan: { creationCost: 100, nameMin: 3, nameMax: 24, maxMembers: 3, minMembersForCost: 2, levelCostPerMember: 10, maxLevel: 5, bonusPerLevel: 0.02, townGuildBonus: 0.03, warehouseKinds: 3, logSize: 5, activeDays: 14 },
+  clan: { creationCost: 100, nameMin: 3, nameMax: 24, maxMembers: 3, minMembersForCost: 2, townGuildBonus: 0.03, logSize: 5, activeDays: 14 },
   town: { activeWindowMin: 15, maxWalkers: 10, feedSize: 30, milestoneLevels: [20, 40] },
   absence: { minSummaryMin: 5 },
   character: { startingGold: 100 },
@@ -57,6 +57,10 @@ export const content = buildContent({
   classes: [
     { id: 'mage', name: 'Mage', style: 'magic', profession: 'mining', affinityColor: '#B39DF5', pitch: '', startingOutfit: 'plain', pose: 'mage' },
     { id: 'brute', name: 'Brute', style: 'melee', profession: 'smithing', affinityColor: '#F08A4B', pitch: '', startingOutfit: 'plain', pose: 'brute' },
+  ],
+  buildings: [
+    { id: 'hall', name: 'Halle', description: '', maxLevel: 3, boost: { profession: 'all', perLevel: 0.01 }, base: { gold: 100, items: [{ item: 'ore', qty: 10 }] } },
+    { id: 'mine_gallery', name: 'Galerie', description: '', maxLevel: 3, boost: { profession: 'mining', perLevel: 0.02 }, base: { gold: 50, items: [] } },
   ],
   npcOrders: [
     { id: 'ore_easy', profession: 'mining', level: 1, client: 'Guilde', text: '', items: [{ item: 'ore', qty: 10 }], gold: 30 },
@@ -120,7 +124,7 @@ export function makeState(over: Partial<CharacterState> = {}): CharacterState {
     wear: {},
     pantry: {},
     shown: {},
-    clanBonus: 0,
+    clanBonuses: {},
     npc: { dayKey: '', done: [] },
     prime: { dayKey: '', units: 0 },
     classId: 'mage',

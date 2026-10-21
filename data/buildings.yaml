@@ -1,0 +1,63 @@
+# Bâtiments de clan (docs/design/monde.md §3). Un clan les construit par niveaux, grâce aux apports de ses membres
+# (or et objets). Chaque niveau donne un bonus de production aux membres ; tous les bonus de clan sont plafonnés
+# ensemble par settings.bonusCaps.clan (+10 %).
+#
+# Coût du niveau N = `base` × N, pour un clan de `settings.clan.minMembersForCost` membres actifs ; il croît
+# proportionnellement au-delà (un petit clan bâtit aussi vite par tête qu'un grand).
+# Chiffres provisoires : à équilibrer avec le simulateur. # à équilibrer
+
+- id: hall
+  name: Halle du clan
+  description: Le cœur du clan. Son foyer réchauffe tous les métiers.
+  maxLevel: 3
+  boost: { profession: all, perLevel: 0.01 }
+  base: { gold: 3000, items: [{ item: pine_plank, qty: 150 }, { item: stone_block, qty: 150 }] }
+
+- id: mine_gallery
+  name: Galerie de mine
+  description: Des galeries étayées, un chariot sur rails. Les mineurs du clan travaillent plus vite.
+  maxLevel: 3
+  boost: { profession: mining, perLevel: 0.02 }
+  base: { gold: 1500, items: [{ item: stone_block, qty: 120 }, { item: iron_bar, qty: 20 }] }
+
+- id: sawmill
+  name: Scierie
+  description: Une scie hydraulique pour les bûcherons du clan.
+  maxLevel: 3
+  boost: { profession: woodcutting, perLevel: 0.02 }
+  base: { gold: 1500, items: [{ item: pine_plank, qty: 120 }, { item: iron_bar, qty: 20 }] }
+
+- id: herb_garden
+  name: Jardin du clan
+  description: Des plates-bandes abritées pour les herboristes du clan.
+  maxLevel: 3
+  boost: { profession: herbalism, perLevel: 0.02 }
+  base: { gold: 1500, items: [{ item: oak_plank, qty: 60 }, { item: thyme, qty: 100 }] }
+
+- id: harbor
+  name: Embarcadère
+  description: Un ponton et une barque pour les pêcheurs du clan.
+  maxLevel: 3
+  boost: { profession: fishing, perLevel: 0.02 }
+  base: { gold: 1500, items: [{ item: pine_plank, qty: 150 }, { item: bronze_bar, qty: 30 }] }
+
+- id: forge
+  name: Forge du clan
+  description: Une seconde enclume et un soufflet de qualité pour les forgerons du clan.
+  maxLevel: 3
+  boost: { profession: smithing, perLevel: 0.02 }
+  base: { gold: 1500, items: [{ item: iron_bar, qty: 40 }, { item: stone_block, qty: 100 }] }
+
+- id: workshop
+  name: Atelier de menuiserie
+  description: Un établi partagé et un râtelier d'outils pour les menuisiers du clan.
+  maxLevel: 3
+  boost: { profession: carpentry, perLevel: 0.02 }
+  base: { gold: 1500, items: [{ item: oak_plank, qty: 100 }, { item: iron_bar, qty: 20 }] }
+
+- id: kitchen
+  name: Cuisines du clan
+  description: De grandes marmites pour les cuisiniers du clan.
+  maxLevel: 3
+  boost: { profession: cooking, perLevel: 0.02 }
+  base: { gold: 1500, items: [{ item: stone_block, qty: 100 }, { item: nettle_broth, qty: 10 }] }

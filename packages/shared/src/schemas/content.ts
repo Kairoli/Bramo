@@ -70,17 +70,10 @@ export const settingsSchema = z.object({
     nameMin: z.number().int().min(1),
     nameMax: z.number().int().min(1),
     maxMembers: z.number().int().min(2),
-    /** Le coût d'un niveau est proportionnel au nombre de membres actifs sur 14 jours, avec ce minimum. */
+    /** Le coût d'un bâtiment croît avec le nombre de membres actifs, par rapport à ce nombre de référence. */
     minMembersForCost: z.number().int().min(1),
-    /** Or par membre actif et par niveau à atteindre : coût du niveau N = N × ce montant × membres actifs. */
-    levelCostPerMember: z.number().int().min(1),
-    maxLevel: z.number().int().min(1),
-    /** Bonus de clan par niveau (0,02 = +2 %), plafonné par bonusCaps.clan. */
-    bonusPerLevel: ratio,
-    /** Bonus de la Guilde du bourg, donné à qui n'a pas de clan. */
+    /** Bonus de la Guilde du bourg (toute production), donné à qui n'a pas de clan. */
     townGuildBonus: ratio,
-    /** Types d'objets différents que l'entrepôt peut contenir. */
-    warehouseKinds: z.number().int().min(1),
     logSize: z.number().int().min(1),
     activeDays: z.number().int().min(1),
   }),
@@ -187,11 +180,26 @@ export const npcOrderSchema = z.object({
   gold: z.number().int().min(1),
 });
 
+/**
+ * Bâtiment de clan : construit par niveaux grâce aux apports des membres, il donne un bonus de production à un métier
+ * (ou à tous). Coût du niveau N = `base` × N pour `settings.clan.minMembersForCost` membres actifs.
+ */
+export const buildingSchema = z.object({
+  id,
+  name: z.string(),
+  description: z.string(),
+  maxLevel: z.number().int().min(1),
+  /** `profession` : un métier, ou « all » pour toute la production. */
+  boost: z.object({ profession: z.string(), perLevel: ratio }),
+  base: z.object({ gold: z.number().int().min(0), items: z.array(stackSchema).default([]) }),
+});
+
 export const professionsFileSchema = z.array(professionSchema);
 export const itemsFileSchema = z.array(itemSchema);
 export const recipesFileSchema = z.array(recipeSchema);
 export const trialsFileSchema = z.array(trialSchema);
 export const npcOrdersFileSchema = z.array(npcOrderSchema);
+export const buildingsFileSchema = z.array(buildingSchema);
 
 export type Settings = z.infer<typeof settingsSchema>;
 export type ProfessionFamily = z.infer<typeof professionFamilySchema>;
@@ -201,6 +209,7 @@ export type Recipe = z.infer<typeof recipeSchema>;
 export type Stack = z.infer<typeof stackSchema>;
 export type Trial = z.infer<typeof trialSchema>;
 export type NpcOrder = z.infer<typeof npcOrderSchema>;
+export type Building = z.infer<typeof buildingSchema>;
 
 /** Contenu chargé, validé et indexé. Construit par `buildContent`. */
 export interface Content {
@@ -212,6 +221,8 @@ export interface Content {
   trials: Record<string, Trial>;
   /** Liste des commandes PNJ possibles ; chaque jour en tire `settings.npcOrders.perDay`. */
   npcOrders: Record<string, NpcOrder>;
+  /** Bâtiments de clan. */
+  buildings: Record<string, Building>;
   classes: Record<string, CharacterClass>;
   cosmetics: Cosmetics;
   /** xpTable[L] = XP totale pour atteindre le niveau L (index 0 inutilisé). */

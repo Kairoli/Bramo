@@ -29,6 +29,7 @@ export function readRawContent(dataDir: string): RawContent {
     classes: read('classes.yaml'),
     cosmetics: read('cosmetics.yaml'),
     trials: read('trials.yaml'),
+    buildings: existsSync(join(dataDir, 'buildings.yaml')) ? read('buildings.yaml') : [],
     npcOrders: existsSync(join(dataDir, 'npc_orders.yaml')) ? read('npc_orders.yaml') : [],
     recipes: recipeFiles.map((f) => [`recipes/${f}`, read(join('recipes', f))]),
   };

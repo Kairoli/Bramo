@@ -302,7 +302,7 @@ describe('API', () => {
     expect(later.feed.some((e) => e.text.includes('Passant'))).toBe(true);
   });
 
-  it('clans : fonder, rejoindre, entrepôt par rang, projet de bonus', async () => {
+  it('clans : fonder, rejoindre, construire un bâtiment ensemble', async () => {
     const chef = player({ value: '' });
     const recrue = player({ value: '' });
     const intrus = player({ value: '' });
@@ -314,37 +314,48 @@ describe('API', () => {
     await grant('Chefclan', 3000, {});
     const created = (await chef('POST', '/api/clan/create', { name: 'Les Braises', description: 'Forgerons du matin' })).json as StateResponse;
     expect(created.state.gold).toBe(3000 - content.settings.clan.creationCost);
-    expect((await intrus('POST', '/api/clan/create', { name: 'les braises' })).status).toBe(400); // nom déjà pris (or insuffisant aussi)
-    expect(((await chef('GET', '/api/clan')).json as import('@bramo/shared').ClanView).myRank).toBe('leader');
+    expect((await intrus('POST', '/api/clan/create', { name: 'les braises' })).status).toBe(400); // nom déjà pris
+    const view0 = (await chef('GET', '/api/clan')).json as import('@bramo/shared').ClanView;
+    expect(view0.myRank).toBe('leader');
+    expect(view0.buildings.map((b) => b.id)).toContain('mine_gallery');
 
     const list = (await recrue('GET', '/api/clans')).json as import('@bramo/shared').ClanListItem[];
     expect(list).toHaveLength(1);
     await recrue('POST', '/api/clan/join', { clanId: list[0]!.id });
-    await grant('Recrue', 0, { copper_ore: 50 });
-    await recrue('POST', '/api/clan/deposit', { itemId: 'copper_ore', qty: 30 });
-    // Un simple membre ne retire rien de l'entrepôt.
-    expect((await recrue('POST', '/api/clan/withdraw', { itemId: 'copper_ore', qty: 5 })).status).toBe(400);
-    const view = (await chef('GET', '/api/clan')).json as import('@bramo/shared').ClanView;
-    expect(view.warehouse.copper_ore).toBe(30);
-    expect(view.members.map((m) => m.rank)).toEqual(['leader', 'member']);
-    expect(view.log.some((l) => l.text.includes('dépose 30'))).toBe(true);
-    // Le chef retire, puis promeut la recrue officier : elle peut retirer à son tour.
-    const taken = (await chef('POST', '/api/clan/withdraw', { itemId: 'copper_ore', qty: 10 })).json as StateResponse;
-    expect(taken.state.inventory.copper_ore).toBe(10);
-    const recruitId = view.members.find((m) => m.rank === 'member')!.id;
-    await chef('POST', '/api/clan/rank', { characterId: recruitId, rank: 'officer' });
-    expect(((await recrue('POST', '/api/clan/withdraw', { itemId: 'copper_ore', qty: 5 })).json as StateResponse).state.inventory.copper_ore).toBe(25);
+    await grant('Recrue', 0, { stone_block: 200, iron_bar: 30, copper_ore: 5 });
 
-    // Projet : 1 × 500 × max(3, membres actifs) = 1 500 or pour le niveau 1 ; le surplus reste au fonds.
-    const donated = (await chef('POST', '/api/clan/donate', { amount: 1700 })).json as StateResponse;
-    expect(donated.state.gold).toBe(3000 - content.settings.clan.creationCost - 1700);
+    // Galerie de mine, niveau 1 : 1 500 or, 120 blocs de pierre, 20 lingots de fer (2 membres actifs : coût de référence).
+    const gallery = view0.buildings.find((b) => b.id === 'mine_gallery')!;
+    expect(gallery.next?.gold.need).toBe(1500);
+    // L'or : l'apport est plafonné à ce qu'il manque ; un objet non demandé est refusé ; un non-membre ne peut rien apporter.
+    expect((await chef('POST', '/api/clan/contribute', { buildingId: 'mine_gallery', what: 'gold', qty: 1000 })).status).toBe(200);
+    expect((await recrue('POST', '/api/clan/contribute', { buildingId: 'mine_gallery', what: 'copper_ore', qty: 5 })).status).toBe(400);
+    expect((await intrus('POST', '/api/clan/contribute', { buildingId: 'mine_gallery', what: 'gold', qty: 10 })).status).toBe(400);
+    const capped = (await chef('POST', '/api/clan/contribute', { buildingId: 'mine_gallery', what: 'gold', qty: 2000 })).json as StateResponse;
+    expect(capped.state.gold).toBe(3000 - content.settings.clan.creationCost - 1500);
+    expect((await chef('POST', '/api/clan/contribute', { buildingId: 'mine_gallery', what: 'gold', qty: 1 })).status).toBe(400); // complet
+    // Les membres apportent ensemble : le bâtiment monte quand tout est réuni.
+    await recrue('POST', '/api/clan/contribute', { buildingId: 'mine_gallery', what: 'stone_block', qty: 120 });
+    const mid = (await chef('GET', '/api/clan')).json as import('@bramo/shared').ClanView;
+    expect(mid.buildings.find((b) => b.id === 'mine_gallery')?.level).toBe(0);
+    const done = (await recrue('POST', '/api/clan/contribute', { buildingId: 'mine_gallery', what: 'iron_bar', qty: 20 })).json as StateResponse;
+    expect(done.journal.some((j) => j.text.includes('niveau 1'))).toBe(true);
+    expect(done.state.inventory.iron_bar).toBe(10);
     const after = (await chef('GET', '/api/clan')).json as import('@bramo/shared').ClanView;
-    expect(after.level).toBe(1);
-    expect(after.bonus).toBeCloseTo(0.02);
-    expect(after.fund).toBe(200);
-    expect(after.nextCost).toBe(3000);
+    expect(after.buildings.find((b) => b.id === 'mine_gallery')).toMatchObject({ level: 1, next: { gold: { need: 3000, have: 0 } } });
+    expect(after.bonuses.mining).toBeCloseTo(0.02);
+    expect(after.log.some((l) => l.text.includes('Galerie de mine passe au niveau 1'))).toBe(true);
+    // Le bonus s'applique à la production des membres : +2 % mineur, en plus des 3 % de la Guilde du bourg.
+    await recrue('POST', '/api/activity/start', { recipeId: 'mine_copper', quantity: 50, mode: 'replace' });
+    const rate = ((await recrue('GET', '/api/state')).json as StateResponse).state.activity!.rate;
+    expect(rate.clan).toBeCloseTo(content.settings.clan.townGuildBonus + 0.02);
+    // Le fil du serveur annonce l'achèvement.
+    const feed = ((await chef('GET', '/api/town')).json as import('@bramo/shared').TownView).feed;
+    expect(feed.some((e) => e.kind === 'clan' && e.text.includes('Galerie de mine'))).toBe(true);
 
-    // Quitter : le chef doit d'abord transférer la direction.
+    // Rangs : l'officier peut exclure un membre ; le chef doit transférer la direction avant de partir.
+    const recruitId = after.members.find((m) => m.rank === 'member')!.id;
+    await chef('POST', '/api/clan/rank', { characterId: recruitId, rank: 'officer' });
     expect((await chef('POST', '/api/clan/leave')).status).toBe(400);
     await chef('POST', '/api/clan/leader', { characterId: recruitId });
     expect((await chef('POST', '/api/clan/leave')).status).toBe(200);

@@ -1,6 +1,8 @@
 import { and, asc, desc, eq, gte, sql } from 'drizzle-orm';
 import {
+  type BuildingLevels,
   type CharacterState,
+  type ClanBuildingView,
   type ClanListItem,
   type ClanMemberView,
   type ClanRank,
@@ -8,17 +10,19 @@ import {
   type Content,
   GameError,
   addStack,
-  clanBonusFor,
-  clanLevelCost,
+  buildingNeeds,
+  clanBonuses,
   cloneState,
-  isDurable,
+  memberBonuses,
 } from '@bramo/shared';
 import type { Db, Tx } from './db/index.js';
-import { characters, clanItems, clanLog, clanMembers, clans } from './db/schema.js';
+import { characters, clanBuildings, clanLog, clanMembers, clanProgress, clans } from './db/schema.js';
+import type { NewServerEvent } from './town.js';
 
 export interface ClanResult {
   state: CharacterState;
   log: string;
+  serverEvents?: NewServerEvent[];
 }
 
 const DAY = 86_400_000;
@@ -50,6 +54,18 @@ async function activeCount(tx: Tx | Db, clanId: number, now: number, content: Co
   return r?.n ?? 0;
 }
 
+/** Niveau de chaque bâtiment construit par un clan. */
+export async function buildingLevels(tx: Tx | Db, clanId: number): Promise<BuildingLevels> {
+  const rows = await tx.select().from(clanBuildings).where(eq(clanBuildings.clanId, clanId));
+  return Object.fromEntries(rows.map((r) => [r.buildingId, r.level]));
+}
+
+/** Bonus de production par métier d'un personnage : ceux de son clan, sinon ceux de la Guilde du bourg. */
+export async function bonusesOfCharacter(tx: Tx | Db, characterId: number, content: Content): Promise<Record<string, number>> {
+  const [me] = await tx.select().from(clanMembers).where(eq(clanMembers.characterId, characterId));
+  return memberBonuses(me ? await buildingLevels(tx, me.clanId) : null, content);
+}
+
 export async function createClan(
   tx: Tx,
   content: Content,
@@ -73,8 +89,12 @@ export async function createClan(
   await logLine(tx, created!.id, now, `${characterName} fonde le clan.`, clan.logSize);
   const state = cloneState(input);
   state.gold -= clan.creationCost;
-  state.clanBonus = clanBonusFor(0, content);
-  return { state, log: `Vous fondez le clan « ${name} » (−${clan.creationCost} or).` };
+  state.clanBonuses = memberBonuses({}, content);
+  return {
+    state,
+    log: `Vous fondez le clan « ${name} » (−${clan.creationCost} or).`,
+    serverEvents: [{ kind: 'clan', text: `${characterName} fonde le clan « ${name} ».` }],
+  };
 }
 
 export async function joinClan(
@@ -93,8 +113,8 @@ export async function joinClan(
   await tx.insert(clanMembers).values({ characterId, clanId, rank: 'member' });
   await logLine(tx, clanId, now, `${characterName} rejoint le clan.`, content.settings.clan.logSize);
   const state = cloneState(input);
-  state.clanBonus = clanBonusFor(target.level, content);
-  return { state, log: `Vous rejoignez le clan « ${target.name} » : bonus de clan +${Math.round(state.clanBonus * 100)} %.` };
+  state.clanBonuses = memberBonuses(await buildingLevels(tx, clanId), content);
+  return { state, log: `Vous rejoignez le clan « ${target.name} ».` };
 }
 
 /** Quitter son clan. Le chef ne peut partir qu'après avoir transféré la direction, ou en dissolvant un clan où il est seul. */
@@ -114,18 +134,14 @@ export async function leaveClan(
   if (me.rank === 'leader' && members > 1) {
     throw new GameError('leader_stays', 'Transférez d’abord la direction du clan à un autre membre.');
   }
+  state.clanBonuses = memberBonuses(null, content);
   if (me.rank === 'leader') {
-    // Seul dans le clan : on le dissout et on rend l'entrepôt et le fonds du projet.
-    const items = await tx.select().from(clanItems).where(eq(clanItems.clanId, me.clanId));
-    for (const i of items) addStack(state.inventory, i.itemId, i.qty);
-    state.gold += clan?.fund ?? 0;
+    // Seul dans le clan : on le dissout (les bâtiments et les apports en cours disparaissent avec lui).
     await tx.delete(clans).where(eq(clans.id, me.clanId));
-    state.clanBonus = content.settings.clan.townGuildBonus;
-    return { state, log: `Vous dissolvez le clan « ${clan?.name} » : entrepôt et fonds vous reviennent.` };
+    return { state, log: `Vous dissolvez le clan « ${clan?.name} ».` };
   }
   await tx.delete(clanMembers).where(eq(clanMembers.characterId, characterId));
   await logLine(tx, me.clanId, now, `${characterName} quitte le clan.`, content.settings.clan.logSize);
-  state.clanBonus = content.settings.clan.townGuildBonus;
   return { state, log: `Vous quittez le clan « ${clan?.name} ».` };
 }
 
@@ -182,115 +198,87 @@ export async function setRank(
   return { state, log: `${t?.name} devient ${label}.` };
 }
 
-export async function depositItems(
+/**
+ * Apport d'un membre à la construction du prochain niveau d'un bâtiment (de l'or, ou un des objets demandés).
+ * L'apport est plafonné à ce qu'il manque ; quand tout est réuni, le bâtiment monte d'un niveau pour tous.
+ */
+export async function contribute(
   tx: Tx,
   content: Content,
   characterId: number,
   characterName: string,
   input: CharacterState,
-  itemId: string,
-  qty: number,
+  p: { buildingId: string; what: string; qty: number },
   now: number,
 ): Promise<ClanResult> {
   const me = await membership(tx, characterId);
   if (!me) throw new GameError('no_clan', 'Vous n’êtes dans aucun clan.');
-  const item = content.items[itemId];
-  if (!item) throw new GameError('unknown_item', 'Objet inconnu.');
-  if (isDurable(item)) throw new GameError('durable', 'Les objets qui s’usent ne vont pas encore à l’entrepôt : chaque exemplaire garde son état.');
-  if ((input.inventory[itemId] ?? 0) < qty) throw new GameError('missing', 'Vous n’en avez pas assez.');
-  const stock = await tx.select().from(clanItems).where(eq(clanItems.clanId, me.clanId)).for('update');
-  const existing = stock.find((s) => s.itemId === itemId);
-  if (!existing && stock.length >= content.settings.clan.warehouseKinds) {
-    throw new GameError('warehouse_full', 'L’entrepôt ne peut plus accueillir de nouveau type d’objet.');
-  }
-  if (existing) await tx.update(clanItems).set({ qty: existing.qty + qty }).where(and(eq(clanItems.clanId, me.clanId), eq(clanItems.itemId, itemId)));
-  else await tx.insert(clanItems).values({ clanId: me.clanId, itemId, qty });
-  await logLine(tx, me.clanId, now, `${characterName} dépose ${qty} × ${item.name}.`, content.settings.clan.logSize);
-  const state = cloneState(input);
-  addStack(state.inventory, itemId, -qty);
-  return { state, log: `Dépôt à l’entrepôt du clan : ${qty} × ${item.name}.` };
-}
-
-/** Retrait : réservé aux officiers et au chef (les membres passent par eux ; les commandes internes viendront). */
-export async function withdrawItems(
-  tx: Tx,
-  content: Content,
-  characterId: number,
-  characterName: string,
-  input: CharacterState,
-  itemId: string,
-  qty: number,
-  now: number,
-): Promise<ClanResult> {
-  const me = await requireOfficer(tx, characterId);
-  const [row] = await tx
-    .select()
-    .from(clanItems)
-    .where(and(eq(clanItems.clanId, me.clanId), eq(clanItems.itemId, itemId)))
-    .for('update');
-  if (!row || row.qty < qty) throw new GameError('missing', 'L’entrepôt n’en contient pas autant.');
-  if (row.qty === qty) await tx.delete(clanItems).where(and(eq(clanItems.clanId, me.clanId), eq(clanItems.itemId, itemId)));
-  else await tx.update(clanItems).set({ qty: row.qty - qty }).where(and(eq(clanItems.clanId, me.clanId), eq(clanItems.itemId, itemId)));
-  const name = content.items[itemId]?.name ?? itemId;
-  await logLine(tx, me.clanId, now, `${characterName} retire ${qty} × ${name}.`, content.settings.clan.logSize);
-  const state = cloneState(input);
-  addStack(state.inventory, itemId, qty);
-  return { state, log: `Retrait de l’entrepôt du clan : ${qty} × ${name}.` };
-}
-
-/** Verser de l'or au projet « bonus de clan » ; au coût du niveau suivant, le clan monte et le surplus reste au fonds. */
-export async function donateGold(
-  tx: Tx,
-  content: Content,
-  characterId: number,
-  characterName: string,
-  input: CharacterState,
-  amount: number,
-  now: number,
-): Promise<ClanResult> {
-  const me = await membership(tx, characterId);
-  if (!me) throw new GameError('no_clan', 'Vous n’êtes dans aucun clan.');
-  if (input.gold < amount) throw new GameError('gold', 'Pas assez d’or.');
+  const building = content.buildings[p.buildingId];
+  if (!building) throw new GameError('unknown_building', 'Bâtiment inconnu.');
   const [clan] = await tx.select().from(clans).where(eq(clans.id, me.clanId)).for('update');
   if (!clan) throw new GameError('no_clan', 'Ce clan n’existe plus.');
-  const { clan: rules } = content.settings;
-  if (clan.level >= rules.maxLevel) throw new GameError('max_level', 'Le projet est terminé : le clan est au niveau maximal.');
-  const active = await activeCount(tx, clan.id, now, content);
-  let level = clan.level;
-  let fund = clan.fund + amount;
-  while (level < rules.maxLevel && fund >= clanLevelCost(level + 1, active, content)) {
-    fund -= clanLevelCost(level + 1, active, content);
-    level++;
-  }
-  if (level >= rules.maxLevel) fund = 0;
-  await tx.update(clans).set({ level, fund }).where(eq(clans.id, clan.id));
-  await logLine(tx, clan.id, now, `${characterName} verse ${amount} or au projet du clan.`, rules.logSize);
-  if (level > clan.level) {
-    await logLine(tx, clan.id, now, `Le clan passe au niveau ${level} : bonus de +${Math.round(clanBonusFor(level, content) * 100)} % pour tous.`, rules.logSize);
-  }
+  const [built] = await tx.select().from(clanBuildings).where(and(eq(clanBuildings.clanId, clan.id), eq(clanBuildings.buildingId, p.buildingId)));
+  const level = built?.level ?? 0;
+  if (level >= building.maxLevel) throw new GameError('max_level', 'Ce bâtiment est au niveau maximal.');
+  const needs = buildingNeeds(p.buildingId, level + 1, await activeCount(tx, clan.id, now, content), content);
+  const required = new Map<string, number>([['gold', needs.gold], ...needs.items.map((i) => [i.item, i.qty] as [string, number])]);
+  if (!required.has(p.what) || (required.get(p.what) ?? 0) <= 0) throw new GameError('not_needed', 'Ce bâtiment ne demande pas cela.');
+  const rows = await tx.select().from(clanProgress).where(and(eq(clanProgress.clanId, clan.id), eq(clanProgress.buildingId, p.buildingId))).for('update');
+  const have = new Map(rows.map((r) => [r.what, r.qty]));
+  const remaining = required.get(p.what)! - (have.get(p.what) ?? 0);
+  if (remaining <= 0) throw new GameError('complete', 'Cet apport est déjà complet pour ce niveau.');
+  const give = Math.min(p.qty, remaining);
   const state = cloneState(input);
-  state.gold -= amount;
-  state.clanBonus = clanBonusFor(level, content);
-  return { state, log: `Vous versez ${amount} or au projet du clan${level > clan.level ? ` : le clan passe au niveau ${level} !` : '.'}` };
+  if (p.what === 'gold') {
+    if (state.gold < give) throw new GameError('gold', 'Pas assez d’or.');
+    state.gold -= give;
+  } else {
+    if ((state.inventory[p.what] ?? 0) < give) throw new GameError('missing', 'Vous n’en avez pas assez.');
+    addStack(state.inventory, p.what, -give);
+  }
+  have.set(p.what, (have.get(p.what) ?? 0) + give);
+  await tx
+    .insert(clanProgress)
+    .values({ clanId: clan.id, buildingId: p.buildingId, what: p.what, qty: have.get(p.what)! })
+    .onConflictDoUpdate({ target: [clanProgress.clanId, clanProgress.buildingId, clanProgress.what], set: { qty: have.get(p.what)! } });
+  const label = p.what === 'gold' ? `${give} or` : `${give} × ${content.items[p.what]?.name ?? p.what}`;
+  await logLine(tx, clan.id, now, `${characterName} apporte ${label} : ${building.name}.`, content.settings.clan.logSize);
+
+  const done = [...required].every(([what, need]) => (have.get(what) ?? 0) >= need);
+  if (!done) return { state, log: `Apport au clan : ${label} (${building.name}).` };
+  await tx
+    .insert(clanBuildings)
+    .values({ clanId: clan.id, buildingId: p.buildingId, level: level + 1 })
+    .onConflictDoUpdate({ target: [clanBuildings.clanId, clanBuildings.buildingId], set: { level: level + 1 } });
+  await tx.delete(clanProgress).where(and(eq(clanProgress.clanId, clan.id), eq(clanProgress.buildingId, p.buildingId)));
+  await logLine(tx, clan.id, now, `${building.name} passe au niveau ${level + 1} : +${Math.round(building.boost.perLevel * 100)} % de production${building.boost.profession === 'all' ? '' : ' dans son métier'}.`, content.settings.clan.logSize);
+  state.clanBonuses = memberBonuses(await buildingLevels(tx, clan.id), content);
+  return {
+    state,
+    log: `Apport au clan : ${label}. ${building.name} passe au niveau ${level + 1} !`,
+    serverEvents: [{ kind: 'clan', text: `Le clan « ${clan.name} » achève ${building.name}, niveau ${level + 1}.` }],
+  };
 }
 
 // --- Lecture ---
 
 export async function listClans(db: Db, content: Content): Promise<ClanListItem[]> {
-  const rows = await db.select().from(clans).orderBy(desc(clans.level), asc(clans.id)).limit(100);
+  const rows = await db.select().from(clans).orderBy(asc(clans.id)).limit(100);
   const counts = await db
     .select({ clanId: clanMembers.clanId, n: sql<number>`count(*)::int` })
     .from(clanMembers)
     .groupBy(clanMembers.clanId);
-  return rows.map((c) => ({
-    id: c.id,
-    name: c.name,
-    description: c.description,
-    members: counts.find((x) => x.clanId === c.id)?.n ?? 0,
-    maxMembers: content.settings.clan.maxMembers,
-    level: c.level,
-    bonus: clanBonusFor(c.level, content),
-  }));
+  const levels = await db.select().from(clanBuildings);
+  return rows
+    .map((c) => ({
+      id: c.id,
+      name: c.name,
+      description: c.description,
+      members: counts.find((x) => x.clanId === c.id)?.n ?? 0,
+      maxMembers: content.settings.clan.maxMembers,
+      buildingLevels: levels.filter((l) => l.clanId === c.id).reduce((s, l) => s + l.level, 0),
+    }))
+    .sort((a, b) => b.buildingLevels - a.buildingLevels || a.id - b.id);
 }
 
 export async function myClanView(db: Db, content: Content, characterId: number, now: number): Promise<ClanView | null> {
@@ -308,22 +296,34 @@ export async function myClanView(db: Db, content: Content, characterId: number, 
   const memberViews: ClanMemberView[] = members
     .map((m) => ({ id: m.id, name: m.name, rank: m.rank, active: m.lastSeenAt.getTime() >= since, lastSeenAt: m.lastSeenAt.getTime() }))
     .sort((a, b) => order[a.rank] - order[b.rank] || a.name.localeCompare(b.name));
-  const items = await db.select().from(clanItems).where(eq(clanItems.clanId, clan.id));
-  const log = await db.select().from(clanLog).where(eq(clanLog.clanId, clan.id)).orderBy(desc(clanLog.id)).limit(content.settings.clan.logSize);
   const active = memberViews.filter((m) => m.active).length;
+  const levels = await buildingLevels(db, clan.id);
+  const progress = await db.select().from(clanProgress).where(eq(clanProgress.clanId, clan.id));
+  const buildings: ClanBuildingView[] = Object.values(content.buildings).map((b) => {
+    const level = levels[b.id] ?? 0;
+    if (level >= b.maxLevel) return { id: b.id, level, maxLevel: b.maxLevel, next: null };
+    const needs = buildingNeeds(b.id, level + 1, active, content);
+    const have = (what: string) => progress.find((p) => p.buildingId === b.id && p.what === what)?.qty ?? 0;
+    return {
+      id: b.id,
+      level,
+      maxLevel: b.maxLevel,
+      next: {
+        gold: { need: needs.gold, have: have('gold') },
+        items: needs.items.map((i) => ({ item: i.item, need: i.qty, have: have(i.item) })),
+      },
+    };
+  });
+  const log = await db.select().from(clanLog).where(eq(clanLog.clanId, clan.id)).orderBy(desc(clanLog.id)).limit(content.settings.clan.logSize);
   return {
     id: clan.id,
     name: clan.name,
     description: clan.description,
-    level: clan.level,
-    bonus: clanBonusFor(clan.level, content),
+    bonuses: clanBonuses(levels, content),
     myRank: me.rank,
     members: memberViews,
     maxMembers: content.settings.clan.maxMembers,
-    warehouse: Object.fromEntries(items.map((i) => [i.itemId, i.qty])),
-    warehouseKinds: content.settings.clan.warehouseKinds,
-    fund: clan.fund,
-    nextCost: clan.level >= content.settings.clan.maxLevel ? null : clanLevelCost(clan.level + 1, active, content),
+    buildings,
     activeMembers: active,
     log: log.map((l) => ({ id: l.id, at: l.at.getTime(), text: l.text })),
   };

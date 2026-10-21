@@ -1,15 +1,16 @@
 import { useCallback, useEffect, useState } from 'react';
-import type { ClanListItem, ClanMemberView, ClanRank, ClanView } from '@bramo/shared';
+import type { ClanBuildingView, ClanListItem, ClanRank, ClanView } from '@bramo/shared';
 import { api } from '../api';
 import { useGame } from '../game/GameContext';
 import { hhmm, num, signedPct } from '../format';
 import { Bar, ItemIcon } from '../components/ui';
 
-type Tab = 'warehouse' | 'members' | 'project' | 'log';
+type Tab = 'buildings' | 'members' | 'log';
+type Run = (call: () => ReturnType<typeof api.state>) => Promise<boolean>;
 
 const RANK_NAME: Record<ClanRank, string> = { leader: 'Chef', officer: 'Officier', member: 'Membre' };
 
-/** Salle Clan : fonder ou rejoindre, puis entrepôt commun, membres, projet de bonus et journal. */
+/** Salle Clan : fonder ou rejoindre, puis construire ses bâtiments ensemble, gérer les membres, lire le journal. */
 export function ClanRoom() {
   const { act } = useGame();
   const [clan, setClan] = useState<ClanView | null | undefined>(undefined);
@@ -28,8 +29,8 @@ export function ClanRoom() {
       window.clearInterval(id);
     };
   }, [tick]);
-  const run = useCallback(
-    async (call: () => ReturnType<typeof api.state>) => {
+  const run = useCallback<Run>(
+    async (call) => {
       const ok = await act(call);
       setTick((t) => t + 1);
       return ok;
@@ -55,7 +56,7 @@ export function ClanRoom() {
   );
 }
 
-function NoClan({ clans, run }: { clans: ClanListItem[]; run: (call: () => ReturnType<typeof api.state>) => Promise<boolean> }) {
+function NoClan({ clans, run }: { clans: ClanListItem[]; run: Run }) {
   const { content, state } = useGame();
   const rules = content.settings.clan;
   const [name, setName] = useState('');
@@ -69,15 +70,15 @@ function NoClan({ clans, run }: { clans: ClanListItem[]; run: (call: () => Retur
           </span>
           <h2>Personne ne fait tout seul</h2>
         </div>
-        <span className="muted small">
-          Sans clan, vous êtes dans la Guilde du bourg : {signedPct(rules.townGuildBonus)} de production.
-        </span>
+        <span className="muted small">Tout le monde profite de la Guilde du bourg : {signedPct(rules.townGuildBonus)} de production.</span>
       </header>
       <div className="market-body" style={{ gridTemplateColumns: 'minmax(260px, 340px) minmax(0, 1fr)' }}>
         <div className="market-form sunken" style={{ alignContent: 'start' }}>
           <h3 style={{ width: '100%' }}>Fonder un clan</h3>
           <label className="field" style={{ width: '100%' }}>
-            <span className="muted small">Nom ({rules.nameMin} à {rules.nameMax} caractères)</span>
+            <span className="muted small">
+              Nom ({rules.nameMin} à {rules.nameMax} caractères)
+            </span>
             <input className="input" value={name} maxLength={rules.nameMax} onChange={(e) => setName(e.target.value)} />
           </label>
           <label className="field" style={{ width: '100%' }}>
@@ -92,7 +93,7 @@ function NoClan({ clans, run }: { clans: ClanListItem[]; run: (call: () => Retur
             Fonder · {num(rules.creationCost)} or
           </button>
           <p className="muted small" style={{ width: '100%' }}>
-            Un clan donne un entrepôt commun et un projet de bonus de production : jusqu’à +{Math.round(rules.maxLevel * rules.bonusPerLevel * 100)} % pour tous ses membres.
+            Un clan se construit : ses membres apportent de l’or et des matériaux pour bâtir des bâtiments (forge, scierie, jardin…), et chaque niveau accélère le métier concerné pour tous.
           </p>
         </div>
         <div className="scroll market-mine">
@@ -107,7 +108,7 @@ function NoClan({ clans, run }: { clans: ClanListItem[]; run: (call: () => Retur
               <span className="muted small">
                 {c.members} / {c.maxMembers} membres
               </span>
-              <span className="chip">niveau {c.level} · {signedPct(c.bonus)}</span>
+              <span className="chip">{c.buildingLevels} niveau{c.buildingLevels > 1 ? 'x' : ''} bâti{c.buildingLevels > 1 ? 's' : ''}</span>
               <button className="btn btn-sm" disabled={c.members >= c.maxMembers} onClick={() => run(() => api.clanJoin(c.id))}>
                 Rejoindre
               </button>
@@ -119,10 +120,10 @@ function NoClan({ clans, run }: { clans: ClanListItem[]; run: (call: () => Retur
   );
 }
 
-function ClanHall({ clan, run }: { clan: ClanView; run: (call: () => ReturnType<typeof api.state>) => Promise<boolean> }) {
-  const [tab, setTab] = useState<Tab>('warehouse');
-  const { content, state } = useGame();
-  const canWithdraw = clan.myRank !== 'member';
+function ClanHall({ clan, run }: { clan: ClanView; run: Run }) {
+  const [tab, setTab] = useState<Tab>('buildings');
+  const { content } = useGame();
+  const totalAll = clan.bonuses.all ?? 0;
   return (
     <section className="panel market-panel">
       <header className="market-head">
@@ -136,9 +137,8 @@ function ClanHall({ clan, run }: { clan: ClanView; run: (call: () => ReturnType<
         <div className="tabs" role="tablist">
           {(
             [
-              ['warehouse', 'Entrepôt'],
+              ['buildings', 'Bâtiments'],
               ['members', `Membres · ${clan.members.length}`],
-              ['project', 'Projet'],
               ['log', 'Journal'],
             ] as [Tab, string][]
           ).map(([id, label]) => (
@@ -148,13 +148,13 @@ function ClanHall({ clan, run }: { clan: ClanView; run: (call: () => ReturnType<
           ))}
         </div>
         <span className="chip" style={{ color: 'var(--clan)', borderColor: 'var(--clan)' }}>
-          niveau {clan.level} · {signedPct(clan.bonus)} de production
+          Guilde {signedPct(content.settings.clan.townGuildBonus)}
+          {totalAll > 0 ? ` · halle ${signedPct(totalAll)}` : ''} · plafond {signedPct(content.settings.bonusCaps.clan)}
         </span>
       </header>
 
-      {tab === 'warehouse' && <Warehouse clan={clan} run={run} canWithdraw={canWithdraw} />}
+      {tab === 'buildings' && <Buildings clan={clan} run={run} />}
       {tab === 'members' && <Members clan={clan} run={run} />}
-      {tab === 'project' && <Project clan={clan} run={run} gold={state.gold} maxLevel={content.settings.clan.maxLevel} />}
       {tab === 'log' && (
         <div className="scroll market-mine">
           {clan.log.length === 0 && <p className="muted">Rien pour le moment.</p>}
@@ -170,63 +170,101 @@ function ClanHall({ clan, run }: { clan: ClanView; run: (call: () => ReturnType<
   );
 }
 
-function Warehouse({ clan, run, canWithdraw }: { clan: ClanView; run: (call: () => ReturnType<typeof api.state>) => Promise<boolean>; canWithdraw: boolean }) {
-  const { content, state } = useGame();
-  const stock = Object.entries(clan.warehouse).sort((a, b) => (content.items[a[0]]?.name ?? '').localeCompare(content.items[b[0]]?.name ?? ''));
-  const bag = Object.entries(state.inventory)
-    .filter(([id, qty]) => qty > 0 && content.items[id] && !content.items[id]!.tool?.durabilityHours)
-    .sort((a, b) => (content.items[a[0]]?.name ?? '').localeCompare(content.items[b[0]]?.name ?? ''));
-  const [amount, setAmount] = useState<Record<string, number>>({});
-  const qtyOf = (id: string, max: number) => Math.max(1, Math.min(max, amount[id] ?? max));
+function Buildings({ clan, run }: { clan: ClanView; run: Run }) {
+  const { content } = useGame();
   return (
-    <div className="market-columns" style={{ minHeight: 0 }}>
-      <div>
-        <span className="eyebrow">
-          Entrepôt du clan · {stock.length} / {clan.warehouseKinds} types
-        </span>
-        <div className="scroll market-list">
-          {stock.length === 0 && <p className="muted small">L’entrepôt est vide. Déposez ce que vous voulez partager.</p>}
-          {stock.map(([id, qty]) => (
-            <div key={id} className="market-row" style={{ gridTemplateColumns: 'auto 1fr auto auto' }}>
-              <ItemIcon item={content.items[id]} small />
-              <span className="bag-name">
-                {content.items[id]?.name} <span className="muted">×{num(qty)}</span>
-              </span>
-              <input className="input" type="number" min={1} max={qty} style={{ width: 80 }} value={qtyOf(id, qty)} onChange={(e) => setAmount({ ...amount, [id]: Number(e.target.value) })} disabled={!canWithdraw} />
-              <button className="btn btn-sm" disabled={!canWithdraw} title={canWithdraw ? '' : 'Réservé aux officiers et au chef'} onClick={() => run(() => api.clanWithdraw(id, qtyOf(id, qty)))}>
-                Retirer
-              </button>
-            </div>
-          ))}
-        </div>
-      </div>
-      <div>
-        <span className="eyebrow">Votre sac</span>
-        <div className="scroll market-list">
-          {bag.length === 0 && <p className="muted small">Votre sac est vide.</p>}
-          {bag.map(([id, qty]) => (
-            <div key={id} className="market-row" style={{ gridTemplateColumns: 'auto 1fr auto auto' }}>
-              <ItemIcon item={content.items[id]} small />
-              <span className="bag-name">
-                {content.items[id]?.name} <span className="muted">×{num(qty)}</span>
-              </span>
-              <input className="input" type="number" min={1} max={qty} style={{ width: 80 }} value={qtyOf('bag:' + id, qty)} onChange={(e) => setAmount({ ...amount, ['bag:' + id]: Number(e.target.value) })} />
-              <button className="btn btn-sm" onClick={() => run(() => api.clanDeposit(id, qtyOf('bag:' + id, qty)))}>
-                Déposer
-              </button>
-            </div>
-          ))}
-        </div>
-      </div>
+    <div className="scroll building-grid">
+      <p className="muted small" style={{ gridColumn: '1 / -1' }}>
+        Chaque bâtiment se construit niveau par niveau, avec les apports de tous les membres (or et matériaux). Les coûts croissent avec le nombre de membres actifs sur {content.settings.clan.activeDays} jours ({clan.activeMembers} aujourd’hui) : un petit clan bâtit aussi vite par tête qu’un grand. Les bonus s’appliquent à tous les membres, actifs ou non, dans la limite de {signedPct(content.settings.bonusCaps.clan)}.
+      </p>
+      {clan.buildings.map((b) => (
+        <BuildingCard key={b.id} b={b} run={run} />
+      ))}
     </div>
   );
 }
 
-function Members({ clan, run }: { clan: ClanView; run: (call: () => ReturnType<typeof api.state>) => Promise<boolean> }) {
+function BuildingCard({ b, run }: { b: ClanBuildingView; run: Run }) {
+  const { content, state } = useGame();
+  const def = content.buildings[b.id]!;
+  const professionName = def.boost.profession === 'all' ? 'toute la production' : (content.professions.find((p) => p.id === def.boost.profession)?.name ?? def.boost.profession);
+  const [amount, setAmount] = useState<Record<string, number>>({});
+  const qty = (key: string, max: number) => Math.max(1, Math.min(max, amount[key] ?? max));
+
+  const rows: { key: string; label: string; need: number; have: number; mine: number; item?: string }[] = b.next
+    ? [
+        { key: 'gold', label: 'Or', need: b.next.gold.need, have: b.next.gold.have, mine: state.gold },
+        ...b.next.items.map((i) => ({ key: i.item, label: content.items[i.item]?.name ?? i.item, need: i.need, have: i.have, mine: state.inventory[i.item] ?? 0, item: i.item })),
+      ].filter((r) => r.need > 0)
+    : [];
+
+  return (
+    <article className={`panel building${b.level >= b.maxLevel ? ' maxed' : ''}`}>
+      <header>
+        <div>
+          <h3>{def.name}</h3>
+          <span className="muted small">{def.description}</span>
+        </div>
+        <span className="chip" style={{ color: b.level ? 'var(--good)' : undefined, borderColor: b.level ? 'var(--good)' : undefined }}>
+          niveau {b.level} / {b.maxLevel}
+        </span>
+      </header>
+      <p className="small">
+        <strong>{signedPct(def.boost.perLevel)}</strong> par niveau de production pour {professionName}
+        {b.level > 0 && <span className="muted"> · actuellement {signedPct(def.boost.perLevel * b.level)}</span>}
+      </p>
+      {b.next === null ? (
+        <p className="muted small">Bâtiment achevé.</p>
+      ) : (
+        <div className="building-needs">
+          <span className="eyebrow">Niveau {b.level + 1} : ce qu’il manque</span>
+          {rows.map((r) => {
+            const left = Math.max(0, r.need - r.have);
+            return (
+              <div key={r.key} className="building-need">
+                <span className="building-need-name">
+                  {r.item && <ItemIcon item={content.items[r.item]} small />}
+                  {r.label}
+                </span>
+                <Bar value={r.have / r.need} color="var(--clan)" />
+                <span className="mono small">
+                  {num(r.have)} / {num(r.need)}
+                </span>
+                {left > 0 ? (
+                  <span className="bag-actions">
+                    <input
+                      className="input"
+                      type="number"
+                      min={1}
+                      aria-label={`Quantité de ${r.label}`}
+                      style={{ width: 76 }}
+                      value={qty(r.key, Math.min(left, Math.max(1, r.mine)))}
+                      onChange={(e) => setAmount({ ...amount, [r.key]: Math.floor(Number(e.target.value)) || 1 })}
+                    />
+                    <button
+                      className="btn btn-sm"
+                      disabled={r.mine <= 0}
+                      onClick={() => run(() => api.clanContribute(b.id, r.key, qty(r.key, Math.min(left, Math.max(1, r.mine)))))}
+                    >
+                      Apporter
+                    </button>
+                  </span>
+                ) : (
+                  <span className="muted small">complet</span>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </article>
+  );
+}
+
+function Members({ clan, run }: { clan: ClanView; run: Run }) {
   const { name } = useGame();
   const leader = clan.myRank === 'leader';
   const officer = clan.myRank !== 'member';
-  const lastSeen = (m: ClanMemberView) => (m.active ? 'actif' : 'inactif');
   return (
     <div className="scroll market-mine">
       <p className="muted small">
@@ -240,7 +278,7 @@ function Members({ clan, run }: { clan: ClanView; run: (call: () => ReturnType<t
               {m.name} {me && <span className="muted small">(vous)</span>}
             </strong>
             <span className={`pill ${m.rank === 'member' ? '' : 'entamé'}`}>{RANK_NAME[m.rank]}</span>
-            <span className="muted small">{lastSeen(m)}</span>
+            <span className="muted small">{m.active ? 'actif' : 'inactif'}</span>
             <span className="bag-actions">
               {leader && !me && m.rank === 'member' && (
                 <button className="btn btn-sm" onClick={() => run(() => api.clanRank(m.id, 'officer'))}>
@@ -271,74 +309,6 @@ function Members({ clan, run }: { clan: ClanView; run: (call: () => ReturnType<t
           {leader && clan.members.length === 1 ? 'Dissoudre le clan' : 'Quitter le clan'}
         </button>
         {leader && clan.members.length > 1 && <span className="muted small"> Le chef doit d’abord passer la main à un officier.</span>}
-      </div>
-    </div>
-  );
-}
-
-function Project({
-  clan,
-  run,
-  gold,
-  maxLevel,
-}: {
-  clan: ClanView;
-  run: (call: () => ReturnType<typeof api.state>) => Promise<boolean>;
-  gold: number;
-  maxLevel: number;
-}) {
-  const { content } = useGame();
-  const rules = content.settings.clan;
-  const [amount, setAmount] = useState(500);
-  const done = clan.nextCost === null;
-  return (
-    <div className="scroll market-mine">
-      <div>
-        <h3>Bonus de clan</h3>
-        <p className="muted small">
-          Chaque niveau donne {signedPct(rules.bonusPerLevel)} de production à tous les membres, actifs ou non. Le coût suit le nombre de membres actifs sur {rules.activeDays} jours (au moins {rules.minMembersForCost}) : un petit clan avance aussi vite par tête qu’un grand.
-        </p>
-      </div>
-      <div className="market-row" style={{ gridTemplateColumns: '1fr' }}>
-        <div style={{ display: 'grid', gap: 6 }}>
-          <span>
-            Niveau {clan.level} / {maxLevel} · {signedPct(clan.bonus)}
-          </span>
-          {done ? (
-            <span className="muted">Le projet est terminé.</span>
-          ) : (
-            <>
-              <Bar value={clan.fund / clan.nextCost!} color="var(--clan)" />
-              <span className="muted small">
-                {num(clan.fund)} / {num(clan.nextCost!)} or pour le niveau {clan.level + 1}
-              </span>
-            </>
-          )}
-        </div>
-      </div>
-      {!done && (
-        <div className="market-form sunken">
-          <label className="field">
-            <span className="muted small">Verser (or)</span>
-            <input className="input" type="number" min={1} value={amount} onChange={(e) => setAmount(Math.max(1, Math.floor(Number(e.target.value)) || 1))} />
-          </label>
-          <button className="btn btn-primary" disabled={gold < amount} onClick={() => run(() => api.clanDonate(amount))}>
-            Verser au projet
-          </button>
-          <span className="muted small">Vous avez {num(gold)} or. L’or versé est dépensé pour le clan.</span>
-        </div>
-      )}
-      <div>
-        <h3>Les niveaux</h3>
-        {Array.from({ length: maxLevel }, (_, i) => i + 1).map((l) => (
-          <div key={l} className="market-row" style={{ gridTemplateColumns: 'auto 1fr auto' }}>
-            <span className="chip" style={l <= clan.level ? { color: 'var(--good)', borderColor: 'var(--good)' } : undefined}>
-              niveau {l}
-            </span>
-            <span className="muted small">{signedPct(l * rules.bonusPerLevel)} de production</span>
-            <span className="muted small">{l <= clan.level ? 'atteint' : `${num(l * rules.levelCostPerMember * Math.max(rules.minMembersForCost, clan.activeMembers))} or`}</span>
-          </div>
-        ))}
       </div>
     </div>
   );

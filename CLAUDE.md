@@ -55,13 +55,15 @@ Bramo est un **idle-RPG multijoueur jouable dans le navigateur**, dans l'esprit 
 
 ## 5. État du projet (à jour au 21 octobre 2026)
 
-### Fait — premier prototype des clans (21 octobre)
+### Fait — clans : un clan à construire (21 octobre)
 
-- **Serveur** (`apps/server/src/clans.ts`, migration `0007_clans`) : tables `clans`, `clan_members`, `clan_items`, `clan_log` ; fonder, rejoindre, quitter/dissoudre, exclure, rangs (chef / officier / membre), transfert de direction, entrepôt (dépôt pour tous, retrait pour officiers et chef), projet de bonus (or versé, niveaux 1 à 5, +2 % chacun, coût N × 500 × membres actifs sur 14 jours, au moins 3), journal. Routes `/api/clans`, `/api/clan` et `POST /api/clan/create|join|leave|kick|rank|leader|deposit|withdraw|donate`.
-- **Moteur** : `CharacterState.clanBonus` (renseigné par `loadCharacterForUpdate`, jamais enregistré : bonus du clan, sinon +3 % de la Guilde du bourg) alimente `bonusesFor` ; `clanBonusFor`, `clanLevelCost` dans `engine/commission.ts`. `loadCharacterForUpdate(tx, accountId, content)` prend désormais le contenu.
-- **Client** : salle Clan (`rooms/ClanRoom.tsx`) : sans clan, fonder ou rejoindre ; dans un clan, onglets Entrepôt, Membres, Projet, Journal.
-- Tests : 19 d'API (dont un scénario de clan à trois joueurs). Détail et limites : `docs/design/monde.md` §3 (premier prototype).
-- **Pas encore fait** : commandes internes, postes d'experts, objets durables à l'entrepôt, invitations, chat de clan, halle et bâtiments (Construction, Agriculture). Louis doit valider les chiffres (création 500 or, coût des niveaux) et les droits de retrait.
+- **Décision de Louis** : pas d'entrepôt (« pas sûr encore ») ; un clan se **construit** avec des **bâtiments qui donnent des boosts**, **construits par les membres**. Détail : `docs/design/monde.md` §3.
+- **Données** : `data/buildings.yaml` (8 bâtiments à 3 niveaux : Halle +1 % tout, un bâtiment par métier +2 %), `settings.clan` (création 500 or, noms, 30 membres, `minMembersForCost`, `townGuildBonus` 3 %, journal, activité 14 jours), schéma `buildingSchema`, `Content.buildings`.
+- **Moteur** : `CharacterState.clanBonuses` (par métier, clé `all` pour toute production ; renseigné par `loadCharacterForUpdate`, jamais enregistré) utilisé par `bonusesFor` ; `clanBonuses`, `memberBonuses` (Guilde du bourg + bâtiments), `buildingNeeds` (coût N × base × membres actifs / référence) dans `engine/commission.ts`. Le plafond `bonusCaps.clan` borne la somme.
+- **Serveur** (`apps/server/src/clans.ts`, migrations `0007` à `0009`) : tables `clans`, `clan_members`, `clan_buildings`, `clan_progress`, `clan_log` ; fonder, rejoindre, quitter/dissoudre, exclure, rangs, transfert de direction, `contribute` (apport d'or ou d'objets, montée de niveau automatique, annonce sur le fil du serveur). Routes `/api/clans`, `/api/clan`, `POST /api/clan/create|join|leave|kick|rank|leader|contribute`.
+- **Client** (`rooms/ClanRoom.tsx`) : sans clan, fonder ou rejoindre ; dans un clan, onglets Bâtiments (cartes avec barres d'avancement et boutons Apporter), Membres, Journal.
+- Tests : 80 dans `packages/shared`, 19 d'API (scénario de clan à trois joueurs avec construction d'un bâtiment).
+- **Pas encore fait** : commandes internes, postes d'experts, invitations, chat, métier Construction, décor de la halle. Les coûts sont à équilibrer avec le simulateur (voir plus bas, équilibrage de l'or).
 
 ### Fait — choix de tenue (21 octobre)
 

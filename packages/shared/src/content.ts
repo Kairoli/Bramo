@@ -4,6 +4,7 @@ import {
   itemsFileSchema,
   professionsFileSchema,
   recipesFileSchema,
+  buildingsFileSchema,
   npcOrdersFileSchema,
   settingsSchema,
   trialsFileSchema,
@@ -21,6 +22,7 @@ export interface RawContent {
   cosmetics: unknown;
   trials: unknown;
   npcOrders: unknown;
+  buildings?: unknown;
   /** Un fichier de recettes par entrée : [nom du fichier, contenu]. */
   recipes: [string, unknown][];
 }
@@ -40,6 +42,7 @@ export function buildContent(raw: RawContent): Content {
   const cosmetics = parse(cosmeticsFileSchema, raw.cosmetics, 'cosmetics.yaml');
   const trialList = parse(trialsFileSchema, raw.trials, 'trials.yaml');
   const npcOrderList = parse(npcOrdersFileSchema, raw.npcOrders ?? [], 'npc_orders.yaml');
+  const buildingList = parse(buildingsFileSchema, raw.buildings ?? [], 'buildings.yaml');
   const errors: string[] = [];
 
   const unique = <T extends { id: string }>(list: T[], file: string) => {
@@ -107,6 +110,11 @@ export function buildContent(raw: RawContent): Content {
     if (!professionMap[o.profession]) errors.push(`npc_orders.yaml : ${o.id} est d'un métier inconnu « ${o.profession} »`);
     for (const s of o.items) if (!items[s.item]) errors.push(`npc_orders.yaml : ${o.id} demande un objet inconnu « ${s.item} »`);
   }
+  const buildings = unique(buildingList, 'buildings.yaml');
+  for (const b of buildingList) {
+    if (b.boost.profession !== 'all' && !professionMap[b.boost.profession]) errors.push(`buildings.yaml : ${b.id} améliore un métier inconnu « ${b.boost.profession} »`);
+    for (const s of b.base.items) if (!items[s.item]) errors.push(`buildings.yaml : ${b.id} demande un objet inconnu « ${s.item} »`);
+  }
   const classes = unique(classList, 'classes.yaml');
   unique(cosmetics.outfits, 'cosmetics.yaml');
   for (const c of classList) {
@@ -121,5 +129,5 @@ export function buildContent(raw: RawContent): Content {
   }
   if (errors.length) throw new ContentError(`Données incohérentes :\n- ${errors.join('\n- ')}`);
 
-  return { settings, professions, items, recipes, trials, npcOrders, classes, cosmetics, xpTable: buildXpTable(settings.xp.maxLevel) };
+  return { settings, professions, items, recipes, trials, npcOrders, buildings, classes, cosmetics, xpTable: buildXpTable(settings.xp.maxLevel) };
 }

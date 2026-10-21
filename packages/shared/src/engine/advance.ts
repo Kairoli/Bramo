@@ -61,7 +61,8 @@ export function bonusesFor(recipe: Recipe, state: CharacterState, t: number, con
   const tool = activeTool(recipe.profession, state, content)?.bonus ?? 0;
   const meal = state.buff && t < state.buff.until ? state.buff.bonus : 0;
   // Saison : prévue dans le calcul, pas encore active.
-  return { tool, meal, clan: state.clanBonus, season: 0 };
+  const clan = (state.clanBonuses.all ?? 0) + (state.clanBonuses[recipe.profession] ?? 0);
+  return { tool, meal, clan, season: 0 };
 }
 
 /** Une activité tourne et peut fabriquer : c'est le moment de manger (pas de repas gâché sur un personnage à l'arrêt). */

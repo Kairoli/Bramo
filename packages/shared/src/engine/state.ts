@@ -47,8 +47,8 @@ export interface CharacterState {
   classId: string | null;
   /** Tenue choisie ; null = la tenue de départ de la classe. */
   outfit: string | null;
-  /** Bonus de clan (ou de la Guilde du bourg) : renseigné au chargement par le serveur, jamais enregistré. */
-  clanBonus: number;
+  /** Bonus de clan par métier (clé « all » = toute production), renseignés au chargement par le serveur, jamais enregistrés. */
+  clanBonuses: Record<string, number>;
   /** Commandes de maître réussies. */
   trials: string[];
   /** Surnom affiché par métier : rang choisi (0 = surnom de départ). Absent = le plus haut débloqué. */

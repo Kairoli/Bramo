@@ -89,13 +89,43 @@ export function repairWithMaterials(input: CharacterState, itemId: string, conte
   return state;
 }
 
-/** Bonus de production d'un clan de ce niveau (plafonné ailleurs par `bonusCaps.clan`). */
-export function clanBonusFor(level: number, content: Pick<Content, 'settings'>): number {
-  return Math.min(content.settings.bonusCaps.clan, level * content.settings.clan.bonusPerLevel);
+/** Niveau de chaque bâtiment d'un clan (absent = pas construit). */
+export type BuildingLevels = Record<string, number>;
+
+/** Bonus de production par métier (« all » = toute production) selon les bâtiments construits. Le plafond `bonusCaps.clan` s'applique ensuite, sur la somme. */
+export function clanBonuses(levels: BuildingLevels, content: Pick<Content, 'buildings'>): Record<string, number> {
+  const out: Record<string, number> = {};
+  for (const [id, level] of Object.entries(levels)) {
+    const b = content.buildings[id];
+    if (!b || level <= 0) continue;
+    out[b.boost.profession] = (out[b.boost.profession] ?? 0) + Math.min(level, b.maxLevel) * b.boost.perLevel;
+  }
+  return out;
 }
 
-/** Coût en or du niveau `level` du projet de clan, selon les membres actifs (au moins `minMembersForCost`). */
-export function clanLevelCost(level: number, activeMembers: number, content: Pick<Content, 'settings'>): number {
-  const { clan } = content.settings;
-  return level * clan.levelCostPerMember * Math.max(clan.minMembersForCost, activeMembers);
+/**
+ * Bonus de production d'un joueur : la Guilde du bourg (`townGuildBonus`, pour tous) plus ceux des bâtiments de son clan
+ * (`levels`, absent sans clan). Le plafond `bonusCaps.clan` s'applique ensuite sur la somme.
+ */
+export function memberBonuses(levels: BuildingLevels | null, content: Pick<Content, 'buildings' | 'settings'>): Record<string, number> {
+  const out = { all: content.settings.clan.townGuildBonus } as Record<string, number>;
+  if (levels) for (const [k, v] of Object.entries(clanBonuses(levels, content))) out[k] = (out[k] ?? 0) + v;
+  return out;
+}
+
+/**
+ * Ce que demande le niveau `level` d'un bâtiment : or et objets, proportionnels à `level` et au nombre de membres actifs
+ * (au moins `minMembersForCost`, qui sert de référence aux chiffres de data/buildings.yaml). Arrondi au supérieur.
+ */
+export function buildingNeeds(
+  buildingId: string,
+  level: number,
+  activeMembers: number,
+  content: Pick<Content, 'buildings' | 'settings'>,
+): { gold: number; items: { item: string; qty: number }[] } {
+  const b = content.buildings[buildingId];
+  if (!b) return { gold: 0, items: [] };
+  const ref = content.settings.clan.minMembersForCost;
+  const factor = (level * Math.max(ref, activeMembers)) / ref;
+  return { gold: Math.ceil(b.base.gold * factor), items: b.base.items.map((s) => ({ item: s.item, qty: Math.ceil(s.qty * factor) })) };
 }

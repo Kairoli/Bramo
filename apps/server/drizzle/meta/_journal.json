@@ -57,6 +57,20 @@
       "when": 1792583333494,
       "tag": "0007_clans",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1792583938856,
+      "tag": "0008_clan_drop_warehouse",
+      "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1792583945108,
+      "tag": "0009_clan_buildings",
+      "breakpoints": true
     }
   ]
 }

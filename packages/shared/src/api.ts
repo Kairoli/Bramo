@@ -86,8 +86,8 @@ export const clanNameBody = z.object({ name: z.string().trim().min(1).max(60), d
 export const clanIdBody = z.object({ clanId: z.number().int() });
 export const clanMemberBody = z.object({ characterId: z.number().int() });
 export const clanRankBody = z.object({ characterId: z.number().int(), rank: z.enum(['officer', 'member']) });
-export const clanItemBody = z.object({ itemId: z.string(), qty: z.number().int().min(1) });
-export const clanGoldBody = z.object({ amount: z.number().int().min(1) });
+/** Apport à un bâtiment : de l'or (`what` = « gold ») ou des objets. */
+export const clanContributeBody = z.object({ buildingId: z.string(), what: z.string(), qty: z.number().int().min(1) });
 
 export type ClanRank = 'leader' | 'officer' | 'member';
 
@@ -98,8 +98,8 @@ export interface ClanListItem {
   description: string;
   members: number;
   maxMembers: number;
-  level: number;
-  bonus: number;
+  /** Somme des niveaux des bâtiments construits. */
+  buildingLevels: number;
 }
 
 export interface ClanMemberView {
@@ -111,22 +111,26 @@ export interface ClanMemberView {
   lastSeenAt: number;
 }
 
-/** Le clan du joueur, avec son entrepôt et son projet. */
+/** Un bâtiment du clan : niveau, effet, et ce qu'il manque pour le niveau suivant. */
+export interface ClanBuildingView {
+  id: string;
+  level: number;
+  maxLevel: number;
+  /** Ce que demande le niveau suivant, avec les apports déjà faits (null si le bâtiment est au maximum). */
+  next: { gold: { need: number; have: number }; items: { item: string; need: number; have: number }[] } | null;
+}
+
+/** Le clan du joueur, avec ses bâtiments. */
 export interface ClanView {
   id: number;
   name: string;
   description: string;
-  level: number;
-  /** Bonus de production donné aux membres. */
-  bonus: number;
+  /** Bonus de production donnés aux membres par métier (« all » = tout), avant plafond. */
+  bonuses: Record<string, number>;
   myRank: ClanRank;
   members: ClanMemberView[];
   maxMembers: number;
-  warehouse: Record<string, number>;
-  warehouseKinds: number;
-  /** Or déjà versé au projet du niveau suivant, et son coût (null au niveau maximal). */
-  fund: number;
-  nextCost: number | null;
+  buildings: ClanBuildingView[];
   activeMembers: number;
   log: { id: number; at: number; text: string }[];
 }
@@ -152,7 +156,7 @@ export interface TownPlayer {
 export interface TownEvent {
   id: number;
   at: number;
-  kind: 'level' | 'trial' | 'first' | 'join';
+  kind: 'level' | 'trial' | 'first' | 'join' | 'clan';
   text: string;
 }
 

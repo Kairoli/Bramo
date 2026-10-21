@@ -150,10 +150,6 @@ export const clans = pgTable('clans', {
   /** Nom en minuscules, unique : « Les Braises » et « les braises » sont le même clan. */
   nameKey: text('name_key').notNull().unique(),
   description: text('description').notNull().default(''),
-  /** Niveau du projet « bonus de clan » (0 à clan.maxLevel). */
-  level: integer('level').notNull().default(0),
-  /** Or déjà versé au projet du niveau suivant. */
-  fund: integer('fund').notNull().default(0),
   createdAt: ts('created_at').notNull().defaultNow(),
 });
 
@@ -168,16 +164,31 @@ export const clanMembers = pgTable('clan_members', {
   joinedAt: ts('joined_at').notNull().defaultNow(),
 });
 
-export const clanItems = pgTable(
-  'clan_items',
+/** Bâtiments construits par un clan. */
+export const clanBuildings = pgTable(
+  'clan_buildings',
   {
     clanId: integer('clan_id')
       .notNull()
       .references(() => clans.id, { onDelete: 'cascade' }),
-    itemId: text('item_id').notNull(),
+    buildingId: text('building_id').notNull(),
+    level: integer('level').notNull(),
+  },
+  (t) => [primaryKey({ columns: [t.clanId, t.buildingId] })],
+);
+
+/** Apports déjà faits pour le niveau suivant d'un bâtiment : or (what = 'gold') ou objets. */
+export const clanProgress = pgTable(
+  'clan_progress',
+  {
+    clanId: integer('clan_id')
+      .notNull()
+      .references(() => clans.id, { onDelete: 'cascade' }),
+    buildingId: text('building_id').notNull(),
+    what: text('what').notNull(),
     qty: integer('qty').notNull(),
   },
-  (t) => [primaryKey({ columns: [t.clanId, t.itemId] })],
+  (t) => [primaryKey({ columns: [t.clanId, t.buildingId, t.what] })],
 );
 
 export const clanLog = pgTable(

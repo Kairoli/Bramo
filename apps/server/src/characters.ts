@@ -1,7 +1,8 @@
 import { and, eq, inArray } from 'drizzle-orm';
-import { type CharacterState, type Content, clanBonusFor, readEnergy } from '@bramo/shared';
+import { type CharacterState, type Content, readEnergy } from '@bramo/shared';
+import { bonusesOfCharacter } from './clans.js';
 import type { Tx } from './db/index.js';
-import { characterItems, characterSkills, characters, clanMembers, clans } from './db/schema.js';
+import { characterItems, characterSkills, characters } from './db/schema.js';
 
 export interface LoadedCharacter {
   id: number;
@@ -15,19 +16,14 @@ export async function loadCharacterForUpdate(tx: Tx, accountId: number, content:
   if (!row) return null;
   const skills = await tx.select().from(characterSkills).where(eq(characterSkills.characterId, row.id));
   const items = await tx.select().from(characterItems).where(eq(characterItems.characterId, row.id));
-  // Bonus de clan : celui du clan, sinon celui de la Guilde du bourg.
-  const [membership] = await tx
-    .select({ level: clans.level })
-    .from(clanMembers)
-    .innerJoin(clans, eq(clans.id, clanMembers.clanId))
-    .where(eq(clanMembers.characterId, row.id));
-  const clanBonus = membership ? clanBonusFor(membership.level, content) : content.settings.clan.townGuildBonus;
+  // Bonus de clan : ceux des bâtiments du clan, sinon ceux de la Guilde du bourg.
+  const clanBonuses = await bonusesOfCharacter(tx, row.id, content);
   return {
     id: row.id,
     name: row.name,
     state: {
       seed: row.id,
-      clanBonus,
+      clanBonuses,
       gold: row.gold,
       skills: Object.fromEntries(skills.map((s) => [s.skill, s.xp])),
       inventory: Object.fromEntries(items.map((i) => [i.itemId, i.qty])),

@@ -63,18 +63,15 @@ market:
 npcOrders:
   perDay: 3
 
-# Clans (docs/design/monde.md §3) : le projet « bonus de clan » se finance en or ; chaque niveau donne +2 % à tous les membres.
+# Clans (docs/design/monde.md §3) : un clan construit des bâtiments (data/buildings.yaml) avec les apports de ses membres ;
+# chaque niveau donne un bonus de production, plafonné ensemble par bonusCaps.clan.
 clan:
   creationCost: 500       # or ; à équilibrer
   nameMin: 3
   nameMax: 24
   maxMembers: 30
-  minMembersForCost: 3    # un petit clan bâtit aussi vite par tête qu'un grand
-  levelCostPerMember: 500 # niveau N = N × 500 or × membres actifs (14 jours, au moins 3) ; à équilibrer
-  maxLevel: 5             # +10 % au niveau 5 (plafond bonusCaps.clan)
-  bonusPerLevel: 0.02
-  townGuildBonus: 0.03    # Guilde du bourg : bonus de qui n'a pas de clan
-  warehouseKinds: 60
+  minMembersForCost: 3    # coûts de data/buildings.yaml pour 3 membres actifs, proportionnels au-delà
+  townGuildBonus: 0.03    # Guilde du bourg : bonus de toute production, pour tout le monde (les bâtiments du clan s'y ajoutent)
   logSize: 30
   activeDays: 14
 

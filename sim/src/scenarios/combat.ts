@@ -41,18 +41,18 @@ export interface CombatOptions {
 export const defaultCombatOptions: CombatOptions = { seeds: 12, levels: [40, 80], dangers: [1, 1.5, 2], openings: ['independent', 'sequence'], variants: ['jitter1', 'jitter2', 'zero'] };
 
 /** Horaires d'une variante ; le décalage aléatoire dépend de la graine (un plan différent par graine). */
-export function shiftPlan(entries: PlanEntry[], variant: Variant, seed: number): PlanEntry[] {
+export function shiftPlan(entries: PlanEntry[], variant: Variant, seed: number, maxAt = Infinity): PlanEntry[] {
   if (variant === 'zero') return entries.map((e) => ({ ...e, at: 0 }));
   if (variant === 'plan') return entries;
   const range = variant === 'jitter1' ? 1 : 2;
   const rand = stream(seed, 'jitter');
   // Pas de 0,25 s, comme l'horloge du combat.
-  return entries.map((e) => ({ ...e, at: Math.max(0, e.at + Math.round((rand() * 2 - 1) * range * 4) / 4) }));
+  return entries.map((e) => ({ ...e, at: Math.min(maxAt, Math.max(0, e.at + Math.round((rand() * 2 - 1) * range * 4) / 4)) }));
 }
 
 export function runCase(combat: CombatContent, c: CombatCase, seed: number): FightResult {
   const plan = combat.plans[c.plan]!;
-  const entries = shiftPlan(plan.levels[String(c.level)]!, c.variant, seed);
+  const entries = shiftPlan(plan.levels[String(c.level)]!, c.variant, seed, combat.rules.maxFirstUse);
   return fight(combat, [{ id: 'p1', classId: plan.class, pathId: plan.path, plan: entries, weapon: plan.weapon, basicElement: plan.basicElement }], combat.encounters[c.encounter]!, {
     seed,
     opening: c.opening,

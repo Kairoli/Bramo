@@ -52,6 +52,7 @@ export function planErrors(combat: CombatContent, classId: string, pathId: strin
     if (s.path && s.path !== pathId) errors.push(`${s.id} est réservé à la voie ${s.path}`);
     if (s.level > level) errors.push(`${s.id} demande le niveau ${s.level}`);
     if (s.tags.includes('ultimate')) ultimates++;
+    if (e.at > combat.rules.maxFirstUse) errors.push(`${s.id} : première utilisation à ${e.at} s (au plus ${combat.rules.maxFirstUse} s)`);
   }
   if (ultimates > 1) errors.push('un seul ultime par plan');
   return errors;

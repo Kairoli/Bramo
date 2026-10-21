@@ -2,7 +2,7 @@
 
 > Généré par `pnpm --filter @bramo/sim sim combat`. Ne pas modifier à la main.
 
-**29160 combats** en 8,2 s (12 graines par cas). Empreintes : données `0caaaf6ebbdc93a2`, moteur `f9fb8328e5181282`, banc `4f97a6156e030c4c`.
+**29160 combats** en 7,9 s (12 graines par cas). Empreintes : données `11645f960a12d574`, moteur `031d2caab6bc5dfc`, banc `9da733f68dab9995`.
 
 **Portée.** Kit de classe seul : sorts, mécanique de classe et passif de voie. Statistiques normalisées du dossier (P = 100, 2 800 PV, 25 % de réduction, 20 % de critique, 12 % de Cadence) : **pas encore d'équipement, d'ensembles, de gemmes ni de nommés**, ni de résistances élémentaires (reportées). Les répertoires 40 et 80 changent les sorts accessibles, pas les statistiques. Rencontres isolées, solo. Les fichiers `combats.json` (un combat par ligne) et `resume.json` (une ligne par cas) gardent tout, échecs compris.
 
@@ -125,21 +125,21 @@ Le banc Python a joué les mêmes plans en kit seul avec la règle d'ouverture �
 
 Écart absolu de temps : médian 0,5 %, maximal 5,7 %.
 
-## 2. Les neuf voies, répertoire 80, danger normal, ouverture « independent »
+## 2. Les neuf voies, répertoire 80, danger normal, ouverture « sequence »
 
 Chaque cellule : **meilleur plan de la voie** pour ce profil (temps médian le plus court parmi ses plans qui gagnent tout), puis les PV médians **de ce même plan**.
 
 | Voie | Rôle | Cible durable | Groupe compact | Attaque chargée | Usure régulière | Gardes à dissiper | Soin ennemi |
 |---|---|---|---|---|---|---|---|
-| cycle de forge · Trempe-Rouge | dégâts | 41,8 s · 62 % | 61,8 s · 41 % | 45,0 s · 58 % | 49,8 s · 53 % | 49,8 s · 68 % | 46,3 s · 69 % |
-| cycle de forge · Enclumier | contrôle | 48,3 s · 73 % | 80,6 s · 44 % | 50,8 s · 63 % | 57,3 s · 59 % | 59,3 s · 75 % | 53,3 s · 79 % |
-| cycle de forge · Rémouleur | soutien | 50,6 s · 66 % | 77,3 s · 53 % | 51,3 s · 57 % | 57,3 s · 61 % | 60,8 s · 78 % | 55,3 s · 93 % |
-| poursuite · Tue-Bête | dégâts | 46,5 s · 54 % | 71,8 s · 34 % | 47,5 s · 52 % | 52,0 s · 46 % | 52,0 s · 62 % | 49,4 s · 63 % |
-| poursuite · Piégeur | contrôle | 50,0 s · 61 % | 79,0 s · 32 % | 52,0 s · 56 % | 58,3 s · 49 % | 61,5 s · 66 % | 55,3 s · 69 % |
-| poursuite · Meneur de meute | soutien | 53,3 s · 75 % | 82,3 s · 64 % | 57,3 s · 89 % | 65,1 s · 94 % | 67,3 s · 86 % | 60,3 s · 83 % |
-| phrase runique · Fulgurant | dégâts | 45,3 s · 74 % | 66,5 s · 63 % | 49,3 s · 62 % | 55,3 s · 65 % | 58,3 s · 84 % | 52,6 s · 82 % |
+| cycle de forge · Trempe-Rouge | dégâts | 44,0 s · 60 % | 61,9 s · 41 % | 45,8 s · 57 % | 50,3 s · 52 % | 50,3 s · 66 % | 46,3 s · 69 % |
+| cycle de forge · Enclumier | contrôle | 49,5 s · 72 % | 83,3 s · 40 % | 51,0 s · 63 % | 58,1 s · 57 % | 61,8 s · 75 % | 56,3 s · 77 % |
+| cycle de forge · Rémouleur | soutien | 50,8 s · 65 % | 78,3 s · 50 % | 53,3 s · 56 % | 58,5 s · 61 % | 61,3 s · 77 % | 55,3 s · 77 % |
+| poursuite · Tue-Bête | dégâts | 48,3 s · 52 % | 71,0 s · 32 % | 49,3 s · 43 % | 55,6 s · 43 % | 57,1 s · 59 % | 52,0 s · 62 % |
+| poursuite · Piégeur | contrôle | 50,8 s · 61 % | 78,3 s · 31 % | 54,3 s · 53 % | 61,3 s · 46 % | 64,3 s · 65 % | 56,5 s · 68 % |
+| poursuite · Meneur de meute | soutien | 55,3 s · 73 % | 82,8 s · 59 % | 59,3 s · 63 % | 64,0 s · 65 % | 67,3 s · 85 % | 61,8 s · 85 % |
+| phrase runique · Fulgurant | dégâts | 47,3 s · 74 % | 66,9 s · 61 % | 49,5 s · 61 % | 56,0 s · 66 % | 59,1 s · 81 % | 52,8 s · 82 % |
 | phrase runique · Sigillaire | contrôle | 53,8 s · 62 % | 79,3 s · 35 % | 55,3 s · 52 % | 61,8 s · 49 % | 64,3 s · 68 % | 57,0 s · 71 % |
-| phrase runique · Glyphiste | soutien | 47,0 s · 84 % | 78,3 s · 69 % | 51,8 s · 74 % | 55,3 s · 79 % | 60,3 s · 91 % | 53,5 s · 94 % |
+| phrase runique · Glyphiste | soutien | 47,3 s · 83 % | 75,3 s · 73 % | 51,0 s · 76 % | 53,8 s · 82 % | 53,8 s · 97 % | 51,3 s · 97 % |
 
 ## 3. Rendement des voies de dégâts
 
@@ -147,14 +147,14 @@ Temps du meilleur plan de contrôle et de soutien **rapporté** au meilleur plan
 
 | Classe | Voie | Cible durable | Groupe compact | Attaque chargée | Usure régulière | Gardes à dissiper | Soin ennemi |
 |---|---|---|---|---|---|---|---|
-| forgefire | Enclumier | +16 % | +31 % | +13 % | +15 % | +19 % | +15 % |
-| forgefire | Rémouleur | +21 % | +25 % | +14 % | +15 % | +22 % | +19 % |
-| tracker | Piégeur | +8 % | +10 % | +9 % | +12 % | +18 % | +12 % |
-| tracker | Meneur de meute | +15 % | +15 % | +21 % | +25 % | +29 % | +22 % |
-| runist | Sigillaire | +19 % | +19 % | +12 % | +12 % | +10 % | +8 % |
-| runist | Glyphiste | +4 % | +18 % | +5 % | +0 % | +3 % | +2 % |
+| forgefire | Enclumier | +13 % | +35 % | +11 % | +16 % | +23 % | +22 % |
+| forgefire | Rémouleur | +15 % | +26 % | +16 % | +16 % | +22 % | +19 % |
+| tracker | Piégeur | +5 % | +10 % | +10 % | +10 % | +12 % | +9 % |
+| tracker | Meneur de meute | +15 % | +17 % | +20 % | +15 % | +18 % | +19 % |
+| runist | Sigillaire | +14 % | +19 % | +12 % | +10 % | +9 % | +8 % |
+| runist | Glyphiste | +0 % | +13 % | +3 % | -4 % | -9 % | -3 % |
 
-## 4. Danger ×1,5 (dégâts ennemis), répertoire 80, ouverture « independent »
+## 4. Danger ×1,5 (dégâts ennemis), répertoire 80, ouverture « sequence »
 
 Taux de victoire de **chaque plan** (12 graines). Les échecs restent dans `combats.json`.
 
@@ -165,16 +165,16 @@ Taux de victoire de **chaque plan** (12 graines). Les échecs restent dans `comb
 | Choc de trempe | Trempe-Rouge | 100 % | 100 % | 100 % | 100 % | 100 % | 100 % |
 | Percée | Enclumier | 100 % | 100 % | 100 % | 100 % | 100 % | 100 % |
 | Retour de forge | Enclumier | 100 % | 100 % | 100 % | 100 % | 100 % | 100 % |
-| Désarmer la charge | Enclumier | 100 % | 17 % (10 mort (attack)) | 100 % | 100 % | 100 % | 100 % |
+| Désarmer la charge | Enclumier | 100 % | 0 % (12 mort (attack)) | 100 % | 100 % | 100 % | 100 % |
 | Plaques fidèles | Rémouleur | 100 % | 100 % | 100 % | 100 % | 100 % | 100 % |
 | Recuire ensemble | Rémouleur | 100 % | 100 % | 100 % | 100 % | 100 % | 100 % |
 | Garde offensive | Rémouleur | 100 % | 100 % | 100 % | 100 % | 100 % | 100 % |
 | La poursuite | Tue-Bête | 100 % | 8 % (11 mort (attack)) | 100 % | 100 % | 100 % | 100 % |
 | Flèches de sang | Tue-Bête | 100 % | 0 % (12 mort (attack)) | 100 % | 100 % | 100 % | 100 % |
-| La battue | Tue-Bête | 100 % | 17 % (10 mort (attack)) | 100 % | 100 % | 100 % | 100 % |
+| La battue | Tue-Bête | 100 % | 0 % (12 mort (attack)) | 100 % | 100 % | 100 % | 100 % |
 | Pièges et cible | Piégeur | 100 % | 0 % (12 mort (attack)) | 100 % | 100 % | 100 % | 100 % |
-| Pas trop vite | Piégeur | 100 % | 33 % (8 mort (attack)) | 100 % | 100 % | 100 % | 100 % |
-| Double détente | Piégeur | 100 % | 33 % (8 mort (attack)) | 100 % | 100 % | 100 % | 100 % |
+| Pas trop vite | Piégeur | 100 % | 8 % (11 mort (attack)) | 100 % | 100 % | 100 % | 100 % |
+| Double détente | Piégeur | 100 % | 8 % (11 mort (attack)) | 100 % | 100 % | 100 % | 100 % |
 | Meute attentive | Meneur de meute | 100 % | 100 % | 100 % | 100 % | 100 % | 100 % |
 | Compagnon de chasse | Meneur de meute | 100 % | 100 % | 100 % | 100 % | 100 % | 100 % |
 | Le rebond | Meneur de meute | 100 % | 100 % | 100 % | 100 % | 100 % | 100 % |
@@ -188,37 +188,37 @@ Taux de victoire de **chaque plan** (12 graines). Les échecs restent dans `comb
 | Soutien offensif | Glyphiste | 100 % | 100 % | 100 % | 100 % | 100 % | 100 % |
 | Contre-écriture | Glyphiste | 100 % | 100 % | 100 % | 100 % | 100 % | 100 % |
 
-## 4. Danger ×2,0 (dégâts ennemis), répertoire 80, ouverture « independent »
+## 4. Danger ×2,0 (dégâts ennemis), répertoire 80, ouverture « sequence »
 
 Taux de victoire de **chaque plan** (12 graines). Les échecs restent dans `combats.json`.
 
 | Plan | Voie | Cible durable | Groupe compact | Attaque chargée | Usure régulière | Gardes à dissiper | Soin ennemi |
 |---|---|---|---|---|---|---|---|
 | Braise longue | Trempe-Rouge | 100 % | 0 % (12 mort (attack)) | 8 % (11 mort (charge)) | 100 % | 100 % | 100 % |
-| Marteau battant | Trempe-Rouge | 100 % | 0 % (12 mort (attack)) | 100 % | 100 % | 100 % | 100 % |
+| Marteau battant | Trempe-Rouge | 100 % | 0 % (12 mort (attack)) | 100 % | 92 % (1 mort (attack)) | 100 % | 100 % |
 | Choc de trempe | Trempe-Rouge | 100 % | 0 % (12 mort (attack)) | 100 % | 100 % | 100 % | 100 % |
 | Percée | Enclumier | 100 % | 0 % (12 mort (attack)) | 100 % | 100 % | 100 % | 100 % |
 | Retour de forge | Enclumier | 100 % | 0 % (12 mort (attack)) | 100 % | 100 % | 100 % | 100 % |
-| Désarmer la charge | Enclumier | 100 % | 0 % (12 mort (attack)) | 25 % (9 mort (attack)) | 100 % | 100 % | 100 % |
-| Plaques fidèles | Rémouleur | 100 % | 100 % | 100 % | 100 % | 100 % | 100 % |
-| Recuire ensemble | Rémouleur | 100 % | 0 % (12 mort (attack)) | 0 % (8 mort (charge), 4 mort (attack)) | 100 % | 100 % | 100 % |
-| Garde offensive | Rémouleur | 100 % | 100 % | 100 % | 100 % | 100 % | 100 % |
-| La poursuite | Tue-Bête | 83 % (2 mort (attack)) | 0 % (12 mort (attack)) | 25 % (9 mort (charge)) | 42 % (7 mort (attack)) | 100 % | 100 % |
-| Flèches de sang | Tue-Bête | 100 % | 0 % (12 mort (attack)) | 67 % (4 mort (charge)) | 67 % (4 mort (attack)) | 100 % | 100 % |
-| La battue | Tue-Bête | 17 % (10 mort (attack)) | 0 % (12 mort (attack)) | 0 % (12 mort (charge)) | 0 % (12 mort (attack)) | 100 % | 100 % |
-| Pièges et cible | Piégeur | 100 % | 0 % (12 mort (attack)) | 8 % (11 mort (attack)) | 58 % (3 mort (attack), 2 mort (aura)) | 100 % | 100 % |
-| Pas trop vite | Piégeur | 100 % | 0 % (12 mort (attack)) | 92 % (1 mort (attack)) | 100 % | 100 % | 100 % |
+| Désarmer la charge | Enclumier | 100 % | 0 % (12 mort (attack)) | 8 % (11 mort (attack)) | 100 % | 100 % | 100 % |
+| Plaques fidèles | Rémouleur | 100 % | 50 % (6 mort (attack)) | 100 % | 100 % | 100 % | 100 % |
+| Recuire ensemble | Rémouleur | 100 % | 0 % (12 mort (attack)) | 0 % (12 mort (charge)) | 100 % | 100 % | 100 % |
+| Garde offensive | Rémouleur | 100 % | 50 % (6 mort (attack)) | 100 % | 100 % | 100 % | 100 % |
+| La poursuite | Tue-Bête | 92 % (1 mort (attack)) | 0 % (12 mort (attack)) | 8 % (11 mort (charge)) | 33 % (8 mort (attack)) | 100 % | 100 % |
+| Flèches de sang | Tue-Bête | 100 % | 0 % (12 mort (attack)) | 17 % (10 mort (charge)) | 25 % (9 mort (attack)) | 100 % | 100 % |
+| La battue | Tue-Bête | 25 % (9 mort (attack)) | 0 % (12 mort (attack)) | 0 % (12 mort (charge)) | 0 % (12 mort (attack)) | 100 % | 100 % |
+| Pièges et cible | Piégeur | 100 % | 0 % (12 mort (attack)) | 0 % (12 mort (attack)) | 17 % (10 mort (attack)) | 100 % | 100 % |
+| Pas trop vite | Piégeur | 100 % | 0 % (12 mort (attack)) | 100 % | 100 % | 100 % | 100 % |
 | Double détente | Piégeur | 100 % | 0 % (12 mort (attack)) | 100 % | 100 % | 100 % | 100 % |
-| Meute attentive | Meneur de meute | 100 % | 83 % (2 mort (attack)) | 100 % | 100 % | 100 % | 100 % |
-| Compagnon de chasse | Meneur de meute | 100 % | 0 % (12 mort (attack)) | 83 % (2 mort (attack)) | 100 % | 100 % | 100 % |
+| Meute attentive | Meneur de meute | 100 % | 0 % (12 mort (attack)) | 100 % | 100 % | 100 % | 100 % |
+| Compagnon de chasse | Meneur de meute | 100 % | 0 % (12 mort (attack)) | 42 % (7 mort (attack)) | 100 % | 100 % | 100 % |
 | Le rebond | Meneur de meute | 100 % | 0 % (12 mort (attack)) | 100 % | 100 % | 100 % | 100 % |
-| Phrase vive | Fulgurant | 100 % | 0 % (12 mort (attack)) | 67 % (4 mort (attack)) | 100 % | 100 % | 100 % |
+| Phrase vive | Fulgurant | 100 % | 0 % (12 mort (attack)) | 92 % (1 mort (attack)) | 100 % | 100 % | 100 % |
 | Ignition | Fulgurant | 100 % | 0 % (12 mort (attack)) | 92 % (1 mort (attack)) | 100 % | 100 % | 100 % |
-| Le coup d’après | Fulgurant | 100 % | 0 % (12 mort (attack)) | 100 % | 100 % | 100 % | 100 % |
+| Le coup d’après | Fulgurant | 100 % | 17 % (10 mort (attack)) | 100 % | 100 % | 100 % | 100 % |
 | Froid en ligne | Sigillaire | 100 % | 0 % (12 mort (attack)) | 67 % (4 mort (attack)) | 100 % | 100 % | 100 % |
 | Les fractures | Sigillaire | 100 % | 0 % (12 mort (attack)) | 100 % | 100 % | 100 % | 100 % |
 | Sceau patient | Sigillaire | 100 % | 0 % (12 mort (attack)) | 100 % | 100 % | 100 % | 100 % |
-| Garde écrite | Glyphiste | 100 % | 25 % (9 mort (attack)) | 100 % | 100 % | 100 % | 100 % |
+| Garde écrite | Glyphiste | 100 % | 67 % (4 mort (attack)) | 100 % | 100 % | 100 % | 100 % |
 | Soutien offensif | Glyphiste | 100 % | 33 % (8 mort (attack)) | 100 % | 100 % | 100 % | 100 % |
 | Contre-écriture | Glyphiste | 100 % | 100 % | 100 % | 100 % | 100 % | 100 % |
 
@@ -256,55 +256,55 @@ Taux de victoire de **chaque plan** (12 graines). Les échecs restent dans `comb
 | Soutien offensif | Glyphiste | 0,0 % | 0,0 % |
 | Contre-écriture | Glyphiste | -1,1 % | -5,4 % |
 
-## 6. Tolérance des horaires (répertoire 80, danger normal, ouverture « independent »)
+## 6. Tolérance des horaires (répertoire 80, danger normal, ouverture « sequence »)
 
 Écart de temps médian par rapport au plan réglé, moyenne sur les six profils ; entre parenthèses, les profils qui ne gagnent plus tout. « ±1 s » et « ±2 s » : chaque horaire décalé au hasard (un tirage par graine), ce qui peut changer l'ordre des sorts. « Sans horaire » : tous les sorts à 0 s, dans l'ordre du plan.
 
 | Plan | Chaque sort ±1 s | Chaque sort ±2 s | Sans horaire |
 |---|---|---|---|
-| Braise longue | +0,3 % | +0,7 % | -3,0 % |
-| Marteau battant | -1,5 % | -1,1 % | -1,8 % |
-| Choc de trempe | -1,6 % | -1,0 % | +4,7 % |
-| Percée | -0,9 % | +0,3 % | -1,1 % |
-| Retour de forge | -1,2 % | -1,1 % | -3,2 % |
-| Désarmer la charge | +0,1 % | +0,7 % | -1,8 % |
-| Plaques fidèles | +0,2 % | -0,1 % | -2,2 % |
-| Recuire ensemble | +0,4 % | +0,8 % | -3,4 % |
-| Garde offensive | +0,2 % | -0,1 % | -2,2 % |
-| La poursuite | -0,2 % | +0,0 % | -4,5 % |
-| Flèches de sang | +0,3 % | +1,1 % | -0,9 % |
-| La battue | +0,2 % | +0,1 % | -3,4 % |
-| Pièges et cible | +0,1 % | -0,1 % | -2,7 % |
-| Pas trop vite | +2,1 % | +2,3 % | +0,8 % |
-| Double détente | +0,9 % | +1,3 % | +3,0 % |
-| Meute attentive | +0,3 % | +0,3 % | +1,7 % |
-| Compagnon de chasse | +0,6 % | +1,2 % | -2,5 % |
-| Le rebond | +0,3 % | +0,4 % | -2,2 % |
-| Phrase vive | -0,3 % | -0,1 % | -1,3 % |
-| Ignition | -0,5 % | -0,3 % | -4,1 % |
-| Le coup d’après | +0,3 % | +0,5 % | -0,5 % |
-| Froid en ligne | +0,4 % | +0,8 % | -2,7 % |
-| Les fractures | -0,0 % | +0,4 % | -1,6 % |
-| Sceau patient | +0,4 % | +0,4 % | -2,4 % |
-| Garde écrite | -2,6 % | -2,7 % | -6,0 % |
-| Soutien offensif | +1,4 % | +1,9 % | +2,0 % |
-| Contre-écriture | +1,3 % | +1,5 % | -2,8 % |
+| Braise longue | +0,8 % | +0,7 % | -3,0 % |
+| Marteau battant | -1,1 % | +0,4 % | -3,3 % |
+| Choc de trempe | -0,1 % | -1,5 % | +0,7 % |
+| Percée | +0,1 % | +0,6 % | -3,9 % |
+| Retour de forge | -0,5 % | -0,6 % | -6,0 % |
+| Désarmer la charge | +0,3 % | -0,4 % | -4,8 % |
+| Plaques fidèles | +0,0 % | -0,3 % | -4,5 % |
+| Recuire ensemble | +0,1 % | +0,3 % | -4,8 % |
+| Garde offensive | +0,0 % | -0,3 % | -4,5 % |
+| La poursuite | -0,7 % | -1,2 % | -3,3 % |
+| Flèches de sang | -0,8 % | -1,5 % | -6,8 % |
+| La battue | -0,6 % | -0,8 % | -4,3 % |
+| Pièges et cible | +0,2 % | -0,3 % | -4,3 % |
+| Pas trop vite | -0,3 % | -0,1 % | -1,6 % |
+| Double détente | -1,5 % | -1,2 % | +0,2 % |
+| Meute attentive | -1,8 % | -1,6 % | -3,1 % |
+| Compagnon de chasse | +0,3 % | +0,7 % | -3,6 % |
+| Le rebond | +0,7 % | +0,9 % | -2,4 % |
+| Phrase vive | -0,1 % | -0,4 % | -2,9 % |
+| Ignition | -0,9 % | -0,8 % | -5,4 % |
+| Le coup d’après | -0,1 % | +0,5 % | -2,1 % |
+| Froid en ligne | -0,2 % | +0,9 % | -2,7 % |
+| Les fractures | -0,0 % | -0,4 % | -1,6 % |
+| Sceau patient | +0,5 % | +0,3 % | -2,4 % |
+| Garde écrite | +2,2 % | +1,7 % | -2,4 % |
+| Soutien offensif | +1,1 % | +1,8 % | +2,0 % |
+| Contre-écriture | +0,7 % | -0,8 % | -3,9 % |
 
-## 7. Contributions moyennes par combat (répertoire 80, danger normal, ouverture « independent », tous profils)
+## 7. Contributions moyennes par combat (répertoire 80, danger normal, ouverture « sequence », tous profils)
 
 Ce que chaque voie apporte au-delà des dégâts : soins réellement rendus, dégâts absorbés par ses boucliers, dégâts évités par ses Affaiblissements, Pression retirée. Base des futures récompenses de groupe et de boss mondial. En solo, les dégâts totaux d'une victoire valent les PV ennemis : on montre donc les dégâts par seconde.
 
 | Voie | Dégâts par seconde | Soins utiles | Absorbé | Atténué | Pression | Ruptures | Dissipations |
 |---|---|---|---|---|---|---|---|
-| Trempe-Rouge | 99,4 | 0 | 346 | 20 | 0 | 0,0 | 0,0 |
-| Enclumier | 85,7 | 0 | 366 | 170 | 300 | 3,5 | 0,0 |
-| Rémouleur | 87,1 | 329 | 697 | 37 | 0 | 0,0 | 0,0 |
-| Tue-Bête | 92,3 | 70 | 0 | 0 | 28 | 0,0 | 0,0 |
-| Piégeur | 84,3 | 79 | 0 | 189 | 282 | 3,3 | 0,0 |
-| Meneur de meute | 78,6 | 947 | 438 | 0 | 30 | 0,0 | 0,0 |
-| Fulgurant | 94,0 | 165 | 506 | 26 | 54 | 0,3 | 0,0 |
+| Trempe-Rouge | 97,2 | 0 | 352 | 21 | 0 | 0,0 | 0,0 |
+| Enclumier | 83,0 | 0 | 376 | 174 | 307 | 3,5 | 0,0 |
+| Rémouleur | 85,3 | 342 | 702 | 37 | 0 | 0,0 | 0,0 |
+| Tue-Bête | 90,8 | 70 | 0 | 0 | 31 | 0,0 | 0,0 |
+| Piégeur | 82,8 | 81 | 0 | 197 | 283 | 3,4 | 0,0 |
+| Meneur de meute | 77,0 | 928 | 446 | 1 | 31 | 0,0 | 0,0 |
+| Fulgurant | 92,3 | 170 | 515 | 26 | 55 | 0,3 | 0,0 |
 | Sigillaire | 81,0 | 85 | 269 | 144 | 326 | 3,8 | 0,1 |
-| Glyphiste | 87,1 | 265 | 923 | 29 | 30 | 0,3 | 0,0 |
+| Glyphiste | 87,7 | 266 | 929 | 29 | 30 | 0,3 | 0,0 |
 
 ## 8. Tous les cas avec au moins un échec
 

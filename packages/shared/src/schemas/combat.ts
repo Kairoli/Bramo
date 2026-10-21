@@ -20,6 +20,8 @@ export const combatRulesSchema = z.object({
   gcd: seconds,
   fightLimit: z.number().positive(),
   opening: z.enum(['independent', 'sequence']),
+  /** Horaire de première utilisation maximal d'un sort du plan (s). */
+  maxFirstUse: seconds,
   secondaryShare: z.number().min(0).max(1),
   firstBasicAt: seconds,
   basicAttack: z.object({ coefficient: coef, referencePeriod: z.number().positive() }),

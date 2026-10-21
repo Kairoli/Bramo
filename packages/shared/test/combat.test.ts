@@ -9,6 +9,7 @@ const rules = {
   gcd: 1,
   fightLimit: 60,
   opening: 'independent',
+  maxFirstUse: 10,
   secondaryShare: 0.55,
   firstBasicAt: 1,
   basicAttack: { coefficient: 0, referencePeriod: 2 },
@@ -74,6 +75,7 @@ describe('contenu de combat', () => {
     expect(planErrors(combat, 'runist', 'glyphkeeper', 80, [{ spell: 'ultime', at: 0 }, { spell: 'ultime2', at: 0 }])).toEqual(['un seul ultime par plan']);
     expect(planErrors(combat, 'forgefire', null, 10, ['a', 'b', 'c', 'chauffe', 'trempe'].map((s) => ({ spell: s, at: 0 })))).toEqual(['5 sorts pour 4 places au niveau 10']);
     expect(planErrors(combat, 'forgefire', null, 10, [{ spell: 'trait', at: 0 }])).toEqual(['trait est un sort de runist']);
+    expect(planErrors(combat, 'forgefire', null, 10, [{ spell: 'a', at: 12 }])).toEqual(['a : première utilisation à 12 s (au plus 10 s)']);
   });
 });
 

@@ -5,10 +5,12 @@
 tick: 0.25                # pas de la simulation (s) ; l'horloge du moteur est en millisecondes entières
 gcd: 1                    # deux compétences du même combattant sont espacées d'au moins 1 s
 fightLimit: 240           # au-delà, la rencontre est perdue (« temps écoulé »)
-# Ouverture du plan [Ouvert, question Q1 à Louis] :
-#   independent : chaque sort part à son horaire de première utilisation, puis suit son cooldown ;
-#   sequence    : les répétitions attendent que chaque sort du plan ait été lancé une fois (lecture du dossier §3).
-opening: independent
+# Ouverture du plan [Décidé par Louis, 22 octobre] : le build a un minuteur (sort 1 immédiat, sort 2 après 3 s…, 10 s au plus) ;
+# une fois ce minuteur exécuté, les sorts partent en automatique selon leur cooldown.
+#   sequence    : les répétitions attendent que chaque sort du plan ait été lancé une fois (règle retenue) ;
+#   independent : chaque sort suit son cooldown dès son premier lancement (gardée pour comparer dans le simulateur).
+opening: sequence
+maxFirstUse: 10           # horaire de première utilisation maximal (s)
 secondaryShare: 0.55      # part des dégâts et afflictions reçue par les cibles secondaires
 firstBasicAt: 1           # première attaque de base
 basicAttack:

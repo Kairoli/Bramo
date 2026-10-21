@@ -13,6 +13,8 @@
 7. **Récompenses de cette progression** : bonus permanents envisageables, **à définir** ; pas de bonus économique illimité qui ferait des combattants de meilleurs producteurs que les artisans et récolteurs.
 8. **Extensions futures** (à rendre compatibles, pas à coder) : donjons avec participation **asynchrone d'alliés hors ligne**, **world boss** collectifs ; les contributions de soutien et de contrôle sont reconnues.
 9. **Accessibilité** : un **plan automatique conseillé** permet de commencer ; les réglages fins optimisent, sans précision à la seconde pour le contenu ordinaire.
+10. **Réponse à Q1, ouverture** : le build a un **minuteur** (sort 1 immédiat, sort 2 après 3 s…, **10 s au plus**) ; une fois ce minuteur exécuté, les sorts partent en automatique selon leur cooldown, simplement. Règle « séquence » dans `rules.yaml` (`maxFirstUse: 10`).
+11. **Réponse à Q2, nommés** : les gemmes sont des talents à mettre sur les builds ; les armes et objets nommés ont aussi des capacités uniques, **traitées comme des talents** (une capacité nommée occupe la place d'une gemme majeure).
 
 ## 2. Ce que le dossier suppose et ce que le code fait
 
@@ -27,9 +29,9 @@
 
 | # | Point | Décision ou texte existant | Dossier | Proposition |
 |---|---|---|---|---|
-| C1 | **Talents fixes sur les objets nommés** | [Décidé par Louis] « Les talents viennent des gemmes » (`combat-items.md` §0.2) | 24 nommés à talent fixe qui **remplace** une majeure ; le dossier cite « la dernière demande de Louis » | Je n'en trouve pas trace écrite dans le dépôt : **à confirmer par Louis** avant de coder les nommés (étape 6) |
+| C1 | **Talents fixes sur les objets nommés** | [Décidé par Louis] « Les talents viennent des gemmes » (`combat-items.md` §0.2) | 24 nommés à talent fixe qui **remplace** une majeure ; le dossier cite « la dernière demande de Louis » | **Tranché par Louis le 22 octobre** : capacités uniques des nommés traitées comme des talents (§1, point 11) |
 | C2 | **Résistances élémentaires** | `combat-items.md` §3.1 [Proposé par Claude] : les résistances ennemies diversifient les builds ; dossier §4 : « une région glacée moins favorable au Givre » | — | **Reportées** (précision 4). Le moteur garde le type de dégâts et un champ de résistance à 0, non utilisé par le contenu |
-| C3 | **Ouverture du plan** | Précision 1 : « première utilisation, puis cooldowns » | §3 : les répétitions **attendent la fin de l'ouverture** complète | Deux règles possibles : réglage `combat.opening` (`sequence` ou `independent`), simulées toutes les deux. **Choix de Louis** (Q1) |
+| C3 | **Ouverture du plan** | Précision 1 : « première utilisation, puis cooldowns » | §3 : les répétitions **attendent la fin de l'ouverture** complète | **Tranché par Louis le 22 octobre** : minuteur de 10 s au plus, puis cooldowns (« séquence », §1 point 10). « independent » reste simulée pour comparer |
 | C4 | **Hors ligne** | `combat-items.md` §3.1 [Proposé par Claude] : échantillon de 20 combats puis extrapolation | §17 : un échantillon ne suffit pas pour attribuer le butin | Je retire ma proposition : résolution déterministe complète, à la demande, avec reprise ; coût mesuré à l'étape 4 |
 | C5 | **Pas de temps** | `combat-items.md` §3.1 : 1 pas par seconde | Banc : 0,25 s | Horloge entière en millisecondes, pas de 250 ms réglable (`combat.tickMs`) |
 | C6 | **Rareté Légendaire** | `combat-items.md` §5.2 [Proposé par Claude] : un attribut conditionnel unique | Rareté sans talent ni attribut conditionnel | Le dossier suit la décision de Louis du 21 octobre (lignes 1+0-1 / 2+1-2 / 2+2-3 / 2+3-4) ; §5.2 est dépassé |
@@ -82,7 +84,7 @@ Chaque étape se termine par une vérification écrite et un commit. Les chiffre
 
 - **Données** `data/combat/` : `rules.yaml` (règles communes), `kits.yaml` (3 mécaniques, 9 voies), `spells.yaml` (66 sorts), `plans.yaml` (27 plans d'exemple, répertoires 40 et 80), `encounters.yaml` (6 profils du banc). Portées depuis `projet.json` du dossier, validées par zod (`schemas/combat.ts`) et par `buildCombatContent` (classes, voies, armes, sorts de voie, places, un seul ultime) au démarrage du serveur comme du simulateur.
 - **Moteur** `packages/shared/src/combat/engine.ts` : `fight(combat, équipe, rencontre, { seed, opening, enemyDamageScale, trace })`. Horloge en ms entières, tirages par flux, deux règles d'ouverture, équipes de 1 à N avec un bénéficiaire par protection, registre de contributions, journal lisible (« 3 Braises dépensées », « rune Sceau lue », « Rupture »). Le client ne reçoit pas encore ce contenu.
-- **Écarts voulus avec le banc Python** : une Assise (Enclumier) et une préparation d'attaque de base **remplacent** la précédente (texte du dossier ; le banc gardait l'ancienne) ; ouverture par défaut « independent » (Q1).
+- **Écart voulu avec le banc Python** : une Assise (Enclumier) et une préparation d'attaque de base **remplacent** la précédente (texte du dossier ; le banc gardait l'ancienne). Ouverture « séquence » avec un minuteur de 10 s au plus (réponse de Louis à Q1).
 - **Tests** : 13 tests de règles (`packages/shared/test/combat.test.ts`) dont l'exemple A/B/C du §3, le plafond de ralentissement des boss, les phases non décalées, la conversion de l'étourdissement, la récupération après Rupture, le bénéficiaire unique en groupe ; un test du simulateur qui exige de retrouver les temps du banc.
 
 ### Étape 2 faite (22 octobre) : `sim combat` sur le moteur réel
@@ -90,8 +92,8 @@ Chaque étape se termine par une vérification écrite et un commit. Les chiffre
 `pnpm --filter @bramo/sim sim combat` : 29 160 combats en une dizaine de secondes. Rapport [`sim/reports/combat/rapport.md`](../../../sim/reports/combat/rapport.md), une ligne par cas dans `resume.json`, une ligne par combat dans `combats.json` (échecs compris, avec leur cause et les PV ennemis restants).
 
 - **Fidélité** : en kit seul et ouverture « séquence », le moteur retrouve les temps du banc Python avec un écart **médian de 0,5 %** (maximum 5,7 %) et les mêmes PV. Les constats du §4 tiennent donc dans le moteur réel.
-- **Rendement des DPS** (meilleur plan de chaque voie, répertoire 80, danger normal, ouverture « independent ») : Glyphiste n'est que **0 à 5 % plus lent que Fulgurant** sur cinq profils sur six, avec plus de PV ; Sigillaire est **plus lent et plus fragile que Glyphiste dans les six profils**. Forgefeu (soutien +14 à 25 %, contrôle +13 à 31 %) et Traqueur (soutien +15 à 29 %, contrôle +8 à 18 %) sont dans la cible.
-- **Murs** : à dégâts ennemis ×2, le **groupe compact** arrête presque tous les plans (seuls Plaques fidèles, Garde offensive et Contre-écriture passent tout) ; les plans de contrôle y font 0 %. Le contrôle ne protège pas encore contre les groupes.
+- **Rendement des DPS** (meilleur plan de chaque voie, répertoire 80, danger normal, ouverture « séquence ») : Glyphiste est **aussi rapide ou plus rapide que Fulgurant** sur cinq profils sur six (de +3 % à −9 % ; seul le groupe compact donne +13 % au DPS), avec plus de PV ; Sigillaire est **plus lent et plus fragile que Glyphiste dans les six profils**. Forgefeu (soutien +15 à 26 %, contrôle +11 à 35 %) et Traqueur (soutien +15 à 20 %) sont dans la cible ; **Piégeur** n'est que 5 à 12 % plus lent que Tue-Bête, avec un peu plus de PV.
+- **Murs** : à dégâts ennemis ×2, le **groupe compact** arrête presque tous les plans (en « séquence », seul Contre-écriture passe tout ; Plaques fidèles et Garde offensive gagnent une fois sur deux) ; les plans de contrôle y font 0 %. Le contrôle ne protège pas encore contre les groupes.
 - **Accessibilité** : décaler chaque horaire au hasard de ±2 s change le temps de moins de 3 % ; mettre tous les sorts à 0 s (ordre du plan) fait aussi bien ou mieux (−6 à +5 %). Un plan conseillé « sorts dans l'ordre, sans horaire » suffit pour commencer.
 - **Ouverture** : en moyenne sur les six profils, « independent » va de 6 % plus rapide à 4 % plus lent que « séquence » selon les plans (13 % au plus sur un profil). La règle change peu le rendement : elle se choisit sur la lisibilité.
 
@@ -99,8 +101,8 @@ Prochaine étape : **3, équilibrage des voies** (propositions mesurées dans `s
 
 ## 7. Questions pour Louis
 
-- **Q1 — Ouverture** : (a) **indépendante** : chaque sort part à son horaire, puis suit son cooldown, même si les autres n'ont pas encore été lancés (plus simple, plus tolérant) ; (b) **séquence** du dossier : les répétitions attendent que tous les sorts aient été lancés une fois. *Ma recommandation : (a), plus lisible et plus fidèle à « première utilisation puis cooldowns ».* Les deux seront simulées.
-- **Q2 — Nommés à talent fixe** (C1) : les confirmes-tu, malgré la règle « talents = gemmes » ?
+- ~~Q1 — Ouverture~~ : tranché (§1, point 10).
+- ~~Q2 — Nommés à talent fixe~~ : tranché (§1, point 11).
 - **Q3 — Récompenses de la progression solo** : titres et cosmétiques seuls ; petits bonus permanents **de combat seulement**, plafonnés ; ou caches de butin ponctuelles ? *Recommandation : bonus de combat plafonnés (jamais de rendement de métier ni d'or) + titres.*
 - **Q4 — Nom et forme** de cette progression (tour, épreuves des veilles, profondeurs…) : un parcours de paliers indépendant des régions, rejouable, sans perte.
 - **Q5 — Recyclage de l'équipement de combat** (C7) : poudres et fragments d'atelier, ou 40 % de la recette avec des taux de butin plus bas ?

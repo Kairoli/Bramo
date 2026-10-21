@@ -92,38 +92,6 @@
   overflow: hidden;
   background: var(--sunken);
 }
-/* Zones cliquables au-dessus de l'illustration (mêmes coordonnées que l'image, même recadrage). */
-.town-hits {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-}
-.town-place {
-  cursor: pointer;
-  outline: none;
-}
-.town-place rect {
-  fill: rgb(255 255 255 / 0);
-  transition: fill 0.2s;
-}
-.town-place:hover rect,
-.town-place:focus-visible rect {
-  fill: rgb(255 255 255 / 0.1);
-}
-.town-label {
-  fill: var(--text);
-  font: 600 34px var(--font);
-  paint-order: stroke;
-  stroke: var(--bg);
-  stroke-width: 9px;
-  opacity: 0;
-  transition: opacity 0.2s;
-}
-.town-place:hover .town-label,
-.town-place:focus-visible .town-label {
-  opacity: 1;
-}
 .town-title {
   position: absolute;
   top: 8px;

@@ -6,15 +6,15 @@ import { Character } from '../../rig/Character';
 import { hhmm } from '../../format';
 import { Scene } from '../../components/Scene';
 
-/** Lieux de la scène : où se tient quelqu'un qui pratique ce métier (en % de la largeur). */
-const WORKPLACES: Record<string, { x: number; label: string }> = {
-  mining: { x: 9, label: 'Mines' },
-  woodcutting: { x: 21, label: 'Bois' },
-  herbalism: { x: 34, label: 'Jardins' },
-  smithing: { x: 45, label: 'Forge' },
-  carpentry: { x: 57, label: 'Menuiserie' },
-  cooking: { x: 69, label: 'Cuisines' },
-  fishing: { x: 92, label: 'Port' },
+/** Où se tient quelqu'un qui pratique ce métier (en % de la largeur ; centre de l'image, jamais recadré). */
+const WORKPLACES: Record<string, number> = {
+  mining: 24,
+  woodcutting: 31,
+  herbalism: 38,
+  smithing: 46,
+  carpentry: 54,
+  cooking: 62,
+  fishing: 72,
 };
 
 const KIND: Record<TownEvent['kind'], { label: string; color: string }> = {
@@ -28,48 +28,13 @@ const KIND: Record<TownEvent['kind'], { label: string; color: string }> = {
 /** Hachage stable d'un identifiant, pour des mouvements différents d'un joueur à l'autre. */
 const spread = (id: number, mod: number) => ((id * 2654435761) >>> 0) % mod;
 
-/** Zones cliquables, en coordonnées de l'illustration (2172 × 724). */
-const HITS: Record<string, { x: number; y: number; w: number; h: number }> = {
-  mining: { x: 40, y: 292, w: 238, h: 217 },
-  woodcutting: { x: 278, y: 326, w: 319, h: 183 },
-  herbalism: { x: 597, y: 366, w: 245, h: 143 },
-  smithing: { x: 848, y: 122, w: 258, h: 394 },
-  carpentry: { x: 1106, y: 136, w: 265, h: 380 },
-  cooking: { x: 1371, y: 312, w: 251, h: 204 },
-  fishing: { x: 1873, y: 312, w: 299, h: 272 },
-};
-
-/** Les lieux du bourg : des zones au-dessus de l'illustration, qui s'éclairent au survol. */
-function Hits({ onGo }: { onGo: (profession: string) => void }) {
-  return (
-    <svg className="town-hits" viewBox="0 0 2172 724" preserveAspectRatio="xMidYMid slice">
-      {Object.entries(HITS).map(([profession, r]) => (
-        <g
-          key={profession}
-          className="town-place"
-          role="button"
-          tabIndex={0}
-          aria-label={WORKPLACES[profession]!.label}
-          onClick={() => onGo(profession)}
-          onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && onGo(profession)}
-        >
-          <rect x={r.x} y={r.y} width={r.w} height={r.h} rx={14} />
-          <text x={r.x + r.w / 2} y={r.y + 44} textAnchor="middle" className="town-label">
-            {WORKPLACES[profession]!.label}
-          </text>
-        </g>
-      ))}
-    </svg>
-  );
-}
-
 /** Un joueur dans la scène : au travail près de son lieu, ou en promenade s'il ne fait rien. */
 function Walker({ p, slot }: { p: TownPlayer; slot: number }) {
   const place = p.doingProfession ? WORKPLACES[p.doingProfession] : undefined;
-  const working = !!place;
+  const working = place !== undefined;
   const depth = spread(p.id, 3); // 0, 1, 2 : un peu d'étagement vertical
   const style = {
-    '--x': working ? `${Math.min(94, Math.max(3, place!.x + (slot % 3) * 4 - 4))}%` : `${10 + spread(p.id + 3, 80)}%`,
+    '--x': working ? `${Math.min(94, Math.max(3, place! + (slot % 3) * 4 - 4))}%` : `${10 + spread(p.id + 3, 80)}%`,
     '--dur': `${70 + spread(p.id, 50)}s`,
     '--delay': `-${spread(p.id + 7, 100)}s`,
     '--dy': `${depth * 7}px`,
@@ -92,18 +57,16 @@ function Walker({ p, slot }: { p: TownPlayer; slot: number }) {
 }
 
 export function Town() {
-  const { go, openMarket, content, name } = useGame();
+  const { openMarket, name } = useGame();
   const town = useTown();
   const [onlyMine, setOnlyMine] = useState(false);
   const others = useMemo(() => (town?.players ?? []).filter((p) => !p.self), [town]);
   const feed = useMemo(() => (town?.feed ?? []).filter((e) => !onlyMine || e.text.includes(name)), [town, onlyMine, name]);
-  const goWork = (profession: string) => go('professions', content.professions.find((p) => p.id === profession)?.status === 'playable' ? profession : null);
 
   return (
     <section className="panel world town">
       <div className="town-scene">
         <Scene ids={['town']} position="50% 50%" shade={false} />
-        <Hits onGo={goWork} />
         <div className="town-walkers" aria-label="Joueurs dans le bourg">
           {others.map((p, i) => (
             <Walker key={p.id} p={p} slot={i} />

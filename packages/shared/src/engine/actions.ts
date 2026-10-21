@@ -1,5 +1,6 @@
 import type { Content } from '../schemas/content.js';
 import { levelForXp } from '../formulas/xp.js';
+import { NO_ENERGY, dayKey, energyChargesLeft, energyDurationMs } from '../formulas/rates.js';
 import { type CharacterState, GameError, addStack, cloneState } from './state.js';
 import { startNextFromQueue } from './advance.js';
 import { recipeAvailable } from './trials.js';
@@ -91,6 +92,22 @@ export function sellItem(input: CharacterState, itemId: string, qty: number, con
 }
 
 /**
+ * Activer un coup de fouet : une charge du jour, effet immédiat pendant `durationMin`, en ligne comme hors ligne.
+ * Activé pendant un autre, il s'ajoute à la suite (deux charges d'un coup = une heure).
+ */
+export function activateEnergy(input: CharacterState, now: number, content: Content): CharacterState {
+  const { settings } = content;
+  if (energyChargesLeft(input.energy, now, settings) <= 0) {
+    throw new GameError('energy_empty', 'Plus de coup de fouet aujourd’hui : ils reviennent au prochain jour de jeu.');
+  }
+  const state = cloneState(input);
+  const key = dayKey(now, settings);
+  const used = input.energy.dayKey === key ? input.energy.used : 0;
+  state.energy = { dayKey: key, used: used + 1, activeUntil: Math.max(now, input.energy.activeUntil) + energyDurationMs(settings) };
+  return state;
+}
+
+/**
  * Choisir ou changer de classe : gratuit et à tout moment, puisque les classes s'appuient sur les métiers.
  * Une tenue choisie est gardée ; sinon le personnage prend la tenue de départ de sa nouvelle classe.
  */
@@ -111,7 +128,7 @@ export function newCharacterState(now: number, content: Content): CharacterState
     queue: [],
     lastTickAt: now,
     lastSeenAt: now,
-    energy: { dayKey: '', usedMs: 0 },
+    energy: { ...NO_ENERGY },
     buff: null,
     classId: null,
     outfit: null,

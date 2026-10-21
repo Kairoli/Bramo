@@ -2,7 +2,8 @@
 # confie une épreuve : remettre des objets. La réussir donne le titre et un peu d'or.
 # Personne n'est bloqué : le niveau continue de monter sans l'épreuve, seul le titre l'attend.
 # Pour un métier d'artisanat, l'épreuve demande un chef-d'œuvre : une recette (trial: <id>)
-# qui n'apparaît que pendant l'épreuve. Quantités et récompenses à équilibrer.
+# qui n'apparaît que pendant l'épreuve.
+# Budgets visés (temps autonome) : Apprenti ≈ 1 h de travail, Compagnon ≈ 3 à 5 h. Récompenses à équilibrer.
 
 # --- Minage · Maître Orvald ---
 - id: mining_apprentice
@@ -11,19 +12,41 @@
   name: Lire la roche
   intro: "« Un apprenti sait ce qu'il frappe. Rapporte-moi du fer et du charbon, et pas de la caillasse. »"
   tasks:
-    - { item: iron_ore, qty: 60 }
-    - { item: coal, qty: 30 }
-  reward: { gold: 120 }
+    - { item: iron_ore, qty: 150 }
+    - { item: coal, qty: 100 }
+  reward: { gold: 300 }
 
 - id: mining_journeyman
   profession: mining
   rank: 60
   name: Le filon de mithril
-  intro: "« Le mithril ne se laisse pas prendre par n'importe qui. Montre-moi que tu l'as trouvé. »"
+  intro: "« Le mithril ne se laisse pas prendre par n'importe qui. Montre-moi que tu l'as trouvé, et l'or avec. »"
   tasks:
-    - { item: mithril_ore, qty: 80 }
-    - { item: coal, qty: 60 }
-  reward: { gold: 400 }
+    - { item: mithril_ore, qty: 400 }
+    - { item: gold_ore, qty: 250 }
+  reward: { gold: 1200 }
+
+# --- Bûcheronnage · Maîtresse Aldra ---
+- id: woodcutting_apprentice
+  profession: woodcutting
+  rank: 30
+  name: Connaître les essences
+  intro: "« Le chêne pour les manches, le frêne pour les arcs. Apporte-moi les deux, et l'écorce avec. »"
+  tasks:
+    - { item: oak_log, qty: 150 }
+    - { item: ash_log, qty: 100 }
+    - { item: bark, qty: 100 }
+  reward: { gold: 300 }
+
+- id: woodcutting_journeyman
+  profession: woodcutting
+  rank: 60
+  name: Le bois de lune
+  intro: "« Le bois de lune ne se coupe qu'en silence. Remplis-moi la charrette, et de l'if pour les archers. »"
+  tasks:
+    - { item: moonwood_log, qty: 500 }
+    - { item: yew_log, qty: 250 }
+  reward: { gold: 1200 }
 
 # --- Herboristerie · Maîtresse Ysolde ---
 - id: herbalism_apprentice
@@ -32,41 +55,61 @@
   name: L'herbier
   intro: "« Avant de cueillir le rare, apprends le commun. Remplis-moi ce panier. »"
   tasks:
-    - { item: mint, qty: 30 }
-    - { item: thyme, qty: 40 }
-    - { item: nettle_root, qty: 40 }
-  reward: { gold: 120 }
+    - { item: thyme, qty: 150 }
+    - { item: nettle_root, qty: 120 }
+  reward: { gold: 300 }
 
 - id: herbalism_journeyman
   profession: herbalism
   rank: 60
   name: La cueillette de nuit
-  intro: "« Les lys-lanternes ne s'ouvrent qu'à la nuit tombée. Reviens avec la rosée. »"
+  intro: "« Les lys-lanternes ne s'ouvrent qu'à la nuit tombée. Reviens avec la rosée, et de la sauge. »"
   tasks:
-    - { item: sage, qty: 40 }
-    - { item: lantern_lily, qty: 50 }
-  reward: { gold: 400 }
+    - { item: sage, qty: 300 }
+    - { item: lantern_lily, qty: 400 }
+  reward: { gold: 1200 }
 
 # --- Forge · Maître Brunhild ---
 - id: smithing_apprentice
   profession: smithing
   rank: 30
   name: La lame d'apprenti
-  intro: "« Forge-moi une lame d'épreuve, et ramène dix lames de fer pour que je voie ta main. »"
+  intro: "« Forge-moi une lame d'épreuve dans l'acier, et deux pioches de fer pour que je voie ta main. »"
   tasks:
     - { item: apprentice_blade, qty: 1 }
-    - { item: iron_blade, qty: 10 }
-  reward: { gold: 150 }
+    - { item: iron_pickaxe, qty: 2 }
+  reward: { gold: 400 }
 
 - id: smithing_journeyman
   profession: smithing
   rank: 60
   name: Le chef-d'œuvre du compagnon
-  intro: "« Un compagnon forge pour les autres. Ton chef-d'œuvre, et trois pioches pour les mines. »"
+  intro: "« Un compagnon forge pour les autres. Ton chef-d'œuvre, et trois pioches d'acier pour les mines. »"
   tasks:
     - { item: journeyman_blade, qty: 1 }
-    - { item: iron_pickaxe, qty: 3 }
-  reward: { gold: 500 }
+    - { item: steel_pickaxe, qty: 3 }
+  reward: { gold: 1500 }
+
+# --- Menuiserie · Maître Joris ---
+- id: carpentry_apprentice
+  profession: carpentry
+  rank: 30
+  name: Le coffre d'apprenti
+  intro: "« Un coffre qui ferme droit, et des manches pour la forge. Brunhild en réclame toujours. »"
+  tasks:
+    - { item: apprentice_chest, qty: 1 }
+    - { item: oak_handle, qty: 60 }
+  reward: { gold: 400 }
+
+- id: carpentry_journeyman
+  profession: carpentry
+  rank: 60
+  name: L'établi du compagnon
+  intro: "« Ton propre établi, avec deux douelles de frêne sur le râtelier. Et des hampes : les archers attendent. »"
+  tasks:
+    - { item: journeyman_workbench, qty: 1 }
+    - { item: arrow_shaft, qty: 600 }
+  reward: { gold: 1500 }
 
 # --- Cuisine · Maître Bertin ---
 - id: cooking_apprentice
@@ -77,7 +120,7 @@
   tasks:
     - { item: apprentice_dish, qty: 1 }
     - { item: nettle_broth, qty: 10 }
-  reward: { gold: 150 }
+  reward: { gold: 400 }
 
 - id: cooking_journeyman
   profession: cooking
@@ -87,4 +130,4 @@
   tasks:
     - { item: journeyman_feast, qty: 1 }
     - { item: lantern_soup, qty: 10 }
-  reward: { gold: 500 }
+  reward: { gold: 1500 }

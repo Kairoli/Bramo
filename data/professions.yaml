@@ -1,4 +1,6 @@
-# Les 14 métiers du lancement. status: soon = visible mais pas encore jouable.
+# Métiers (docs/design/metiers.md). status: soon = visible mais pas encore jouable.
+# Jouables : la boucle récolte → transformation → fabrication → usage (Minage, Bûcheronnage,
+# Herboristerie, Forge, Menuiserie, Cuisine).
 
 # --- Récolte ---
 - id: mining
@@ -6,31 +8,38 @@
   family: gathering
   status: playable
   place: Mines des Monts de Brisefer
-  description: Extraire le minerai des galeries.
+  description: Minerais, pierre, sable et gemmes brutes.
   master: { name: Maître Orvald, line: "« Une bonne pioche vaut dix bras. Reviens quand tu sauras lire la roche. »" }
   categories:
     - { id: ores, name: Minerais }
+    - { id: stone, name: Pierre et sable }
+    - { id: gems, name: Gemmes }
 
 - id: woodcutting
   name: Bûcheronnage
   family: gathering
-  status: soon
+  status: playable
   place: Bois des Murmures
-  description: Abattre et débiter le bois.
+  description: Bois d'œuvre et écorce (tanin).
+  master: { name: Maîtresse Aldra, line: "« L'écorce, garde-la : les tanneurs paient. »" }
+  categories:
+    - { id: logs, name: Bois }
 
 - id: fishing
   name: Pêche
   family: gathering
   status: soon
   place: Mer des Lanternes
-  description: Pêcher en mer et en rivière.
+  description: Poissons, coquillages et perles.
+  categories:
+    - { id: fish, name: Poissons }
 
 - id: herbalism
   name: Herboristerie
   family: gathering
   status: playable
   place: Jardins des Brumes
-  description: Cueillir herbes, racines et fleurs rares.
+  description: Herbes sauvages, racines et fleurs rares.
   master: { name: Maîtresse Ysolde, line: "« Cueille à l'aube, jamais à midi. La sauge, elle, s'en moque. »" }
   categories:
     - { id: herbs, name: Herbes }
@@ -40,7 +49,18 @@
   family: gathering
   status: soon
   place: Landes du Nord
-  description: Traquer le gibier, rapporter cuirs et viandes.
+  description: Peaux, viandes, plumes et trophées.
+  categories:
+    - { id: game, name: Gibier }
+
+- id: agriculture
+  name: Agriculture
+  family: gathering
+  status: soon
+  place: Terrasses du Val
+  description: Parcelles qui poussent seules (lin, blé, légumes, plantes tinctoriales) et leur préparation.
+  categories:
+    - { id: processing, name: Préparation }
 
 # --- Artisanat ---
 - id: smithing
@@ -48,30 +68,57 @@
   family: crafting
   status: playable
   place: Forge du campement
-  description: Fondre les lingots, forger lames et outils.
-  master: { name: Maître Brunhild, line: "« Ramène-moi des lames dignes de ce nom et je t'apprendrai la trempe. »" }
+  description: Fonte des métaux communs, outils de tous les métiers, armes et armures de métal.
+  master: { name: Maître Brunhild, line: "« Tout le monde a besoin d'un forgeron. Même ceux qui l'ignorent. »" }
   categories:
-    - { id: bars, name: Lingots }
-    - { id: weapons, name: Armes }
+    - { id: bars, name: Fonte }
+    - { id: tool_parts, name: Fers d'outils }
     - { id: tools, name: Outils }
+    - { id: hardware, name: Quincaillerie }
+    - { id: weapons, name: Armes }
     - { id: masterwork, name: Épreuve }
 
 - id: carpentry
   name: Menuiserie
   family: crafting
+  status: playable
+  place: Atelier du campement
+  description: Planches, manches, arcs, flèches et bois de charpente.
+  master: { name: Maître Joris, line: "« Un manche mal taillé, et la meilleure lame ne vaut rien. »" }
+  categories:
+    - { id: planks, name: Planches }
+    - { id: handles, name: Manches }
+    - { id: archery, name: Archerie }
+    - { id: masterwork, name: Épreuve }
+
+- id: tanning
+  name: Tannerie
+  family: crafting
+  status: soon
+  place: Fosses du tanneur
+  description: Tanner les peaux et travailler le cuir.
+  categories:
+    - { id: tanning, name: Tannage }
+    - { id: leather_goods, name: Cuir ouvré }
+
+- id: tailoring
+  name: Couture
+  family: crafting
   status: soon
   place: Atelier du campement
-  description: Manches, arcs, meubles et charpentes.
+  description: Filer, tisser, teindre et coudre les vêtements.
+  categories:
+    - { id: spinning, name: Fil et toile }
+    - { id: garments, name: Vêtements }
 
 - id: cooking
   name: Cuisine
   family: crafting
   status: playable
   place: Cuisines du campement
-  description: Préparer des repas qui donnent un coup de fouet.
+  description: Repas longs qui accélèrent le travail, provisions et vivres de combat.
   master: { name: Maître Bertin, line: "« Un bon repas, et la journée file deux fois plus vite. Bon, presque. »" }
   categories:
-    - { id: infusions, name: Infusions }
     - { id: dishes, name: Plats }
     - { id: masterwork, name: Épreuve }
 
@@ -80,40 +127,53 @@
   family: crafting
   status: soon
   place: Laboratoire
-  description: Potions et élixirs.
+  description: Fioles, potions de combat, élixirs de métier et réactifs.
+  categories:
+    - { id: glass, name: Verrerie }
+    - { id: potions, name: Potions }
+    - { id: reagents, name: Réactifs }
 
-- id: tailoring
-  name: Couture
+- id: jewelcrafting
+  name: Joaillerie
   family: crafting
   status: soon
-  place: Atelier du campement
-  description: Tissus, cuirs et tenues.
-
-- id: artificing
-  name: Artificerie
-  family: crafting
-  status: soon
-  place: Atelier des artificiers
-  description: Mécanismes, pièges et engins.
+  place: Comptoir du lapidaire
+  description: Affiner l'argent et l'or, tailler les gemmes, sertir anneaux et amulettes.
+  categories:
+    - { id: refining, name: Affinage }
+    - { id: cutting, name: Taille }
+    - { id: jewelry, name: Bijoux }
 
 - id: enchanting
   name: Enchantement
   family: crafting
   status: soon
   place: Cercle des runes
-  description: Graver des runes, enchanter les objets.
+  description: Graver des runes et les poser sur l'équipement.
+  categories:
+    - { id: runes, name: Runes }
+    - { id: enchant, name: Enchantements }
+
+- id: artificing
+  name: Artificerie
+  family: crafting
+  status: soon
+  place: Atelier des artificiers
+  description: Mécanismes, pièges, poudres et engins.
 
 # --- Monde et clan ---
 - id: construction
   name: Construction
   family: world
   status: soon
-  place: Halle du clan
-  description: Bâtir les projets du clan.
+  place: Chantiers
+  description: Éléments de charpente et de maçonnerie, posés dans l'atelier personnel et la halle du clan.
+  categories:
+    - { id: elements, name: Éléments }
 
 - id: exploration
   name: Exploration
   family: world
   status: soon
   place: Carte du monde
-  description: Découvrir de nouveaux lieux et leurs ressources.
+  description: Expéditions qui rapportent des cartes de gisement, des curiosités et des sites.

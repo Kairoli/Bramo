@@ -19,14 +19,18 @@ presence:
   activeTimeoutSec: 120   # sans signe de vie depuis ce délai, le joueur passe hors ligne
   heartbeatSec: 30        # fréquence des signes de vie du client
 
+# Rendement unique (décision du 21 octobre) : 100 % en ligne comme hors ligne,
+# pendant 16 h d'autonomie après la dernière visite. Au-delà, l'activité attend ; rien n'est perdu.
 rates:
-  active: 1.0             # 100 % en actif
-  offline: 0.25           # à équilibrer
-  offlineCapHours: 12     # accumulation hors ligne maximale
+  active: 1.0
+  offline: 1.0
+  offlineCapHours: 16
 
+# Coups de fouet : le joueur les active quand il veut, en ligne comme hors ligne.
 energy:
   multiplier: 1.5         # à équilibrer
-  dailyHours: 2           # 2 premières heures actives de la journée
+  charges: 2              # par jour de jeu
+  durationMin: 30
   resetHourUtc: 4         # bascule du jour de jeu (4 h UTC = 5 h ou 6 h à Paris)
 
 # Plafond de chaque source de bonus (0.30 = +30 %).

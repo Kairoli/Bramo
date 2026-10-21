@@ -25,22 +25,6 @@ export function levelForXp(xp: number, table: number[]): number {
   return level;
 }
 
-/**
- * XP réellement gagnée pour `raw` XP de recettes, à partir de `current`.
- * Sous le niveau d'apprentissage, l'XP est multipliée ; le passage du seuil est exact,
- * donc gagner en une fois ou en plusieurs fois donne le même total.
- */
-export function gainXp(current: number, raw: number, xp: Settings['xp'], table: number[]): number {
-  const app = xp.apprenticeship;
-  if (!app || raw <= 0) return raw;
-  const threshold = table[app.belowLevel] ?? Number.POSITIVE_INFINITY;
-  if (current >= threshold) return raw;
-  const boosted = raw * app.multiplier;
-  if (current + boosted <= threshold) return boosted;
-  const rawBelow = (threshold - current) / app.multiplier;
-  return threshold - current + (raw - rawBelow);
-}
-
 /** Titre du plus haut palier atteint. */
 export function titleForLevel(level: number, titles: Settings['titles']): string {
   let name = titles[0]!.name;

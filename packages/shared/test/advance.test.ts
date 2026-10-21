@@ -3,7 +3,7 @@ import { advance } from '../src/engine/advance.js';
 import { HOUR, MIN, SEC, T0, content, makeState, mining } from './fixture.js';
 
 describe('advance : rendement', () => {
-  it('actif sans énergie : 100 %', () => {
+  it('actif sans coup de fouet : 100 %', () => {
     // Présent jusqu’à T0 + 2 min (délai), on avance de 2 min : 12 fabrications de 10 s.
     const { state, summary } = advance(makeState({ activity: mining() }), T0 + 2 * MIN, content);
     expect(state.inventory.ore).toBe(12);
@@ -11,12 +11,19 @@ describe('advance : rendement', () => {
     expect(summary.time.active).toBe(2 * MIN);
   });
 
-  it('avec énergie : 150 %', () => {
-    const s = makeState({ activity: mining(), energy: { dayKey: '', usedMs: 0 } });
+  it('coup de fouet : 150 %, jusqu’à sa fin', () => {
+    // Coup de fouet sur la 1re minute : 60 s × 1,5 + 60 s × 1 = 150 s → 15 fabrications.
+    const s = makeState({ activity: mining(), energy: { dayKey: '2026-01-10', used: 1, activeUntil: T0 + MIN } });
     const { state, summary } = advance(s, T0 + 2 * MIN, content);
-    expect(state.inventory.ore).toBe(18);
-    expect(summary.energyUsedMs).toBe(2 * MIN);
-    expect(state.energy.usedMs).toBe(2 * MIN);
+    expect(state.inventory.ore).toBe(15);
+    expect(summary.energyUsedMs).toBe(MIN);
+  });
+
+  it('le coup de fouet vaut aussi hors ligne', () => {
+    // Le joueur part à T0 et active un coup de fouet de 30 min : 2 min actives ×1,5, puis 28 min hors ligne ×1,5×0,25.
+    const s = makeState({ activity: mining(), energy: { dayKey: '2026-01-10', used: 1, activeUntil: T0 + 30 * MIN } });
+    const { state } = advance(s, T0 + 30 * MIN, content);
+    expect(state.inventory.ore).toBe(Math.floor((2 * MIN * 1.5 + 28 * MIN * 1.5 * 0.25) / (10 * SEC)));
   });
 
   it('hors ligne : 25 %, plafonné à 12 h', () => {
@@ -77,8 +84,8 @@ describe('advance : activités et file', () => {
     expect(summary.workedMs).toBe(60 * SEC);
   });
 
-  it('l’énergie ne se consomme pas sans activité', () => {
-    const s = makeState({ activity: mining(3), energy: { dayKey: '', usedMs: 0 } });
+  it('ne compte le coup de fouet que pendant le travail', () => {
+    const s = makeState({ activity: mining(3), energy: { dayKey: '2026-01-10', used: 1, activeUntil: T0 + 30 * MIN } });
     const { summary } = advance(s, T0 + 2 * MIN, content);
     expect(summary.energyUsedMs).toBe(20 * SEC); // 3 × 10 s à ×1,5
   });

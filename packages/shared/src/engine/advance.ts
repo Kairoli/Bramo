@@ -1,10 +1,9 @@
 import type { Content, Recipe } from '../schemas/content.js';
-import { gainXp, levelForXp } from '../formulas/xp.js';
+import { levelForXp } from '../formulas/xp.js';
 import {
   type Bonuses,
   type Presence,
   bonusMultiplier,
-  consumeEnergy,
   presenceAt,
 } from '../formulas/rates.js';
 import { type CharacterState, addStack, addTo, cloneState } from './state.js';
@@ -22,6 +21,7 @@ export interface AdvanceSummary {
   time: Record<Presence, number>;
   /** Temps réel pendant lequel une activité a réellement tourné. */
   workedMs: number;
+  /** Temps réel de travail sous coup de fouet. */
   energyUsedMs: number;
   xp: Record<string, number>;
   produced: Record<string, number>;
@@ -135,9 +135,8 @@ export function advance(
       if (!(recipe.profession in levelsBefore)) {
         levelsBefore[recipe.profession] = levelForXp(state.skills[recipe.profession] ?? 0, content.xpTable);
       }
-      const gained = gainXp(state.skills[recipe.profession] ?? 0, recipe.xp * n, settings.xp, content.xpTable);
-      addTo(state.skills, recipe.profession, gained);
-      addTo(summary.xp, recipe.profession, gained);
+      addTo(state.skills, recipe.profession, recipe.xp * n);
+      addTo(summary.xp, recipe.profession, recipe.xp * n);
       for (const i of recipe.inputs) {
         addStack(state.inventory, i.item, -i.qty * n);
         addTo(summary.consumed, i.item, i.qty * n);
@@ -151,11 +150,7 @@ export function advance(
     const worked = t - workStart;
     if (worked > 0) {
       summary.workedMs += worked;
-      // L'énergie ne se consomme que pendant qu'une activité tourne.
-      if (win.energized) {
-        state.energy = consumeEnergy(state.energy, workStart, worked, settings);
-        summary.energyUsedMs += worked;
-      }
+      if (win.energized) summary.energyUsedMs += worked;
     }
     // Plus d'activité : le reste de l'intervalle s'écoule sans rien produire.
     if (!state.activity) break;

@@ -1,76 +1,92 @@
-# Objets. value = prix de revente au marchand PNJ ; shopPrice = prix d'achat (si vendu).
-# Toutes les valeurs d'or sont à équilibrer.
+# Objets des métiers jouables (source : sim/proposals/boucle-v0). Valeurs à équilibrer.
+# value = prix de rachat du marchand PNJ (plancher), calculé par `pnpm --filter @bramo/sim sim calibrate --data --write` :
+# 10 % de la valeur de référence (1 000 or par heure de travail, chaîne complète, outils de base).
+# Les repas durent longtemps et se mangent seuls depuis le garde-manger (proposition) :
+# leur durée est réglée pour qu'une heure de bonus coûte environ la moitié de ce qu'elle rapporte.
 
-# --- Minerais (Minage) ---
-- { id: copper_ore, name: Minerai de cuivre, category: ore, value: 1 }
-- { id: tin_ore, name: Minerai d'étain, category: ore, value: 1 }
-- { id: iron_ore, name: Minerai de fer, category: ore, value: 3 }
-- { id: coal, name: Charbon, category: ore, value: 4 }
-- { id: mithril_ore, name: Minerai de mithril, category: ore, value: 12 }
-- { id: orichalcum_ore, name: Minerai d'orichalque, category: ore, value: 25 }
+# --- Minage ---
+- {id: copper_ore, name: Minerai de cuivre, category: ore, value: 1}
+- {id: tin_ore, name: Minerai d'étain, category: ore, value: 1}
+- {id: stone_block, name: Bloc de pierre, category: stone, value: 1}
+- {id: sand, name: Sable, category: stone, value: 1}
+- {id: iron_ore, name: Minerai de fer, category: ore, value: 1}
+- {id: rune_stone, name: Pierre runique, category: stone, value: 1}
+- {id: coal, name: Charbon, category: ore, value: 1}
+- {id: silver_ore, name: Minerai d'argent, category: ore, value: 1}
+- {id: rough_amethyst, name: Améthyste brute, category: gem, value: 2}
+- {id: mithril_ore, name: Minerai de mithril, category: ore, value: 1}
+- {id: gold_ore, name: Minerai d'or, category: ore, value: 1}
+- {id: orichalcum_ore, name: Minerai d'orichalque, category: ore, value: 1}
+- {id: azurite_ore, name: Minerai d'azurite, category: ore, value: 1}
+- {id: umbral_ore, name: Minerai de sombracier, category: ore, value: 1}
+- {id: astralite_ore, name: Astralite, category: ore, value: 1}
+
+# --- Bûcheronnage ---
+- {id: pine_log, name: Bûche de pin, category: log, value: 1}
+- {id: bark, name: Écorce, category: log, value: 1}
+- {id: oak_log, name: Bûche de chêne, category: log, value: 1}
+- {id: ash_log, name: Bûche de frêne, category: log, value: 1}
+- {id: yew_log, name: Bûche d'if, category: log, value: 1}
+- {id: moonwood_log, name: Bois de lune, category: log, value: 1}
+
+# --- Herboristerie ---
+- {id: mint, name: Menthe sauvage, category: herb, value: 1}
+- {id: thyme, name: Thym, category: herb, value: 1}
+- {id: nettle_root, name: Racine d'ortie, category: herb, value: 1}
+- {id: sage, name: Sauge pourpre, category: herb, value: 1}
+- {id: lantern_lily, name: Lys-lanterne, category: herb, value: 1}
+- {id: frost_flower, name: Fleur de givre, category: herb, value: 1}
+
+# --- Pêche (le marchand du port vend encore le poisson) ---
+- {id: raw_fish, name: Poisson frais, category: fish, value: 1, shopPrice: 12}
+- {id: trout, name: Truite, category: fish, value: 3, shopPrice: 25}
 
 # --- Forge ---
-- { id: bronze_ingot, name: Lingot de bronze, category: bar, value: 4 }
-- { id: iron_ingot, name: Lingot de fer, category: bar, value: 8 }
-- { id: bronze_blade, name: Lame de bronze, category: weapon, value: 12 }
-- { id: iron_blade, name: Lame de fer, category: weapon, value: 25 }
-- id: bronze_pickaxe
-  name: Pioche de bronze
-  category: tool
-  value: 15
-  tool: { profession: mining, bonus: 0.10 }   # à équilibrer
-- id: iron_pickaxe
-  name: Pioche de fer
-  category: tool
-  value: 30
-  tool: { profession: mining, bonus: 0.20 }   # à équilibrer
+- {id: bronze_bar, name: Lingot de bronze, category: bar, value: 1}
+- {id: iron_bar, name: Lingot de fer, category: bar, value: 1}
+- {id: steel_bar, name: Lingot d'acier, category: bar, value: 2}
+- {id: rivets, name: Clous et rivets, category: hardware, value: 1}
+- {id: bronze_tool_head, name: Fer d'outil en bronze, category: tool_part, value: 12}
+- {id: iron_tool_head, name: Fer d'outil en fer, category: tool_part, value: 59}
+- {id: steel_tool_head, name: Fer d'outil en acier, category: tool_part, value: 105}
+- {id: iron_arrowhead, name: Pointes de flèche en fer, category: hardware, value: 1}
+- {id: iron_sword, name: Épée de fer, category: weapon, value: 57}
+
+# Outils : un par métier et par métal. Bonus plafonné à +30 % (settings.bonusCaps.tool).
+- {id: bronze_pickaxe, name: Pioche de bronze, category: tool, value: 13, tool: {profession: mining, bonus: 0.10}}
+- {id: iron_pickaxe, name: Pioche de fer, category: tool, value: 61, tool: {profession: mining, bonus: 0.15}}
+- {id: steel_pickaxe, name: Pioche d'acier, category: tool, value: 108, tool: {profession: mining, bonus: 0.20}}
+- {id: bronze_axe, name: Hache de bronze, category: tool, value: 13, tool: {profession: woodcutting, bonus: 0.10}}
+- {id: iron_axe, name: Hache de fer, category: tool, value: 61, tool: {profession: woodcutting, bonus: 0.15}}
+- {id: bronze_sickle, name: Serpe de bronze, category: tool, value: 13, tool: {profession: herbalism, bonus: 0.10}}
+- {id: iron_sickle, name: Serpe de fer, category: tool, value: 61, tool: {profession: herbalism, bonus: 0.15}}
+- {id: bronze_hammer, name: Marteau de bronze, category: tool, value: 13, tool: {profession: smithing, bonus: 0.10}}
+- {id: iron_hammer, name: Marteau de fer, category: tool, value: 61, tool: {profession: smithing, bonus: 0.15}}
+- {id: bronze_saw, name: Scie de bronze, category: tool, value: 13, tool: {profession: carpentry, bonus: 0.10}}
+- {id: iron_saw, name: Scie de fer, category: tool, value: 61, tool: {profession: carpentry, bonus: 0.15}}
+- {id: bronze_knife, name: Couteau de bronze, category: tool, value: 13, tool: {profession: cooking, bonus: 0.10}}
+- {id: iron_knife, name: Couteau de fer, category: tool, value: 61, tool: {profession: cooking, bonus: 0.15}}
+
+# --- Menuiserie ---
+- {id: pine_plank, name: Planche de pin, category: plank, value: 1}
+- {id: pine_handle, name: Manche de pin, category: handle, value: 1}
+- {id: oak_plank, name: Planche de chêne, category: plank, value: 1}
+- {id: oak_handle, name: Manche de chêne, category: handle, value: 1}
+- {id: arrow_shaft, name: Hampes de flèche, category: archery, value: 1}
+- {id: bow_stave, name: Douelle d'arc en frêne, category: archery, value: 12}
+
+# --- Cuisine : repas (un seul actif, bonus plafonné à +10 %) ---
+- {id: mint_tea, name: Tisane de menthe, category: meal, value: 1, meal: {bonus: 0.03, durationMin: 60}}
+- {id: grilled_fish, name: Poisson grillé au thym, category: meal, value: 4, meal: {bonus: 0.04, durationMin: 45}}
+- {id: nettle_broth, name: Bouillon d'ortie, category: meal, value: 3, meal: {bonus: 0.05, durationMin: 75}}
+- {id: sage_trout, name: Truite à la sauge, category: meal, value: 13, meal: {bonus: 0.07, durationMin: 45}}
+- {id: lantern_soup, name: Soupe aux lys-lanternes, category: meal, value: 9, meal: {bonus: 0.08, durationMin: 60}}
+- {id: frost_feast, name: Festin du givre, category: meal, value: 17, meal: {bonus: 0.10, durationMin: 90}}
 
 # --- Chefs-d'œuvre : fabriqués pendant une épreuve de maître, remis au maître ---
-- { id: apprentice_blade, name: Lame d'épreuve, category: masterwork, value: 40 }
-- { id: journeyman_blade, name: Lame de compagnon, category: masterwork, value: 120 }
-- { id: apprentice_dish, name: Truite du maître, category: masterwork, value: 40 }
-- { id: journeyman_feast, name: Banquet du compagnon, category: masterwork, value: 120 }
-
-# --- Herbes (Herboristerie) ---
-- { id: mint, name: Menthe sauvage, category: herb, value: 1 }
-- { id: thyme, name: Thym, category: herb, value: 2 }
-- { id: nettle_root, name: Racine d'ortie, category: herb, value: 3 }
-- { id: sage, name: Sauge pourpre, category: herb, value: 5 }
-- { id: lantern_lily, name: Lys-lanterne, category: herb, value: 8 }
-- { id: frost_flower, name: Fleur de givre, category: herb, value: 14 }
-
-# --- Poissons : vendus par le marchand du port tant que la Pêche n'est pas ouverte ---
-- { id: raw_fish, name: Poisson frais, category: fish, value: 2, shopPrice: 4 }
-- { id: trout, name: Truite, category: fish, value: 6, shopPrice: 12 }
-
-# --- Repas (Cuisine) : un seul repas actif à la fois ; bonus plafonné à +10 % ---
-- id: mint_tea
-  name: Tisane de menthe
-  category: meal
-  value: 3
-  meal: { bonus: 0.03, durationMin: 20 }      # à équilibrer
-- id: grilled_fish
-  name: Poisson grillé au thym
-  category: meal
-  value: 8
-  meal: { bonus: 0.05, durationMin: 30 }      # à équilibrer
-- id: nettle_broth
-  name: Bouillon d'ortie
-  category: meal
-  value: 9
-  meal: { bonus: 0.05, durationMin: 45 }      # à équilibrer
-- id: sage_trout
-  name: Truite à la sauge
-  category: meal
-  value: 25
-  meal: { bonus: 0.08, durationMin: 45 }      # à équilibrer
-- id: lantern_soup
-  name: Soupe aux lys-lanternes
-  category: meal
-  value: 30
-  meal: { bonus: 0.08, durationMin: 60 }      # à équilibrer
-- id: frost_feast
-  name: Festin du givre
-  category: meal
-  value: 50
-  meal: { bonus: 0.10, durationMin: 60 }      # à équilibrer
+- {id: apprentice_blade, name: Lame d'épreuve, category: masterwork, value: 1}
+- {id: journeyman_blade, name: Lame de compagnon, category: masterwork, value: 1}
+- {id: apprentice_chest, name: Coffre d'épreuve, category: masterwork, value: 1}
+- {id: journeyman_workbench, name: Établi du compagnon, category: masterwork, value: 1}
+- {id: apprentice_dish, name: Truite du maître, category: masterwork, value: 1}
+- {id: journeyman_feast, name: Banquet du compagnon, category: masterwork, value: 1}

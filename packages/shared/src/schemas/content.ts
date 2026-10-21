@@ -8,8 +8,6 @@ const ratio = z.number().min(0);
 export const settingsSchema = z.object({
   xp: z.object({
     maxLevel: z.number().int().min(2),
-    /** Apprentissage : XP multipliée tant que le métier est sous ce niveau. Absent = pas de bonus. */
-    apprenticeship: z.object({ belowLevel: z.number().int().min(2), multiplier: z.number().min(1) }).optional(),
   }),
   titles: z
     .array(z.object({ level: z.number().int().min(1), name: z.string() }))
@@ -27,9 +25,11 @@ export const settingsSchema = z.object({
     offline: ratio,
     offlineCapHours: z.number().min(0),
   }),
+  /** Coups de fouet activés par le joueur : `charges` par jour de jeu, chacun `durationMin` à ×`multiplier`. */
   energy: z.object({
     multiplier: ratio,
-    dailyHours: z.number().min(0),
+    charges: z.number().int().min(0),
+    durationMin: z.number().positive(),
     resetHourUtc: z.number().int().min(0).max(23),
   }),
   bonusCaps: z.object({

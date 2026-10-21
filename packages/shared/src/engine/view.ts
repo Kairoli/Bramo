@@ -1,7 +1,7 @@
 import type { Content } from '../schemas/content.js';
 import type { Appearance } from '../schemas/art.js';
 import { levelForXp, nextTitle } from '../formulas/xp.js';
-import { bonusMultiplier, energyMaxMs, energyRemainingMs, presenceAt } from '../formulas/rates.js';
+import { bonusMultiplier, energyChargesLeft, energyDurationMs, presenceAt } from '../formulas/rates.js';
 import type { Activity, CharacterState, MealBuff, QueuedAction } from './state.js';
 import { bonusesFor } from './advance.js';
 import { type TrialStatus, earnedTitle, trialStatus, trialsOf } from './trials.js';
@@ -36,7 +36,8 @@ export interface StateView {
   inventory: Record<string, number>;
   activity: (Activity & { rate: RateView; durationMs: number }) | null;
   queue: QueuedAction[];
-  energy: { remainingMs: number; maxMs: number };
+  /** Coups de fouet : charges restantes aujourd'hui, et fin de celui en cours (null = aucun). */
+  energy: { chargesLeft: number; charges: number; activeUntil: number | null; durationMs: number; multiplier: number };
   buff: MealBuff | null;
   /** null tant que le joueur n'a pas choisi sa classe (écran de choix). */
   classId: string | null;
@@ -111,7 +112,13 @@ export function viewState(state: CharacterState, now: number, content: Content):
     inventory: state.inventory,
     activity,
     queue: state.queue,
-    energy: { remainingMs: energyRemainingMs(state.energy, now, settings), maxMs: energyMaxMs(settings) },
+    energy: {
+      chargesLeft: energyChargesLeft(state.energy, now, settings),
+      charges: settings.energy.charges,
+      activeUntil: state.energy.activeUntil > now ? state.energy.activeUntil : null,
+      durationMs: energyDurationMs(settings),
+      multiplier: settings.energy.multiplier,
+    },
     buff: state.buff && state.buff.until > now ? state.buff : null,
     classId: state.classId,
     appearance: viewAppearance(state, content),

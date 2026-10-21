@@ -9,16 +9,21 @@ describe('data/', () => {
   const content = loadContent(dataDir, artDir);
 
   it('se charge et se valide', () => {
-    expect(content.professions).toHaveLength(14);
+    expect(content.professions).toHaveLength(17);
   });
 
-  it('chaque métier jouable a 5 à 6 recettes (hors chefs-d’œuvre) et ses épreuves de maître', () => {
+  it('chaque métier jouable a au moins 5 recettes (hors chefs-d’œuvre) et ses épreuves de maître', () => {
     for (const p of content.professions.filter((p) => p.status === 'playable')) {
       const count = Object.values(content.recipes).filter((r) => r.profession === p.id && !r.trial).length;
       expect(Object.values(content.trials).filter((t) => t.profession === p.id).length, p.id).toBeGreaterThanOrEqual(2);
       expect(count, p.id).toBeGreaterThanOrEqual(5);
-      expect(count, p.id).toBeLessThanOrEqual(6);
     }
+  });
+
+  it('chaque métier jouable a un outil, et les recettes ne visent que des métiers jouables', () => {
+    const playable = new Set(content.professions.filter((p) => p.status === 'playable').map((p) => p.id));
+    for (const id of playable) expect(Object.values(content.items).some((i) => i.tool?.profession === id), id).toBe(true);
+    for (const r of Object.values(content.recipes)) expect(playable.has(r.profession), r.id).toBe(true);
   });
 
   it('art/ est cohérent et les tenues pointent vers des pièces existantes', () => {

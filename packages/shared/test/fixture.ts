@@ -14,7 +14,7 @@ export const settings = {
   activity: { queueLength: 3, maxQuantity: 10000 },
   presence: { activeTimeoutSec: 120, heartbeatSec: 30 },
   rates: { active: 1, offline: 0.25, offlineCapHours: 12 },
-  energy: { multiplier: 1.5, dailyHours: 2, resetHourUtc: 4 },
+  energy: { multiplier: 1.5, charges: 2, durationMin: 30, resetHourUtc: 4 },
   bonusCaps: { tool: 0.3, meal: 0.1, clan: 0.1, season: 0.2 },
   absence: { minSummaryMin: 5 },
   character: { startingGold: 100 },
@@ -101,8 +101,8 @@ export function makeState(over: Partial<CharacterState> = {}): CharacterState {
     queue: [],
     lastTickAt: T0,
     lastSeenAt: T0,
-    // Énergie déjà épuisée par défaut, pour tester le rendement de base.
-    energy: { dayKey: '2026-01-10', usedMs: 2 * HOUR },
+    // Aucun coup de fouet en cours par défaut, pour tester le rendement de base.
+    energy: { dayKey: '', used: 0, activeUntil: 0 },
     buff: null,
     classId: 'mage',
     outfit: null,

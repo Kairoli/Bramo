@@ -21,6 +21,7 @@ pnpm --filter @bramo/sim sim report
 | `consumables [--proposal p]` | Rapport bonus / coût de chaque repas |
 | `economy [--proposal p]` | Flux de travail et d'or par joueur, variantes, sensibilité, taille du serveur, débouchés du bas niveau |
 | `market [--players n] [--days n] [--seed n]` | **Simulation du marché** : des bots (récolteurs, artisans, présences variées) jouent avec le vrai moteur et le marché du jeu ; écrit `reports/marche.html` (tableau de bord visuel) et `marche.json` |
+| `combat [--seeds n] [--proposal p]` | **Banc de combat sur le moteur réel** (`fight` de `@bramo/shared`, données `data/combat/`) : les plans d'exemple × six profils de rencontre × graines, deux règles d'ouverture, danger ×1 / ×1,5 / ×2, tolérance des horaires. Écrit `reports/combat/rapport.md`, `resume.json` (une ligne par cas) et `combats.json` (une ligne par combat, échecs compris). Compare au banc Python du dossier (`reference/banc-coeur-v0.2.json`) |
 | `calibrate [--proposal p] [--write]` | Recalcule l'XP des recettes, la durée des repas et la valeur des objets d'une proposition à partir des règles (`src/rules.ts`) |
 
 `pnpm --filter @bramo/sim test` vérifie entre autres que la mesure de référence est reproduite et que la proposition respecte ses règles.
@@ -52,5 +53,5 @@ Fichiers propres au simulateur (pas encore dans le moteur) : `plots.yaml` (parce
 ## Limites
 
 - Le modèle économique de `economy` est un **bilan de flux moyens**. La commande `market` simule des prix avec des bots, mais ils ne dépensent presque rien (pas de clan, de construction ni de combat) et suivent des règles de prix simples.
-- Le combat, l'usure et les parcelles ne sont pas encore dans le moteur : ils sont modélisés à part.
+- Le combat est dans le moteur pour le kit de classe seul (sorts, mécaniques, passifs de voie), avec des statistiques normalisées : pas encore d'équipement, d'ensembles, de gemmes, de niveau de classe ni de donjon. L'usure et les parcelles ne sont pas encore dans le moteur : elles sont modélisées à part.
 - Les joueurs qui partagent leur temps sont calculés à partir du spécialiste (journées découpées en parts égales).

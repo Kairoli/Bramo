@@ -53,7 +53,17 @@ Bramo est un **idle-RPG multijoueur jouable dans le navigateur**, dans l'esprit 
 
 ---
 
-## 5. État du projet (à jour au 21 octobre 2026)
+## 5. État du projet (à jour au 22 octobre 2026)
+
+### Fait — moteur de combat partagé, kit seul (22 octobre)
+
+- **Dossier de conception** de Louis : [`docs/design/coeur-du-jeu/`](docs/design/coeur-du-jeu/) (`Bramo-coeur-du-jeu.md` v0.2 : classes, voies, 66 sorts, ensembles, nommés, gemmes, régions, butin ; banc Python indépendant dans le ZIP). **Tout y est proposé**, coefficients provisoires. **Plan d'intégration, contradictions et questions pour Louis : [`integration.md`](docs/design/coeur-du-jeu/integration.md)** (à lire avant toute suite du combat).
+- **Précisions de Louis du 22 octobre** (dans `integration.md` §1) : combat automatique avec première utilisation programmée puis cooldowns ; protections du Forgefeu soutien sur soi ou un allié, jamais tout le groupe ; ralentissement = cadence des attaques ordinaires, pas les phases de boss ; **résistances et faiblesses élémentaires ennemies reportées** ; un DPS a un avantage de rendement perceptible, soutien et contrôle progressent bien en solo ; progression PvE solo à difficulté croissante, à murs, distincte des zones et donjons ; pas de bonus économique illimité pour les combattants ; donjons à alliés hors ligne et world boss à rendre compatibles ; plan automatique conseillé.
+- **Données** `data/combat/` (`rules`, `kits`, `spells`, `plans`, `encounters`), schémas `schemas/combat.ts`, validation `combat/content.ts` (`buildCombatContent`, `planErrors`) branchée dans `buildContent` (`Content.combat`, non envoyé au client).
+- **Moteur** `combat/engine.ts` : `fight()` pur et déterministe (ms entières, flux de tirages `combat/rng.ts`), deux règles d'ouverture (`rules.opening`, question Q1 ouverte), trois mécaniques (Braises, Angle, runes), neuf passifs, Stabilité/Pression/Rupture, ralentissement sur les attaques ordinaires seulement, équipes de 1 à N avec un bénéficiaire par protection, contributions par combattant (dégâts, soins utiles, absorbé, atténué, Pression, Ruptures, dissipations), journal.
+- **Simulateur** : `sim combat` (`sim/src/scenarios/combat.ts`) écrit `sim/reports/combat/` (rapport, une ligne par cas, une ligne par combat, échecs compris) ; il retrouve le banc Python du dossier à 0,5 % près (référence `sim/reference/banc-coeur-v0.2.json`). Constats : Fulgurant n'a presque pas d'avance sur Glyphiste, Sigillaire est dominé par Glyphiste, le groupe compact à dégâts ×2 arrête les plans de contrôle.
+- Tests : 109 dans `packages/shared` (13 de combat), 14 du simulateur, 20 d'API.
+- **Pas encore fait** : statistiques issues de l'équipement, gemmes, ensembles, nommés, niveau et XP de classe, activité de combat dans `advance`, routes et salle Combat, progression solo à murs, donjons.
 
 ### Fait — moteur d'objets à exemplaires (21 octobre)
 
@@ -210,7 +220,7 @@ Bramo est un **idle-RPG multijoueur jouable dans le navigateur**, dans l'esprit 
 - Pas de limite de tentatives de connexion, pas de changement de mot de passe, pas de suppression de compte.
 - Chiffres de `data/` encore provisoires (`# à équilibrer`), mais suivant des règles vérifiées par le simulateur. Le simulateur ne fait pas encore de prix de marché (bilan de flux seulement).
 - Animations de repos seulement (une par pose). Marée haute ne change que les couleurs. Une seule pose par classe (pas encore par voie).
-- Les niveaux de classe n'existent pas encore (combat en P4).
+- Les niveaux de classe n'existent pas encore ; le moteur de combat ne tourne que dans les tests et le simulateur (aucune activité de combat jouable).
 - L'écran de choix de classe est un contrôle du client : le serveur accepte les actions de jeu d'un personnage sans classe.
 - Pas de vrai système d'équipement : les emplacements montrent la tenue, l'arme de classe en aperçu, la meilleure pioche et le repas actif.
 - Les onglets Tout / Clan / Serveur du journal et la discussion sont désactivés.
@@ -222,7 +232,8 @@ Bramo est un **idle-RPG multijoueur jouable dans le navigateur**, dans l'esprit 
 
 ### Prochaines étapes (ordre proposé)
 
-0. **Suite de `docs/design/arbitrages.md` §3** (étapes 1 à 4 faites pour l'essentiel ; reste les outils d'apprenti, les commandes artisanales et le simulateur de marché) : (5) clans, Construction, Agriculture, (6) combat et métiers d'équipement, (7) premier événement.
+0. **Combat : suite de [`docs/design/coeur-du-jeu/integration.md`](docs/design/coeur-du-jeu/integration.md) §5** (étapes 0 à 2 faites) : réponses de Louis aux questions §7, puis (3) équilibrage des voies dans `sim/proposals/`, (4) niveau de classe et activité de combat, (5) statistiques réelles et progression solo à murs, (6) gemmes, ensembles, butin.
+0 bis. **Suite de `docs/design/arbitrages.md` §3** (étapes 1 à 4 faites pour l'essentiel ; reste les outils d'apprenti, les commandes artisanales et le simulateur de marché) : (5) clans, Construction, Agriculture, (6) combat et métiers d'équipement, (7) premier événement.
 1. **Mise en service sur le homeserver** : Postgres (docker compose), `.env` avec `DATABASE_URL`, build du client (`pnpm --filter @bramo/web build`), le serveur Fastify sert `apps/web/dist` (ou un reverse proxy devant), HTTPS, `NODE_ENV=production`, service systemd ou conteneur, sauvegardes de la base. Limite de tentatives de connexion.
 2. ~~Accueil à refaire~~ **Fait le 21 octobre** (scène du bourg et fil du serveur). Reste : annonces de saison, discussion, popup « Voyager ».
 3. **Animation et vie de l'interface** (choix de l'auteur en attente) : « +1 objet » flottant à chaque fabrication, pulsation de l'anneau, célébration de montée de niveau et d'épreuve réussie, scènes animées dans les bandeaux (forge, mines, eau), entrées du journal qui glissent.
@@ -238,7 +249,7 @@ Bramo est un **idle-RPG multijoueur jouable dans le navigateur**, dans l'esprit 
 | P1 | Prototype solo | **fait** (reste : mise en service, animations) |
 | P2 | Marché (ordres achat/vente, taxe 5 %), commandes PNJ, usure | **fait en prototype** (reste : simulateur de marché, équilibrage) |
 | P3 | Clans : bâtiments à boosts construits par les membres (pas d'entrepôt), commandes internes, postes d'experts | **commencé** (fonder, rangs, bâtiments) ; reste commandes internes, postes d'experts, Construction |
-| P4 | Combat et classes (Forgefeu mêlée, Traqueur tir, Runiste magie ; voies = spécialisations ; combat automatique ; triangle abandonné) ; vrai système d'équipement | à faire |
+| P4 | Combat et classes (Forgefeu mêlée, Traqueur tir, Runiste magie ; voies = spécialisations ; combat automatique ; triangle abandonné) ; vrai système d'équipement | **commencé** (moteur de combat partagé, kit seul, `sim combat`) |
 | P5 | Saisons (6 semaines, une mutation chacune) et classes de métier (Artificier, Alchimiste au niveau 40 du métier) | à faire |
 | P6 | Arènes PvP et ouverture | à faire |
 
@@ -326,7 +337,8 @@ packages/shared/src/
 data/               contenu et équilibrage (YAML)
 art/                gabarit, animations, poses, pièces des personnages
 docs/               game design, conception détaillée (design/) et maquettes
-sim/                simulateur : src/ (bot, chains, economy, rules, calibrate, scenarios), proposals/, reports/
+sim/                simulateur : src/ (bot, chains, economy, rules, calibrate, scenarios), proposals/, reports/, reference/ (résultats du banc du dossier)
+packages/shared/src/combat/  moteur de combat (engine, content, rng) ; données data/combat/
 ```
 
 ## 11. Pièges connus

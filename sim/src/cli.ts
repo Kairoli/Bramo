@@ -9,6 +9,7 @@ import { economyReport } from './scenarios/economy.js';
 import { chainsReport, consumablesReport } from './scenarios/chains.js';
 import { marketReport, marketText } from './scenarios/market.js';
 import { type GoldVariant, balanceMarkdown, runBalance, writeBalance } from './scenarios/balance.js';
+import { combatReport, defaultCombatOptions } from './scenarios/combat.js';
 
 const [command = 'help', ...args] = process.argv.slice(2);
 const opt = (name: string, fallback: string) => {
@@ -32,6 +33,7 @@ const commands: Record<string, () => string> = {
 
 Écrit : ${writeBalance(md)}`;
   },
+  combat: () => combatReport(loadVariant(opt('proposal', '') || undefined), { ...defaultCombatOptions, seeds: Number(opt('seeds', String(defaultCombatOptions.seeds))) }),
   market: () => marketText(marketReport({ players: Number(opt('players', '60')), days: Number(opt('days', '120')), seed: Number(opt('seed', '1')) })),
   presence: () => presenceReport(),
   progression: () => progressionReport(opt('proposal', 'boucle-v0'), Number(opt('days', '520'))),

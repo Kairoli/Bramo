@@ -2,7 +2,7 @@
 
 > Généré par `pnpm --filter @bramo/sim sim combat`. Ne pas modifier à la main.
 
-**38880 combats** en 10,4 s (12 graines par cas). Empreintes : données `173742c3dae17649`, moteur `20ec0cd7cb11587f`, banc `3e3f57f19207c75b`.
+**38880 combats** en 10,6 s (12 graines par cas). Empreintes : données `797b46ccb166c158`, moteur `447b6ae7a13cd5a6`, banc `3e3f57f19207c75b`.
 
 **Portée.** Kit de classe seul : sorts, mécanique de classe et passif de voie. Statistiques normalisées du dossier (P = 100, 2 800 PV, 25 % de réduction, 20 % de critique, 12 % de Cadence) : **pas encore d'équipement, d'ensembles, de gemmes ni de nommés**, ni de résistances élémentaires (reportées). Les répertoires 40 et 80 changent les sorts accessibles, pas les statistiques. Rencontres isolées, solo. Les fichiers `combats.json` (un combat par ligne) et `resume.json` (une ligne par cas) gardent tout, échecs compris.
 

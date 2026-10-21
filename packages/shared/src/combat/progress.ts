@@ -52,7 +52,7 @@ export interface CombatState {
   /** Dernière rencontre terminée, pour le journal du combat. */
   last: FightRecord | null;
   /** Pourquoi la dernière activité s'est arrêtée toute seule. */
-  stopped: 'losses' | 'training_cap' | null;
+  stopped: 'losses' | 'training_cap' | 'unavailable' | null;
 }
 
 export const emptyCombat = (): CombatState => ({ xp: {}, paths: {}, plans: {}, activity: null, nextIndex: 0, last: null, stopped: null });
@@ -189,8 +189,15 @@ function gainXp(state: CharacterState, classId: string, xp: number, content: Con
 export function runCombat(state: CharacterState, t: number, end: number, rate: number, content: Content, summary: CombatSummary): number {
   const a = state.combat.activity;
   if (!a || rate <= 0 || !state.classId) return end;
-  const p = need(content).rules.progression;
   const classId = state.classId;
+  // Données changées depuis le lancement (rencontre retirée, classe sans kit) : on s'arrête proprement plutôt que de bloquer le personnage.
+  const combat = content.combat;
+  if (!combat?.kits[classId] || (a.encounter !== null && !combat.encounters[a.encounter])) {
+    state.combat.activity = null;
+    state.combat.stopped = summary.stopped = 'unavailable';
+    return t;
+  }
+  const p = combat.rules.progression;
   if (a.encounter === null) {
     // Terrain d'entraînement : XP continue, réduite, jusqu'au niveau plafond.
     while (t < end) {

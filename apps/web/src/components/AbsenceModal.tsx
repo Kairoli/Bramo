@@ -17,6 +17,10 @@ export function AbsenceModal({ summary }: { summary: AdvanceSummary }) {
     })),
     ...Object.entries(summary.xp).map(([id, xp]) => ({ value: xp, label: `XP de ${profession(id)}`, color: 'var(--text)' })),
     ...summary.levelUps.map((l) => ({ value: l.to, label: `niveau de ${profession(l.skill)}`, color: 'var(--good)' })),
+    // Combat (absent des résumés enregistrés avant l'ajout du combat).
+    ...(summary.combat?.fights ? [{ value: summary.combat.wins, label: `combat${summary.combat.wins > 1 ? 's' : ''} gagné${summary.combat.wins > 1 ? 's' : ''}`, color: 'var(--alert)' }] : []),
+    ...Object.entries(summary.combat?.xp ?? {}).map(([id, xp]) => ({ value: xp, label: `XP de ${content.classes[id]?.name ?? id}`, color: 'var(--text)' })),
+    ...(summary.combat?.levelUps ?? []).map((l) => ({ value: l.to, label: `niveau de ${content.classes[l.classId]?.name ?? l.classId}`, color: 'var(--good)' })),
   ].slice(0, 6);
 
   const capReached = summary.time.capped > 0;

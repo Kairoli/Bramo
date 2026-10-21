@@ -54,7 +54,7 @@ export interface CombatView {
     fightMs: number | null;
     startedAt: number;
   } | null;
-  stopped: 'losses' | 'training_cap' | null;
+  stopped: 'losses' | 'training_cap' | 'unavailable' | null;
   lastFight: { encounter: string; name: string; win: boolean; time: number; lines: { t: number; text: string }[]; contributions: Contributions } | null;
   /** Niveau de chaque classe du personnage. */
   classLevels: Record<string, number>;
@@ -103,8 +103,14 @@ export function viewCombat(state: CharacterState, content: Content): CombatView 
   const encounterName = (id: string | null) => (id === null ? 'Terrain d’entraînement' : (combat.encounters[id]?.name ?? id));
   const last = state.combat.last;
   let lastFight: CombatView['lastFight'] = null;
-  if (last && combat.encounters[last.encounter]) {
-    const r = replayFight(state, last, content);
+  // Rejouer le dernier combat peut échouer si les données ont changé depuis (sort retiré) : on n'affiche alors pas son journal.
+  let r: ReturnType<typeof replayFight> | null = null;
+  try {
+    r = last && combat.encounters[last.encounter] ? replayFight(state, last, content) : null;
+  } catch {
+    r = null;
+  }
+  if (last && r) {
     lastFight = {
       encounter: last.encounter,
       name: encounterName(last.encounter),

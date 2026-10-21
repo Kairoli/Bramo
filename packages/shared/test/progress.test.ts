@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { loadContent } from '../src/node/index.js';
 import { advance } from '../src/engine/advance.js';
 import { startActivity } from '../src/engine/actions.js';
+import { viewCombat } from '../src/combat/view.js';
 import { advisedPlan, choosePath, classLevel, currentPlan, setPlan, startCombat, stopCombat } from '../src/combat/progress.js';
 import type { Content } from '../src/schemas/content.js';
 import { HOUR, T0, makeState } from './fixture.js';
@@ -75,6 +76,25 @@ describe('activité de combat', () => {
     const stopped = stopCombat(s);
     expect(stopped.combat.activity).toBeNull();
     expect(stopped.combat.xp).toEqual(s.combat.xp);
+  });
+});
+
+describe('données qui changent', () => {
+  it('une rencontre retirée des données arrête le combat au lieu de bloquer le personnage', () => {
+    const s = startCombat(forge(), 'duel', T0, content);
+    const changed: Content = structuredClone(content);
+    delete changed.combat!.encounters.duel;
+    const { state, summary } = advance(s, T0 + HOUR, changed);
+    expect(state.combat.activity).toBeNull();
+    expect(summary.combat.stopped).toBe('unavailable');
+  });
+
+  it('un sort retiré des données n’empêche pas d’afficher l’état (le journal du dernier combat disparaît)', () => {
+    const played = advance(startCombat(forge(), 'duel', T0, content), T0 + HOUR, content).state;
+    expect(viewCombat(played, content)?.lastFight).not.toBeNull();
+    const changed: Content = structuredClone(content);
+    for (const e of played.combat.last!.setup.plan) delete changed.combat!.spells[e.spell];
+    expect(viewCombat(played, changed)?.lastFight).toBeNull();
   });
 });
 

@@ -68,7 +68,8 @@ export function entriesFromSummary(
   // Combat : bilan des rencontres, niveaux de classe, pause éventuelle.
   const c = summary.combat;
   const className = (id: string) => content.classes[id]?.name ?? id;
-  if (c.fights) {
+  // Le bilan des rencontres n'est écrit qu'au retour d'une absence (en ligne, une ligne par rencontre noierait le journal).
+  if (c.fights && isAbsence) {
     const xp = Object.entries(c.xp).map(([id, v]) => `+${fmt(v)} XP de ${className(id)}`).join(', ');
     entries.push({ at, kind: 'combat', text: `Combat : ${fmt(c.wins)} victoire${c.wins > 1 ? 's' : ''}${c.losses ? `, ${fmt(c.losses)} défaite${c.losses > 1 ? 's' : ''}` : ''} (${xp}).` });
   } else if (Object.keys(c.xp).length && isAbsence) {
@@ -76,6 +77,7 @@ export function entriesFromSummary(
   }
   for (const l of c.levelUps) entries.push({ at, kind: 'levelup', text: `${className(l.classId)} passe au niveau ${l.to}.` });
   if (c.stopped === 'losses') entries.push({ at, kind: 'info', text: 'Trois défaites de suite : le combat se met en pause. Rien n’est perdu ; changez de plan ou de rencontre.' });
+  if (c.stopped === 'unavailable') entries.push({ at, kind: 'info', text: 'Cette rencontre n’existe plus : le combat s’est arrêté.' });
   if (c.stopped === 'training_cap') entries.push({ at, kind: 'info', text: 'Le Terrain d’entraînement s’arrête ici : la suite se gagne en vraies rencontres.' });
   for (const l of summary.levelUps) {
     entries.push({ at, kind: 'levelup', text: `${profession(l.skill)} passe au niveau ${l.to}.` });

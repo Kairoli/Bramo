@@ -215,7 +215,9 @@ function FightColumn({ view }: { view: CombatView }) {
         <p className="muted small">
           {view.stopped === 'losses'
             ? 'Trois défaites de suite : le combat s’est mis en pause. Rien n’est perdu ; changez de plan ou de rencontre.'
-            : view.stopped === 'training_cap'
+            : view.stopped === 'unavailable'
+              ? 'Cette rencontre n’existe plus : le combat s’est arrêté.'
+              : view.stopped === 'training_cap'
               ? 'Le Terrain d’entraînement s’arrête ici : la suite se gagne en vraies rencontres.'
               : 'Aucun combat. Une rencontre se rejoue en boucle, en ligne comme hors ligne, et remplace l’activité de métier.'}
         </p>

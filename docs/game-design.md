@@ -120,7 +120,7 @@ Chaque classe a **trois voies** : dégâts, contrôle, soutien.
 
 **Choix** : tout personnage, même niveau 1 et fraîchement créé, choisit sa classe avant d'entrer dans le jeu. Il en change **quand il veut, gratuitement** (les classes s'appuient sur les métiers ; rien n'est perdu).
 
-**Visuel** : chaque classe a sa **tenue de départ** et sa **pose** (Runiste : bâton et main du sort levée ; Forgefeu : campé, marteau posé au sol) pour qu'on voie tout de suite qui joue quoi. À terme, chaque voie aura aussi sa pose. Les tenues cosmétiques se changent ensuite librement par-dessus : elles suivent les os, donc toutes les poses.
+**Visuel** : chaque classe a sa **tenue de départ** et sa **pose** (Runiste : bâton et main du sort levée ; Forgefeu : campé, une main sur la hanche, le marteau sur l'épaule) pour qu'on voie tout de suite qui joue quoi. À terme, chaque voie aura aussi sa pose. Les tenues cosmétiques se changent ensuite librement par-dessus : elles suivent les os, donc toutes les poses.
 
 ### 7.2 Progression de classe
 - Niveau 30 : choix de la **voie**.

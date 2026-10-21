@@ -10,7 +10,7 @@
     { "id": "shin_far", "bone": "shin_far", "z": 15 },
     { "id": "thigh_near", "bone": "thigh_near", "z": 18 },
     { "id": "shin_near", "bone": "shin_near", "z": 19 },
-    { "id": "hand_far", "bone": "hand_far", "z": 27 },
+    { "id": "hand_far", "bone": "hand_far", "z": 48 },
     { "id": "neck", "bone": "neck", "z": 34 },
     { "id": "head", "bone": "head", "z": 54 },
     { "id": "hand_near", "bone": "hand_near", "z": 70 }

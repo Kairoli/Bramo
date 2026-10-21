@@ -150,7 +150,10 @@ export function Character({
   // Boucle d'animation : on écrit directement les attributs transform, sans re-rendu React.
   useEffect(() => {
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const anim = animate && !reduced ? (animations[pose?.animation ?? 'idle'] ?? null) : null;
+    // « Réduire les animations » : on garde une respiration de repos très douce (moitié d'amplitude),
+    // sans les effets secondaires (CSS) ; c'est le seul mouvement du personnage.
+    const anim = animate ? (animations[pose?.animation ?? 'idle'] ?? null) : null;
+    const gain = reduced ? 0.4 : 1;
     const offsets = pose?.bones ?? {};
     const zs = layers.map((l) => l.z);
     const zMid = (Math.min(...zs) + Math.max(...zs)) / 2;
@@ -159,7 +162,7 @@ export function Character({
     const draw = (now: number) => {
       const target = explode ? 1 : 0;
       explodeAmount.current += (target - explodeAmount.current) * (reduced ? 1 : 0.12);
-      const world: Record<string, Matrix> = worldMatrices(BONES, anim, now / 1000, offsets);
+      const world: Record<string, Matrix> = worldMatrices(BONES, anim, now / 1000, offsets, gain);
       for (const l of layers) {
         const el = layerRefs.current.get(l.key);
         if (!el) continue;

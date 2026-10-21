@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 760">
   <!-- Corps de base des poses qui tiennent une arme : mêmes jambes, cou et tête que « base », mais des poings.
-       Le poing éloigné est dessiné dans la pose du Forgefeu, puis ramené dans le repère de repos de l'os hand_far
+       Le poing éloigné est dessiné dans la pose du Forgefeu (il serre le manche en 332 214), puis ramené dans le repère de repos de l'os hand_far
        par la matrice inverse (calculée sur art/rig/poses/forgefire.json). -->
   <g id="shadow">
     <ellipse cx="226" cy="700" rx="118" ry="14" fill="#000" opacity=".45"/>
@@ -25,10 +25,12 @@
     <path d="M186 100 Q188 72 212 68 L208 149 Q198 143 190 130 Z" fill="url(#rig-shade)"/>
   </g>
   <g id="hand_far">
-    <g transform="matrix(-0.1219 -0.9925 0.9925 -0.1219 31.6663 589.5937)">
-      <path d="M302 348 Q318 340 335 347 L337 372 Q320 380 302 373 Z" fill="var(--c-skin)"/>
-      <path d="M304 352 Q320 346 334 352 M304 360 Q320 354 335 360 M304 367 Q320 362 335 367" stroke="var(--c-skin-dark)" stroke-width="1.5" fill="none"/>
-      <path d="M300 350 Q296 362 304 372" stroke="var(--c-skin-dark)" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+    <g transform="matrix(0.9848 0.1736 -0.1736 0.9848 57.3613 -46.4738)">
+      <g transform="translate(332 214) rotate(33)">
+        <rect x="-15" y="-13" width="30" height="26" rx="8" fill="var(--c-skin)"/>
+        <path d="M-5 -12 L-5 12 M4 -12 L4 12 M12 -10 L12 10" stroke="var(--c-skin-dark)" stroke-width="1.6" fill="none"/>
+        <path d="M-14 -13 Q-4 -20 10 -14" stroke="var(--c-skin-dark)" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+      </g>
     </g>
   </g>
   <g id="hand_near">

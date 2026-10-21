@@ -45,11 +45,11 @@ Une pose (`rig/poses/<id>.json`) ajoute des degrés à la pose de référence de
 | Pose | Classe | Corps | Animation |
 |---|---|---|---|
 | `runist` | Runiste (et Traqueur en attendant son visuel) | `base` (main du sort ouverte) | `idle` |
-| `forgefire` | Forgefeu : campé, jambes écartées, marteau posé tête au sol à droite, poing proche fermé | `base_grip` (poings) | `idle_forgefire` |
+| `forgefire` | Forgefeu : campé, jambes écartées, poing proche sur la hanche (coude écarté), marteau porté sur l'épaule par la main éloignée, masse dans le dos | `base_grip` (poings) | `idle_forgefire` |
 
 Les pièces restent dessinées sur la pose de repos et suivent leurs os ; une tenue va donc avec toutes les poses. Deux exceptions, propres à une pose :
 - un poing qui tient une arme est dessiné **dans la pose** puis ramené dans le repère de repos de son os par la matrice inverse (voir `parts/body/base_grip.svg`) ;
-- une arme posée au sol (le marteau du Forgefeu) est portée par l'os `root` : elle ne bouge pas quand le personnage respire.
+- une arme tenue dans la pose (le marteau du Forgefeu) est portée par l'os de la main qui la tient (`hand_far`), dessinée dans la pose puis ramenée dans le repère de repos par la même matrice inverse que le poing : elle suit le bras. Une arme posée au sol serait portée par l'os `root`.
 
 Pour calculer les pivots d'une pose et la matrice inverse d'un os, reprendre la cinématique de `apps/web/src/rig/skeleton.ts` (`worldMatrices` avec les décalages de la pose).
 
@@ -90,7 +90,7 @@ Pièges : pas de `--` dans un commentaire XML (le fichier entier serait refusé)
 
 ### Animations secondaires
 
-Classes CSS utilisables dans les pièces : `fx-pulse` (lueur), `fx-hover` (flotte), `fx-spin`, `fx-spin-back`, `fx-orbit` (rotation sur soi ; pour une orbite, inclure un cercle invisible centré), `fx-rise` (particule qui monte). Elles se coupent avec « réduire les animations ».
+Classes CSS utilisables dans les pièces : `fx-pulse` (lueur), `fx-hover` (flotte), `fx-spin`, `fx-spin-back`, `fx-orbit` (rotation sur soi ; pour une orbite, inclure un cercle invisible centré), `fx-rise` (particule qui monte). Elles se coupent avec « réduire les animations ». Les animations de repos (en images clés) continuent, à 40 % d'amplitude, avec ce réglage : une page web ne peut pas réactiver les effets d'animation de Windows, et un personnage totalement figé fait un jeu mort.
 
 ## Ajouter une tenue ou une pièce
 

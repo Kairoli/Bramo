@@ -46,10 +46,14 @@ export const gearModelSchema = z.object({
   rolls: z.tuple([z.number().int().min(0), z.number().int().min(0)]),
   socket: z.enum(['aucun', 'mineur', 'oui', 'majeur']),
   set: id.optional(),
-  source: z.array(z.enum(['craft', 'loot', 'plan', 'dungeon', 'event'])).min(1),
+  source: z.array(z.enum(['craft', 'loot', 'plan', 'dungeon', 'event', 'start'])).min(1),
   weaponSpeed: z.string().optional(),
   conditional: z.string().optional(),
   named: z.boolean().optional(),
+  /** Pièce du set de départ : donnée une fois par classe, au choix de la classe. */
+  starter: z.boolean().optional(),
+  /** Liée au personnage : ne se vend ni ne s'échange. */
+  bound: z.boolean().optional(),
 });
 
 export const gearSetSchema = z.object({

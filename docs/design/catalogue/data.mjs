@@ -182,7 +182,7 @@ let seq = 0;
 const add = (it) => {
   const r = RARITIES.find((x) => x.id === it.rarity);
   const tool = it.kind === 'tool';
-  items.push({ id: `i${++seq}`, ...it, stats: tool ? it.stats : it.stats.slice(0, r.stats), rolls: tool ? undefined : r.rolls });
+  items.push({ id: `i${++seq}`, ...it, stats: tool ? it.stats : it.stats.slice(0, r.stats), rolls: tool ? undefined : (it.rolls ?? r.rolls) });
 };
 
 /** Chef-d'œuvre [Proposé par Claude, à valider] : tirage séparé à la fabrication seulement, jamais par retouche. */
@@ -390,6 +390,20 @@ const named = [
   { name: 'Tunique de l\'Aube', kind: 'clothing', slot: 'torso', family: 'robe', classes: ['runist'], tier: 20, rarity: 'epic', orientation: 'offensive', material: 'de soie', stats: [{ stat: 'power', value: 160 }, { stat: 'crit', value: 76 }, { stat: 'vitality', value: 70 }], socket: 'majeur', source: ['craft', 'plan'], masterpieceExample: true },
 ];
 for (const n of named) add({ lines: lineRange(n.slot, 2), named: true, ...n });
+
+// --- Set de départ : quelques pièces Communes de palier 1, presque sans valeur, données une fois par classe et liées au personnage ---
+const STARTER = {
+  forgefire: { family: 'armor', stat: 'defense', names: { head: 'Calot de recrue', torso: 'Gilet de toile rapiécé', legs: 'Braies de recrue', feet: 'Sabots de bois' }, weapon: ['hammer', 'Maillet ébréché'] },
+  tracker: { family: 'trail', stat: 'vitality', names: { head: 'Capuchon de chiffon', torso: 'Gilet de peau mal tannée', legs: 'Chausses de toile', feet: 'Bottes de paille tressée' }, weapon: ['longbow', 'Arc de fortune'] },
+  runist: { family: 'robe', stat: 'vitality', names: { head: 'Bonnet de laine', torso: 'Robe rapiécée', legs: 'Jupe de toile', feet: 'Chaussons de feutre' }, weapon: ['staff', 'Bâton de berger'] },
+};
+const STARTER_VALUE = { head: 3, torso: 6, legs: 4, feet: 3 };
+for (const [cls, s] of Object.entries(STARTER)) {
+  for (const [slot, name] of Object.entries(s.names)) {
+    add({ name, kind: 'clothing', slot, family: s.family, classes: [cls], tier: 1, rarity: 'common', orientation: 'protective', material: 'de fortune', stats: [{ stat: s.stat, value: STARTER_VALUE[slot] }], rolls: [0, 0], socket: 'aucun', source: ['start'], starter: true, bound: true, named: true });
+  }
+  add({ name: s.weapon[1], kind: 'weapon', slot: 'weapon', family: s.weapon[0], classes: [cls], tier: 1, rarity: 'common', orientation: 'offensive', material: 'de fortune', stats: [{ stat: 'power', value: 5 }], rolls: [0, 0], socket: 'aucun', source: ['start'], starter: true, bound: true, named: true });
+}
 
 // --- Outils et équipements de métier (exemples) ---
 const tools = [

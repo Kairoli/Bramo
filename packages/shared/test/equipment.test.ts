@@ -28,7 +28,7 @@ describe('catalogue d’équipement', () => {
       }
     }
     const expectRolls: Record<string, [number, number]> = { common: [0, 1], rare: [1, 2], epic: [2, 3], legendary: [3, 4] };
-    for (const m of models) {
+    for (const m of models.filter((x) => !x.starter)) {
       expect(m.rolls, m.id).toEqual(expectRolls[m.rarity]);
       expect(m.stats.length, m.id).toBe(m.rarity === 'common' ? 1 : 2);
     }
@@ -45,6 +45,24 @@ describe('catalogue d’équipement', () => {
     const t1 = model((m) => m.slot === 'torso' && m.tier === 1);
     const t20 = model((m) => m.slot === 'torso' && m.tier === 20);
     expect(lineRange(t20, content)[0]!.max).toBeGreaterThan(lineRange(t1, content)[0]!.max);
+  });
+});
+
+describe('set de départ', () => {
+  it('chaque classe a un set de départ faible, commun, lié, sans ligne aléatoire', () => {
+    for (const cls of Object.keys(content.classes)) {
+      const set = models.filter((m) => m.starter && m.classes.includes(cls));
+      expect(set.map((m) => m.slot).sort(), cls).toEqual(['feet', 'head', 'legs', 'torso', 'weapon']);
+      for (const m of set) {
+        expect(m.rarity).toBe('common');
+        expect(m.bound).toBe(true);
+        expect(m.rolls).toEqual([0, 0]);
+        expect(rollLines(m, content, seeded(1))).toEqual([]);
+        // Bien plus faible que le même emplacement en Commun palier 1 hors set de départ.
+        const normal = models.find((x) => !x.starter && x.slot === m.slot && x.tier === 1 && x.rarity === 'common' && x.classes.includes(cls));
+        if (normal) expect(m.stats[0]!.value).toBeLessThan(normal.stats[0]!.value + 1);
+      }
+    }
   });
 });
 

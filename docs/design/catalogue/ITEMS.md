@@ -1,6 +1,6 @@
 # Équipement : tous les modèles du catalogue
 
-Généré par `docs/design/catalogue/export_gear.mjs` à partir de `data/gear.yaml` (source de vérité du jeu). **754 modèles.** Valeurs provisoires, à équilibrer.
+Généré par `docs/design/catalogue/export_gear.mjs` à partir de `data/gear.yaml` (source de vérité du jeu). **769 modèles.** Valeurs provisoires, à équilibrer.
 
 - **Lignes fixes** : propres au modèle (1 en Commun, 2 sinon). **Lignes aléatoires** : tirées par exemplaire parmi la liste de la famille, en nombre variable selon la rareté (Commun 0-1, Rare 1-2, Épique 2-3, Légendaire 3-4), valeurs selon le palier.
 - **Chef-d'œuvre** : tirage rare à la fabrication, lignes au maximum. Jamais obtenu par perfectionnement.
@@ -121,6 +121,9 @@ Ensemble d'événement (la Wyverne des cimes) : jamais indispensable, rerun chaq
 | Capuchon de l'Encrier sans fond | Robe | Runiste | Épique | Vitalité 6, Défense 5 | 2-3 parmi : Critique 2-4 % ; Ténacité 3-6 % ; Dégâts de Feu 2-4 % ; Dégâts de Givre 2-4 % ; Vitalité 3-6 % ; Défense 2-5 % | oui |
 | Capuchon du Penseur d'orage | Robe | Runiste | Épique | Puissance 10, Critique 5 | 2-3 parmi : Critique 2-4 % ; Ténacité 3-6 % ; Dégâts de Feu 2-4 % ; Dégâts de Givre 2-4 % ; Vitalité 3-6 % ; Défense 2-5 % | oui |
 | Capuchon du Songe-creux | Robe | Runiste | Légendaire | Vitalité 6, Défense 5 | 3-4 parmi : Critique 2-4 % ; Ténacité 3-6 % ; Dégâts de Feu 2-4 % ; Dégâts de Givre 2-4 % ; Vitalité 3-6 % ; Défense 2-5 % | oui |
+| Calot de recrue * | Armure | Forgefeu | Commun | Défense 3 | 0-0 parmi : Critique 2-4 % ; Ténacité 3-6 % ; Dégâts de Feu 2-4 % ; Dégâts de Givre 2-4 % ; Vitalité 3-6 % ; Défense 2-5 % | aucun |
+| Capuchon de chiffon * | Tenue de piste | Traqueur | Commun | Vitalité 3 | 0-0 parmi : Critique 2-4 % ; Ténacité 3-6 % ; Dégâts de Feu 2-4 % ; Dégâts de Givre 2-4 % ; Vitalité 3-6 % ; Défense 2-5 % | aucun |
+| Bonnet de laine * | Robe | Runiste | Commun | Vitalité 3 | 0-0 parmi : Critique 2-4 % ; Ténacité 3-6 % ; Dégâts de Feu 2-4 % ; Dégâts de Givre 2-4 % ; Vitalité 3-6 % ; Défense 2-5 % | aucun |
 
 ### Torse, palier 1
 
@@ -154,6 +157,9 @@ Ensemble d'événement (la Wyverne des cimes) : jamais indispensable, rerun chaq
 | Tunique de l'Encrier sans fond | Robe | Runiste | Épique | Vitalité 11, Défense 9 | 2-3 parmi : Vitalité 3-6 % ; Défense 3-6 % ; Bouclier de début de combat 2-5 % ; Régénération 1-3 % ; Ténacité 3-6 % ; Résistance au ralentissement 4-8 % | oui |
 | Tunique du Penseur d'orage | Robe | Runiste | Épique | Puissance 18, Critique 8 | 2-3 parmi : Vitalité 3-6 % ; Défense 3-6 % ; Bouclier de début de combat 2-5 % ; Régénération 1-3 % ; Ténacité 3-6 % ; Résistance au ralentissement 4-8 % | oui |
 | Robe du Grand Silence | Robe | Runiste | Légendaire | Puissance 19, Critique 9 | 3-4 parmi : Vitalité 3-6 % ; Défense 3-6 % ; Bouclier de début de combat 2-5 % ; Régénération 1-3 % ; Ténacité 3-6 % ; Résistance au ralentissement 4-8 % | oui |
+| Gilet de toile rapiécé * | Armure | Forgefeu | Commun | Défense 6 | 0-0 parmi : Vitalité 3-6 % ; Défense 3-6 % ; Bouclier de début de combat 2-5 % ; Régénération 1-3 % ; Ténacité 3-6 % ; Résistance au ralentissement 4-8 % | aucun |
+| Gilet de peau mal tannée * | Tenue de piste | Traqueur | Commun | Vitalité 6 | 0-0 parmi : Vitalité 3-6 % ; Défense 3-6 % ; Bouclier de début de combat 2-5 % ; Régénération 1-3 % ; Ténacité 3-6 % ; Résistance au ralentissement 4-8 % | aucun |
+| Robe rapiécée * | Robe | Runiste | Commun | Vitalité 6 | 0-0 parmi : Vitalité 3-6 % ; Défense 3-6 % ; Bouclier de début de combat 2-5 % ; Régénération 1-3 % ; Ténacité 3-6 % ; Résistance au ralentissement 4-8 % | aucun |
 
 ### Gants, palier 1
 
@@ -220,6 +226,9 @@ Ensemble d'événement (la Wyverne des cimes) : jamais indispensable, rerun chaq
 | Jupe de tissu de l'Encrier sans fond | Robe | Runiste | Épique | Vitalité 8, Défense 7 | 2-3 parmi : Vitalité 3-6 % ; Résistance au ralentissement 4-8 % ; Défense 2-5 % ; Dégâts de Givre 2-4 % ; Ténacité 3-6 % ; Régénération 1-3 % | oui |
 | Jupe de tissu du Penseur d'orage | Robe | Runiste | Épique | Puissance 13, Critique 6 | 2-3 parmi : Vitalité 3-6 % ; Résistance au ralentissement 4-8 % ; Défense 2-5 % ; Dégâts de Givre 2-4 % ; Ténacité 3-6 % ; Régénération 1-3 % | oui |
 | Jupe des Marées mortes | Robe | Runiste | Légendaire | Vitalité 8, Défense 7 | 3-4 parmi : Vitalité 3-6 % ; Résistance au ralentissement 4-8 % ; Défense 2-5 % ; Dégâts de Givre 2-4 % ; Ténacité 3-6 % ; Régénération 1-3 % | oui |
+| Braies de recrue * | Armure | Forgefeu | Commun | Défense 4 | 0-0 parmi : Vitalité 3-6 % ; Résistance au ralentissement 4-8 % ; Défense 2-5 % ; Dégâts de Givre 2-4 % ; Ténacité 3-6 % ; Régénération 1-3 % | aucun |
+| Chausses de toile * | Tenue de piste | Traqueur | Commun | Vitalité 4 | 0-0 parmi : Vitalité 3-6 % ; Résistance au ralentissement 4-8 % ; Défense 2-5 % ; Dégâts de Givre 2-4 % ; Ténacité 3-6 % ; Régénération 1-3 % | aucun |
+| Jupe de toile * | Robe | Runiste | Commun | Vitalité 4 | 0-0 parmi : Vitalité 3-6 % ; Résistance au ralentissement 4-8 % ; Défense 2-5 % ; Dégâts de Givre 2-4 % ; Ténacité 3-6 % ; Régénération 1-3 % | aucun |
 
 ### Bottes, palier 1
 
@@ -253,6 +262,9 @@ Ensemble d'événement (la Wyverne des cimes) : jamais indispensable, rerun chaq
 | Chaussons de l'Encrier sans fond | Robe | Runiste | Épique | Vitalité 5, Défense 4 | 2-3 parmi : Cadence 2-4 % ; Résistance au ralentissement 4-8 % ; Critique 1-3 % ; Dégâts de Foudre 2-4 % ; Vitalité 3-6 % ; Dégâts de Feu 2-4 % | oui |
 | Chaussons du Penseur d'orage | Robe | Runiste | Épique | Puissance 8, Critique 4 | 2-3 parmi : Cadence 2-4 % ; Résistance au ralentissement 4-8 % ; Critique 1-3 % ; Dégâts de Foudre 2-4 % ; Vitalité 3-6 % ; Dégâts de Feu 2-4 % | oui |
 | Chaussons du Somnambule royal | Robe | Runiste | Légendaire | Vitalité 5, Défense 4 | 3-4 parmi : Cadence 2-4 % ; Résistance au ralentissement 4-8 % ; Critique 1-3 % ; Dégâts de Foudre 2-4 % ; Vitalité 3-6 % ; Dégâts de Feu 2-4 % | oui |
+| Sabots de bois * | Armure | Forgefeu | Commun | Défense 3 | 0-0 parmi : Cadence 2-4 % ; Résistance au ralentissement 4-8 % ; Critique 1-3 % ; Dégâts de Foudre 2-4 % ; Vitalité 3-6 % ; Dégâts de Feu 2-4 % | aucun |
+| Bottes de paille tressée * | Tenue de piste | Traqueur | Commun | Vitalité 3 | 0-0 parmi : Cadence 2-4 % ; Résistance au ralentissement 4-8 % ; Critique 1-3 % ; Dégâts de Foudre 2-4 % ; Vitalité 3-6 % ; Dégâts de Feu 2-4 % | aucun |
+| Chaussons de feutre * | Robe | Runiste | Commun | Vitalité 3 | 0-0 parmi : Cadence 2-4 % ; Résistance au ralentissement 4-8 % ; Critique 1-3 % ; Dégâts de Foudre 2-4 % ; Vitalité 3-6 % ; Dégâts de Feu 2-4 % | aucun |
 
 ### Cape, palier 1
 
@@ -378,6 +390,9 @@ Ensemble d'événement (la Wyverne des cimes) : jamais indispensable, rerun chaq
 | Grimoire des marges de toile | grimoire | Runiste | Rare | Vitalité 33, Puissance 30 | 1-2 parmi : Dégâts critiques 4-9 % ; Cadence 2-4 % ; Pénétration 2-5 % ; Dégâts de l'élément de l'arme 3-6 % ; Critique 2-4 % ; Dégâts physiques 2-4 % | majeur |
 | Le Livre des ratures | grimoire | Runiste | Épique | Vitalité 35, Puissance 31 | 2-3 parmi : Dégâts critiques 4-9 % ; Cadence 2-4 % ; Pénétration 2-5 % ; Dégâts de l'élément de l'arme 3-6 % ; Critique 2-4 % ; Dégâts physiques 2-4 % | majeur |
 | Livre-qui-murmure | grimoire | Runiste | Légendaire | Vitalité 36, Puissance 32 | 3-4 parmi : Dégâts critiques 4-9 % ; Cadence 2-4 % ; Pénétration 2-5 % ; Dégâts de l'élément de l'arme 3-6 % ; Critique 2-4 % ; Dégâts physiques 2-4 % | majeur |
+| Maillet ébréché * | hammer | Forgefeu | Commun | Puissance 5 | 0-0 parmi : Dégâts critiques 4-9 % ; Cadence 2-4 % ; Pénétration 2-5 % ; Dégâts de l'élément de l'arme 3-6 % ; Critique 2-4 % ; Dégâts physiques 2-4 % | aucun |
+| Arc de fortune * | longbow | Traqueur | Commun | Puissance 5 | 0-0 parmi : Dégâts critiques 4-9 % ; Cadence 2-4 % ; Pénétration 2-5 % ; Dégâts de l'élément de l'arme 3-6 % ; Critique 2-4 % ; Dégâts physiques 2-4 % | aucun |
+| Bâton de berger * | staff | Runiste | Commun | Puissance 5 | 0-0 parmi : Dégâts critiques 4-9 % ; Cadence 2-4 % ; Pénétration 2-5 % ; Dégâts de l'élément de l'arme 3-6 % ; Critique 2-4 % ; Dégâts physiques 2-4 % | aucun |
 
 ## Palier 10
 

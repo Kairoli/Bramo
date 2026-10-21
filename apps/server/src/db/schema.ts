@@ -55,6 +55,8 @@ export const characters = pgTable('characters', {
   /** Null = tenue de départ de la classe. */
   outfit: text('outfit'),
   /** Apparence pièce par pièce (emplacement → pièce), au-dessus de la tenue. */
+  /** Classes dont le set de départ a déjà été donné (une fois par classe). */
+  starterClasses: jsonb('starter_classes').$type<string[]>().notNull().default([]),
   look: jsonb('look').$type<Record<string, string>>().notNull().default({}),
   trials: jsonb('trials').$type<string[]>().notNull().default([]),
   /** Surnom affiché par métier (rang choisi). */

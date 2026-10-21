@@ -156,6 +156,16 @@ export function buildContent(raw: RawContent): Content {
     if (!classes[s.class]) errors.push(`gear_sets.yaml : ${s.id} : classe inconnue « ${s.class} »`);
     if (gearList.filter((m) => m.set === s.id).length < 4) errors.push(`gear_sets.yaml : l'ensemble ${s.id} a moins de 4 pièces`);
   }
+  if (gearList.length) {
+    for (const c of classList) {
+      const set = gearList.filter((m) => m.starter && m.classes.includes(c.id));
+      if (!set.some((m) => m.slot === 'weapon') || !set.some((m) => m.slot === 'torso')) errors.push(`gear.yaml : la classe ${c.id} n'a pas de set de départ (au moins une arme et un torse)`);
+    }
+    for (const m of gearList.filter((x) => x.starter)) {
+      if (m.rarity !== 'common' || m.rolls[1] !== 0) errors.push(`gear.yaml : ${m.id} : une pièce de départ est Commune, sans ligne aléatoire`);
+      if (!m.bound) errors.push(`gear.yaml : ${m.id} : une pièce de départ est liée au personnage`);
+    }
+  }
   if (errors.length) throw new ContentError(`Données incohérentes :\n- ${errors.join('\n- ')}`);
 
   return { settings, professions, items, recipes, trials, npcOrders, buildings, classes, cosmetics, gearSlots, gearPools, gearModels, gearSets, xpTable: buildXpTable(settings.xp.maxLevel) };

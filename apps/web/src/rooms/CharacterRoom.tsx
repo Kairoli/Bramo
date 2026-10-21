@@ -188,7 +188,7 @@ export function CharacterRoom() {
             {best.s.nickname} · {best.p.name} {best.s.level}
           </div>
         </header>
-        <PaperDoll size="page" />
+        <PaperDoll size="page" mode={mode} gear={gear} />
         <footer className="char-stage-foot">
           <button className="btn btn-sm" onClick={() => setClassOpen(true)}>
             Changer de classe

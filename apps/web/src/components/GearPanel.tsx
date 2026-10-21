@@ -41,6 +41,7 @@ function ItemCard({ g, children }: { g: GearItemView; children?: React.ReactNode
         <strong>{g.masterpiece ? `Chef-d’œuvre ${g.name}` : g.name}</strong>
         <span className="muted">
           {RARITY_NAMES[g.rarity]} · palier {g.tier}
+          {g.bound ? ' · lié' : ''}
         </span>
       </div>
       <div className="gear-lines">

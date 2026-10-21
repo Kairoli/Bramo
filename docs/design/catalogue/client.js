@@ -184,7 +184,7 @@ function renderItems() {
   next.addEventListener('click', () => { F.page++; renderItems(); });
   pg.append(prev, el('span', 'small muted', `page ${F.page + 1} sur ${pages}`), next);
 }
-const SRC = { craft: 'Fabrication (Forge, Couture, Tannerie…)', loot: 'Butin de rencontres', plan: 'Plan à apprendre', dungeon: 'Donjon', event: 'Événement' };
+const SRC = { start: 'Set de départ (lié au personnage)', craft: 'Fabrication (Forge, Couture, Tannerie…)', loot: 'Butin de rencontres', plan: 'Plan à apprendre', dungeon: 'Donjon', event: 'Événement' };
 let masterpiece = false;
 function renderDetail() {
   const d = $('detail');

@@ -85,6 +85,13 @@
       "when": 1792598612146,
       "tag": "0011_gear",
       "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "7",
+      "when": 1792599276846,
+      "tag": "0012_starter",
+      "breakpoints": true
     }
   ]
 }

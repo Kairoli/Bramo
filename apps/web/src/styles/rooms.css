@@ -1936,3 +1936,18 @@
 .char-equipment > * {
   flex-shrink: 0;
 }
+
+.equip-slot.equip-gear[style] {
+  border-color: var(--rc);
+}
+.equip-gear-name {
+  font-size: 8.5px;
+  line-height: 1.1;
+  text-align: center;
+  padding: 2px;
+  color: var(--rc);
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+}

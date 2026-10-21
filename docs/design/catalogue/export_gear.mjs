@@ -29,7 +29,7 @@ const unique = (base) => {
 };
 for (const it of ITEMS) {
   if (it.kind === 'tool') continue; // les outils de métier restent dans items.yaml
-  const base = it.named || it.set ? `${slug(it.name)}_t${it.tier}` : `${it.family}_${it.slot}_t${it.tier}_${it.rarity}_${it.orientation === 'protective' ? 'prot' : 'off'}`;
+  const base = it.starter ? `starter_${it.classes[0]}_${it.slot}` : it.named || it.set ? `${slug(it.name)}_t${it.tier}` : `${it.family}_${it.slot}_t${it.tier}_${it.rarity}_${it.orientation === 'protective' ? 'prot' : 'off'}`;
   const m = {
     id: unique(base),
     name: it.name,
@@ -50,6 +50,8 @@ for (const it of ITEMS) {
   if (it.weaponSpeed) m.weaponSpeed = it.weaponSpeed;
   if (it.conditional) m.conditional = it.conditional;
   if (it.named) m.named = true;
+  if (it.starter) m.starter = true;
+  if (it.bound) m.bound = true;
   models.push(m);
 }
 

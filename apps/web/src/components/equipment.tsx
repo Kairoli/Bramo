@@ -1,5 +1,5 @@
 import { useId, useLayoutEffect, useMemo, useRef, useState } from 'react';
-import type { Appearance, Item, Slot } from '@bramo/shared';
+import type { Appearance, GearView, Item, Slot } from '@bramo/shared';
 import { useGame } from '../game/GameContext';
 import { useNow } from '../game/useLive';
 import { Character, RigDefs, colorVars, resolveParts, useLook } from '../rig/Character';
@@ -33,6 +33,8 @@ export interface EquipEntry {
   item: Item | null;
   /** Pièces à mettre en valeur sur le personnage au survol. */
   highlight: Slot[];
+  /** Rareté de l'équipement réel porté (couleur de bordure). */
+  rarity?: string;
 }
 
 const COSMETIC: { id: EquipSlotId; label: string; slots: Slot[] }[] = [
@@ -164,6 +166,29 @@ export function PartThumb({ slot, partId, appearance }: { slot: Slot; partId: st
   );
 }
 
+/** Emplacement du poupon → emplacement d'équipement réel (les épaules n'en ont pas). */
+const GEAR_SLOT_OF: Partial<Record<EquipSlotId, string>> = { headwear: 'head', top: 'torso', gloves: 'hands', belt: 'belt', cape: 'cape', robe: 'legs', boots: 'feet', weapon: 'weapon' };
+const RARITY_NAMES: Record<string, string> = { common: 'Commun', rare: 'Rare', epic: 'Épique', legendary: 'Légendaire' };
+
+/** Mode Équipement : les cases montrent ce qui est réellement porté (le build), pas l'apparence. */
+function gearEntries(base: Record<EquipSlotId, EquipEntry>, gear: GearView | null): Record<EquipSlotId, EquipEntry> {
+  const out = { ...base };
+  for (const [id, slot] of Object.entries(GEAR_SLOT_OF) as [EquipSlotId, string][]) {
+    const g = gear?.items.find((x) => x.equipped === slot);
+    out[id] = {
+      ...base[id],
+      kind: 'gear',
+      name: g ? (g.masterpiece ? `Chef-d’œuvre ${g.name}` : g.name) : null,
+      detail: g ? `${RARITY_NAMES[g.rarity]} · palier ${g.tier}${g.worn ? ' · usé' : ''}` : 'Vide',
+      thumb: null,
+      item: null,
+      rarity: g?.rarity,
+    };
+  }
+  out.shoulders = { ...base.shoulders, kind: 'gear', name: null, detail: 'Pas d’équipement à cet emplacement', thumb: null, item: null };
+  return out;
+}
+
 export function EquipSlot({
   entry,
   side,
@@ -176,6 +201,7 @@ export function EquipSlot({
   return (
     <div
       className={`equip-slot equip-${entry.kind}${entry.name ? '' : ' empty'}`}
+      style={entry.rarity ? ({ '--rc': `var(--r-${entry.rarity})` } as React.CSSProperties) : undefined}
       tabIndex={0}
       onMouseEnter={() => onHover?.(entry.highlight)}
       onMouseLeave={() => onHover?.(null)}
@@ -187,6 +213,8 @@ export function EquipSlot({
         <PartThumb slot={entry.thumb.slot} partId={entry.thumb.partId} />
       ) : entry.item ? (
         <ItemIcon item={entry.item} small />
+      ) : entry.rarity && entry.name ? (
+        <span className="equip-gear-name">{entry.name}</span>
       ) : (
         <span className="equip-empty-label">{entry.label}</span>
       )}
@@ -200,9 +228,10 @@ export function EquipSlot({
 }
 
 /** Le personnage en entier, entouré de ce qu'il porte. Survoler un emplacement met la pièce en valeur. */
-export function PaperDoll({ size }: { size: 'card' | 'page' }) {
+export function PaperDoll({ size, mode = 'look', gear = null }: { size: 'card' | 'page'; mode?: 'gear' | 'look'; gear?: GearView | null }) {
   const { look } = useGame();
-  const equipment = useEquipment();
+  const base = useEquipment();
+  const equipment = mode === 'gear' ? gearEntries(base, gear) : base;
   const [highlight, setHighlight] = useState<Slot[] | null>(null);
   return (
     <div className={`doll doll-${size}`}>

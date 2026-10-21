@@ -65,7 +65,7 @@ import { recentEntries } from './journal.js';
 import { joinEvent, recordEvents, townView } from './town.js';
 import { contribute, createClan, joinClan, kickMember, leaveClan, listClans, myClanView, setRank } from './clans.js';
 import { cancelRepair, openRepairs, requestRepair, takeRepair } from './repairs.js';
-import { dropMismatchedOwned, equipOwned, grantGear, loadGear, unequipOwned } from './gear.js';
+import { dropMismatchedOwned, equipOwned, giveStarterGear, grantGear, loadGear, unequipOwned } from './gear.js';
 import { buyFromStall, cancelOrder, fillOrder, marketBook, marketSummary, myOrders, placeOrder } from './market.js';
 
 export interface AppOptions {
@@ -365,6 +365,7 @@ export async function buildApp({ db, content, clock = Date.now, secureCookies = 
     return playAs(req, async (state, _now, ctx) => {
       const next = chooseClass(state, classId, content);
       await dropMismatchedOwned(ctx.tx, ctx.characterId, classId, content);
+      await giveStarterGear(ctx.tx, ctx.characterId, classId, content);
       return {
         state: next,
         log: `${state.classId ? 'Vous changez de classe' : 'Vous choisissez votre classe'} : ${content.classes[classId]?.name}.`,
@@ -379,6 +380,8 @@ export async function buildApp({ db, content, clock = Date.now, secureCookies = 
 
   app.get('/api/gear', async (req) => {
     const me = await myCharacter(req);
+    // Les personnages créés avant le set de départ le reçoivent ici, une fois.
+    if (me.classId) await db.transaction((tx) => giveStarterGear(tx, me.id, me.classId, content));
     return viewGear(await loadGear(db, me.id), me.classId, content);
   });
 

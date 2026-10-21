@@ -93,9 +93,10 @@ describe('API', () => {
     const robe = pick('torso', 'runist');
     const mail = pick('torso', 'forgefire');
     const granted = (await call('POST', '/api/dev/gear/grant', { modelId: robe, count: 2 })).json;
-    expect(granted.items).toHaveLength(2);
-    expect(granted.items[0]).toMatchObject({ model: robe, equipped: null, wearable: true, worn: false });
-    expect(granted.items[0].lines.length).toBeLessThanOrEqual(4);
+    const mine = granted.items.filter((g: { model: string }) => g.model === robe);
+    expect(mine).toHaveLength(2);
+    expect(mine[0]).toMatchObject({ model: robe, equipped: null, wearable: true, worn: false, bound: false });
+    expect(mine[0].lines.length).toBeLessThanOrEqual(4);
     const other = (await call('POST', '/api/dev/gear/grant', { modelId: mail })).json;
     const mailId = other.items.find((g: { model: string }) => g.model === mail).id;
     expect(other.items.find((g: { id: number }) => g.id === mailId).wearable).toBe(false);
@@ -103,7 +104,7 @@ describe('API', () => {
 
     // Équiper : le bon style, pas un autre ; un second torse remplace le premier.
     expect((await call('POST', '/api/gear/equip', { id: mailId })).status).toBe(400);
-    const [first, second] = granted.items as { id: number }[];
+    const [first, second] = mine as { id: number }[];
     const worn = (await call('POST', '/api/gear/equip', { id: first!.id })).json;
     expect(worn.items.find((g: { id: number }) => g.id === first!.id).equipped).toBe('torso');
     expect(worn.totals.stats.power ?? worn.totals.stats.vitality ?? worn.totals.stats.defense).toBeGreaterThan(0);
@@ -121,6 +122,8 @@ describe('API', () => {
     // Changer de classe range les pièces qui ne sont plus du bon style (les anneaux, universels, restent).
     await call('POST', '/api/character/class', { classId: 'forgefire' });
     const forge = (await call('GET', '/api/gear')).json;
+    // Le set de départ n'est donné qu'une fois par classe : changer de classe et revenir ne le redonne pas.
+    expect(forge.items.filter((g: { bound: boolean }) => g.bound)).toHaveLength(10);
     expect(forge.items.find((g: { id: number }) => g.id === second!.id).equipped).toBeNull();
     expect(forge.items.filter((g: { equipped: string | null }) => g.equipped === 'ring')).toHaveLength(2);
     await call('POST', '/api/character/class', { classId: 'runist' });

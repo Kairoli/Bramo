@@ -11,7 +11,7 @@ import {
   unequipGear,
 } from '@bramo/shared';
 import type { Db, Tx } from './db/index.js';
-import { gearItems } from './db/schema.js';
+import { characters, gearItems } from './db/schema.js';
 
 /** Les exemplaires d'un personnage, dans l'ordre de leur création. */
 export async function loadGear(tx: Tx | Db, characterId: number): Promise<GearInstance[]> {
@@ -51,6 +51,22 @@ export async function unequipOwned(tx: Tx, characterId: number, id: number): Pro
 export async function dropMismatchedOwned(tx: Tx, characterId: number, classId: string | null, content: Content): Promise<void> {
   const before = await loadGear(tx, characterId);
   await saveEquipped(tx, before, dropMismatched(before, classId, content));
+}
+
+/**
+ * Set de départ d'une classe : donné et équipé la première fois que le personnage choisit cette classe (une fois par classe).
+ * Les pièces sont liées au personnage. Renvoie true si le set vient d'être donné.
+ */
+export async function giveStarterGear(tx: Tx, characterId: number, classId: string | null, content: Content): Promise<boolean> {
+  if (!classId) return false;
+  const [row] = await tx.select({ given: characters.starterClasses }).from(characters).where(eq(characters.id, characterId));
+  if (!row || row.given.includes(classId)) return false;
+  for (const m of Object.values(content.gearModels)) {
+    if (!m.starter || !m.classes.includes(classId)) continue;
+    await tx.insert(gearItems).values({ characterId, modelId: m.id, lines: [], masterpiece: false, signedBy: null, wear: 0, equipped: m.slot });
+  }
+  await tx.update(characters).set({ starterClasses: [...row.given, classId] }).where(eq(characters.id, characterId));
+  return true;
 }
 
 export interface GrantOptions {

@@ -1,0 +1,1 @@
+ALTER TABLE "characters" ADD COLUMN "starter_classes" jsonb DEFAULT '[]'::jsonb NOT NULL;

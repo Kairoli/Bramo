@@ -101,7 +101,40 @@ Chaque étape se termine par une vérification écrite et un commit. Les chiffre
 - **Accessibilité** : décaler chaque horaire au hasard de ±2 s change le temps de moins de 3 % ; mettre tous les sorts à 0 s (ordre du plan) fait aussi bien ou mieux (−6 à +5 %). Un plan conseillé « sorts dans l'ordre, sans horaire » suffit pour commencer.
 - **Ouverture** : en moyenne sur les six profils, « independent » va de 6 % plus rapide à 4 % plus lent que « séquence » selon les plans (13 % au plus sur un profil). La règle change peu le rendement : elle se choisit sur la lisibilité.
 
-Prochaine étape : **3, équilibrage des voies** (propositions mesurées dans `sim/proposals/`), après les réponses aux questions ci-dessous, puis **4, niveau de classe et activité de combat**.
+### Étape 3 faite (22 octobre) : équilibrage des voies, deux propositions mesurées
+
+Rien n'est changé dans `data/`. Les propositions sont dans `sim/proposals/<nom>/combat.yaml` (format décrit dans `sim/README.md`) ; les leviers ajoutés au moteur sont des paramètres **inactifs par défaut** (`data/` donne exactement les mêmes combats qu'avant).
+
+**Outil nouveau : la recherche de plans** (`sim combat-search`). Pour chaque voie, toutes les combinaisons de 5 sorts accessibles aux répertoires 40 et 80 (au plus un ultime), sans horaire ; les plus rapides, les plus sûrs et le meilleur de chaque profil sont rejoués à 12 graines et aux dangers ×1 à ×4. Le **mur** d'une voie dans un profil est le plus haut danger où l'un de ses plans gagne 90 % des combats. Rapports : `sim/reports/combat/recherche.md` (données actuelles) et `sim/reports/combat/<proposition>/recherche.md`. La même recherche fournira le **plan conseillé automatique** de l'étape 4.
+
+**Ce que la recherche a changé au diagnostic** (données actuelles, kit seul) :
+- **Fulgurant n'a pas de problème de passif** : avec son meilleur plan, c'est le DPS le plus rapide (41,4 s en moyenne au répertoire 80, contre 42,9 pour Trempe-Rouge et 46,4 pour Tue-Bête). Son retard venait des **plans d'exemple** du dossier, qui lui retirent Rature ardente au répertoire 80. Glyphiste et Sigillaire sont alors 6 à 14 % plus lents que lui.
+- Le vrai écart manquant est chez **Forgefeu et Traqueur au répertoire 40** : l'Enclumier y est même 1 à 3 % plus rapide que Trempe-Rouge, et le Piégeur seulement 2 à 5 % plus lent que Tue-Bête.
+- **Le contrôle n'avait aucun avantage de survie** : ses murs étaient ceux du DPS. Il était seulement un DPS un peu plus lent.
+- **Des sorts de voie que personne ne prend** : le meilleur plan d'Enclumier et de Rémouleur (aux deux répertoires) et de Trempe-Rouge au 40 ne contient **aucun** sort de sa voie ; les sorts communs valent mieux.
+
+**Proposition `combat-plans-v1`** : seulement des plans conseillés (un par voie, issus de la recherche), aucune règle changée. Elle règle Fulgurant et montre l'effet des plans seuls. Rapport : `sim/reports/combat/combat-plans-v1/rapport.md`.
+
+**Proposition `combat-voies-v1`** *[Proposé par Claude, à valider]* : les plans conseillés recherchés sur ses propres règles, plus :
+1. **Deux passifs de dégâts renforcés, eux seuls** : Rebattue (Trempe-Rouge) 0,12 → 0,22 P par Braise ; Morsure (Tue-Bête) 0,42 → 0,65 P. Fulgurant inchangé.
+2. **Survie du contrôle** (Enclumier, Piégeur, Sigillaire) : l'Affaiblissement de leur passif touche **toutes les attaques** de la cible pendant sa durée, à valeur réduite (Enclumier 8 → 6 % par Braise, Contrepiège et Interdit 25-30 → 20 %) ; leurs ralentissements +10 points et +50 % de durée (toujours plafonnés à 15 % sur un boss, sans toucher ses phases).
+3. **Rupture des ennemis ordinaires** (jamais des boss) : Stabilité 50 au lieu de 80, et 2 s d'étourdissement à la Rupture.
+
+Résultats de la recherche sur cette proposition (meilleur plan par profil ; écart de temps au DPS de la classe ; murs) :
+
+| Classe | Répertoire 40 : contrôle / soutien | Répertoire 80 : contrôle / soutien | Murs du contrôle |
+|---|---|---|---|
+| Forgefeu | +5 à +9 % / +8 à +14 % (avant : −1 à −3 % / +1 à +8 %) | +11 à +18 % / +14 à +23 % (avant : +2 à +12 % / +10 à +16 %) | égaux ou plus hauts que le DPS partout, ≥ ×4 contre gardes et soins |
+| Traqueur | +5 à +10 % / +8 à +15 % (avant : +2 à +5 % / +4 à +10 %) | +2 à +13 % / +12 à +16 % (avant : +1 à +11 % / +10 à +14 %) | égaux ou plus hauts que le DPS ; un demi-cran au-dessus sur quatre profils sur six au répertoire 80 |
+| Runiste | +3 à +8 % / +3 à +13 % (avant : +6 à +11 % / +3 à +13 %) | +5 à +12 % / +6 à +12 % (avant : +7 à +14 % / +6 à +12 %) | Sigillaire ≥ ×4 contre gardes et soins, ×3 contre la charge |
+
+Ce qui reste insatisfaisant, à arbitrer :
+- En solo, le contrôle franchit parfois **des murs plus hauts que le soutien** (Enclumier ≥ ×4 contre gardes et soins, Rémouleur ×3). Le soutien garde son avantage en groupe, qui n'est pas encore simulé (étape 6).
+- Au répertoire 40, le Runiste de contrôle ou de soutien n'est que 3 % plus lent que Fulgurant contre la cible durable.
+- **Le groupe compact à ×2 reste un mur** pour presque toutes les voies (seuls Glyphiste et, dans `combat-voies-v1`, Sigillaire à 67 % le franchissent). C'est un réglage de contenu (étape 5), pas de voie.
+- Les sorts de voie d'Enclumier et de Rémouleur restent inutilisés : il faudra les revoir un par un, avec Louis, plutôt que de monter leurs chiffres à l'aveugle.
+
+Prochaine étape : choix de Louis sur `combat-voies-v1` (les trois leviers sont indépendants), puis **4, niveau de classe et activité de combat**.
 
 ## 7. Questions pour Louis
 

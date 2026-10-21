@@ -1,0 +1,284 @@
+# Proposition de combat (voir sim/README.md). addPlans est réécrit par `sim combat-search --write combat-voies-v1`.
+note: "Équilibrage des voies, étape 3 de docs/design/coeur-du-jeu/integration.md. Proposé par Claude, à valider. 1) Passifs de dégâts faibles renforcés, eux seuls : Rebattue (Trempe-Rouge) 0,12 -> 0,22 P par Braise, Morsure (Tue-Bête) 0,42 -> 0,65 P. Fulgurant n'est pas touché : son retard venait des plans d'exemple. 2) Survie des voies de contrôle : leurs Affaiblissements de passif valent pour toutes les attaques de la cible pendant leur durée (plus seulement la prochaine), à valeur réduite ; leurs ralentissements +10 points et +50 % de durée. 3) Rupture des ennemis ordinaires (pas des boss) : Stabilité 50 au lieu de 80, étourdissement de 2 s. addPlans : plans conseillés trouvés par sim combat-search sur ces règles."
+rules:
+  stability:
+    ordinaryMax: 50
+    ordinaryBreakStun: 2
+paths:
+  red_temper:
+    params:
+      perHeat: 0.22
+  beastslayer:
+    params:
+      bleed: 0.65
+  anvil:
+    params:
+      weakenAll: 1
+      weakenPerHeat: 0.06
+      slowAmount: 0.1
+      slowDuration: 1.5
+  trapper:
+    params:
+      weakenAll: 1
+      weaken: 0.2
+      slowAmount: 0.1
+      slowDuration: 1.5
+  sigilbinder:
+    params:
+      weakenAll: 1
+      weaken: 0.2
+      slowAmount: 0.1
+      slowDuration: 1.5
+addPlans:
+  - id: red_temper_advised
+    name: Plan conseillé Trempe-Rouge
+    class: forgefire
+    path: red_temper
+    weapon: hammer
+    levels:
+      "40":
+        - spell: fg_workshop
+          at: 0
+        - spell: fg_quench
+          at: 0
+        - spell: fg_punch
+          at: 0
+        - spell: fg_furnace
+          at: 0
+        - spell: fg_crosscut
+          at: 0
+      "80":
+        - spell: fg_workshop
+          at: 0
+        - spell: fg_quench
+          at: 0
+        - spell: fg_furnace
+          at: 0
+        - spell: fg_crosscut
+          at: 0
+        - spell: fg_second_strike
+          at: 0
+  - id: anvil_advised
+    name: Plan conseillé Enclumier
+    class: forgefire
+    path: anvil
+    weapon: hammer
+    levels:
+      "40":
+        - spell: fg_workshop
+          at: 0
+        - spell: fg_quench
+          at: 0
+        - spell: fg_furnace
+          at: 0
+        - spell: fg_crosscut
+          at: 0
+        - spell: fg_return
+          at: 0
+      "80":
+        - spell: fg_workshop
+          at: 0
+        - spell: fg_quench
+          at: 0
+        - spell: fg_furnace
+          at: 0
+        - spell: fg_crosscut
+          at: 0
+        - spell: fg_return
+          at: 0
+  - id: whetter_advised
+    name: Plan conseillé Rémouleur
+    class: forgefire
+    path: whetter
+    weapon: hammer
+    levels:
+      "40":
+        - spell: fg_workshop
+          at: 0
+        - spell: fg_quench
+          at: 0
+        - spell: fg_furnace
+          at: 0
+        - spell: fg_crosscut
+          at: 0
+        - spell: fg_return
+          at: 0
+      "80":
+        - spell: fg_workshop
+          at: 0
+        - spell: fg_quench
+          at: 0
+        - spell: fg_furnace
+          at: 0
+        - spell: fg_crosscut
+          at: 0
+        - spell: fg_return
+          at: 0
+  - id: beastslayer_advised
+    name: Plan conseillé Tue-Bête
+    class: tracker
+    path: beastslayer
+    weapon: longbow
+    levels:
+      "40":
+        - spell: tr_read
+          at: 0
+        - spell: tr_pursuit
+          at: 0
+        - spell: tr_broadside
+          at: 0
+        - spell: tr_barbed
+          at: 0
+        - spell: tr_seam
+          at: 0
+      "80":
+        - spell: tr_read
+          at: 0
+        - spell: tr_pursuit
+          at: 0
+        - spell: tr_barbed
+          at: 0
+        - spell: tr_seam
+          at: 0
+        - spell: tr_sidestep
+          at: 0
+  - id: trapper_advised
+    name: Plan conseillé Piégeur
+    class: tracker
+    path: trapper
+    weapon: longbow
+    levels:
+      "40":
+        - spell: tr_read
+          at: 0
+        - spell: tr_pursuit
+          at: 0
+        - spell: tr_snare
+          at: 0
+        - spell: tr_barbed
+          at: 0
+        - spell: tr_iron_teeth
+          at: 0
+      "80":
+        - spell: tr_read
+          at: 0
+        - spell: tr_pursuit
+          at: 0
+        - spell: tr_barbed
+          at: 0
+        - spell: tr_iron_teeth
+          at: 0
+        - spell: tr_stare
+          at: 0
+  - id: packleader_advised
+    name: Plan conseillé Meneur de meute
+    class: tracker
+    path: packleader
+    weapon: longbow
+    levels:
+      "40":
+        - spell: tr_read
+          at: 0
+        - spell: tr_pursuit
+          at: 0
+        - spell: tr_broadside
+          at: 0
+        - spell: tr_barbed
+          at: 0
+        - spell: tr_packguard
+          at: 0
+      "80":
+        - spell: tr_read
+          at: 0
+        - spell: tr_pursuit
+          at: 0
+        - spell: tr_barbed
+          at: 0
+        - spell: tr_packguard
+          at: 0
+        - spell: tr_stare
+          at: 0
+  - id: fulgurant_advised
+    name: Plan conseillé Fulgurant
+    class: runist
+    path: fulgurant
+    weapon: staff
+    levels:
+      "40":
+        - spell: rn_ember
+          at: 0
+        - spell: rn_frost_circle
+          at: 0
+        - spell: rn_lightning
+          at: 0
+        - spell: rn_frost_line
+          at: 0
+        - spell: rn_ardent_erasure
+          at: 0
+      "80":
+        - spell: rn_ember
+          at: 0
+        - spell: rn_lightning
+          at: 0
+        - spell: rn_frost_line
+          at: 0
+        - spell: rn_shards
+          at: 0
+        - spell: rn_ardent_erasure
+          at: 0
+  - id: sigilbinder_advised
+    name: Plan conseillé Sigillaire
+    class: runist
+    path: sigilbinder
+    weapon: staff
+    levels:
+      "40":
+        - spell: rn_ember
+          at: 0
+        - spell: rn_frost_circle
+          at: 0
+        - spell: rn_lightning
+          at: 0
+        - spell: rn_frost_line
+          at: 0
+        - spell: rn_ash_ring
+          at: 0
+      "80":
+        - spell: rn_ember
+          at: 0
+        - spell: rn_frost_circle
+          at: 0
+        - spell: rn_lightning
+          at: 0
+        - spell: rn_frost_line
+          at: 0
+        - spell: rn_divide
+          at: 0
+  - id: glyphkeeper_advised
+    name: Plan conseillé Glyphiste
+    class: runist
+    path: glyphkeeper
+    weapon: staff
+    levels:
+      "40":
+        - spell: rn_ember
+          at: 0
+        - spell: rn_lightning
+          at: 0
+        - spell: rn_frost_line
+          at: 0
+        - spell: rn_ash_ring
+          at: 0
+        - spell: rn_resonant_guard
+          at: 0
+      "80":
+        - spell: rn_ember
+          at: 0
+        - spell: rn_lightning
+          at: 0
+        - spell: rn_frost_line
+          at: 0
+        - spell: rn_resonant_guard
+          at: 0
+        - spell: rn_divide
+          at: 0

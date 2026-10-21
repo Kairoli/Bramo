@@ -1,0 +1,61 @@
+import { mkdirSync, writeFileSync } from 'node:fs';
+import { dirname, join } from 'node:path';
+import { calibrate } from './calibrate.js';
+import { ROOT, loadVariant } from './load.js';
+import { miningProgression } from './scenarios/baseline.js';
+import { presenceReport } from './scenarios/presence.js';
+import { milestonesReport, progressionReport } from './scenarios/progression.js';
+import { economyReport } from './scenarios/economy.js';
+import { chainsReport, consumablesReport } from './scenarios/chains.js';
+
+const [command = 'help', ...args] = process.argv.slice(2);
+const opt = (name: string, fallback: string) => {
+  const i = args.indexOf(`--${name}`);
+  return i >= 0 && args[i + 1] ? args[i + 1]! : fallback;
+};
+
+const commands: Record<string, () => string> = {
+  presence: () => presenceReport(),
+  progression: () => progressionReport(opt('proposal', 'boucle-v0'), Number(opt('days', '520'))),
+  milestones: () => milestonesReport(opt('proposal', 'boucle-v0')),
+  economy: () => economyReport(opt('proposal', 'boucle-v0')),
+  chains: () => chainsReport(opt('proposal', 'boucle-v0')),
+  calibrate: () => {
+    const changes = calibrate(opt('proposal', 'boucle-v0'), args.includes('--write'));
+    const lines = changes.map((c) => `${c.file} ${c.id} ${c.field} : ${c.from} → ${c.to}`);
+    return `${lines.join('\n')}\n${changes.length} valeur(s) ${args.includes('--write') ? 'réécrite(s)' : 'à recalculer (--write pour écrire)'}.`;
+  },
+  consumables: () => consumablesReport(opt('proposal', '') || undefined),
+  baseline: () => {
+    const content = loadVariant(opt('proposal', '') || undefined);
+    const profiles = opt('profiles', 'block2h;regular2h;casu20;tab16h').split(/[;,\s]+/);
+    return miningProgression(content, profiles, Number(opt('days', '60')));
+  },
+};
+
+/** Tous les rapports dans sim/reports/rapport.md (régénéré à chaque appel). */
+commands.report = () => {
+  const sections: [string, string][] = [
+    ['Vérification : le prototype actuel (Minage seul, sans outil ni repas)', 'baseline'],
+    ['Présence : heures effectives par jour selon la variante', 'presence'],
+    ['Repas actuels (data/)', 'consumables'],
+    ['Progression proposée (boucle-v0)', 'progression'],
+    ['Ce qu’un personnage atteint avec le temps (boucle-v0)', 'milestones'],
+    ['Chaînes de production (boucle-v0)', 'chains'],
+    ['Repas proposés (boucle-v0)', 'consumables-proposal'],
+    ['Économie (boucle-v0)', 'economy'],
+  ];
+  commands['consumables-proposal'] = () => consumablesReport('boucle-v0');
+  const body = sections.map(([title, cmd]) => `## ${title}\n\n${commands[cmd]!()}\n`).join('\n');
+  const file = join(ROOT, 'sim', 'reports', 'rapport.md');
+  mkdirSync(dirname(file), { recursive: true });
+  writeFileSync(file, `# Rapport du simulateur\n\n> Généré par \`pnpm --filter @bramo/sim sim report\`. Ne pas modifier à la main.\n\n${body}`);
+  return `Écrit : ${file}`;
+};
+
+const run = commands[command];
+if (!run) {
+  console.log(`Commandes : ${Object.keys(commands).join(', ')}`);
+} else {
+  console.log(run());
+}

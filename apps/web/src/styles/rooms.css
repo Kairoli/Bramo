@@ -382,7 +382,8 @@
 }
 .family-cards {
   display: grid;
-  grid-template-columns: repeat(8, minmax(0, 1fr));
+  /* 9 colonnes : l'Artisanat (9 métiers) tient sur une ligne, sans scroll à 1280×720. */
+  grid-template-columns: repeat(9, minmax(0, 1fr));
   gap: 8px;
 }
 .prof-card {

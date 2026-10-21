@@ -1,6 +1,9 @@
 const nf = new Intl.NumberFormat('fr-FR', { maximumFractionDigits: 0 });
 
 export const num = (n: number) => nf.format(n);
+const nf1 = new Intl.NumberFormat('fr-FR', { maximumFractionDigits: 1 });
+/** « 3,2 », « 12 » : un chiffre après la virgule au plus (XP des recettes). */
+export const decimal = (n: number) => nf1.format(n);
 export const pct = (ratio: number) => `${Math.round(ratio * 100)} %`;
 export const signedPct = (ratio: number) => `+${Math.round(ratio * 100)} %`;
 

@@ -56,7 +56,7 @@ export function ActivityPanel() {
               <dt>Rendement</dt>
               <dd style={{ color: a.rate.energized ? 'var(--good)' : undefined }}>
                 {pct(a.rate.total)}
-                {a.rate.energized ? ' · énergie' : ''}
+                {a.rate.energized ? ' · coup de fouet' : ''}
               </dd>
               {a.rate.tool > 0 && (
                 <>

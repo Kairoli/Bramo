@@ -36,6 +36,7 @@ export const api = {
   start: (recipeId: string, quantity: number, mode: 'replace' | 'queue') =>
     request<StateResponse>('POST', '/activity/start', { recipeId, quantity, mode }),
   cancel: (index: number) => request<StateResponse>('POST', '/activity/cancel', { index }),
+  energize: () => request<StateResponse>('POST', '/energy/activate'),
   eat: (itemId: string) => request<StateResponse>('POST', '/items/eat', { itemId }),
   buy: (itemId: string, qty: number) => request<StateResponse>('POST', '/shop/buy', { itemId, qty }),
   sell: (itemId: string, qty: number) => request<StateResponse>('POST', '/shop/sell', { itemId, qty }),

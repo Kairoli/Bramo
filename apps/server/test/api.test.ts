@@ -72,17 +72,30 @@ describe('API', () => {
   it('refuse une recette au-dessus du niveau', async () => {
     const res = await call('POST', '/api/activity/start', { recipeId: 'mine_iron', quantity: 1, mode: 'replace' });
     expect(res.status).toBe(400);
-    expect(res.json.message).toBe('Niveau 15 requis.');
+    expect(res.json.message).toBe('Niveau 10 requis.');
   });
 
   it('lance une activité et la fait progresser côté serveur', async () => {
     const start = await call('POST', '/api/activity/start', { recipeId: 'mine_copper', quantity: 1000, mode: 'replace' });
     expect((start.json as StateResponse).state.activity?.recipeId).toBe('mine_copper');
-    now += 60_000;
+    now += 120_000;
     const after = (await call('GET', '/api/state')).json as StateResponse;
-    // Énergie quotidienne active : 60 s × 1,5 / 3 s = 30 minerais.
-    expect(after.state.inventory.copper_ore).toBe(30);
+    // 120 s / 12 s = 10 minerais.
+    expect(after.state.inventory.copper_ore).toBe(10);
     expect(after.absence).toBeNull();
+  });
+
+  it('active un coup de fouet : ×1,5 pendant 30 min, deux par jour', async () => {
+    const res = (await call('POST', '/api/energy/activate')).json as StateResponse;
+    expect(res.state.energy).toMatchObject({ chargesLeft: 1, charges: 2, activeUntil: now + 30 * 60_000 });
+    expect(res.state.activity?.rate.total).toBe(1.5);
+    now += 120_000;
+    const after = (await call('GET', '/api/state')).json as StateResponse;
+    // 120 s × 1,5 / 12 s = 15 minerais de plus.
+    expect(after.state.inventory.copper_ore).toBe(25);
+    await call('POST', '/api/energy/activate');
+    const empty = await call('POST', '/api/energy/activate');
+    expect(empty.status).toBe(400);
   });
 
   it('renvoie un résumé d’absence au retour, une seule fois', async () => {

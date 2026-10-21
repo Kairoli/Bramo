@@ -1,5 +1,5 @@
 import { and, eq, inArray } from 'drizzle-orm';
-import type { CharacterState } from '@bramo/shared';
+import { type CharacterState, readEnergy } from '@bramo/shared';
 import type { Tx } from './db/index.js';
 import { characterItems, characterSkills, characters } from './db/schema.js';
 
@@ -26,7 +26,8 @@ export async function loadCharacterForUpdate(tx: Tx, accountId: number): Promise
       queue: row.queue,
       lastTickAt: row.lastTickAt.getTime(),
       lastSeenAt: row.lastSeenAt.getTime(),
-      energy: row.energy,
+      // Les personnages créés avec l'ancienne énergie quotidienne repartent avec leurs coups de fouet du jour.
+      energy: readEnergy(row.energy),
       buff: row.buff ?? null,
       classId: row.classId,
       outfit: row.outfit,

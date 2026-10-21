@@ -1,6 +1,6 @@
 import { type Room, useGame } from '../game/GameContext';
-import { duration, num } from '../format';
-import { Bar } from './ui';
+import { num } from '../format';
+import { EnergyButton } from './EnergyButton';
 
 const TABS: { room: Room; label: string }[] = [
   { room: 'home', label: 'Accueil' },
@@ -13,7 +13,6 @@ const TABS: { room: Room; label: string }[] = [
 
 export function TopBar() {
   const { room, go, state, logout } = useGame();
-  const { remainingMs, maxMs } = state.energy;
   return (
     <header className="topbar">
       <div className="logo">Bramo</div>
@@ -27,13 +26,7 @@ export function TopBar() {
       <div className="topbar-right">
         <div className="status-box">
           <span className="gold">{num(state.gold)} or</span>
-          <div className="energy" title="Énergie quotidienne : gains à 150 % pendant les premières heures actives de la journée.">
-            <div className="energy-head">
-              <span>Énergie</span>
-              <span>{duration(remainingMs)}</span>
-            </div>
-            <Bar value={maxMs ? remainingMs / maxMs : 0} />
-          </div>
+          <EnergyButton />
         </div>
         {import.meta.env.DEV && (
           <a className="btn btn-ghost btn-sm" href="#atelier" title="Atelier de personnages (développement)">

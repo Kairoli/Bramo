@@ -6,6 +6,7 @@ import {
   type Content,
   type ContentResponse,
   GameError,
+  activateEnergy,
   buyItem,
   cancelAction,
   cancelBody,
@@ -193,6 +194,13 @@ export async function buildApp({ db, content, clock = Date.now, secureCookies = 
       log: `Vous mangez : ${itemName(itemId)}.`,
     }));
   });
+
+  app.post('/api/energy/activate', (req) =>
+    playAs(req, (state, now) => ({
+      state: activateEnergy(state, now, content),
+      log: `Coup de fouet : rendement ×${String(content.settings.energy.multiplier).replace('.', ',')} pendant ${content.settings.energy.durationMin} min.`,
+    })),
+  );
 
   app.post('/api/shop/buy', (req) => {
     const { itemId, qty } = body(tradeBody, req);

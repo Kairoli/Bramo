@@ -3,7 +3,7 @@ import { maxAffordable, trialsOf, type Recipe } from '@bramo/shared';
 import { api } from '../api';
 import { useGame } from '../game/GameContext';
 import { useLiveActivity } from '../game/useLive';
-import { duration, num, seconds } from '../format';
+import { decimal, duration, num, seconds } from '../format';
 import { Bar, ItemIcon, Ring } from '../components/ui';
 import { Character } from '../rig/Character';
 import { QueueChips } from '../components/QueueChips';
@@ -325,7 +325,7 @@ function RecipeDetail({ recipe, level }: { recipe: Recipe; level: number }) {
             <dt>Temps</dt>
             <dd>{seconds(recipe.durationSec)}</dd>
             <dt>Gain</dt>
-            <dd>{num(recipe.xp)} XP</dd>
+            <dd>{decimal(recipe.xp)} XP</dd>
             <dt>Durée pour {num(qty)}</dt>
             <dd>{duration((qty * recipe.durationSec * 1000) / (state.activity?.rate.total || 1))}</dd>
           </dl>

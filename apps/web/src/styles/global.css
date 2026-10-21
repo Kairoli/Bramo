@@ -270,6 +270,36 @@ p {
   gap: 10px;
   color: var(--text-muted);
 }
+.energy-active {
+  background: none;
+  border: 0;
+  padding: 0;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.energy-active:disabled {
+  cursor: default;
+}
+.energy-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.energy-pips {
+  display: inline-flex;
+  gap: 3px;
+}
+.energy-pips .pip {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  border: 1px solid var(--good);
+}
+.energy-pips .pip.on {
+  background: var(--good);
+}
 
 /* ---------- Popups et volets ---------- */
 

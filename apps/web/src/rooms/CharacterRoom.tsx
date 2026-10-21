@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { api } from '../api';
 import { ClassModal, STYLE_NAMES } from '../components/ClassChoice';
+import { EnergyButton } from '../components/EnergyButton';
 import { useGame } from '../game/GameContext';
 import { duration, num, pct, signedPct } from '../format';
 import { Bar, FAMILY_COLOR, ItemIcon } from '../components/ui';
@@ -133,11 +134,11 @@ export function CharacterRoom() {
           <dl className="kv">
             <dt>Présence</dt>
             <dd style={{ color: rate?.energized ? 'var(--good)' : undefined }}>
-              {rate ? `${pct(rate.presence)}${rate.energized ? ' · énergie' : ''}` : '—'}
+              {rate ? `${pct(rate.presence)}${rate.energized ? ' · coup de fouet' : ''}` : '—'}
             </dd>
             <dt>Hors ligne</dt>
             <dd>
-              {pct(settings.rates.offline)}, {settings.rates.offlineCapHours} h max
+              {pct(settings.rates.offline)}, {settings.rates.offlineCapHours} h d’autonomie
             </dd>
             <dt>Total appliqué</dt>
             <dd style={{ color: 'var(--action)' }}>{rate ? pct(rate.total) : '—'}</dd>
@@ -153,14 +154,15 @@ export function CharacterRoom() {
 
         <div className="stat-block">
           <div className="stat-block-head">
-            <span className="eyebrow">Énergie du jour</span>
+            <span className="eyebrow">Coups de fouet</span>
             <span className="muted">
-              {duration(state.energy.remainingMs)} / {duration(state.energy.maxMs)}
+              {state.energy.chargesLeft} / {state.energy.charges} aujourd’hui
             </span>
           </div>
-          <Bar value={state.energy.maxMs ? state.energy.remainingMs / state.energy.maxMs : 0} />
+          <EnergyButton />
           <p className="muted small">
-            Gains à {pct(settings.energy.multiplier)} pendant vos premières heures actives de la journée.
+            Gains à {pct(settings.energy.multiplier)} pendant {duration(state.energy.durationMs)}, quand vous le voulez, en ligne
+            comme hors ligne.
           </p>
         </div>
 

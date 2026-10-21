@@ -189,7 +189,8 @@ export interface StateResponse {
   journal: JournalEntry[];
 }
 
-export type ContentResponse = Omit<Content, 'xpTable' | 'gearModels'>;
+// Le combat n'est pas encore envoyé au client (salle Combat : étape 4 de docs/design/coeur-du-jeu/integration.md).
+export type ContentResponse = Omit<Content, 'xpTable' | 'gearModels' | 'combat'>;
 
 export interface ApiError {
   code: string;

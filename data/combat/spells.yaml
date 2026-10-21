@@ -1,0 +1,71 @@
+# Sorts des trois classes (dossier « Le cœur du jeu » v0.2, §6) : proposition, coefficients de banc à équilibrer.
+# Une ligne par sort, au format JSON (YAML valide). Unités : P = Puissance ; cooldown et durées en secondes.
+# damage = coefficient de P sur la cible principale (secondaires : rules.secondaryShare) ; dot.amount = montant total.
+# tags : heat (Chauffe), temper (Trempe), setup (Repérage), exploit (Poursuite), companion, ultimate. form : rune écrite (Runiste).
+# duration : durée du ralentissement (4 s par défaut), de la protection, de l'Affaiblissement et de la réduction de soins (6 s).
+- {"id":"fg_workshop","name":"Frappe d’atelier","class":"forgefire","level":1,"cooldown":6,"element":"physical","damage":0.95,"targets":1,"tags":["heat"],"heat":1}
+- {"id":"fg_quench","name":"Trempe vive","class":"forgefire","level":1,"cooldown":10,"element":"fire","damage":1.2,"targets":1,"tags":["temper"]}
+- {"id":"fg_furnace","name":"Éclat du four","class":"forgefire","level":5,"cooldown":12,"element":"fire","damage":0.65,"targets":3,"tags":["heat"],"heat":1,"dot":{"amount":0.35,"type":"burn","duration":6}}
+- {"id":"fg_guard","name":"Garde rouge","class":"forgefire","level":10,"cooldown":14,"element":"physical","damage":0.45,"targets":1,"tags":["heat"],"heat":1,"shield":0.85,"duration":6}
+- {"id":"fg_crosscut","name":"Coup de travers","class":"forgefire","level":15,"cooldown":12,"element":"physical","damage":1.1,"targets":1,"tags":["heat"],"heat":1,"duration":4,"pressure":18,"slow":0.15}
+- {"id":"fg_cooling","name":"Refroidissement","class":"forgefire","level":20,"cooldown":16,"element":"physical","damage":0.6,"targets":1,"tags":["temper"],"heal":0.75,"cleanse":true}
+- {"id":"fg_punch","name":"Poinçon du maître","class":"forgefire","level":25,"cooldown":10,"element":"physical","damage":0.8,"targets":1,"tags":["heat"],"heat":1,"mark":8}
+- {"id":"fg_return","name":"Marteau de retour","class":"forgefire","level":35,"cooldown":14,"element":"physical","damage":1.35,"targets":1,"tags":["temper"],"pressure":20}
+- {"id":"fg_bellows","name":"Grand soufflet","class":"forgefire","level":45,"cooldown":18,"element":"fire","damage":0.85,"targets":3,"tags":["heat"],"heat":1,"dot":{"amount":0.45,"type":"burn","duration":6}}
+- {"id":"fg_rivet","name":"Rivet de garde","class":"forgefire","level":55,"cooldown":18,"element":"physical","damage":0.65,"targets":1,"tags":["temper"],"shield":1.2,"duration":6,"weaken":0.15}
+- {"id":"fg_scour","name":"Décrassage","class":"forgefire","level":65,"cooldown":20,"element":"fire","damage":0.9,"targets":1,"tags":["heat"],"heat":1,"duration":6,"antiheal":0.2,"dispel":true}
+- {"id":"fg_counterweight","name":"Contrepoids","class":"forgefire","level":85,"cooldown":22,"element":"physical","damage":1.6,"targets":1,"tags":["temper"],"shield":0.8}
+- {"id":"fg_slag","name":"Jet de scories","class":"forgefire","path":"red_temper","level":30,"cooldown":16,"element":"fire","damage":1.2,"targets":1,"tags":["temper"],"dot":{"amount":0.65,"type":"burn","duration":6}}
+- {"id":"fg_second_strike","name":"Deuxième frappe","class":"forgefire","path":"red_temper","level":50,"cooldown":12,"element":"physical","damage":1.4,"targets":1,"tags":["heat"],"heat":1,"empowerAuto":0.55}
+- {"id":"fg_red_reprise","name":"Reprise au rouge","class":"forgefire","path":"red_temper","level":70,"cooldown":20,"element":"fire","damage":2.2,"targets":2,"tags":["temper"]}
+- {"id":"fg_ring_anvil","name":"Faire sonner l’enclume","class":"forgefire","path":"anvil","level":30,"cooldown":16,"element":"physical","damage":1,"targets":1,"tags":["temper"],"pressure":35,"stun":1}
+- {"id":"fg_wedges","name":"Coins d’arrêt","class":"forgefire","path":"anvil","level":50,"cooldown":14,"element":"physical","damage":0.9,"targets":1,"tags":["heat"],"heat":1,"duration":6,"pressure":15,"slow":0.25}
+- {"id":"fg_sealing","name":"Frappe de scellement","class":"forgefire","path":"anvil","level":70,"cooldown":22,"element":"physical","damage":1.5,"targets":1,"tags":["temper"],"duration":6,"pressure":45,"weaken":0.2}
+- {"id":"fg_lay_rivets","name":"Pose de rivets","class":"forgefire","path":"whetter","level":30,"cooldown":14,"element":"physical","damage":1,"targets":1,"tags":["heat"],"heat":1,"shield":1.1,"duration":6}
+- {"id":"fg_shared_anneal","name":"Recuit partagé","class":"forgefire","path":"whetter","level":50,"cooldown":18,"element":"fire","damage":1.05,"targets":1,"tags":["temper"],"heal":1}
+- {"id":"fg_masterplate","name":"Plaque maîtresse","class":"forgefire","path":"whetter","level":70,"cooldown":22,"element":"physical","damage":1.1,"targets":1,"tags":["heat"],"heat":1,"shield":1.4,"duration":6,"weaken":0.15}
+- {"id":"fg_great_temper","name":"La Grande Trempe","class":"forgefire","level":75,"cooldown":60,"element":"fire","damage":3,"targets":3,"tags":["temper","ultimate"],"shield":1.5,"duration":8}
+- {"id":"tr_read","name":"Lecture de piste","class":"tracker","level":1,"cooldown":8,"element":"physical","damage":0.8,"targets":1,"tags":["setup"],"mark":8}
+- {"id":"tr_pursuit","name":"Trait de poursuite","class":"tracker","level":1,"cooldown":8,"element":"physical","damage":1.25,"targets":1,"tags":["exploit"]}
+- {"id":"tr_snare","name":"Collet vif","class":"tracker","level":5,"cooldown":12,"element":"physical","damage":0.6,"targets":1,"tags":["setup"],"duration":4,"pressure":15,"slow":0.2}
+- {"id":"tr_whistle","name":"Sifflet bref","class":"tracker","level":10,"cooldown":14,"element":"physical","damage":0.8,"targets":1,"tags":["setup","companion"],"heal":0.4}
+- {"id":"tr_broadside","name":"Tir de travers","class":"tracker","level":15,"cooldown":12,"element":"physical","damage":0.9,"targets":3,"tags":["exploit"]}
+- {"id":"tr_retreat","name":"Repli couvert","class":"tracker","level":20,"cooldown":16,"element":"physical","damage":0.65,"targets":1,"tags":["setup"],"shield":0.8,"duration":6}
+- {"id":"tr_barbed","name":"Flèche barbelée","class":"tracker","level":25,"cooldown":12,"element":"physical","damage":1,"targets":1,"tags":["exploit"],"dot":{"amount":0.5,"type":"bleed","duration":6}}
+- {"id":"tr_resin","name":"Piège de résine","class":"tracker","level":35,"cooldown":18,"element":"physical","damage":0.65,"targets":1,"tags":["setup"],"duration":6,"pressure":20,"antiheal":0.2}
+- {"id":"tr_packbeat","name":"Battement de meute","class":"tracker","level":45,"cooldown":16,"element":"physical","damage":0.95,"targets":1,"tags":["exploit","companion"],"heal":0.65}
+- {"id":"tr_stare","name":"Regard fixe","class":"tracker","level":55,"cooldown":18,"element":"lightning","damage":1.65,"targets":1,"tags":["exploit"],"mark":8}
+- {"id":"tr_net","name":"Filet d’orage","class":"tracker","level":65,"cooldown":20,"element":"lightning","damage":1,"targets":2,"tags":["setup"],"duration":6,"pressure":25,"slow":0.2}
+- {"id":"tr_cover","name":"Rappel au couvert","class":"tracker","level":85,"cooldown":20,"element":"physical","damage":0.95,"targets":1,"tags":["setup","companion"],"heal":0.9,"cleanse":true}
+- {"id":"tr_seam","name":"Tir à la couture","class":"tracker","path":"beastslayer","level":30,"cooldown":14,"element":"physical","damage":1.75,"targets":1,"tags":["exploit"],"penetration":0.2}
+- {"id":"tr_crossbite","name":"Morsure croisée","class":"tracker","path":"beastslayer","level":50,"cooldown":16,"element":"physical","damage":0.9,"targets":1,"tags":["setup","companion"],"dot":{"amount":0.75,"type":"bleed","duration":6}}
+- {"id":"tr_sidestep","name":"Pas de côté","class":"tracker","path":"beastslayer","level":70,"cooldown":20,"element":"lightning","damage":1.9,"targets":2,"tags":["exploit"]}
+- {"id":"tr_iron_teeth","name":"Dents de fer","class":"tracker","path":"trapper","level":30,"cooldown":16,"element":"physical","damage":1,"targets":1,"tags":["setup"],"pressure":35,"stun":1}
+- {"id":"tr_harass","name":"Flèches de gêne","class":"tracker","path":"trapper","level":50,"cooldown":12,"element":"physical","damage":1.1,"targets":1,"tags":["exploit"],"duration":6,"weaken":0.2}
+- {"id":"tr_leftbehind","name":"Laissé pour compte","class":"tracker","path":"trapper","level":70,"cooldown":22,"element":"lightning","damage":1.3,"targets":1,"tags":["setup","companion"],"duration":6,"pressure":45,"slow":0.25}
+- {"id":"tr_packguard","name":"Garde de meute","class":"tracker","path":"packleader","level":30,"cooldown":14,"element":"physical","damage":1,"targets":1,"tags":["setup","companion"],"shield":1,"duration":6}
+- {"id":"tr_share","name":"Partage de chasse","class":"tracker","path":"packleader","level":50,"cooldown":16,"element":"physical","damage":1.1,"targets":1,"tags":["exploit","companion"],"heal":0.8}
+- {"id":"tr_packreturn","name":"Retour de la meute","class":"tracker","path":"packleader","level":70,"cooldown":22,"element":"lightning","damage":1.3,"targets":1,"tags":["setup","companion"],"heal":1,"cleanse":true}
+- {"id":"tr_grand_hunt","name":"La Grande Battue","class":"tracker","level":75,"cooldown":60,"element":"physical","damage":2.8,"targets":3,"tags":["exploit","ultimate"],"heal":0.9,"mark":8}
+- {"id":"rn_ember","name":"Trait incandescent","class":"runist","level":1,"cooldown":8,"element":"fire","damage":1.1,"targets":1,"tags":[],"form":"trait","dot":{"amount":0.2,"type":"burn","duration":6}}
+- {"id":"rn_frost_circle","name":"Cercle de givre","class":"runist","level":1,"cooldown":10,"element":"frost","damage":0.75,"targets":2,"tags":[],"form":"circle","duration":4,"pressure":12,"slow":0.15}
+- {"id":"rn_guard","name":"Sceau de garde","class":"runist","level":5,"cooldown":12,"element":"lightning","damage":0.5,"targets":1,"tags":[],"form":"seal","shield":0.9,"duration":6}
+- {"id":"rn_lightning","name":"Trait fulgurant","class":"runist","level":10,"cooldown":10,"element":"lightning","damage":1.55,"targets":1,"tags":[],"form":"trait"}
+- {"id":"rn_ash_ring","name":"Anneau de cendres","class":"runist","level":15,"cooldown":14,"element":"fire","damage":0.75,"targets":3,"tags":[],"form":"circle","dot":{"amount":0.4,"type":"burn","duration":6}}
+- {"id":"rn_respite","name":"Sceau de répit","class":"runist","level":20,"cooldown":16,"element":"frost","damage":0.65,"targets":1,"tags":[],"form":"seal","heal":0.9,"cleanse":true}
+- {"id":"rn_frost_line","name":"Trait de gel","class":"runist","level":25,"cooldown":12,"element":"frost","damage":1.15,"targets":1,"tags":[],"form":"trait","duration":4,"pressure":18,"slow":0.2}
+- {"id":"rn_reveal","name":"Cercle révélateur","class":"runist","level":35,"cooldown":14,"element":"lightning","damage":0.9,"targets":1,"tags":[],"form":"circle","mark":8,"dispel":true}
+- {"id":"rn_hearth","name":"Sceau du foyer","class":"runist","level":45,"cooldown":18,"element":"fire","damage":0.8,"targets":1,"tags":[],"form":"seal","shield":0.65,"heal":0.65,"duration":6}
+- {"id":"rn_divide","name":"Ligne de partage","class":"runist","level":55,"cooldown":16,"element":"frost","damage":1.3,"targets":2,"tags":[],"form":"trait"}
+- {"id":"rn_silence","name":"Anneau de silence","class":"runist","level":65,"cooldown":20,"element":"frost","damage":1,"targets":1,"tags":[],"form":"circle","duration":6,"pressure":30,"weaken":0.2}
+- {"id":"rn_continuity","name":"Sceau de continuité","class":"runist","level":85,"cooldown":22,"element":"lightning","damage":0.8,"targets":1,"tags":[],"form":"seal","shield":1.5,"duration":6}
+- {"id":"rn_ardent_erasure","name":"Rature ardente","class":"runist","path":"fulgurant","level":30,"cooldown":16,"element":"fire","damage":1.4,"targets":1,"tags":[],"form":"trait","dot":{"amount":0.75,"type":"burn","duration":6}}
+- {"id":"rn_shards","name":"Trait des éclats","class":"runist","path":"fulgurant","level":50,"cooldown":14,"element":"frost","damage":1.65,"targets":1,"tags":[],"form":"trait"}
+- {"id":"rn_burst_circle","name":"Cercle de rupture","class":"runist","path":"fulgurant","level":70,"cooldown":22,"element":"lightning","damage":1.2,"targets":3,"tags":[],"form":"circle","pressure":20}
+- {"id":"rn_stop","name":"Sceau d’arrêt","class":"runist","path":"sigilbinder","level":30,"cooldown":16,"element":"frost","damage":1,"targets":1,"tags":[],"form":"seal","pressure":35,"stun":1}
+- {"id":"rn_bind","name":"Cercle de l’entrave","class":"runist","path":"sigilbinder","level":50,"cooldown":14,"element":"lightning","damage":0.85,"targets":1,"tags":[],"form":"circle","duration":6,"pressure":20,"slow":0.25}
+- {"id":"rn_interdict","name":"Trait d’interdit","class":"runist","path":"sigilbinder","level":70,"cooldown":22,"element":"fire","damage":1.4,"targets":1,"tags":[],"form":"trait","duration":6,"pressure":45,"antiheal":0.2}
+- {"id":"rn_resonant_guard","name":"Sceau de résonance","class":"runist","path":"glyphkeeper","level":30,"cooldown":14,"element":"lightning","damage":1,"targets":1,"tags":[],"form":"seal","shield":1.1,"duration":6}
+- {"id":"rn_refuge","name":"Cercle du refuge","class":"runist","path":"glyphkeeper","level":50,"cooldown":18,"element":"frost","damage":1,"targets":1,"tags":[],"form":"circle","heal":0.9}
+- {"id":"rn_relay","name":"Trait de relève","class":"runist","path":"glyphkeeper","level":70,"cooldown":22,"element":"fire","damage":1.4,"targets":1,"tags":[],"form":"trait","shield":0.95,"duration":6}
+- {"id":"rn_sovereign","name":"La Phrase souveraine","class":"runist","level":75,"cooldown":60,"element":"inherit","damage":3,"targets":3,"tags":["ultimate"],"form":"circle","shield":0.8,"heal":0.8,"duration":8}

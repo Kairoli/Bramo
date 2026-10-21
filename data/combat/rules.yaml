@@ -1,0 +1,42 @@
+# Règles communes du combat automatique (dossier « Le cœur du jeu » v0.2, §3, §4, §7, §17).
+# Les formes des règles sont dans packages/shared/src/combat/ ; ici, seulement leurs paramètres. Tout est à équilibrer.
+# Unités : P = Puissance (coefficients), secondes pour les durées.
+
+tick: 0.25                # pas de la simulation (s) ; l'horloge du moteur est en millisecondes entières
+gcd: 1                    # deux compétences du même combattant sont espacées d'au moins 1 s
+fightLimit: 240           # au-delà, la rencontre est perdue (« temps écoulé »)
+# Ouverture du plan [Ouvert, question Q1 à Louis] :
+#   independent : chaque sort part à son horaire de première utilisation, puis suit son cooldown ;
+#   sequence    : les répétitions attendent que chaque sort du plan ait été lancé une fois (lecture du dossier §3).
+opening: independent
+secondaryShare: 0.55      # part des dégâts et afflictions reçue par les cibles secondaires
+firstBasicAt: 1           # première attaque de base
+basicAttack:
+  coefficient: 0.62       # dégâts de base = 0,62 P × intervalle de l'arme / referencePeriod
+  referencePeriod: 2
+weaponPeriods: {hammer: 2.4, sword_shield: 2, axe: 2, longbow: 2.2, crossbow: 2.4, daggers: 1.8, staff: 2.2, scepter: 2, grimoire: 2}
+# Statistiques normalisées du banc, en attendant la conversion de l'équipement (étape 5).
+referenceStats: {power: 100, maxHp: 2800, damageReduction: 0.25, critChance: 0.2, critMultiplier: 1.6, haste: 0.12}
+caps:
+  critChance: 0.5
+  vulnerability: 0.1      # valeur active la plus forte, jamais la somme
+  bossSlow: 0.15          # un boss n'est ralenti que sur ses attaques ordinaires, au plus de 15 %
+  hardControl: 1.5        # étourdissement maximal d'un ennemi ordinaire (s)
+  totalShield: 4.5        # boucliers simultanés sur un bénéficiaire (× P)
+  secondaryShield: 1.6    # dont boucliers hors compétence (plaques, équipement) (× P)
+  afflictionsPerType: 3   # Brûlures (ou Saignements) actives par cible, de sources différentes
+enemy:
+  defense: 0.10           # réduction uniforme ; aucune résistance élémentaire (reportées, décision de Louis du 22 octobre)
+  firstAttackAt: 2        # première attaque ordinaire ; +0,5 s par ennemi suivant
+  attackStagger: 0.5
+  damageSpread: 0.10      # attaque ordinaire tirée entre 95 % et 105 %
+stability:
+  max: 80
+  stunPressurePerSecond: 15   # un étourdissement sur boss devient de la Pression
+  breakDuration: 6            # Rupture
+  recovery: 8                 # pas de nouvelle Pression ni Rupture pendant ce délai
+  breakDamageTaken: 0.08
+  breakNextHitReduction: 0.25
+cleanse:
+  auraImmunity: 6             # une purification protège de l'aura pendant 6 s
+dotTick: 1

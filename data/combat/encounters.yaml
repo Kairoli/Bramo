@@ -1,0 +1,10 @@
+# Profils de rencontre du banc (dossier §16) : six familles de mécaniques, statistiques normalisées (P = 100, 2 800 PV).
+# Ce ne sont pas encore des adversaires du jeu : ils servent à comparer les voies. Valeurs à équilibrer.
+# attack = attaque ordinaire (ralentissable) ; charge, guard (garde à dissiper) et regen sont des phases à horaire fixe, jamais décalées par un ralentissement.
+# aura = dégâts par seconde, évités pendant 6 s par une purification.
+- {"id":"duel","name":"Cible durable","inspiredBy":"archive_witness","enemies":1,"hp":4500,"attack":{"damage":100,"period":2.5}}
+- {"id":"pack","name":"Groupe compact","inspiredBy":"cinder_stag","enemies":3,"hp":2400,"attack":{"damage":59,"period":3}}
+- {"id":"charge","name":"Attaque chargée","inspiredBy":"iron_bell","enemies":1,"hp":4700,"attack":{"damage":75,"period":3},"charge":{"damage":340,"period":16}}
+- {"id":"attrition","name":"Usure régulière","inspiredBy":"glass_custodian","enemies":1,"hp":5200,"attack":{"damage":76,"period":2.5},"aura":{"damage":8}}
+- {"id":"ward","name":"Gardes à dissiper","inspiredBy":"tide_notary","enemies":1,"hp":4600,"attack":{"damage":88,"period":3},"guard":{"amount":300,"period":18,"duration":6}}
+- {"id":"recovery","name":"Soin ennemi","inspiredBy":"resin_matriarch","enemies":1,"hp":4500,"attack":{"damage":90,"period":3},"regen":{"amount":140,"period":15}}

@@ -1,0 +1,44 @@
+# Mécaniques de classe et voies (dossier « Le cœur du jeu » v0.2, §5). Proposition, coefficients de banc à équilibrer.
+# Le fonctionnement de chaque mécanique et de chaque passif est écrit dans packages/shared/src/combat/ ;
+# ce fichier n'en porte que les noms, les rôles et les chiffres.
+# Un sort de voie (spells.yaml, champ path) n'est accessible qu'à sa voie ; la voie s'ouvre au niveau pathLevel.
+
+slots: {beforePath: 4, fromPath: 5}   # l'ultime (niveau 75) occupe une des cinq places
+pathLevel: 30
+
+classes:
+  - id: forgefire
+    mechanic: heat
+    label: Le cycle de forge
+    state: "Braises : 0 à 3"
+    params: {cap: 3, temperPerHeat: 0.15}        # une Trempe ajoute 0,15 P par Braise dépensée
+    elements: [physical, fire]
+    weapons: [hammer, sword_shield, axe]
+    paths:
+      - {id: red_temper, name: Trempe-Rouge, role: damage, passive: Rebattue, params: {perHeat: 0.12, hits: 3, duration: 8}}
+      - {id: anvil, name: Enclumier, role: control, passive: Le poids du métal, params: {pressurePerHeat: 6, weakenPerHeat: 0.08, weakenDuration: 6, followupPerHeat: 0.30, followupDuration: 8}}
+      - {id: whetter, name: Rémouleur, role: support, passive: Plaques de recuit, params: {shieldPerHeat: 0.16, duration: 6, ripostePerHeat: 0.12}}
+
+  - id: tracker
+    mechanic: angle
+    label: La poursuite
+    state: "Une Proie, un Angle mort"
+    params: {duration: 6, bonus: 0.30, carryOnKill: 3}
+    elements: [physical, lightning]
+    weapons: [longbow, crossbow, daggers]
+    paths:
+      - {id: beastslayer, name: Tue-Bête, role: damage, passive: La morsure après le trait, params: {bleed: 0.42, duration: 6}}
+      - {id: trapper, name: Piégeur, role: control, passive: Contrepiège, params: {damage: 0.35, weaken: 0.25, duration: 6, pressure: 10}}
+      - {id: packleader, name: Meneur de meute, role: support, passive: À mon signal, params: {heal: 0.50, damage: 0.35, duration: 8}}
+
+  - id: runist
+    mechanic: rune
+    label: La phrase runique
+    state: "Une rune précédente : Trait, Cercle ou Sceau"
+    params: {trait: 0.16, circle: 0.08, circleTargets: 2, circleSlow: 0.10, circleSlowDuration: 2, seal: 0.20, sealDuration: 4}
+    elements: [fire, frost, lightning]
+    weapons: [staff, scepter, grimoire]
+    paths:
+      - {id: fulgurant, name: Fulgurant, role: damage, passive: Le dernier mot, params: {every: 3, damage: 0.65, sealShare: 0.15}}
+      - {id: sigilbinder, name: Sigillaire, role: control, passive: Mise sous scellés, params: {seals: 3, damage: 0.75, weaken: 0.30, duration: 6}}
+      - {id: glyphkeeper, name: Glyphiste, role: support, passive: L'encre de garde, params: {cap: 0.65}}

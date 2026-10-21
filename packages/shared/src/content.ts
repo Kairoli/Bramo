@@ -12,6 +12,7 @@ import {
 import { classesFileSchema, cosmeticsFileSchema } from './schemas/art.js';
 import { gearFileSchema, gearPoolsFileSchema, gearSetsFileSchema, gearSlotsFileSchema } from './schemas/gear.js';
 import { buildXpTable } from './formulas/xp.js';
+import { type RawCombat, buildCombatContent } from './combat/content.js';
 
 export class ContentError extends Error {}
 
@@ -29,6 +30,8 @@ export interface RawContent {
   gearSlots?: unknown;
   gearPools?: unknown;
   gearSets?: unknown;
+  /** Combat automatique : data/combat/ (optionnel pour les propositions du simulateur). */
+  combat?: RawCombat;
   /** Un fichier de recettes par entrée : [nom du fichier, contenu]. */
   recipes: [string, unknown][];
 }
@@ -166,7 +169,13 @@ export function buildContent(raw: RawContent): Content {
       if (!m.bound) errors.push(`gear.yaml : ${m.id} : une pièce de départ est liée au personnage`);
     }
   }
+  let combat: Content['combat'] = null;
+  if (raw.combat) {
+    const built = buildCombatContent(raw.combat, Object.keys(classes));
+    errors.push(...built.errors);
+    combat = built.combat;
+  }
   if (errors.length) throw new ContentError(`Données incohérentes :\n- ${errors.join('\n- ')}`);
 
-  return { settings, professions, items, recipes, trials, npcOrders, buildings, classes, cosmetics, gearSlots, gearPools, gearModels, gearSets, xpTable: buildXpTable(settings.xp.maxLevel) };
+  return { settings, professions, items, recipes, trials, npcOrders, buildings, classes, cosmetics, gearSlots, gearPools, gearModels, gearSets, combat, xpTable: buildXpTable(settings.xp.maxLevel) };
 }

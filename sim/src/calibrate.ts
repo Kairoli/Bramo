@@ -2,7 +2,7 @@ import { readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { type Document, isMap, isSeq, parseDocument } from 'yaml';
 import { unitCost, workSec } from './chains.js';
-import { PROPOSALS_DIR, loadVariant } from './load.js';
+import { DATA_DIR, PROPOSALS_DIR, loadVariant } from './load.js';
 import { GOLD_PER_WORK_HOUR, MEAL_PAYBACK, NPC_BUYBACK, ruleXp } from './rules.js';
 import { proposalOptions } from './scenarios/chains.js';
 
@@ -26,8 +26,9 @@ function eachMap(doc: Document, fn: (map: import('yaml').YAMLMap) => void): void
  * - la valeur (rachat PNJ) de chaque objet, depuis son coût de chaîne.
  * Les commentaires et la mise en forme YAML sont conservés.
  */
-export function calibrate(proposal: string, write: boolean): Change[] {
-  const dir = join(PROPOSALS_DIR, proposal);
+export function calibrate(proposal: string | null, write: boolean): Change[] {
+  // null : les données du jeu elles-mêmes (data/).
+  const dir = proposal ? join(PROPOSALS_DIR, proposal) : DATA_DIR;
   const changes: Change[] = [];
 
   // 1. XP des recettes.
@@ -47,8 +48,8 @@ export function calibrate(proposal: string, write: boolean): Change[] {
   }
 
   // 2. et 3. Repas et valeurs, sur le contenu recalculé.
-  const content = loadVariant(proposal);
-  const opts = proposalOptions(proposal);
+  const content = loadVariant(proposal ?? undefined);
+  const opts = proposal ? proposalOptions(proposal) : {};
   const path = join(dir, 'items.yaml');
   const doc = parseDocument(readFileSync(path, 'utf8'));
   eachMap(doc, (m) => {

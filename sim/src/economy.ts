@@ -5,16 +5,15 @@ import { type ChainOptions, bundleCost, workSec } from './chains.js';
 export interface EconomyAssumptions {
   archetypes: { id: string; name: string; share: number; hours: number; gather: number; craft: number; combat: number; meals: number }[];
   wear: {
-    tool: { item: string; lifeHours: number; repairs: number; repairCost: number };
-    weapon: { item: string; lifeHours: number; repairs: number; repairCost: number };
-    armor: { items: Record<string, number>; lifeHours: number; repairs: number; repairCost: number };
-    recycleReturn: number;
+    tool: { item: string; lifeHours: number; repairCost: number };
+    weapon: { item: string; lifeHours: number; repairCost: number };
+    armor: { items: Record<string, number>; lifeHours: number; repairCost: number };
   };
   combat: { enabled: boolean; arrowsPerHour: number; potionsPerHour: number; rangedShare: number };
   meals: { bonus: number; payback: number };
   clan: { membershipShare: number };
   construction: { craftTimeShare: number };
-  recycling: { craftedSurplusRecycled: number };
+  recycling: { craftedSurplusRecycled: number; return: number };
   arrivals: { weeklyShare: number; kitHours: number };
   gold: {
     perWorkHour: number;
@@ -50,9 +49,12 @@ export interface EconomyFlows {
 
 const h = (content: Content, opts: ChainOptions, items: Record<string, number>) => workSec(bundleCost(items, content, opts)) / 3600;
 
-/** Part d'un objet consommée par heure d'usage, réparations et recyclage compris (en heures de travail). */
-function wearPerHour(costHours: number, w: { lifeHours: number; repairs: number; repairCost: number }, recycle: number): number {
-  return (costHours * (1 + w.repairs * w.repairCost - recycle)) / (w.lifeHours * (1 + w.repairs));
+/**
+ * Coût d'usure par heure d'usage, en heures de travail : une réparation (`repairCost` de la valeur) toutes les `lifeHours`.
+ * La durabilité maximale ne baisse pas : l'objet n'est jamais détruit par l'usure, seulement remplacé par un meilleur palier.
+ */
+function wearPerHour(costHours: number, w: { lifeHours: number; repairCost: number }): number {
+  return (costHours * w.repairCost) / w.lifeHours;
 }
 
 export function economyFlows(content: Content, opts: ChainOptions, a: EconomyAssumptions): EconomyFlows {
@@ -77,7 +79,7 @@ export function economyFlows(content: Content, opts: ChainOptions, a: EconomyAss
   const armorH = h(content, opts, a.wear.armor.items);
   const arrowH = h(content, opts, { iron_arrow: 1 });
   const potionH = h(content, opts, { minor_healing_potion: 1 });
-  const r = a.wear.recycleReturn;
+  const r = a.recycling.return;
   // Construction : pour une heure de pose, les matériaux d'une charpente représentent `inputRatio` heures de travail.
   const frame = bundleCost({ oak_frame: 1 }, content, opts);
   const frameOwn = (frame.labor.construction ?? 0) / 3600;
@@ -85,10 +87,10 @@ export function economyFlows(content: Content, opts: ChainOptions, a: EconomyAss
   const constructionHours = hours.craft * a.construction.craftTimeShare;
 
   const consumption: Record<string, number> = {
-    'Outils (usure)': working * wearPerHour(toolH, a.wear.tool, r),
+    'Outils (réparations)': working * wearPerHour(toolH, a.wear.tool),
     'Repas': (mealHours * a.meals.bonus) / a.meals.payback,
-    'Armes (usure)': hours.combat * wearPerHour(weaponH, a.wear.weapon, r),
-    'Armures (usure)': hours.combat * wearPerHour(armorH, a.wear.armor, r),
+    'Armes (réparations)': hours.combat * wearPerHour(weaponH, a.wear.weapon),
+    'Armures (réparations)': hours.combat * wearPerHour(armorH, a.wear.armor),
     'Flèches': hours.combat * a.combat.rangedShare * a.combat.arrowsPerHour * arrowH,
     'Potions': hours.combat * a.combat.potionsPerHour * potionH,
     'Construction (pose et matériaux)': constructionHours * (1 + inputRatio),
@@ -113,10 +115,8 @@ export function economyFlows(content: Content, opts: ChainOptions, a: EconomyAss
   };
 
   const g = a.gold;
-  const repairHours =
-    working * (toolH * a.wear.tool.repairs * a.wear.tool.repairCost) / (a.wear.tool.lifeHours * (1 + a.wear.tool.repairs)) +
-    hours.combat * ((weaponH * a.wear.weapon.repairs * a.wear.weapon.repairCost) / (a.wear.weapon.lifeHours * (1 + a.wear.weapon.repairs)) +
-      (armorH * a.wear.armor.repairs * a.wear.armor.repairCost) / (a.wear.armor.lifeHours * (1 + a.wear.armor.repairs)));
+  // Toute l'usure est payée en réparations : une part au PNJ (en or), le reste par des artisans.
+  const repairHours = consumption['Outils (réparations)']! + consumption['Armes (réparations)']! + consumption['Armures (réparations)']!;
   const faucets = {
     'Rachat du marchand PNJ': soldToNpc * g.perWorkHour * g.npcBuyback,
     'Épreuves des maîtres': g.trialGoldPerDay,
@@ -130,7 +130,7 @@ export function economyFlows(content: Content, opts: ChainOptions, a: EconomyAss
   const sum = (o: Record<string, number>) => Object.values(o).reduce((s, v) => s + v, 0);
 
   const units = {
-    'Outils remplacés': working / (a.wear.tool.lifeHours * (1 + a.wear.tool.repairs)),
+    'Outils réparés': working / a.wear.tool.lifeHours,
     'Repas mangés': mealHours / 2,
     'Flèches tirées': hours.combat * a.combat.rangedShare * a.combat.arrowsPerHour,
     'Potions bues': hours.combat * a.combat.potionsPerHour,

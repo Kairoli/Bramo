@@ -94,7 +94,7 @@ export function economyReport(proposal = 'boucle-v0'): string {
   out.push('\n### Taille du serveur (variante recommandée)\n');
   out.push(
     table(
-      ['Joueurs', 'Spécialistes par métier (moyenne)', 'Métiers sans spécialiste', 'Métiers avec moins de 3', 'Outils remplacés / semaine', 'Repas / jour', 'Flèches / jour', 'Or créé / jour'],
+      ['Joueurs', 'Spécialistes par métier (moyenne)', 'Métiers sans spécialiste', 'Métiers avec moins de 3', 'Outils réparés / semaine', 'Repas / jour', 'Flèches / jour', 'Or créé / jour'],
       [20, 50, 200].map((n) => {
         const c = specialistCoverage(n, recommended);
         return [
@@ -102,7 +102,7 @@ export function economyReport(proposal = 'boucle-v0'): string {
           fmt(c.perProfession, 1),
           fmt(c.zero, 1),
           fmt(c.underThree, 1),
-          fmt(withCombat.units['Outils remplacés']! * n * 7, 0),
+          fmt(withCombat.units['Outils réparés']! * n * 7, 0),
           fmt(withCombat.units['Repas mangés']! * n, 0),
           fmt(withCombat.units['Flèches tirées']! * n, 0),
           fmt(withCombat.gold.net * n, 0),

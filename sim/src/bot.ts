@@ -2,7 +2,9 @@ import {
   type CharacterState,
   type Content,
   type Recipe,
+  activateEnergy,
   advance,
+  energyChargesLeft,
   levelForXp,
   newCharacterState,
   startActivity,
@@ -136,6 +138,8 @@ export interface GatherOptions {
   tools?: [number, string][];
   /** Repas consommés automatiquement selon le niveau, [niveau, bonus] : le bonus couvre tout le temps (garde-manger). */
   autoMeal?: [number, number][];
+  /** Active ses coups de fouet du jour dès qu'il passe (ils s'enchaînent). */
+  energize?: boolean;
 }
 
 /**
@@ -150,6 +154,9 @@ export function gatherer(skill: string, opts: GatherOptions = {}): Policy {
       const lvl = level(state, skill, content);
       for (const [need, item] of opts.tools ?? []) {
         if (lvl >= need && !state.inventory[item]) state = { ...state, inventory: { ...state.inventory, [item]: 1 } };
+      }
+      if (opts.energize) {
+        while (energyChargesLeft(state.energy, t, content.settings) > 0) state = activateEnergy(state, t, content);
       }
       const meal = (opts.autoMeal ?? []).filter(([need]) => lvl >= need).at(-1);
       if (meal) state = { ...state, buff: { itemId: 'auto', bonus: meal[1], until: t + 7 * DAY } };

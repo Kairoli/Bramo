@@ -10,8 +10,9 @@ import { proposalOptions } from './chains.js';
 
 export const LEVELS = [10, 20, 30, 45, 60, 70, 85, 90, 99];
 
-/** Équipement d'un spécialiste qui achète ses outils au marché et garde un repas actif (garde-manger). */
+/** Équipement d'un spécialiste qui achète ses outils au marché, garde un repas actif (garde-manger) et prend ses coups de fouet. */
 export const EQUIPPED: GatherOptions = {
+  energize: true,
   tools: [
     [5, 'bronze_pickaxe'],
     [15, 'iron_pickaxe'],
@@ -75,11 +76,9 @@ function crafter(content: Content, proposal: string, buys: Buys, hoursPerDay: nu
   const out: Record<number, number> = {};
   let xp = 0;
   let hours = 0;
-  const app = content.settings.xp.apprenticeship;
   for (let level = 1; level < 99; ) {
     const next = content.xpTable[level + 1]!;
-    const boost = app && level < app.belowLevel ? app.multiplier : 1;
-    hours += (next - xp) / (rate(level) * boost);
+    hours += (next - xp) / rate(level);
     xp = next;
     level = levelForXp(xp, content.xpTable);
     if (LEVELS.includes(level)) out[level] = hours / hoursPerDay;
@@ -98,7 +97,7 @@ export function milestonesReport(proposal = 'boucle-v0'): string {
     ['1 an', 365],
   ];
   const runs = {
-    casu: runBot(content, profile('casu20'), gatherer('mining', { tools: EQUIPPED.tools }), { days: 366, track: { skill: 'mining', levels: [] } }),
+    casu: runBot(content, profile('casu20'), gatherer('mining', { tools: EQUIPPED.tools, energize: true }), { days: 366, track: { skill: 'mining', levels: [] } }),
     regular: runBot(content, profile('regular2h'), gatherer('mining', EQUIPPED), { days: 366, track: { skill: 'mining', levels: [] } }),
   };
   const at = (byDay: number[], day: number) => byDay[Math.max(0, Math.floor(day) - 1)] ?? byDay.at(-1)!;
@@ -117,13 +116,13 @@ export function progressionReport(proposal = 'boucle-v0', days = 520): string {
   // Tryhard : repas +10 % et bonus de clan +10 % (simulés par un repas à +20 %).
   const tryhardContent = loadVariant(proposal, { bonusCaps: { meal: 0.2 } });
   const regular = specialist(content, 'regular2h', EQUIPPED, days);
-  const casu = specialist(content, 'casu20', { tools: EQUIPPED.tools }, days);
+  const casu = specialist(content, 'casu20', { tools: EQUIPPED.tools, energize: true }, days);
   const rows: Row[] = [
     { name: 'Spécialiste casu (20 min/j, outils, sans repas)', levelDay: casu },
     { name: 'Spécialiste régulier (2 visites/j, outils, repas)', levelDay: regular },
     {
       name: 'Spécialiste tryhard (+ repas 10 % et clan 10 %)',
-      levelDay: specialist(tryhardContent, 'tab16h', { tools: EQUIPPED.tools, autoMeal: [[1, 0.2]] }, days),
+      levelDay: specialist(tryhardContent, 'tab16h', { tools: EQUIPPED.tools, autoMeal: [[1, 0.2]], energize: true }, days),
     },
     { name: 'Partagé : 3 métiers + combat, régulier', levelDay: shared(regular, 4) },
     { name: 'Partagé : 3 métiers + combat, casu', levelDay: shared(casu, 4) },

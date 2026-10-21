@@ -7,33 +7,38 @@ import { profile } from '../src/profiles.js';
 import { proposalOptions } from '../src/scenarios/chains.js';
 import { presenceMatrix } from '../src/scenarios/presence.js';
 
-describe('données actuelles (data/)', () => {
+describe('données du jeu (data/)', () => {
   const content = loadVariant();
 
-  it('reproduit la mesure : Minage 60 en ~1 jour et 90 en ~18 jours avec 2 h de présence', () => {
-    const r = runBot(content, profile('block2h'), gatherer('mining'), { days: 25, track: { skill: 'mining', levels: [60, 90] } });
-    expect(r.levelDay[60]).toBeGreaterThan(0.5);
-    expect(r.levelDay[60]).toBeLessThan(2);
-    expect(r.levelDay[90]).toBeGreaterThan(15);
-    expect(r.levelDay[90]).toBeLessThan(21);
+  it('la progression est bien plus lente que le prototype (Minage 60 en ~1 jour, 90 en 18 jours)', () => {
+    const r = runBot(content, profile('regular2h'), gatherer('mining'), { days: 40, track: { skill: 'mining', levels: [30, 60] } });
+    expect(r.levelDay[30]).toBeLessThan(3);
+    expect(r.levelDay[60]).toBeGreaterThan(10);
+    expect(r.levelDay[60]).toBeLessThan(30);
   });
 
-  it('les repas actuels donnent plus de 300 h de bonus par heure de cuisson', () => {
-    const feast = consumableRatios(content).find((c) => c.item === 'frost_feast')!;
-    expect(feast.bonusHoursPerCraftHour).toBe(360);
+  it('suit les règles d’équilibrage (calibrate ne change rien)', () => {
+    expect(calibrate(null, false)).toEqual([]);
+  });
+
+  it('chaque repas rapporte entre 1,5 et 2,5 fois son coût de chaîne', () => {
+    for (const r of consumableRatios(content)) {
+      expect(r.payback, r.item).toBeGreaterThan(1.5);
+      expect(r.payback, r.item).toBeLessThan(2.5);
+    }
   });
 });
 
 describe('présence', () => {
   const m = Object.fromEntries(presenceMatrix(4).map((r) => [r.id, r.eff]));
 
-  it('le prototype donne environ ×7 entre un onglet ouvert jour et nuit et 20 min par jour', () => {
-    expect(m.actuel!.tab24h! / m.actuel!.casu20!).toBeGreaterThan(6);
+  it('à 100 % avec 16 h d’autonomie, le téléphone et l’onglet visible font jeu égal', () => {
+    expect(m.decided!.mobile).toBeCloseTo(m.decided!.tab16h!, 1);
+    expect(m.decided!.tab24h! / m.decided!.casu20!).toBeLessThan(1.6);
   });
 
-  it('à 100 % avec 16 h d’autonomie, le téléphone et l’onglet visible font jeu égal', () => {
-    expect(m.h100_16!.mobile).toBeCloseTo(m.h100_16!.tab16h!, 1);
-    expect(m.h100_16!.tab24h! / m.h100_16!.casu20!).toBeLessThan(1.6);
+  it('les coups de fouet ajoutent une demi-heure effective par jour', () => {
+    expect(m.decided!.regular2h! - m.h100_16!.regular2h!).toBeCloseTo(0.5, 1);
   });
 });
 

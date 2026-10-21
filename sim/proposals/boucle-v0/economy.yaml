@@ -11,14 +11,13 @@ archetypes:
   - { id: crafter, name: Spécialiste artisan, share: 0.10, hours: 24, gather: 0.15, craft: 0.75, combat: 0.1, meals: 1 }
   - { id: tryhard, name: Tryhard, share: 0.05, hours: 26, gather: 0.4, craft: 0.4, combat: 0.2, meals: 1 }
 
-# Usure : un outil ou un équipement tient `lifeHours` heures d'activité réelle (hors ligne compris,
-# jamais quand le personnage est arrêté), puis se répare `repairs` fois pour `repairCost` de sa valeur,
-# puis se recycle (`recycleReturn` des matériaux reviennent).
+# Usure (décidé le 21 octobre) : un outil ou un équipement tient `lifeHours` heures d'activité réelle
+# (hors ligne compris, jamais quand le personnage est arrêté), puis se répare pour `repairCost` de sa valeur.
+# La durabilité maximale ne baisse jamais : un objet n'est remplacé que par un meilleur palier.
 wear:
-  tool: { item: iron_pickaxe, lifeHours: 60, repairs: 3, repairCost: 0.3 }
-  weapon: { item: iron_sword, lifeHours: 120, repairs: 3, repairCost: 0.3 }
-  armor: { items: { leather_jerkin: 1, linen_robe: 1, linen_hood: 1 }, lifeHours: 150, repairs: 3, repairCost: 0.3 }
-  recycleReturn: 0.4
+  tool: { item: iron_pickaxe, lifeHours: 60, repairCost: 0.3 }
+  weapon: { item: iron_sword, lifeHours: 120, repairCost: 0.3 }
+  armor: { items: { leather_jerkin: 1, linen_robe: 1, linen_hood: 1 }, lifeHours: 150, repairCost: 0.3 }
 
 # Consommation de combat par heure de combat (P4) : flèches et potions.
 combat:
@@ -37,8 +36,8 @@ clan: { membershipShare: 0.7 }
 # Les matériaux posés et le temps de pose sortent du circuit : c'est un puits qui rapporte de l'XP.
 construction: { craftTimeShare: 0 }
 
-# Recyclage : part du surplus fabriqué que les joueurs recyclent (ils en récupèrent recycleReturn).
-recycling: { craftedSurplusRecycled: 0 }
+# Recyclage : part du surplus fabriqué que les joueurs recyclent (ils en récupèrent `return`).
+recycling: { craftedSurplusRecycled: 0, return: 0.4 }
 
 # Arrivées : nouveaux joueurs par semaine (part de la population) et kit de départ (heures de travail).
 arrivals: { weeklyShare: 0.03, kitHours: 4 }
@@ -68,10 +67,10 @@ variants:
     name: "Recommandé : Construction (15 % de l'artisanat), recyclage (60 % du surplus fabriqué), rachat PNJ 10 % plafonné à 2 000 or/semaine"
     patch:
       construction: { craftTimeShare: 0.15 }
-      recycling: { craftedSurplusRecycled: 0.6 }
+      recycling: { craftedSurplusRecycled: 0.6, return: 0.4 }
       gold: { npcBuyback: 0.10, npcWeeklyCap: 2000 }
 
 # Métiers et petite population : combien de spécialistes par métier ?
 market:
-  professions: 18
+  professions: 17
   mainProfessionShare: 0.6   # part des joueurs qui ont un métier principal identifiable

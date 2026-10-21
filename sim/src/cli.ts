@@ -21,7 +21,7 @@ const commands: Record<string, () => string> = {
   economy: () => economyReport(opt('proposal', 'boucle-v0')),
   chains: () => chainsReport(opt('proposal', 'boucle-v0')),
   calibrate: () => {
-    const changes = calibrate(opt('proposal', 'boucle-v0'), args.includes('--write'));
+    const changes = calibrate(args.includes('--data') ? null : opt('proposal', 'boucle-v0'), args.includes('--write'));
     const lines = changes.map((c) => `${c.file} ${c.id} ${c.field} : ${c.from} → ${c.to}`);
     return `${lines.join('\n')}\n${changes.length} valeur(s) ${args.includes('--write') ? 'réécrite(s)' : 'à recalculer (--write pour écrire)'}.`;
   },
@@ -36,10 +36,10 @@ const commands: Record<string, () => string> = {
 /** Tous les rapports dans sim/reports/rapport.md (régénéré à chaque appel). */
 commands.report = () => {
   const sections: [string, string][] = [
-    ['Vérification : le prototype actuel (Minage seul, sans outil ni repas)', 'baseline'],
+    ['Données du jeu (data/) : Minage seul, sans outil, repas ni coup de fouet', 'baseline'],
     ['Présence : heures effectives par jour selon la variante', 'presence'],
     ['Repas actuels (data/)', 'consumables'],
-    ['Progression proposée (boucle-v0)', 'progression'],
+    ['Progression (boucle-v0, mêmes règles que data/)', 'progression'],
     ['Ce qu’un personnage atteint avec le temps (boucle-v0)', 'milestones'],
     ['Chaînes de production (boucle-v0)', 'chains'],
     ['Repas proposés (boucle-v0)', 'consumables-proposal'],

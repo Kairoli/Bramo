@@ -1,10 +1,4 @@
 # Seules les valeurs qui changent par rapport à data/settings.yaml.
-activity:
-  queueLength: 3
-rates:
-  offline: 1.0            # rendement unique : 100 % en ligne comme hors ligne
-  offlineCapHours: 16     # autonomie : 16 h après la dernière visite
-energy:
-  multiplier: 1.0         # plus d'énergie quotidienne (elle récompensait l'onglet visible)
-xp:
-  apprenticeship: { belowLevel: 20, multiplier: 2 }   # XP ×2 sous le niveau 20, dans chaque métier
+# Depuis le 21 octobre, data/ applique déjà le rendement unique (100 %, 16 h) et les coups de fouet :
+# la proposition n'a plus rien à y changer.
+{}

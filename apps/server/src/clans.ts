@@ -251,7 +251,7 @@ export async function contribute(
     .values({ clanId: clan.id, buildingId: p.buildingId, level: level + 1 })
     .onConflictDoUpdate({ target: [clanBuildings.clanId, clanBuildings.buildingId], set: { level: level + 1 } });
   await tx.delete(clanProgress).where(and(eq(clanProgress.clanId, clan.id), eq(clanProgress.buildingId, p.buildingId)));
-  await logLine(tx, clan.id, now, `${building.name} passe au niveau ${level + 1} : +${Math.round(building.boost.perLevel * 100)} % de production${building.boost.profession === 'all' ? '' : ' dans son métier'}.`, content.settings.clan.logSize);
+  await logLine(tx, clan.id, now, `${building.name} passe au niveau ${level + 1} : +${Math.round(building.boost.perLevel * 100)} % de production${building.boost.professions.includes('all') ? '' : ' dans ses métiers'}.`, content.settings.clan.logSize);
   state.clanBonuses = memberBonuses(await buildingLevels(tx, clan.id), content);
   return {
     state,

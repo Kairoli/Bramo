@@ -189,8 +189,8 @@ export const buildingSchema = z.object({
   name: z.string(),
   description: z.string(),
   maxLevel: z.number().int().min(1),
-  /** `profession` : un métier, ou « all » pour toute la production. */
-  boost: z.object({ profession: z.string(), perLevel: ratio }),
+  /** Métiers accélérés par chaque niveau : une liste de métiers, ou `[all]` pour toute la production. */
+  boost: z.object({ professions: z.array(z.string()).min(1), perLevel: ratio }),
   base: z.object({ gold: z.number().int().min(0), items: z.array(stackSchema).default([]) }),
 });
 

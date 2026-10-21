@@ -6,14 +6,15 @@ import { SEC, T0, content, makeState, mining } from './fixture.js';
 describe('bâtiments de clan', () => {
   it('chaque niveau ajoute son bonus au métier ou à tout, borné au niveau maximal', () => {
     expect(clanBonuses({}, content)).toEqual({});
-    expect(clanBonuses({ hall: 2, mine_gallery: 1 }, content)).toEqual({ all: 0.02, mining: 0.02 });
+    // Un bâtiment accélère tout un groupe de métiers voisins.
+    expect(clanBonuses({ hall: 2, mine_gallery: 1 }, content)).toEqual({ all: 0.02, mining: 0.02, smithing: 0.02 });
     expect(clanBonuses({ mine_gallery: 9 }, content).mining).toBeCloseTo(0.06); // maxLevel 3
     expect(clanBonuses({ inconnu: 2 }, content)).toEqual({});
   });
 
   it('un joueur reçoit toujours la Guilde du bourg, les bâtiments de son clan s’y ajoutent', () => {
     expect(memberBonuses(null, content)).toEqual({ all: 0.03 });
-    expect(memberBonuses({ hall: 1, mine_gallery: 2 }, content)).toEqual({ all: 0.04, mining: 0.04 });
+    expect(memberBonuses({ hall: 1, mine_gallery: 2 }, content)).toEqual({ all: 0.04, mining: 0.04, smithing: 0.04 });
   });
 
   it('le coût du niveau N vaut N fois la base, proportionnel aux membres actifs au-delà du minimum', () => {

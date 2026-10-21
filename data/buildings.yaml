@@ -1,64 +1,66 @@
-# Bâtiments de clan (docs/design/monde.md §3). Un clan les construit par niveaux, grâce aux apports de ses membres
-# (or et objets). Chaque niveau donne un bonus de production aux membres ; tous les bonus de clan sont plafonnés
-# ensemble par settings.bonusCaps.clan (+10 %).
+# Le village du clan (docs/design/monde.md §3) : un clan le construit niveau par niveau, grâce aux apports de ses
+# membres (or et matériaux). Chaque bâtiment accélère un groupe de métiers voisins (la forge sert les mineurs, les
+# forgerons et les joailliers) ; la halle accélère tout le monde. Les 17 métiers du jeu sont tous couverts, y compris
+# ceux qui ne sont pas encore jouables. Tous les bonus de clan sont plafonnés ensemble par settings.bonusCaps.clan (+10 %).
 #
 # Coût du niveau N = `base` × N, pour un clan de `settings.clan.minMembersForCost` membres actifs ; il croît
 # proportionnellement au-delà (un petit clan bâtit aussi vite par tête qu'un grand).
 # Les matériaux sont des matières premières de récolte (milliers d'unités) : les bâtiments absorbent le surplus des récolteurs,
 # alors que l'or est un puits plus modeste. Chiffres provisoires : à équilibrer avec le simulateur. # à équilibrer
+# `professions: [all]` = toute la production.
 
 - id: hall
   name: Halle du clan
-  description: Le cœur du clan. Son foyer réchauffe tous les métiers.
+  description: "Le cœur du village. Son foyer réchauffe tous les métiers."
   maxLevel: 3
-  boost: { profession: all, perLevel: 0.01 }
+  boost: { professions: [all], perLevel: 0.01 }
   base: { gold: 3000, items: [{ item: stone_block, qty: 4000 }, { item: pine_log, qty: 4000 }] }
 
-- id: mine_gallery
-  name: Galerie de mine
-  description: Des galeries étayées, un chariot sur rails. Les mineurs du clan travaillent plus vite.
+- id: forge
+  name: Forge
+  description: "Fourneaux, enclumes et galeries : tout ce qui se tire de la roche et du métal."
   maxLevel: 3
-  boost: { profession: mining, perLevel: 0.02 }
-  base: { gold: 1500, items: [{ item: stone_block, qty: 2000 }, { item: pine_log, qty: 1000 }] }
+  boost: { professions: [mining, smithing, jewelcrafting], perLevel: 0.02 }
+  base: { gold: 1500, items: [{ item: stone_block, qty: 2000 }, { item: coal, qty: 1000 }] }
 
 - id: sawmill
   name: Scierie
-  description: Une scie hydraulique pour les bûcherons du clan.
+  description: "Une scie hydraulique et un chantier couvert pour le bois et la construction."
   maxLevel: 3
-  boost: { profession: woodcutting, perLevel: 0.02 }
-  base: { gold: 1500, items: [{ item: pine_log, qty: 2500 }, { item: iron_ore, qty: 1000 }] }
+  boost: { professions: [woodcutting, carpentry, construction], perLevel: 0.02 }
+  base: { gold: 1500, items: [{ item: pine_log, qty: 2500 }, { item: oak_log, qty: 1000 }] }
 
-- id: herb_garden
-  name: Jardin du clan
-  description: Des plates-bandes abritées pour les herboristes du clan.
+- id: fields
+  name: Champs et jardins
+  description: "Parcelles, serres et plates-bandes pour ce qui pousse."
   maxLevel: 3
-  boost: { profession: herbalism, perLevel: 0.02 }
+  boost: { professions: [agriculture, herbalism], perLevel: 0.02 }
   base: { gold: 1500, items: [{ item: thyme, qty: 2000 }, { item: pine_log, qty: 1000 }] }
 
 - id: harbor
   name: Embarcadère
-  description: Un ponton et une barque pour les pêcheurs du clan.
+  description: "Un ponton, une barque et une carte aux trésors pour ceux qui prennent le large."
   maxLevel: 3
-  boost: { profession: fishing, perLevel: 0.02 }
+  boost: { professions: [fishing, exploration], perLevel: 0.02 }
   base: { gold: 1500, items: [{ item: pine_log, qty: 2000 }, { item: raw_fish, qty: 1500 }] }
 
-- id: forge
-  name: Forge du clan
-  description: Une seconde enclume et un soufflet de qualité pour les forgerons du clan.
+- id: lodge
+  name: Pavillon de chasse
+  description: "Des peaux qui sèchent, une table de couture : chasseurs, tanneurs et couturiers y ont leurs habitudes."
   maxLevel: 3
-  boost: { profession: smithing, perLevel: 0.02 }
-  base: { gold: 1500, items: [{ item: stone_block, qty: 2000 }, { item: coal, qty: 1000 }] }
+  boost: { professions: [hunting, tanning, tailoring], perLevel: 0.02 }
+  base: { gold: 1500, items: [{ item: oak_log, qty: 2000 }, { item: stone_block, qty: 1000 }] }
 
-- id: workshop
-  name: Atelier de menuiserie
-  description: Un établi partagé et un râtelier d'outils pour les menuisiers du clan.
+- id: arcane_tower
+  name: Tour des arcanes
+  description: "Alambics, runes et rouages au sommet d'une tour : alchimistes, enchanteurs et artificiers."
   maxLevel: 3
-  boost: { profession: carpentry, perLevel: 0.02 }
-  base: { gold: 1500, items: [{ item: oak_log, qty: 2000 }, { item: pine_log, qty: 1000 }] }
+  boost: { professions: [alchemy, enchanting, artificing], perLevel: 0.02 }
+  base: { gold: 1500, items: [{ item: stone_block, qty: 2000 }, { item: rune_stone, qty: 500 }] }
 
-- id: kitchen
-  name: Cuisines du clan
-  description: De grandes marmites pour les cuisiniers du clan.
+- id: tavern
+  name: Taverne
+  description: "De grandes marmites et une cheminée qui ne s'éteint jamais pour les cuisiniers du clan."
   maxLevel: 3
-  boost: { profession: cooking, perLevel: 0.02 }
+  boost: { professions: [cooking], perLevel: 0.02 }
   base: { gold: 1500, items: [{ item: stone_block, qty: 1500 }, { item: raw_fish, qty: 1500 }] }

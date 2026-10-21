@@ -317,41 +317,42 @@ describe('API', () => {
     expect((await intrus('POST', '/api/clan/create', { name: 'les braises' })).status).toBe(400); // nom déjà pris
     const view0 = (await chef('GET', '/api/clan')).json as import('@bramo/shared').ClanView;
     expect(view0.myRank).toBe('leader');
-    expect(view0.buildings.map((b) => b.id)).toContain('mine_gallery');
+    expect(view0.buildings.map((b) => b.id)).toContain('forge');
 
     const list = (await recrue('GET', '/api/clans')).json as import('@bramo/shared').ClanListItem[];
     expect(list).toHaveLength(1);
     await recrue('POST', '/api/clan/join', { clanId: list[0]!.id });
-    await grant('Recrue', 0, { stone_block: 3000, pine_log: 1500, copper_ore: 5 });
+    await grant('Recrue', 0, { stone_block: 3000, coal: 1500, copper_ore: 5 });
 
-    // Galerie de mine, niveau 1 : 1 500 or, 2 000 blocs de pierre, 1 000 bûches de pin (2 membres actifs : coût de référence).
-    const gallery = view0.buildings.find((b) => b.id === 'mine_gallery')!;
+    // Forge, niveau 1 : 1 500 or, 2 000 blocs de pierre, 1 000 de charbon (2 membres actifs : coût de référence).
+    const gallery = view0.buildings.find((b) => b.id === 'forge')!;
     expect(gallery.next?.gold.need).toBe(1500);
     // L'or : l'apport est plafonné à ce qu'il manque ; un objet non demandé est refusé ; un non-membre ne peut rien apporter.
-    expect((await chef('POST', '/api/clan/contribute', { buildingId: 'mine_gallery', what: 'gold', qty: 1000 })).status).toBe(200);
-    expect((await recrue('POST', '/api/clan/contribute', { buildingId: 'mine_gallery', what: 'copper_ore', qty: 5 })).status).toBe(400);
-    expect((await intrus('POST', '/api/clan/contribute', { buildingId: 'mine_gallery', what: 'gold', qty: 10 })).status).toBe(400);
-    const capped = (await chef('POST', '/api/clan/contribute', { buildingId: 'mine_gallery', what: 'gold', qty: 2000 })).json as StateResponse;
+    expect((await chef('POST', '/api/clan/contribute', { buildingId: 'forge', what: 'gold', qty: 1000 })).status).toBe(200);
+    expect((await recrue('POST', '/api/clan/contribute', { buildingId: 'forge', what: 'copper_ore', qty: 5 })).status).toBe(400);
+    expect((await intrus('POST', '/api/clan/contribute', { buildingId: 'forge', what: 'gold', qty: 10 })).status).toBe(400);
+    const capped = (await chef('POST', '/api/clan/contribute', { buildingId: 'forge', what: 'gold', qty: 2000 })).json as StateResponse;
     expect(capped.state.gold).toBe(3000 - content.settings.clan.creationCost - 1500);
-    expect((await chef('POST', '/api/clan/contribute', { buildingId: 'mine_gallery', what: 'gold', qty: 1 })).status).toBe(400); // complet
+    expect((await chef('POST', '/api/clan/contribute', { buildingId: 'forge', what: 'gold', qty: 1 })).status).toBe(400); // complet
     // Les membres apportent ensemble : le bâtiment monte quand tout est réuni.
-    await recrue('POST', '/api/clan/contribute', { buildingId: 'mine_gallery', what: 'stone_block', qty: 2000 });
+    await recrue('POST', '/api/clan/contribute', { buildingId: 'forge', what: 'stone_block', qty: 2000 });
     const mid = (await chef('GET', '/api/clan')).json as import('@bramo/shared').ClanView;
-    expect(mid.buildings.find((b) => b.id === 'mine_gallery')?.level).toBe(0);
-    const done = (await recrue('POST', '/api/clan/contribute', { buildingId: 'mine_gallery', what: 'pine_log', qty: 1000 })).json as StateResponse;
+    expect(mid.buildings.find((b) => b.id === 'forge')?.level).toBe(0);
+    const done = (await recrue('POST', '/api/clan/contribute', { buildingId: 'forge', what: 'coal', qty: 1000 })).json as StateResponse;
     expect(done.journal.some((j) => j.text.includes('niveau 1'))).toBe(true);
-    expect(done.state.inventory.pine_log).toBe(500);
+    expect(done.state.inventory.coal).toBe(500);
     const after = (await chef('GET', '/api/clan')).json as import('@bramo/shared').ClanView;
-    expect(after.buildings.find((b) => b.id === 'mine_gallery')).toMatchObject({ level: 1, next: { gold: { need: 3000, have: 0 } } });
+    expect(after.buildings.find((b) => b.id === 'forge')).toMatchObject({ level: 1, next: { gold: { need: 3000, have: 0 } } });
     expect(after.bonuses.mining).toBeCloseTo(0.02);
-    expect(after.log.some((l) => l.text.includes('Galerie de mine passe au niveau 1'))).toBe(true);
+    expect(after.bonuses.smithing).toBeCloseTo(0.02); // la forge sert aussi les forgerons
+    expect(after.log.some((l) => l.text.includes('Forge passe au niveau 1'))).toBe(true);
     // Le bonus s'applique à la production des membres : +2 % mineur, en plus des 3 % de la Guilde du bourg.
     await recrue('POST', '/api/activity/start', { recipeId: 'mine_copper', quantity: 50, mode: 'replace' });
     const rate = ((await recrue('GET', '/api/state')).json as StateResponse).state.activity!.rate;
     expect(rate.clan).toBeCloseTo(content.settings.clan.townGuildBonus + 0.02);
     // Le fil du serveur annonce l'achèvement.
     const feed = ((await chef('GET', '/api/town')).json as import('@bramo/shared').TownView).feed;
-    expect(feed.some((e) => e.kind === 'clan' && e.text.includes('Galerie de mine'))).toBe(true);
+    expect(feed.some((e) => e.kind === 'clan' && e.text.includes('Forge'))).toBe(true);
 
     // Rangs : l'officier peut exclure un membre ; le chef doit transférer la direction avant de partir.
     const recruitId = after.members.find((m) => m.rank === 'member')!.id;

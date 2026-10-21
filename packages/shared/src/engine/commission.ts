@@ -98,7 +98,7 @@ export function clanBonuses(levels: BuildingLevels, content: Pick<Content, 'buil
   for (const [id, level] of Object.entries(levels)) {
     const b = content.buildings[id];
     if (!b || level <= 0) continue;
-    out[b.boost.profession] = (out[b.boost.profession] ?? 0) + Math.min(level, b.maxLevel) * b.boost.perLevel;
+    for (const p of b.boost.professions) out[p] = (out[p] ?? 0) + Math.min(level, b.maxLevel) * b.boost.perLevel;
   }
   return out;
 }

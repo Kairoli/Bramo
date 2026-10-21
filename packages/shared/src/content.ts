@@ -112,7 +112,7 @@ export function buildContent(raw: RawContent): Content {
   }
   const buildings = unique(buildingList, 'buildings.yaml');
   for (const b of buildingList) {
-    if (b.boost.profession !== 'all' && !professionMap[b.boost.profession]) errors.push(`buildings.yaml : ${b.id} améliore un métier inconnu « ${b.boost.profession} »`);
+    for (const p of b.boost.professions) if (p !== 'all' && !professionMap[p]) errors.push(`buildings.yaml : ${b.id} améliore un métier inconnu « ${p} »`);
     for (const s of b.base.items) if (!items[s.item]) errors.push(`buildings.yaml : ${b.id} demande un objet inconnu « ${s.item} »`);
   }
   const classes = unique(classList, 'classes.yaml');

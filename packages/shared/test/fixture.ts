@@ -59,8 +59,8 @@ export const content = buildContent({
     { id: 'brute', name: 'Brute', style: 'melee', profession: 'smithing', affinityColor: '#F08A4B', pitch: '', startingOutfit: 'plain', pose: 'brute' },
   ],
   buildings: [
-    { id: 'hall', name: 'Halle', description: '', maxLevel: 3, boost: { profession: 'all', perLevel: 0.01 }, base: { gold: 100, items: [{ item: 'ore', qty: 10 }] } },
-    { id: 'mine_gallery', name: 'Galerie', description: '', maxLevel: 3, boost: { profession: 'mining', perLevel: 0.02 }, base: { gold: 50, items: [] } },
+    { id: 'hall', name: 'Halle', description: '', maxLevel: 3, boost: { professions: ['all'], perLevel: 0.01 }, base: { gold: 100, items: [{ item: 'ore', qty: 10 }] } },
+    { id: 'mine_gallery', name: 'Forge', description: '', maxLevel: 3, boost: { professions: ['mining', 'smithing'], perLevel: 0.02 }, base: { gold: 50, items: [] } },
   ],
   npcOrders: [
     { id: 'ore_easy', profession: 'mining', level: 1, client: 'Guilde', text: '', items: [{ item: 'ore', qty: 10 }], gold: 30 },

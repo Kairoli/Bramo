@@ -187,7 +187,9 @@ function Buildings({ clan, run }: { clan: ClanView; run: Run }) {
 function BuildingCard({ b, run }: { b: ClanBuildingView; run: Run }) {
   const { content, state } = useGame();
   const def = content.buildings[b.id]!;
-  const professionName = def.boost.profession === 'all' ? 'toute la production' : (content.professions.find((p) => p.id === def.boost.profession)?.name ?? def.boost.profession);
+  const targets = def.boost.professions.includes('all')
+    ? 'toute la production'
+    : def.boost.professions.map((id) => content.professions.find((p) => p.id === id)?.name ?? id).join(', ');
   const [amount, setAmount] = useState<Record<string, number>>({});
   const qty = (key: string, max: number) => Math.max(1, Math.min(max, amount[key] ?? max));
 
@@ -210,7 +212,7 @@ function BuildingCard({ b, run }: { b: ClanBuildingView; run: Run }) {
         </span>
       </header>
       <p className="small">
-        <strong>{signedPct(def.boost.perLevel)}</strong> par niveau de production pour {professionName}
+        <strong>{signedPct(def.boost.perLevel)}</strong> par niveau de production pour {targets}
         {b.level > 0 && <span className="muted"> · actuellement {signedPct(def.boost.perLevel * b.level)}</span>}
       </p>
       {b.next === null ? (

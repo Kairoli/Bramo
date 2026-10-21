@@ -73,14 +73,14 @@ Mesuré avec `pnpm --filter @bramo/sim sim balance` (60 joueurs, 150 jours, **mo
 
 | Réglage | Entrée (PNJ) | Taxe | Clans | Solde | Or d'un membre de clan | Or d'un joueur seul | Niveaux bâtis par clan (sur 24) | 500 or gagnés en |
 |---|---|---|---|---|---|---|---|---|
-| Commandes PNJ ×1 (avant) | 173 | 15 | 28 | +126 | 4 900 | 47 000 | 14 | 2 jours |
-| **Commandes PNJ ×0,75 (choisi)** | **96** | **12** | **39** | **+44** | **165** | **19 700** | **7** | **6,5 jours** |
-| Commandes PNJ ×0,6 | 84 | 11 | 27 | +44 | 133 | 16 900 | 5 | 8 jours |
-| Choisi + or des bâtiments ×1,5 | 102 | 13 | 57 | +30 | 165 | 17 000 | 6 | 7 jours |
+| Commandes PNJ ×1 (avant) | 164 | 15 | 33 | +112 | 5 000 | 47 400 | 14 | 2 jours |
+| **Commandes PNJ ×0,75 (choisi)** | **97** | **14** | **44** | **+36** | **196** | **18 500** | **8** | **6 jours** |
+| Commandes PNJ ×0,6 | 77 | 10 | 33 | +33 | 165 | 14 700 | 6 | 8 jours |
+| Choisi + or des bâtiments ×1,5 | 107 | 12 | 46 | +46 | 200 | 18 200 | 6 | 6 jours |
 
 Avant les clans, la simulation donnait +120 or créés par joueur et par jour et 24 000 or par joueur au bout de 120 jours (`sim/reports/marche.html`, première version). Ce que les chiffres disent :
-- **Les clans règlent l'or de leurs membres** : ils apportent leur excédent aux bâtiments et finissent avec une centaine d'or. Le rythme est celui d'un objectif long : **le premier niveau de bâtiment vers le jour 19**, 7 niveaux sur 24 au bout de 150 jours (le double sans la baisse des commandes), donc un arbre complet en un an et demi pour un clan moyen. Si c'est trop lent, c'est le coût en or des bâtiments qu'il faut baisser, pas les commandes.
-- **Les joueurs sans clan n'ont rien à dépenser** : leur or s'accumule (près de 20 000 à 150 jours dans la simulation, où ils ne font que jouer). C'est le point faible restant. Pistes : un **atelier personnel** avec le métier Construction (puits d'or et de matériaux sans clan), de l'équipement de combat à payer, des services de joueurs. Aucun bonus de PNJ pour les solitaires (ce serait casser « personne ne fait tout seul »).
+- **Les clans règlent l'or de leurs membres** : ils apportent leur excédent aux bâtiments et finissent avec une centaine d'or. Le rythme est celui d'un objectif long : **le premier niveau de bâtiment vers le jour 19**, 8 niveaux sur 24 au bout de 150 jours (le double sans la baisse des commandes), donc un village complet en un an et demi pour un clan moyen (Louis : « ça me va »). Si c'est trop lent plus tard, c'est le coût en or des bâtiments qu'il faut baisser, pas les commandes.
+- **Les joueurs sans clan n'ont rien à dépenser** : leur or s'accumule (près de 20 000 à 150 jours dans la simulation, où ils ne font que jouer). C'est le point faible restant. **Décision de Louis (21 octobre) : on ne fait rien pour l'instant** (il n'a pas d'idée et ne veut surtout pas pousser les joueurs à éviter les clans) ; on y reviendra avec la Construction. Pistes : un **atelier personnel** avec le métier Construction (puits d'or et de matériaux sans clan), de l'équipement de combat à payer, des services de joueurs. Aucun bonus de PNJ pour les solitaires (ce serait casser « personne ne fait tout seul »).
 - **Choix retenu** : récompenses des commandes PNJ **×0,75** (de ~170 à ~100 or par joueur et par jour réellement perçus), bâtiments inchangés. Un nouveau joueur gagne ses 500 premiers or en environ une semaine et son premier outil en quelques jours.
 - Les bâtiments demandent des **matières premières par milliers** (pierre, bois, poisson…) : c'est un débouché pour le surplus des récolteurs, dont les prix s'effondraient (40 à 50 % de la référence).
 - **Limites** : les bots donnent la moitié de leur excédent au-dessus de 300 or ; de vrais joueurs dépenseraient plus ou moins. Une seule graine est bruitée : toujours comparer des moyennes. À refaire quand le combat et la Construction existeront.

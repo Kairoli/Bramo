@@ -511,7 +511,7 @@ export function runWorld(content: Content, input: WorldOptions): WorldResult {
     if (!clan) return;
     const active = clan.members.filter((m) => m.started).length;
     let budget = Math.max(0, b.state.gold - RESERVE) * opts.clanWillingness;
-    const own = Object.values(content.buildings).find((x) => x.boost.profession === b.profession)?.id;
+    const own = Object.values(content.buildings).find((x) => x.boost.professions.includes(b.profession))?.id;
     const order = [own, 'hall', ...Object.keys(content.buildings).sort((x, y) => (clan.levels[x] ?? 0) - (clan.levels[y] ?? 0))].filter(
       (id, i, all): id is string => !!id && all.indexOf(id) === i && !!content.buildings[id],
     );

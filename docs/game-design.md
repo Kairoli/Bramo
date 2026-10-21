@@ -106,7 +106,7 @@ Pseudo et mot de passe, un personnage par compte.
 Chaque classe a **trois voies** (dégâts, contrôle, soutien) qui partagent le même métier principal. Le bonus de métier reste modeste et s'évalue avec les autres sources de puissance. Choix de la classe à la création, changeable à tout moment et gratuitement. Chaque classe a sa **tenue de départ** et sa **pose** ; à terme, chaque voie aura sa pose.
 
 ### 7.2 Progression de classe [Décidé par Louis : un niveau par classe ; sens des paliers proposé]
-Chaque classe a **son niveau** ; toutes les activités productives donnent de l'XP à la classe sélectionnée ; changer de classe conserve tous les niveaux. Niveau 30 : **voie** ; 60 : **spécialisation** (deux doctrines par voie) ; 75 : **éveil** (compétence ultime). Taux d'XP, rattrapage, plan de combat : [`design/combat-items.md`](design/combat-items.md) §2.
+Chaque classe a **son niveau**, gagné **au combat seulement** (les métiers ne font pas monter la classe) ; changer de classe conserve tous les niveaux. Niveau 30 : **voie** = la spécialisation (dégâts, contrôle, soutien) ; le style vient du build et des sorts choisis. Niveau 75 : éveil (ultime), à confirmer. Taux d'XP, rattrapage, plan de combat, non-combattants : [`design/combat-items.md`](design/combat-items.md) §2.
 
 ### 7.3 Classes de métier [Décidé]
 **Artificier** (Artificerie), **Alchimiste** (Alchimie). [Prototype du v1.0] Déblocage au niveau 40. [Recommandé] Au niveau 60 avec la nouvelle progression.

@@ -10,6 +10,7 @@
 4. **L'équipement s'use** (durabilité jamais réduite au maximum, réparation qui rend tout).
 5. **Emplacements à la Dofus** : coiffe, cape, bottes, ceinture, bijoux (anneaux, collier). Détail au §4.
 6. **Validés** : le niveau par classe, les raretés sans talent intrinsèque, les ensembles à 2 / 3 / 4 pièces, l'abandon des qualités statistiques.
+6 bis. **Précisions de Louis (21 octobre, suite)** : les **voies sont la spécialisation** (dégâts, contrôle, soutien) ; le **style** vient du build et des sorts choisis ; **l'XP de classe ne monte pas en faisant les métiers**, seulement au combat.
 7. **Chasse** : un métier de récolte comme les autres, **sans combat**.
 8. **Triangle mêlée > tir > magie** : abandonné pour les monstres (réservé à un éventuel PvP).
 9. **Recaler les recettes** sur l'échelle des paliers (1, 10, 20… 90) : fait dans ce chantier (§9).
@@ -22,35 +23,40 @@ Chaque joueur choisit son activité principale et peut en changer à tout moment
 |---|---|---|
 | Combattant | Donjons, boss, régions, ensembles, builds | Équipement fini en butin, composants, plans, gemmes |
 | Récolteur | Rendement, économie de matériaux, trouvailles | Équipement de métier (outils, tenues de récolte), gemmes de métier |
-| Artisan | Séries, qualité, signature | Plans, composants, commandes, reforge, chefs-d'œuvre |
+| Artisan | Séries, signature, chefs-d'œuvre | Plans, composants, commandes, reforge ; équipe les combattants sans jamais combattre |
 
 **Les objets, composants, plans et gemmes circulent par le marché et les commandes.** Un artisan n'a jamais à finir un donjon, un combattant n'a jamais à monter un métier.
 
 ## 2. Niveau de classe
 
-### 2.1 Un niveau par classe [Décidé par Louis]
+### 2.1 Un niveau par classe, gagné au combat [Décidé par Louis]
 - Chaque classe (Forgefeu, Traqueur, Runiste ; Artificier et Alchimiste plus tard) a **son propre niveau**, de 1 à 99.
+- **L'XP de classe vient du combat, et seulement du combat.** Faire ses métiers ne fait **pas** monter la classe (décision du 21 octobre, qui corrige le récapitulatif ChatGPT : « toutes les activités productives donnent de l'XP à la classe »). Les métiers donnent l'XP des métiers, le combat celle de la classe.
 - **Changer de classe conserve** les niveaux de toutes les classes, les métiers, le sac et les possessions. Gratuit, à tout moment.
 - Les **trois voies** d'une classe partagent son niveau. **Pas de progression par type d'arme.**
-- **Toutes les activités productives** (métiers de récolte et d'artisanat, combat) donnent de l'XP à la **classe sélectionnée**, en plus de l'XP du métier concerné. Un artisan peut donc monter une classe sans combattre ; il lui faudra ensuite l'équipement et le build pour réussir les rencontres.
 
-### 2.2 Combien d'XP de classe [Proposé par Claude]
-- **L'XP de classe se gagne au temps de travail effectif**, pas à la recette : `XP de classe par heure effective = R(niveau de la classe)`, la même courbe que celle des métiers (`R(L) = 400 × 2^((L−1)/55)`), sur la courbe d'XP RuneScape. Une classe monte donc aussi vite qu'un métier. Une recette très courte ou un recyclage ne rapporte rien de plus : le recyclage est une action instantanée, sans temps de travail, donc **sans XP de classe**.
-- **Le combat rapporte ×1,25** l'XP de classe d'une heure de métier : un petit avantage, jamais une nécessité (le jeu reste casu : l'écart reste sous ×2–2,5).
-- **Rattrapage** : une classe plus basse que la plus haute des classes du joueur gagne **+50 % d'XP de classe** tant qu'elle n'a pas atteint 80 % du niveau de la plus haute. Changer de classe ne coûte donc pas des mois.
-- Le hors ligne suit la règle générale (100 % pendant 16 h d'autonomie).
+### 2.2 Les voies sont la spécialisation [Décidé par Louis]
+Les trois **voies** (**dégâts**, **contrôle**, **soutien**) *sont* la spécialisation de la classe : il n'y a pas de « spécialisation » en plus. Elles se choisissent au **niveau 30** et se changent gratuitement en ville. Le **style** de jeu à l'intérieur d'une voie ne vient pas d'un autre palier de choix : il vient du **build et des sorts choisis** (compétences du plan, équipement, gemmes, ensemble). L'ancienne « doctrine » du niveau 60 que j'avais proposée est **retirée**.
 
-### 2.3 Ce que signifient voie, spécialisation et éveil [Proposé par Claude]
-Ces trois mots venaient du v1.0 sans définition. Proposition, en trois paliers de choix qui **orientent** sans verrouiller le reste du build :
+| Niveau de classe | Ce que ça donne |
+|---|---|
+| 1 à 29 | **Base** : une attaque de base et un répertoire de sorts qui s'élargit (un nouveau sort tous les 5 niveaux), à placer dans un **plan de combat** à quatre emplacements. |
+| 30 | **Voie** : un passif de voie, deux sorts propres à la voie, un emplacement de sort en plus. |
+| 75 | **Éveil** [Proposé, à confirmer ou supprimer] : un dernier sort, l'**ultime** de la classe, qui entre dans le plan avec sa condition de lancement. Si Louis préfère, l'éveil disparaît et tous les sorts se débloquent avec le niveau. |
 
-| Niveau de classe | Nom | Ce que ça donne |
-|---|---|---|
-| 1 à 29 | **Base** | Une attaque de base et un petit répertoire de compétences ; un plan de combat à quatre emplacements de compétence. Une nouvelle compétence ou amélioration tous les 5 niveaux. |
-| 30 | **Voie** (dégâts, contrôle, soutien) | Un passif de voie, deux compétences de voie, un emplacement de compétence en plus. Changer de voie est gratuit en ville. |
-| 60 | **Spécialisation** | Deux **doctrines** par voie, soit six par classe. Une doctrine est un passif qui change le **style** de la voie : par exemple, pour le Forgefeu « dégâts », *Fournaise* (la voie vit des brûlures) ou *Acier chaud* (la voie vit des coups lourds). |
-| 75 | **Éveil** | La compétence **ultime** de la classe (une par doctrine), qui entre dans le plan avec sa condition de lancement (par exemple « quand la cible est marquée » ou « quand les PV passent sous 40 % »). |
+**Le plan de combat** est ce que le joueur prépare : l'ordre de priorité de ses sorts, leurs conditions, les réponses aux situations (un protecteur à garder pour la phase dangereuse, une interruption quand la cible charge). Chaque classe et chaque voie ont un **plan par défaut utilisable** ; aucune intervention manuelle n'est jamais requise.
 
-**Le plan de combat** est ce que le joueur prépare : l'ordre de priorité de ses compétences, leurs conditions, les réponses aux situations (un protecteur à garder pour la phase dangereuse, une interruption quand la cible charge). Chaque classe et chaque voie ont un **plan par défaut utilisable** ; aucune intervention manuelle n'est jamais requise.
+### 2.3 Combien d'XP de classe [Proposé par Claude]
+- **Au temps de combat effectif** : `XP de classe par heure de combat = R(niveau de la classe)`, la courbe des métiers (`R(L) = 400 × 2^((L−1)/55)`), sur la courbe d'XP RuneScape. Une classe monte au rythme d'un métier.
+- **Rattrapage** : une classe plus basse que la plus haute des classes du joueur gagne **+50 % d'XP de classe** tant qu'elle n'a pas atteint 80 % du niveau de la plus haute. Changer de classe ne coûte pas des mois.
+- Le hors ligne suit la règle générale (100 % pendant 16 h d'autonomie) ; aucun gain par une action instantanée (recyclage, vente, remise de commande).
+
+### 2.4 Pour celles et ceux qui ne veulent pas combattre [Proposé par Claude, à valider]
+La classe ne doit être **ni une obligation ni un goulot** pour eux :
+- **Rien de ce qui concerne les métiers ne dépend du niveau de classe.** Outils, tenues de métier et gemmes de métier se débloquent avec le **niveau du métier** ; l'affinité de la classe avec son métier lié (+5 % au plus) dépend du **niveau du métier**, pas de celui de la classe. Le rang du maître, les clans, le marché, les chefs-d'œuvre et les commandes non plus.
+- La classe sert alors d'**identité** (pose, tenue de départ, nom) et de petit bonus de métier. On peut la choisir pour son style et ne jamais combattre.
+- **L'artisan** équipe les combattants (armes, armures, gemmes, reforges) sans jamais avoir besoin d'un niveau de classe : l'équipement de combat n'exige un niveau de classe que de **celui qui le porte**.
+- **Option « Terrain d'entraînement »** : une activité automatique, sans butin ni risque, qui donne de l'XP de classe à **40 %** du rythme du combat, jusqu'au niveau de classe **40**. Elle sert à ceux qui veulent porter de l'équipement de palier moyen ou essayer un build sans affronter de vraies rencontres. Au-delà, il faut de vraies rencontres. À confirmer : veut-on l'offrir ?
 
 ## 3. Combat entièrement automatique [Décidé par Louis]
 
@@ -201,4 +207,4 @@ Une **gemme** porte un **talent** : une règle automatique du type *quand [évé
 - Les **chiffres** : caractéristiques et plafonds, budget exact des raretés, valeur et coût du perfectionnement, taux de butin.
 - La **liste exacte des déclencheurs et effets** de gemmes de la première version.
 - Le **plan de combat** : interface (liste de priorités simple, ou conditions plus riches).
-- La **doctrine** (niveau 60) et l'**éveil** (niveau 75) : confirmer le sens proposé au §2.3.
+- L'**éveil** (niveau 75, ultime) : le garder ou non (§2.2). Le **Terrain d'entraînement** pour les non-combattants (§2.4).

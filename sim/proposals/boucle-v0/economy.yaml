@@ -1,0 +1,77 @@
+# Hypothèses du modèle économique (sim/src/economy.ts). Ce ne sont pas des réglages du jeu :
+# chaque ligne est une hypothèse à discuter, et le rapport montre lesquelles comptent le plus.
+
+# Population : part, heures effectives par jour (docs/design/presence.md), répartition du temps,
+# part du temps avec un repas actif.
+archetypes:
+  - { id: newcomer, name: Nouveau (moins d'un mois), share: 0.15, hours: 20, gather: 0.6, craft: 0.3, combat: 0.1, meals: 0.3 }
+  - { id: casual, name: Casu, share: 0.35, hours: 16.4, gather: 0.4, craft: 0.3, combat: 0.3, meals: 0.5 }
+  - { id: generalist, name: Régulier généraliste, share: 0.25, hours: 24, gather: 0.35, craft: 0.35, combat: 0.3, meals: 0.8 }
+  - { id: gatherer, name: Spécialiste récolte, share: 0.10, hours: 24, gather: 0.85, craft: 0.05, combat: 0.1, meals: 1 }
+  - { id: crafter, name: Spécialiste artisan, share: 0.10, hours: 24, gather: 0.15, craft: 0.75, combat: 0.1, meals: 1 }
+  - { id: tryhard, name: Tryhard, share: 0.05, hours: 26, gather: 0.4, craft: 0.4, combat: 0.2, meals: 1 }
+
+# Usure : un outil ou un équipement tient `lifeHours` heures d'activité réelle (hors ligne compris,
+# jamais quand le personnage est arrêté), puis se répare `repairs` fois pour `repairCost` de sa valeur,
+# puis se recycle (`recycleReturn` des matériaux reviennent).
+wear:
+  tool: { item: iron_pickaxe, lifeHours: 60, repairs: 3, repairCost: 0.3 }
+  weapon: { item: iron_sword, lifeHours: 120, repairs: 3, repairCost: 0.3 }
+  armor: { items: { leather_jerkin: 1, linen_robe: 1, linen_hood: 1 }, lifeHours: 150, repairs: 3, repairCost: 0.3 }
+  recycleReturn: 0.4
+
+# Consommation de combat par heure de combat (P4) : flèches et potions.
+combat:
+  enabled: true
+  arrowsPerHour: 60
+  potionsPerHour: 2
+  rangedShare: 0.35       # part des combattants qui tirent des flèches
+
+# Repas : bonus moyen et rendement (le repas coûte bonus / payback heures de chaîne par heure couverte).
+meals: { bonus: 0.06, payback: 2 }
+
+# Clan : part des joueurs membres.
+clan: { membershipShare: 0.7 }
+
+# Construction : part du temps d'artisanat passée à poser des éléments (atelier personnel, halle du clan).
+# Les matériaux posés et le temps de pose sortent du circuit : c'est un puits qui rapporte de l'XP.
+construction: { craftTimeShare: 0 }
+
+# Recyclage : part du surplus fabriqué que les joueurs recyclent (ils en récupèrent recycleReturn).
+recycling: { craftedSurplusRecycled: 0 }
+
+# Arrivées : nouveaux joueurs par semaine (part de la population) et kit de départ (heures de travail).
+arrivals: { weeklyShare: 0.03, kitHours: 4 }
+
+# Or. Valeur de référence : 1 000 or par heure de travail.
+gold:
+  perWorkHour: 1000
+  npcBuyback: 0.25        # rachat du marchand en part de la valeur de référence
+  npcWeeklyCap: null      # or maximal racheté par le marchand par personnage et par semaine (null = illimité)
+  surplusSoldToNpc: 0.5   # part du surplus vendue au marchand (le reste est stocké, recyclé ou vendu entre joueurs)
+  tradedShare: 0.3        # part de la production qui change de main au marché
+  marketTax: 0.05
+  npcRepairShare: 0.3     # part des réparations payées en or au PNJ (au double du coût des matériaux)
+  trialGoldPerDay: 40     # épreuves des maîtres, ramené à la journée
+  clanUpkeepPerMemberDay: 60
+  stationFeesPerDay: 80   # postes d'atelier, expéditions et services payés en or
+
+# Variantes comparées par le rapport (fusionnées avec les hypothèses ci-dessus).
+variants:
+  - id: prototype
+    name: "Comme le prototype : rachat PNJ à 25 % sans plafond, ni Construction ni recyclage"
+    patch: {}
+  - id: wear_x3
+    name: Usure ×3 et repas plus forts (seule réponse par l'usure)
+    patch: { wear: { tool: { lifeHours: 20 }, weapon: { lifeHours: 40 }, armor: { lifeHours: 50 } }, meals: { bonus: 0.08 } }
+  - id: recommended
+    name: "Recommandé : Construction (15 % de l'artisanat), recyclage (60 % du surplus fabriqué), rachat PNJ 10 % plafonné à 2 000 or/semaine"
+    patch:
+      construction: { craftTimeShare: 0.15 }
+      recycling: { craftedSurplusRecycled: 0.6 }
+      gold: { npcBuyback: 0.10, npcWeeklyCap: 2000 }
+
+# Métiers et petite population : combien de spécialistes par métier ?
+market:
+  professions: 18
+  mainProfessionShare: 0.6   # part des joueurs qui ont un métier principal identifiable

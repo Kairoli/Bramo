@@ -1,0 +1,10 @@
+# Parcelles d'Agriculture (pas encore dans le moteur) : semer et récolter sont des gestes instantanés
+# qui n'occupent pas l'activité ; la culture pousse en temps réel, sans plafond d'absence ;
+# une récolte mûre attend sans se gâter. Le nombre de parcelles limite la production.
+# Le simulateur compte une parcelle·heure comme ressource à part dans le coût des chaînes.
+plotsAtLevel: [[1, 3], [10, 4], [20, 5], [30, 6], [45, 7], [60, 8], [75, 9], [90, 10]]
+crops:
+  - { item: flax_stalk, level: 1, growthHours: 8, yield: 80, xpPerHarvest: 30 }
+  - { item: wheat_sheaf, level: 1, growthHours: 8, yield: 40, xpPerHarvest: 30 }
+  - { item: carrot, level: 5, growthHours: 6, yield: 30, xpPerHarvest: 25 }
+  - { item: woad_leaves, level: 15, growthHours: 10, yield: 45, xpPerHarvest: 45 }

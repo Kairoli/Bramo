@@ -1,0 +1,43 @@
+# Récolte. Règle : durée = 12 s + 2 s par dizaine de niveaux ; XP = R(niveau) × durée / 3600,
+# avec R(L) = 400 × 2^((L−1)/55) XP par heure effective (docs/design/progression.md).
+
+# --- Minage ---
+- {id: mine_copper, name: Minerai de cuivre, profession: mining, category: ores, level: 1, durationSec: 12, xp: 1.3, outputs: [{item: copper_ore, qty: 1}]}
+- {id: mine_tin, name: Minerai d'étain, profession: mining, category: ores, level: 1, durationSec: 12, xp: 1.3, outputs: [{item: tin_ore, qty: 1}]}
+- {id: mine_stone, name: Bloc de pierre, profession: mining, category: stone, level: 1, durationSec: 12, xp: 1.3, outputs: [{item: stone_block, qty: 1}]}
+- {id: mine_sand, name: Sable, profession: mining, category: stone, level: 1, durationSec: 12, xp: 1.3, outputs: [{item: sand, qty: 1}]}
+- {id: mine_iron, name: Minerai de fer, profession: mining, category: ores, level: 10, durationSec: 14, xp: 1.7, outputs: [{item: iron_ore, qty: 1}]}
+- {id: mine_rune_stone, name: Pierre runique, profession: mining, category: stone, level: 15, durationSec: 16, xp: 2.1, outputs: [{item: rune_stone, qty: 1}]}
+- {id: mine_coal, name: Charbon, profession: mining, category: ores, level: 20, durationSec: 16, xp: 2.3, outputs: [{item: coal, qty: 1}]}
+- {id: mine_silver, name: Minerai d'argent, profession: mining, category: ores, level: 30, durationSec: 18, xp: 2.9, outputs: [{item: silver_ore, qty: 1}]}
+- {id: mine_gem_vein, name: Filon de gemmes, profession: mining, category: gems, level: 35, durationSec: 60, xp: 10.2, outputs: [{item: rough_amethyst, qty: 1}]}
+- {id: mine_mithril, name: Minerai de mithril, profession: mining, category: ores, level: 40, durationSec: 20, xp: 3.6, outputs: [{item: mithril_ore, qty: 1}]}
+- {id: mine_gold, name: Minerai d'or, profession: mining, category: ores, level: 50, durationSec: 22, xp: 4.5, outputs: [{item: gold_ore, qty: 1}]}
+- {id: mine_orichalcum, name: Minerai d'orichalque, profession: mining, category: ores, level: 60, durationSec: 24, xp: 5.6, outputs: [{item: orichalcum_ore, qty: 1}]}
+- {id: mine_azurite, name: Minerai d'azurite, profession: mining, category: ores, level: 70, durationSec: 26, xp: 6.9, outputs: [{item: azurite_ore, qty: 1}]}
+- {id: mine_umbral, name: Minerai de sombracier, profession: mining, category: ores, level: 80, durationSec: 28, xp: 8.4, outputs: [{item: umbral_ore, qty: 1}]}
+- {id: mine_astralite, name: Astralite, profession: mining, category: ores, level: 90, durationSec: 30, xp: 10.2, outputs: [{item: astralite_ore, qty: 1}]}
+
+# --- Bûcheronnage : chaque coupe donne aussi de l'écorce (tanin des tanneurs) ---
+- {id: cut_pine, name: Pin, profession: woodcutting, category: logs, level: 1, durationSec: 12, xp: 1.3, outputs: [{item: pine_log, qty: 1}, {item: bark, qty: 1}]}
+- {id: cut_oak, name: Chêne, profession: woodcutting, category: logs, level: 10, durationSec: 14, xp: 1.7, outputs: [{item: oak_log, qty: 1}, {item: bark, qty: 1}]}
+- {id: cut_ash, name: Frêne, profession: woodcutting, category: logs, level: 20, durationSec: 16, xp: 2.3, outputs: [{item: ash_log, qty: 1}]}
+- {id: cut_yew, name: If, profession: woodcutting, category: logs, level: 30, durationSec: 18, xp: 2.9, outputs: [{item: yew_log, qty: 1}]}
+- {id: cut_moonwood, name: Bois de lune, profession: woodcutting, category: logs, level: 40, durationSec: 20, xp: 3.6, outputs: [{item: moonwood_log, qty: 1}]}
+
+# --- Herboristerie ---
+- {id: pick_mint, name: Menthe sauvage, profession: herbalism, category: herbs, level: 1, durationSec: 12, xp: 1.3, outputs: [{item: mint, qty: 1}]}
+- {id: pick_thyme, name: Thym, profession: herbalism, category: herbs, level: 10, durationSec: 14, xp: 1.7, outputs: [{item: thyme, qty: 1}]}
+- {id: pick_nettle, name: Racine d'ortie, profession: herbalism, category: herbs, level: 20, durationSec: 16, xp: 2.3, outputs: [{item: nettle_root, qty: 1}]}
+- {id: pick_sage, name: Sauge pourpre, profession: herbalism, category: herbs, level: 30, durationSec: 18, xp: 2.9, outputs: [{item: sage, qty: 1}]}
+- {id: pick_lantern_lily, name: Lys-lanterne, profession: herbalism, category: herbs, level: 40, durationSec: 20, xp: 3.6, outputs: [{item: lantern_lily, qty: 1}]}
+- {id: pick_frost_flower, name: Fleur de givre, profession: herbalism, category: herbs, level: 60, durationSec: 24, xp: 5.6, outputs: [{item: frost_flower, qty: 1}]}
+
+# --- Pêche (bientôt : le marchand vend le poisson en attendant) ---
+- {id: fish_raw, name: Poisson frais, profession: fishing, category: fish, level: 1, durationSec: 12, xp: 1.3, outputs: [{item: raw_fish, qty: 1}]}
+- {id: fish_trout, name: Truite, profession: fishing, category: fish, level: 20, durationSec: 16, xp: 2.3, outputs: [{item: trout, qty: 1}]}
+
+# --- Chasse : chaque prise donne une peau (ou des plumes) et de la viande ---
+- {id: hunt_rabbit, name: Lapins de garenne, profession: hunting, category: game, level: 1, durationSec: 12, xp: 1.3, outputs: [{item: small_hide, qty: 1}, {item: game_meat, qty: 1}]}
+- {id: hunt_pheasant, name: Faisans, profession: hunting, category: game, level: 5, durationSec: 12, xp: 1.4, outputs: [{item: feather, qty: 5}, {item: game_meat, qty: 1}]}
+- {id: hunt_deer, name: Cerfs, profession: hunting, category: game, level: 20, durationSec: 16, xp: 2.3, outputs: [{item: deer_hide, qty: 1}, {item: venison, qty: 1}]}

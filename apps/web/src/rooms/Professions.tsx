@@ -75,9 +75,9 @@ export function Professions() {
                       </span>
                       <Bar value={soon ? 0 : span} color={FAMILY_COLOR[family]} />
                       <span className="prof-bottom">
-                        <span className="muted">{s.title}</span>
+                        <span className="muted">{s.nickname}</span>
                         {soon && <span className="muted">Bientôt</span>}
-                        {!soon && waiting(p.id) && active !== p.id && <span style={{ color: 'var(--clan)' }}>Épreuve</span>}
+                        {!soon && waiting(p.id) && active !== p.id && <span style={{ color: 'var(--clan)' }}>Commande</span>}
                         {active === p.id && <span style={{ color: 'var(--action)' }}>En cours</span>}
                       </span>
                     </button>

@@ -1686,3 +1686,12 @@
 .market-craft .market-row {
   grid-template-columns: auto 1fr auto auto;
 }
+
+.nickname-picker {
+  background: var(--sunken);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 2px 8px;
+  font: inherit;
+}

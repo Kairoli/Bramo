@@ -53,6 +53,8 @@ export function runBot(content: Content, presence: PresenceProfile, policy: Poli
   const decisionMs = (opts.decisionEveryMin ?? 15) * MIN;
   let state = newCharacterState(SIM_START, content);
   state.classId = Object.keys(content.classes)[0] ?? null;
+  // Les bots mesurent la vitesse de progression : on suppose les commandes du maître validées dès qu'un palier est atteint.
+  state.trials = Object.keys(content.trials);
   const result: BotResult = { state, levelDay: {}, levelByDay: [], effHoursByDay: [], xpByDay: [] };
   const track = opts.track;
   const firstVisit = SIM_START + Math.min(...presence.sessions.map((s) => s.at)) * HOUR;

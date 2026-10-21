@@ -23,6 +23,7 @@ export const itemBody = z.object({ itemId: z.string() });
 export const tradeBody = z.object({ itemId: z.string(), qty: z.number().int().min(1) });
 export const classBody = z.object({ classId: z.string() });
 export const trialBody = z.object({ trialId: z.string() });
+export const nicknameBody = z.object({ profession: z.string(), rank: z.number().int().min(0) });
 
 export const placeOrderBody = z.object({
   side: z.enum(['buy', 'sell']),
@@ -92,7 +93,8 @@ export interface TownPlayer {
   /** Son métier le plus haut, avec son niveau et son titre. */
   profession: string | null;
   level: number;
-  title: string;
+  /** Surnom affiché dans son métier le plus haut. */
+  nickname: string;
   self: boolean;
 }
 

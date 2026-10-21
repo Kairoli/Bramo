@@ -9,9 +9,8 @@ export const settingsSchema = z.object({
   xp: z.object({
     maxLevel: z.number().int().min(2),
   }),
-  titles: z
-    .array(z.object({ level: z.number().int().min(1), name: z.string() }))
-    .min(1),
+  /** Rangs de métier : niveaux où le maître propose une commande (surnom + déblocage de la tranche suivante). */
+  ranks: z.object({ levels: z.array(z.number().int().min(2)).min(1) }),
   activity: z.object({
     queueLength: z.number().int().min(0),
     maxQuantity: z.number().int().min(1),
@@ -82,6 +81,8 @@ export const professionFamilySchema = z.enum(['gathering', 'crafting', 'world'])
 export const professionSchema = z.object({
   id,
   name: z.string(),
+  /** Surnom de départ du métier (rang 0), avant la première commande du maître. */
+  nickname: z.string().default(''),
   family: professionFamilySchema,
   status: z.enum(['playable', 'soon']),
   place: z.string(),
@@ -130,17 +131,22 @@ export const recipeSchema = z.object({
 });
 
 /**
- * Épreuve de maître : au niveau d'un palier de titre, le maître du métier demande des objets.
- * Les remettre donne le titre (Apprenti, Compagnon…). Le niveau, lui, continue de monter sans elle.
+ * Commande du maître : à un palier de rang (settings.ranks.levels), le maître du métier demande des objets
+ * (récolte, fabrication ou préparation, livrées). La réussir donne le surnom du palier et débloque la tranche suivante.
  */
 export const trialSchema = z.object({
   id,
   profession: id,
-  /** Palier de titre ouvert par l'épreuve (un niveau de settings.titles). */
+  /** Palier ouvert par la commande (un niveau de settings.ranks.levels). */
   rank: z.number().int().min(2),
+  /** Titre de la commande. */
   name: z.string(),
-  /** Ce que dit le maître en confiant l'épreuve. */
+  /** Surnom accordé, propre au métier. */
+  nickname: z.string(),
+  /** Ce que dit le maître en confiant la commande. */
   intro: z.string(),
+  /** La petite histoire, racontée à la réussite : elle explique le surnom. */
+  outro: z.string(),
   /** Objets à remettre au maître (consommés). */
   tasks: z.array(stackSchema).min(1),
   reward: z.object({ gold: z.number().int().min(0) }),

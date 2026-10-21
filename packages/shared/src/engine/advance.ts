@@ -1,5 +1,4 @@
 import type { Content, Item, Recipe } from '../schemas/content.js';
-import { levelForXp } from '../formulas/xp.js';
 import {
   type Bonuses,
   type Presence,
@@ -8,6 +7,7 @@ import {
 } from '../formulas/rates.js';
 import { type CharacterState, addStack, addTo, cloneState } from './state.js';
 import { activeCopy, isDurable, wearCopy } from './gear.js';
+import { skillLevel } from './trials.js';
 
 export interface FinishedActivity {
   recipeId: string;
@@ -196,7 +196,7 @@ export function advance(
       activity.done += n;
       wearTool();
       if (!(recipe.profession in levelsBefore)) {
-        levelsBefore[recipe.profession] = levelForXp(state.skills[recipe.profession] ?? 0, content.xpTable);
+        levelsBefore[recipe.profession] = skillLevel(state, recipe.profession, content);
       }
       addTo(state.skills, recipe.profession, recipe.xp * n);
       addTo(summary.xp, recipe.profession, recipe.xp * n);
@@ -224,7 +224,7 @@ export function advance(
   state.lastTickAt = now;
 
   for (const [skill, from] of Object.entries(levelsBefore)) {
-    const to = levelForXp(state.skills[skill] ?? 0, content.xpTable);
+    const to = skillLevel(state, skill, content);
     if (to > from) summary.levelUps.push({ skill, from, to });
   }
   return { state, summary };

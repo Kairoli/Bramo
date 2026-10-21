@@ -8,6 +8,8 @@ import {
   GameError,
   activateEnergy,
   completeNpcOrder,
+  nicknameBody,
+  setNickname,
   repairIdBody,
   repairWithMaterials,
   requestRepairBody,
@@ -338,17 +340,21 @@ export async function buildApp({ db, content, clock = Date.now, secureCookies = 
     return playAs(req, (state, _now, ctx) => {
       const trial = content.trials[trialId];
       const next = completeTrial(state, trialId, content);
-      const title = trial && content.settings.titles.find((t) => t.level === trial.rank)?.name;
       const profession = trial && content.professions.find((p) => p.id === trial.profession);
       return {
         state: next,
-        log: `Épreuve réussie : « ${trial?.name} ». Vous devenez ${title} en ${profession?.name}, +${trial?.reward.gold} or.`,
+        log: `Commande réussie : « ${trial?.name} ». Vous gagnez le surnom « ${trial?.nickname} » en ${profession?.name} et le niveau se débloque, +${trial?.reward.gold} or.`,
         logKind: 'trial',
         serverEvents: [
-          { kind: 'trial', text: `${ctx.characterName} réussit l’épreuve « ${trial?.name} » et devient ${title} en ${profession?.name}.` },
+          { kind: 'trial', text: `${ctx.characterName} devient « ${trial?.nickname} » en ${profession?.name} (${trial?.name}).` },
         ],
       };
     });
+  });
+
+  app.post('/api/nickname', (req) => {
+    const { profession, rank } = body(nicknameBody, req);
+    return playAs(req, (state) => ({ state: setNickname(state, profession, rank, content) }));
   });
 
   app.get('/api/town', async (req) => {

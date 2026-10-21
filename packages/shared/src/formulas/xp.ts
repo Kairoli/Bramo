@@ -1,5 +1,3 @@
-import type { Settings } from '../schemas/content.js';
-
 /**
  * Courbe d'XP de RuneScape :
  * XP(L) = floor( Σ_{l=1}^{L-1} floor(l + 300·2^(l/7)) / 4 )
@@ -23,16 +21,4 @@ export function levelForXp(xp: number, table: number[]): number {
   let level = 1;
   while (level + 1 < table.length && xp >= table[level + 1]!) level++;
   return level;
-}
-
-/** Titre du plus haut palier atteint. */
-export function titleForLevel(level: number, titles: Settings['titles']): string {
-  let name = titles[0]!.name;
-  for (const t of titles) if (level >= t.level) name = t.name;
-  return name;
-}
-
-/** Prochain palier de titre, ou null au sommet. */
-export function nextTitle(level: number, titles: Settings['titles']): Settings['titles'][number] | null {
-  return titles.find((t) => t.level > level) ?? null;
 }

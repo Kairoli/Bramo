@@ -38,6 +38,7 @@ export async function loadCharacterForUpdate(tx: Tx, accountId: number): Promise
       classId: row.classId,
       outfit: row.outfit,
       trials: row.trials,
+      shown: row.shown,
     },
   };
 }
@@ -59,6 +60,7 @@ export async function saveCharacter(tx: Tx, id: number, before: CharacterState, 
       classId: after.classId,
       outfit: after.outfit,
       trials: after.trials,
+      shown: after.shown,
       lastTickAt: new Date(after.lastTickAt),
       lastSeenAt: new Date(after.lastSeenAt),
     })

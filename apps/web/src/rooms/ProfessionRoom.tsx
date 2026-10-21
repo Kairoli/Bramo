@@ -25,7 +25,7 @@ export function ProfessionRoom({ id }: { id: string }) {
   // Un chef-d'œuvre disparaît une fois l'épreuve réussie : on revient alors à une recette du métier.
   const selectedId = recipes.some((r) => r.id === chosenId) ? chosenId : fallbackId;
   const selected = content.recipes[selectedId]!;
-  const span = skill.nextLevelXp ? (skill.xp - skill.levelXp) / (skill.nextLevelXp - skill.levelXp) : 1;
+  const span = skill.nextLevelXp ? Math.min(1, (skill.xp - skill.levelXp) / (skill.nextLevelXp - skill.levelXp)) : 1;
 
   return (
     <main className="room">
@@ -41,21 +41,22 @@ export function ProfessionRoom({ id }: { id: string }) {
             <span className="skill-level">{skill.level}</span>
           </div>
           <div>
-            {skill.title}
-            {skill.nextTitle &&
-              (skill.nextTitle.trialId && skill.level >= skill.nextTitle.level ? (
-                <span style={{ color: 'var(--clan)' }}> · épreuve de {skill.nextTitle.name} à passer</span>
+            <NicknamePicker professionId={id} />
+            {skill.next &&
+              (skill.next.reached ? (
+                <span style={{ color: 'var(--clan)' }}> · la commande « {skill.next.name} » vous attend</span>
               ) : (
                 <span className="muted">
                   {' '}
-                  · {skill.nextTitle.name} au niveau {skill.nextTitle.level}
-                  {skill.nextTitle.trialId ? ', par l’épreuve du maître' : ''}
+                  · « {skill.next.nickname} » au niveau {skill.next.rank}, par la commande du maître
                 </span>
               ))}
           </div>
-          <Bar value={span} />
+          <Bar value={span} color={skill.heldXp > 0 || skill.next?.reached ? 'var(--clan)' : undefined} />
           <div className="muted skill-xp">
-            {num(skill.xp)} XP{skill.nextLevelXp ? ` · encore ${num(skill.nextLevelXp - skill.xp)} pour le niveau ${skill.level + 1}` : ''}
+            {skill.next?.reached
+              ? `Niveau bloqué au ${skill.level} · ${num(skill.heldXp)} XP en attente, créditée à la validation`
+              : `${num(skill.xp)} XP${skill.nextLevelXp ? ` · encore ${num(skill.nextLevelXp - skill.xp)} pour le niveau ${skill.level + 1}` : ''}`}
           </div>
         </div>
         {profession.master && <MasterPanel professionId={id} onCraft={setSelectedId} />}
@@ -69,8 +70,30 @@ export function ProfessionRoom({ id }: { id: string }) {
   );
 }
 
+/** Surnom affiché : on choisit parmi ceux qu'on a débloqués, même après un rang supérieur. */
+function NicknamePicker({ professionId }: { professionId: string }) {
+  const { state, act } = useGame();
+  const skill = state.skills[professionId]!;
+  const unlocked = skill.nicknames.filter((n) => n.unlocked);
+  if (unlocked.length < 2) return <span>{skill.nickname}</span>;
+  return (
+    <select
+      className="nickname-picker"
+      aria-label="Surnom affiché"
+      value={skill.shownRank}
+      onChange={(e) => act(() => api.setNickname(professionId, Number(e.target.value)))}
+    >
+      {unlocked.map((n) => (
+        <option key={n.rank} value={n.rank}>
+          {n.nickname}
+        </option>
+      ))}
+    </select>
+  );
+}
+
 /**
- * Le maître du métier et son épreuve, à droite de la scène.
+ * Le maître du métier et sa commande, à droite de la scène.
  * Quatre cas : épreuve à passer (mise en avant), prochaine épreuve (verrouillée), toutes réussies, aucune.
  */
 function MasterPanel({ professionId, onCraft }: { professionId: string; onCraft: (recipeId: string) => void }) {
@@ -79,19 +102,18 @@ function MasterPanel({ professionId, onCraft }: { professionId: string; onCraft:
   const master = profession.master!;
   const skill = state.skills[professionId]!;
   const trials = trialsOf(professionId, content);
-  const [success, setSuccess] = useState<string | null>(null);
+  const [success, setSuccess] = useState<{ title: string; story: string } | null>(null);
   const open = trials.find((t) => state.trials[t.id] === 'open');
   const next = open ?? trials.find((t) => state.trials[t.id] === 'locked');
-  const titleOf = (rank: number) => content.settings.titles.find((t) => t.level === rank)?.name ?? '';
 
   if (success) {
     return (
       <div className="sunken master-bubble trial-success" role="status">
         <span className="npc-avatar" />
         <div>
-          <span className="eyebrow">Épreuve réussie</span>
-          <strong>{success}</strong>
-          <p className="muted">{master.name} vous serre la main.</p>
+          <span className="eyebrow">Commande réussie</span>
+          <strong>{success.title}</strong>
+          <p className="muted">{success.story}</p>
         </div>
       </div>
     );
@@ -104,7 +126,7 @@ function MasterPanel({ professionId, onCraft }: { professionId: string; onCraft:
         <div>
           <strong>{master.name}</strong>
           <p className="muted">
-            {trials.length ? 'Vous avez réussi toutes les épreuves de ce métier, pour l’instant.' : master.line}
+            {trials.length ? 'Vous avez réussi toutes les commandes de ce métier, pour l’instant.' : master.line}
           </p>
         </div>
       </div>
@@ -119,7 +141,7 @@ function MasterPanel({ professionId, onCraft }: { professionId: string; onCraft:
           <strong>{master.name}</strong>
           <p className="muted">{master.line}</p>
           <span className="eyebrow">
-            Prochaine épreuve · {titleOf(next.rank)} au niveau {next.rank}
+            Prochaine commande · « {next.nickname} » au niveau {next.rank}
           </span>
           <Bar value={skill.level / next.rank} color="var(--clan)" />
           <span className="muted small">
@@ -139,8 +161,8 @@ function MasterPanel({ professionId, onCraft }: { professionId: string; onCraft:
   const verb = profession.family === 'gathering' ? 'Récolter' : 'Fabriquer';
   const submit = async () => {
     if (await act(() => api.completeTrial(open.id))) {
-      setSuccess(`Vous devenez ${titleOf(open.rank)} en ${profession.name} · +${num(open.reward.gold)} or`);
-      window.setTimeout(() => setSuccess(null), 6000);
+      setSuccess({ title: `Vous devenez « ${open.nickname} » en ${profession.name} · +${num(open.reward.gold)} or`, story: open.outro });
+      window.setTimeout(() => setSuccess(null), 12000);
     }
   };
 
@@ -148,7 +170,7 @@ function MasterPanel({ professionId, onCraft }: { professionId: string; onCraft:
     <div className="sunken master-bubble trial-open">
       <span className="npc-avatar" />
       <div className="trial-body">
-        <span className="trial-badge">Épreuve · titre de {titleOf(open.rank)}</span>
+        <span className="trial-badge">Commande · surnom « {open.nickname} »</span>
         <strong>
           {master.name} · « {open.name} »
         </strong>
@@ -180,7 +202,7 @@ function MasterPanel({ professionId, onCraft }: { professionId: string; onCraft:
           <button className="btn btn-primary btn-sm" disabled={!ready} onClick={submit}>
             Remettre au maître
           </button>
-          <span className="muted small">{ready ? 'Les objets seront consommés.' : `Récompense : ${num(open.reward.gold)} or et le titre`}</span>
+          <span className="muted small">{ready ? 'Les objets seront consommés.' : `Récompense : ${num(open.reward.gold)} or, le surnom et la suite de la progression`}</span>
         </div>
       </div>
     </div>

@@ -71,5 +71,6 @@ export const api = {
   stockPantry: (itemId: string, qty: number) => request<StateResponse>('POST', '/pantry/stock', { itemId, qty }),
   unstockPantry: (itemId: string, qty: number) => request<StateResponse>('POST', '/pantry/unstock', { itemId, qty }),
   chooseClass: (classId: string) => request<StateResponse>('POST', '/character/class', { classId }),
+  setNickname: (profession: string, rank: number) => request<StateResponse>('POST', '/nickname', { profession, rank }),
   completeTrial: (trialId: string) => request<StateResponse>('POST', '/trials/complete', { trialId }),
 };

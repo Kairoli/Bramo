@@ -88,8 +88,8 @@ export function buildContent(raw: RawContent): Content {
   const ranks = new Set<string>();
   for (const t of trialList) {
     if (!professionMap[t.profession]) errors.push(`épreuve ${t.id} : métier inconnu « ${t.profession} »`);
-    if (!settings.titles.some((title) => title.level === t.rank)) {
-      errors.push(`épreuve ${t.id} : le niveau ${t.rank} n'est pas un palier de titre`);
+    if (!settings.ranks.levels.includes(t.rank)) {
+      errors.push(`commande ${t.id} : le niveau ${t.rank} n'est pas un palier de rang (settings.ranks.levels)`);
     }
     const key = `${t.profession}/${t.rank}`;
     if (ranks.has(key)) errors.push(`épreuve ${t.id} : deux épreuves pour ${key}`);

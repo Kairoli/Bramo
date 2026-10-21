@@ -1,6 +1,6 @@
 import type { Content } from '../schemas/content.js';
 import type { Appearance } from '../schemas/art.js';
-import { levelForXp, nextTitle } from '../formulas/xp.js';
+import { levelForXp } from '../formulas/xp.js';
 import { bonusMultiplier, energyChargesLeft, energyDurationMs, presenceAt } from '../formulas/rates.js';
 import type { Activity, CharacterState, MealBuff, QueuedAction } from './state.js';
 import { bonusesFor } from './advance.js';
@@ -8,18 +8,24 @@ import { copiesRemaining, durabilityMs, isDurable } from './gear.js';
 import { recycleYield, repairCost } from './actions.js';
 import { repairProblem } from './commission.js';
 import { npcDoneToday, npcOrdersOfDay } from './npc.js';
-import { type TrialStatus, earnedTitle, trialStatus, trialsOf } from './trials.js';
+import { type RankName, type TrialStatus, effectiveLevel, heldXp, nextTrial, ranksOf, shownNickname, skillLevel, trialStatus } from './trials.js';
 
 /** Ce que le client reçoit. Tous les nombres sont calculés par le serveur. */
 export interface SkillView {
   xp: number;
+  /** Niveau effectif : borné par le prochain palier dont la commande du maître n'est pas réussie. */
   level: number;
-  /** Titre acquis : un palier avec épreuve attend que l'épreuve soit réussie. */
-  title: string;
   levelXp: number;
   nextLevelXp: number | null;
-  /** Prochain titre. `trialId` : l'épreuve qui le donne ; si level ≥ niveau, le maître attend déjà. */
-  nextTitle: { level: number; name: string; trialId: string | null } | null;
+  /** XP gagnée au-delà du palier bloquant : gardée, créditée à la validation de la commande. */
+  heldXp: number;
+  /** Surnom affiché. */
+  nickname: string;
+  /** Tous les surnoms du métier (rang 0 = départ), débloqués ou non. */
+  nicknames: RankName[];
+  shownRank: number;
+  /** Prochaine commande du maître : `reached` quand le niveau du palier est atteint (le maître attend). */
+  next: { rank: number; trialId: string; name: string; nickname: string; reached: boolean } | null;
 }
 
 export interface RateView {
@@ -57,25 +63,29 @@ export interface StateView {
   trials: Record<string, TrialStatus>;
 }
 
-export function viewSkill(profession: string, xp: number, done: readonly string[], content: Content): SkillView {
+export function viewSkill(
+  profession: string,
+  xp: number,
+  done: readonly string[],
+  shown: Record<string, number>,
+  content: Content,
+): SkillView {
   const { xpTable, settings } = content;
-  const level = levelForXp(xp, xpTable);
-  const { name, pendingTrial } = earnedTitle(profession, level, done, content);
-  const trialAt = (rank: number) => trialsOf(profession, content).find((t) => t.rank === rank)?.id ?? null;
-  const upcoming = nextTitle(level, settings.titles);
+  const level = effectiveLevel(xp, profession, done, content);
+  const upcoming = nextTrial(profession, done, content);
+  const current = shownNickname(profession, done, shown, content);
   return {
     xp,
     level,
-    title: name,
     levelXp: xpTable[level]!,
     nextLevelXp: level < settings.xp.maxLevel ? xpTable[level + 1]! : null,
-    nextTitle: pendingTrial
-      ? {
-          level: pendingTrial.rank,
-          name: settings.titles.find((t) => t.level === pendingTrial.rank)!.name,
-          trialId: pendingTrial.id,
-        }
-      : upcoming && { ...upcoming, trialId: trialAt(upcoming.level) },
+    heldXp: heldXp(xp, profession, done, content),
+    nickname: current.nickname,
+    nicknames: ranksOf(profession, done, content),
+    shownRank: current.rank,
+    next: upcoming
+      ? { rank: upcoming.rank, trialId: upcoming.id, name: upcoming.name, nickname: upcoming.nickname, reached: level >= upcoming.rank }
+      : null,
   };
 }
 
@@ -88,7 +98,7 @@ export function viewAppearance(state: CharacterState, content: Content): Appeara
 export function viewState(state: CharacterState, now: number, content: Content): StateView {
   const { settings } = content;
   const skills: Record<string, SkillView> = {};
-  for (const p of content.professions) skills[p.id] = viewSkill(p.id, state.skills[p.id] ?? 0, state.trials, content);
+  for (const p of content.professions) skills[p.id] = viewSkill(p.id, state.skills[p.id] ?? 0, state.trials, state.shown, content);
   const trials: Record<string, TrialStatus> = {};
   for (const t of Object.values(content.trials)) {
     trials[t.id] = trialStatus(t, skills[t.profession]?.level ?? 1, state.trials, content);

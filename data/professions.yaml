@@ -5,6 +5,7 @@
 # --- Récolte ---
 - id: mining
   name: Minage
+  nickname: Gratte-sol
   family: gathering
   status: playable
   place: Mines des Monts de Brisefer
@@ -17,6 +18,7 @@
 
 - id: woodcutting
   name: Bûcheronnage
+  nickname: Ramasseur de brindilles
   family: gathering
   status: playable
   place: Bois des Murmures
@@ -27,6 +29,7 @@
 
 - id: fishing
   name: Pêche
+  nickname: Lanceur de lignes
   family: gathering
   status: playable
   place: Mer des Lanternes
@@ -37,6 +40,7 @@
 
 - id: herbalism
   name: Herboristerie
+  nickname: Cueilleur de pissenlits
   family: gathering
   status: playable
   place: Jardins des Brumes
@@ -66,6 +70,7 @@
 # --- Artisanat ---
 - id: smithing
   name: Forge
+  nickname: Souffleur de braises
   family: crafting
   status: playable
   place: Forge du campement
@@ -77,10 +82,10 @@
     - { id: tools, name: Outils }
     - { id: hardware, name: Quincaillerie }
     - { id: weapons, name: Armes }
-    - { id: masterwork, name: Épreuve }
 
 - id: carpentry
   name: Menuiserie
+  nickname: Aligneur de planches
   family: crafting
   status: playable
   place: Atelier du campement
@@ -90,7 +95,6 @@
     - { id: planks, name: Planches }
     - { id: handles, name: Manches }
     - { id: archery, name: Archerie }
-    - { id: masterwork, name: Épreuve }
 
 - id: tanning
   name: Tannerie
@@ -114,6 +118,7 @@
 
 - id: cooking
   name: Cuisine
+  nickname: Éplucheur de légumes
   family: crafting
   status: playable
   place: Cuisines du campement
@@ -121,7 +126,6 @@
   master: { name: Maître Bertin, line: "« Un bon repas, et la journée file deux fois plus vite. Bon, presque. »" }
   categories:
     - { id: dishes, name: Plats }
-    - { id: masterwork, name: Épreuve }
 
 - id: alchemy
   name: Alchimie

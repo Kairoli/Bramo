@@ -231,6 +231,7 @@ a { color: var(--market); }
       <li>Les prix de référence viennent du temps de travail ; aucun joueur réel ne les connaît. Les bots ajustent leurs prix chaque jour avec des règles simples.</li>
       <li>Le combat, l’Agriculture et les autres métiers ne sont pas dans le moteur : la demande d’équipement, de potions et de flèches manque.</li>
       <li>Les bots n’utilisent jamais la réparation par un artisan : ils prennent le moins cher, qui est le PNJ.</li>
+      <li>Les bots valident les commandes du maître (rangs) sans délai : leur progression n’est jamais bloquée au palier.</li>
       <li>Une simulation avec une autre graine donne des chiffres voisins, pas identiques.</li>
     </ul>
   </section>

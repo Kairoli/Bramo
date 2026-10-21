@@ -144,7 +144,7 @@ function Walker({ p, slot }: { p: TownPlayer; slot: number }) {
       <div className="walker-card">
         <strong>{p.name}</strong>
         <span>
-          {p.title}
+          {p.nickname}
           {p.profession ? ` · niveau ${p.level}` : ''}
         </span>
         <span className="muted">{p.doing ?? 'se promène'}</span>

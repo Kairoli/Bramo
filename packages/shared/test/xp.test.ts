@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { buildXpTable, levelForXp, nextTitle, titleForLevel, xpForLevel } from '../src/formulas/xp.js';
+import { buildXpTable, levelForXp, xpForLevel } from '../src/formulas/xp.js';
 import { settings } from './fixture.js';
 
 describe('courbe d’XP', () => {
@@ -31,24 +31,5 @@ describe('courbe d’XP', () => {
     expect(levelForXp(13_034_430, table)).toBe(98);
     expect(levelForXp(13_034_431, table)).toBe(99);
     expect(levelForXp(200_000_000, table)).toBe(99);
-  });
-});
-
-describe('titres de métier', () => {
-  it.each([
-    [1, 'Novice'],
-    [29, 'Novice'],
-    [30, 'Apprenti'],
-    [60, 'Compagnon'],
-    [84, 'Compagnon'],
-    [85, 'Maître'],
-    [99, 'Grand maître'],
-  ])('niveau %i → %s', (level, title) => {
-    expect(titleForLevel(level, settings.titles)).toBe(title);
-  });
-
-  it('prochain titre', () => {
-    expect(nextTitle(74, settings.titles)?.name).toBe('Maître');
-    expect(nextTitle(99, settings.titles)).toBeNull();
   });
 });

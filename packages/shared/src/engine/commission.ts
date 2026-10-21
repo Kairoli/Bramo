@@ -1,8 +1,8 @@
 import type { Content, Recipe } from '../schemas/content.js';
 import { dayKey } from '../formulas/rates.js';
-import { levelForXp } from '../formulas/xp.js';
 import { type CharacterState, GameError, addStack, addTo, cloneState } from './state.js';
 import { isDurable, takeCopy } from './gear.js';
+import { skillLevel } from './trials.js';
 
 /** Unités déjà primées pendant le jour de jeu `dayKey`. */
 export interface PrimeProgress {
@@ -18,7 +18,7 @@ export function recipeFor(itemId: string, content: Content): Recipe | undefined 
 }
 
 export const levelIn = (state: CharacterState, profession: string, content: Content): number =>
-  levelForXp(state.skills[profession] ?? 0, content.xpTable);
+  skillLevel(state, profession, content);
 
 /**
  * Prime de commande : livrer `units` exemplaires d'un objet qu'on sait fabriquer à un ordre d'achat rapporte un peu d'XP

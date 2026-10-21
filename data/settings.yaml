@@ -3,13 +3,11 @@
 xp:
   maxLevel: 99
 
-# Titres de métier : le plus haut palier atteint s'affiche.
-titles:
-  - { level: 1, name: Novice }
-  - { level: 30, name: Apprenti }
-  - { level: 60, name: Compagnon }
-  - { level: 85, name: Maître }
-  - { level: 99, name: Grand maître }
+# Rangs de métier (docs/design/rangs.md) : à ces niveaux, le maître du métier propose une commande spéciale (data/trials.yaml).
+# La réussir accorde le surnom du palier et débloque la tranche suivante ; sans elle, le niveau reste au palier
+# (l'XP continue de s'accumuler et se débloque à la validation : rien n'est perdu).
+ranks:
+  levels: [20, 40, 60, 80, 99]
 
 activity:
   queueLength: 3          # actions en file après l'activité en cours (abonnés : à décider)

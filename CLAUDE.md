@@ -24,7 +24,7 @@ Bramo est un **idle-RPG multijoueur jouable dans le navigateur**, dans l'esprit 
 
 ## 2. Le contenu vit dans les données, pas dans le code
 
-- Contenu et équilibrage en **YAML** dans `data/` : `settings.yaml` (réglages globaux), `professions.yaml`, `items.yaml`, `recipes/*.yaml`, `trials.yaml` (épreuves des maîtres), `classes.yaml`, `cosmetics.yaml`.
+- Contenu et équilibrage en **YAML** dans `data/` : `settings.yaml` (réglages globaux), `npc_orders.yaml` (commandes PNJ), `professions.yaml`, `items.yaml`, `recipes/*.yaml`, `trials.yaml` (commandes des maîtres, rangs), `classes.yaml`, `cosmetics.yaml`.
 - Chargés et **validés au démarrage avec zod** (schémas dans `packages/shared/src/schemas/`), y compris les références croisées (recette → objet, tenue → pièce de `art/`…). Un fichier invalide empêche le démarrage avec un message clair.
 - **Aucun chiffre de jeu codé en dur.** Les formules (forme mathématique) sont dans `packages/shared`, leurs paramètres dans `data/`.
 - Valeurs provisoires marquées **`# à équilibrer`**.
@@ -54,6 +54,14 @@ Bramo est un **idle-RPG multijoueur jouable dans le navigateur**, dans l'esprit 
 ---
 
 ## 5. État du projet (à jour au 21 octobre 2026)
+
+### Fait — rangs de métier : surnoms et commandes du maître (21 octobre)
+
+- Remplace les titres génériques et les épreuves 30/60. `settings.ranks.levels` = 20/40/60/80/99 ; chaque profession a un `nickname` de départ ; `data/trials.yaml` (35 commandes générées puis relues : `profession`, `rank`, `name`, `nickname`, `intro`, `outro`, `tasks`, `reward`). Les chefs-d'œuvre et leurs objets ont été supprimés des données (le champ `trial` des recettes subsiste).
+- Moteur (`engine/trials.ts`) : `effectiveLevel`, `skillLevel`, `heldXp`, `nextTrial`, `ranksOf`, `shownNickname`, `setNickname`, `completeTrial` (met aussi à jour `state.shown`). `advance`, `startActivity`, commandes PNJ et prime utilisent `skillLevel`. `SkillView` : `level` effectif, `heldXp`, `nickname`, `nicknames[]`, `shownRank`, `next` (prochaine commande, `reached`).
+- Serveur : colonne `shown` (migration `0006_rangs`), `POST /api/nickname`, journal et fil du serveur (« X devient « … » en … »). Client : salle du métier (surnom au choix, XP en attente, histoire racontée à la réussite), grille des métiers, accueil.
+- Les bots du simulateur valident les commandes sans délai (hypothèse écrite dans les limites du tableau de bord). Tests : 74 dans `packages/shared`, 18 d'API. Les personnages créés avant ce changement sont bornés au palier 20 jusqu'à la commande (XP gardée).
+- **Pas encore fait** : relecture des noms et histoires par Louis, équilibrage des quantités et des récompenses, commandes des 10 autres métiers, écran « Mes surnoms » dans la salle Personnage.
 
 ### Fait — accueil du bourg (21 octobre)
 
@@ -119,10 +127,10 @@ Bramo est un **idle-RPG multijoueur jouable dans le navigateur**, dans l'esprit 
 ### Fait — P1, prototype solo
 
 **Moteur de jeu** (`packages/shared`, 44 tests)
-- Courbe d'XP RuneScape 1–99 (test : niveau 99 = 13 034 431 XP), titres Novice / Apprenti (30) / Compagnon (60) / Maître (85) / Grand maître (99).
+- Courbe d'XP RuneScape 1–99 (test : niveau 99 = 13 034 431 XP), surnoms de métier aux paliers 20/40/60/80/99 (voir Rangs plus bas).
 - `engine/advance.ts` : `advance(state, now, content)` fait avancer un personnage à partir de `lastTickAt` et `lastSeenAt`. Fenêtres successives : actif pendant `activeTimeoutSec` après le dernier signe de vie, puis hors ligne pendant l'autonomie (`offlineCapHours`), puis plus rien (rien n'est perdu) ; les taux viennent de `settings.rates` (100 % et 16 h depuis le 21 octobre), ×1,5 pendant un coup de fouet. Les bonus plafonnés (outil 30 %, repas 10 %, clan 10 %, saison 20 % ; clan et saison valent 0 en P1) multiplient la vitesse. Calculer en une fois ou en plusieurs fois donne le même résultat (testé).
 - `engine/actions.ts` : lancer (remplacer ou mettre en file, file de 3), annuler, manger un repas (un seul bonus actif), manger, réparer, recycler, garde-manger, commandes PNJ (le marché, lui, est côté serveur). Erreurs = `GameError` avec message français.
-- `engine/view.ts` : ce que le client reçoit (niveaux, titres, rendement détaillé, coups de fouet).
+- `engine/view.ts` : ce que le client reçoit (niveaux effectifs, XP en attente, surnoms, prochaine commande, rendement détaillé, coups de fouet).
 
 **Données** (`data/`)
 - 17 métiers (voir `docs/design/metiers.md`). **Jouables depuis le 21 octobre : Minage, Bûcheronnage, Herboristerie, Pêche, Forge, Menuiserie, Cuisine.** Les autres sont `status: soon`.
@@ -158,7 +166,6 @@ Bramo est un **idle-RPG multijoueur jouable dans le navigateur**, dans l'esprit 
 - Chiffres de `data/` encore provisoires (`# à équilibrer`), mais suivant des règles vérifiées par le simulateur. Le simulateur ne fait pas encore de prix de marché (bilan de flux seulement).
 - Animations de repos seulement (une par pose). Marée haute ne change que les couleurs. Une seule pose par classe (pas encore par voie).
 - Le choix de tenue n'a pas encore d'écran : `outfit` reste null (tenue de départ de la classe). Les niveaux de classe n'existent pas encore (combat en P4).
-- Les rangs décidés (surnoms, commandes aux niveaux 20/40/60/80/99) ne sont pas implémentés : le code garde les titres génériques et les épreuves 30 et 60 ; Maître (85) et Grand maître (99) restent automatiques.
 - L'écran de choix de classe est un contrôle du client : le serveur accepte les actions de jeu d'un personnage sans classe.
 - Pas de vrai système d'équipement : les emplacements montrent la tenue, l'arme de classe en aperçu, la meilleure pioche et le repas actif.
 - Les onglets Tout / Clan / Serveur du journal et la discussion sont désactivés.
@@ -175,7 +182,7 @@ Bramo est un **idle-RPG multijoueur jouable dans le navigateur**, dans l'esprit 
 2. ~~Accueil à refaire~~ **Fait le 21 octobre** (scène du bourg et fil du serveur). Reste : annonces de saison, discussion, popup « Voyager ».
 3. **Animation et vie de l'interface** (choix de l'auteur en attente) : « +1 objet » flottant à chaque fabrication, pulsation de l'anneau, célébration de montée de niveau et d'épreuve réussie, scènes animées dans les bandeaux (forge, mines, eau), entrées du journal qui glissent.
 4. **Personnages** : **une pose par voie** à terme, écran de choix de tenue, animations « travail » par famille de métier, une tenue Marée haute qui change aussi de forme. Couleurs cuivre #F08A4B (mêlée) et jade #7ED6A2 (tir) toujours à valider.
-5. **Rangs** (décidés, `docs/design/rangs.md`) : concevoir les commandes du maître (20, 40, 60, 80, 99), les surnoms et le traitement de l'XP en attente, puis remplacer les titres et épreuves actuels (`settings.titles`, `trials.yaml`, `engine/trials.ts`, interface du maître).
+5. ~~Rangs~~ **Faits le 21 octobre** (voir l'état du projet). Reste : relire les noms et histoires, équilibrer, les 10 autres métiers.
 6. **Simulateur, suite** : bots qui passent des ordres au marché (prix, liquidité à 20 et 50 joueurs), usure et parcelles dans le moteur pour ne plus les modéliser à part, combat en P4.
 
 ### Feuille de route
@@ -208,8 +215,7 @@ Bramo est un **idle-RPG multijoueur jouable dans le navigateur**, dans l'esprit 
 - Bonus plafonnés : outil +30 %, repas +10 %, clan +10 %, saison +20 %.
 - Résumé d'absence à la connexion, puis dans le journal.
 - Classe choisie avant d'entrer, changeable à tout moment et gratuitement.
-- **Rangs [Décidé le 21 octobre, pas encore implémenté]** : des **surnoms amusants propres à chaque métier** remplacent Novice / Apprenti / Compagnon / Maître / Grand maître. Aux niveaux 20, 40, 60 et 80, une **commande spéciale du maître** (récolte ou fabrication spéciale, préparation, livraison ; aucun mini-jeu) accorde le surnom et **débloque la tranche de progression suivante** ; commande finale au 99 ; chaque commande raconte une petite histoire drôle ; le joueur affiche le surnom débloqué de son choix. Restent à concevoir : commandes, noms définitifs, XP en attente de validation (`docs/design/rangs.md`).
-- Titres **dans le code actuel** (ancienne règle, à remplacer) : un palier qui a une épreuve de maître n'est acquis qu'une fois l'épreuve réussie (objets remis, consommés) ; on ne saute pas une épreuve ; le niveau, lui, n'attend jamais.
+- **Rangs [Décidé et implémenté le 21 octobre]** : des **surnoms propres à chaque métier** (35 commandes dans `data/trials.yaml`, `design/rangs.md` avec la table). Aux niveaux 20, 40, 60, 80 et 99, le maître propose une commande (objets à livrer, histoire d'introduction et histoire racontée à la réussite) ; la réussir accorde le surnom et **débloque la tranche suivante** : le niveau effectif est **borné au prochain palier non validé** (`effectiveLevel`/`skillLevel`), l'XP continue de s'accumuler (« XP en attente », créditée à la validation, rien n'est perdu). Le joueur affiche le surnom débloqué de son choix (`state.shown`).
 - XP des recettes (règle du simulateur, `sim/src/rules.ts`) : récolte `R(L) = 400 × 2^((L−1)/55)` XP par heure effective, durée 12 s + 2 s par dizaine de niveaux ; artisanat ×1,75. Pas d'XP doublée en début de métier (décision).
 - Plus tard (dans le game design) : maîtrise après 99 (paliers décroissants, +10 % max), affinité de métier (+1 % par tranche de 10 niveaux du métier lié, +10 % max), objets faits maison signés et de meilleure qualité, progression de classe (voie 30, spécialisation 60, éveil 75).
 

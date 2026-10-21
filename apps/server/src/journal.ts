@@ -1,5 +1,5 @@
 import { desc, eq } from 'drizzle-orm';
-import { type AdvanceSummary, type Content, type JournalEntry, earnedTitle, previousTrial, trialsOf } from '@bramo/shared';
+import { type AdvanceSummary, type Content, type JournalEntry, previousTrial, trialsOf } from '@bramo/shared';
 import type { Db, Tx } from './db/index.js';
 import { journal } from './db/schema.js';
 
@@ -64,17 +64,18 @@ export function entriesFromSummary(
   }
   for (const id of summary.started) entries.push({ at, kind: 'started', text: `La file enchaîne : ${recipe(id)}.` });
   for (const l of summary.levelUps) {
-    const before = earnedTitle(l.skill, l.from, trials, content).name;
-    const after = earnedTitle(l.skill, l.to, trials, content).name;
-    const title = after !== before ? ` Vous devenez ${after}.` : '';
-    entries.push({ at, kind: 'levelup', text: `${profession(l.skill)} passe au niveau ${l.to}.${title}` });
-    // Une épreuve s'ouvre : le maître du métier vous attend.
-    const opened = trialsOf(l.skill, content).find(
+    entries.push({ at, kind: 'levelup', text: `${profession(l.skill)} passe au niveau ${l.to}.` });
+    // Un palier est atteint : le niveau s'y arrête jusqu'à la commande du maître, l'XP continue de s'accumuler.
+    const reached = trialsOf(l.skill, content).find(
       (t) => t.rank > l.from && t.rank <= l.to && !trials.includes(t.id) && !previousTrial(t, trials, content),
     );
     const master = content.professions.find((p) => p.id === l.skill)?.master?.name;
-    if (opened && master) {
-      entries.push({ at, kind: 'trial', text: `${master} vous attend pour l’épreuve « ${opened.name} ».` });
+    if (reached && master) {
+      entries.push({
+        at,
+        kind: 'trial',
+        text: `${master} vous attend pour la commande « ${reached.name} » : le niveau reste au ${reached.rank} jusque-là, mais votre XP continue de s’accumuler.`,
+      });
     }
   }
   return entries;

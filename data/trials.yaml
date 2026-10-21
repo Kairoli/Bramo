@@ -1,154 +1,431 @@
-# Épreuves des maîtres. À chaque palier de titre (Apprenti 30, Compagnon 60…), le maître du métier
-# confie une épreuve : remettre des objets. La réussir donne le titre et un peu d'or.
-# Personne n'est bloqué : le niveau continue de monter sans l'épreuve, seul le titre l'attend.
-# Pour un métier d'artisanat, l'épreuve demande un chef-d'œuvre : une recette (trial: <id>)
-# qui n'apparaît que pendant l'épreuve.
-# Budgets visés (temps autonome) : Apprenti ≈ 1 h de travail, Compagnon ≈ 3 à 5 h. Récompenses à équilibrer.
+# Rangs de métier : commandes du maître aux niveaux 20, 40, 60, 80 et 99 (docs/design/rangs.md).
+# Réussir la commande accorde le surnom du palier et débloque la tranche suivante : sans elle, le niveau reste au palier
+# (l'XP continue de s'accumuler, rien n'est perdu). Quantités = budget de travail par palier (30 min, 1 h 30, 3 h, 6 h, 12 h).
+# Récompenses et quantités à équilibrer. # à équilibrer
 
-# --- Minage · Maître Orvald ---
-- id: mining_apprentice
+# --- Maître Orvald (mining) ---
+- id: mining_20
   profession: mining
-  rank: 30
-  name: Lire la roche
-  intro: "« Un apprenti sait ce qu'il frappe. Rapporte-moi du fer et du charbon, et pas de la caillasse. »"
+  rank: 20
+  name: "Les cailloux d’Orvald"
+  nickname: "Gratteur de galeries"
+  intro: "« Mes galeries ont besoin de fer et de charbon. Pas de la caillasse, pas des cailloux « jolis ». Du fer. »"
+  outro: "Orvald a rangé ton chargement sans un mot, puis il a fait graver ton nom sur le plus petit casier de la mine. Chez lui, ça s’appelle de l’estime."
   tasks:
-    - { item: iron_ore, qty: 150 }
-    - { item: coal, qty: 100 }
+    - { item: iron_ore, qty: 65 }
+    - { item: coal, qty: 55 }
   reward: { gold: 300 }
 
-- id: mining_journeyman
+- id: mining_40
+  profession: mining
+  rank: 40
+  name: "Le filon qui chuchote"
+  nickname: "Chuchoteur de filons"
+  intro: "« On dit que le mithril chuchote aux mineurs patients. Moi, je n’entends rien. Va écouter pour moi. »"
+  outro: "Tu es revenu en jurant que le filon avait dit du bien de toi. Orvald n’a rien entendu, mais il a gardé le mithril."
+  tasks:
+    - { item: silver_ore, qty: 150 }
+    - { item: mithril_ore, qty: 135 }
+  reward: { gold: 800 }
+
+- id: mining_60
   profession: mining
   rank: 60
-  name: Le filon de mithril
-  intro: "« Le mithril ne se laisse pas prendre par n'importe qui. Montre-moi que tu l'as trouvé, et l'or avec. »"
+  name: "L’éboulement de trop"
+  nickname: "Fléau des éboulements"
+  intro: "« Il y a eu un éboulement. Il y en a toujours. Rapporte-moi de quoi remplir le trou, de l’or et de l’orichalque. »"
+  outro: "La galerie tient debout et Orvald jure que c’est grâce à toi. Les poutres préfèrent ne pas commenter."
   tasks:
-    - { item: mithril_ore, qty: 400 }
-    - { item: gold_ore, qty: 250 }
-  reward: { gold: 1200 }
-
-# --- Bûcheronnage · Maîtresse Aldra ---
-- id: woodcutting_apprentice
-  profession: woodcutting
-  rank: 30
-  name: Connaître les essences
-  intro: "« Le chêne pour les manches, le frêne pour les arcs. Apporte-moi les deux, et l'écorce avec. »"
-  tasks:
-    - { item: oak_log, qty: 150 }
-    - { item: ash_log, qty: 100 }
-    - { item: bark, qty: 100 }
-  reward: { gold: 300 }
-
-- id: woodcutting_journeyman
-  profession: woodcutting
-  rank: 60
-  name: Le bois de lune
-  intro: "« Le bois de lune ne se coupe qu'en silence. Remplis-moi la charrette, et de l'if pour les archers. »"
-  tasks:
-    - { item: moonwood_log, qty: 500 }
-    - { item: yew_log, qty: 250 }
-  reward: { gold: 1200 }
-
-# --- Herboristerie · Maîtresse Ysolde ---
-- id: herbalism_apprentice
-  profession: herbalism
-  rank: 30
-  name: L'herbier
-  intro: "« Avant de cueillir le rare, apprends le commun. Remplis-moi ce panier. »"
-  tasks:
-    - { item: thyme, qty: 150 }
-    - { item: nettle_root, qty: 120 }
-  reward: { gold: 300 }
-
-- id: herbalism_journeyman
-  profession: herbalism
-  rank: 60
-  name: La cueillette de nuit
-  intro: "« Les lys-lanternes ne s'ouvrent qu'à la nuit tombée. Reviens avec la rosée, et de la sauge. »"
-  tasks:
-    - { item: sage, qty: 300 }
-    - { item: lantern_lily, qty: 400 }
-  reward: { gold: 1200 }
-
-# --- Forge · Maître Brunhild ---
-- id: smithing_apprentice
-  profession: smithing
-  rank: 30
-  name: La lame d'apprenti
-  intro: "« Forge-moi une lame d'épreuve dans l'acier, et deux pioches de fer pour que je voie ta main. »"
-  tasks:
-    - { item: apprentice_blade, qty: 1 }
-    - { item: iron_pickaxe, qty: 2 }
-  reward: { gold: 400 }
-
-- id: smithing_journeyman
-  profession: smithing
-  rank: 60
-  name: Le chef-d'œuvre du compagnon
-  intro: "« Un compagnon forge pour les autres. Ton chef-d'œuvre, et trois pioches d'acier pour les mines. »"
-  tasks:
-    - { item: journeyman_blade, qty: 1 }
-    - { item: steel_pickaxe, qty: 3 }
+    - { item: gold_ore, qty: 245 }
+    - { item: orichalcum_ore, qty: 225 }
   reward: { gold: 1500 }
 
-# --- Menuiserie · Maître Joris ---
-- id: carpentry_apprentice
-  profession: carpentry
-  rank: 30
-  name: Le coffre d'apprenti
-  intro: "« Un coffre qui ferme droit, et des manches pour la forge. Brunhild en réclame toujours. »"
+- id: mining_80
+  profession: mining
+  rank: 80
+  name: "Le salut des nains"
+  nickname: "Salué par les nains"
+  intro: "« Les nains ne saluent personne. Rapporte-moi de l’azurite et du sombracier, et on verra. »"
+  outro: "Un nain a hoché la tête sur ton passage. Le village en parle encore, à voix basse."
   tasks:
-    - { item: apprentice_chest, qty: 1 }
+    - { item: azurite_ore, qty: 415 }
+    - { item: umbral_ore, qty: 385 }
+  reward: { gold: 3000 }
+
+- id: mining_99
+  profession: mining
+  rank: 99
+  name: "Le cœur de la montagne"
+  nickname: "Cœur de la montagne"
+  intro: "« Dernière commande. Je ne dirai pas ce que la montagne y gagne. Apporte-lui de l’astralite. »"
+  outro: "La montagne a eu un petit tremblement de satisfaction. Orvald a pleuré, discrètement, dans un seau."
+  tasks:
+    - { item: umbral_ore, qty: 770 }
+    - { item: astralite_ore, qty: 720 }
+  reward: { gold: 6000 }
+
+# --- Maîtresse Aldra (woodcutting) ---
+- id: woodcutting_20
+  profession: woodcutting
+  rank: 20
+  name: "Du bois pour l’hiver"
+  nickname: "Collectionneur d’écorce"
+  intro: "« L’hiver arrive et mon stock de chêne et de frêne est à sec. Je ne fais pas de feu avec de l’espoir. »"
+  outro: "Aldra a compté les bûches trois fois, puis t’a offert un morceau d’écorce. Chez elle, c’est une médaille."
+  tasks:
+    - { item: oak_log, qty: 65 }
+    - { item: ash_log, qty: 55 }
+  reward: { gold: 300 }
+
+- id: woodcutting_40
+  profession: woodcutting
+  rank: 40
+  name: "Les querelles du bûcheron"
+  nickname: "Fendeur de querelles"
+  intro: "« Les voisins se disputent la parcelle d’if. Trancher à la hache, c’est plus rapide que le tribunal. »"
+  outro: "Les voisins se sont réconciliés pour t’en vouloir ensemble. La paix est revenue."
+  tasks:
+    - { item: yew_log, qty: 150 }
+    - { item: moonwood_log, qty: 135 }
+  reward: { gold: 800 }
+
+- id: woodcutting_60
+  profession: woodcutting
+  rank: 60
+  name: "Le murmure des chênes"
+  nickname: "Chuchoteur de chênes"
+  intro: "« Un arbre ne se coupe pas, il se convainc. Apporte-moi du bois de lune, et dis-moi ce qu’il t’a dit. »"
+  outro: "Les chênes disent qu’ils ont aimé ta conversation. Aldra a noté qu’ils n’ont pas dit « merci »."
+  tasks:
+    - { item: moonwood_log, qty: 270 }
+    - { item: yew_log, qty: 300 }
+  reward: { gold: 1500 }
+
+- id: woodcutting_80
+  profession: woodcutting
+  rank: 80
+  name: "Le malheur des castors"
+  nickname: "Désespoir des castors"
+  intro: "« Les castors se plaignent de la concurrence. Je ne vois pas de quoi ils parlent. Bien sûr que je les vois. »"
+  outro: "Les castors ont déposé une plainte. Elle est restée sur une branche, faute de tribunal."
+  tasks:
+    - { item: moonwood_log, qty: 540 }
+    - { item: ash_log, qty: 675 }
+  reward: { gold: 3000 }
+
+- id: woodcutting_99
+  profession: woodcutting
+  rank: 99
+  name: "La forêt à lui seul"
+  nickname: "La forêt à lui tout seul"
+  intro: "« Dernière commande : toute une forêt, ou presque. Je ne demande pas où tu la caches. »"
+  outro: "Aldra a replanté tout ce que tu as coupé. Les arbres t’ont reconnu et ont fait semblant de dormir."
+  tasks:
+    - { item: moonwood_log, qty: 1080 }
+    - { item: yew_log, qty: 1200 }
+  reward: { gold: 6000 }
+
+# --- Maîtresse Ysolde (herbalism) ---
+- id: herbalism_20
+  profession: herbalism
+  rank: 20
+  name: "Les aurores d’Ysolde"
+  nickname: "Cueilleur d’aube"
+  intro: "« Cueille à l’aube. Si tu te lèves à midi, tes herbes dorment encore. »"
+  outro: "Les herbes sont arrivées fraîches. Ysolde a tout reniflé et déclaré qu’elles sentaient l’effort."
+  tasks:
+    - { item: thyme, qty: 65 }
+    - { item: nettle_root, qty: 55 }
+  reward: { gold: 300 }
+
+- id: herbalism_40
+  profession: herbalism
+  rank: 40
+  name: "L’ami des orties"
+  nickname: "Ami des orties"
+  intro: "« Les orties piquent tout le monde, sauf ceux qu’elles aiment. Va voir si elles t’aiment. »"
+  outro: "Plus une piqûre depuis la semaine dernière. Ysolde soupçonne un pacte."
+  tasks:
+    - { item: sage, qty: 150 }
+    - { item: lantern_lily, qty: 135 }
+  reward: { gold: 800 }
+
+- id: herbalism_60
+  profession: herbalism
+  rank: 60
+  name: "La fleur qui refuse"
+  nickname: "Chuchoteur de givre"
+  intro: "« La fleur de givre refuse de fleurir quand on la regarde. Cueille-la sans qu’elle s’en aperçoive. »"
+  outro: "Tu as marché à reculons pendant trois heures. Ça a fonctionné et personne ne veut savoir comment."
+  tasks:
+    - { item: frost_flower, qty: 225 }
+    - { item: lantern_lily, qty: 270 }
+  reward: { gold: 1500 }
+
+- id: herbalism_80
+  profession: herbalism
+  rank: 80
+  name: "Les plates-bandes du voisin"
+  nickname: "Terreur des plates-bandes"
+  intro: "« Les jardins voisins demandent qu’on te surveille. Je leur ai répondu que tu étais toujours très poli. »"
+  outro: "Tout le quartier a replanté ses plates-bandes après ton passage. Elles ont repoussé plus belles. Mystère."
+  tasks:
+    - { item: frost_flower, qty: 450 }
+    - { item: sage, qty: 600 }
+  reward: { gold: 3000 }
+
+- id: herbalism_99
+  profession: herbalism
+  rank: 99
+  name: "Ce que la brume cache"
+  nickname: "La Brume en personne"
+  intro: "« Dernière cueillette : tout ce que la brume cache. Elle ne te dira pas où. »"
+  outro: "La brume s’est levée, t’a salué, puis s’est rendormie. Ysolde jure l’avoir vue sourire."
+  tasks:
+    - { item: frost_flower, qty: 900 }
+    - { item: lantern_lily, qty: 1080 }
+  reward: { gold: 6000 }
+
+# --- Maître Naël (fishing) ---
+- id: fishing_20
+  profession: fishing
+  rank: 20
+  name: "Le calme de la baie"
+  nickname: "Lanceur patient"
+  intro: "« La patience, ça se mesure en truites. Le reste, c’est du bruit. »"
+  outro: "Naël a pesé tes truites sans rien dire, puis il a dit « pas mal ». Pour lui, c’est un discours."
+  tasks:
+    - { item: trout, qty: 55 }
+    - { item: raw_fish, qty: 75 }
+  reward: { gold: 300 }
+
+- id: fishing_40
+  profession: fishing
+  rank: 40
+  name: "Les fâcheux du lac"
+  nickname: "Fâcheux des brochets"
+  intro: "« Les brochets m’ont déclaré la guerre. Tu es dans mon camp ? »"
+  outro: "Les brochets ont signé une trêve. Ils réclament une pension."
+  tasks:
+    - { item: pike, qty: 150 }
+    - { item: trout, qty: 170 }
+  reward: { gold: 800 }
+
+- id: fishing_60
+  profession: fishing
+  rank: 60
+  name: "Le veilleur de lanternes"
+  nickname: "Veilleur de lanternes"
+  intro: "« Les poissons-lanternes ne mordent que la nuit. Tu veilleras. »"
+  outro: "Tu es rentré à l’aube, les yeux rouges et la gloire en bandoulière. Naël dort encore sur la jetée."
+  tasks:
+    - { item: lantern_fish, qty: 245 }
+    - { item: pike, qty: 300 }
+  reward: { gold: 1500 }
+
+- id: fishing_80
+  profession: fishing
+  rank: 80
+  name: "Les marées capricieuses"
+  nickname: "Seigneur des marées"
+  intro: "« La mer fait comme elle veut. Fais-lui croire que c’est toi. »"
+  outro: "Les marées arrivent maintenant à l’heure. Les marins ont posé des questions et Naël les a envoyés pêcher."
+  tasks:
+    - { item: abyss_ray, qty: 415 }
+    - { item: lantern_fish, qty: 490 }
+  reward: { gold: 3000 }
+
+- id: fishing_99
+  profession: fishing
+  rank: 99
+  name: "La prise de la légende"
+  nickname: "Légende de la jetée"
+  intro: "« Dernière prise : ce qui nage assez profond pour avoir un nom de légende. »"
+  outro: "On a installé une plaque sur la jetée. Elle est un peu de travers, comme tout ce que Naël aime."
+  tasks:
+    - { item: abyss_ray, qty: 830 }
+    - { item: lantern_fish, qty: 980 }
+  reward: { gold: 6000 }
+
+# --- Maître Brunhild (smithing) ---
+- id: smithing_20
+  profession: smithing
+  rank: 20
+  name: "Les lingots de Brunhild"
+  nickname: "Tapeur d’enclume"
+  intro: "« Un forgeron se juge à ses lingots, pas à son tablier. Montre-moi les tiens. »"
+  outro: "Brunhild a frappé un lingot du poing. Il n’a pas bougé. Elle a hoché la tête, impressionnée."
+  tasks:
+    - { item: iron_bar, qty: 30 }
+    - { item: bronze_bar, qty: 40 }
+  reward: { gold: 300 }
+
+- id: smithing_40
+  profession: smithing
+  rank: 40
+  name: "La pluie d’étincelles"
+  nickname: "Semeur d’étincelles"
+  intro: "« Des lingots d’acier et des fers d’outil. Je manque de tout depuis que l’apprenti a voulu forger une épée « artistique ». »"
+  outro: "L’épée artistique a fini en porte-manteau. Ta commande, elle, a fini à la forge."
+  tasks:
+    - { item: steel_bar, qty: 75 }
+    - { item: iron_tool_head, qty: 5 }
+  reward: { gold: 800 }
+
+- id: smithing_60
+  profession: smithing
+  rank: 60
+  name: "Le feu sacré"
+  nickname: "Gardien du feu sacré"
+  intro: "« Le feu sacré a besoin de combustible. Et d’un peu de respect. »"
+  outro: "Le feu a flambé plus fort en te voyant. Brunhild dit que c’était le vent. Il n’y avait pas de vent."
+  tasks:
+    - { item: steel_bar, qty: 150 }
+    - { item: steel_tool_head, qty: 5 }
+  reward: { gold: 1500 }
+
+- id: smithing_80
+  profession: smithing
+  rank: 80
+  name: "Le marteau du roi"
+  nickname: "Forgeron des rois"
+  intro: "« Un roi passe demain et il veut un marteau. Il n’a pas dit lequel. »"
+  outro: "Le roi a emporté le marteau, laissé le tablier et oublié de payer. Brunhild affirme que c’est un honneur."
+  tasks:
+    - { item: steel_tool_head, qty: 5 }
+    - { item: steel_bar, qty: 300 }
+  reward: { gold: 3000 }
+
+- id: smithing_99
+  profession: smithing
+  rank: 99
+  name: "La dernière enclume"
+  nickname: "Enclume vivante"
+  intro: "« Dernière commande : un ouvrage qui survivra à la forge. »"
+  outro: "Ton nom est gravé sous l’enclume. Brunhild jure qu’elle ne l’a fait pour personne d’autre. C’est faux, mais c’est touchant."
+  tasks:
+    - { item: steel_tool_head, qty: 10 }
+    - { item: steel_bar, qty: 600 }
+  reward: { gold: 6000 }
+
+# --- Maître Joris (carpentry) ---
+- id: carpentry_20
+  profession: carpentry
+  rank: 20
+  name: "Des planches droites"
+  nickname: "Équarrisseur de planches"
+  intro: "« Des planches droites, s’il te plaît. Droites. Je répète parce que ça m’arrive de ne pas être compris. »"
+  outro: "Joris a posé son niveau sur ta planche. La bulle est restée au milieu. Il a failli sourire."
+  tasks:
+    - { item: oak_plank, qty: 30 }
     - { item: oak_handle, qty: 60 }
-  reward: { gold: 400 }
-
-- id: carpentry_journeyman
-  profession: carpentry
-  rank: 60
-  name: L'établi du compagnon
-  intro: "« Ton propre établi, avec deux douelles de frêne sur le râtelier. Et des hampes : les archers attendent. »"
-  tasks:
-    - { item: journeyman_workbench, qty: 1 }
-    - { item: arrow_shaft, qty: 600 }
-  reward: { gold: 1500 }
-
-# --- Cuisine · Maître Bertin ---
-- id: cooking_apprentice
-  profession: cooking
-  rank: 30
-  name: Le plat du jour
-  intro: "« Cuisine-moi mon plat d'épreuve, et dix bouillons pour la tablée. Pas un de brûlé. »"
-  tasks:
-    - { item: apprentice_dish, qty: 1 }
-    - { item: nettle_broth, qty: 10 }
-  reward: { gold: 400 }
-
-- id: cooking_journeyman
-  profession: cooking
-  rank: 60
-  name: Le banquet
-  intro: "« Un compagnon nourrit une salle entière. Prépare le banquet, je m'occupe des invités. »"
-  tasks:
-    - { item: journeyman_feast, qty: 1 }
-    - { item: lantern_soup, qty: 10 }
-  reward: { gold: 1500 }
-
-# --- Pêche · Maître Naël ---
-- id: fishing_apprentice
-  profession: fishing
-  rank: 30
-  name: Le fond de la baie
-  intro: "« Une truite, ça se prend au calme. Cent cinquante, ça se prend à la patience. Rapporte-moi les deux. »"
-  tasks:
-    - { item: trout, qty: 150 }
-    - { item: raw_fish, qty: 100 }
   reward: { gold: 300 }
 
-- id: fishing_journeyman
-  profession: fishing
-  rank: 60
-  name: Les eaux profondes
-  intro: "« Les lanternes ne mordent que la nuit. Montre-moi que tu sais veiller. »"
+- id: carpentry_40
+  profession: carpentry
+  rank: 40
+  name: "Un arc pour la patience"
+  nickname: "Ponceur de patience"
+  intro: "« Un arc, c’est un morceau de bois qui rêve en grand. Aide-le. »"
+  outro: "Tu as poncé jusqu’à ce que le bois te supplie d’arrêter. Joris dit que c’est exactement ça, la vocation."
   tasks:
-    - { item: lantern_fish, qty: 400 }
-    - { item: pike, qty: 250 }
-  reward: { gold: 1200 }
+    - { item: bow_stave, qty: 5 }
+    - { item: oak_plank, qty: 90 }
+  reward: { gold: 800 }
+
+- id: carpentry_60
+  profession: carpentry
+  rank: 60
+  name: "Les poutres qui grincent"
+  nickname: "Chuchoteur de poutres"
+  intro: "« Les poutres du comptoir grincent. Il faut leur parler ou les remplacer. »"
+  outro: "Les poutres ne grincent plus. Joris suspecte un chantage."
+  tasks:
+    - { item: bow_stave, qty: 5 }
+    - { item: oak_plank, qty: 180 }
+  reward: { gold: 1500 }
+
+- id: carpentry_80
+  profession: carpentry
+  rank: 80
+  name: "Le toit de la guilde"
+  nickname: "Charpentier de légende"
+  intro: "« Le toit de la guilde doit tenir mille ans. Pas moins. »"
+  outro: "Dans mille ans, on se demandera qui a fait ça. Joris a déjà prévenu : « le plus beau, c’était toi »."
+  tasks:
+    - { item: oak_plank, qty: 360 }
+    - { item: bow_stave, qty: 10 }
+  reward: { gold: 3000 }
+
+- id: carpentry_99
+  profession: carpentry
+  rank: 99
+  name: "La sciure d’or"
+  nickname: "Sciure d’or"
+  intro: "« Dernière commande : toute la sciure du monde, transformée en légende. »"
+  outro: "Il te reste de la sciure dans les bottes. Joris dit que c’est la seule décoration qui compte."
+  tasks:
+    - { item: oak_plank, qty: 720 }
+    - { item: bow_stave, qty: 25 }
+  reward: { gold: 6000 }
+
+# --- Maître Bertin (cooking) ---
+- id: cooking_20
+  profession: cooking
+  rank: 20
+  name: "Les marmites de Bertin"
+  nickname: "Remueur de marmites"
+  intro: "« Une marmite ne se remue pas toute seule. Enfin, si, mais pas bien. »"
+  outro: "Bertin a goûté, fermé les yeux, et déclaré que ce n’était pas dégoûtant. Dans sa bouche, c’est un triomphe."
+  tasks:
+    - { item: nettle_broth, qty: 10 }
+    - { item: grilled_fish, qty: 15 }
+  reward: { gold: 300 }
+
+- id: cooking_40
+  profession: cooking
+  rank: 40
+  name: "Le banquet de la sieste"
+  nickname: "Fournisseur de siestes"
+  intro: "« Une délégation arrive demain. Il faut qu’elle soit rassasiée, et calme. »"
+  outro: "Un banquet si copieux que toute la délégation s’est endormie avant les discours. Le traité a été signé en rêve."
+  tasks:
+    - { item: sage_trout, qty: 30 }
+    - { item: nettle_broth, qty: 35 }
+  reward: { gold: 800 }
+
+- id: cooking_60
+  profession: cooking
+  rank: 60
+  name: "Les buffets vides"
+  nickname: "Terreur des buffets"
+  intro: "« Les buffets de la guilde se vident en dix minutes. Remplis-les. Plus vite. »"
+  outro: "Les buffets tremblent maintenant à ton arrivée. Les convives aussi."
+  tasks:
+    - { item: lantern_soup, qty: 45 }
+    - { item: sage_trout, qty: 60 }
+  reward: { gold: 1500 }
+
+- id: cooking_80
+  profession: cooking
+  rank: 80
+  name: "La table des rois"
+  nickname: "Celui qui régale les rois"
+  intro: "« Le roi a faim, et il est susceptible. »"
+  outro: "Le roi a demandé la recette. Tu as souri. Il a décidé que c’était un secret d’État."
+  tasks:
+    - { item: frost_feast, qty: 60 }
+    - { item: lantern_soup, qty: 90 }
+  reward: { gold: 3000 }
+
+- id: cooking_99
+  profession: cooking
+  rank: 99
+  name: "Le festin du siècle"
+  nickname: "Gourmet de légende"
+  intro: "« Dernière commande : un festin dont on se souviendra, ou dont on sera trop plein pour oublier. »"
+  outro: "Tout le bourg a mangé jusqu’à l’aube. Bertin affirme que c’est la seule fois où il n’a pas eu besoin de goûter pour se rassurer."
+  tasks:
+    - { item: frost_feast, qty: 120 }
+    - { item: lantern_soup, qty: 180 }
+  reward: { gold: 6000 }

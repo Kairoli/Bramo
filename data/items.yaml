@@ -89,9 +89,3 @@
 - {id: frost_feast, name: Festin du givre, category: meal, value: 9, meal: {bonus: 0.10, durationMin: 105}}
 
 # --- Chefs-d'œuvre : fabriqués pendant une épreuve de maître, remis au maître ---
-- {id: apprentice_blade, name: Lame d'épreuve, category: masterwork, value: 1}
-- {id: journeyman_blade, name: Lame de compagnon, category: masterwork, value: 1}
-- {id: apprentice_chest, name: Coffre d'épreuve, category: masterwork, value: 1}
-- {id: journeyman_workbench, name: Établi du compagnon, category: masterwork, value: 1}
-- {id: apprentice_dish, name: Truite du maître, category: masterwork, value: 1}
-- {id: journeyman_feast, name: Banquet du compagnon, category: masterwork, value: 1}

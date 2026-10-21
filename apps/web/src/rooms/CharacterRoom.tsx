@@ -166,7 +166,7 @@ export function CharacterRoom() {
           )}
           <h1>{name}</h1>
           <div style={{ color: 'var(--clan)' }}>
-            {best.s.title} · {best.p.name} {best.s.level}
+            {best.s.nickname} · {best.p.name} {best.s.level}
           </div>
         </header>
         <PaperDoll size="page" />
@@ -243,7 +243,7 @@ export function CharacterRoom() {
               return (
                 <div key={p.id} className={`skill-row${p.status === 'soon' ? ' soon' : ''}`}>
                   <span>{p.name}</span>
-                  <span className="muted">{p.status === 'soon' ? 'Bientôt' : s.title}</span>
+                  <span className="muted">{p.status === 'soon' ? 'Bientôt' : s.nickname}</span>
                   <Bar value={p.status === 'soon' ? 0 : span} color={FAMILY_COLOR[p.family]} />
                   <strong>{s.level}</strong>
                 </div>

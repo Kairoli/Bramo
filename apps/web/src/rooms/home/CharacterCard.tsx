@@ -17,7 +17,7 @@ export function CharacterCard() {
       <div className="character-id">
         <h3>{name}</h3>
         <div style={{ color: 'var(--clan)' }}>
-          {best.s.title} · {best.p.name} {best.s.level}
+          {best.s.nickname} · {best.p.name} {best.s.level}
         </div>
         {cls && (
           <span className="chip" style={{ color: cls.affinityColor, borderColor: cls.affinityColor }}>

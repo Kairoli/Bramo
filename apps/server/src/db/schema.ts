@@ -54,6 +54,8 @@ export const characters = pgTable('characters', {
   /** Null = tenue de départ de la classe. */
   outfit: text('outfit'),
   trials: jsonb('trials').$type<string[]>().notNull().default([]),
+  /** Surnom affiché par métier (rang choisi). */
+  shown: jsonb('shown').$type<Record<string, number>>().notNull().default({}),
   lastTickAt: ts('last_tick_at').notNull(),
   lastSeenAt: ts('last_seen_at').notNull(),
   createdAt: ts('created_at').notNull().defaultNow(),

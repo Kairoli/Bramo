@@ -1,10 +1,9 @@
 import type { Content } from '../schemas/content.js';
-import { levelForXp } from '../formulas/xp.js';
 import { NO_ENERGY, dayKey, energyChargesLeft, energyDurationMs } from '../formulas/rates.js';
 import { type CharacterState, GameError, addStack, cloneState } from './state.js';
 import { startNextFromQueue } from './advance.js';
 import { copiesWear, durabilityMs, isDurable, takeCopy } from './gear.js';
-import { recipeAvailable } from './trials.js';
+import { recipeAvailable, skillLevel } from './trials.js';
 
 /**
  * Actions du joueur. Toutes pures : elles reçoivent un état déjà avancé jusqu'à `now`
@@ -25,10 +24,10 @@ export function startActivity(
   if (!recipe) throw new GameError('unknown_recipe', 'Recette inconnue.');
   const profession = content.professions.find((p) => p.id === recipe.profession);
   if (profession?.status !== 'playable') throw new GameError('soon', 'Ce métier arrive bientôt.');
-  const level = levelForXp(input.skills[recipe.profession] ?? 0, content.xpTable);
+  const level = skillLevel(input, recipe.profession, content);
   if (level < recipe.level) throw new GameError('level', `Niveau ${recipe.level} requis.`);
   if (!recipeAvailable(recipe.trial, input, content)) {
-    throw new GameError('trial', 'Ce chef-d’œuvre ne se fabrique que pendant l’épreuve du maître.');
+    throw new GameError('trial', 'Ce chef-d’œuvre ne se fabrique que pendant la commande du maître.');
   }
   const { maxQuantity, queueLength } = content.settings.activity;
   if (!Number.isInteger(quantity) || quantity < 1 || quantity > maxQuantity) {
@@ -191,5 +190,6 @@ export function newCharacterState(now: number, content: Content): CharacterState
     classId: null,
     outfit: null,
     trials: [],
+    shown: {},
   };
 }

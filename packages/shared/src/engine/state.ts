@@ -47,8 +47,10 @@ export interface CharacterState {
   classId: string | null;
   /** Tenue choisie ; null = la tenue de départ de la classe. */
   outfit: string | null;
-  /** Épreuves de maître réussies. */
+  /** Commandes de maître réussies. */
   trials: string[];
+  /** Surnom affiché par métier : rang choisi (0 = surnom de départ). Absent = le plus haut débloqué. */
+  shown: Record<string, number>;
 }
 
 export class GameError extends Error {

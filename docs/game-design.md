@@ -42,8 +42,7 @@ Détail : [`design/rangs.md`](design/rangs.md). Remplace les titres Novice / App
 - Elle repose sur les **activités automatiques** : récolte ou fabrication spéciale, préparation, livraison. **Aucun mini-jeu manuel obligatoire.**
 - Le joueur **affiche le surnom de son choix** parmi ceux qu'il a débloqués.
 - Pas de quête journalière ni de chantier commun au serveur : les objectifs collectifs passent par les clans, les boosts par les événements.
-- [Ouvert] Les commandes, les noms définitifs et le **traitement de l'XP en attente de validation du palier**.
-- [Prototype, à remplacer] Le code applique encore l'ancienne règle : titres génériques, épreuves aux niveaux 30 et 60 (remise d'objets, chef-d'œuvre pour l'artisanat) qui donnent le titre sans jamais bloquer le niveau.
+- [Prototype, fait le 21 octobre] Commandes, noms et histoires écrits (35 commandes), **XP en attente** : l'XP continue de s'accumuler au-delà du palier et se débloque à la validation (choix de Claude, à valider ; voir `design/rangs.md`).
 
 ### 3.3 Maîtrise après 99 *(plus tard)*
 Paliers au rendement décroissant, plafonnés à **+10 %** au total.

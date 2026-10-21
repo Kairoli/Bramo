@@ -67,13 +67,14 @@ describe('API', () => {
     expect((await call('POST', '/api/character/class', { classId: 'paladin' })).status).toBe(400);
   });
 
-  it('refuse une épreuve de maître avant son niveau', async () => {
-    const res = await call('POST', '/api/trials/complete', { trialId: 'mining_apprentice' });
+  it('refuse une commande de maître avant son niveau', async () => {
+    const res = await call('POST', '/api/trials/complete', { trialId: 'mining_20' });
     expect(res.status).toBe(400);
-    expect(res.json.message).toBe('Niveau 30 requis pour cette épreuve.');
+    expect(res.json.message).toBe('Niveau 20 requis pour cette commande.');
     const state = (await call('GET', '/api/state')).json as StateResponse;
-    expect(state.state.trials.mining_apprentice).toBe('locked');
-    expect(state.state.skills.mining?.nextTitle).toMatchObject({ name: 'Apprenti', trialId: 'mining_apprentice' });
+    expect(state.state.trials.mining_20).toBe('locked');
+    expect(state.state.skills.mining?.next).toMatchObject({ rank: 20, trialId: 'mining_20', nickname: 'Gratteur de galeries', reached: false });
+    expect(state.state.skills.mining?.nickname).toBe('Gratte-sol');
   });
 
   it('refuse un pseudo déjà pris', async () => {

@@ -1,7 +1,7 @@
 import type { Content, NpcOrder } from '../schemas/content.js';
 import { dayKey } from '../formulas/rates.js';
-import { levelForXp } from '../formulas/xp.js';
 import { type CharacterState, GameError, addStack, cloneState } from './state.js';
+import { skillLevel } from './trials.js';
 
 /** Commandes déjà remises par le joueur pendant le jour de jeu `dayKey`. */
 export interface NpcProgress {
@@ -33,7 +33,7 @@ export function npcOrdersOfDay(state: CharacterState, now: number, content: Cont
   const picks: { profession: string; h: number; order: NpcOrder }[] = [];
   for (const p of content.professions) {
     if (p.status !== 'playable') continue;
-    const level = levelForXp(state.skills[p.id] ?? 0, content.xpTable);
+    const level = skillLevel(state, p.id, content);
     const eligible = orders
       .filter((o) => o.profession === p.id && o.level <= level)
       .sort((a, b) => b.level - a.level || a.id.localeCompare(b.id))

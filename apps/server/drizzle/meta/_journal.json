@@ -43,6 +43,13 @@
       "when": 1792582463139,
       "tag": "0005_town",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1792582960069,
+      "tag": "0006_rangs",
+      "breakpoints": true
     }
   ]
 }

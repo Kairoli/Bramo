@@ -269,6 +269,8 @@ export function runWorld(content: Content, input: WorldOptions): WorldResult {
     if (b.started) return;
     b.state = newCharacterState(t, content);
     b.state.classId = Object.keys(content.classes)[0] ?? null;
+    // Hypothèse du simulateur : les commandes du maître sont validées sans délai (voir les limites du tableau de bord).
+    b.state.trials = Object.keys(content.trials);
     b.state.seed = b.id;
     b.started = true;
     traders.set(b.id, b);

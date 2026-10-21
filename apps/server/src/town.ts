@@ -5,8 +5,8 @@ import {
   type TownEvent,
   type TownPlayer,
   type TownView,
-  earnedTitle,
-  levelForXp,
+  effectiveLevel,
+  shownNickname,
 } from '@bramo/shared';
 import type { Db, Tx } from './db/index.js';
 import { characterSkills, characters, serverEvents, serverFirsts } from './db/schema.js';
@@ -76,7 +76,7 @@ export async function townView(db: Db, content: Content, now: number, selfId: nu
     .map((r) => {
       const mine = skills.filter((s) => s.characterId === r.id);
       const best = mine
-        .map((s) => ({ skill: s.skill, level: levelForXp(s.xp, content.xpTable) }))
+        .map((s) => ({ skill: s.skill, level: effectiveLevel(s.xp, s.skill, r.trials, content) }))
         .filter((s) => content.professions.find((p) => p.id === s.skill)?.status === 'playable')
         .sort((a, b) => b.level - a.level)[0];
       const recipe = r.activity ? content.recipes[r.activity.recipeId] : undefined;
@@ -90,7 +90,7 @@ export async function townView(db: Db, content: Content, now: number, selfId: nu
         doingProfession: recipe?.profession ?? null,
         profession: best?.skill ?? null,
         level: best?.level ?? 1,
-        title: best ? earnedTitle(best.skill, best.level, r.trials, content).name : content.settings.titles[0]!.name,
+        nickname: best ? shownNickname(best.skill, r.trials, r.shown, content).nickname : '',
         self: r.id === selfId,
       };
     });

@@ -4,13 +4,7 @@ import type { CharacterState } from '../src/engine/state.js';
 /** Contenu de test figé : les tests ne dépendent pas de l'équilibrage de data/. */
 export const settings = {
   xp: { maxLevel: 99 },
-  titles: [
-    { level: 1, name: 'Novice' },
-    { level: 30, name: 'Apprenti' },
-    { level: 60, name: 'Compagnon' },
-    { level: 85, name: 'Maître' },
-    { level: 99, name: 'Grand maître' },
-  ],
+  ranks: { levels: [20, 40, 60] },
   activity: { queueLength: 3, maxQuantity: 10000 },
   presence: { activeTimeoutSec: 120, heartbeatSec: 30 },
   rates: { active: 1, offline: 0.25, offlineCapHours: 12 },
@@ -31,6 +25,7 @@ export const content = buildContent({
     {
       id: 'mining',
       name: 'Minage',
+      nickname: 'Gratte-sol',
       family: 'gathering',
       status: 'playable',
       place: 'Mines',
@@ -40,13 +35,14 @@ export const content = buildContent({
     {
       id: 'smithing',
       name: 'Forge',
+      nickname: 'Souffleur',
       family: 'crafting',
       status: 'playable',
       place: 'Forge',
       description: '',
       categories: [{ id: 'bars', name: 'Lingots' }],
     },
-    { id: 'fishing', name: 'Pêche', family: 'gathering', status: 'soon', place: 'Port', description: '' },
+    { id: 'fishing', name: 'Pêche', nickname: 'Lanceur', family: 'gathering', status: 'soon', place: 'Port', description: '' },
   ],
   items: [
     { id: 'ore', name: 'Minerai', category: 'ore', value: 1 },
@@ -68,9 +64,9 @@ export const content = buildContent({
     { id: 'fish_easy', profession: 'fishing', level: 1, client: 'Guilde', text: '', items: [{ item: 'ore', qty: 1 }], gold: 10 },
   ],
   trials: [
-    // Minage 30 puis 60 : remettre du minerai, puis un lingot.
-    { id: 'mining_30', profession: 'mining', rank: 30, name: 'Épreuve 30', intro: '', tasks: [{ item: 'ore', qty: 10 }], reward: { gold: 50 } },
-    { id: 'mining_60', profession: 'mining', rank: 60, name: 'Épreuve 60', intro: '', tasks: [{ item: 'bar', qty: 1 }], reward: { gold: 80 } },
+    // Minage 20 puis 40 : remettre du minerai, puis un lingot.
+    { id: 'mining_20', profession: 'mining', rank: 20, name: 'Commande 20', nickname: 'Gratteur', intro: '', outro: 'Bravo.', tasks: [{ item: 'ore', qty: 10 }], reward: { gold: 50 } },
+    { id: 'mining_40', profession: 'mining', rank: 40, name: 'Commande 40', nickname: 'Chuchoteur', intro: '', outro: '', tasks: [{ item: 'bar', qty: 1 }], reward: { gold: 80 } },
   ],
   cosmetics: {
     default: { outfit: 'plain', class: 'mage' },
@@ -94,8 +90,8 @@ export const content = buildContent({
         { id: 'smelt', name: 'Fondre', profession: 'smithing', category: 'bars', level: 1, durationSec: 10, xp: 20, inputs: [{ item: 'ore', qty: 2 }], outputs: [{ item: 'bar', qty: 1 }] },
         { id: 'make_block', name: 'Bloc', profession: 'smithing', category: 'bars', level: 1, durationSec: 10, xp: 5, inputs: [{ item: 'ore', qty: 10 }], outputs: [{ item: 'block', qty: 1 }] },
         { id: 'hard', name: 'Difficile', profession: 'mining', category: 'ores', level: 50, durationSec: 10, xp: 10, outputs: [{ item: 'ore', qty: 1 }] },
-        // Chef-d'œuvre : seulement pendant l'épreuve mining_30.
-        { id: 'masterpiece', name: 'Chef-d’œuvre', profession: 'mining', category: 'ores', level: 30, durationSec: 10, xp: 10, trial: 'mining_30', outputs: [{ item: 'ore', qty: 1 }] },
+        // Chef-d'œuvre : seulement pendant l'commande mining_20.
+        { id: 'masterpiece', name: 'Chef-d’œuvre', profession: 'mining', category: 'ores', level: 20, durationSec: 10, xp: 10, trial: 'mining_20', outputs: [{ item: 'ore', qty: 1 }] },
       ],
     ],
   ],
@@ -122,6 +118,7 @@ export function makeState(over: Partial<CharacterState> = {}): CharacterState {
     buff: null,
     wear: {},
     pantry: {},
+    shown: {},
     npc: { dayKey: '', done: [] },
     prime: { dayKey: '', units: 0 },
     classId: 'mage',

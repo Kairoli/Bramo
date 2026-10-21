@@ -1,5 +1,5 @@
 import type { Content, Recipe } from '../schemas/content.js';
-import { levelForXp } from '../formulas/xp.js';
+import { gainXp, levelForXp } from '../formulas/xp.js';
 import {
   type Bonuses,
   type Presence,
@@ -135,8 +135,9 @@ export function advance(
       if (!(recipe.profession in levelsBefore)) {
         levelsBefore[recipe.profession] = levelForXp(state.skills[recipe.profession] ?? 0, content.xpTable);
       }
-      addTo(state.skills, recipe.profession, recipe.xp * n);
-      addTo(summary.xp, recipe.profession, recipe.xp * n);
+      const gained = gainXp(state.skills[recipe.profession] ?? 0, recipe.xp * n, settings.xp, content.xpTable);
+      addTo(state.skills, recipe.profession, gained);
+      addTo(summary.xp, recipe.profession, gained);
       for (const i of recipe.inputs) {
         addStack(state.inventory, i.item, -i.qty * n);
         addTo(summary.consumed, i.item, i.qty * n);

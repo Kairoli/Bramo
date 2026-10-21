@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { buildXpTable, levelForXp, nextTitle, titleForLevel, xpForLevel } from '../src/formulas/xp.js';
+import { buildXpTable, gainXp, levelForXp, nextTitle, titleForLevel, xpForLevel } from '../src/formulas/xp.js';
 import { settings } from './fixture.js';
 
 describe('courbe d’XP', () => {
@@ -31,6 +31,30 @@ describe('courbe d’XP', () => {
     expect(levelForXp(13_034_430, table)).toBe(98);
     expect(levelForXp(13_034_431, table)).toBe(99);
     expect(levelForXp(200_000_000, table)).toBe(99);
+  });
+});
+
+describe('apprentissage', () => {
+  const table = buildXpTable(99);
+  const xp = { maxLevel: 99, apprenticeship: { belowLevel: 20, multiplier: 2 } };
+  const threshold = table[20]!;
+
+  it('sans réglage, l’XP est inchangée', () => {
+    expect(gainXp(0, 50, { maxLevel: 99 }, table)).toBe(50);
+  });
+
+  it('double l’XP sous le seuil, plus rien au-delà', () => {
+    expect(gainXp(0, 50, xp, table)).toBe(100);
+    expect(gainXp(threshold, 50, xp, table)).toBe(50);
+  });
+
+  it('le passage du seuil est exact : en une fois ou en deux, même total', () => {
+    const start = threshold - 100;
+    const once = gainXp(start, 200, xp, table);
+    expect(once).toBe(100 + 150); // 50 XP de recette doublées jusqu’au seuil, puis 150 normales
+    const first = gainXp(start, 30, xp, table);
+    const second = gainXp(start + first, 170, xp, table);
+    expect(first + second).toBeCloseTo(once);
   });
 });
 

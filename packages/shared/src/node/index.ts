@@ -2,7 +2,7 @@ import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { parse } from 'yaml';
 import { z } from 'zod';
-import { ContentError, buildContent } from '../content.js';
+import { ContentError, type RawContent, buildContent } from '../content.js';
 import type { Content } from '../schemas/content.js';
 import {
   type Animation,
@@ -16,13 +16,13 @@ import {
   slots,
 } from '../schemas/art.js';
 
-/** Charge et valide `data/` (serveur, simulateur, tests). Lève une ContentError lisible. */
-export function loadContent(dataDir: string, artDir?: string): Content {
+/** Lit les fichiers YAML de `data/` sans les valider (le simulateur les modifie avant `buildContent`). */
+export function readRawContent(dataDir: string): RawContent {
   const read = (file: string): unknown => parse(readFileSync(join(dataDir, file), 'utf8'));
   const recipeFiles = readdirSync(join(dataDir, 'recipes'))
     .filter((f) => f.endsWith('.yaml'))
     .sort();
-  const content = buildContent({
+  return {
     settings: read('settings.yaml'),
     professions: read('professions.yaml'),
     items: read('items.yaml'),
@@ -30,7 +30,12 @@ export function loadContent(dataDir: string, artDir?: string): Content {
     cosmetics: read('cosmetics.yaml'),
     trials: read('trials.yaml'),
     recipes: recipeFiles.map((f) => [`recipes/${f}`, read(join('recipes', f))]),
-  });
+  };
+}
+
+/** Charge et valide `data/` (serveur, simulateur, tests). Lève une ContentError lisible. */
+export function loadContent(dataDir: string, artDir?: string): Content {
+  const content = buildContent(readRawContent(dataDir));
   if (artDir) checkArtReferences(content, loadArt(artDir));
   return content;
 }

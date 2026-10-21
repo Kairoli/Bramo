@@ -8,6 +8,8 @@ const ratio = z.number().min(0);
 export const settingsSchema = z.object({
   xp: z.object({
     maxLevel: z.number().int().min(2),
+    /** Apprentissage : XP multipliée tant que le métier est sous ce niveau. Absent = pas de bonus. */
+    apprenticeship: z.object({ belowLevel: z.number().int().min(2), multiplier: z.number().min(1) }).optional(),
   }),
   titles: z
     .array(z.object({ level: z.number().int().min(1), name: z.string() }))

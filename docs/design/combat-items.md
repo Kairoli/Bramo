@@ -138,11 +138,11 @@ Dix emplacements de statistiques en combat (sept vêtements, trois bijoux) plus 
 Chaque objet est un **exemplaire unique** (identifiant propre) d'un **modèle**. Le modèle fixe :
 - le **niveau requis** (niveau de classe pour le combat, niveau du métier pour les outils et les tenues de métier) ;
 - la **rareté** : Commun, Rare, Épique, Légendaire ;
-- les **attributs fixes** (dépendent du modèle : tous les plastrons n'ont pas la même orientation défensive) ;
+- les **lignes fixes** [Décidé par Louis, 21 octobre : une ou deux selon la rareté] (dépendent du modèle : tous les plastrons n'ont pas la même orientation défensive). **Commun : 1 ligne fixe ; Rare, Épique, Légendaire : 2.** Lignes aléatoires tirées par exemplaire : **Commun 0 à 1, Rare 1 à 2, Épique 2 à 3, Légendaire 3 à 4** ;
 - l'**emplacement de gemme** éventuel, et l'**ensemble** éventuel.
 
 L'exemplaire ajoute :
-- **une seule ligne variable**, tirée dans une petite liste compatible avec l'objet, avec une valeur variable entre un minimum et un plafond ;
+- **des lignes aléatoires** [Décidé par Louis, 21 octobre : le nombre varie avec la rareté ; les valeurs suivent le palier], tirées dans une liste compatible avec l'objet, chacune avec une valeur entre un minimum et un plafond ;
 - l'**usure** (§5.6), la **gemme** sertie, la **signature** de l'artisan s'il est fabriqué, et le marqueur **Chef-d'œuvre**.
 
 Dans un même emplacement et un même palier, plusieurs modèles **concurrents** : une cuirasse protectrice, un harnais fragile et offensif, une pièce intermédiaire. Le joueur peut sacrifier de la résistance pour de l'attaque.
@@ -160,7 +160,7 @@ La rareté ne porte **aucun talent** (les talents sont dans les gemmes). Elle r�
 Pas de limite à un légendaire équipé. La rareté appartient au modèle : un objet nommé ne tombe pas tantôt Commun, tantôt Légendaire ; seule sa ligne variable diffère.
 
 ### 5.3 Chef-d'œuvre [Décidé par Louis]
-Un **Chef-d'œuvre** est un exemplaire **fabriqué** dont la ligne variable est au **jet maximal** (ou très proche), ou un objet exceptionnel signé. Il se reconnaît à son nom (« Épique Chef-d'œuvre Tunique de l'Aube ») et à la signature de l'artisan. La chance d'en fabriquer **dépend de l'écart entre le niveau de l'artisan et celui de la recette**, ce qui garde les artisans de haut niveau demandés. Pas de qualité statistique supplémentaire.
+Un **Chef-d'œuvre** est un exemplaire **fabriqué**, signé, qui porte une **ligne bonus unique** [Décidé par Louis : option « b », et il doit rester rare]. Son nom **ne répète pas la rareté** (« Chef-d'œuvre Tunique de l'Aube » : la couleur la montre). **[Proposé par Claude, à valider]** : c'est un **tirage séparé à la fabrication** (2 à 5 %, plafond sans moyen de le dépasser, **1 par jour et par artisan**), **jamais obtenu par perfectionnement** ; ses lignes aléatoires sont tirées dans la **moitié haute** de leur fourchette (pas « toutes au maximum » : un Légendaire à 6 lignes serait irréalisable) ; la ligne bonus n'est pas perfectionnable ; test du simulateur : moins de 3 % du stock d'équipement. **Signature** : tout objet fabriqué garde le nom de son artisan, sans bonus (réputation, recherche au marché). La chance d'en fabriquer **dépend de l'écart entre le niveau de l'artisan et celui de la recette**, ce qui garde les artisans de haut niveau demandés. Pas de qualité statistique supplémentaire.
 
 ### 5.4 Armes [Ouvert]
 Une classe a **deux ou trois catégories d'armes**, qui orientent le style sans imposer de garde-robe : par exemple Forgefeu (marteau lent, épée et bouclier équilibrés), Traqueur (arc long, arbalète), Runiste (bâton, sceptre). À décider avec le catalogue de la tranche verticale.
@@ -173,7 +173,8 @@ Correspondance avec les ressources : cuivre et étain (1), fer (10), acier (20),
 ### 5.6 Usure, réparation, reforge [Décidé par Louis pour l'usure ; reste proposé]
 - **L'équipement s'use** au temps de combat (repères : une armure de palier ≈ 150 h). Usé, il perd ses statistiques mais n'est jamais perdu. Réparation par soi-même, par un artisan ou chez le PNJ. La durabilité maximale ne baisse jamais.
 - **Reforge** (par un artisan) : retire la ligne variable et en tire une nouvelle. Le joueur peut **garder l'ancienne ligne** si la nouvelle ne convient pas. Le coût **croît à chaque reforge** du même exemplaire.
-- **Perfectionnement** : monter la valeur de la ligne vers son plafond, contre matériaux et or. Pas de montée en +15 ni de rang supplémentaire dans la première version.
+- **Pas de re-tirage de ligne** pour l'instant [Décidé par Louis, 21 octobre] ; peut-être plus tard, via des événements.
+- **Perfectionnement** [Décidé par Louis : un artisan peut monter une ligne jusqu'à son maximum] : monter la valeur d'une ligne (une à la fois) vers son plafond, contre matériaux et or, coût croissant. Jamais au-delà du maximum et jamais pour obtenir un Chef-d'œuvre. Pas de montée en +15 ni de rang supplémentaire dans la première version.
 - Ce sont des **puits d'or et de matériaux pour tous les joueurs**, clan ou non.
 - Pas de conversion d'un objet vers le palier supérieur ni de changement de rareté dans la première version.
 

@@ -5,10 +5,10 @@
 export const TIERS = [1, 10, 20];
 
 export const RARITIES = [
-  { id: 'common', name: 'Commun', mult: 1.0, stats: 2, socket: 'aucun', color: 'var(--r-common)' },
-  { id: 'rare', name: 'Rare', mult: 1.05, stats: 3, socket: 'mineur', color: 'var(--r-rare)' },
-  { id: 'epic', name: 'Épique', mult: 1.1, stats: 3, socket: 'oui', color: 'var(--r-epic)' },
-  { id: 'legendary', name: 'Légendaire', mult: 1.15, stats: 4, socket: 'oui', color: 'var(--r-legendary)' },
+  { id: 'common', name: 'Commun', mult: 1.0, stats: 1, rolls: [0, 1], socket: 'aucun', color: 'var(--r-common)' },
+  { id: 'rare', name: 'Rare', mult: 1.05, stats: 2, rolls: [1, 2], socket: 'mineur', color: 'var(--r-rare)' },
+  { id: 'epic', name: 'Épique', mult: 1.1, stats: 2, rolls: [2, 3], socket: 'oui', color: 'var(--r-epic)' },
+  { id: 'legendary', name: 'Légendaire', mult: 1.15, stats: 2, rolls: [3, 4], socket: 'oui', color: 'var(--r-legendary)' },
 ];
 
 export const STATS = {
@@ -147,6 +147,10 @@ const WEAPONS = [
   { id: 'grimoire', name: 'Grimoire', cls: 'runist', speed: 'soutien', stats: { power: 0.8, vitality: 0.9, tenacity: 0.6 }, mat: ['de toile', 'de lin', 'de soie'] },
 ];
 
+const RARITY_IDS = ['common', 'rare', 'epic', 'legendary'];
+const RARITY_SUFFIX = { common: '', rare: '', epic: ' de maître', legendary: " d'exception" };
+const SOURCE_BY_RARITY = { common: ['craft', 'loot'], rare: ['craft', 'loot', 'plan'], epic: ['craft', 'loot', 'plan'], legendary: ['dungeon', 'plan'] };
+
 const round = (n) => Math.max(1, Math.round(n));
 
 function statLine(base, slotW, shares, famBias, rarityMult, count) {
@@ -161,17 +165,25 @@ const lineRange = (slot, tierIndex) => VARIABLE_LINES[slot].map(([name, lo, hi])
 
 const items = [];
 let seq = 0;
-const add = (it) => items.push({ id: `i${++seq}`, ...it });
+const add = (it) => {
+  const r = RARITIES.find((x) => x.id === it.rarity);
+  const tool = it.kind === 'tool';
+  items.push({ id: `i${++seq}`, ...it, stats: tool ? it.stats : it.stats.slice(0, r.stats), rolls: tool ? undefined : r.rolls });
+};
+
+/** Chef-d'œuvre [Proposé par Claude, à valider] : tirage séparé à la fabrication seulement, jamais par retouche. */
+export const MASTERPIECE = { chance: [0.02, 0.05], dailyCap: 1, lineBand: [0.5, 1], bonusLine: true, stockCeiling: 0.03 };
 
 // --- Vêtements : par famille, emplacement, palier ; deux modèles Communs et deux Rares (protecteur, offensif) ---
 for (const fam of FAMILIES) {
   for (const slot of SLOTS.filter((s) => s.kind === 'clothing')) {
     TIERS.forEach((level, ti) => {
-      ['common', 'rare'].forEach((rar, ri) => {
+      RARITY_IDS.forEach((rar, ri) => {
         ['protective', 'offensive'].forEach((orient, oi) => {
+          if (rar === 'legendary' && oi !== slot.id.length % 2) return; // un seul modèle légendaire par emplacement
           const rarity = RARITIES.find((r) => r.id === rar);
           add({
-            name: `${fam.slotNames[slot.id]} ${fam.names[ri * 2 + oi]}`,
+            name: `${fam.slotNames[slot.id]} ${fam.names[(ri % 2) * 2 + oi]}${RARITY_SUFFIX[rar]}`,
             kind: 'clothing',
             slot: slot.id,
             family: fam.id,
@@ -183,7 +195,7 @@ for (const fam of FAMILIES) {
             stats: statLine(basePoints(level), slot.w, SHARES[orient], fam.bias, rarity.mult, rarity.stats),
             lines: lineRange(slot.id, ti),
             socket: rarity.socket,
-            source: rar === 'common' ? ['craft', 'loot'] : ['craft', 'loot', 'plan'],
+            source: SOURCE_BY_RARITY[rar],
           });
         });
       });
@@ -201,7 +213,7 @@ for (const [slotId, models] of Object.entries(JEWEL)) {
   const slot = SLOTS.find((s) => s.id === slotId);
   TIERS.forEach((level, ti) => {
     models.forEach(([n, orient, shares], mi) => {
-      const rar = mi < 2 ? 'common' : 'rare';
+      const rar = RARITY_IDS[mi];
       const rarity = RARITIES.find((r) => r.id === rar);
       add({
         name: `${slotId === 'ring' ? 'Anneau' : 'Collier'} ${n}`,
@@ -216,7 +228,7 @@ for (const [slotId, models] of Object.entries(JEWEL)) {
         stats: statLine(basePoints(level), slot.w, shares, {}, rarity.mult, rarity.stats),
         lines: lineRange(slotId, ti),
         socket: slotId === 'necklace' ? 'majeur' : rarity.socket,
-        source: ['craft', 'loot'],
+        source: SOURCE_BY_RARITY[rar],
       });
     });
   });
@@ -226,10 +238,10 @@ for (const [slotId, models] of Object.entries(JEWEL)) {
 for (const w of WEAPONS) {
   const slot = SLOTS.find((s) => s.id === 'weapon');
   TIERS.forEach((level, ti) => {
-    ['common', 'rare'].forEach((rar) => {
+    RARITY_IDS.forEach((rar) => {
       const rarity = RARITIES.find((r) => r.id === rar);
       add({
-        name: rar === 'common' ? `${w.name} ${w.mat[ti]}` : `${w.name} ${w.mat[ti]} ouvragé`,
+        name: `${w.name} ${w.mat[ti]}${{ common: '', rare: ' ouvragé', epic: ' de maître', legendary: " d'exception" }[rar]}`,
         kind: 'weapon',
         slot: 'weapon',
         family: w.id,
@@ -242,7 +254,7 @@ for (const w of WEAPONS) {
         weaponSpeed: w.speed,
         lines: lineRange('weapon', ti),
         socket: 'majeur',
-        source: rar === 'common' ? ['craft', 'loot'] : ['craft', 'loot', 'plan'],
+        source: SOURCE_BY_RARITY[rar],
       });
     });
   });

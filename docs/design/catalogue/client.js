@@ -77,10 +77,10 @@ function anatomy() {
     <div class="card" style="--rc:${rar(s.rarity).color};--fc:${colorOf(s)};cursor:default;grid-template-columns:64px 1fr">
       <div class="ico" style="width:64px;height:64px">${ico(glyphOf(s))}</div>
       <div class="t">
-        <strong style="font-size:15px">${rar(s.rarity).name} <span style="color:var(--r-legendary)">Chef-d’œuvre</span> ${s.name}</strong>
+        <strong style="font-size:15px">Chef-d’œuvre ${s.name}</strong>
         <span>Niveau ${s.tier} · ${slotName(s.slot)} · ${famName(s)}</span>
         <span>${s.stats.map((x) => `${statName(x.stat)} ${x.value}`).join(' · ')}</span>
-        <span style="color:var(--teal)">${line.name} +${line.max} % (jet maximal)</span>
+        <span style="color:var(--teal)">${line.name} +${(line.min + (line.max - line.min) * 0.9).toFixed(1)} % (moitié haute de la fourchette)</span><span style="color:var(--r-legendary)">Ligne bonus du chef-d’œuvre : +6 % de chance de gemme</span>
         <span>Gemme : <span style="color:var(--ge-storm)">Paratonnerre</span> · Signé : Maître Brunhild</span>
         <span>Durabilité 142 / 150 h</span>
       </div>
@@ -91,10 +91,11 @@ const parts = [
   ['Niveau requis', 'celui de la classe pour le combat, celui du métier pour un outil.'],
   ['Rareté', 'Commun, Rare, Épique ou Légendaire : fixe pour le modèle, elle règle le budget de statistiques et les emplacements. Aucun talent.'],
   ['Attributs fixes', 'connus d’avance, propres au modèle : une cuirasse protège, un harnais frappe.'],
-  ['Ligne variable', 'une seule, tirée dans une petite liste, avec une valeur qui varie jusqu’à un plafond. Un artisan peut la reforger.'],
+  ['Lignes fixes et aléatoires', 'Commun : 1 fixe ; les autres : 2 fixes. Les lignes aléatoires varient en nombre avec la rareté (0-1, 1-2, 2-3, 3-4) ; les valeurs suivent le palier. Un artisan peut les monter jusqu’au maximum de chaque ligne, sans re-tirage.'],
   ['Gemme', 'les talents sont là. Quatre gemmes majeures actives : arme, torse, coiffe, collier.'],
   ['Ensemble', 'des bonus à 2, 3 et 4 pièces, indépendants de la rareté.'],
-  ['Chef-d’œuvre', 'un exemplaire fabriqué au jet maximal, signé par l’artisan.'],
+  ['Chef-d’œuvre', 'tirage séparé à la fabrication (2 à 5 %, 1 par jour et par artisan), jamais par retouche : lignes tirées dans la moitié haute, plus une ligne bonus unique. Le nom ne répète pas la rareté. Proposé, à valider.'],
+  ['Signature', 'tout objet fabriqué garde le nom de son artisan ; aucun bonus, seulement la réputation et la recherche au marché.'],
   ['Usure', 'baisse avec le temps de combat, se répare sans jamais perdre de durabilité maximale.'],
 ];
 $('parts').innerHTML = parts.map(([a, b]) => `<div class="sub"><b>${a}</b><span class="muted">${b}</span></div>`).join('');
@@ -189,18 +190,18 @@ function renderDetail() {
   const d = $('detail');
   const it = D.items.find((i) => i.id === F.sel);
   if (!it) { d.innerHTML = '<p class="muted">Choisissez un objet pour voir sa fiche.</p>'; return; }
-  const max = Math.max(...it.stats.map((s) => s.value), 1);
+  const max = Math.max(...it.stats.map((s) => s.value || 0), 1);
   const line = it.lines[0];
   const set = it.set ? D.sets.find((s) => s.id === it.set) : null;
   const craftable = it.source.includes('craft');
   d.innerHTML = `
-    <div class="eyebrow" style="color:${rar(it.rarity).color}">${masterpiece && craftable ? `${rar(it.rarity).name} · Chef-d’œuvre` : rar(it.rarity).name}</div>
-    <h3>${masterpiece && craftable ? `${rar(it.rarity).name} Chef-d’œuvre ` : ''}${it.name}</h3>
+    <div class="eyebrow" style="color:${rar(it.rarity).color}">${rar(it.rarity).name}${masterpiece && craftable ? ' · Chef-d’œuvre' : ''}</div>
+    <h3>${masterpiece && craftable ? 'Chef-d’œuvre ' : ''}${it.name}</h3>
     <div class="chips">${chip(`Niveau ${it.tier}`)}${chip(slotName(it.slot))}${chip(famName(it), colorOf(it))}${it.material ? chip(it.material.replace(/^d[e’']\s?/, '')) : ''}${it.weaponSpeed ? chip(it.weaponSpeed) : ''}</div>
     <p class="small muted">Porté par : <b style="color:var(--text)">${it.classes.length ? className(it.classes) : 'toute personne exerçant le métier'}</b></p>
     ${it.stats.length && typeof it.stats[0] === 'object' ? `<div class="grid">${it.stats.map((s) => `<div class="statrow"><span>${statName(s.stat)}</span><div class="bar"><i style="width:${(s.value / max) * 100}%"></i></div><b class="mono">${s.value}</b></div>`).join('')}</div>` : `<div class="sub">${it.stats.map((s) => `<span>${s}</span>`).join('')}</div>`}
     ${it.conditional ? `<div class="sub"><b style="color:var(--r-legendary)">Attribut conditionnel</b><span>${it.conditional}</span></div>` : ''}
-    ${line ? `<div class="sub"><b>Ligne variable</b><span class="muted">Une seule, tirée parmi :</span>${it.lines.map((l) => `<span>• ${l.name} : ${l.min} à ${l.max} %</span>`).join('')}${masterpiece && craftable ? `<span style="color:var(--teal)">Chef-d’œuvre : jet maximal, signé par un artisan.</span>` : ''}</div>` : ''}
+    ${line && it.rolls ? `<div class="sub"><b>Lignes aléatoires : ${it.rolls[0] === it.rolls[1] ? it.rolls[0] : `${it.rolls[0]} à ${it.rolls[1]}`}</b><span class="muted">Tirées parmi (fourchette selon le palier) :</span>${it.lines.map((l) => `<span>• ${l.name} : ${l.min} à ${l.max} %${masterpiece && craftable ? ` → ${(l.min + (l.max - l.min) * 0.5).toFixed(1)} à ${l.max}` : ''}</span>`).join('')}${masterpiece && craftable ? `<span style="color:var(--teal)">Chef-d’œuvre : lignes dans la moitié haute, plus une ligne bonus, signé par l’artisan.</span>` : ''}</div>` : ''}
     <div class="sub"><b>Gemme</b><span class="muted">${it.socket === 'aucun' ? 'Aucun emplacement.' : it.socket === 'majeur' ? 'Emplacement de talent (gemme majeure).' : it.socket === 'mineur' ? 'Emplacement de gemme mineure.' : it.socket === 'métier' ? 'Emplacement de gemme de métier.' : 'Un emplacement de gemme.'}</span></div>
     ${set ? `<div class="sub"><b>Ensemble : ${set.name}</b><span class="muted">${set.theme}</span></div>` : ''}
     <div class="sub"><b>Où le trouver</b>${it.source.map((s) => `<span>• ${SRC[s]}</span>`).join('')}</div>

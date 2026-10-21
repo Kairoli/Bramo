@@ -46,7 +46,7 @@ Passif au rang du niveau 80 du métier principal ([`rangs.md`](rangs.md)) : **qu
 **Pendant l'événement** :
 - **Ressources d'événement** récoltées par les métiers existants dans un lieu temporaire (fleur de givre éternelle en Herboristerie, glace runique en Minage…). Aucun nouveau métier.
 - **Recettes d'événement**, apprises une fois pour toutes.
-- **Rencontres** asynchrones de 48 h (contributions, seuil proportionnel aux joueurs actifs) et un **gardien d'événement** à affronter en combat idle, avec contribution cumulée sur la semaine.
+- **Rencontres** asynchrones de 48 h (contributions, seuil proportionnel aux joueurs actifs) et un **gardien d'événement** à affronter en combat idle, avec contribution cumulée sur la semaine. **Tout le monde y participe** : combat, ravitaillement par les artisans, ressources par les récolteurs, commandes pour tous, avec un score de contribution normalisé par canal ([`combat-items.md`](combat-items.md) §3.3).
 - **Mutation** : +20 % de vitesse dans un ou deux métiers thématiques (catégorie de bonus « Saison », déjà prévue). Elle vaut pour tous, donc elle ne creuse pas l'écart entre joueurs.
 - **Cosmétiques** et **ensemble thématique** (voir ci-dessous).
 - **Jetons d'événement** gagnés par participation, dépensés à la boutique de l'événement.

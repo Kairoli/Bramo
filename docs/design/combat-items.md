@@ -10,6 +10,7 @@
 4. **L'équipement s'use** (durabilité jamais réduite au maximum, réparation qui rend tout).
 5. **Emplacements à la Dofus** : coiffe, cape, bottes, ceinture, bijoux (anneaux, collier). Détail au §4.
 6. **Validés** : le niveau par classe, les raretés sans talent intrinsèque, les ensembles à 2 / 3 / 4 pièces, l'abandon des qualités statistiques.
+6 ter. **Validés par Louis (21 octobre, suite)** : le **Terrain d'entraînement** (§2.4), l'**éveil** au niveau 75 (§2.2) et tout le §2 tel qu'écrit. Question soulevée : **les événements et boss mondiaux**, où des non-combattants ne pourraient pas se battre : réponse au §3.3.
 6 bis. **Précisions de Louis (21 octobre, suite)** : les **voies sont la spécialisation** (dégâts, contrôle, soutien) ; le **style** vient du build et des sorts choisis ; **l'XP de classe ne monte pas en faisant les métiers**, seulement au combat.
 7. **Chasse** : un métier de récolte comme les autres, **sans combat**.
 8. **Triangle mêlée > tir > magie** : abandonné pour les monstres (réservé à un éventuel PvP).
@@ -42,7 +43,7 @@ Les trois **voies** (**dégâts**, **contrôle**, **soutien**) *sont* la spécia
 |---|---|
 | 1 à 29 | **Base** : une attaque de base et un répertoire de sorts qui s'élargit (un nouveau sort tous les 5 niveaux), à placer dans un **plan de combat** à quatre emplacements. |
 | 30 | **Voie** : un passif de voie, deux sorts propres à la voie, un emplacement de sort en plus. |
-| 75 | **Éveil** [Proposé, à confirmer ou supprimer] : un dernier sort, l'**ultime** de la classe, qui entre dans le plan avec sa condition de lancement. Si Louis préfère, l'éveil disparaît et tous les sorts se débloquent avec le niveau. |
+| 75 | **Éveil** [Validé par Louis] : un dernier sort, l'**ultime** de la classe, qui entre dans le plan avec sa condition de lancement. Si Louis préfère, l'éveil disparaît et tous les sorts se débloquent avec le niveau. |
 
 **Le plan de combat** est ce que le joueur prépare : l'ordre de priorité de ses sorts, leurs conditions, les réponses aux situations (un protecteur à garder pour la phase dangereuse, une interruption quand la cible charge). Chaque classe et chaque voie ont un **plan par défaut utilisable** ; aucune intervention manuelle n'est jamais requise.
 
@@ -51,12 +52,12 @@ Les trois **voies** (**dégâts**, **contrôle**, **soutien**) *sont* la spécia
 - **Rattrapage** : une classe plus basse que la plus haute des classes du joueur gagne **+50 % d'XP de classe** tant qu'elle n'a pas atteint 80 % du niveau de la plus haute. Changer de classe ne coûte pas des mois.
 - Le hors ligne suit la règle générale (100 % pendant 16 h d'autonomie) ; aucun gain par une action instantanée (recyclage, vente, remise de commande).
 
-### 2.4 Pour celles et ceux qui ne veulent pas combattre [Proposé par Claude, à valider]
+### 2.4 Pour celles et ceux qui ne veulent pas combattre [Validé par Louis]
 La classe ne doit être **ni une obligation ni un goulot** pour eux :
 - **Rien de ce qui concerne les métiers ne dépend du niveau de classe.** Outils, tenues de métier et gemmes de métier se débloquent avec le **niveau du métier** ; l'affinité de la classe avec son métier lié (+5 % au plus) dépend du **niveau du métier**, pas de celui de la classe. Le rang du maître, les clans, le marché, les chefs-d'œuvre et les commandes non plus.
 - La classe sert alors d'**identité** (pose, tenue de départ, nom) et de petit bonus de métier. On peut la choisir pour son style et ne jamais combattre.
 - **L'artisan** équipe les combattants (armes, armures, gemmes, reforges) sans jamais avoir besoin d'un niveau de classe : l'équipement de combat n'exige un niveau de classe que de **celui qui le porte**.
-- **Option « Terrain d'entraînement »** : une activité automatique, sans butin ni risque, qui donne de l'XP de classe à **40 %** du rythme du combat, jusqu'au niveau de classe **40**. Elle sert à ceux qui veulent porter de l'équipement de palier moyen ou essayer un build sans affronter de vraies rencontres. Au-delà, il faut de vraies rencontres. À confirmer : veut-on l'offrir ?
+- **Option « Terrain d'entraînement »** : une activité automatique, sans butin ni risque, qui donne de l'XP de classe à **40 %** du rythme du combat, jusqu'au niveau de classe **40**. Elle sert à ceux qui veulent porter de l'équipement de palier moyen ou essayer un build sans affronter de vraies rencontres. Au-delà, il faut de vraies rencontres. Validé par Louis.
 
 ## 3. Combat entièrement automatique [Décidé par Louis]
 
@@ -70,6 +71,26 @@ La classe ne doit être **ni une obligation ni un goulot** pour eux :
 - **Hors ligne** : on ne simule pas des milliers de combats. On simule un petit échantillon (par exemple 20 combats) par couple (build, rencontre) pour estimer taux de victoire, durée et gains, puis on **extrapole** sur la durée d'autonomie. L'estimation est mise en cache tant que le build ne change pas.
 - **Statistiques** : Vitalité (PV), Défense (réduction), Puissance, Cadence, Critique, Dégâts critiques, Ténacité (durée des statuts subis), Pénétration. Trois types de dégâts (Physique, Feu, Foudre, plus Givre) pour que les résistances des ennemis diversifient les builds.
 - **Statuts** (mots-clés partagés par les gemmes, les ensembles et les compétences) : Brûlure, Saignement, Marque, Ralentissement, Étourdissement, Vulnérabilité, Bouclier, Régénération, Charge.
+
+### 3.3 Événements et boss mondiaux : tout le monde y participe [Proposé par Claude, à valider]
+
+**Règle** : un événement ne doit jamais être fermé à celles et ceux qui ne veulent pas combattre. Chaque événement ou boss mondial a **au moins trois canaux de contribution**, et **le meilleur palier de récompense est atteignable par chacun**.
+
+Le boss mondial (le gardien d'un événement, [`monde.md`](monde.md) §2) a une **réserve de PV commune**, proportionnelle au nombre de joueurs actifs, et une durée de quelques jours. Les contributions s'additionnent pour tout le serveur (ou pour un clan, selon l'événement).
+
+| Canal | Qui | Comment il agit sur le boss |
+|---|---|---|
+| **Combat** | Combattants | Leurs dégâts automatiques retirent des PV au boss. Ils sont limités par un plafond quotidien d'apport pour que la contribution reste casu (aucune course). |
+| **Ravitaillement** | Artisans | Ils fabriquent des **consommables et des machines d'événement** (balistes et pièges de la Forge, banquets de la Cuisine, flasques de l'Alchimie, runes de l'Enchantement, flèches, potions). Chacun remis au **point de ravitaillement** soit inflige des dégâts à distance, soit **renforce tous les combattants** pour un temps (ça compte comme contribution). |
+| **Récolte** | Récolteurs | Ils rapportent les **ressources de la région d'événement** (minerais givrés, herbes de brume, poissons de la marée…) qui alimentent les artisans, ou qui font avancer un chantier commun du camp (barricades, tour de guet : bâtiments d'événement). |
+| **Logistique** | Tout le monde | Les commandes d'événement (type commandes PNJ : un lot d'objets contre des jetons), le transport, l'entretien du camp. |
+
+**Récompenses** :
+- Un **score de contribution normalisé par canal** : le meilleur apport possible d'un combattant et celui d'un artisan ou d'un récolteur donnent **le même palier** de récompense. Personne n'est classé au sacrifice d'un autre canal.
+- **Pour tous** : jetons d'événement, titre ou cosmétique d'événement, objets d'ambiance. **Selon le canal** : butin de combat (pièces, plans, gemmes) pour les combattants ; plans et composants rares pour les artisans ; ressources et collections pour les récolteurs.
+- Ensembles d'événement : **jamais de bonus exclusif indispensable** ; leurs pièces se fabriquent et s'échangent, donc un non-combattant peut les produire et les vendre.
+
+**Conséquences de conception** : un événement contient donc toujours **un contenu de combat**, **des recettes**, **des ressources** et **des commandes**. Le simulateur vérifiera que, sur un serveur simulé, chaque profil (combattant, artisan, récolteur) peut atteindre le palier maximal avec un temps de jeu comparable.
 
 ### 3.2 Contenu de combat
 - **Régions** (ressources, ennemis, composants, collections, contraintes propres) et **donjons** (suite de rencontres avec un boss), dans l'esprit des zones des métiers.
@@ -207,4 +228,4 @@ Une **gemme** porte un **talent** : une règle automatique du type *quand [évé
 - Les **chiffres** : caractéristiques et plafonds, budget exact des raretés, valeur et coût du perfectionnement, taux de butin.
 - La **liste exacte des déclencheurs et effets** de gemmes de la première version.
 - Le **plan de combat** : interface (liste de priorités simple, ou conditions plus riches).
-- L'**éveil** (niveau 75, ultime) : le garder ou non (§2.2). Le **Terrain d'entraînement** pour les non-combattants (§2.4).
+- La **réserve de PV et le plafond d'apport** des boss mondiaux, la valeur des machines et des consommables d'événement (§3.3).

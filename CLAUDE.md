@@ -55,13 +55,21 @@ Bramo est un **idle-RPG multijoueur jouable dans le navigateur**, dans l'esprit 
 
 ## 5. État du projet (à jour au 21 octobre 2026)
 
+### Fait — premières décisions appliquées : présence, progression, boucle à 6 métiers (21 octobre)
+
+- **Décisions de Louis** (arbitrages 1, 2, 4, 11, 12) : rendement unique 100 % et 16 h d'autonomie ; l'énergie quotidienne devient **deux coups de fouet de 30 min (×1,5) par jour, activés quand on veut** (en ligne comme hors ligne, un second s'ajoute au premier) ; courbe RuneScape avec les taux recalibrés, **sans XP doublée en début de métier** ; repas à ~2 fois leur coût et garde-manger ; usure **sans perte de durabilité maximale**. Idée de Louis à examiner : un coup de fouet derrière une publicité (`arbitrages.md` §2).
+- **`data/`** reprend `sim/proposals/boucle-v0` pour les 6 métiers jouables (Minage, Bûcheronnage, Herboristerie, Forge, Menuiserie, Cuisine) : 17 métiers listés, recettes `recipes/gathering.yaml` et `recipes/crafting.yaml`, un outil par métier (fer d'outil + manche), épreuves 30 et 60 pour les six. XP, durée des repas et valeurs se recalculent avec `pnpm --filter @bramo/sim sim calibrate --data --write` (ne modifier que durées et quantités).
+- **Moteur** : `EnergyState` = `{ dayKey, used, activeUntil }` (l'ancien format est relu par `readEnergy`) ; `presenceAt` applique le coup de fouet jusqu'à `activeUntil`, quelle que soit la présence ; action `activateEnergy`. L'apprentissage optionnel du chantier précédent est retiré.
+- **Serveur / client** : route `POST /api/energy/activate` ; bouton « Coup de fouet » (pastilles des charges, puis jauge du temps restant) dans la barre du haut et la salle Personnage ; XP des recettes affichée au dixième ; grille des métiers sur 9 colonnes (17 métiers, sans scroll à 1280×720).
+- Tests : 53 dans `packages/shared`, 11 d'API, 10 du simulateur. Vérifié dans le navigateur à 1440×900 et 1280×720 (accueil, Métiers, Menuiserie, Forge, Personnage, activation d'un coup de fouet).
+- **Pas encore fait** : usure, réparation, recyclage et garde-manger dans le moteur ; outils d'apprenti (sans outil, on travaille sans bonus). Les personnages déjà créés gardent leurs anciens objets disparus des données (ignorés à l'affichage).
+
 ### Fait — refonte de la conception et simulateur (21 octobre)
 
-- **Conception** (`docs/design/`, tout en **[Recommandé]** sauf mention) : écosystème de 18 métiers + 3 extensions ouverts par phases (Agriculture à parcelles en temps réel, Tannerie séparée de la Couture, Joaillerie, Construction comme métier-puits, Exploration qui produit des cartes de gisement), chaînes chiffrées, progression recalibrée, présence (rendement unique 100 % + autonomie 16 h, participation récompensée à part), économie (surplus structurel, puits, robinet d'or du PNJ), classes et voies, événements récurrents sans remise à zéro, clans et plafonds de bonus. `docs/game-design.md` réécrit avec les statuts.
+- **Conception** (`docs/design/`, tout en **[Recommandé]** sauf mention) : écosystème de 17 métiers + 3 extensions ouverts par phases (Agriculture à parcelles en temps réel, Tannerie séparée de la Couture, Joaillerie, Construction comme métier-puits, Exploration qui produit des cartes de gisement), chaînes chiffrées, progression recalibrée, présence (rendement unique 100 % + autonomie 16 h, participation récompensée à part), économie (surplus structurel, puits, robinet d'or du PNJ), classes et voies, événements récurrents sans remise à zéro, clans et plafonds de bonus. `docs/game-design.md` réécrit avec les statuts.
 - **Constats mesurés** : Minage 60 en ~1 jour et 90 en 18 jours confirmés ; ×7,04 de production entre 20 min/jour et un onglet ouvert jour et nuit ; Festin du givre à 360 h de bonus par heure de cuisson ; dans le prototype, seuls ~5 % du travail ont un usage réel et le rachat PNJ crée ~1 500 or par joueur et par jour.
 - **Simulateur** `sim/` (9 tests) : bots joués par le vrai moteur selon des profils de présence, coût complet des chaînes, rapport des repas, bilan économique (variantes, sensibilité, 20/50/200 joueurs), recalibrage automatique d'une proposition. Proposition **`sim/proposals/boucle-v0/`** : la boucle de test à 6 métiers jouables (Minage, Bûcheronnage, Herboristerie, Forge, Menuiserie, Cuisine) et les recettes des chaînes d'exemple des autres métiers.
-- **Moteur** : apprentissage optionnel (`xp.apprenticeship` : XP multipliée sous un niveau, passage du seuil exact), absent de `data/` donc sans effet sur le jeu ; `readRawContent` dans `@bramo/shared/node`. Tests : 54 dans `packages/shared`.
-- **`data/` n'a pas changé** : rien n'est appliqué avant l'arbitrage de Louis.
+- **Moteur** : `readRawContent` dans `@bramo/shared/node`.
 
 ### Fait — le Traqueur (21 octobre)
 
@@ -82,27 +90,27 @@ Bramo est un **idle-RPG multijoueur jouable dans le navigateur**, dans l'esprit 
 
 **Moteur de jeu** (`packages/shared`, 44 tests)
 - Courbe d'XP RuneScape 1–99 (test : niveau 99 = 13 034 431 XP), titres Novice / Apprenti (30) / Compagnon (60) / Maître (85) / Grand maître (99).
-- `engine/advance.ts` : `advance(state, now, content)` fait avancer un personnage à partir de `lastTickAt` et `lastSeenAt`. Fenêtres successives : actif pendant `activeTimeoutSec` après le dernier signe de vie (×1,5 tant qu'il reste de l'énergie quotidienne, sinon ×1), puis hors ligne ×0,25 pendant 12 h, puis plus rien (rien n'est perdu). Les bonus plafonnés (outil 30 %, repas 10 %, clan 10 %, saison 20 % ; clan et saison valent 0 en P1) multiplient la vitesse. L'énergie ne se consomme que si une activité tourne. Calculer en une fois ou en plusieurs fois donne le même résultat (testé).
+- `engine/advance.ts` : `advance(state, now, content)` fait avancer un personnage à partir de `lastTickAt` et `lastSeenAt`. Fenêtres successives : actif pendant `activeTimeoutSec` après le dernier signe de vie, puis hors ligne pendant l'autonomie (`offlineCapHours`), puis plus rien (rien n'est perdu) ; les taux viennent de `settings.rates` (100 % et 16 h depuis le 21 octobre), ×1,5 pendant un coup de fouet. Les bonus plafonnés (outil 30 %, repas 10 %, clan 10 %, saison 20 % ; clan et saison valent 0 en P1) multiplient la vitesse. Calculer en une fois ou en plusieurs fois donne le même résultat (testé).
 - `engine/actions.ts` : lancer (remplacer ou mettre en file, file de 3), annuler, manger un repas (un seul bonus actif), acheter et vendre au marchand PNJ. Erreurs = `GameError` avec message français.
-- `engine/view.ts` : ce que le client reçoit (niveaux, titres, rendement détaillé, énergie).
+- `engine/view.ts` : ce que le client reçoit (niveaux, titres, rendement détaillé, coups de fouet).
 
 **Données** (`data/`)
-- 14 métiers (Récolte : Minage, Bûcheronnage, Pêche, Herboristerie, Chasse ; Artisanat : Forge, Menuiserie, Cuisine, Alchimie, Couture, Artificerie, Enchantement ; Monde et clan : Construction, Exploration). **Jouables : Minage, Forge, Herboristerie, Cuisine**, 6 recettes chacun. Les autres sont `status: soon`.
-- Chaînes : minerai → lingot → lame ou pioche (les pioches donnent le bonus d'outil du Minage) ; herbes + poisson → repas (bonus temporaire).
-- Le poisson est vendu par le **marchand du port** (PNJ) tant que la Pêche n'existe pas ; le marchand rachète tout à la valeur de l'objet.
+- 17 métiers (voir `docs/design/metiers.md`). **Jouables depuis le 21 octobre : Minage, Bûcheronnage, Herboristerie, Forge, Menuiserie, Cuisine.** Les autres sont `status: soon`.
+- Chaînes : minerai → lingot → fer d'outil + manche → outil de chaque métier ; bois → planches, manches, hampes, douelles ; herbes + poisson → repas longs (rendement ~2 fois leur coût).
+- Le poisson est vendu par le **marchand du port** (PNJ) tant que la Pêche n'existe pas ; le marchand rachète à `value` (10 % de la valeur de référence).
 - 3 classes (`classes.yaml`) : Runiste, Forgefeu et Traqueur complets (tenue de départ, pose, arme, effet, animation de repos).
 - 5 tenues (`cosmetics.yaml`) : Cendres (départ du Runiste), Braise (départ du Forgefeu), Lisière (départ du Traqueur), Marée haute (saison), Grand maître (Enchantement 99, change la silhouette).
 
 **Serveur** (`apps/server`, 8 tests d'API)
-- Routes : `POST /api/auth/register|login|logout`, `GET /api/content` (public), `GET /api/state` (sert aussi de signe de vie), `POST /api/activity/start|cancel`, `POST /api/items/eat`, `POST /api/shop/buy|sell`, `POST /api/character/class`, `POST /api/trials/complete`, `GET /api/journal`.
+- Routes : `POST /api/auth/register|login|logout`, `GET /api/content` (public), `GET /api/state` (sert aussi de signe de vie), `POST /api/activity/start|cancel`, `POST /api/energy/activate`, `POST /api/items/eat`, `POST /api/shop/buy|sell`, `POST /api/character/class`, `POST /api/trials/complete`, `GET /api/journal`.
 - `game.ts > play()` : point d'entrée unique de toute requête de jeu (verrouiller la ligne → avancer → action → marquer présent → enregistrer → journal). Le **résumé d'absence** est renvoyé une seule fois (absence ≥ 5 min avec du travail effectué), puis reste dans le journal.
 - Tables : `accounts`, `sessions`, `characters` (activité, file, énergie, repas en jsonb), `character_skills`, `character_items`, `journal`.
 
 **Client** (`apps/web`)
-- Connexion / création de compte. Barre du haut (6 onglets, or, jauge d'énergie, lien « Atelier » en dev).
+- Connexion / création de compte. Barre du haut (6 onglets, or, bouton Coup de fouet, lien « Atelier » en dev).
 - **Accueil** : carte du monde (lieux cliquables + volet d'infos ; provisoire, à repenser) ; en bas, journal à gauche (seul l'onglet Journal fonctionne), **personnage en entier au centre** entouré de ses emplacements, **activité en cours à droite** (anneau, XP/h, rendement, file).
 - **Salle Métiers** : grille groupée, « Bientôt » en pointillés, maîtres PNJ ; **salle d'un métier** : scène avec le personnage et le maître, recettes 2×3 paginées avec filtres et recettes verrouillées, détail (niveau, temps, XP, ingrédients, quantité −/+/Max, Lancer / Lancer à la place de / Ajouter à la file), file.
-- **Salle Personnage** (trois colonnes) : équipement détaillé et sac (Manger, marchand) · personnage centré entouré de ses emplacements · caractéristiques (progression, rendement et bonus plafonnés, énergie, 14 métiers, bloc Combat grisé).
+- **Salle Personnage** (trois colonnes) : équipement détaillé et sac (Manger, marchand) · personnage centré entouré de ses emplacements · caractéristiques (progression, rendement et bonus plafonnés, coups de fouet, 17 métiers, bloc Combat grisé).
 - Clan, Marché, Combat : pages « Bientôt » (le Marché ouvre le marchand du port).
 - Popups : résumé d'absence (auto à la connexion, « Revoir » dans le journal), marchand.
 - Aucun scroll de page, vérifié à 1440×900 et 1280×720.
@@ -117,7 +125,7 @@ Bramo est un **idle-RPG multijoueur jouable dans le navigateur**, dans l'esprit 
 
 - **Pas de déploiement** : le serveur tourne avec `tsx`, il n'y a ni build de production du serveur, ni service des fichiers statiques du client, ni reverse proxy, ni HTTPS. `secureCookies` s'active avec `NODE_ENV=production`.
 - Pas de limite de tentatives de connexion, pas de changement de mot de passe, pas de suppression de compte.
-- Chiffres de `data/` non équilibrés (`# à équilibrer`) : la proposition `boucle-v0` attend l'arbitrage. Le simulateur ne fait pas encore de prix de marché (bilan de flux seulement).
+- Chiffres de `data/` encore provisoires (`# à équilibrer`), mais suivant des règles vérifiées par le simulateur. Le simulateur ne fait pas encore de prix de marché (bilan de flux seulement).
 - Animations de repos seulement (une par pose). Marée haute ne change que les couleurs. Une seule pose par classe (pas encore par voie).
 - Le choix de tenue n'a pas encore d'écran : `outfit` reste null (tenue de départ de la classe). Les niveaux de classe n'existent pas encore (combat en P4).
 - Les épreuves Maître (85) et Grand maître (99) ne sont pas écrites : ces titres restent automatiques. Pas d'épreuve pour les métiers « Bientôt ».
@@ -132,7 +140,7 @@ Bramo est un **idle-RPG multijoueur jouable dans le navigateur**, dans l'esprit 
 
 ### Prochaines étapes (ordre proposé)
 
-0. **Arbitrages de Louis** sur `docs/design/arbitrages.md` (17 points), puis l'ordre d'implémentation de son §3 : (1) présence et progression dans `data/` depuis `boucle-v0`, (2) Bûcheronnage, Menuiserie et un outil par métier, (3) usure, réparation, recyclage et garde-manger dans le moteur, (4) marché et Pêche, (5) clans, Construction, Agriculture, (6) combat et métiers d'équipement, (7) premier événement.
+0. **Suite de `docs/design/arbitrages.md` §3** (étapes 1 et 2 faites) : (3) usure sans perte de durabilité maximale, réparation, recyclage, garde-manger et outils d'apprenti dans le moteur, (4) marché et Pêche, (5) clans, Construction, Agriculture, (6) combat et métiers d'équipement, (7) premier événement.
 1. **Mise en service sur le homeserver** : Postgres (docker compose), `.env` avec `DATABASE_URL`, build du client (`pnpm --filter @bramo/web build`), le serveur Fastify sert `apps/web/dist` (ou un reverse proxy devant), HTTPS, `NODE_ENV=production`, service systemd ou conteneur, sauvegardes de la base. Limite de tentatives de connexion.
 2. **Accueil à refaire** (direction choisie par l'auteur le 21 octobre) : la carte du monde est remplacée par une **scène du bourg** où passent d'autres joueurs (vrais joueurs récemment actifs, avec leur classe et leur activité) et un **Panneau du bourg** dont le cœur est le **fil du serveur** (montées de titre, épreuves réussies, premières fabrications). Décisions : **pas de bonus du jour** (les boosts viennent des saisons et événements), **pas de chantier commun au serveur** (c'est le rôle des clans), commandes de PNJ non tranchées. La carte pourra revenir en popup « Voyager » avec l'Exploration.
 3. **Animation et vie de l'interface** (choix de l'auteur en attente) : « +1 objet » flottant à chaque fabrication, pulsation de l'anneau, célébration de montée de niveau et d'épreuve réussie, scènes animées dans les bandeaux (forge, mines, eau), entrées du journal qui glissent.
@@ -154,7 +162,7 @@ Bramo est un **idle-RPG multijoueur jouable dans le navigateur**, dans l'esprit 
 
 ### Décisions en attente de l'auteur
 
-- **Les 17 arbitrages de conception** : `docs/design/arbitrages.md` (hors ligne, énergie, progression, liste des métiers, Agriculture en parallèle, Construction, Exploration, plafonds de bonus, PNJ, repas, usure, affinité, événements, classes de métier, Guilde du bourg, file).
+- **Les 12 arbitrages de conception restants** (les n° 1, 2, 4, 11 et 12 sont tranchés) : `docs/design/arbitrages.md` (hors ligne, énergie, progression, liste des métiers, Agriculture en parallèle, Construction, Exploration, plafonds de bonus, PNJ, repas, usure, affinité, événements, classes de métier, Guilde du bourg, file).
 - Animations prioritaires ; commandes de PNJ pour le Panneau du bourg (recommandation : Comptoir de la guilde, trois commandes par semaine).
 - **Équipement en deux couches** (proposé) : l'équipement porte les statistiques, s'use et passe par le marché ; l'apparence (tenue cosmétique) le recouvre visuellement. L'emplacement affiche l'apparence, l'infobulle les deux.
 - Couleurs d'affinité mêlée et tir.
@@ -166,12 +174,12 @@ Bramo est un **idle-RPG multijoueur jouable dans le navigateur**, dans l'esprit 
 
 - XP : `XP(L) = floor( Σ_{l=1}^{L-1} floor(l + 300·2^(l/7)) / 4 )`, niveaux 1 à 99.
 - Une seule activité à la fois + file de 3 (`settings.activity.queueLength`).
-- Gains : 100 % en actif, 25 % hors ligne plafonné à 12 h, énergie quotidienne ×1,5 sur les 2 premières heures actives (le jour bascule à 4 h UTC).
+- Gains : 100 % en ligne comme hors ligne pendant 16 h d'autonomie après la dernière visite. Coups de fouet : ×1,5 pendant 30 min, 2 par jour de jeu (bascule à 4 h UTC), activés par le joueur, un second s'ajoute au premier.
 - Bonus plafonnés : outil +30 %, repas +10 %, clan +10 %, saison +20 %.
 - Résumé d'absence à la connexion, puis dans le journal.
 - Classe choisie avant d'entrer, changeable à tout moment et gratuitement.
 - Titres : un palier qui a une épreuve de maître n'est acquis qu'une fois l'épreuve réussie (objets remis, consommés) ; on ne saute pas une épreuve ; le niveau, lui, n'attend jamais.
-- Apprentissage (`xp.apprenticeship`, optionnel, absent de `data/`) : XP multipliée sous un niveau ; le gain qui franchit le seuil est découpé exactement (`gainXp`).
+- XP des recettes (règle du simulateur, `sim/src/rules.ts`) : récolte `R(L) = 400 × 2^((L−1)/55)` XP par heure effective, durée 12 s + 2 s par dizaine de niveaux ; artisanat ×1,75. Pas d'XP doublée en début de métier (décision).
 - Plus tard (dans le game design) : maîtrise après 99 (paliers décroissants, +10 % max), affinité de métier (+1 % par tranche de 10 niveaux du métier lié, +10 % max), objets faits maison signés et de meilleure qualité, progression de classe (voie 30, spécialisation 60, éveil 75).
 
 ## 8. Interface
@@ -245,4 +253,5 @@ sim/                simulateur : src/ (bot, chains, economy, rules, calibrate, s
 - Les pièces sont lues depuis `art/` par Vite (`server.fs.allow: ['../..']` dans `apps/web/vite.config.ts`).
 - Le résumé d'absence n'est envoyé qu'une fois : le client garde le premier si deux réponses se croisent (StrictMode).
 - pnpm récent bloque les scripts d'installation (esbuild) : ça fonctionne sans, `pnpm approve-builds` si besoin. `pnpm install` peut alors finir en erreur `ERR_PNPM_IGNORED_BUILDS` alors que les paquets sont bien installés.
+- **Aperçu du navigateur de Claude** : il impose `PORT=5173` aux processus qu'il lance, et le serveur lit `PORT` : il prend alors le port de Vite. Lancer le client seul dans l'aperçu (`pnpm --filter @bramo/web dev`) et le serveur à part (`pnpm --filter @bramo/server start`, sans `PORT`).
 - `tsx watch` ne surveille pas `data/` ni `art/` : après un changement de YAML ou de pièce, redémarrer le serveur (ou toucher un fichier de `packages/shared`).

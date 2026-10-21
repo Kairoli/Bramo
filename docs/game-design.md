@@ -31,9 +31,8 @@ Le jeu est **casu dans l'ensemble** : on y passe quelques minutes plusieurs fois
 
 ### 3.1 Courbe d'XP
 - [Décidé] Niveaux 1 à 99, titres Novice / Apprenti (30) / Compagnon (60) / Maître (85) / Grand maître (99).
-- [Prototype] Courbe de RuneScape : `XP(L) = floor( Σ_{l=1}^{L-1} floor(l + 300 · 2^(l/7)) / 4 )`, niveau 99 = 13 034 431 XP.
-- [Recommandé] **Conserver cette courbe** et recalibrer les recettes : XP par heure effective `R(L) = 400 × 2^((L−1)/55)`, artisanat ×1,75, **apprentissage ×2 sous le niveau 20** (déjà codé : `xp.apprenticeship`). Cibles pour un spécialiste régulier : 30 en 1 jour, 60 en 2 semaines, 85 en 3 à 4 mois, 90 en 5 à 6 mois, 99 en ~1 an ([`design/progression.md`](design/progression.md)).
-- [Prototype] Aujourd'hui (mesuré) : Minage 60 en ~1 jour, 90 en 18 jours avec 2 h de présence par jour. **Beaucoup trop rapide** [Décidé].
+- [Décidé, 21 octobre] **Courbe de RuneScape conservée** : `XP(L) = floor( Σ_{l=1}^{L-1} floor(l + 300 · 2^(l/7)) / 4 )`, niveau 99 = 13 034 431 XP. **Recettes recalibrées** : XP par heure effective `R(L) = 400 × 2^((L−1)/55)` pour la meilleure récolte d'un palier, artisanat ×1,75. **Pas d'XP doublée en début de métier.** Mesuré pour un spécialiste régulier : 30 en ~1 jour, 60 en ~2 semaines, 85 en ~3,3 mois, 90 en ~5,2 mois, 99 en ~11 mois ([`design/progression.md`](design/progression.md)). Appliqué dans `data/`.
+- Avant le 21 octobre (mesuré) : Minage 60 en ~1 jour, 90 en 18 jours avec 2 h de présence par jour. Jugé beaucoup trop rapide.
 
 ### 3.2 Épreuves des maîtres [Décidé]
 À un palier de titre, le maître PNJ du métier confie une **épreuve** : remettre des objets (consommés). La réussir donne **le titre** et un peu d'or. Sans elle, le niveau continue de monter : seul le titre attend. On ne saute pas une épreuve.
@@ -50,13 +49,13 @@ Signés par l'artisan, de meilleure qualité : Normale, Supérieure, Rare, Chef-
 ## 4. Métiers
 
 - [Décidé] Ouvert à 20–30 métiers **si chacun apporte une activité intéressante et une utilité réelle**. Agriculture et Joaillerie intéressent particulièrement Louis.
-- [Recommandé] **18 métiers et 3 extensions, ouverts par phases** ([`design/metiers.md`](design/metiers.md)) :
+- [Recommandé] **17 métiers et 3 extensions, ouverts par phases** ([`design/metiers.md`](design/metiers.md)) :
   - Récolte : Minage, Bûcheronnage, Herboristerie, Pêche, **Agriculture** (parcelles en temps réel), Chasse ;
   - Artisanat : Forge (outils de tous les métiers), Menuiserie (manches, archerie), Cuisine, Alchimie, **Tannerie** (séparée de la Couture), Couture, **Joaillerie**, Enchantement, Artificerie ;
   - Monde : **Construction** (le grand puits : atelier personnel et halle du clan), **Exploration** (cartes de gisement, curiosités, sites) ;
   - Extensions : Élevage, Archéologie, Dressage.
-- [Prototype] 14 métiers dans `data/professions.yaml`, dont 4 jouables (Minage, Forge, Herboristerie, Cuisine) ; chaînes minerai → lingot → lame ou pioche, herbes + poisson → repas ; le poisson vendu par le **marchand du port** (PNJ), qui rachète tout à la valeur de l'objet.
-- [Recommandé] **Boucle de test** à implémenter d'abord : Minage, Bûcheronnage, Herboristerie, Forge, Menuiserie, Cuisine, avec un outil par métier qui s'use et se répare. Données prêtes dans `sim/proposals/boucle-v0/`.
+- [Prototype] `data/professions.yaml` liste les 17 métiers proposés ; **6 sont jouables** (Minage, Bûcheronnage, Herboristerie, Forge, Menuiserie, Cuisine), avec un outil par métier (fer d'outil de la Forge + manche de la Menuiserie) et des épreuves 30 et 60 pour chacun. Le poisson reste vendu par le **marchand du port** (PNJ), qui rachète à 10 % de la valeur de référence.
+- [Décidé] **Usure** : elle suit les heures d'usage réel ; un objet usé se répare et **ne perd jamais de durabilité maximale** (un objet qu'on aime ne se détruit pas). [Prototype] Pas encore dans le moteur, ni le garde-manger.
 
 ## 5. Boucle idle
 
@@ -65,15 +64,17 @@ Signés par l'artisan, de meilleure qualité : Normale, Supérieure, Rare, Chef-
 - [Recommandé] Seule exception : les **parcelles d'Agriculture**, qui poussent en temps réel et sont bornées par leur nombre.
 
 ### 5.2 Rendement
-- [Prototype] Actif 100 % ; hors ligne 25 % plafonné à 12 h ; énergie quotidienne ×1,5 sur les 2 premières heures actives. Mesure : ×7 de production entre 20 min par jour et un onglet ouvert jour et nuit.
-- [Décidé] Le système actuel récompense trop le simple fait de garder une fenêtre visible. Le passage à 100 % n'est pas acquis : comparer les solutions.
-- [Recommandé] **Rendement unique 100 %, autonomie de 16 h après la dernière visite, plus d'énergie** ; la participation (commandes, marché, clan, rencontres) est récompensée à part, surtout hors production ([`design/presence.md`](design/presence.md)). Rien n'est perdu au-delà du plafond.
+- [Décidé, 21 octobre] **Rendement unique de 100 %**, en ligne comme hors ligne, pendant **16 h d'autonomie** après la dernière visite. Au-delà, l'activité attend ; rien n'est perdu. Appliqué dans `data/`.
+- [Décidé, 21 octobre] **Coups de fouet** à la place de l'énergie quotidienne : ×1,5 pendant 30 min, **deux par jour de jeu**, activés quand le joueur le veut (en ligne comme hors ligne ; un second activé pendant le premier s'y ajoute). Appliqué.
+- [Ouvert] Louis envisage un coup de fouet derrière une publicité (retirable avec un abonnement « sans pub », achetable plus tard). À examiner contre le pilier « le payant ne vend que du confort et du cosmétique » : voir [`design/arbitrages.md`](design/arbitrages.md) §2.
+- [Recommandé] La participation (commandes, marché, clan, rencontres) est récompensée à part, surtout hors production ([`design/presence.md`](design/presence.md)).
+- Avant le 21 octobre : actif 100 %, hors ligne 25 % plafonné à 12 h, énergie ×1,5 sur les 2 premières heures actives ; ×7 de production entre 20 min par jour et un onglet ouvert jour et nuit. Jugé trop favorable à la fenêtre visible.
 
 ### 5.3 Bonus (plafonnés, dans les réglages)
 | Source | [Prototype] | [Recommandé] |
 |---|---|---|
 | Outil | +30 % | +30 % (bronze +10 % … orichalque +30 %) |
-| Repas | +10 % | +10 %, garde-manger automatique |
+| Repas | +10 % | +10 %, garde-manger automatique [Décidé] |
 | Lieu | — | **+25 %** : carte de gisement ou filon de clan (la meilleure) |
 | Clan | +10 % | **+10 % toutes sources confondues** (bâtiments, experts), pour tous les membres |
 | Saison | +20 % | +20 % (mutation d'événement, pour tous) |
@@ -140,7 +141,7 @@ Maquettes de référence : `docs/maquettes/`
 - Un accueil et cinq salles : **Accueil, Métiers, Personnage, Clan, Marché, Combat** (six onglets en haut). Tout le reste s'ouvre en popup ou en volet.
 - **Aucun scroll de page** : cible 1440×900, correct à 1280×720.
 - Squelette commun : **bande visuelle du lieu en haut, contenu en bas**.
-- Barre du haut : nom du jeu, onglets, puis à droite l'événement en cours, l'or, la jauge d'énergie ([Recommandé] retirée avec l'énergie), la recherche.
+- Barre du haut : nom du jeu, onglets, puis à droite l'événement en cours, l'or, le bouton **Coup de fouet** (charges du jour, puis jauge du temps restant), la recherche.
 - Police unique **Bricolage Grotesque**, palette « Anthracite et cuivre » (voir `CLAUDE.md`).
 
 ### 9.2 Accueil
@@ -163,7 +164,7 @@ Toujours à gauche de la scène, de face mais tourné vers la droite, jamais en 
 | Phase | Contenu |
 |---|---|
 | P0 | Chiffrage et simulateur d'équilibrage — **commencé** (`sim/`) |
-| P1 | Prototype solo — fait ; [Recommandé] recalage présence et progression, boucle de test à 6 métiers, usure et garde-manger |
+| P1 | Prototype solo — fait ; présence, progression et boucle à 6 métiers appliquées le 21 octobre ; reste usure et garde-manger |
 | P2 | Marché et commandes ; Pêche |
 | P3 | Clans, Construction, Agriculture |
 | P4 | Combat ; Chasse, Tannerie, Couture, Enchantement, Joaillerie, Alchimie |

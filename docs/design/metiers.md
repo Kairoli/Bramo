@@ -1,6 +1,6 @@
 # Écosystème des métiers
 
-> **Statut : recommandation**, à arbitrer par Louis (voir [`arbitrages.md`](arbitrages.md)).
+> **Statut : recommandation**, à arbitrer par Louis (voir [`arbitrages.md`](arbitrages.md)). Les 6 métiers de la boucle (Minage, Bûcheronnage, Herboristerie, Forge, Menuiserie, Cuisine) sont jouables depuis le 21 octobre.
 > Les chiffres viennent du simulateur (`sim/`, proposition `sim/proposals/boucle-v0/`) et se régénèrent avec `pnpm --filter @bramo/sim sim report`.
 > Légende utilisée dans tous les documents de conception : **[Décidé]** = choix de Louis · **[Recommandé]** = proposition argumentée · **[Ouvert]** = question sans réponse.
 
@@ -23,7 +23,7 @@
 6. **On démarre seul** : chaque métier a un **outil d'apprenti** gratuit, incassable et sans bonus. Les premiers outils fabriqués (bronze) ne demandent que des métiers au niveau 5 au plus (vérifié par un test du simulateur). Aucune recette de début n'exige un produit qu'on ne peut pas faire soi-même en quelques minutes.
 7. **Les récolteurs ont aussi des clients à servir et des fournisseurs** : outils (Forge + Menuiserie), repas (Cuisine), élixirs de métier (Alchimie), cartes de gisement (Exploration), appâts (Chasse, Agriculture), pièges (Artificerie), engrais (Agriculture, Alchimie).
 
-## 3. Liste proposée : 18 métiers et 3 extensions
+## 3. Liste proposée : 17 métiers et 3 extensions
 
 | Métier | Famille | Phase | Rôle en une phrase |
 |---|---|---|---|
@@ -52,7 +52,7 @@ Phases : **A** = la boucle de test, maintenant ; **B** = avec le marché et les 
 
 **Écartés comme métiers, gardés comme catégories** : Fonderie (Forge), tannage seul (Tannerie), Teinturerie (Couture), Verrerie (Alchimie : fioles ; Joaillerie : lentilles), Maçonnerie et taille de pierre (Construction), Brasserie (Cuisine), Calligraphie (Enchantement pour les parchemins runiques, Exploration pour les cartes), Apiculture (branche future de l'Agriculture : miel, cire), Commerce (le marché est déjà le métier du marchand ; une compétence « Négoce » créerait de l'or de nulle part), Navigation (à reconsidérer avec l'Exploration, bien plus tard).
 
-**Pourquoi 18 et pas 30** : avec 20 joueurs, 18 métiers donnent en moyenne 0,7 spécialiste par métier et une dizaine de métiers sans aucun spécialiste (rapport du simulateur, « Taille du serveur »). Chaque métier ajouté dilue le marché. Il vaut mieux ouvrir les métiers par phases, au rythme de la population, que lancer 30 métiers vides.
+**Pourquoi 17 et pas 30** : avec 20 joueurs, 17 métiers donnent en moyenne 0,7 spécialiste par métier et neuf métiers sans aucun spécialiste (rapport du simulateur, « Taille du serveur »). Chaque métier ajouté dilue le marché. Il vaut mieux ouvrir les métiers par phases, au rythme de la population, que lancer 30 métiers vides.
 
 ## 4. Carte des dépendances
 
@@ -298,7 +298,7 @@ Déroulé des cinq chaînes demandées :
 Trois coûts différents, à ne pas confondre :
 
 1. **Le temps de travail** est modeste aux premiers paliers : 26 min à 2 h pour une pièce d'équipement. En temps effectif, c'est l'équivalent d'une à deux heures sur les 24 h qu'un régulier produit par jour.
-2. **Les niveaux requis** sont le vrai coût. La robe runée demande six métiers entre 15 et 25. Avec l'apprentissage, un métier passe le niveau 20 en ~6 h effectives et le 25 en ~13 h : **environ trois jours** de temps de jeu pour tout débloquer. Au palier du niveau 60, le même schéma demanderait quatre métiers à 60, soit **quatre fois 13 jours** pour un spécialiste, plus de **deux mois** : c'est là que le commerce devient la seule voie raisonnable, sans jamais être obligatoire.
+2. **Les niveaux requis** sont le vrai coût. La robe runée demande six métiers entre 15 et 25. Un métier passe le niveau 20 en ~10 h effectives et le 25 en ~17 h : **environ quatre jours** de temps de jeu pour tout débloquer. Au palier du niveau 60, le même schéma demanderait quatre métiers à 60, soit **quatre fois 13 jours** pour un spécialiste, plus de **deux mois** : c'est là que le commerce devient la seule voie raisonnable, sans jamais être obligatoire.
 3. **La gestion de la file** : une chaîne de 12 à 17 étapes avec une activité et 3 actions en file demande 4 ou 5 visites pour être orchestrée. C'est le coût qui pèse le plus sur un casu.
 
 Le multiplicateur d'autonomie (temps total / temps du dernier métier) va de ×1,3 (arc) à ×11 (robe runée). Règle proposée : **pas plus de ×4 aux paliers courants** pour une pièce d'équipement, ce qui exclut d'ajouter des étapes intermédiaires sans décision (exemple écarté : filer, retordre, puis tisser).

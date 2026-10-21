@@ -1,6 +1,6 @@
 # Présence, hors ligne et participation
 
-> **Statut : recommandation**, à arbitrer (voir [`arbitrages.md`](arbitrages.md)). Chiffres : `sim/reports/rapport.md`, section « Présence ».
+> **Statut** : le rendement unique (100 %, 16 h) et les coups de fouet sont **[Décidé] le 21 octobre et appliqués** ; les récompenses de participation (§4) restent **[Recommandé]**. Chiffres : `sim/reports/rapport.md`, section « Présence ».
 > [Décidé] : pas de bonus du jour ; on ne punit jamais l'absent ; l'écart casu / tryhard visé est de ×2 à ×2,5, jamais ×10.
 
 ## 1. Le problème mesuré
@@ -14,6 +14,7 @@ Heures effectives produites par jour, à recette et équipement identiques (vrai
 | 75 % hors ligne, plafond 16 h | 12,4 | 18,1 | 18,1 | 18,5 | 22,0 | 24,0 | ×1,9 | 82 % |
 | 100 %, autonomie 12 h | 12,4 | 24,0 | 24,0 | 20,0 | 24,0 | 24,0 | ×1,9 | 100 % |
 | **100 %, autonomie 16 h** | 16,4 | 24,0 | 24,0 | 24,0 | 24,0 | 24,0 | ×1,5 | 100 % |
+| **Décidé : 100 %, 16 h, 2 coups de fouet de 30 min** | 16,9 | 24,5 | 24,5 | 24,5 | 24,5 | 24,5 | ×1,45 | 100 % |
 | 100 %, autonomie 24 h | 24,0 | 24,0 | 24,0 | 24,0 | 24,0 | 24,0 | ×1,0 | 100 % |
 
 Le ×7 de la mesure est retrouvé (×7,04). Deux défauts : le jeu paie **la fenêtre visible, pas la participation**, et le **téléphone** (qui passe en arrière-plan, donc hors ligne) produit le tiers d'un onglet de bureau.
@@ -35,12 +36,13 @@ Remarque : à 100 % avec 12 h d'autonomie, « 2 h par jour » (20,0) fait moins 
 
 **Pourquoi pas 24 h** : on perd la seule raison mécanique de revenir, et l'écart casu / tryhard tombe à 1 sur la production ; il ne resterait que le commerce, que l'on ne peut pas borner.
 
-## 3. Recommandation : rendement unique et participation séparée
+## 3. Décision : rendement unique, coups de fouet et participation séparée
 
-1. **Rendement unique de 100 %**, en ligne comme hors ligne. Plus d'énergie quotidienne : elle récompensait les deux premières heures d'onglet ouvert.
+1. **Rendement unique de 100 %**, en ligne comme hors ligne [Décidé]. L'énergie quotidienne, qui récompensait les deux premières heures d'onglet ouvert, devient **deux coups de fouet de 30 min (×1,5) par jour de jeu**, activés quand le joueur le veut, qui comptent aussi hors ligne ; un second activé pendant le premier s'y ajoute [Décidé, idée de Louis]. Ils ajoutent une demi-heure effective par jour à tout le monde et ne creusent pas l'écart.
 2. **Autonomie de 16 h** après la dernière visite. Une visite = ouvrir le jeu (une requête authentifiée), dix secondes sur un téléphone suffisent. Au-delà, l'activité attend ; rien n'est perdu. Le résumé d'absence le dit : « Votre personnage a travaillé 16 h sur 20 ; il a attendu ensuite. »
 3. **La participation est récompensée à part**, par des récompenses qui ne demandent ni horaire ni présence simultanée, et qui passent surtout par **autre chose que la vitesse de production** (§4).
-4. Réglages correspondants (déjà possibles dans le moteur actuel) : `rates.offline: 1`, `rates.offlineCapHours: 16`, `energy.multiplier: 1`.
+4. Réglages appliqués dans `data/settings.yaml` : `rates.offline: 1`, `rates.offlineCapHours: 16`, `energy: { multiplier: 1.5, charges: 2, durationMin: 30 }`. Route `POST /api/energy/activate`, bouton « Coup de fouet » dans la barre du haut.
+5. [Ouvert] Coup de fouet derrière une publicité : voir `arbitrages.md` §2.
 
 ## 4. Récompenser la participation sans horaire
 

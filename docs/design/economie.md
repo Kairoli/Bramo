@@ -1,7 +1,7 @@
 # Économie, marché et puits
 
 > **Statut : recommandation**, à arbitrer (voir [`arbitrages.md`](arbitrages.md)). Chiffres : `sim/reports/rapport.md`, sections « Repas » et « Économie ». Hypothèses du modèle : `sim/proposals/boucle-v0/economy.yaml`.
-> [Décidé] : marché entre joueurs, ordres d'achat et de vente, commandes artisanales ; l'usure suit les actions réellement réalisées (hors ligne compris) ; un personnage arrêté ne se dégrade pas.
+> [Décidé] : marché entre joueurs, ordres d'achat et de vente, commandes artisanales ; l'usure suit les actions réellement réalisées (hors ligne compris) ; un personnage arrêté ne se dégrade pas ; pas de perte de durabilité maximale ; repas à ~2 fois leur coût et garde-manger automatique (21 octobre).
 
 ## 1. Le constat principal : un surplus structurel
 
@@ -9,9 +9,9 @@ Dans un idle où chaque joueur produit 16 à 24 h effectives par jour **pour gag
 
 | Variante (avec combat) | Part de la production qui sert | Vendu au PNJ | Stocké | Or créé par joueur et par jour |
 |---|---|---|---|---|
-| Comme le prototype : rachat PNJ à 25 %, sans plafond, sans Construction ni recyclage | **5 %** | 47 % | 47 % | **+1 562** |
-| Usure ×3 et repas plus forts | 8 % | 46 % | 46 % | +1 445 |
-| **Recommandé** : Construction (15 % de l'artisanat), recyclage, rachat PNJ 10 % plafonné | **26 %** | 18 % | 45 % | **−77** |
+| Comme le prototype : rachat PNJ à 25 %, sans plafond, sans Construction ni recyclage | **5 %** | 47 % | 47 % | **+1 553** |
+| Usure ×3 et repas plus forts | 7 % | 46 % | 46 % | +1 415 |
+| **Recommandé** : Construction (15 % de l'artisanat), recyclage, rachat PNJ 10 % plafonné | **26 %** | 18 % | 45 % | **−90** |
 
 Conséquences :
 
@@ -28,12 +28,13 @@ Conséquences :
 | **des ressources** | Construction (éléments posés) ; consommables (repas, potions, flèches, runes de combat) ; recyclage (60 % perdus) ; épreuves des maîtres ; projets d'événement | Absorber le volume |
 | **des équipements** | Usure → réparations (chacune réduit la durabilité maximale) → recyclage ; montée de palier ; qualité recherchée | Renouveler la demande des artisans |
 
-## 3. Usure et réparation [Recommandé]
+## 3. Usure et réparation [Décidé le 21 octobre, pas encore dans le moteur]
 
 - **La durabilité se compte en heures d'usage effectif** : chaque fabrication ou combat simulé, hors ligne compris, consomme sa durée. Un personnage arrêté (activité terminée, autonomie écoulée) n'use rien.
 - **Repères** : outil de fer ~60 h effectives (deux à trois jours pour un régulier), armure de palier ~150 h de combat. Toujours affichée (« reste 23 h »), jamais de surprise.
 - **Usé ≠ perdu** : à 0, l'objet ne donne plus son bonus et le personnage retombe sur l'outil d'apprenti. Il ne disparaît pas.
-- **Réparer** : par un joueur du métier (30 % des matériaux, un peu d'XP, commande possible) ou par le PNJ (en or, deux fois plus cher). Chaque réparation retire 15 % de la durabilité maximale : après trois ou quatre réparations, on recycle.
+- **Réparer** : par un joueur du métier (30 % des matériaux, un peu d'XP, commande possible) ou par le PNJ (en or, deux fois plus cher). **La durabilité maximale ne baisse jamais** (décision de Louis : un objet qu'on aime ne doit pas se détruire doucement). Un objet n'est remplacé que par un meilleur palier.
+- **Conséquence** : la demande d'équipement ne vient plus du remplacement, mais des **réparations** (travail régulier des artisans, or retiré par le PNJ), de la **montée de palier**, de la **qualité**, des **nouveaux joueurs** et des **ensembles d'événement**. Le modèle économique n'en est presque pas changé, l'usure pesant peu en volume.
 - **Recycler** : rend 40 % des matériaux principaux (arrondis vers le bas), sans or. C'est un débouché pour tout ce qu'on fabrique pour l'XP, et une source de matières de bas niveau.
 
 ## 4. Consommables : le rapport bonus / coût [Recommandé]
@@ -71,10 +72,10 @@ Le marchand ne doit être ni un débouché ni une source infinie d'or.
 | + Rachat du PNJ (plafonné) | 286 |
 | + Épreuves des maîtres | 40 |
 | − Taxe du marché | 244 |
-| − Réparations au PNJ | 37 |
+| − Réparations au PNJ | 49 |
 | − Entretien du clan | 42 |
 | − Services en or | 80 |
-| **Solde** | **−77** |
+| **Solde** | **−90** |
 
 Le solde doit rester **proche de zéro et légèrement positif** pour que les nouveaux trouvent de l'or en circulation : à régler avec le plafond du PNJ et le comptoir. **Hypothèses les plus sensibles** (rapport, « Sensibilité ») : la part de la production échangée au marché (elle porte la taxe) et le plafond hebdomadaire du PNJ ; viennent ensuite la part de temps passée en Construction (elle fait varier la part utile de 16 % à 47 %). L'usure et les flèches comptent peu.
 
@@ -86,11 +87,11 @@ Le solde doit rester **proche de zéro et légèrement positif** pour que les no
 
 ## 8. Viabilité selon la taille du serveur
 
-| Joueurs | Spécialistes par métier (18 métiers) | Métiers sans spécialiste | Métiers avec moins de 3 spécialistes | Outils remplacés / semaine | Repas / jour |
+| Joueurs | Spécialistes par métier (17 métiers) | Métiers sans spécialiste | Métiers avec moins de 3 spécialistes | Outils réparés / semaine | Repas / jour |
 |---|---|---|---|---|---|
-| 20 | 0,7 | ~10 | ~17 | 9 | 150 |
-| 50 | 1,7 | ~4 | ~14 | 24 | 370 |
-| 200 | 6,7 | ~0 | ~2 | 95 | 1 470 |
+| 20 | 0,7 | ~9 | ~16 | 38 | 150 |
+| 50 | 1,8 | ~4 | ~12 | 95 | 370 |
+| 200 | 7,1 | ~0 | ~2 | 380 | 1 470 |
 
 Ce qu'on en tire :
 

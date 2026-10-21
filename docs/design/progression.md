@@ -1,6 +1,6 @@
 # Progression des métiers
 
-> **Statut : recommandation**, à arbitrer (voir [`arbitrages.md`](arbitrages.md)). Chiffres : `sim/reports/rapport.md`.
+> **Statut : [Décidé] le 21 octobre et appliqué dans `data/`** (courbe conservée, taux recalibrés, sans XP doublée en début de métier, coups de fouet). Chiffres : `sim/reports/rapport.md`.
 > « Heure effective » = une heure d'activité à 100 % de rendement, bonus non compris.
 
 ## 1. Vérification de la mesure
@@ -28,12 +28,12 @@ Le simulateur rejoue le vrai moteur (`advance`) avec les données actuelles : Mi
 
 | Levier | Proposition | Pourquoi |
 |---|---|---|
-| Présence | Rendement unique 100 %, autonomie 16 h, plus d'énergie (voir [`presence.md`](presence.md)) | Le temps effectif ne dépend plus d'un onglet visible. Il monte donc pour tout le monde (16 à 24 h/jour) : les taux d'XP doivent baisser d'autant. |
+| Présence | Rendement unique 100 %, autonomie 16 h, deux coups de fouet de 30 min par jour (voir [`presence.md`](presence.md)) | Le temps effectif ne dépend plus d'un onglet visible. Il monte donc pour tout le monde (16 à 24 h/jour) : les taux d'XP doivent baisser d'autant. |
 | Courbe | **Conserver la courbe RuneScape** | Elle est connue, lisible, et sa forme exponentielle sert le serveur persistant : un nouveau venu rattrape vite le milieu de tableau (60 en deux semaines), le haut niveau reste un investissement. |
 | XP des recettes | Règle unique **R(L) = 400 × 2^((L−1)/55) XP par heure effective** pour la meilleure récolte d'un palier : 400 au niveau 1, 580 au 30, 840 au 60, 1 230 au 90 | Chaque palier rapporte ~+13 % d'XP/h en plus d'objets de plus grande valeur. Fin de jeu 30 à 40 fois plus lente qu'aujourd'hui par heure effective. |
 | Durées | Récolte : **12 s + 2 s par dizaine de niveaux** (12 s au 1, 30 s au 90) | Volumes lisibles (300 à 120 unités par heure), matières rares plus lentes, sans changer l'XP/h. |
 | Artisanat | XP par heure de fabrication = **1,75 × R(L)** | L'artisan qui achète ses matériaux progresse ~1,75 fois plus vite qu'un récolteur ; celui qui récolte tout progresse ~2,5 fois moins vite dans son métier, mais monte aussi ses récoltes. C'est ce qui rend le commerce intéressant en temps économisé. |
-| Début | **Apprentissage : XP ×2 sous le niveau 20**, dans chaque métier | Garde un premier soir généreux (niveau 10 dans la première heure et demie, 20 dans la journée) et rend agréable l'essai de nouveaux métiers. Coût nul en fin de jeu. Déjà codé dans le moteur (`xp.apprenticeship`, absent de `data/`). |
+| Début | [Recommandé, **refusé par Louis**] Apprentissage : XP ×2 sous le niveau 20 | Sans lui, une première session de 20 min atteint le niveau 4 environ ; le niveau 10 vient au bout de ~2 h 30 effectives (le premier soir et la nuit), le 20 vers 10 h. Les premiers objectifs viennent donc des **épreuves, du premier outil et des premières ventes** plutôt que des niveaux. |
 | Bonus | Outils +10 % (bronze) à +30 % (orichalque) ; repas +3 à +10 % | Inchangés en plafond. Ils sont désormais payés (usure, repas qui coûtent la moitié de ce qu'ils rapportent). |
 | Ingrédients | Quantités fortes sur les pièces finales (30 lingots pour une épée, 10 rouleaux de toile pour une robe) | Une pièce coûte 25 min à 2 h de travail autonome : l'équipement a une valeur, l'autonomie a un coût. |
 | Paliers | Une nouvelle ressource tous les 10 niveaux, des recettes aux 70, 80, 90 et des chefs-d'œuvre | Toujours un objectif à moins de deux semaines, même en fin de jeu (voir §6). |
@@ -42,18 +42,18 @@ Le simulateur rejoue le vrai moteur (`advance`) avec les données actuelles : Mi
 
 ## 4. Durées obtenues
 
-Simulation avec le vrai moteur et la proposition `boucle-v0` (les forgerons sont calculés à part, à 30 h effectives par jour bonus compris).
+Simulation avec le vrai moteur et la proposition `boucle-v0` (mêmes règles que `data/`, coups de fouet utilisés) (les forgerons sont calculés à part, à 30 h effectives par jour bonus compris).
 
 | Profil | Niv. 30 | Niv. 60 | Niv. 85 | Niv. 90 | Niv. 99 |
 |---|---|---|---|---|---|
-| Spécialiste casu (20 min/j, outils, sans repas) | 1,4 j | 20 j | 5,4 mois | 8,3 mois | plus de 17 mois |
-| Spécialiste régulier (2 visites/j, outils, repas) | 21 h | 13 j | 3,4 mois | 5,3 mois | 11,4 mois |
-| Spécialiste tryhard (repas +10 %, clan +10 %) | 17 h | 12 j | 3,2 mois | 4,9 mois | 10,7 mois |
-| 3 métiers + combat, régulier | 3,4 j | 52 j | 13,6 mois | 21 mois | près de 4 ans |
-| 3 métiers + combat, casu | 5,4 j | 2,6 mois | 21 mois | 33 mois | — |
-| Forgeron autonome (mine son minerai) | 1,1 j | 20 j | 5,8 mois | 9,0 mois | 19,5 mois |
-| Forgeron qui achète le minerai | 10 h | 8 j | 2,3 mois | 3,5 mois | 7,7 mois |
-| Forgeron qui achète aussi ses lingots | 10 h | 7 j | 2,0 mois | 3,2 mois | 6,8 mois |
+| Spécialiste casu (20 min/j, outils, sans repas) | 1,5 j | 19 j | 5,2 mois | 8,1 mois | plus de 17 mois |
+| Spécialiste régulier (2 visites/j, outils, repas) | 1,1 j | 13 j | 3,3 mois | 5,2 mois | 11,2 mois |
+| Spécialiste tryhard (repas +10 %, clan +10 %) | 21 h | 11 j | 3,1 mois | 4,8 mois | 10,4 mois |
+| 3 métiers + combat, régulier | 4,3 j | 51 j | 13,4 mois | 21 mois | près de 4 ans |
+| 3 métiers + combat, casu | 5,9 j | 2,6 mois | 21 mois | 32 mois | — |
+| Forgeron autonome (mine son minerai) | 1,5 j | 21 j | 5,8 mois | 9,0 mois | 19,5 mois |
+| Forgeron qui achète le minerai | 13 h | 8 j | 2,3 mois | 3,5 mois | 7,7 mois |
+| Forgeron qui achète aussi ses lingots | 12 h | 7 j | 2,0 mois | 3,2 mois | 6,8 mois |
 
 **Durées cibles proposées** (spécialiste régulier) et leur raison :
 
@@ -73,16 +73,16 @@ Niveau dans un métier (Minage, proposition `boucle-v0`) :
 
 | Profil | 1 semaine | 1 mois | 3 mois | 6 mois | 1 an |
 |---|---|---|---|---|---|
-| Spécialiste, casu | 46 | 64 | 78 | 86 | 94 |
-| Métier principal (½) + combat, casu | 34 | 56 | 69 | 78 | 86 |
-| 3 métiers + combat (¼ chacun), casu | 17 | 46 | 60 | 69 | 78 |
+| Spécialiste, casu | 46 | 65 | 78 | 86 | 94 |
+| Métier principal (½) + combat, casu | 33 | 56 | 69 | 78 | 86 |
+| 3 métiers + combat (¼ chacun), casu | 13 | 46 | 60 | 69 | 78 |
 | Spécialiste, régulier | 51 | 70 | 83 | 91 | 99 |
-| Métier principal (½) + combat, régulier | 41 | 61 | 75 | 83 | 91 |
-| 3 métiers + combat (¼ chacun), régulier | 25 | 51 | 66 | 75 | 83 |
+| Métier principal (½) + combat, régulier | 40 | 61 | 75 | 83 | 91 |
+| 3 métiers + combat (¼ chacun), régulier | 21 | 51 | 66 | 75 | 83 |
 
 Ce que ça représente pour un régulier qui a un métier principal et fait du combat :
 
-- **Après une semaine** : métier principal ~40, Apprenti (épreuve passée), outils de fer, premiers objets vendus au marché, un clan rejoint. Les métiers d'appoint à 15–25 grâce à l'apprentissage.
+- **Après une semaine** : métier principal ~40, Apprenti (épreuve passée), outils de fer, premiers objets vendus au marché, un clan rejoint. Les métiers d'appoint vers 15–20.
 - **Après un mois** : Compagnon (60) dans son métier, équipement du palier 3–4 fait maison ou commandé, une place reconnue dans le clan (« le forgeron »).
 - **Après trois mois** : 75 dans son métier, les ressources rares de son palier, un premier événement saisonnier complet, ses premières commandes régulières.
 - **Après six mois** : Maître (85) à portée, poste d'expert du clan, chefs-d'œuvre signés.

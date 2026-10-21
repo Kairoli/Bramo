@@ -1,11 +1,14 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { ROOT, loadVariant } from '../src/load.js';
-import { runCase } from '../src/scenarios/combat.js';
+import { buildContent } from '@bramo/shared';
+import { readRawContent } from '@bramo/shared/node';
+import { DATA_DIR, ROOT, loadVariant, patchCombat } from '../src/load.js';
+import { dossierCombat, runCase } from '../src/scenarios/combat.js';
 
 describe('combat : moteur réel et banc du dossier', () => {
-  const combat = loadVariant().combat!;
+  // Le banc a joué les chiffres du dossier v0.2, pas l'équilibrage actuel de data/.
+  const combat = dossierCombat();
   const banc = JSON.parse(readFileSync(join(ROOT, 'sim', 'reference', 'banc-coeur-v0.2.json'), 'utf8')) as {
     baselines: { level: number; plan: string; encounter: string; medianTime: number }[];
   };
@@ -28,13 +31,15 @@ describe('combat : moteur réel et banc du dossier', () => {
 });
 
 describe('combat : propositions', () => {
-  it('une proposition ne change que ce qu’elle écrit (paramètres de voie, plans ajoutés) et reste validée', () => {
-    const base = loadVariant().combat!;
-    const p = loadVariant('combat-voies-v1').combat!;
-    expect(p.paths.red_temper!.params.perHeat).toBe(0.22);
-    expect(p.paths.red_temper!.params.hits).toBe(base.paths.red_temper!.params.hits);
-    expect(p.paths.fulgurant).toEqual(base.paths.fulgurant);
-    expect(p.plans.fulgurant_advised?.levels['80']).toHaveLength(5);
-    expect(Object.keys(p.plans).length).toBe(Object.keys(base.plans).length + 9);
+  it('un combat.yaml ne change que ce qu’il écrit (paramètres de voie, plans ajoutés)', () => {
+    const raw = readRawContent(DATA_DIR);
+    const before = buildContent(raw).combat!;
+    const plan = { ...before.plans.red_temper_advised!, id: 'essai' };
+    raw.combat = patchCombat(raw.combat, { paths: { red_temper: { params: { perHeat: 0.5 } } }, addPlans: [plan] });
+    const after = buildContent(raw).combat!;
+    expect(after.paths.red_temper!.params.perHeat).toBe(0.5);
+    expect(after.paths.red_temper!.params.hits).toBe(before.paths.red_temper!.params.hits);
+    expect(after.paths.fulgurant).toEqual(before.paths.fulgurant);
+    expect(Object.keys(after.plans).length).toBe(Object.keys(before.plans).length + 1);
   });
 });

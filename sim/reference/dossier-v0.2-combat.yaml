@@ -1,0 +1,12 @@
+# Règles du dossier « Le cœur du jeu » v0.2 (banc Python), à appliquer à data/combat/ pour comparer le moteur au banc.
+# Même format qu'un combat.yaml de proposition. Remet les valeurs d'avant l'équilibrage du 22 octobre.
+rules:
+  stability:
+    ordinaryMax: 80
+    ordinaryBreakStun: 0
+paths:
+  red_temper: {params: {perHeat: 0.12}}
+  beastslayer: {params: {bleed: 0.42}}
+  anvil: {params: {weakenPerHeat: 0.08, weakenAll: 0, slowAmount: 0, slowDuration: 1}}
+  trapper: {params: {weaken: 0.25, weakenAll: 0, slowAmount: 0, slowDuration: 1}}
+  sigilbinder: {params: {weaken: 0.30, weakenAll: 0, slowAmount: 0, slowDuration: 1}}

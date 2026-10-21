@@ -10,15 +10,15 @@ Toutes les combinaisons de 5 sorts accessibles à chaque voie (au plus un ultime
 
 | Voie | Plan le plus rapide en moyenne | Moyenne | Cible durable | Groupe compact | Attaque chargée | Usure régulière | Gardes à dissiper | Soin ennemi |
 |---|---|---|---|---|---|---|---|---|
-| Trempe-Rouge | Frappe d’atelier, Trempe vive, Poinçon du maître, Éclat du four, Coup de travers | 48,0 s | 39,8 s · 62 % · mur ×2,5 | 64,1 s · 37 % · mur ×1,5 | 43,9 s · 56 % · mur ×2,0 | 47,3 s · 53 % · mur ×2,5 | 47,3 s · 68 % · mur ×3,0 | 44,0 s · 69 % · mur ×3,0 |
-| Enclumier | Frappe d’atelier, Trempe vive, Éclat du four, Coup de travers, Marteau de retour | 47,0 s | 39,5 s (-1 %) · 63 % · mur ×2,5 | 63,1 s (-2 %) · 42 % · mur ×1,5 | 42,8 s (-3 %) · 58 % · mur ×2,0 | 46,8 s (-1 %) · 55 % · mur ×3,0 | 46,8 s (-1 %) · 70 % · mur ×3,0 | 43,4 s (-1 %) · 72 % · mur ×3,0 |
-| Rémouleur | Frappe d’atelier, Trempe vive, Éclat du four, Coup de travers, Marteau de retour | 49,5 s | 42,8 s (+8 %) · 65 % · mur ×3,0 | 67,5 s (+5 %) · 44 % · mur ×2,0 | 44,3 s (+1 %) · 75 % · mur ×2,5 | 48,0 s (+2 %) · 60 % · mur ×3,0 | 48,5 s (+3 %) · 75 % · mur ×3,0 | 45,1 s (+3 %) · 89 % · mur ×3,0 |
-| Tue-Bête | Lecture de piste, Trait de poursuite, Tir de travers, Flèche barbelée, Tir à la couture | 48,2 s | 41,3 s · 63 % · mur ×2,0 | 66,8 s · 32 % · mur ×1,5 | 43,1 s · 54 % · mur ×2,0 | 46,8 s · 56 % · mur ×2,5 | 46,8 s · 70 % · mur ×3,0 | 43,8 s · 66 % · mur ×3,0 |
-| Piégeur | Lecture de piste, Trait de poursuite, Collet vif, Flèche barbelée, Dents de fer | 49,9 s | 43,3 s (+5 %) · 66 % · mur ×2,5 | 68,3 s (+2 %) · 35 % · mur ×1,5 | 45,3 s (+5 %) · 60 % · mur ×2,5 | 48,3 s (+3 %) · 57 % · mur ×3,0 | 48,3 s (+3 %) · 70 % · mur ×3,0 | 45,3 s (+3 %) · 71 % · mur ×3,0 |
-| Meneur de meute | Lecture de piste, Trait de poursuite, Tir de travers, Flèche barbelée, Garde de meute | 52,0 s | 45,0 s (+9 %) · 79 % · mur ×2,5 | 69,3 s (+4 %) · 59 % · mur ×1,5 | 46,5 s (+8 %) · 76 % · mur ×2,5 | 51,5 s (+10 %) · 66 % · mur ×3,0 | 51,5 s (+10 %) · 81 % · mur ×3,0 | 47,8 s (+9 %) · 83 % · mur ×3,0 |
+| Trempe-Rouge | Frappe d’atelier, Trempe vive, Poinçon du maître, Éclat du four, Coup de travers | 44,2 s | 37,8 s · 63 % · mur ×2,5 | 59,8 s · 42 % · mur ×1,5 | 39,5 s · 58 % · mur ×2,0 | 44,3 s · 55 % · mur ×2,5 | 44,3 s · 69 % · mur ×3,0 | 39,6 s · 71 % · mur ×3,0 |
+| Enclumier | Frappe d’atelier, Trempe vive, Éclat du four, Coup de travers, Marteau de retour | 46,9 s | 39,5 s (+5 %) · 67 % · mur ×3,0 | 62,5 s (+5 %) · 42 % · mur ×1,5 | 42,8 s (+8 %) · 63 % · mur ×2,5 | 46,8 s (+6 %) · 57 % · mur ×3,0 | 46,8 s (+6 %) · 73 % · mur ×3,0 | 43,4 s (+9 %) · 75 % · mur ≥ ×4,0 |
+| Rémouleur | Frappe d’atelier, Trempe vive, Éclat du four, Coup de travers, Marteau de retour | 49,5 s | 42,8 s (+13 %) · 65 % · mur ×3,0 | 67,3 s (+13 %) · 48 % · mur ×2,0 | 44,3 s (+12 %) · 75 % · mur ×2,5 | 48,0 s (+8 %) · 60 % · mur ×3,0 | 48,5 s (+10 %) · 75 % · mur ×3,0 | 45,1 s (+14 %) · 89 % · mur ×3,0 |
+| Tue-Bête | Lecture de piste, Trait de poursuite, Tir de travers, Flèche barbelée, Tir à la couture | 46,8 s | 39,3 s · 60 % · mur ×2,5 | 62,3 s · 35 % · mur ×1,5 | 43,0 s · 54 % · mur ×2,0 | 45,8 s · 56 % · mur ×2,5 | 45,8 s · 70 % · mur ×3,0 | 43,0 s · 66 % · mur ×3,0 |
+| Piégeur | Lecture de piste, Trait de poursuite, Collet vif, Flèche barbelée, Dents de fer | 49,9 s | 43,3 s (+10 %) · 68 % · mur ×3,0 | 67,3 s (+8 %) · 37 % · mur ×1,5 | 45,3 s (+5 %) · 65 % · mur ×2,5 | 48,3 s (+5 %) · 59 % · mur ×3,0 | 48,3 s (+5 %) · 74 % · mur ×3,0 | 45,3 s (+5 %) · 75 % · mur ×3,0 |
+| Meneur de meute | Lecture de piste, Trait de poursuite, Tir de travers, Flèche barbelée, Garde de meute | 52,0 s | 45,0 s (+15 %) · 79 % · mur ×2,5 | 69,3 s (+11 %) · 59 % · mur ×1,5 | 46,5 s (+8 %) · 76 % · mur ×2,5 | 51,5 s (+13 %) · 66 % · mur ×3,0 | 51,5 s (+13 %) · 81 % · mur ×3,0 | 47,8 s (+11 %) · 83 % · mur ×3,0 |
 | Fulgurant | Trait incandescent, Cercle de givre, Trait fulgurant, Trait de gel, Rature ardente | 42,7 s | 37,0 s · 69 % · mur ×3,0 | 57,5 s · 44 % · mur ×2,0 | 37,1 s · 62 % · mur ×2,5 | 43,0 s · 60 % · mur ×3,0 | 43,0 s · 73 % · mur ×3,0 | 37,9 s · 74 % · mur ≥ ×4,0 |
-| Sigillaire | Trait incandescent, Cercle de givre, Trait fulgurant, Trait de gel, Sceau d’arrêt | 46,8 s | 39,3 s (+6 %) · 70 % · mur ×3,0 | 61,6 s (+7 %) · 47 % · mur ×2,0 | 39,8 s (+7 %) · 64 % · mur ×2,5 | 47,3 s (+10 %) · 60 % · mur ×3,0 | 47,3 s (+10 %) · 75 % · mur ×3,0 | 42,0 s (+11 %) · 78 % · mur ≥ ×4,0 |
-| Glyphiste | Trait incandescent, Trait fulgurant, Trait de gel, Anneau de cendres, Sceau de résonance | 46,7 s | 38,3 s (+3 %) · 90 % · mur ×3,0 | 64,0 s (+11 %) · 60 % · mur ×2,0 | 41,3 s (+11 %) · 71 % · mur ×2,5 | 46,3 s (+8 %) · 69 % · mur ×3,0 | 45,8 s (+6 %) · 83 % · mur ×3,0 | 42,6 s (+13 %) · 83 % · mur ≥ ×4,0 |
+| Sigillaire | Trait incandescent, Cercle de givre, Trait fulgurant, Trait de gel, Anneau de cendres | 45,7 s | 38,3 s (+3 %) · 71 % · mur ×3,0 | 61,1 s (+6 %) · 52 % · mur ×2,0 | 39,3 s (+6 %) · 67 % · mur ×3,0 | 46,3 s (+8 %) · 63 % · mur ×3,0 | 46,3 s (+8 %) · 76 % · mur ≥ ×4,0 | 41,0 s (+8 %) · 80 % · mur ≥ ×4,0 |
+| Glyphiste | Trait incandescent, Trait fulgurant, Trait de gel, Anneau de cendres, Sceau de résonance | 46,7 s | 38,3 s (+3 %) · 90 % · mur ×3,0 | 63,3 s (+10 %) · 62 % · mur ×2,0 | 41,3 s (+11 %) · 71 % · mur ×2,5 | 46,3 s (+8 %) · 69 % · mur ×3,0 | 45,8 s (+6 %) · 83 % · mur ×3,0 | 42,6 s (+13 %) · 83 % · mur ≥ ×4,0 |
 
 Sorts de voie dans le plan le plus rapide en moyenne :
 
@@ -29,32 +29,32 @@ Sorts de voie dans le plan le plus rapide en moyenne :
 - Piégeur : Dents de fer
 - Meneur de meute : Garde de meute
 - Fulgurant : Rature ardente
-- Sigillaire : Sceau d’arrêt
+- Sigillaire : **aucun**
 - Glyphiste : Sceau de résonance
 
 ## Répertoire 80
 
 | Voie | Plan le plus rapide en moyenne | Moyenne | Cible durable | Groupe compact | Attaque chargée | Usure régulière | Gardes à dissiper | Soin ennemi |
 |---|---|---|---|---|---|---|---|---|
-| Trempe-Rouge | Frappe d’atelier, Trempe vive, Coup de travers, Deuxième frappe, Reprise au rouge | 42,9 s | 37,3 s · 65 % · mur ×2,5 | 57,5 s · 42 % · mur ×1,5 | 38,3 s · 60 % · mur ×2,0 | 41,8 s · 58 % · mur ×3,0 | 41,8 s · 71 % · mur ×3,0 | 39,1 s · 72 % · mur ×3,0 |
-| Enclumier | Frappe d’atelier, Trempe vive, Éclat du four, Coup de travers, Marteau de retour | 47,0 s | 39,5 s (+6 %) · 63 % · mur ×2,5 | 58,4 s (+2 %) · 46 % · mur ×1,5 | 42,3 s (+10 %) · 58 % · mur ×2,5 | 46,8 s (+12 %) · 55 % · mur ×3,0 | 46,8 s (+12 %) · 70 % · mur ×3,0 | 42,3 s (+8 %) · 72 % · mur ×3,0 |
-| Rémouleur | Frappe d’atelier, Trempe vive, Éclat du four, Coup de travers, Marteau de retour | 49,5 s | 42,3 s (+13 %) · 68 % · mur ×3,0 | 63,1 s (+10 %) · 51 % · mur ×2,0 | 44,3 s (+16 %) · 63 % · mur ×2,5 | 48,0 s (+15 %) · 60 % · mur ×3,0 | 48,5 s (+16 %) · 75 % · mur ×3,0 | 45,1 s (+15 %) · 89 % · mur ×3,0 |
-| Tue-Bête | Lecture de piste, Trait de poursuite, Tir à la couture, Morsure croisée, Regard fixe | 46,4 s | 38,5 s · 60 % · mur ×2,0 | 60,9 s · 35 % · mur ×1,5 | 40,8 s · 56 % · mur ×2,0 | 45,8 s · 51 % · mur ×2,5 | 45,8 s · 65 % · mur ×3,0 | 41,0 s · 68 % · mur ×3,0 |
-| Piégeur | Lecture de piste, Trait de poursuite, Flèche barbelée, Dents de fer, Regard fixe | 48,5 s | 38,9 s (+1 %) · 65 % · mur ×2,5 | 67,8 s (+11 %) · 40 % · mur ×1,5 | 43,5 s (+7 %) · 59 % · mur ×2,5 | 47,3 s (+3 %) · 54 % · mur ×3,0 | 47,3 s (+3 %) · 68 % · mur ×3,0 | 44,5 s (+9 %) · 70 % · mur ×3,0 |
-| Meneur de meute | Lecture de piste, Trait de poursuite, Flèche barbelée, Garde de meute, Regard fixe | 51,0 s | 42,8 s (+11 %) · 73 % · mur ×2,5 | 69,3 s (+14 %) · 59 % · mur ×2,0 | 45,3 s (+11 %) · 72 % · mur ×2,5 | 50,1 s (+10 %) · 80 % · mur ×3,0 | 50,1 s (+10 %) · 94 % · mur ×3,0 | 46,5 s (+13 %) · 84 % · mur ×3,0 |
-| Fulgurant | Trait incandescent, Trait fulgurant, Trait de gel, Trait des éclats, Rature ardente | 41,4 s | 34,5 s · 68 % · mur ×2,5 | 57,3 s · 43 % · mur ×2,0 | 37,3 s · 60 % · mur ×2,0 | 40,8 s · 60 % · mur ×3,0 | 40,8 s · 72 % · mur ×3,0 | 37,5 s · 74 % · mur ×3,0 |
-| Sigillaire | Trait incandescent, Cercle de givre, Trait fulgurant, Trait de gel, Sceau d’arrêt | 46,8 s | 39,3 s (+14 %) · 70 % · mur ×3,0 | 61,3 s (+7 %) · 41 % · mur ×2,0 | 39,8 s (+7 %) · 64 % · mur ×2,5 | 46,3 s (+13 %) · 55 % · mur ×3,0 | 46,3 s (+13 %) · 68 % · mur ×3,0 | 42,0 s (+12 %) · 78 % · mur ×3,0 |
+| Trempe-Rouge | Frappe d’atelier, Trempe vive, Éclat du four, Coup de travers, Deuxième frappe | 41,0 s | 35,0 s · 68 % · mur ×3,0 | 55,5 s · 43 % · mur ×2,0 | 36,0 s · 60 % · mur ×2,5 | 39,5 s · 58 % · mur ×3,0 | 39,5 s · 72 % · mur ×3,0 | 37,3 s · 74 % · mur ×3,0 |
+| Enclumier | Frappe d’atelier, Trempe vive, Éclat du four, Coup de travers, Marteau de retour | 46,9 s | 39,5 s (+13 %) · 67 % · mur ×3,0 | 61,4 s (+11 %) · 42 % · mur ×2,0 | 42,3 s (+17 %) · 63 % · mur ×2,5 | 46,8 s (+18 %) · 57 % · mur ×3,0 | 46,8 s (+18 %) · 73 % · mur ≥ ×4,0 | 42,3 s (+13 %) · 74 % · mur ≥ ×4,0 |
+| Rémouleur | Frappe d’atelier, Trempe vive, Éclat du four, Coup de travers, Marteau de retour | 49,5 s | 42,3 s (+21 %) · 68 % · mur ×3,0 | 63,1 s (+14 %) · 51 % · mur ×2,0 | 44,3 s (+23 %) · 63 % · mur ×2,5 | 48,0 s (+22 %) · 60 % · mur ×3,0 | 48,5 s (+23 %) · 75 % · mur ×3,0 | 45,1 s (+21 %) · 89 % · mur ×3,0 |
+| Tue-Bête | Lecture de piste, Trait de poursuite, Flèche barbelée, Tir à la couture, Pas de côté | 45,1 s | 38,1 s · 60 % · mur ×2,5 | 59,5 s · 45 % · mur ×1,5 | 39,3 s · 56 % · mur ×2,0 | 44,6 s · 52 % · mur ×2,5 | 44,6 s · 66 % · mur ×3,0 | 40,8 s · 69 % · mur ×3,0 |
+| Piégeur | Lecture de piste, Trait de poursuite, Flèche barbelée, Dents de fer, Regard fixe | 48,4 s | 38,9 s (+2 %) · 67 % · mur ×3,0 | 67,0 s (+13 %) · 51 % · mur ×2,0 | 43,5 s (+11 %) · 63 % · mur ×2,5 | 47,3 s (+6 %) · 56 % · mur ×3,0 | 47,3 s (+6 %) · 69 % · mur ×3,0 | 44,5 s (+9 %) · 72 % · mur ×3,0 |
+| Meneur de meute | Lecture de piste, Trait de poursuite, Flèche barbelée, Garde de meute, Regard fixe | 51,0 s | 42,8 s (+12 %) · 73 % · mur ×2,5 | 69,3 s (+16 %) · 59 % · mur ×2,0 | 45,3 s (+15 %) · 72 % · mur ×2,5 | 50,1 s (+12 %) · 80 % · mur ×3,0 | 50,1 s (+12 %) · 94 % · mur ×3,0 | 46,5 s (+14 %) · 84 % · mur ×3,0 |
+| Fulgurant | Trait incandescent, Trait fulgurant, Trait de gel, Trait des éclats, Rature ardente | 41,4 s | 34,5 s · 68 % · mur ×3,0 | 57,3 s · 43 % · mur ×2,0 | 37,3 s · 60 % · mur ×2,5 | 40,8 s · 60 % · mur ×3,0 | 40,8 s · 72 % · mur ×3,0 | 37,5 s · 74 % · mur ×3,0 |
+| Sigillaire | Trait incandescent, Cercle de givre, Trait fulgurant, Trait de gel, Ligne de partage | 45,6 s | 38,0 s (+10 %) · 69 % · mur ×3,0 | 60,0 s (+5 %) · 49 % · mur ×2,0 | 39,3 s (+5 %) · 66 % · mur ×3,0 | 45,5 s (+12 %) · 61 % · mur ×3,0 | 45,5 s (+12 %) · 73 % · mur ≥ ×4,0 | 40,3 s (+7 %) · 78 % · mur ≥ ×4,0 |
 | Glyphiste | Trait incandescent, Trait fulgurant, Trait de gel, Sceau de résonance, Ligne de partage | 46,3 s | 38,5 s (+12 %) · 77 % · mur ×3,0 | 60,6 s (+6 %) · 66 % · mur ×2,0 | 41,0 s (+10 %) · 69 % · mur ×2,5 | 45,8 s (+12 %) · 71 % · mur ×3,0 | 45,4 s (+11 %) · 88 % · mur ×3,0 | 41,0 s (+9 %) · 94 % · mur ×3,0 |
 
 Sorts de voie dans le plan le plus rapide en moyenne :
 
-- Trempe-Rouge : Deuxième frappe, Reprise au rouge
+- Trempe-Rouge : Deuxième frappe
 - Enclumier : **aucun**
 - Rémouleur : **aucun**
-- Tue-Bête : Tir à la couture, Morsure croisée
+- Tue-Bête : Tir à la couture, Pas de côté
 - Piégeur : Dents de fer
 - Meneur de meute : Garde de meute
 - Fulgurant : Trait des éclats, Rature ardente
-- Sigillaire : Sceau d’arrêt
+- Sigillaire : **aucun**
 - Glyphiste : Sceau de résonance
 

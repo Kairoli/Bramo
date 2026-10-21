@@ -50,7 +50,7 @@ reports/         rapports générés (ne pas modifier à la main)
 
 Un dossier de `proposals/` remplace tout ou partie de `data/` : `settings.yaml` y est **fusionné** (on n'écrit que ce qui change) ; `professions.yaml`, `items.yaml`, `trials.yaml` et le dossier `recipes/` y **remplacent** ceux de `data/`. Le résultat passe par la même validation que le serveur. Une proposition adoptée se recopie dans `data/`.
 
-**Combat** : un fichier `combat.yaml` modifie `data/combat/` sans le recopier : `rules` (fusionné), `classes.<id>.params` et `paths.<id>.params` (paramètres fusionnés), `spells.<id>` (champs d'un sort), `plans.<id>.levels` (répertoire remplacé), `addPlans` (plans ajoutés). Propositions : `combat-plans-v1` (plans conseillés seuls), `combat-voies-v1` (équilibrage des voies, voir `docs/design/coeur-du-jeu/integration.md`).
+**Combat** : un fichier `combat.yaml` modifie `data/combat/` sans le recopier : `rules` (fusionné), `classes.<id>.params` et `paths.<id>.params` (paramètres fusionnés), `spells.<id>` (champs d'un sort), `plans.<id>.levels` (répertoire remplacé), `addPlans` (plans ajoutés). Les propositions `combat-plans-v1` et `combat-voies-v1` ont été adoptées le 22 octobre (recopiées dans `data/combat/`) ; leurs rapports restent dans `reports/combat/`.
 
 Fichiers propres au simulateur (pas encore dans le moteur) : `plots.yaml` (parcelles d'Agriculture) et `economy.yaml` (hypothèses économiques, chacune discutable).
 

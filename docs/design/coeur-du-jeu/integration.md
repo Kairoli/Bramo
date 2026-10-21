@@ -19,6 +19,8 @@
 13. **Réponse à Q4, forme** : un **mélange** entre une progression classique par étapes et chapitres (à la *Legend of Mushroom*) et une couche **saisonnière à mutations**. *[Proposé par Claude, à valider]* : une échelle permanente d'étapes groupées en chapitres, jamais remise à zéro, avec un checkpoint de récompenses en fin de chapitre ; chaque saison de 6 semaines applique une **mutation** (règle de rencontre qui change) sur des étapes de saison, avec leurs propres récompenses cosmétiques et de collection.
 14. **Réponse à Q5, recyclage** : l'équipement de combat, dropé ou fabriqué, se recycle en **poudres et fragments d'atelier**, pas en matières premières.
 15. **Réponse à Q6** : second élément du Traqueur = **Foudre**.
+16. **Équilibrage des voies adopté** : la proposition `combat-voies-v1` (trois leviers et plans conseillés) est recopiée dans `data/combat/` le 22 octobre.
+17. **Le solo n'a pas de voie « meilleure »** : il y aura des **zones** et des **paliers** qui proposent des défis différents. Un DPS pourra devoir monter un build de contrôle pour passer un palier, puis, deux zones plus loin, repasser DPS ; entre-temps, il farme son butin. Les six profils du banc ne sont donc **pas** un classement du solo : ils vérifient que chaque voie a des profils où elle est la bonne réponse et d'autres où elle peine, sans jamais être bloquée.
 
 ## 2. Ce que le dossier suppose et ce que le code fait
 
@@ -115,7 +117,7 @@ Rien n'est changé dans `data/`. Les propositions sont dans `sim/proposals/<nom>
 
 **Proposition `combat-plans-v1`** : seulement des plans conseillés (un par voie, issus de la recherche), aucune règle changée. Elle règle Fulgurant et montre l'effet des plans seuls. Rapport : `sim/reports/combat/combat-plans-v1/rapport.md`.
 
-**Proposition `combat-voies-v1`** *[Proposé par Claude, à valider]* : les plans conseillés recherchés sur ses propres règles, plus :
+**Proposition `combat-voies-v1`** *[Adoptée par Louis le 22 octobre, recopiée dans `data/combat/`]* : les plans conseillés recherchés sur ses propres règles, plus :
 1. **Deux passifs de dégâts renforcés, eux seuls** : Rebattue (Trempe-Rouge) 0,12 → 0,22 P par Braise ; Morsure (Tue-Bête) 0,42 → 0,65 P. Fulgurant inchangé.
 2. **Survie du contrôle** (Enclumier, Piégeur, Sigillaire) : l'Affaiblissement de leur passif touche **toutes les attaques** de la cible pendant sa durée, à valeur réduite (Enclumier 8 → 6 % par Braise, Contrepiège et Interdit 25-30 → 20 %) ; leurs ralentissements +10 points et +50 % de durée (toujours plafonnés à 15 % sur un boss, sans toucher ses phases).
 3. **Rupture des ennemis ordinaires** (jamais des boss) : Stabilité 50 au lieu de 80, et 2 s d'étourdissement à la Rupture.
@@ -129,12 +131,12 @@ Résultats de la recherche sur cette proposition (meilleur plan par profil ; éc
 | Runiste | +3 à +8 % / +3 à +13 % (avant : +6 à +11 % / +3 à +13 %) | +5 à +12 % / +6 à +12 % (avant : +7 à +14 % / +6 à +12 %) | Sigillaire ≥ ×4 contre gardes et soins, ×3 contre la charge |
 
 Ce qui reste insatisfaisant, à arbitrer :
-- En solo, le contrôle franchit parfois **des murs plus hauts que le soutien** (Enclumier ≥ ×4 contre gardes et soins, Rémouleur ×3). Le soutien garde son avantage en groupe, qui n'est pas encore simulé (étape 6).
+- Dans ces six profils, le contrôle franchit parfois **des murs plus hauts que le soutien** (Enclumier ≥ ×4 contre gardes et soins, Rémouleur ×3). Ce n'est **pas** une règle du solo (§1, point 17) : ce sont les zones et paliers de l'étape 5 qui décideront où chaque voie est la bonne réponse. Le soutien a aussi un rôle de groupe, pas encore simulé.
 - Au répertoire 40, le Runiste de contrôle ou de soutien n'est que 3 % plus lent que Fulgurant contre la cible durable.
 - **Le groupe compact à ×2 reste un mur** pour presque toutes les voies (seuls Glyphiste et, dans `combat-voies-v1`, Sigillaire à 67 % le franchissent). C'est un réglage de contenu (étape 5), pas de voie.
 - Les sorts de voie d'Enclumier et de Rémouleur restent inutilisés : il faudra les revoir un par un, avec Louis, plutôt que de monter leurs chiffres à l'aveugle.
 
-Prochaine étape : choix de Louis sur `combat-voies-v1` (les trois leviers sont indépendants), puis **4, niveau de classe et activité de combat**.
+Prochaine étape : **4, niveau de classe et activité de combat**. À l'étape 5, les paliers solo seront conçus pour **faire alterner** la voie la mieux adaptée (un profil qui demande du contrôle, un autre du débit, un autre de la survie), et le banc mesurera que chaque voie a ses profils favorables.
 
 ## 7. Questions pour Louis
 

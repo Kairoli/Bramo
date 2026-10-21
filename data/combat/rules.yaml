@@ -39,6 +39,8 @@ stability:
   recovery: 8                 # pas de nouvelle Pression ni Rupture pendant ce délai
   breakDamageTaken: 0.08
   breakNextHitReduction: 0.25
+  ordinaryMax: 50             # Stabilité d'un ennemi ordinaire (pas un boss) ; validé par Louis le 22 octobre
+  ordinaryBreakStun: 2        # à sa Rupture, un ennemi ordinaire est étourdi 2 s (jamais un boss)
 cleanse:
   auraImmunity: 6             # une purification protège de l'aura pendant 6 s
 dotTick: 1

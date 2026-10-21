@@ -5,8 +5,10 @@
 import { createHash } from 'node:crypto';
 import { mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { type CombatContent, type Content, type ExamplePlan, type FightResult, type PlanEntry, fight, stream } from '@bramo/shared';
-import { ROOT } from '../load.js';
+import { type CombatContent, type Content, type ExamplePlan, type FightResult, type PlanEntry, buildContent, fight, stream } from '@bramo/shared';
+import { parse } from 'yaml';
+import { readRawContent } from '@bramo/shared/node';
+import { type CombatPatch, DATA_DIR, ROOT, patchCombat } from '../load.js';
 
 export type Opening = 'independent' | 'sequence';
 /**
@@ -274,12 +276,15 @@ export function combatReport(content: Content, o: CombatOptions = defaultCombatO
   const banc = JSON.parse(readFileSync(bancFile, 'utf8')) as { baselines: BancRow[] };
   if (target.baseline?.combat) md.push(...beforeAfter(target.baseline.combat, combat, summarize(target.baseline.combat, runCombat(target.baseline.combat, o)), summary, o));
   if (!target.proposal && o.openings.includes('sequence') && o.dangers.includes(1)) {
-    md.push('## 1. Moteur réel et banc du dossier (kit seul, ouverture « séquence »)', '');
-    md.push('Le banc Python a joué les mêmes plans en kit seul avec la règle d\'ouverture « séquence ». Les tirages ne sont pas les mêmes (générateurs différents) : on attend des écarts de quelques pour cent, pas une égalité.', '');
+    // Le banc a joué les règles du dossier v0.2 : on les rejoue (sim/reference/dossier-v0.2-combat.yaml), pas data/.
+    const ref = dossierCombat();
+    const refRows = summarize(ref, runCombat(ref, { ...o, dangers: [1], openings: ['sequence'], variants: [] }));
+    md.push('## 1. Moteur réel et banc du dossier (kit seul, ouverture « séquence », règles du dossier v0.2)', '');
+    md.push('Le banc Python a joué les mêmes plans en kit seul avec la règle d\'ouverture « séquence » et les chiffres du dossier v0.2 ; le moteur les rejoue avec ces mêmes chiffres (`sim/reference/dossier-v0.2-combat.yaml`), pas avec l\'équilibrage actuel de `data/`. Les tirages ne sont pas les mêmes (générateurs différents) : on attend des écarts de quelques pour cent, pas une égalité.', '');
     md.push('| Niveau | Plan | Rencontre | Banc : temps · PV | Moteur : temps · PV | Écart de temps |', '|---|---|---|---|---|---|');
     const deltas: number[] = [];
     for (const b of banc.baselines) {
-      const s = find({ opening: 'sequence', danger: 1, level: b.level, variant: 'plan', plan: b.plan, encounter: b.encounter })[0];
+      const s = refRows.find((x) => x.level === b.level && x.plan === b.plan && x.encounter === b.encounter);
       if (!s) continue;
       const d = s.medianTime && b.medianTime ? s.medianTime / b.medianTime - 1 : null;
       if (d !== null) deltas.push(Math.abs(d));
@@ -411,3 +416,10 @@ export function combatReport(content: Content, o: CombatOptions = defaultCombatO
 }
 
 export type { ExamplePlan };
+
+/** Contenu de combat avec les chiffres du dossier v0.2 (ceux du banc Python), pour vérifier la fidélité du moteur. */
+export function dossierCombat(): CombatContent {
+  const raw = readRawContent(DATA_DIR);
+  raw.combat = patchCombat(raw.combat, parse(readFileSync(join(ROOT, 'sim', 'reference', 'dossier-v0.2-combat.yaml'), 'utf8')) as CombatPatch);
+  return buildContent(raw).combat!;
+}

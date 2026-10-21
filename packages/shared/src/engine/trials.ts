@@ -4,14 +4,15 @@ import { type CharacterState, GameError, addStack, cloneState } from './state.js
 
 /**
  * Rangs de métier (docs/design/rangs.md). Aux niveaux de `settings.ranks.levels`, le maître du métier propose une
- * commande spéciale. La réussir accorde le surnom du palier et **débloque la tranche suivante** : tant qu'elle n'est pas
- * faite, le niveau reste au palier, mais l'XP continue de s'accumuler (rien n'est perdu) et se débloque à la validation.
+ * commande spéciale. La réussir accorde le surnom du palier. Avec `settings.ranks.gatesLevel`, elle **débloque aussi la
+ * tranche suivante** : tant qu'elle n'est pas faite, le niveau reste au palier, mais l'XP continue de s'accumuler
+ * (rien n'est perdu) et se débloque à la validation. Sans, le niveau monte librement et seul le surnom attend.
  */
 
 /** locked : palier pas encore atteint ; open : le maître attend ; done : réussie. */
 export type TrialStatus = 'locked' | 'open' | 'done';
 
-type TrialContent = Pick<Content, 'trials' | 'professions' | 'xpTable'>;
+type TrialContent = Pick<Content, 'trials' | 'professions' | 'xpTable' | 'settings'>;
 
 /** Commandes d'un métier, du premier palier au dernier. */
 export function trialsOf(profession: string, content: Pick<Content, 'trials'>): Trial[] {
@@ -33,6 +34,7 @@ export function nextTrial(profession: string, done: readonly string[], content: 
 /** Niveau réel (celui de l'XP) borné par le prochain palier non validé. */
 export function effectiveLevel(xp: number, profession: string, done: readonly string[], content: TrialContent): number {
   const raw = levelForXp(xp, content.xpTable);
+  if (!content.settings.ranks.gatesLevel) return raw;
   const cap = nextTrial(profession, done, content)?.rank;
   return cap === undefined ? raw : Math.min(raw, cap);
 }
@@ -43,6 +45,7 @@ export function skillLevel(state: CharacterState, profession: string, content: T
 
 /** XP gagnée au-delà du palier bloquant : gardée, créditée dès que la commande est validée. */
 export function heldXp(xp: number, profession: string, done: readonly string[], content: TrialContent): number {
+  if (!content.settings.ranks.gatesLevel) return 0;
   const cap = nextTrial(profession, done, content)?.rank;
   if (cap === undefined || levelForXp(xp, content.xpTable) <= cap) return 0;
   const limit = content.xpTable[cap + 1];

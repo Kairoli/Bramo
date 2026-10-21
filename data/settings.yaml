@@ -4,10 +4,12 @@ xp:
   maxLevel: 99
 
 # Rangs de métier (docs/design/rangs.md) : à ces niveaux, le maître du métier propose une commande spéciale (data/trials.yaml).
-# La réussir accorde le surnom du palier et débloque la tranche suivante ; sans elle, le niveau reste au palier
-# (l'XP continue de s'accumuler et se débloque à la validation : rien n'est perdu).
+# La réussir accorde le surnom du palier. gatesLevel : false = le niveau monte librement, la commande ne donne que le surnom
+# (décision de Louis du 21 octobre : « seulement pour un titre ») ; true = le niveau s'arrête au palier jusqu'à la commande,
+# l'XP continue de s'accumuler et se débloque à la validation (rien n'est perdu).
 ranks:
   levels: [20, 40, 60, 80, 99]
+  gatesLevel: false
 
 activity:
   queueLength: 3          # actions en file après l'activité en cours (abonnés : à décider)

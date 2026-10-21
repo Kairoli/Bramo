@@ -84,6 +84,21 @@ describe('rangs : commandes du maître', () => {
   });
 });
 
+describe('rangs sans blocage du niveau (settings.ranks.gatesLevel = false)', () => {
+  const free = { ...content, settings: { ...content.settings, ranks: { ...content.settings.ranks, gatesLevel: false } } };
+
+  it('le niveau monte librement : la commande ne donne que le surnom', () => {
+    const xp = xpAt(45);
+    expect(effectiveLevel(xp, 'mining', [], free)).toBe(45);
+    expect(heldXp(xp, 'mining', [], free)).toBe(0);
+    const view = viewState(makeState({ skills: atLevel(45) }), T0, free);
+    expect(view.skills.mining).toMatchObject({ level: 45, gated: false, nickname: 'Gratte-sol' });
+    expect(view.skills.mining?.next).toMatchObject({ rank: 20, reached: true });
+    const done = completeTrial(makeState({ skills: atLevel(45), inventory: { ore: 10 } }), 'mining_20', free);
+    expect(viewState(done, T0, free).skills.mining?.nickname).toBe('Gratteur');
+  });
+});
+
 describe('classe', () => {
   it('se choisit, se change librement et donne la tenue de départ', () => {
     const fresh = makeState({ classId: null });

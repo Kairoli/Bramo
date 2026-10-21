@@ -74,7 +74,9 @@ export function entriesFromSummary(
       entries.push({
         at,
         kind: 'trial',
-        text: `${master} vous attend pour la commande « ${reached.name} » : le niveau reste au ${reached.rank} jusque-là, mais votre XP continue de s’accumuler.`,
+        text: content.settings.ranks.gatesLevel
+          ? `${master} vous attend pour la commande « ${reached.name} » : le niveau reste au ${reached.rank} jusque-là, mais votre XP continue de s’accumuler.`
+          : `${master} vous attend pour la commande « ${reached.name} » : elle vous vaudra le surnom « ${reached.nickname} ».`,
       });
     }
   }

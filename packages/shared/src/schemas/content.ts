@@ -10,7 +10,11 @@ export const settingsSchema = z.object({
     maxLevel: z.number().int().min(2),
   }),
   /** Rangs de métier : niveaux où le maître propose une commande (surnom + déblocage de la tranche suivante). */
-  ranks: z.object({ levels: z.array(z.number().int().min(2)).min(1) }),
+  ranks: z.object({
+    levels: z.array(z.number().int().min(2)).min(1),
+    /** true : le niveau s'arrête au palier jusqu'à la commande du maître (l'XP est gardée). false : la commande ne donne que le surnom, le niveau monte librement. */
+    gatesLevel: z.boolean(),
+  }),
   activity: z.object({
     queueLength: z.number().int().min(0),
     maxQuantity: z.number().int().min(1),

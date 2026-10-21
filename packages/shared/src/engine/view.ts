@@ -19,6 +19,8 @@ export interface SkillView {
   nextLevelXp: number | null;
   /** XP gagnée au-delà du palier bloquant : gardée, créditée à la validation de la commande. */
   heldXp: number;
+  /** Le niveau est-il bloqué au palier par la commande du maître (settings.ranks.gatesLevel) ? */
+  gated: boolean;
   /** Surnom affiché. */
   nickname: string;
   /** Tous les surnoms du métier (rang 0 = départ), débloqués ou non. */
@@ -82,6 +84,7 @@ export function viewSkill(
     levelXp: xpTable[level]!,
     nextLevelXp: level < settings.xp.maxLevel ? xpTable[level + 1]! : null,
     heldXp: heldXp(xp, profession, done, content),
+    gated: settings.ranks.gatesLevel && !!upcoming && level >= upcoming.rank,
     nickname: current.nickname,
     nicknames: ranksOf(profession, done, content),
     shownRank: current.rank,

@@ -4,7 +4,7 @@ import type { CharacterState } from '../src/engine/state.js';
 /** Contenu de test figé : les tests ne dépendent pas de l'équilibrage de data/. */
 export const settings = {
   xp: { maxLevel: 99 },
-  ranks: { levels: [20, 40, 60] },
+  ranks: { levels: [20, 40, 60], gatesLevel: true },
   activity: { queueLength: 3, maxQuantity: 10000 },
   presence: { activeTimeoutSec: 120, heartbeatSec: 30 },
   rates: { active: 1, offline: 0.25, offlineCapHours: 12 },

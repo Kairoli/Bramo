@@ -2,6 +2,8 @@
 
 > **Statut : [Décidé] le 21 octobre 2026 et [Prototype] depuis le même jour.** Les points marqués *choix de Claude* (XP en attente, quantités, noms et histoires) ont été tranchés par Claude à la demande de Louis (« je te laisse tout faire ») : à relire et à valider. Le code applique cette règle ; `settings.titles` et les anciennes épreuves 30 et 60 n'existent plus.
 
+> **Précision de Louis (21 octobre, après le premier prototype)** : « rien n'est perdu, c'est seulement pour un titre ». Le niveau **ne bloque donc plus** : la commande ne donne que le **surnom** (et l'or). Le blocage de la tranche reste codé derrière `settings.ranks.gatesLevel` (`false` aujourd'hui) si on veut le rétablir, avec l'XP gardée et créditée à la validation.
+
 ## 1. Le principe [Décidé]
 
 - Les rangs de métier sont des **surnoms amusants propres à chaque métier**, à la place des titres génériques Apprenti, Compagnon, Maître, etc.

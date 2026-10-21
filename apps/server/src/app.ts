@@ -360,7 +360,7 @@ export async function buildApp({ db, content, clock = Date.now, secureCookies = 
       const profession = trial && content.professions.find((p) => p.id === trial.profession);
       return {
         state: next,
-        log: `Commande réussie : « ${trial?.name} ». Vous gagnez le surnom « ${trial?.nickname} » en ${profession?.name} et le niveau se débloque, +${trial?.reward.gold} or.`,
+        log: `Commande réussie : « ${trial?.name} ». Vous gagnez le surnom « ${trial?.nickname} » en ${profession?.name}${content.settings.ranks.gatesLevel ? ' et le niveau se débloque' : ''}, +${trial?.reward.gold} or.`,
         logKind: 'trial',
         serverEvents: [
           { kind: 'trial', text: `${ctx.characterName} devient « ${trial?.nickname} » en ${profession?.name} (${trial?.name}).` },

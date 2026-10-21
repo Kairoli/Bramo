@@ -52,9 +52,9 @@ export function ProfessionRoom({ id }: { id: string }) {
                 </span>
               ))}
           </div>
-          <Bar value={span} color={skill.heldXp > 0 || skill.next?.reached ? 'var(--clan)' : undefined} />
+          <Bar value={span} color={skill.gated ? 'var(--clan)' : undefined} />
           <div className="muted skill-xp">
-            {skill.next?.reached
+            {skill.gated
               ? `Niveau bloqué au ${skill.level} · ${num(skill.heldXp)} XP en attente, créditée à la validation`
               : `${num(skill.xp)} XP${skill.nextLevelXp ? ` · encore ${num(skill.nextLevelXp - skill.xp)} pour le niveau ${skill.level + 1}` : ''}`}
           </div>

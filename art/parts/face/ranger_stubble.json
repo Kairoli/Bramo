@@ -1,0 +1,26 @@
+{
+  "id": "ranger_stubble",
+  "slot": "face",
+  "name": "Barbe de trois jours",
+  "colorRoles": [
+    "beard",
+    "skinDark",
+    "trim"
+  ],
+  "anchor": [
+    0,
+    0
+  ],
+  "layers": [
+    {
+      "id": "features",
+      "bone": "head",
+      "z": 56
+    },
+    {
+      "id": "eyes",
+      "bone": "head",
+      "z": 59
+    }
+  ]
+}

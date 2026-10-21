@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 760">
+  <!-- Bottes souples de pisteur : revers de cuir clair, lacet de jade. -->
+  <g id="far">
+    <path d="M220 594 L252 594 L255 652 L280 674 Q252 686 218 684 L222 650 Z" fill="var(--c-boots)" opacity=".92"/>
+    <path d="M219 594 L253 594 L254 612 L220 612 Z" fill="var(--c-leather)"/>
+    <path d="M220 603 L254 603" stroke="var(--c-trim)" stroke-width="1.6" stroke-dasharray="3 3"/>
+    <path d="M218 684 Q252 686 280 674" stroke="#16130F" stroke-width="4" fill="none"/>
+  </g>
+  <g id="near">
+    <path d="M164 596 L196 596 L198 654 L222 676 Q192 688 160 686 L164 652 Z" fill="var(--c-boots)"/>
+    <path d="M163 596 L197 596 L198 614 L164 614 Z" fill="var(--c-leather)"/>
+    <path d="M164 605 L198 605" stroke="var(--c-trim)" stroke-width="1.6" stroke-dasharray="3 3"/>
+    <path d="M160 686 Q192 688 222 676" stroke="#16130F" stroke-width="4" fill="none"/>
+  </g>
+</svg>

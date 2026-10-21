@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 760">
+  <!-- Corps de base du Traqueur : mêmes jambes, cou et tête que « base ». Les deux mains sont dessinées dans la pose
+       du Traqueur (poing sur l'arc en 435 203, pouce et index sur la corde en 305 200), puis ramenées dans le repère de repos
+       de leur os par la matrice inverse (calculée sur art/rig/poses/tracker.json). -->
+  <g id="shadow">
+    <ellipse cx="208" cy="700" rx="132" ry="14" fill="#000" opacity=".45"/>
+  </g>
+  <g id="thigh_far">
+    <path d="M214 330 L242 330 L246 558 L220 558 Z" fill="var(--c-legs-dark)"/>
+  </g>
+  <g id="shin_far">
+    <path d="M219 550 L246 550 L250 668 L226 668 Z" fill="var(--c-legs-dark)"/>
+  </g>
+  <g id="thigh_near">
+    <path d="M166 332 L202 332 L196 562 L168 562 Z" fill="var(--c-legs)"/>
+  </g>
+  <g id="shin_near">
+    <path d="M167 554 L196 554 L191 672 L169 672 Z" fill="var(--c-legs)"/>
+  </g>
+  <g id="neck">
+    <path d="M194 124 L222 128 L226 164 L192 164 Z" fill="var(--c-skin-dark)"/>
+  </g>
+  <g id="head">
+    <path d="M186 100 Q188 72 212 68 Q236 70 240 92 L242 104 L250 113 L242 118 L240 128 Q236 142 222 150 Q200 148 190 130 Z" fill="var(--c-skin)"/>
+    <path d="M186 100 Q188 72 212 68 L208 149 Q198 143 190 130 Z" fill="url(#rig-shade)"/>
+  </g>
+  <g id="hand_far">
+    <g transform="matrix(0.887 -0.4617 0.4617 0.887 -132.0098 245.1001)">
+      <rect x="422" y="190" width="26" height="31" rx="9" fill="var(--c-skin)"/>
+      <path d="M424 197 L446 197 M424 204 L446 204 M424 211 L446 211" stroke="var(--c-skin-dark)" stroke-width="1.5" fill="none"/>
+      <path d="M426 191 Q436 183 448 192" stroke="var(--c-skin-dark)" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+    </g>
+  </g>
+  <g id="hand_near">
+    <g transform="matrix(-0.7826 0.6225 -0.6225 -0.7826 500.216 356.8235)">
+      <g transform="translate(297 207) rotate(48)">
+        <rect x="-10" y="-5" width="20" height="21" rx="6" fill="var(--c-skin)"/>
+        <path d="M-5 -3 L-4 -14 M4 -3 L5 -12" stroke="var(--c-skin)" stroke-width="4.5" stroke-linecap="round" fill="none"/>
+        <path d="M-9 4 L9 3" stroke="var(--c-skin-dark)" stroke-width="1.5"/>
+      </g>
+    </g>
+  </g>
+</svg>

@@ -1,0 +1,37 @@
+{
+  "id": "jade_aura",
+  "slot": "effect",
+  "name": "Pousses de jade",
+  "colorRoles": [
+    "glow",
+    "glowLight"
+  ],
+  "anchor": [
+    0,
+    0
+  ],
+  "layers": [
+    {
+      "id": "sprouts",
+      "bone": "root",
+      "z": 1,
+      "detail": 2
+    },
+    {
+      "id": "glow",
+      "bone": "root",
+      "z": 2
+    },
+    {
+      "id": "leaves",
+      "bone": "root",
+      "z": 92,
+      "detail": 2
+    },
+    {
+      "id": "tip",
+      "bone": "hand_far",
+      "z": 93
+    }
+  ]
+}

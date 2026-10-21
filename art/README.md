@@ -44,7 +44,8 @@ Une pose (`rig/poses/<id>.json`) ajoute des degrés à la pose de référence de
 
 | Pose | Classe | Corps | Animation |
 |---|---|---|---|
-| `runist` | Runiste (et Traqueur en attendant son visuel) | `base` (main du sort ouverte) | `idle` |
+| `runist` | Runiste | `base` (main du sort ouverte) | `idle` |
+| `tracker` | Traqueur : en garde, jambes écartées, arc tendu dans la main éloignée, corde à demi bandée par la main proche, flèche encochée | `base_ranger` (poing sur l'arc, pouce et index sur la corde) | `idle_tracker` |
 | `forgefire` | Forgefeu : campé, jambes écartées, poing proche sur la hanche (coude écarté), marteau porté sur l'épaule par la main éloignée, masse dans le dos | `base_grip` (poings) | `idle_forgefire` |
 
 Les pièces restent dessinées sur la pose de repos et suivent leurs os ; une tenue va donc avec toutes les poses. Deux exceptions, propres à une pose :

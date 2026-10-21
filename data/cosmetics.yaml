@@ -52,6 +52,27 @@ outfits:
       boots: forge_boots
       shoulder_far: forge_pauldron
 
+  # Tenue de départ du Traqueur : capuchon à plume, pourpoint de cuir, carquois, cape courte.
+  - id: thicket
+    name: Lisière
+    subtitle: Tenue de départ du Traqueur
+    palette:
+      coat: "#46513E"
+      coatDark: "#2E382B"
+      mantle: "#5A4A34"
+      under: "#B9A77C"
+      trim: "#7ED6A2"
+      metal: "#98A39D"
+      beard: "#4A3426"
+    parts:
+      headwear: ranger_hood
+      face: ranger_stubble
+      top: ranger_jerkin
+      belt: ranger_belt
+      gloves: ranger_bracers
+      boots: ranger_boots
+      cape: ranger_cloak
+
   - id: high_tide
     name: Marée haute
     subtitle: Saison des marées

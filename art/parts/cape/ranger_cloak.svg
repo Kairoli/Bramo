@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 760">
+  <!-- Cape de pisteur : courte, dans le dos, bord déchiqueté qui flotte. -->
+  <g id="back">
+    <path d="M170 160 Q122 300 108 506 L128 534 L146 506 L168 542 L190 510 L214 548 L236 512 L260 540 L276 440 Q272 300 252 164 Z" fill="var(--c-mantle)"/>
+    <path d="M170 160 Q122 300 108 506 L128 534 L146 506 L168 542 L190 510 L206 520 L206 160 Z" fill="url(#rig-shade)"/>
+    <path d="M252 164 Q272 300 276 440" stroke="var(--c-glow)" stroke-opacity=".45" stroke-width="2" fill="none"/>
+    <path d="M150 220 Q176 236 200 226 M140 300 Q172 316 196 304" stroke="#000" stroke-opacity=".18" stroke-width="2" fill="none"/>
+  </g>
+</svg>

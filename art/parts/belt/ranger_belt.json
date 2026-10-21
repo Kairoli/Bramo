@@ -1,0 +1,27 @@
+{
+  "id": "ranger_belt",
+  "slot": "belt",
+  "name": "Ceinture de pisteur",
+  "colorRoles": [
+    "leather",
+    "metal",
+    "trim"
+  ],
+  "anchor": [
+    0,
+    0
+  ],
+  "layers": [
+    {
+      "id": "belt",
+      "bone": "pelvis",
+      "z": 40
+    },
+    {
+      "id": "gear",
+      "bone": "pelvis",
+      "z": 41,
+      "detail": 2
+    }
+  ]
+}

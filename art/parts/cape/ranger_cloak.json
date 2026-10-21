@@ -1,0 +1,20 @@
+{
+  "id": "ranger_cloak",
+  "slot": "cape",
+  "name": "Cape de pisteur",
+  "colorRoles": [
+    "mantle",
+    "glow"
+  ],
+  "anchor": [
+    0,
+    0
+  ],
+  "layers": [
+    {
+      "id": "back",
+      "bone": "cape",
+      "z": 6
+    }
+  ]
+}

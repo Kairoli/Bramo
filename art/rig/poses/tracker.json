@@ -1,0 +1,20 @@
+{
+  "id": "tracker",
+  "description": "Traqueur : en garde, jambes écartées (la proche en arrière), buste penché vers l'avant. Le bras éloigné tend l'arc devant lui, l'autre main ramène à demi la corde flèche encochée contre le torse.",
+  "bones": {
+    "torso": 3,
+    "head": -3,
+    "upperarm_far": -49,
+    "forearm_far": 75,
+    "hand_far": 0,
+    "upperarm_near": -46,
+    "forearm_near": -97,
+    "hand_near": 0,
+    "thigh_near": 7,
+    "shin_near": -7,
+    "thigh_far": -7,
+    "shin_far": 6
+  },
+  "body": "base_ranger",
+  "animation": "idle_tracker"
+}

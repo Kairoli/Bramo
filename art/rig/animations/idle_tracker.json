@@ -1,0 +1,18 @@
+{
+  "id": "idle_tracker",
+  "description": "Repos du Traqueur : en garde, il respire à peine, la tête balaie lentement l'horizon, l'arc oscille d'un souffle et la main de corde se resserre. Les pieds restent plantés ; la cape flotte derrière lui.",
+  "duration": 4.4,
+  "bones": {
+    "pelvis": { "translate": [[0, 0, 0], [1.1, 0.8, 0.6], [2.2, 0, 1.4], [3.3, -0.8, 0.6], [4.4, 0, 0]] },
+    "torso": { "rotate": [[0, 0], [1.1, 0.5], [2.2, -0.6], [3.3, 0.4], [4.4, 0]], "translate": [[0, 0, 0], [2.2, 0, 1], [4.4, 0, 0]] },
+    "neck": { "rotate": [[0, 0], [1.5, 1.2], [3, -1], [4.4, 0]] },
+    "head": { "rotate": [[0, 0], [1.4, 2.6], [2.2, 2.6], [3.4, -2.2], [4.4, 0]] },
+    "upperarm_far": { "rotate": [[0, 0], [1.1, 1.2], [2.2, 0], [3.3, -1], [4.4, 0]] },
+    "forearm_far": { "rotate": [[0, 0], [1.1, -1.6], [2.2, 0], [3.3, 1.2], [4.4, 0]] },
+    "hand_far": { "rotate": [[0, 0], [1.1, 1.4], [2.2, 0], [3.3, -1.2], [4.4, 0]] },
+    "upperarm_near": { "rotate": [[0, 0], [2.2, 0.9], [4.4, 0]] },
+    "forearm_near": { "rotate": [[0, 0], [2.2, -1.2], [4.4, 0]] },
+    "hand_near": { "rotate": [[0, 0], [2.2, 1.5], [4.4, 0]] },
+    "cape": { "rotate": [[0, 0], [1.5, 1.6], [3, -1.1], [4.4, 0]] }
+  }
+}

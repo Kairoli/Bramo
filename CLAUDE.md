@@ -53,6 +53,11 @@ Bramo est un **idle-RPG multijoueur jouable dans le navigateur**, dans l'esprit 
 
 ## 5. État du projet (à jour au 21 octobre 2026)
 
+### Fait — le Traqueur (21 octobre)
+
+- Tenue **Lisière** (capuchon à plume, visage à barbe de trois jours, pourpoint avec carquois dans le dos, ceinture, brassards lacés, bottes souples, cape courte déchiquetée), pose `tracker` (en garde, jambes écartées, arc tendu dans la main éloignée, corde à demi bandée, flèche encochée), corps `base_ranger`, arc `ranger_bow`, effet Pousses de jade (pousses au sol, feuilles, pointe de flèche qui luit), animation `idle_tracker`.
+- Pose du Forgefeu refaite (une main sur la hanche, marteau sur l'épaule) et animations de repos plus marquées. Avec « réduire les animations » le repos continue à 40 % d'amplitude (`gain` dans `Character.tsx`) : une page web ne peut pas réactiver les effets d'animation de Windows.
+
 ### Fait — classes choisies et épreuves des maîtres (21 octobre)
 
 - **Classe dès la création** : un personnage sans classe voit l'écran « Choisissez votre classe » (trois cartes avec la classe dans sa tenue et sa pose) avant d'entrer. Il en change **à tout moment, gratuitement** (salle Personnage → « Changer de classe »). Route `POST /api/character/class`, action `chooseClass`.
@@ -75,8 +80,8 @@ Bramo est un **idle-RPG multijoueur jouable dans le navigateur**, dans l'esprit 
 - 14 métiers (Récolte : Minage, Bûcheronnage, Pêche, Herboristerie, Chasse ; Artisanat : Forge, Menuiserie, Cuisine, Alchimie, Couture, Artificerie, Enchantement ; Monde et clan : Construction, Exploration). **Jouables : Minage, Forge, Herboristerie, Cuisine**, 6 recettes chacun. Les autres sont `status: soon`.
 - Chaînes : minerai → lingot → lame ou pioche (les pioches donnent le bonus d'outil du Minage) ; herbes + poisson → repas (bonus temporaire).
 - Le poisson est vendu par le **marchand du port** (PNJ) tant que la Pêche n'existe pas ; le marchand rachète tout à la valeur de l'objet.
-- 3 classes (`classes.yaml`) : Runiste et Forgefeu complets, Traqueur provisoire (tenue et pose du Runiste, sans arme ni effet).
-- 4 tenues (`cosmetics.yaml`) : Cendres (départ du Runiste), Braise (départ du Forgefeu), Marée haute (saison), Grand maître (Enchantement 99, change la silhouette).
+- 3 classes (`classes.yaml`) : Runiste, Forgefeu et Traqueur complets (tenue de départ, pose, arme, effet, animation de repos).
+- 5 tenues (`cosmetics.yaml`) : Cendres (départ du Runiste), Braise (départ du Forgefeu), Lisière (départ du Traqueur), Marée haute (saison), Grand maître (Enchantement 99, change la silhouette).
 
 **Serveur** (`apps/server`, 8 tests d'API)
 - Routes : `POST /api/auth/register|login|logout`, `GET /api/content` (public), `GET /api/state` (sert aussi de signe de vie), `POST /api/activity/start|cancel`, `POST /api/items/eat`, `POST /api/shop/buy|sell`, `POST /api/character/class`, `POST /api/trials/complete`, `GET /api/journal`.
@@ -103,7 +108,7 @@ Bramo est un **idle-RPG multijoueur jouable dans le navigateur**, dans l'esprit 
 - **Pas de déploiement** : le serveur tourne avec `tsx`, il n'y a ni build de production du serveur, ni service des fichiers statiques du client, ni reverse proxy, ni HTTPS. `secureCookies` s'active avec `NODE_ENV=production`.
 - Pas de limite de tentatives de connexion, pas de changement de mot de passe, pas de suppression de compte.
 - Chiffres non équilibrés (`# à équilibrer`), simulateur absent.
-- Animations de repos seulement (une par pose). Marée haute ne change que les couleurs. Le Traqueur n'a ni tenue, ni pose, ni arme, ni effet propres.
+- Animations de repos seulement (une par pose). Marée haute ne change que les couleurs. Une seule pose par classe (pas encore par voie).
 - Le choix de tenue n'a pas encore d'écran : `outfit` reste null (tenue de départ de la classe). Les niveaux de classe n'existent pas encore (combat en P4).
 - Les épreuves Maître (85) et Grand maître (99) ne sont pas écrites : ces titres restent automatiques. Pas d'épreuve pour les métiers « Bientôt ».
 - L'écran de choix de classe est un contrôle du client : le serveur accepte les actions de jeu d'un personnage sans classe.
@@ -120,7 +125,7 @@ Bramo est un **idle-RPG multijoueur jouable dans le navigateur**, dans l'esprit 
 1. **Mise en service sur le homeserver** : Postgres (docker compose), `.env` avec `DATABASE_URL`, build du client (`pnpm --filter @bramo/web build`), le serveur Fastify sert `apps/web/dist` (ou un reverse proxy devant), HTTPS, `NODE_ENV=production`, service systemd ou conteneur, sauvegardes de la base. Limite de tentatives de connexion.
 2. **Accueil à refaire** (direction choisie par l'auteur le 21 octobre) : la carte du monde est remplacée par une **scène du bourg** où passent d'autres joueurs (vrais joueurs récemment actifs, avec leur classe et leur activité) et un **Panneau du bourg** dont le cœur est le **fil du serveur** (montées de titre, épreuves réussies, premières fabrications). Décisions : **pas de bonus du jour** (les boosts viennent des saisons et événements), **pas de chantier commun au serveur** (c'est le rôle des clans), commandes de PNJ non tranchées. La carte pourra revenir en popup « Voyager » avec l'Exploration.
 3. **Animation et vie de l'interface** (choix de l'auteur en attente) : « +1 objet » flottant à chaque fabrication, pulsation de l'anneau, célébration de montée de niveau et d'épreuve réussie, scènes animées dans les bandeaux (forge, mines, eau), entrées du journal qui glissent.
-4. **Personnages** : Traqueur (tenue de départ, pose, arc, effet jade), **une pose par voie** à terme, écran de choix de tenue, animations « travail » par famille de métier, une tenue Marée haute qui change aussi de forme. Couleurs cuivre #F08A4B (mêlée) et jade #7ED6A2 (tir) toujours à valider.
+4. **Personnages** : **une pose par voie** à terme, écran de choix de tenue, animations « travail » par famille de métier, une tenue Marée haute qui change aussi de forme. Couleurs cuivre #F08A4B (mêlée) et jade #7ED6A2 (tir) toujours à valider.
 5. **Épreuves** : Maître (85) et Grand maître (99), et une épreuve pour chaque métier qui ouvre.
 6. **P0 — chiffrage et simulateur** dans `sim/` : bots par profil sur les mêmes formules, vérifier le ratio tryhard / casu (2 à 2,5).
 

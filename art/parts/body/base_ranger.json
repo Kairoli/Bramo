@@ -1,0 +1,18 @@
+{
+  "id": "base_ranger",
+  "slot": "body",
+  "name": "Corps de base (arc)",
+  "colorRoles": ["skin", "skinDark", "legs", "legsDark"],
+  "anchor": [0, 0],
+  "layers": [
+    { "id": "shadow", "bone": "root", "z": 0 },
+    { "id": "thigh_far", "bone": "thigh_far", "z": 14 },
+    { "id": "shin_far", "bone": "shin_far", "z": 15 },
+    { "id": "thigh_near", "bone": "thigh_near", "z": 18 },
+    { "id": "shin_near", "bone": "shin_near", "z": 19 },
+    { "id": "hand_far", "bone": "hand_far", "z": 27 },
+    { "id": "neck", "bone": "neck", "z": 34 },
+    { "id": "head", "bone": "head", "z": 54 },
+    { "id": "hand_near", "bone": "hand_near", "z": 70 }
+  ]
+}

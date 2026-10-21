@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 760">
+  <!-- Visage du pisteur : barbe de trois jours, trait de peinture sur la pommette. -->
+  <g id="features">
+    <path d="M241 100 L248 112 L241 115" fill="none" stroke="var(--c-skin-dark)" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M190 118 Q194 142 216 156 Q236 148 240 128 Q232 132 224 130 Q212 128 204 122 Z" fill="var(--c-beard)" opacity=".55"/>
+    <path d="M216 109 L232 118" stroke="var(--c-trim)" stroke-width="3" stroke-linecap="round" opacity=".9"/>
+    <path d="M221 124 Q231 121 240 125" stroke="var(--c-beard)" stroke-width="2" fill="none" stroke-linecap="round" opacity=".7"/>
+  </g>
+  <g id="eyes">
+    <ellipse class="fx-pulse" cx="219" cy="101" rx="3.4" ry="1.6" fill="var(--c-glow-light)" filter="url(#rig-glow)"/>
+    <ellipse class="fx-pulse" cx="237" cy="100" rx="2.4" ry="1.4" fill="var(--c-glow-light)" filter="url(#rig-glow)"/>
+  </g>
+</svg>

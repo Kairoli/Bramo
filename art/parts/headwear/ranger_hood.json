@@ -1,0 +1,34 @@
+{
+  "id": "ranger_hood",
+  "slot": "headwear",
+  "name": "Capuchon de pisteur",
+  "colorRoles": [
+    "coat",
+    "coatDark",
+    "shadow",
+    "leather",
+    "trim",
+    "glow"
+  ],
+  "anchor": [
+    0,
+    0
+  ],
+  "layers": [
+    {
+      "id": "back",
+      "bone": "head",
+      "z": 52
+    },
+    {
+      "id": "shadow",
+      "bone": "head",
+      "z": 57
+    },
+    {
+      "id": "front",
+      "bone": "head",
+      "z": 78
+    }
+  ]
+}

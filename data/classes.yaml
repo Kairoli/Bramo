@@ -26,12 +26,13 @@
   weapon: forge_hammer
   effect: ember_aura
 
-# Visuel à venir : en attendant, tenue et pose du Runiste, sans arme ni effet.
 - id: tracker
   name: Traqueur
   style: ranged
   profession: hunting
   affinityColor: "#7ED6A2"   # proposition, à valider
   pitch: Piste le gibier et tire de loin. Pièges, flèches et compagnons de meute.
-  startingOutfit: ashes
-  pose: runist
+  startingOutfit: thicket
+  pose: tracker
+  weapon: ranger_bow
+  effect: jade_aura

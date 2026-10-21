@@ -1,0 +1,26 @@
+{
+  "id": "ranger_boots",
+  "slot": "boots",
+  "name": "Bottes de pisteur",
+  "colorRoles": [
+    "boots",
+    "leather",
+    "trim"
+  ],
+  "anchor": [
+    0,
+    0
+  ],
+  "layers": [
+    {
+      "id": "far",
+      "bone": "shin_far",
+      "z": 16
+    },
+    {
+      "id": "near",
+      "bone": "shin_near",
+      "z": 20
+    }
+  ]
+}

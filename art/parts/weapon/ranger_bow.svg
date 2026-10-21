@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 760">
+  <!-- Arc du Traqueur, tenu à bout de bras, corde à demi bandée, flèche encochée. Tout est dessiné dans la pose du Traqueur
+       (poing en 435 203, encoche en 305 200), puis ramené dans le repère de repos de hand_far par la matrice inverse. -->
+  <g id="bow">
+    <g transform="matrix(0.887 -0.4617 0.4617 0.887 -132.0098 245.1001)">
+      <path d="M408 34 Q446 120 436 188 L436 222 Q446 290 408 376" stroke="var(--c-wood)" stroke-width="9" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M410 42 Q443 124 433 190 M433 220 Q443 288 410 368" stroke="var(--c-wood-light)" stroke-width="2.5" fill="none" stroke-linecap="round" opacity=".6"/>
+      <rect x="430" y="188" width="12" height="34" rx="3" fill="var(--c-leather)"/>
+      <path d="M430 196 L442 196 M430 205 L442 205 M430 214 L442 214" stroke="var(--c-trim)" stroke-width="1.8"/>
+      <circle cx="408" cy="34" r="3.5" fill="var(--c-metal)"/>
+      <circle cx="408" cy="376" r="3.5" fill="var(--c-metal)"/>
+      <path d="M404 36 L412 36 M404 374 L412 374" stroke="var(--c-trim)" stroke-width="2"/>
+    </g>
+  </g>
+  <g id="string">
+    <g transform="matrix(0.887 -0.4617 0.4617 0.887 -132.0098 245.1001)">
+      <path d="M408 34 L305 200 L408 376" stroke="#E6DFC8" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity=".9"/>
+      <path d="M305 200 L458 196" stroke="var(--c-wood-light)" stroke-width="3.2" stroke-linecap="round"/>
+      <path d="M312 198.5 L458 194.8" stroke="#000" stroke-opacity=".25" stroke-width="1"/>
+      <path d="M310 200 L322 190 L340 190 L331 199 Z M310 200 L322 210 L340 210 L331 201 Z" fill="var(--c-trim)"/>
+      <path d="M311 200 L338 199 M316 195 L330 194.5" stroke="#000" stroke-opacity=".28" stroke-width="1"/>
+      <path d="M441 190 L460 196 L441 202 Z" fill="var(--c-metal)"/>
+      <path d="M441 190 L460 196" stroke="var(--c-glow-light)" stroke-width="1.4" stroke-linecap="round"/>
+    </g>
+  </g>
+</svg>

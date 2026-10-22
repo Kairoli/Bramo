@@ -238,6 +238,122 @@
 .journal-line {
   font-size: 13px;
 }
+.journal-list {
+  gap: 3px;
+}
+.j-group {
+  display: grid;
+  gap: 3px;
+}
+.j-sep {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 6px 0 2px;
+  color: var(--text-muted);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+}
+.j-sep::before,
+.j-sep::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+.j-line {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 4px 6px;
+  border-radius: 9px;
+  font-size: 13px;
+  line-height: 1.35;
+}
+.j-line:hover {
+  background: rgb(255 255 255 / 0.03);
+}
+.j-icon {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--tc) 16%, transparent);
+  border: 1px solid color-mix(in srgb, var(--tc) 35%, transparent);
+}
+.j-icon svg {
+  width: 14px;
+  height: 14px;
+  fill: none;
+  stroke: var(--tc);
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.j-body {
+  flex: 1;
+  min-width: 0;
+}
+.j-body strong {
+  color: var(--tc, var(--text));
+  font-weight: 700;
+}
+.tone-muted .j-body strong {
+  color: var(--text);
+}
+.j-count {
+  margin-left: 6px;
+  padding: 0 6px;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.08);
+  color: var(--text-muted);
+  font-size: 11px;
+  font-weight: 700;
+}
+.j-item {
+  color: var(--rc);
+  font-weight: 600;
+}
+.j-item small {
+  color: var(--text-muted);
+  font-weight: 500;
+}
+.j-time {
+  flex: none;
+  min-width: 34px;
+  text-align: right;
+  color: var(--text-muted);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+}
+.j-absence {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border: 1px solid color-mix(in srgb, var(--event) 40%, var(--border));
+  border-radius: 12px;
+  background: linear-gradient(90deg, color-mix(in srgb, var(--event) 14%, transparent), transparent), var(--sunken);
+  color: var(--text);
+  font: inherit;
+  font-size: 13px;
+  text-align: left;
+  cursor: pointer;
+}
+.j-absence .j-body {
+  display: grid;
+}
+.j-absence strong {
+  color: var(--event);
+}
+.j-more {
+  flex: none;
+  color: var(--event);
+  font-size: 12px;
+  font-weight: 700;
+}
 .journal-time {
   color: var(--text-muted);
   margin-right: 8px;
@@ -847,11 +963,122 @@
   grid-template-columns: auto minmax(0, 1fr) auto;
 }
 .doll-card .doll-col {
-  gap: 5px;
+  gap: 10px;
 }
+/* Quatre grandes cases par colonne, réduites si la hauteur manque. */
 .doll-card .doll-col .equip-slot {
-  width: min(var(--slot), (100cqh - 25px) / 6);
-  height: min(var(--slot), (100cqh - 25px) / 6);
+  width: min(66px, (100cqh - 30px) / 4);
+  height: min(66px, (100cqh - 30px) / 4);
+  border-radius: 14px;
+}
+.doll-card .equip-empty-label {
+  font-size: 10.5px;
+}
+
+/* Cases de l'accueil : un cadre en relief, la couleur de la pièce en halo. */
+.character-card .equip-slot {
+  border-width: 1.5px;
+  background:
+    radial-gradient(circle at 50% 30%, color-mix(in srgb, var(--rc, var(--slot-color, var(--border))) 26%, transparent), transparent 72%),
+    linear-gradient(to bottom, rgb(255 255 255 / 0.05), rgb(0 0 0 / 0.25)),
+    var(--sunken);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.06), 0 3px 8px rgb(0 0 0 / 0.3);
+  transition: transform 0.12s, box-shadow 0.12s;
+}
+.character-card .equip-slot.empty {
+  background: rgb(0 0 0 / 0.12);
+  box-shadow: none;
+}
+.character-card .equip-slot:hover {
+  transform: translateY(-2px);
+}
+
+/* Bandeau sous le personnage : la classe (niveau, voie, XP) puis l'outil et le repas. */
+.char-strip {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.class-badge {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 10px 6px 6px;
+  border: 1px solid color-mix(in srgb, var(--cc) 45%, var(--border));
+  border-radius: 14px;
+  background: linear-gradient(90deg, color-mix(in srgb, var(--cc) 18%, transparent), transparent 80%), var(--sunken);
+  color: var(--text);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.class-badge:hover {
+  border-color: var(--cc);
+}
+.class-level {
+  flex: none;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: radial-gradient(circle at 50% 30%, color-mix(in srgb, var(--cc) 55%, #000), color-mix(in srgb, var(--cc) 22%, #000));
+  border: 1.5px solid var(--cc);
+  color: #fff;
+  font-size: 19px;
+  font-weight: 800;
+  line-height: 1;
+  box-shadow: 0 0 14px color-mix(in srgb, var(--cc) 35%, transparent);
+}
+.class-level small {
+  font-size: 9px;
+  font-weight: 700;
+  opacity: 0.8;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.class-text {
+  min-width: 0;
+  display: grid;
+  gap: 2px;
+}
+.class-text strong {
+  font-size: 14px;
+  color: var(--cc);
+}
+.class-text .muted {
+  font-size: 12px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.class-xp {
+  height: 5px;
+  border-radius: 3px;
+  background: rgb(0 0 0 / 0.35);
+  overflow: hidden;
+}
+.class-xp span {
+  display: block;
+  height: 100%;
+  background: var(--cc);
+  border-radius: 3px;
+}
+.strip-slots {
+  display: flex;
+  gap: 6px;
+}
+.strip-slots .equip-slot {
+  width: 52px;
+  height: 52px;
+  border-radius: 12px;
+}
+.character-card .preset-chips,
+.character-card .preset-none {
+  align-self: center;
 }
 
 .equip-slot {
@@ -3798,5 +4025,386 @@
 .ornament-actions {
   display: flex;
   justify-content: flex-end;
+  gap: 8px;
+}
+
+/* ---------- Salle Clan : la place du clan, le village, le journal ---------- */
+.clan-room {
+  /* La place du clan en haut, le village et le journal en bas. */
+  grid-template-rows: minmax(0, 46fr) minmax(0, 54fr);
+}
+.clan-band {
+  position: relative;
+}
+.clan-yard {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.clan-member-figure {
+  position: absolute;
+  bottom: calc(8% + var(--dy, 0px));
+  left: var(--x);
+  height: calc(58% - var(--shrink, 0%));
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  pointer-events: auto;
+}
+.clan-member-figure svg.rig {
+  height: 100%;
+  width: auto;
+  aspect-ratio: 400 / 750;
+  filter: drop-shadow(0 6px 4px rgb(0 0 0 / 0.4));
+}
+.clan-member-figure.away {
+  opacity: 0.55;
+  filter: saturate(0.5);
+}
+.clan-member-figure:hover {
+  z-index: 20 !important;
+}
+.clan-member-figure:hover .walker-card {
+  display: grid;
+}
+.clan-tag {
+  position: absolute;
+  top: -6px;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 1px 7px;
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--panel) 85%, transparent);
+  border: 1px solid var(--border);
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.clan-tag.rank-leader {
+  border-color: #f2c14e;
+  color: #f2c14e;
+}
+.clan-tag.rank-officer {
+  border-color: color-mix(in srgb, var(--hc) 70%, var(--border));
+}
+.clan-id {
+  position: absolute;
+  left: 18px;
+  top: 16px;
+  z-index: 25;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 10px 18px 10px 12px;
+  border-radius: 16px;
+  background: linear-gradient(90deg, rgb(10 12 16 / 0.82), rgb(10 12 16 / 0.45));
+  border: 1px solid color-mix(in srgb, var(--hc) 40%, transparent);
+  max-width: 46%;
+}
+.clan-crest {
+  flex: none;
+  filter: drop-shadow(0 4px 10px rgb(0 0 0 / 0.5));
+}
+.clan-id-text {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+.clan-id-text h1 {
+  font-size: 28px;
+  font-weight: 800;
+  line-height: 1.05;
+  color: #fff6dd;
+}
+.clan-id-text p {
+  color: var(--text-muted);
+  font-size: 13px;
+}
+.clan-id-text .eyebrow {
+  color: var(--hc);
+}
+.clan-stats {
+  position: absolute;
+  right: 16px;
+  top: 16px;
+  z-index: 25;
+  display: grid;
+  grid-template-columns: repeat(2, auto);
+  gap: 6px;
+}
+.clan-stat {
+  display: grid;
+  justify-items: end;
+  padding: 6px 12px;
+  border-radius: 12px;
+  background: rgb(10 12 16 / 0.72);
+  border: 1px solid var(--border);
+}
+.clan-stat strong {
+  font-size: 18px;
+  font-weight: 800;
+  line-height: 1.1;
+}
+.clan-stat span {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+.clan-hub {
+  display: grid;
+  grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+  gap: var(--gap);
+  min-height: 0;
+}
+.clan-village,
+.clan-side {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px 14px;
+  min-height: 0;
+}
+.clan-village-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px;
+}
+.clan-village-head > div {
+  display: grid;
+}
+.clan-village-head strong {
+  font-size: 17px;
+}
+.building-tiles {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-auto-rows: minmax(0, 1fr);
+  gap: 10px;
+}
+.building-tile {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 12px 10px 10px;
+  border: 1px solid color-mix(in srgb, var(--bc) 40%, var(--border));
+  border-radius: 16px;
+  background:
+    radial-gradient(circle at 50% 30%, color-mix(in srgb, var(--bc) 20%, transparent), transparent 65%),
+    linear-gradient(to bottom, rgb(255 255 255 / 0.03), rgb(0 0 0 / 0.2)),
+    var(--sunken);
+  color: var(--text);
+  font: inherit;
+  text-align: center;
+  cursor: pointer;
+  min-height: 0;
+  overflow: hidden;
+  transition: transform 0.12s, border-color 0.12s;
+}
+.building-tile:hover {
+  transform: translateY(-2px);
+  border-color: var(--bc);
+}
+.building-tile.unbuilt {
+  border-style: dashed;
+  background: rgb(0 0 0 / 0.15);
+}
+.building-tile.unbuilt .building-art svg {
+  opacity: 0.45;
+}
+.building-tile.maxed {
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--bc) 50%, transparent), 0 0 18px color-mix(in srgb, var(--bc) 18%, transparent);
+}
+.building-art {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: radial-gradient(circle, color-mix(in srgb, var(--bc) 22%, #000) 0%, rgb(0 0 0 / 0.35) 70%);
+  border: 1.5px solid color-mix(in srgb, var(--bc) 55%, transparent);
+  flex: none;
+}
+.building-art.big {
+  width: 92px;
+  height: 92px;
+}
+.building-ring {
+  position: absolute;
+  inset: -5px;
+  border-radius: 50%;
+  background: conic-gradient(var(--bc) var(--p), transparent 0);
+  -webkit-mask: radial-gradient(circle, transparent 62%, #000 63%);
+  mask: radial-gradient(circle, transparent 62%, #000 63%);
+  opacity: 0.8;
+}
+.building-text {
+  display: grid;
+  justify-items: center;
+  gap: 3px;
+  min-width: 0;
+}
+.building-text strong {
+  font-size: 14px;
+}
+.building-text .muted {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  line-height: 1.25;
+}
+.building-pips {
+  display: flex;
+  gap: 4px;
+}
+.building-pips span {
+  width: 18px;
+  height: 5px;
+  border-radius: 3px;
+  background: rgb(255 255 255 / 0.12);
+}
+.building-pips span.on {
+  background: var(--bc);
+  box-shadow: 0 0 6px color-mix(in srgb, var(--bc) 60%, transparent);
+}
+.building-state {
+  position: absolute;
+  top: 8px;
+  right: 9px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--bc);
+}
+.building-tile.unbuilt .building-state {
+  color: var(--text-muted);
+}
+.building-modal {
+  width: min(640px, calc(100vw - 32px));
+}
+.building-sheet {
+  display: grid;
+  gap: 14px;
+}
+.building-sheet-head {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+.building-sheet-head h2 {
+  color: var(--bc);
+}
+.building-sheet-head .row-gap {
+  margin-top: 6px;
+}
+.gold-dot {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #ffe08a, #c08a20);
+}
+.clan-side .tabs button {
+  flex: 1;
+}
+.clan-log {
+  flex: 1;
+}
+.clan-members {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.clan-member {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 8px;
+  border-radius: 12px;
+  background: var(--sunken);
+}
+.clan-member.away {
+  opacity: 0.65;
+}
+.clan-portrait {
+  position: relative;
+  flex: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 1.5px solid var(--border);
+  background: rgb(0 0 0 / 0.3);
+}
+.clan-portrait .rig {
+  width: 100%;
+  height: 100%;
+}
+.clan-dot {
+  position: absolute;
+  right: 1px;
+  bottom: 1px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--text-muted);
+  border: 2px solid var(--sunken);
+}
+.clan-dot.on {
+  background: var(--good);
+}
+.clan-member-text {
+  flex: 1;
+  min-width: 0;
+  display: grid;
+}
+.rank-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 9px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  font-size: 11.5px;
+  font-weight: 700;
+}
+.rank-badge.rank-leader {
+  color: #f2c14e;
+  border-color: #f2c14e;
+}
+.rank-badge.rank-officer {
+  color: var(--hc);
+  border-color: color-mix(in srgb, var(--hc) 60%, var(--border));
+}
+.clan-member-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  width: 100%;
+  padding-left: 50px;
+}
+.clan-leave {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: auto;
+  padding-top: 8px;
+}
+.clan-side .clan-soon {
+  flex: 1;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  text-align: center;
   gap: 8px;
 }

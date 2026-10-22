@@ -13,6 +13,7 @@ import {
   buildingNeeds,
   clanBonuses,
   cloneState,
+  levelForXp,
   memberBonuses,
 } from '@bramo/shared';
 import type { Db, Tx } from './db/index.js';
@@ -288,13 +289,22 @@ export async function myClanView(db: Db, content: Content, characterId: number, 
   if (!clan) return null;
   const since = now - content.settings.clan.activeDays * DAY;
   const members = await db
-    .select({ id: characters.id, name: characters.name, rank: clanMembers.rank, lastSeenAt: characters.lastSeenAt })
+    .select({ id: characters.id, name: characters.name, rank: clanMembers.rank, lastSeenAt: characters.lastSeenAt, classId: characters.classId, outfit: characters.outfit, combat: characters.combat })
     .from(clanMembers)
     .innerJoin(characters, eq(characters.id, clanMembers.characterId))
     .where(eq(clanMembers.clanId, clan.id));
   const order: Record<ClanRank, number> = { leader: 0, officer: 1, member: 2 };
   const memberViews: ClanMemberView[] = members
-    .map((m) => ({ id: m.id, name: m.name, rank: m.rank, active: m.lastSeenAt.getTime() >= since, lastSeenAt: m.lastSeenAt.getTime() }))
+    .map((m) => ({
+      id: m.id,
+      name: m.name,
+      rank: m.rank,
+      active: m.lastSeenAt.getTime() >= since,
+      lastSeenAt: m.lastSeenAt.getTime(),
+      classId: m.classId,
+      outfit: m.outfit,
+      classLevel: m.classId ? levelForXp(m.combat?.xp?.[m.classId] ?? 0, content.xpTable) : 1,
+    }))
     .sort((a, b) => order[a.rank] - order[b.rank] || a.name.localeCompare(b.name));
   const active = memberViews.filter((m) => m.active).length;
   const levels = await buildingLevels(db, clan.id);

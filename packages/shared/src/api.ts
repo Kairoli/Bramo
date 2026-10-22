@@ -134,6 +134,10 @@ export interface ClanMemberView {
   /** Vu depuis moins de `clan.activeDays` jours. */
   active: boolean;
   lastSeenAt: number;
+  /** Pour le montrer dans la scène du clan : sa classe (null avant le choix), sa tenue, son niveau de classe. */
+  classId: string | null;
+  outfit: string | null;
+  classLevel: number;
 }
 
 /** Un bâtiment du clan : niveau, effet, et ce qu'il manque pour le niveau suivant. */

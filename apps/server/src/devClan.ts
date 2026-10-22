@@ -11,11 +11,11 @@ import type { ClanResult } from './clans.js';
  * sans mot de passe utilisable : personne ne peut s'y connecter.
  */
 const NAME = 'Clan d’essai';
-const BOTS: { name: string; rank: 'officer' | 'member'; skills: Record<string, number>; seenHoursAgo: number }[] = [
-  { name: 'Aubépine', rank: 'officer', skills: { smithing: 42_000, mining: 30_000 }, seenHoursAgo: 1 },
-  { name: 'Corvin', rank: 'member', skills: { woodcutting: 26_000, carpentry: 18_000 }, seenHoursAgo: 5 },
-  { name: 'Maëlle', rank: 'member', skills: { cooking: 22_000, farming: 15_000 }, seenHoursAgo: 30 },
-  { name: 'Brandt', rank: 'member', skills: { fishing: 9_000 }, seenHoursAgo: 24 * 12 },
+const BOTS: { name: string; classId: string; rank: 'officer' | 'member'; skills: Record<string, number>; seenHoursAgo: number }[] = [
+  { name: 'Aubépine', classId: 'forgefire', rank: 'officer', skills: { smithing: 42_000, mining: 30_000 }, seenHoursAgo: 1 },
+  { name: 'Corvin', classId: 'tracker', rank: 'member', skills: { woodcutting: 26_000, carpentry: 18_000 }, seenHoursAgo: 5 },
+  { name: 'Maëlle', classId: 'runist', rank: 'member', skills: { cooking: 22_000, farming: 15_000 }, seenHoursAgo: 30 },
+  { name: 'Brandt', classId: 'forgefire', rank: 'member', skills: { fishing: 9_000 }, seenHoursAgo: 24 * 12 },
 ];
 
 export async function joinTestClan(tx: Tx, content: Content, characterId: number, characterName: string, input: CharacterState, now: number): Promise<ClanResult> {
@@ -38,7 +38,7 @@ export async function joinTestClan(tx: Tx, content: Content, characterId: number
         const seen = new Date(now - b.seenHoursAgo * 3_600_000);
         [ch] = await tx
           .insert(characters)
-          .values({ accountId: acc!.id, name: b.name, gold: s.gold, activity: null, queue: [], energy: s.energy, buff: null, classId: null, outfit: null, trials: [], lastTickAt: seen, lastSeenAt: seen })
+          .values({ accountId: acc!.id, name: b.name, gold: s.gold, activity: null, queue: [], energy: s.energy, buff: null, classId: b.classId, outfit: null, trials: [], lastTickAt: seen, lastSeenAt: seen })
           .returning();
         for (const [skill, xp] of Object.entries(b.skills)) if (content.professions.some((p) => p.id === skill)) await tx.insert(characterSkills).values({ characterId: ch!.id, skill, xp });
       }

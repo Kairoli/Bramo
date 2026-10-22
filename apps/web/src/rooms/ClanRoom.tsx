@@ -1,17 +1,22 @@
-import { useCallback, useEffect, useState } from 'react';
-import type { ClanBuildingView, ClanListItem, ClanRank, ClanView } from '@bramo/shared';
+import { type CSSProperties, type ReactNode, useCallback, useEffect, useState } from 'react';
+import type { ClanBuildingView, ClanListItem, ClanMemberView, ClanRank, ClanView } from '@bramo/shared';
 import { api } from '../api';
 import { useGame } from '../game/GameContext';
 import { hhmm, num, signedPct } from '../format';
-import { Bar, ItemIcon } from '../components/ui';
+import { Bar, ItemIcon, Modal } from '../components/ui';
 import { Scene } from '../components/Scene';
+import { Character } from '../rig/Character';
 
-type Tab = 'buildings' | 'members' | 'log' | 'roads';
+type Tab = 'log' | 'members' | 'roads';
 type Run = (call: () => ReturnType<typeof api.state>) => Promise<boolean>;
 
 const RANK_NAME: Record<ClanRank, string> = { leader: 'Chef', officer: 'Officier', member: 'Membre' };
 
-/** Salle Clan : fonder ou rejoindre, puis construire ses bâtiments ensemble, gérer les membres, lire le journal. */
+/**
+ * Salle Clan, comme un écran de jeu (retour de Louis : « gros pâté de texte », « ambiance clan ») : en haut la place du
+ * clan avec son blason et ses membres debout dans le décor ; en bas le village (un bâtiment par tuile, ses niveaux, ce qu'il
+ * manque) et, à côté, le journal, les membres et les Routes franches. Les apports se font dans la fenêtre d'un bâtiment.
+ */
 export function ClanRoom() {
   const { act } = useGame();
   const [clan, setClan] = useState<ClanView | null | undefined>(undefined);
@@ -39,6 +44,7 @@ export function ClanRoom() {
     [act],
   );
 
+  if (clan) return <ClanHall clan={clan} run={run} />;
   return (
     <main className="room market-room">
       <section className="panel band">
@@ -48,8 +54,6 @@ export function ClanRoom() {
         <section className="panel market-panel">
           <p className="muted">Chargement…</p>
         </section>
-      ) : clan ? (
-        <ClanHall clan={clan} run={run} />
       ) : (
         <NoClan clans={clans} run={run} />
       )}
@@ -126,208 +130,394 @@ function NoClan({ clans, run }: { clans: ClanListItem[]; run: Run }) {
   );
 }
 
-function ClanHall({ clan, run }: { clan: ClanView; run: Run }) {
-  const [tab, setTab] = useState<Tab>('buildings');
-  const { content } = useGame();
-  const totalAll = clan.bonuses.all ?? 0;
-  return (
-    <section className="panel market-panel">
-      <header className="market-head">
-        <div>
-          <span className="eyebrow" style={{ color: 'var(--clan)' }}>
-            Clan · {RANK_NAME[clan.myRank]}
-          </span>
-          <h2>{clan.name}</h2>
-          {clan.description && <span className="muted small">{clan.description}</span>}
-        </div>
-        <div className="tabs" role="tablist">
-          {(
-            [
-              ['buildings', 'Bâtiments'],
-              ['members', `Membres · ${clan.members.length}`],
-              ['log', 'Journal'],
-              ['roads', 'Routes franches'],
-            ] as [Tab, string][]
-          ).map(([id, label]) => (
-            <button key={id} role="tab" aria-selected={tab === id} onClick={() => setTab(id)}>
-              {label}
-            </button>
-          ))}
-        </div>
-        <span className="chip" style={{ color: 'var(--clan)', borderColor: 'var(--clan)' }}>
-          Guilde {signedPct(content.settings.clan.townGuildBonus)}
-          {totalAll > 0 ? ` · halle ${signedPct(totalAll)}` : ''} · plafond {signedPct(content.settings.bonusCaps.clan)}
-        </span>
-      </header>
+// --- Blason et identité ------------------------------------------------------------------------------------------------
 
-      {tab === 'buildings' && <Buildings clan={clan} run={run} />}
-      {tab === 'members' && <Members clan={clan} run={run} />}
-      {tab === 'roads' && (
-        <div className="clan-soon">
-          <span className="mode-soon static">Bientôt</span>
-          <h3>Routes franches</h3>
-          <p className="muted">
-            La caravane du clan, chaque semaine : une équipe l’escorte d’étape en étape, chacun son poste (éclaireur, escorte, intendant, artisan), et le
-            clan grimpe au classement des caravanes. Elle arrivera avec les rangs de clan.
-          </p>
-        </div>
-      )}
-      {tab === 'log' && (
-        <div className="scroll market-mine">
-          {clan.log.length === 0 && <p className="muted">Rien pour le moment.</p>}
-          {clan.log.map((l) => (
-            <p key={l.id} className="town-line">
-              <span className="journal-time">{hhmm(l.at)}</span>
-              {l.text}
-            </p>
-          ))}
-        </div>
-      )}
-    </section>
+/** Couleur et motif du clan, tirés de son nom (stables) : en attendant des blasons choisis par le chef. */
+function heraldry(name: string) {
+  let h = 0;
+  for (const ch of name) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
+  const hues = [8, 28, 44, 140, 175, 205, 255, 290, 330];
+  const hue = hues[h % hues.length]!;
+  return { color: `hsl(${hue} 62% 52%)`, dark: `hsl(${hue} 45% 18%)`, motif: (h >> 4) % 4, letter: name.replace(/^(Clan|Les|La|Le|L’)\s+/i, '').charAt(0).toUpperCase() };
+}
+
+function Crest({ name, size = 84 }: { name: string; size?: number }) {
+  const h = heraldry(name);
+  const motif = [
+    <path key="m" d="M30 62 L50 30 L70 62" fill="none" stroke="#F3E3B5" strokeOpacity=".35" strokeWidth="3" />,
+    <path key="m" d="M24 40 H76 M24 50 H76" stroke="#F3E3B5" strokeOpacity=".25" strokeWidth="4" />,
+    <circle key="m" cx="50" cy="50" r="22" fill="none" stroke="#F3E3B5" strokeOpacity=".3" strokeWidth="3" />,
+    <path key="m" d="M26 28 L74 76 M74 28 L26 76" stroke="#F3E3B5" strokeOpacity=".22" strokeWidth="4" />,
+  ][h.motif];
+  return (
+    <svg className="clan-crest" viewBox="0 0 100 110" width={size} height={size * 1.1} aria-hidden>
+      <path d="M50 4 L92 16 V52 C92 80 72 98 50 106 C28 98 8 80 8 52 V16 Z" fill={h.dark} stroke="#E8C77A" strokeWidth="4" />
+      <path d="M50 12 L84 22 V52 C84 74 68 89 50 96 C32 89 16 74 16 52 V22 Z" fill={h.color} opacity=".9" />
+      {motif}
+      <text x="50" y="66" textAnchor="middle" fontSize="40" fontWeight="800" fill="#FFF6DD" stroke={h.dark} strokeWidth="1.5" fontFamily="inherit">
+        {h.letter}
+      </text>
+      <path d="M38 4 L50 -2 L62 4" fill="none" stroke="#E8C77A" strokeWidth="3" />
+    </svg>
   );
 }
 
-function Buildings({ clan, run }: { clan: ClanView; run: Run }) {
+/** Pour la scène : un membre sans classe (compte ancien ou de test) prend une classe fixe tirée de son identifiant. */
+function lookOf(m: ClanMemberView, classes: Record<string, { startingOutfit: string }>) {
+  const ids = Object.keys(classes);
+  const classId = m.classId ?? ids[m.id % ids.length]!;
+  return { classId, outfit: m.outfit ?? classes[classId]!.startingOutfit };
+}
+
+// --- La salle ----------------------------------------------------------------------------------------------------------
+
+function ClanHall({ clan, run }: { clan: ClanView; run: Run }) {
   const { content } = useGame();
+  const [tab, setTab] = useState<Tab>('log');
+  const [open, setOpen] = useState<string | null>(null);
+  const h = heraldry(clan.name);
+  const raw = Object.values(clan.bonuses).reduce((a, b) => Math.max(a, b), 0);
+  const built = clan.buildings.reduce((s, b) => s + b.level, 0);
+  const maxBuilt = clan.buildings.reduce((s, b) => s + b.maxLevel, 0);
+  const building = clan.buildings.find((b) => b.id === open);
   return (
-    <div className="scroll building-grid">
-      <p className="muted small" style={{ gridColumn: '1 / -1' }}>
-        Chaque bâtiment se construit niveau par niveau, avec les apports de tous les membres (or et matériaux). Les coûts croissent avec le nombre de membres actifs sur {content.settings.clan.activeDays} jours ({clan.activeMembers} aujourd’hui) : un petit clan bâtit aussi vite par tête qu’un grand. Les bonus s’appliquent à tous les membres, actifs ou non, dans la limite de {signedPct(content.settings.bonusCaps.clan)}.
-      </p>
-      {clan.buildings.map((b) => (
-        <BuildingCard key={b.id} b={b} run={run} />
-      ))}
+    <main className="room clan-room" style={{ '--hc': h.color } as CSSProperties}>
+      <section className="panel band clan-band">
+        <Scene ids={['clan']} />
+        <ClanYard clan={clan} />
+        <div className="clan-id">
+          <Crest name={clan.name} />
+          <div className="clan-id-text">
+            <span className="eyebrow">Clan · vous êtes {RANK_NAME[clan.myRank].toLowerCase()}</span>
+            <h1>{clan.name}</h1>
+            {clan.description && <p>{clan.description}</p>}
+          </div>
+        </div>
+        <div className="clan-stats">
+          <Stat value={`${clan.members.length}/${clan.maxMembers}`} label="membres" />
+          <Stat value={String(clan.activeMembers)} label="actifs" />
+          <Stat value={`${built}/${maxBuilt}`} label="niveaux bâtis" />
+          <Stat value={signedPct(Math.min(raw, content.settings.bonusCaps.clan))} label={`bonus · max ${signedPct(content.settings.bonusCaps.clan)}`} tone="var(--good)" />
+        </div>
+      </section>
+      <div className="clan-hub">
+        <section className="panel clan-village">
+          <header className="clan-village-head">
+            <div>
+              <span className="eyebrow">Le village</span>
+              <strong>Bâtir ensemble</strong>
+            </div>
+            <span className="muted small">Chaque niveau accélère des métiers pour tous les membres · coûts selon les {clan.activeMembers} actifs</span>
+          </header>
+          <div className="building-tiles">
+            {clan.buildings.map((b) => (
+              <BuildingTile key={b.id} b={b} onOpen={() => setOpen(b.id)} />
+            ))}
+          </div>
+        </section>
+        <section className="panel clan-side">
+          <div className="tabs" role="tablist">
+            {(
+              [
+                ['log', 'Journal'],
+                ['members', `Membres · ${clan.members.length}`],
+                ['roads', 'Routes franches'],
+              ] as [Tab, string][]
+            ).map(([id, label]) => (
+              <button key={id} role="tab" aria-selected={tab === id} onClick={() => setTab(id)}>
+                {label}
+              </button>
+            ))}
+          </div>
+          {tab === 'log' && <ClanLog clan={clan} />}
+          {tab === 'members' && <Members clan={clan} run={run} />}
+          {tab === 'roads' && (
+            <div className="clan-soon">
+              <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="var(--clan)" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                <path d="M3 17h13l3-5h2M5 17V9h9v8M14 12h4M7 20a2 2 0 1 0 0-.01M16 20a2 2 0 1 0 0-.01" />
+              </svg>
+              <span className="mode-soon static">Bientôt</span>
+              <h3>Routes franches</h3>
+              <p className="muted small">La caravane du clan, chaque semaine : chacun son poste (éclaireur, escorte, intendant, artisan), étape après étape, et le clan grimpe au classement.</p>
+            </div>
+          )}
+        </section>
+      </div>
+      {building && (
+        <Modal onClose={() => setOpen(null)} className="building-modal">
+          <BuildingSheet b={building} run={run} />
+        </Modal>
+      )}
+    </main>
+  );
+}
+
+function Stat({ value, label, tone }: { value: string; label: string; tone?: string }) {
+  return (
+    <div className="clan-stat">
+      <strong style={{ color: tone }}>{value}</strong>
+      <span>{label}</span>
     </div>
   );
 }
 
-function BuildingCard({ b, run }: { b: ClanBuildingView; run: Run }) {
+/** La place du clan : ses membres debout dans le décor, le chef au centre ; les absents en retrait, estompés. */
+function ClanYard({ clan }: { clan: ClanView }) {
+  const { content } = useGame();
+  const order: Record<ClanRank, number> = { leader: 0, officer: 1, member: 2 };
+  const shown = [...clan.members].sort((a, b) => Number(b.active) - Number(a.active) || order[a.rank] - order[b.rank]).slice(0, 9);
+  // Le chef au milieu, puis les autres de part et d'autre, de plus en plus loin.
+  const slots = shown.map((_, i) => (i === 0 ? 0 : (i % 2 ? 1 : -1) * Math.ceil(i / 2)));
+  return (
+    <div className="clan-yard">
+      {shown.map((m, i) => {
+        const s = slots[i]!;
+        const style = { '--x': `${64 + s * 7.6}%`, '--dy': `${Math.abs(s) * 4}px`, '--shrink': `${Math.min(10, Math.abs(s) * 2.2)}%`, zIndex: 10 - Math.abs(s) } as CSSProperties;
+        return (
+          <div key={m.id} className={`clan-member-figure${m.active ? '' : ' away'}`} style={style}>
+            <div className="walker-card">
+              <strong>{m.name}</strong>
+              <span>
+                {RANK_NAME[m.rank]} · {content.classes[m.classId ?? '']?.name ?? 'sans classe'} {m.classLevel}
+              </span>
+              <span className="muted">{m.active ? 'actif' : `absent depuis ${daysSince(m.lastSeenAt)} j`}</span>
+            </div>
+            <Character appearance={lookOf(m, content.classes)} lod="scene" title={m.name} />
+            <span className={`clan-tag rank-${m.rank}`}>
+              {m.rank === 'leader' && <Crown />}
+              {m.name}
+            </span>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+const daysSince = (at: number) => Math.max(1, Math.floor((Date.now() - at) / 86_400_000));
+
+function Crown() {
+  return (
+    <svg viewBox="0 0 24 24" width="13" height="13" aria-hidden>
+      <path d="M3 18h18l-1.5-10-4.5 4-3-6-3 6-4.5-4z" fill="#F2C14E" />
+    </svg>
+  );
+}
+
+// --- Le village --------------------------------------------------------------------------------------------------------
+
+/** Dessin et couleur de chaque bâtiment (en attendant des illustrations). */
+const BUILDING_ART: Record<string, { color: string; d: string }> = {
+  hall: { color: '#E8C77A', d: 'M4 21V10l8-6 8 6v11M9 21v-5h6v5M8 11h2M14 11h2M12 4V2' },
+  forge: { color: '#FF8A3D', d: 'M4 21V11h10v10M14 14h6v7M16 11V5h3v6M6 17h6M7 14h4M17 3c0 1 1 1 1 2' },
+  sawmill: { color: '#C9A36A', d: 'M3 21h18M5 21V12h9v9M14 15a4 4 0 1 0 8 0 4 4 0 0 0-8 0M18 11v8M14 15h8M7 9l3-4 3 4' },
+  fields: { color: '#8DCB6A', d: 'M3 20h18M6 20v-5M6 15c-2 0-3-2-3-3 2 0 3 1 3 3zM6 15c2 0 3-2 3-3-2 0-3 1-3 3M12 20v-7M12 13c-2 0-3-2-3-3 2 0 3 1 3 3zM12 13c2 0 3-2 3-3-2 0-3 1-3 3M18 20v-5M18 15c-2 0-3-2-3-3 2 0 3 1 3 3z' },
+  harbor: { color: '#6FB7E8', d: 'M2 19c2 1.5 4 1.5 6 0s4-1.5 6 0 4 1.5 6 0M5 15h14l-2 3H7zM12 15V4l6 8h-6M3 15V9h3' },
+  lodge: { color: '#B58A5E', d: 'M3 21L12 4l9 17zM12 4v17M9 21l3-6 3 6M6 5l2 2M18 5l-2 2M5 3v3M19 3v3' },
+  arcane_tower: { color: '#B39DF5', d: 'M8 21V9h8v12M7 9l5-6 5 6M10 13h4M10 17h4M12 1v1M19 6l1-1M5 6L4 5' },
+  tavern: { color: '#F2C14E', d: 'M5 21V9h14v12M4 9l8-5 8 5M9 21v-5h6v5M15 12h3v3h-3zM6 12h3' },
+};
+
+function BuildingArt({ id, size = 44 }: { id: string; size?: number }) {
+  const art = BUILDING_ART[id] ?? BUILDING_ART.hall!;
+  return (
+    <svg viewBox="0 0 24 24" width={size} height={size} fill="none" stroke={art.color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <path d={art.d} />
+    </svg>
+  );
+}
+
+/** Part réunie pour le niveau suivant (moyenne des apports demandés). */
+function readiness(b: ClanBuildingView): number {
+  if (!b.next) return 1;
+  const parts = [b.next.gold, ...b.next.items].filter((p) => p.need > 0);
+  return parts.length ? parts.reduce((s, p) => s + Math.min(1, p.have / p.need), 0) / parts.length : 0;
+}
+
+/** Ce qu'accélère un bâtiment, en peu de mots. */
+function targetsOf(id: string, content: ReturnType<typeof useGame>['content']): string {
+  const def = content.buildings[id]!;
+  return def.boost.professions.includes('all') ? 'tous les métiers' : def.boost.professions.map((p) => content.professions.find((x) => x.id === p)?.name ?? p).join(', ');
+}
+
+function BuildingTile({ b, onOpen }: { b: ClanBuildingView; onOpen: () => void }) {
+  const { content } = useGame();
+  const def = content.buildings[b.id]!;
+  const art = BUILDING_ART[b.id] ?? BUILDING_ART.hall!;
+  const ready = readiness(b);
+  const maxed = b.level >= b.maxLevel;
+  return (
+    <button className={`building-tile${b.level === 0 ? ' unbuilt' : ''}${maxed ? ' maxed' : ''}`} style={{ '--bc': art.color } as CSSProperties} onClick={onOpen}>
+      <span className="building-art">
+        <BuildingArt id={b.id} />
+        {!maxed && ready > 0 && <span className="building-ring" style={{ '--p': `${ready * 360}deg` } as CSSProperties} />}
+      </span>
+      <span className="building-text">
+        <strong>{def.name}</strong>
+        <span className="building-pips" aria-label={`niveau ${b.level} sur ${b.maxLevel}`}>
+          {Array.from({ length: b.maxLevel }, (_, i) => (
+            <span key={i} className={i < b.level ? 'on' : ''} />
+          ))}
+        </span>
+        <span className="muted small">
+          {b.level > 0 ? `${signedPct(def.boost.perLevel * b.level)} · ` : ''}
+          {targetsOf(b.id, content)}
+        </span>
+      </span>
+      <span className="building-state">{maxed ? 'Achevé' : b.level === 0 ? (ready > 0 ? `${Math.round(ready * 100)} %` : 'À bâtir') : `${Math.round(ready * 100)} %`}</span>
+    </button>
+  );
+}
+
+/** Fenêtre d'un bâtiment : ce qu'il fait, son prochain niveau, et les apports. */
+function BuildingSheet({ b, run }: { b: ClanBuildingView; run: Run }) {
   const { content, state } = useGame();
   const def = content.buildings[b.id]!;
-  const targets = def.boost.professions.includes('all')
-    ? 'toute la production'
-    : def.boost.professions.map((id) => content.professions.find((p) => p.id === id)?.name ?? id).join(', ');
+  const art = BUILDING_ART[b.id] ?? BUILDING_ART.hall!;
   const [amount, setAmount] = useState<Record<string, number>>({});
   const qty = (key: string, max: number) => Math.max(1, Math.min(max, amount[key] ?? max));
-
   const rows: { key: string; label: string; need: number; have: number; mine: number; item?: string }[] = b.next
     ? [
         { key: 'gold', label: 'Or', need: b.next.gold.need, have: b.next.gold.have, mine: state.gold },
         ...b.next.items.map((i) => ({ key: i.item, label: content.items[i.item]?.name ?? i.item, need: i.need, have: i.have, mine: state.inventory[i.item] ?? 0, item: i.item })),
       ].filter((r) => r.need > 0)
     : [];
-
   return (
-    <article className={`panel building${b.level >= b.maxLevel ? ' maxed' : ''}`}>
-      <header>
-        <div>
-          <h3>{def.name}</h3>
-          <span className="muted small">{def.description}</span>
-        </div>
-        <span className="chip" style={{ color: b.level ? 'var(--good)' : undefined, borderColor: b.level ? 'var(--good)' : undefined }}>
-          niveau {b.level} / {b.maxLevel}
+    <div className="building-sheet" style={{ '--bc': art.color } as CSSProperties}>
+      <header className="building-sheet-head">
+        <span className="building-art big">
+          <BuildingArt id={b.id} size={60} />
         </span>
+        <div>
+          <h2>{def.name}</h2>
+          <p className="muted small">{def.description}</p>
+          <div className="row-gap">
+            <span className="chip">
+              Niveau {b.level} / {b.maxLevel}
+            </span>
+            <span className="chip" style={{ color: 'var(--good)', borderColor: 'var(--good)' }}>
+              {signedPct(def.boost.perLevel)} par niveau · {targetsOf(b.id, content)}
+            </span>
+          </div>
+        </div>
       </header>
-      <p className="small">
-        <strong>{signedPct(def.boost.perLevel)}</strong> par niveau de production pour {targets}
-        {b.level > 0 && <span className="muted"> · actuellement {signedPct(def.boost.perLevel * b.level)}</span>}
-      </p>
       {b.next === null ? (
-        <p className="muted small">Bâtiment achevé.</p>
+        <p className="muted">Bâtiment achevé : il donne {signedPct(def.boost.perLevel * b.level)} à tous les membres.</p>
       ) : (
         <div className="building-needs">
-          <span className="eyebrow">Niveau {b.level + 1} : ce qu’il manque</span>
+          <span className="eyebrow">Pour le niveau {b.level + 1}</span>
           {rows.map((r) => {
             const left = Math.max(0, r.need - r.have);
+            const n = qty(r.key, Math.min(left, Math.max(1, r.mine)));
             return (
               <div key={r.key} className="building-need">
                 <span className="building-need-name">
-                  {r.item && <ItemIcon item={content.items[r.item]} small />}
+                  {r.item ? <ItemIcon item={content.items[r.item]} small /> : <span className="gold-dot" />}
                   {r.label}
                 </span>
-                <Bar value={r.have / r.need} color="var(--clan)" />
+                <Bar value={r.have / r.need} color="var(--bc)" />
                 <span className="mono small">
                   {num(r.have)} / {num(r.need)}
                 </span>
                 {left > 0 ? (
                   <span className="bag-actions">
-                    <input
-                      className="input"
-                      type="number"
-                      min={1}
-                      aria-label={`Quantité de ${r.label}`}
-                      style={{ width: 76 }}
-                      value={qty(r.key, Math.min(left, Math.max(1, r.mine)))}
-                      onChange={(e) => setAmount({ ...amount, [r.key]: Math.floor(Number(e.target.value)) || 1 })}
-                    />
-                    <button
-                      className="btn btn-sm"
-                      disabled={r.mine <= 0}
-                      onClick={() => run(() => api.clanContribute(b.id, r.key, qty(r.key, Math.min(left, Math.max(1, r.mine)))))}
-                    >
+                    <input className="input" type="number" min={1} aria-label={`Quantité de ${r.label}`} style={{ width: 80 }} value={n} onChange={(e) => setAmount({ ...amount, [r.key]: Math.floor(Number(e.target.value)) || 1 })} />
+                    <button className="btn btn-sm btn-primary" disabled={r.mine <= 0} onClick={() => run(() => api.clanContribute(b.id, r.key, n))} title={`Vous en avez ${num(r.mine)}`}>
                       Apporter
                     </button>
                   </span>
                 ) : (
-                  <span className="muted small">complet</span>
+                  <span className="chip" style={{ color: 'var(--good)', borderColor: 'var(--good)' }}>
+                    complet
+                  </span>
                 )}
               </div>
             );
           })}
+          <p className="muted small">Vous avez : {rows.map((r) => `${num(r.mine)} ${r.label.toLowerCase()}`).join(' · ')}.</p>
         </div>
       )}
-    </article>
+    </div>
+  );
+}
+
+// --- Journal et membres ------------------------------------------------------------------------------------------------
+
+/** Le journal du clan, en lignes à icône (arrivées, apports, niveaux de bâtiment, rangs). */
+function ClanLog({ clan }: { clan: ClanView }) {
+  const icon = (t: string): { d: string; c: string } =>
+    /passe au niveau/.test(t)
+      ? { d: 'M12 4l6 7h-4v8h-4v-8H6z', c: 'var(--good)' }
+      : /apporte/.test(t)
+        ? { d: 'M4 10h16v9H4zM4 10l2-5h12l2 5M11 13h2', c: 'var(--action)' }
+        : /rejoint|fonde/.test(t)
+          ? { d: 'M15 19v-1a4 4 0 0 0-8 0v1M11 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6M19 8v6M16 11h6', c: 'var(--event)' }
+          : /quitte|exclu/.test(t)
+            ? { d: 'M15 19v-1a4 4 0 0 0-8 0v1M11 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6M16 11h6', c: 'var(--alert)' }
+            : { d: 'M12 3l7 3v5c0 5-3 8-7 10-4-2-7-5-7-10V6z', c: 'var(--clan)' };
+  return (
+    <div className="journal-list scroll clan-log">
+      {clan.log.length === 0 && <p className="muted small">Rien pour le moment.</p>}
+      {[...clan.log].reverse().map((l) => {
+        const ic = icon(l.text);
+        return (
+          <div key={l.id} className="j-line">
+            <span className="j-icon" style={{ '--tc': ic.c } as CSSProperties}>
+              <svg viewBox="0 0 24 24" aria-hidden>
+                <path d={ic.d} />
+              </svg>
+            </span>
+            <span className="j-body">{l.text}</span>
+            <span className="j-time">{hhmm(l.at)}</span>
+          </div>
+        );
+      })}
+    </div>
   );
 }
 
 function Members({ clan, run }: { clan: ClanView; run: Run }) {
-  const { name } = useGame();
+  const { name, content } = useGame();
   const leader = clan.myRank === 'leader';
   const officer = clan.myRank !== 'member';
   return (
-    <div className="scroll market-mine">
-      <p className="muted small">
-        {clan.activeMembers} membre{clan.activeMembers > 1 ? 's' : ''} actif{clan.activeMembers > 1 ? 's' : ''} sur les 14 derniers jours · {clan.members.length} / {clan.maxMembers}. Aucun bonus n’est retiré à un absent.
-      </p>
+    <div className="scroll clan-members">
       {clan.members.map((m) => {
         const me = m.name === name;
+        const actions: ReactNode[] = [];
+        if (leader && !me && m.rank === 'member') actions.push(<button key="o" className="btn btn-sm" onClick={() => run(() => api.clanRank(m.id, 'officer'))}>Nommer officier</button>);
+        if (leader && !me && m.rank === 'officer') {
+          actions.push(<button key="r" className="btn btn-sm" onClick={() => run(() => api.clanRank(m.id, 'member'))}>Rétrograder</button>);
+          actions.push(<button key="l" className="btn btn-sm" onClick={() => run(() => api.clanLeader(m.id))}>Passer la main</button>);
+        }
+        if (officer && !me && m.rank !== 'leader' && (leader || m.rank === 'member')) actions.push(<button key="k" className="btn btn-sm" onClick={() => run(() => api.clanKick(m.id))}>Exclure</button>);
         return (
-          <div key={m.id} className="market-row" style={{ gridTemplateColumns: 'minmax(0, 1fr) auto auto auto' }}>
-            <strong>
-              {m.name} {me && <span className="muted small">(vous)</span>}
-            </strong>
-            <span className={`pill ${m.rank === 'member' ? '' : 'entamé'}`}>{RANK_NAME[m.rank]}</span>
-            <span className="muted small">{m.active ? 'actif' : 'inactif'}</span>
-            <span className="bag-actions">
-              {leader && !me && m.rank === 'member' && (
-                <button className="btn btn-sm" onClick={() => run(() => api.clanRank(m.id, 'officer'))}>
-                  Nommer officier
-                </button>
-              )}
-              {leader && !me && m.rank === 'officer' && (
-                <>
-                  <button className="btn btn-sm" onClick={() => run(() => api.clanRank(m.id, 'member'))}>
-                    Rétrograder
-                  </button>
-                  <button className="btn btn-sm" onClick={() => run(() => api.clanLeader(m.id))}>
-                    Passer la main
-                  </button>
-                </>
-              )}
-              {officer && !me && m.rank !== 'leader' && (leader || m.rank === 'member') && (
-                <button className="btn btn-sm" onClick={() => run(() => api.clanKick(m.id))}>
-                  Exclure
-                </button>
-              )}
+          <div key={m.id} className={`clan-member${m.active ? '' : ' away'}`}>
+            <span className="clan-portrait">
+              <Character appearance={lookOf(m, content.classes)} lod="portrait" animate={false} />
+              <span className={`clan-dot${m.active ? ' on' : ''}`} />
             </span>
+            <span className="clan-member-text">
+              <strong>
+                {m.name} {me && <span className="muted small">(vous)</span>}
+              </strong>
+              <span className="muted small">
+                {content.classes[m.classId ?? '']?.name ?? 'Sans classe'} {m.classLevel} · {m.active ? 'actif' : `absent ${daysSince(m.lastSeenAt)} j`}
+              </span>
+            </span>
+            <span className={`rank-badge rank-${m.rank}`}>
+              {m.rank === 'leader' && <Crown />}
+              {RANK_NAME[m.rank]}
+            </span>
+            {actions.length > 0 && <span className="clan-member-actions">{actions}</span>}
           </div>
         );
       })}
-      <div style={{ marginTop: 10 }}>
+      <div className="clan-leave">
         <button className="btn btn-sm" onClick={() => run(() => api.clanLeave())}>
           {leader && clan.members.length === 1 ? 'Dissoudre le clan' : 'Quitter le clan'}
         </button>
-        {leader && clan.members.length > 1 && <span className="muted small"> Le chef doit d’abord passer la main à un officier.</span>}
+        {leader && clan.members.length > 1 && <span className="muted small">Le chef doit d’abord passer la main.</span>}
       </div>
     </div>
   );

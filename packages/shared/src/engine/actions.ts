@@ -247,6 +247,7 @@ export function newCharacterState(now: number, content: Content): CharacterState
     look: {},
     trials: [],
     shown: {},
+    ornament: null,
     clanBonuses: {},
     combat: emptyCombat(),
     weaponFamily: null,

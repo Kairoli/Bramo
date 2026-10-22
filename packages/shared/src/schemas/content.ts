@@ -100,6 +100,8 @@ export const settingsSchema = z.object({
   character: z.object({
     startingGold: z.number().int().min(0),
   }),
+  /** Ornements de métier. unlockAll : tous portables sans commande réussie, variantes en réserve comprises (essais). */
+  ornaments: z.object({ unlockAll: z.boolean() }).default({ unlockAll: false }),
 });
 
 export const professionFamilySchema = z.enum(['gathering', 'crafting', 'world']);
@@ -203,12 +205,25 @@ export const buildingSchema = z.object({
   base: z.object({ gold: z.number().int().min(0), items: z.array(stackSchema).default([]) }),
 });
 
+/**
+ * Ornement de métier : cadre dessiné autour du pseudo et du titre (images dans apps/web/public/ornaments/<métier>/<rang>/).
+ * Débloqué par la commande du maître `trial`, dont le surnom est le titre affiché. `reserved` : dessin sans déblocage.
+ */
+export const ornamentSchema = z.object({
+  id,
+  profession: id,
+  rank: z.number().int().min(1),
+  trial: id.optional(),
+  reserved: z.boolean().default(false),
+});
+
 export const professionsFileSchema = z.array(professionSchema);
 export const itemsFileSchema = z.array(itemSchema);
 export const recipesFileSchema = z.array(recipeSchema);
 export const trialsFileSchema = z.array(trialSchema);
 export const npcOrdersFileSchema = z.array(npcOrderSchema);
 export const buildingsFileSchema = z.array(buildingSchema);
+export const ornamentsFileSchema = z.array(ornamentSchema);
 
 export type Settings = z.infer<typeof settingsSchema>;
 export type ProfessionFamily = z.infer<typeof professionFamilySchema>;
@@ -219,6 +234,7 @@ export type Stack = z.infer<typeof stackSchema>;
 export type Trial = z.infer<typeof trialSchema>;
 export type NpcOrder = z.infer<typeof npcOrderSchema>;
 export type Building = z.infer<typeof buildingSchema>;
+export type Ornament = z.infer<typeof ornamentSchema>;
 
 /** Contenu chargé, validé et indexé. Construit par `buildContent`. */
 export interface Content {
@@ -232,6 +248,8 @@ export interface Content {
   npcOrders: Record<string, NpcOrder>;
   /** Bâtiments de clan. */
   buildings: Record<string, Building>;
+  /** Ornements de métier, par métier puis par palier. */
+  ornaments: Record<string, Ornament>;
   classes: Record<string, CharacterClass>;
   cosmetics: Cosmetics;
   /** Emplacements d'équipement. */

@@ -6,6 +6,7 @@ import {
   recipesFileSchema,
   buildingsFileSchema,
   npcOrdersFileSchema,
+  ornamentsFileSchema,
   settingsSchema,
   trialsFileSchema,
 } from './schemas/content.js';
@@ -25,6 +26,7 @@ export interface RawContent {
   trials: unknown;
   npcOrders: unknown;
   buildings?: unknown;
+  ornaments?: unknown;
   /** Équipement : modèles, emplacements, lignes aléatoires, ensembles (optionnels pour les propositions du simulateur). */
   gear?: unknown;
   gearSlots?: unknown;
@@ -52,6 +54,7 @@ export function buildContent(raw: RawContent): Content {
   const trialList = parse(trialsFileSchema, raw.trials, 'trials.yaml');
   const npcOrderList = parse(npcOrdersFileSchema, raw.npcOrders ?? [], 'npc_orders.yaml');
   const buildingList = parse(buildingsFileSchema, raw.buildings ?? [], 'buildings.yaml');
+  const ornamentList = parse(ornamentsFileSchema, raw.ornaments ?? [], 'ornaments.yaml');
   const gearSlotList = parse(gearSlotsFileSchema, raw.gearSlots ?? [], 'gear_slots.yaml');
   const gearPools = parse(gearPoolsFileSchema.default({ tierScale: {}, pools: {} }), raw.gearPools ?? undefined, 'gear_pools.yaml');
   const gearList = parse(gearFileSchema, raw.gear ?? [], 'gear.yaml');
@@ -128,6 +131,17 @@ export function buildContent(raw: RawContent): Content {
     for (const p of b.boost.professions) if (p !== 'all' && !professionMap[p]) errors.push(`buildings.yaml : ${b.id} améliore un métier inconnu « ${p} »`);
     for (const s of b.base.items) if (!items[s.item]) errors.push(`buildings.yaml : ${b.id} demande un objet inconnu « ${s.item} »`);
   }
+  const ornaments = unique(
+    [...ornamentList].sort((a, b) => a.profession.localeCompare(b.profession) || a.rank - b.rank),
+    'ornaments.yaml',
+  );
+  for (const o of ornamentList) {
+    if (!professionMap[o.profession]) errors.push(`ornaments.yaml : ${o.id} est d'un métier inconnu « ${o.profession} »`);
+    if (o.reserved !== !o.trial) errors.push(`ornaments.yaml : ${o.id} doit avoir soit une commande (trial), soit reserved: true`);
+    const t = o.trial ? trials[o.trial] : undefined;
+    if (o.trial && !t) errors.push(`ornaments.yaml : ${o.id} : commande inconnue « ${o.trial} »`);
+    else if (t && (t.profession !== o.profession || t.rank !== o.rank)) errors.push(`ornaments.yaml : ${o.id} : la commande ${t.id} est d'un autre métier ou palier`);
+  }
   const classes = unique(classList, 'classes.yaml');
   unique(cosmetics.outfits, 'cosmetics.yaml');
   for (const c of classList) {
@@ -177,5 +191,5 @@ export function buildContent(raw: RawContent): Content {
   }
   if (errors.length) throw new ContentError(`Données incohérentes :\n- ${errors.join('\n- ')}`);
 
-  return { settings, professions, items, recipes, trials, npcOrders, buildings, classes, cosmetics, gearSlots, gearPools, gearModels, gearSets, combat, xpTable: buildXpTable(settings.xp.maxLevel) };
+  return { settings, professions, items, recipes, trials, npcOrders, buildings, ornaments, classes, cosmetics, gearSlots, gearPools, gearModels, gearSets, combat, xpTable: buildXpTable(settings.xp.maxLevel) };
 }

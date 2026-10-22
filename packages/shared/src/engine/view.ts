@@ -9,7 +9,19 @@ import { lookOptions, recycleYield, repairCost, unlockedOutfits } from './action
 import { repairProblem } from './commission.js';
 import { npcDoneToday, npcOrdersOfDay } from './npc.js';
 import { type CombatView, viewCombat } from '../combat/view.js';
-import { type RankName, type TrialStatus, effectiveLevel, heldXp, nextTrial, ranksOf, shownNickname, skillLevel, trialStatus } from './trials.js';
+import {
+  type RankName,
+  type TrialStatus,
+  effectiveLevel,
+  heldXp,
+  nextTrial,
+  ranksOf,
+  shownNickname,
+  skillLevel,
+  trialStatus,
+  unlockedOrnaments,
+  wornOrnament,
+} from './trials.js';
 
 /** Ce que le client reçoit. Tous les nombres sont calculés par le serveur. */
 export interface SkillView {
@@ -67,6 +79,9 @@ export interface StateView {
   lookOptions: Record<string, string[]>;
   /** Apparence à afficher : classe et tenue (tenue de départ de la classe par défaut). */
   appearance: Appearance | null;
+  /** Ornement de métier porté (null = aucun) et ceux que le personnage peut porter. */
+  ornament: string | null;
+  unlockedOrnaments: string[];
   trials: Record<string, TrialStatus>;
   /** Combat de la classe actuelle (null sans classe ou sans data/combat/). */
   combat: CombatView | null;
@@ -182,6 +197,8 @@ export function viewState(state: CharacterState, now: number, content: Content):
     unlockedOutfits: unlockedOutfits(state, content),
     lookOptions: lookOptions(state, content),
     appearance: viewAppearance(state, content),
+    ornament: wornOrnament(state, content),
+    unlockedOrnaments: unlockedOrnaments(state, content),
     trials,
     combat: viewCombat(state, content),
   };

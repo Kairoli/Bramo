@@ -96,3 +96,8 @@ absence:
 
 character:
   startingGold: 100       # à équilibrer
+
+# Ornements de métier (data/ornaments.yaml) : cadre autour du pseudo, débloqué par la commande du maître du palier.
+# unlockAll : true = tous portables sans commande, variantes du 90 en réserve comprises. Essais de Louis (22 octobre) : à repasser à false.
+ornaments:
+  unlockAll: true

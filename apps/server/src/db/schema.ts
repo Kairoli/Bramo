@@ -61,6 +61,8 @@ export const characters = pgTable('characters', {
   trials: jsonb('trials').$type<string[]>().notNull().default([]),
   /** Surnom affiché par métier (rang choisi). */
   shown: jsonb('shown').$type<Record<string, number>>().notNull().default({}),
+  /** Ornement de métier porté (null = aucun). */
+  ornament: text('ornament'),
   /** Combat : XP par classe, voies, plans, activité de combat (CombatState de @bramo/shared). */
   combat: jsonb('combat').$type<Partial<CombatState>>().notNull().default({}),
   lastTickAt: ts('last_tick_at').notNull(),

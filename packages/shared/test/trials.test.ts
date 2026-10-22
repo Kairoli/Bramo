@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { advance } from '../src/engine/advance.js';
 import { chooseClass, chooseOutfit, setLook, startActivity, unlockedOutfits } from '../src/engine/actions.js';
-import { completeTrial, effectiveLevel, heldXp, setNickname, skillLevel } from '../src/engine/trials.js';
+import { chooseOrnament, completeTrial, effectiveLevel, heldXp, setNickname, skillLevel, unlockedOrnaments } from '../src/engine/trials.js';
 import { viewState } from '../src/engine/view.js';
 import { HOUR, T0, content, makeState, mining } from './fixture.js';
 
@@ -148,5 +148,26 @@ describe('tenue', () => {
     expect(() => setLook(s, 'cape', 'x', content)).toThrow('pas d’apparence');
     // Changer de tenue repart de zéro.
     expect(chooseOutfit(changed, 'plain', content).look).toEqual({});
+  });
+});
+
+describe('ornements de métier', () => {
+  it('celui d’une commande réussie se porte ; la variante en réserve, jamais sans essais', () => {
+    expect(unlockedOrnaments(makeState(), content)).toEqual([]);
+    expect(() => chooseOrnament(makeState(), 'mining_20', content)).toThrow('commande du maître');
+    const s = chooseOrnament(makeState({ trials: ['mining_20'] }), 'mining_20', content);
+    expect(viewState(s, T0, content)).toMatchObject({ ornament: 'mining_20', unlockedOrnaments: ['mining_20'] });
+    expect(() => chooseOrnament(s, 'mining_90', content)).toThrow('commande du maître');
+    expect(() => chooseOrnament(s, 'nope', content)).toThrow('inconnu');
+    expect(chooseOrnament(s, null, content).ornament).toBeNull();
+  });
+
+  it('settings.ornaments.unlockAll : tous portables, réserve comprise', () => {
+    const all = { ...content, settings: { ...content.settings, ornaments: { unlockAll: true } } };
+    expect(unlockedOrnaments(makeState(), all)).toEqual(['mining_20', 'mining_90']);
+    const s = chooseOrnament(makeState(), 'mining_90', all);
+    expect(viewState(s, T0, all).ornament).toBe('mining_90');
+    // Les essais finis, l'ornement non débloqué n'est plus affiché (le choix reste enregistré).
+    expect(viewState(s, T0, content).ornament).toBeNull();
   });
 });

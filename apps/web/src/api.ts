@@ -93,6 +93,7 @@ export const api = {
   gearUnequip: (id: number) => request<GearView>('POST', '/gear/unequip', { id }),
   devGrantGear: (modelId: string, masterpiece = false) => request<GearView>('POST', '/dev/gear/grant', { modelId, masterpiece }),
   chooseOutfit: (outfitId: string) => request<StateResponse>('POST', '/character/outfit', { outfitId }),
+  chooseOrnament: (ornamentId: string | null) => request<StateResponse>('POST', '/character/ornament', { ornamentId }),
   setLook: (slot: string, partId: string | null) => request<StateResponse>('POST', '/character/look', { slot, partId }),
   chooseClass: (classId: string) => request<StateResponse>('POST', '/character/class', { classId }),
   setNickname: (profession: string, rank: number) => request<StateResponse>('POST', '/nickname', { profession, rank }),

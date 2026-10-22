@@ -15,6 +15,7 @@ import { ProfessionRoom } from './rooms/ProfessionRoom';
 import { CharacterRoom } from './rooms/CharacterRoom';
 import { CombatRoom } from './rooms/CombatRoom';
 import { Atelier } from './rooms/Atelier';
+import { OrnamentGallery } from './rooms/OrnamentGallery';
 import { ContentContext } from './game/ContentContext';
 import './styles/global.css';
 import './styles/rooms.css';
@@ -78,6 +79,8 @@ function App() {
     <ContentContext.Provider value={content}>
       {hash === '#atelier' ? (
         <Atelier />
+      ) : hash === '#ornements' ? (
+        <OrnamentGallery />
       ) : !session ? (
         <LoginScreen onLoggedIn={loadState} />
       ) : (

@@ -2111,3 +2111,133 @@
 .combat-line {
   padding: 1px 0;
 }
+
+/* Page de contrôle des ornements (/#ornements). */
+.ornament-gallery {
+  height: 100vh;
+  padding: 20px 24px 40px;
+  display: grid;
+  align-content: start;
+  gap: 24px;
+}
+.ornament-gallery-head {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.ornament-gallery-head input {
+  font: inherit;
+  background: var(--sunken);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 2px 8px;
+}
+.ornament-gallery-row {
+  display: grid;
+  gap: 10px;
+}
+.ornament-gallery-item {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+.ornament-gallery-item .eyebrow {
+  width: 80px;
+  flex: none;
+}
+
+/* Ornements : plaque dans la salle Personnage et sur la carte de l'accueil, choix de l'ornement. */
+.char-plate {
+  --plate-scale: 1;
+}
+.card-plate {
+  --plate-scale: 0.72;
+  margin-top: 6px;
+}
+@media (max-height: 780px) {
+  .char-plate {
+    --plate-scale: 0.85;
+  }
+  .card-plate {
+    --plate-scale: 0.62;
+  }
+}
+.ornament-modal {
+  width: min(1000px, calc(100vw - 48px));
+  max-height: min(760px, calc(100vh - 48px));
+  grid-template-rows: auto auto auto minmax(0, 1fr) auto;
+}
+.ornament-preview {
+  display: grid;
+  place-items: center;
+  min-height: 152px;
+  border-radius: 12px;
+}
+.ornament-none {
+  display: grid;
+  justify-items: center;
+  gap: 4px;
+}
+.ornament-none strong {
+  font-size: 24px;
+  font-weight: 800;
+}
+.ornament-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(440px, 1fr));
+  gap: 6px 28px;
+  align-content: start;
+}
+.ornament-row {
+  display: grid;
+  grid-template-columns: 110px repeat(6, 52px);
+  align-items: center;
+  gap: 8px;
+}
+.ornament-row-name {
+  font-weight: 700;
+}
+.ornament-cell {
+  display: grid;
+  justify-items: center;
+  gap: 1px;
+  padding: 4px 0 3px;
+  background: var(--sunken);
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  color: var(--text-muted);
+  font: inherit;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.ornament-cell img {
+  width: 40px;
+  height: 40px;
+}
+.ornament-cell:hover:not(:disabled) {
+  border-color: var(--text-muted);
+}
+.ornament-cell.picked {
+  border-color: var(--action);
+  color: var(--action);
+  box-shadow: 0 0 0 1px var(--action) inset;
+}
+.ornament-cell.worn span::after {
+  content: ' ✓';
+  color: var(--good);
+}
+.ornament-cell:disabled {
+  cursor: default;
+}
+.ornament-cell:disabled img {
+  filter: grayscale(1) brightness(0.55);
+  opacity: 0.5;
+}
+.ornament-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}

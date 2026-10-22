@@ -20,6 +20,7 @@ export const settings = {
   town: { activeWindowMin: 15, maxWalkers: 10, feedSize: 30, milestoneLevels: [20, 40] },
   absence: { minSummaryMin: 5 },
   character: { startingGold: 100 },
+  ornaments: { unlockAll: false },
 };
 
 export const content = buildContent({
@@ -59,6 +60,10 @@ export const content = buildContent({
   classes: [
     { id: 'mage', name: 'Mage', style: 'magic', profession: 'mining', affinityColor: '#B39DF5', pitch: '', startingOutfit: 'plain', pose: 'mage' },
     { id: 'brute', name: 'Brute', style: 'melee', profession: 'smithing', affinityColor: '#F08A4B', pitch: '', startingOutfit: 'brute_garb', pose: 'brute' },
+  ],
+  ornaments: [
+    { id: 'mining_20', profession: 'mining', rank: 20, trial: 'mining_20' },
+    { id: 'mining_90', profession: 'mining', rank: 90, reserved: true },
   ],
   buildings: [
     { id: 'hall', name: 'Halle', description: '', maxLevel: 3, boost: { professions: ['all'], perLevel: 0.01 }, base: { gold: 100, items: [{ item: 'ore', qty: 10 }] } },
@@ -152,6 +157,7 @@ export function makeState(over: Partial<CharacterState> = {}): CharacterState {
     wear: {},
     pantry: {},
     shown: {},
+    ornament: null,
     clanBonuses: {},
     npc: { dayKey: '', done: [] },
     prime: { dayKey: '', units: 0 },

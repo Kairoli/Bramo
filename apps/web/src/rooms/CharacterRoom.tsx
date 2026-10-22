@@ -9,6 +9,8 @@ import { Bar, FAMILY_COLOR, ItemIcon } from '../components/ui';
 import { AppearancePicker } from '../components/AppearancePicker';
 import { GearPanel, GearTotalsBlock } from '../components/GearPanel';
 import { DOLL_LEFT, DOLL_RIGHT, PaperDoll, PartThumb, useEquipment } from '../components/equipment';
+import { OrnamentPlate, ornamentTitle } from '../components/Ornament';
+import { OrnamentModal } from '../components/OrnamentPicker';
 
 /** Salle Personnage : le personnage au centre, tout ce qu'il porte, ses caractéristiques. */
 export function CharacterRoom() {
@@ -17,6 +19,8 @@ export function CharacterRoom() {
   const { settings } = content;
   const [classOpen, setClassOpen] = useState(false);
   const [outfitOpen, setOutfitOpen] = useState(false);
+  const [ornamentOpen, setOrnamentOpen] = useState(false);
+  const ornament = state.ornament ? content.ornaments[state.ornament] : undefined;
   /** « Équipement » : ce qui compte pour le build ; « Apparence » : l'aspect de chaque pièce, sans effet sur le build. */
   const [mode, setMode] = useState<'gear' | 'look'>('gear');
   const [gear, setGear] = useState<GearView | null>(null);
@@ -174,7 +178,11 @@ export function CharacterRoom() {
             </div>
           )}
           <div className="char-name-row">
-            <h1>{name}</h1>
+            {ornament ? (
+              <OrnamentPlate ornament={ornament} name={name} title={ornamentTitle(ornament, content, state)} width={352} className="char-plate" />
+            ) : (
+              <h1>{name}</h1>
+            )}
             <div className="seg-toggle" role="group" aria-label="Affichage du personnage">
               <button aria-pressed={mode === 'gear'} onClick={() => setMode('gear')}>
                 Équipement
@@ -184,9 +192,11 @@ export function CharacterRoom() {
               </button>
             </div>
           </div>
-          <div style={{ color: 'var(--clan)' }}>
-            {best.s.nickname} · {best.p.name} {best.s.level}
-          </div>
+          {!ornament && (
+            <div style={{ color: 'var(--clan)' }}>
+              {best.s.nickname} · {best.p.name} {best.s.level}
+            </div>
+          )}
         </header>
         <PaperDoll size="page" mode={mode} gear={gear} />
         <footer className="char-stage-foot">
@@ -196,11 +206,15 @@ export function CharacterRoom() {
           <button className="btn btn-sm" onClick={() => setOutfitOpen(true)}>
             Changer de tenue
           </button>
+          <button className="btn btn-sm" onClick={() => setOrnamentOpen(true)}>
+            Ornement
+          </button>
           {outfit && <span className="chip">Tenue {outfit.name}</span>}
           <span className="chip">Niveau total {totalLevel}</span>
         </footer>
         {classOpen && <ClassModal onClose={() => setClassOpen(false)} />}
         {outfitOpen && <OutfitModal onClose={() => setOutfitOpen(false)} />}
+        {ornamentOpen && <OrnamentModal onClose={() => setOrnamentOpen(false)} />}
       </section>
 
       <section className="panel char-stats scroll">

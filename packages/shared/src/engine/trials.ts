@@ -94,6 +94,34 @@ export function setNickname(input: CharacterState, profession: string, rank: num
   return state;
 }
 
+/**
+ * Ornements que le joueur peut porter : celui de chaque commande réussie. Avec `settings.ornaments.unlockAll` (essais),
+ * tous, variantes en réserve comprises.
+ */
+export function unlockedOrnaments(state: Pick<CharacterState, 'trials'>, content: Pick<Content, 'ornaments' | 'settings'>): string[] {
+  return Object.values(content.ornaments)
+    .filter((o) => content.settings.ornaments.unlockAll || (!!o.trial && state.trials.includes(o.trial)))
+    .map((o) => o.id);
+}
+
+/** Ornement affiché : celui que le joueur porte, s'il est encore débloqué. */
+export function wornOrnament(state: Pick<CharacterState, 'trials' | 'ornament'>, content: Pick<Content, 'ornaments' | 'settings'>): string | null {
+  return state.ornament && unlockedOrnaments(state, content).includes(state.ornament) ? state.ornament : null;
+}
+
+/** Porter un ornement débloqué, de n'importe quel métier (null = aucun). */
+export function chooseOrnament(input: CharacterState, ornamentId: string | null, content: Content): CharacterState {
+  if (ornamentId !== null) {
+    if (!content.ornaments[ornamentId]) throw new GameError('unknown_ornament', 'Ornement inconnu.');
+    if (!unlockedOrnaments(input, content).includes(ornamentId)) {
+      throw new GameError('locked_ornament', 'Cet ornement se débloque avec la commande du maître de son palier.');
+    }
+  }
+  const state = cloneState(input);
+  state.ornament = ornamentId;
+  return state;
+}
+
 /** Une recette de chef-d'œuvre n'existe que pendant sa commande. */
 export function recipeAvailable(recipeTrial: string | undefined, state: CharacterState, content: Content): boolean {
   if (!recipeTrial) return true;

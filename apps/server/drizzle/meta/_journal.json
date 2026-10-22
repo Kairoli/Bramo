@@ -99,6 +99,13 @@
       "when": 1792624732464,
       "tag": "0013_combat",
       "breakpoints": true
+    },
+    {
+      "idx": 14,
+      "version": "7",
+      "when": 1792679872549,
+      "tag": "0014_ornament",
+      "breakpoints": true
     }
   ]
 }

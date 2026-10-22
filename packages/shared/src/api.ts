@@ -28,6 +28,7 @@ export const combatPathBody = z.object({ pathId: z.string() });
 /** Plan de combat : sorts et première utilisation (s) ; null revient au plan conseillé. */
 export const combatPlanBody = z.object({ plan: z.array(z.object({ spell: z.string(), at: z.number().min(0) })).max(10).nullable() });
 export const outfitBody = z.object({ outfitId: z.string() });
+export const ornamentBody = z.object({ ornamentId: z.string().nullable() });
 export const gearIdBody = z.object({ id: z.number().int() });
 export const gearGrantBody = z.object({ modelId: z.string(), masterpiece: z.boolean().optional(), count: z.number().int().min(1).max(20).optional() });
 export const lookBody = z.object({ slot: z.string(), partId: z.string().nullable() });

@@ -56,6 +56,8 @@ export interface CharacterState {
   trials: string[];
   /** Surnom affiché par métier : rang choisi (0 = surnom de départ). Absent = le plus haut débloqué. */
   shown: Record<string, number>;
+  /** Ornement de métier porté (identifiant de data/ornaments.yaml) ; null = aucun. */
+  ornament: string | null;
   /** Combat : XP par classe, voies, plans, activité de combat (voir combat/progress.ts). */
   combat: CombatState;
   /** Famille de l'arme portée (renseignée au chargement depuis l'équipement, jamais enregistrée). */

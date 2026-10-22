@@ -27,12 +27,14 @@ import {
   cancelBody,
   chooseClass,
   chooseOutfit,
+  chooseOrnament,
   setLook,
   viewGear,
   gearGrantBody,
   gearIdBody,
   lookBody,
   outfitBody,
+  ornamentBody,
   classBody,
   choosePath,
   combatPathBody,
@@ -153,6 +155,7 @@ export async function buildApp({ db, content, clock = Date.now, secureCookies = 
     items: content.items,
     npcOrders: content.npcOrders,
     buildings: content.buildings,
+    ornaments: content.ornaments,
     recipes: content.recipes,
     trials: content.trials,
     classes: content.classes,
@@ -360,6 +363,11 @@ export async function buildApp({ db, content, clock = Date.now, secureCookies = 
       state: chooseOutfit(state, outfitId, content),
       log: `Vous enfilez la tenue ${content.cosmetics.outfits.find((o) => o.id === outfitId)?.name}.`,
     }));
+  });
+
+  app.post('/api/character/ornament', (req) => {
+    const { ornamentId } = body(ornamentBody, req);
+    return playAs(req, (state) => ({ state: chooseOrnament(state, ornamentId, content) }));
   });
 
   app.post('/api/character/look', (req) => {

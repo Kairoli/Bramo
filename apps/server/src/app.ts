@@ -87,6 +87,7 @@ import { recentEntries } from './journal.js';
 import { joinEvent, recordEvents, townView } from './town.js';
 import { contribute, createClan, joinClan, kickMember, leaveClan, listClans, myClanView, setRank } from './clans.js';
 import { joinTestClan } from './devClan.js';
+import { playerProfile } from './profile.js';
 import { cancelRepair, openRepairs, requestRepair, takeRepair } from './repairs.js';
 import { dropMismatchedOwned, equipOwned, giveStarterGear, grantGear, loadGear, unequipOwned, wearGearSet } from './gear.js';
 import { buyFromStall, cancelOrder, fillOrder, marketBook, marketSummary, myOrders, placeOrder } from './market.js';
@@ -602,6 +603,15 @@ export async function buildApp({ db, content, clock = Date.now, secureCookies = 
   app.get('/api/town', async (req) => {
     const me = await myCharacter(req);
     return townView(db, content, clock(), me.id);
+  });
+
+  /** Fiche publique d'un joueur (clic sur un personnage du bourg ou du clan). */
+  app.get('/api/players/:id', async (req) => {
+    await requireAccount(req);
+    const id = Number((req.params as { id: string }).id);
+    const profile = Number.isInteger(id) ? await playerProfile(db, content, id) : null;
+    if (!profile) throw new HttpError(404, 'unknown_player', 'Joueur introuvable.');
+    return profile;
   });
 
   app.get('/api/journal', async (req) => {

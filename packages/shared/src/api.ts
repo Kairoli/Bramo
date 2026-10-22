@@ -182,6 +182,30 @@ export interface TownPlayer {
 }
 
 /** Une ligne du fil du serveur. */
+/** Fiche publique d'un joueur (clic sur un personnage du bourg ou du clan) : de quoi le voir, sans rien de privé. */
+export interface PlayerProfile {
+  id: number;
+  name: string;
+  classId: string | null;
+  outfit: string | null;
+  look: Record<string, string>;
+  ornament: string | null;
+  /** Surnom et métier du meilleur métier. */
+  nickname: string;
+  clan: { name: string; rank: ClanRank } | null;
+  /** Classe actuelle : niveau et voie ; les autres classes jouées. */
+  classLevel: number;
+  path: string | null;
+  otherClasses: { classId: string; level: number }[];
+  /** Équipement porté (de quoi dessiner chaque pièce). */
+  gear: { slot: string; family: string; tier: number; rarity: string; name: string; masterpiece: boolean }[];
+  /** Métiers au-delà du niveau 1, du plus haut au plus bas. */
+  skills: { profession: string; level: number }[];
+  totalLevel: number;
+  doing: string | null;
+  lastSeenAt: number;
+}
+
 export interface TownEvent {
   id: number;
   at: number;

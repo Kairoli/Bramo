@@ -1,0 +1,1228 @@
+{
+  "version": 1,
+  "pathBase": "ornement/",
+  "entries": {
+    "mining_20": {
+      "id": "gratteur_de_galeries",
+      "profession": "mining",
+      "professionName": "Minage",
+      "rank": 20,
+      "title": "Gratteur de galeries",
+      "trialId": "mining_20",
+      "enabled": true,
+      "provisional": false,
+      "palette": [
+        "#8799A2",
+        "#454D53",
+        "#AF7752"
+      ],
+      "motifs": [
+        "fer brut",
+        "petite pioche",
+        "attaches rivetées"
+      ],
+      "files": {
+        "left": "assets/mining/20/gratteur_de_galeries_left.png",
+        "right": "assets/mining/20/gratteur_de_galeries_right.png",
+        "center": "assets/mining/20/gratteur_de_galeries_center.png",
+        "badge": "assets/mining/20/gratteur_de_galeries_badge.png",
+        "preview": "assets/mining/20/gratteur_de_galeries_preview.png",
+        "metadata": "assets/mining/20/gratteur_de_galeries.json"
+      }
+    },
+    "mining_40": {
+      "id": "chuchoteur_de_filons",
+      "profession": "mining",
+      "professionName": "Minage",
+      "rank": 40,
+      "title": "Chuchoteur de filons",
+      "trialId": "mining_40",
+      "enabled": true,
+      "provisional": false,
+      "palette": [
+        "#718A96",
+        "#86C4CF",
+        "#B77F55"
+      ],
+      "motifs": [
+        "filons de mithril",
+        "crochets de fer",
+        "petites pointes de pioche"
+      ],
+      "files": {
+        "left": "assets/mining/40/chuchoteur_de_filons_left.png",
+        "right": "assets/mining/40/chuchoteur_de_filons_right.png",
+        "center": "assets/mining/40/chuchoteur_de_filons_center.png",
+        "badge": "assets/mining/40/chuchoteur_de_filons_badge.png",
+        "preview": "assets/mining/40/chuchoteur_de_filons_preview.png",
+        "metadata": "assets/mining/40/chuchoteur_de_filons.json"
+      }
+    },
+    "mining_60": {
+      "id": "fleau_des_eboulements",
+      "profession": "mining",
+      "professionName": "Minage",
+      "rank": 60,
+      "title": "Fléau des éboulements",
+      "trialId": "mining_60",
+      "enabled": true,
+      "provisional": false,
+      "palette": [
+        "#728B98",
+        "#C38A55",
+        "#86C4CF"
+      ],
+      "motifs": [
+        "galerie renforcée",
+        "roche fissurée",
+        "brides de cuivre"
+      ],
+      "files": {
+        "left": "assets/mining/60/fleau_des_eboulements_left.png",
+        "right": "assets/mining/60/fleau_des_eboulements_right.png",
+        "center": "assets/mining/60/fleau_des_eboulements_center.png",
+        "badge": "assets/mining/60/fleau_des_eboulements_badge.png",
+        "preview": "assets/mining/60/fleau_des_eboulements_preview.png",
+        "metadata": "assets/mining/60/fleau_des_eboulements.json"
+      }
+    },
+    "mining_80": {
+      "id": "salue_par_les_nains",
+      "profession": "mining",
+      "professionName": "Minage",
+      "rank": 80,
+      "title": "Salué par les nains",
+      "trialId": "mining_80",
+      "enabled": true,
+      "provisional": false,
+      "palette": [
+        "#435569",
+        "#69BADA",
+        "#C39A61"
+      ],
+      "motifs": [
+        "architecture naine",
+        "azurite sertie",
+        "sombracier ajouré"
+      ],
+      "files": {
+        "left": "assets/mining/80/salue_par_les_nains_left.png",
+        "right": "assets/mining/80/salue_par_les_nains_right.png",
+        "center": "assets/mining/80/salue_par_les_nains_center.png",
+        "badge": "assets/mining/80/salue_par_les_nains_badge.png",
+        "preview": "assets/mining/80/salue_par_les_nains_preview.png",
+        "metadata": "assets/mining/80/salue_par_les_nains.json"
+      }
+    },
+    "mining_90": {
+      "id": "minage_palier_90",
+      "profession": "mining",
+      "professionName": "Minage",
+      "rank": 90,
+      "title": "Minage — palier 90",
+      "trialId": null,
+      "enabled": false,
+      "provisional": true,
+      "palette": [
+        "#33485E",
+        "#91D7E5",
+        "#D3AE69"
+      ],
+      "motifs": [
+        "pics montagneux",
+        "double armature",
+        "sertissages de maîtrise"
+      ],
+      "files": {
+        "left": "assets/mining/90/minage_palier_90_left.png",
+        "right": "assets/mining/90/minage_palier_90_right.png",
+        "center": "assets/mining/90/minage_palier_90_center.png",
+        "badge": "assets/mining/90/minage_palier_90_badge.png",
+        "preview": "assets/mining/90/minage_palier_90_preview.png",
+        "metadata": "assets/mining/90/minage_palier_90.json"
+      }
+    },
+    "mining_99": {
+      "id": "coeur_de_la_montagne",
+      "profession": "mining",
+      "professionName": "Minage",
+      "rank": 99,
+      "title": "Cœur de la montagne",
+      "trialId": "mining_99",
+      "enabled": true,
+      "provisional": false,
+      "palette": [
+        "#C5F5F0",
+        "#39465F",
+        "#DDB66C"
+      ],
+      "motifs": [
+        "cœur d’astralite",
+        "ailettes minérales",
+        "architecture de montagne"
+      ],
+      "files": {
+        "left": "assets/mining/99/coeur_de_la_montagne_left.png",
+        "right": "assets/mining/99/coeur_de_la_montagne_right.png",
+        "center": "assets/mining/99/coeur_de_la_montagne_center.png",
+        "badge": "assets/mining/99/coeur_de_la_montagne_badge.png",
+        "preview": "assets/mining/99/coeur_de_la_montagne_preview.png",
+        "metadata": "assets/mining/99/coeur_de_la_montagne.json"
+      }
+    },
+    "woodcutting_20": {
+      "id": "collectionneur_d_ecorce",
+      "profession": "woodcutting",
+      "professionName": "Bûcheronnage",
+      "rank": 20,
+      "title": "Collectionneur d’écorce",
+      "trialId": "woodcutting_20",
+      "enabled": true,
+      "provisional": false,
+      "palette": [
+        "#8B6042",
+        "#7ED6A2",
+        "#C89562"
+      ],
+      "motifs": [
+        "branches de chêne",
+        "hache et écorce",
+        "feuilles de bois de lune"
+      ],
+      "files": {
+        "left": "assets/woodcutting/20/collectionneur_d_ecorce_left.png",
+        "right": "assets/woodcutting/20/collectionneur_d_ecorce_right.png",
+        "center": "assets/woodcutting/20/collectionneur_d_ecorce_center.png",
+        "badge": "assets/woodcutting/20/collectionneur_d_ecorce_badge.png",
+        "preview": "assets/woodcutting/20/collectionneur_d_ecorce_preview.png",
+        "metadata": "assets/woodcutting/20/collectionneur_d_ecorce.json"
+      }
+    },
+    "woodcutting_40": {
+      "id": "fendeur_de_querelles",
+      "profession": "woodcutting",
+      "professionName": "Bûcheronnage",
+      "rank": 40,
+      "title": "Fendeur de querelles",
+      "trialId": "woodcutting_40",
+      "enabled": true,
+      "provisional": false,
+      "palette": [
+        "#8B6042",
+        "#7ED6A2",
+        "#C89562"
+      ],
+      "motifs": [
+        "branches de chêne",
+        "hache et écorce",
+        "feuilles de bois de lune"
+      ],
+      "files": {
+        "left": "assets/woodcutting/40/fendeur_de_querelles_left.png",
+        "right": "assets/woodcutting/40/fendeur_de_querelles_right.png",
+        "center": "assets/woodcutting/40/fendeur_de_querelles_center.png",
+        "badge": "assets/woodcutting/40/fendeur_de_querelles_badge.png",
+        "preview": "assets/woodcutting/40/fendeur_de_querelles_preview.png",
+        "metadata": "assets/woodcutting/40/fendeur_de_querelles.json"
+      }
+    },
+    "woodcutting_60": {
+      "id": "chuchoteur_de_chenes",
+      "profession": "woodcutting",
+      "professionName": "Bûcheronnage",
+      "rank": 60,
+      "title": "Chuchoteur de chênes",
+      "trialId": "woodcutting_60",
+      "enabled": true,
+      "provisional": false,
+      "palette": [
+        "#8B6042",
+        "#7ED6A2",
+        "#C89562"
+      ],
+      "motifs": [
+        "branches de chêne",
+        "hache et écorce",
+        "feuilles de bois de lune"
+      ],
+      "files": {
+        "left": "assets/woodcutting/60/chuchoteur_de_chenes_left.png",
+        "right": "assets/woodcutting/60/chuchoteur_de_chenes_right.png",
+        "center": "assets/woodcutting/60/chuchoteur_de_chenes_center.png",
+        "badge": "assets/woodcutting/60/chuchoteur_de_chenes_badge.png",
+        "preview": "assets/woodcutting/60/chuchoteur_de_chenes_preview.png",
+        "metadata": "assets/woodcutting/60/chuchoteur_de_chenes.json"
+      }
+    },
+    "woodcutting_80": {
+      "id": "desespoir_des_castors",
+      "profession": "woodcutting",
+      "professionName": "Bûcheronnage",
+      "rank": 80,
+      "title": "Désespoir des castors",
+      "trialId": "woodcutting_80",
+      "enabled": true,
+      "provisional": false,
+      "palette": [
+        "#8B6042",
+        "#7ED6A2",
+        "#C89562"
+      ],
+      "motifs": [
+        "branches de chêne",
+        "hache et écorce",
+        "feuilles de bois de lune"
+      ],
+      "files": {
+        "left": "assets/woodcutting/80/desespoir_des_castors_left.png",
+        "right": "assets/woodcutting/80/desespoir_des_castors_right.png",
+        "center": "assets/woodcutting/80/desespoir_des_castors_center.png",
+        "badge": "assets/woodcutting/80/desespoir_des_castors_badge.png",
+        "preview": "assets/woodcutting/80/desespoir_des_castors_preview.png",
+        "metadata": "assets/woodcutting/80/desespoir_des_castors.json"
+      }
+    },
+    "woodcutting_90": {
+      "id": "bucheronnage_palier_90",
+      "profession": "woodcutting",
+      "professionName": "Bûcheronnage",
+      "rank": 90,
+      "title": "Bûcheronnage — palier 90",
+      "trialId": null,
+      "enabled": false,
+      "provisional": true,
+      "palette": [
+        "#8B6042",
+        "#7ED6A2",
+        "#C89562"
+      ],
+      "motifs": [
+        "branches de chêne",
+        "hache et écorce",
+        "feuilles de bois de lune"
+      ],
+      "files": {
+        "left": "assets/woodcutting/90/bucheronnage_palier_90_left.png",
+        "right": "assets/woodcutting/90/bucheronnage_palier_90_right.png",
+        "center": "assets/woodcutting/90/bucheronnage_palier_90_center.png",
+        "badge": "assets/woodcutting/90/bucheronnage_palier_90_badge.png",
+        "preview": "assets/woodcutting/90/bucheronnage_palier_90_preview.png",
+        "metadata": "assets/woodcutting/90/bucheronnage_palier_90.json"
+      }
+    },
+    "woodcutting_99": {
+      "id": "la_foret_a_lui_tout_seul",
+      "profession": "woodcutting",
+      "professionName": "Bûcheronnage",
+      "rank": 99,
+      "title": "La forêt à lui tout seul",
+      "trialId": "woodcutting_99",
+      "enabled": true,
+      "provisional": false,
+      "palette": [
+        "#8B6042",
+        "#7ED6A2",
+        "#C89562"
+      ],
+      "motifs": [
+        "branches de chêne",
+        "hache et écorce",
+        "feuilles de bois de lune"
+      ],
+      "files": {
+        "left": "assets/woodcutting/99/la_foret_a_lui_tout_seul_left.png",
+        "right": "assets/woodcutting/99/la_foret_a_lui_tout_seul_right.png",
+        "center": "assets/woodcutting/99/la_foret_a_lui_tout_seul_center.png",
+        "badge": "assets/woodcutting/99/la_foret_a_lui_tout_seul_badge.png",
+        "preview": "assets/woodcutting/99/la_foret_a_lui_tout_seul_preview.png",
+        "metadata": "assets/woodcutting/99/la_foret_a_lui_tout_seul.json"
+      }
+    },
+    "fishing_20": {
+      "id": "lanceur_patient",
+      "profession": "fishing",
+      "professionName": "Pêche",
+      "rank": 20,
+      "title": "Lanceur patient",
+      "trialId": "fishing_20",
+      "enabled": true,
+      "provisional": false,
+      "palette": [
+        "#4CC9D6",
+        "#C59E64",
+        "#42637B"
+      ],
+      "motifs": [
+        "cordages et hameçons",
+        "vagues et nageoires",
+        "lanternes et coquillages"
+      ],
+      "files": {
+        "left": "assets/fishing/20/lanceur_patient_left.png",
+        "right": "assets/fishing/20/lanceur_patient_right.png",
+        "center": "assets/fishing/20/lanceur_patient_center.png",
+        "badge": "assets/fishing/20/lanceur_patient_badge.png",
+        "preview": "assets/fishing/20/lanceur_patient_preview.png",
+        "metadata": "assets/fishing/20/lanceur_patient.json"
+      }
+    },
+    "fishing_40": {
+      "id": "facheux_des_brochets",
+      "profession": "fishing",
+      "professionName": "Pêche",
+      "rank": 40,
+      "title": "Fâcheux des brochets",
+      "trialId": "fishing_40",
+      "enabled": true,
+      "provisional": false,
+      "palette": [
+        "#4CC9D6",
+        "#C59E64",
+        "#42637B"
+      ],
+      "motifs": [
+        "cordages et hameçons",
+        "vagues et nageoires",
+        "lanternes et coquillages"
+      ],
+      "files": {
+        "left": "assets/fishing/40/facheux_des_brochets_left.png",
+        "right": "assets/fishing/40/facheux_des_brochets_right.png",
+        "center": "assets/fishing/40/facheux_des_brochets_center.png",
+        "badge": "assets/fishing/40/facheux_des_brochets_badge.png",
+        "preview": "assets/fishing/40/facheux_des_brochets_preview.png",
+        "metadata": "assets/fishing/40/facheux_des_brochets.json"
+      }
+    },
+    "fishing_60": {
+      "id": "veilleur_de_lanternes",
+      "profession": "fishing",
+      "professionName": "Pêche",
+      "rank": 60,
+      "title": "Veilleur de lanternes",
+      "trialId": "fishing_60",
+      "enabled": true,
+      "provisional": false,
+      "palette": [
+        "#4CC9D6",
+        "#C59E64",
+        "#42637B"
+      ],
+      "motifs": [
+        "cordages et hameçons",
+        "vagues et nageoires",
+        "lanternes et coquillages"
+      ],
+      "files": {
+        "left": "assets/fishing/60/veilleur_de_lanternes_left.png",
+        "right": "assets/fishing/60/veilleur_de_lanternes_right.png",
+        "center": "assets/fishing/60/veilleur_de_lanternes_center.png",
+        "badge": "assets/fishing/60/veilleur_de_lanternes_badge.png",
+        "preview": "assets/fishing/60/veilleur_de_lanternes_preview.png",
+        "metadata": "assets/fishing/60/veilleur_de_lanternes.json"
+      }
+    },
+    "fishing_80": {
+      "id": "seigneur_des_marees",
+      "profession": "fishing",
+      "professionName": "Pêche",
+      "rank": 80,
+      "title": "Seigneur des marées",
+      "trialId": "fishing_80",
+      "enabled": true,
+      "provisional": false,
+      "palette": [
+        "#4CC9D6",
+        "#C59E64",
+        "#42637B"
+      ],
+      "motifs": [
+        "cordages et hameçons",
+        "vagues et nageoires",
+        "lanternes et coquillages"
+      ],
+      "files": {
+        "left": "assets/fishing/80/seigneur_des_marees_left.png",
+        "right": "assets/fishing/80/seigneur_des_marees_right.png",
+        "center": "assets/fishing/80/seigneur_des_marees_center.png",
+        "badge": "assets/fishing/80/seigneur_des_marees_badge.png",
+        "preview": "assets/fishing/80/seigneur_des_marees_preview.png",
+        "metadata": "assets/fishing/80/seigneur_des_marees.json"
+      }
+    },
+    "fishing_90": {
+      "id": "peche_palier_90",
+      "profession": "fishing",
+      "professionName": "Pêche",
+      "rank": 90,
+      "title": "Pêche — palier 90",
+      "trialId": null,
+      "enabled": false,
+      "provisional": true,
+      "palette": [
+        "#4CC9D6",
+        "#C59E64",
+        "#42637B"
+      ],
+      "motifs": [
+        "cordages et hameçons",
+        "vagues et nageoires",
+        "lanternes et coquillages"
+      ],
+      "files": {
+        "left": "assets/fishing/90/peche_palier_90_left.png",
+        "right": "assets/fishing/90/peche_palier_90_right.png",
+        "center": "assets/fishing/90/peche_palier_90_center.png",
+        "badge": "assets/fishing/90/peche_palier_90_badge.png",
+        "preview": "assets/fishing/90/peche_palier_90_preview.png",
+        "metadata": "assets/fishing/90/peche_palier_90.json"
+      }
+    },
+    "fishing_99": {
+      "id": "legende_de_la_jetee",
+      "profession": "fishing",
+      "professionName": "Pêche",
+      "rank": 99,
+      "title": "Légende de la jetée",
+      "trialId": "fishing_99",
+      "enabled": true,
+      "provisional": false,
+      "palette": [
+        "#4CC9D6",
+        "#C59E64",
+        "#42637B"
+      ],
+      "motifs": [
+        "cordages et hameçons",
+        "vagues et nageoires",
+        "lanternes et coquillages"
+      ],
+      "files": {
+        "left": "assets/fishing/99/legende_de_la_jetee_left.png",
+        "right": "assets/fishing/99/legende_de_la_jetee_right.png",
+        "center": "assets/fishing/99/legende_de_la_jetee_center.png",
+        "badge": "assets/fishing/99/legende_de_la_jetee_badge.png",
+        "preview": "assets/fishing/99/legende_de_la_jetee_preview.png",
+        "metadata": "assets/fishing/99/legende_de_la_jetee.json"
+      }
+    },
+    "herbalism_20": {
+      "id": "cueilleur_d_aube",
+      "profession": "herbalism",
+      "professionName": "Herboristerie",
+      "rank": 20,
+      "title": "Cueilleur d’aube",
+      "trialId": "herbalism_20",
+      "enabled": true,
+      "provisional": false,
+      "palette": [
+        "#7ED6A2",
+        "#B39DF5",
+        "#BD985F"
+      ],
+      "motifs": [
+        "tiges et feuilles",
+        "fleurs de givre",
+        "rosée et brume"
+      ],
+      "files": {
+        "left": "assets/herbalism/20/cueilleur_d_aube_left.png",
+        "right": "assets/herbalism/20/cueilleur_d_aube_right.png",
+        "center": "assets/herbalism/20/cueilleur_d_aube_center.png",
+        "badge": "assets/herbalism/20/cueilleur_d_aube_badge.png",
+        "preview": "assets/herbalism/20/cueilleur_d_aube_preview.png",
+        "metadata": "assets/herbalism/20/cueilleur_d_aube.json"
+      }
+    },
+    "herbalism_40": {
+      "id": "ami_des_orties",
+      "profession": "herbalism",
+      "professionName": "Herboristerie",
+      "rank": 40,
+      "title": "Ami des orties",
+      "trialId": "herbalism_40",
+      "enabled": true,
+      "provisional": false,
+      "palette": [
+        "#7ED6A2",
+        "#B39DF5",
+        "#BD985F"
+      ],
+      "motifs": [
+        "tiges et feuilles",
+        "fleurs de givre",
+        "rosée et brume"
+      ],
+      "files": {
+        "left": "assets/herbalism/40/ami_des_orties_left.png",
+        "right": "assets/herbalism/40/ami_des_orties_right.png",
+        "center": "assets/herbalism/40/ami_des_orties_center.png",
+        "badge": "assets/herbalism/40/ami_des_orties_badge.png",
+        "preview": "assets/herbalism/40/ami_des_orties_preview.png",
+        "metadata": "assets/herbalism/40/ami_des_orties.json"
+      }
+    },
+    "herbalism_60": {
+      "id": "chuchoteur_de_givre",
+      "profession": "herbalism",
+      "professionName": "Herboristerie",
+      "rank": 60,
+      "title": "Chuchoteur de givre",
+      "trialId": "herbalism_60",
+      "enabled": true,
+      "provisional": false,
+      "palette": [
+        "#7ED6A2",
+        "#B39DF5",
+        "#BD985F"
+      ],
+      "motifs": [
+        "tiges et feuilles",
+        "fleurs de givre",
+        "rosée et brume"
+      ],
+      "files": {
+        "left": "assets/herbalism/60/chuchoteur_de_givre_left.png",
+        "right": "assets/herbalism/60/chuchoteur_de_givre_right.png",
+        "center": "assets/herbalism/60/chuchoteur_de_givre_center.png",
+        "badge": "assets/herbalism/60/chuchoteur_de_givre_badge.png",
+        "preview": "assets/herbalism/60/chuchoteur_de_givre_preview.png",
+        "metadata": "assets/herbalism/60/chuchoteur_de_givre.json"
+      }
+    },
+    "herbalism_80": {
+      "id": "terreur_des_plates_bandes",
+      "profession": "herbalism",
+      "professionName": "Herboristerie",
+      "rank": 80,
+      "title": "Terreur des plates-bandes",
+      "trialId": "herbalism_80",
+      "enabled": true,
+      "provisional": false,
+      "palette": [
+        "#7ED6A2",
+        "#B39DF5",
+        "#BD985F"
+      ],
+      "motifs": [
+        "tiges et feuilles",
+        "fleurs de givre",
+        "rosée et brume"
+      ],
+      "files": {
+        "left": "assets/herbalism/80/terreur_des_plates_bandes_left.png",
+        "right": "assets/herbalism/80/terreur_des_plates_bandes_right.png",
+        "center": "assets/herbalism/80/terreur_des_plates_bandes_center.png",
+        "badge": "assets/herbalism/80/terreur_des_plates_bandes_badge.png",
+        "preview": "assets/herbalism/80/terreur_des_plates_bandes_preview.png",
+        "metadata": "assets/herbalism/80/terreur_des_plates_bandes.json"
+      }
+    },
+    "herbalism_90": {
+      "id": "herboristerie_palier_90",
+      "profession": "herbalism",
+      "professionName": "Herboristerie",
+      "rank": 90,
+      "title": "Herboristerie — palier 90",
+      "trialId": null,
+      "enabled": false,
+      "provisional": true,
+      "palette": [
+        "#7ED6A2",
+        "#B39DF5",
+        "#BD985F"
+      ],
+      "motifs": [
+        "tiges et feuilles",
+        "fleurs de givre",
+        "rosée et brume"
+      ],
+      "files": {
+        "left": "assets/herbalism/90/herboristerie_palier_90_left.png",
+        "right": "assets/herbalism/90/herboristerie_palier_90_right.png",
+        "center": "assets/herbalism/90/herboristerie_palier_90_center.png",
+        "badge": "assets/herbalism/90/herboristerie_palier_90_badge.png",
+        "preview": "assets/herbalism/90/herboristerie_palier_90_preview.png",
+        "metadata": "assets/herbalism/90/herboristerie_palier_90.json"
+      }
+    },
+    "herbalism_99": {
+      "id": "la_brume_en_personne",
+      "profession": "herbalism",
+      "professionName": "Herboristerie",
+      "rank": 99,
+      "title": "La Brume en personne",
+      "trialId": "herbalism_99",
+      "enabled": true,
+      "provisional": false,
+      "palette": [
+        "#7ED6A2",
+        "#B39DF5",
+        "#BD985F"
+      ],
+      "motifs": [
+        "tiges et feuilles",
+        "fleurs de givre",
+        "rosée et brume"
+      ],
+      "files": {
+        "left": "assets/herbalism/99/la_brume_en_personne_left.png",
+        "right": "assets/herbalism/99/la_brume_en_personne_right.png",
+        "center": "assets/herbalism/99/la_brume_en_personne_center.png",
+        "badge": "assets/herbalism/99/la_brume_en_personne_badge.png",
+        "preview": "assets/herbalism/99/la_brume_en_personne_preview.png",
+        "metadata": "assets/herbalism/99/la_brume_en_personne.json"
+      }
+    },
+    "smithing_20": {
+      "id": "tapeur_d_enclume",
+      "profession": "smithing",
+      "professionName": "Forge",
+      "rank": 20,
+      "title": "Tapeur d’enclume",
+      "trialId": "smithing_20",
+      "enabled": true,
+      "provisional": false,
+      "palette": [
+        "#F08A4B",
+        "#71818B",
+        "#D3A85B"
+      ],
+      "motifs": [
+        "marteaux et enclumes",
+        "fer forgé",
+        "feu sacré"
+      ],
+      "files": {
+        "left": "assets/smithing/20/tapeur_d_enclume_left.png",
+        "right": "assets/smithing/20/tapeur_d_enclume_right.png",
+        "center": "assets/smithing/20/tapeur_d_enclume_center.png",
+        "badge": "assets/smithing/20/tapeur_d_enclume_badge.png",
+        "preview": "assets/smithing/20/tapeur_d_enclume_preview.png",
+        "metadata": "assets/smithing/20/tapeur_d_enclume.json"
+      }
+    },
+    "smithing_40": {
+      "id": "semeur_d_etincelles",
+      "profession": "smithing",
+      "professionName": "Forge",
+      "rank": 40,
+      "title": "Semeur d’étincelles",
+      "trialId": "smithing_40",
+      "enabled": true,
+      "provisional": false,
+      "palette": [
+        "#F08A4B",
+        "#71818B",
+        "#D3A85B"
+      ],
+      "motifs": [
+        "marteaux et enclumes",
+        "fer forgé",
+        "feu sacré"
+      ],
+      "files": {
+        "left": "assets/smithing/40/semeur_d_etincelles_left.png",
+        "right": "assets/smithing/40/semeur_d_etincelles_right.png",
+        "center": "assets/smithing/40/semeur_d_etincelles_center.png",
+        "badge": "assets/smithing/40/semeur_d_etincelles_badge.png",
+        "preview": "assets/smithing/40/semeur_d_etincelles_preview.png",
+        "metadata": "assets/smithing/40/semeur_d_etincelles.json"
+      }
+    },
+    "smithing_60": {
+      "id": "gardien_du_feu_sacre",
+      "profession": "smithing",
+      "professionName": "Forge",
+      "rank": 60,
+      "title": "Gardien du feu sacré",
+      "trialId": "smithing_60",
+      "enabled": true,
+      "provisional": false,
+      "palette": [
+        "#F08A4B",
+        "#71818B",
+        "#D3A85B"
+      ],
+      "motifs": [
+        "marteaux et enclumes",
+        "fer forgé",
+        "feu sacré"
+      ],
+      "files": {
+        "left": "assets/smithing/60/gardien_du_feu_sacre_left.png",
+        "right": "assets/smithing/60/gardien_du_feu_sacre_right.png",
+        "center": "assets/smithing/60/gardien_du_feu_sacre_center.png",
+        "badge": "assets/smithing/60/gardien_du_feu_sacre_badge.png",
+        "preview": "assets/smithing/60/gardien_du_feu_sacre_preview.png",
+        "metadata": "assets/smithing/60/gardien_du_feu_sacre.json"
+      }
+    },
+    "smithing_80": {
+      "id": "forgeron_des_rois",
+      "profession": "smithing",
+      "professionName": "Forge",
+      "rank": 80,
+      "title": "Forgeron des rois",
+      "trialId": "smithing_80",
+      "enabled": true,
+      "provisional": false,
+      "palette": [
+        "#F08A4B",
+        "#71818B",
+        "#D3A85B"
+      ],
+      "motifs": [
+        "marteaux et enclumes",
+        "fer forgé",
+        "feu sacré"
+      ],
+      "files": {
+        "left": "assets/smithing/80/forgeron_des_rois_left.png",
+        "right": "assets/smithing/80/forgeron_des_rois_right.png",
+        "center": "assets/smithing/80/forgeron_des_rois_center.png",
+        "badge": "assets/smithing/80/forgeron_des_rois_badge.png",
+        "preview": "assets/smithing/80/forgeron_des_rois_preview.png",
+        "metadata": "assets/smithing/80/forgeron_des_rois.json"
+      }
+    },
+    "smithing_90": {
+      "id": "forge_palier_90",
+      "profession": "smithing",
+      "professionName": "Forge",
+      "rank": 90,
+      "title": "Forge — palier 90",
+      "trialId": null,
+      "enabled": false,
+      "provisional": true,
+      "palette": [
+        "#F08A4B",
+        "#71818B",
+        "#D3A85B"
+      ],
+      "motifs": [
+        "marteaux et enclumes",
+        "fer forgé",
+        "feu sacré"
+      ],
+      "files": {
+        "left": "assets/smithing/90/forge_palier_90_left.png",
+        "right": "assets/smithing/90/forge_palier_90_right.png",
+        "center": "assets/smithing/90/forge_palier_90_center.png",
+        "badge": "assets/smithing/90/forge_palier_90_badge.png",
+        "preview": "assets/smithing/90/forge_palier_90_preview.png",
+        "metadata": "assets/smithing/90/forge_palier_90.json"
+      }
+    },
+    "smithing_99": {
+      "id": "enclume_vivante",
+      "profession": "smithing",
+      "professionName": "Forge",
+      "rank": 99,
+      "title": "Enclume vivante",
+      "trialId": "smithing_99",
+      "enabled": true,
+      "provisional": false,
+      "palette": [
+        "#F08A4B",
+        "#71818B",
+        "#D3A85B"
+      ],
+      "motifs": [
+        "marteaux et enclumes",
+        "fer forgé",
+        "feu sacré"
+      ],
+      "files": {
+        "left": "assets/smithing/99/enclume_vivante_left.png",
+        "right": "assets/smithing/99/enclume_vivante_right.png",
+        "center": "assets/smithing/99/enclume_vivante_center.png",
+        "badge": "assets/smithing/99/enclume_vivante_badge.png",
+        "preview": "assets/smithing/99/enclume_vivante_preview.png",
+        "metadata": "assets/smithing/99/enclume_vivante.json"
+      }
+    },
+    "carpentry_20": {
+      "id": "equarrisseur_de_planches",
+      "profession": "carpentry",
+      "professionName": "Menuiserie",
+      "rank": 20,
+      "title": "Équarrisseur de planches",
+      "trialId": "carpentry_20",
+      "enabled": true,
+      "provisional": false,
+      "palette": [
+        "#BA8B52",
+        "#7C969D",
+        "#D9C58F"
+      ],
+      "motifs": [
+        "assemblages de bois",
+        "ciseaux et rabots",
+        "volutes de copeaux"
+      ],
+      "files": {
+        "left": "assets/carpentry/20/equarrisseur_de_planches_left.png",
+        "right": "assets/carpentry/20/equarrisseur_de_planches_right.png",
+        "center": "assets/carpentry/20/equarrisseur_de_planches_center.png",
+        "badge": "assets/carpentry/20/equarrisseur_de_planches_badge.png",
+        "preview": "assets/carpentry/20/equarrisseur_de_planches_preview.png",
+        "metadata": "assets/carpentry/20/equarrisseur_de_planches.json"
+      }
+    },
+    "carpentry_40": {
+      "id": "ponceur_de_patience",
+      "profession": "carpentry",
+      "professionName": "Menuiserie",
+      "rank": 40,
+      "title": "Ponceur de patience",
+      "trialId": "carpentry_40",
+      "enabled": true,
+      "provisional": false,
+      "palette": [
+        "#BA8B52",
+        "#7C969D",
+        "#D9C58F"
+      ],
+      "motifs": [
+        "assemblages de bois",
+        "ciseaux et rabots",
+        "volutes de copeaux"
+      ],
+      "files": {
+        "left": "assets/carpentry/40/ponceur_de_patience_left.png",
+        "right": "assets/carpentry/40/ponceur_de_patience_right.png",
+        "center": "assets/carpentry/40/ponceur_de_patience_center.png",
+        "badge": "assets/carpentry/40/ponceur_de_patience_badge.png",
+        "preview": "assets/carpentry/40/ponceur_de_patience_preview.png",
+        "metadata": "assets/carpentry/40/ponceur_de_patience.json"
+      }
+    },
+    "carpentry_60": {
+      "id": "chuchoteur_de_poutres",
+      "profession": "carpentry",
+      "professionName": "Menuiserie",
+      "rank": 60,
+      "title": "Chuchoteur de poutres",
+      "trialId": "carpentry_60",
+      "enabled": true,
+      "provisional": false,
+      "palette": [
+        "#BA8B52",
+        "#7C969D",
+        "#D9C58F"
+      ],
+      "motifs": [
+        "assemblages de bois",
+        "ciseaux et rabots",
+        "volutes de copeaux"
+      ],
+      "files": {
+        "left": "assets/carpentry/60/chuchoteur_de_poutres_left.png",
+        "right": "assets/carpentry/60/chuchoteur_de_poutres_right.png",
+        "center": "assets/carpentry/60/chuchoteur_de_poutres_center.png",
+        "badge": "assets/carpentry/60/chuchoteur_de_poutres_badge.png",
+        "preview": "assets/carpentry/60/chuchoteur_de_poutres_preview.png",
+        "metadata": "assets/carpentry/60/chuchoteur_de_poutres.json"
+      }
+    },
+    "carpentry_80": {
+      "id": "charpentier_de_legende",
+      "profession": "carpentry",
+      "professionName": "Menuiserie",
+      "rank": 80,
+      "title": "Charpentier de légende",
+      "trialId": "carpentry_80",
+      "enabled": true,
+      "provisional": false,
+      "palette": [
+        "#BA8B52",
+        "#7C969D",
+        "#D9C58F"
+      ],
+      "motifs": [
+        "assemblages de bois",
+        "ciseaux et rabots",
+        "volutes de copeaux"
+      ],
+      "files": {
+        "left": "assets/carpentry/80/charpentier_de_legende_left.png",
+        "right": "assets/carpentry/80/charpentier_de_legende_right.png",
+        "center": "assets/carpentry/80/charpentier_de_legende_center.png",
+        "badge": "assets/carpentry/80/charpentier_de_legende_badge.png",
+        "preview": "assets/carpentry/80/charpentier_de_legende_preview.png",
+        "metadata": "assets/carpentry/80/charpentier_de_legende.json"
+      }
+    },
+    "carpentry_90": {
+      "id": "menuiserie_palier_90",
+      "profession": "carpentry",
+      "professionName": "Menuiserie",
+      "rank": 90,
+      "title": "Menuiserie — palier 90",
+      "trialId": null,
+      "enabled": false,
+      "provisional": true,
+      "palette": [
+        "#BA8B52",
+        "#7C969D",
+        "#D9C58F"
+      ],
+      "motifs": [
+        "assemblages de bois",
+        "ciseaux et rabots",
+        "volutes de copeaux"
+      ],
+      "files": {
+        "left": "assets/carpentry/90/menuiserie_palier_90_left.png",
+        "right": "assets/carpentry/90/menuiserie_palier_90_right.png",
+        "center": "assets/carpentry/90/menuiserie_palier_90_center.png",
+        "badge": "assets/carpentry/90/menuiserie_palier_90_badge.png",
+        "preview": "assets/carpentry/90/menuiserie_palier_90_preview.png",
+        "metadata": "assets/carpentry/90/menuiserie_palier_90.json"
+      }
+    },
+    "carpentry_99": {
+      "id": "sciure_d_or",
+      "profession": "carpentry",
+      "professionName": "Menuiserie",
+      "rank": 99,
+      "title": "Sciure d’or",
+      "trialId": "carpentry_99",
+      "enabled": true,
+      "provisional": false,
+      "palette": [
+        "#BA8B52",
+        "#7C969D",
+        "#D9C58F"
+      ],
+      "motifs": [
+        "assemblages de bois",
+        "ciseaux et rabots",
+        "volutes de copeaux"
+      ],
+      "files": {
+        "left": "assets/carpentry/99/sciure_d_or_left.png",
+        "right": "assets/carpentry/99/sciure_d_or_right.png",
+        "center": "assets/carpentry/99/sciure_d_or_center.png",
+        "badge": "assets/carpentry/99/sciure_d_or_badge.png",
+        "preview": "assets/carpentry/99/sciure_d_or_preview.png",
+        "metadata": "assets/carpentry/99/sciure_d_or.json"
+      }
+    },
+    "cooking_20": {
+      "id": "remueur_de_marmites",
+      "profession": "cooking",
+      "professionName": "Cuisine",
+      "rank": 20,
+      "title": "Remueur de marmites",
+      "trialId": "cooking_20",
+      "enabled": true,
+      "provisional": false,
+      "palette": [
+        "#D58A50",
+        "#91AE77",
+        "#E6D5AE"
+      ],
+      "motifs": [
+        "anses de cuivre",
+        "herbes et blé",
+        "cloches et vapeur"
+      ],
+      "files": {
+        "left": "assets/cooking/20/remueur_de_marmites_left.png",
+        "right": "assets/cooking/20/remueur_de_marmites_right.png",
+        "center": "assets/cooking/20/remueur_de_marmites_center.png",
+        "badge": "assets/cooking/20/remueur_de_marmites_badge.png",
+        "preview": "assets/cooking/20/remueur_de_marmites_preview.png",
+        "metadata": "assets/cooking/20/remueur_de_marmites.json"
+      }
+    },
+    "cooking_40": {
+      "id": "fournisseur_de_siestes",
+      "profession": "cooking",
+      "professionName": "Cuisine",
+      "rank": 40,
+      "title": "Fournisseur de siestes",
+      "trialId": "cooking_40",
+      "enabled": true,
+      "provisional": false,
+      "palette": [
+        "#D58A50",
+        "#91AE77",
+        "#E6D5AE"
+      ],
+      "motifs": [
+        "anses de cuivre",
+        "herbes et blé",
+        "cloches et vapeur"
+      ],
+      "files": {
+        "left": "assets/cooking/40/fournisseur_de_siestes_left.png",
+        "right": "assets/cooking/40/fournisseur_de_siestes_right.png",
+        "center": "assets/cooking/40/fournisseur_de_siestes_center.png",
+        "badge": "assets/cooking/40/fournisseur_de_siestes_badge.png",
+        "preview": "assets/cooking/40/fournisseur_de_siestes_preview.png",
+        "metadata": "assets/cooking/40/fournisseur_de_siestes.json"
+      }
+    },
+    "cooking_60": {
+      "id": "terreur_des_buffets",
+      "profession": "cooking",
+      "professionName": "Cuisine",
+      "rank": 60,
+      "title": "Terreur des buffets",
+      "trialId": "cooking_60",
+      "enabled": true,
+      "provisional": false,
+      "palette": [
+        "#D58A50",
+        "#91AE77",
+        "#E6D5AE"
+      ],
+      "motifs": [
+        "anses de cuivre",
+        "herbes et blé",
+        "cloches et vapeur"
+      ],
+      "files": {
+        "left": "assets/cooking/60/terreur_des_buffets_left.png",
+        "right": "assets/cooking/60/terreur_des_buffets_right.png",
+        "center": "assets/cooking/60/terreur_des_buffets_center.png",
+        "badge": "assets/cooking/60/terreur_des_buffets_badge.png",
+        "preview": "assets/cooking/60/terreur_des_buffets_preview.png",
+        "metadata": "assets/cooking/60/terreur_des_buffets.json"
+      }
+    },
+    "cooking_80": {
+      "id": "celui_qui_regale_les_rois",
+      "profession": "cooking",
+      "professionName": "Cuisine",
+      "rank": 80,
+      "title": "Celui qui régale les rois",
+      "trialId": "cooking_80",
+      "enabled": true,
+      "provisional": false,
+      "palette": [
+        "#D58A50",
+        "#91AE77",
+        "#E6D5AE"
+      ],
+      "motifs": [
+        "anses de cuivre",
+        "herbes et blé",
+        "cloches et vapeur"
+      ],
+      "files": {
+        "left": "assets/cooking/80/celui_qui_regale_les_rois_left.png",
+        "right": "assets/cooking/80/celui_qui_regale_les_rois_right.png",
+        "center": "assets/cooking/80/celui_qui_regale_les_rois_center.png",
+        "badge": "assets/cooking/80/celui_qui_regale_les_rois_badge.png",
+        "preview": "assets/cooking/80/celui_qui_regale_les_rois_preview.png",
+        "metadata": "assets/cooking/80/celui_qui_regale_les_rois.json"
+      }
+    },
+    "cooking_90": {
+      "id": "cuisine_palier_90",
+      "profession": "cooking",
+      "professionName": "Cuisine",
+      "rank": 90,
+      "title": "Cuisine — palier 90",
+      "trialId": null,
+      "enabled": false,
+      "provisional": true,
+      "palette": [
+        "#D58A50",
+        "#91AE77",
+        "#E6D5AE"
+      ],
+      "motifs": [
+        "anses de cuivre",
+        "herbes et blé",
+        "cloches et vapeur"
+      ],
+      "files": {
+        "left": "assets/cooking/90/cuisine_palier_90_left.png",
+        "right": "assets/cooking/90/cuisine_palier_90_right.png",
+        "center": "assets/cooking/90/cuisine_palier_90_center.png",
+        "badge": "assets/cooking/90/cuisine_palier_90_badge.png",
+        "preview": "assets/cooking/90/cuisine_palier_90_preview.png",
+        "metadata": "assets/cooking/90/cuisine_palier_90.json"
+      }
+    },
+    "cooking_99": {
+      "id": "gourmet_de_legende",
+      "profession": "cooking",
+      "professionName": "Cuisine",
+      "rank": 99,
+      "title": "Gourmet de légende",
+      "trialId": "cooking_99",
+      "enabled": true,
+      "provisional": false,
+      "palette": [
+        "#D58A50",
+        "#91AE77",
+        "#E6D5AE"
+      ],
+      "motifs": [
+        "anses de cuivre",
+        "herbes et blé",
+        "cloches et vapeur"
+      ],
+      "files": {
+        "left": "assets/cooking/99/gourmet_de_legende_left.png",
+        "right": "assets/cooking/99/gourmet_de_legende_right.png",
+        "center": "assets/cooking/99/gourmet_de_legende_center.png",
+        "badge": "assets/cooking/99/gourmet_de_legende_badge.png",
+        "preview": "assets/cooking/99/gourmet_de_legende_preview.png",
+        "metadata": "assets/cooking/99/gourmet_de_legende.json"
+      }
+    }
+  },
+  "geometry": {
+    "nativeHeight": 256,
+    "nativeWidths": [
+      384,
+      640,
+      960
+    ],
+    "minimumNativeWidth": 384,
+    "nativeWidthStep": 64,
+    "sourceSizes": {
+      "left": [
+        192,
+        256
+      ],
+      "right": [
+        192,
+        256
+      ],
+      "center": [
+        128,
+        256
+      ],
+      "badge": [
+        128,
+        128
+      ]
+    },
+    "outerCapWidth": 128,
+    "innerOverlap": 64,
+    "centerPeriod": 64,
+    "badgeRenderSize": [
+      96,
+      96
+    ],
+    "badgeY": 0,
+    "nameY": 108,
+    "titleY": 180,
+    "cssScale": 0.5,
+    "background": "#20262a"
+  },
+  "selection": {
+    "key": "<profession>_<shownRank>",
+    "rankZero": "no_ornament",
+    "unlock": "completed_trial",
+    "rank90": "reserved_until_a_game_unlock_rule_exists"
+  }
+}

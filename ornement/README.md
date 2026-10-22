@@ -1,5 +1,7 @@
 # Ornements Bramo
 
+**Pour Claude : commencer par [README_CLAUDE.md](README_CLAUDE.md).** Les 42 ornements sont aussi disponibles décompressés dans [assets/](assets/), avec leur [manifeste d'intégration](manifest.json), leurs [contrôles](validation.json) et des [utilitaires autonomes](tools/).
+
 Sept métiers, six paliers : **20 / 40 / 60 / 80 / 90 / 99**.
 
 35 titres actuels des épreuves, plus 7 propositions au niveau 90 dont les intitulés restent provisoires.

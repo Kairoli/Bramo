@@ -50,6 +50,11 @@
     "sha256": "80f74b60c5c85473aec2f6894a2a1469bba7a87a837b413f947e224800fd5dac"
   },
   {
+    "name": "Bramo-minage-famille-v2.zip",
+    "bytes": 2221121,
+    "sha256": "4d98840c3bc0f0133463cb8564fb2bb437268157775d478312c8e2af0f62cded"
+  },
+  {
     "name": "Bramo-ornements-tous-metiers.png",
     "bytes": 885936,
     "sha256": "b5d4921618690a6746cb5e276ed79b7203ae0bf4d698d3e006bb1bd45833fa96"
@@ -66,12 +71,1302 @@
   },
   {
     "name": "README.md",
-    "bytes": 2605,
-    "sha256": "67a1c3a5efeb52e00a763a66199d1c8eda5d486955daa33a8d972df9e8eed282"
+    "bytes": 2885,
+    "sha256": "8e391c95c49083e214365e9169fcd05af8f12a7fc5ff386055fc3328a9e44585"
+  },
+  {
+    "name": "README_CLAUDE.md",
+    "bytes": 9611,
+    "sha256": "e975d2d73f89e10f52de955d5df5e4d5ea7f678f09ff2e408067af9649887add"
+  },
+  {
+    "name": "assets/carpentry/20/equarrisseur_de_planches.json",
+    "bytes": 239,
+    "sha256": "72eff24b2b0bcb7aef65872451bf9f90a69a746748cefb2f6ae2ce45e2e68ef1"
+  },
+  {
+    "name": "assets/carpentry/20/equarrisseur_de_planches_badge.png",
+    "bytes": 8232,
+    "sha256": "3d97088b22efb67f20e8c288cf987d7fe43f4a710e5e880b606d050c3e24c1d7"
+  },
+  {
+    "name": "assets/carpentry/20/equarrisseur_de_planches_center.png",
+    "bytes": 383,
+    "sha256": "fc26d0afc99344ced676c75eea91e0a110c9bc09b090198728e97d30ebbaebf9"
+  },
+  {
+    "name": "assets/carpentry/20/equarrisseur_de_planches_left.png",
+    "bytes": 4090,
+    "sha256": "625fa8a1eeb9c8bf7c3b3e1c19bcd8866463f635aa82bad3ca1dfbaa3fe2873e"
+  },
+  {
+    "name": "assets/carpentry/20/equarrisseur_de_planches_preview.png",
+    "bytes": 33974,
+    "sha256": "90d02a741f46ae77fc8313af1584764c709e7dcfa04e461d4f2e5b3de66b1fbb"
+  },
+  {
+    "name": "assets/carpentry/20/equarrisseur_de_planches_right.png",
+    "bytes": 4104,
+    "sha256": "0ebd353e1d58cfc90347eb9e4ae6420dd64d98b7de49a7a4a6f7bc6feb05ffd7"
+  },
+  {
+    "name": "assets/carpentry/40/ponceur_de_patience.json",
+    "bytes": 228,
+    "sha256": "c178803b7b728db295179f56d8145f63998c0c447a3bf6cab4ea4eb8914c138d"
+  },
+  {
+    "name": "assets/carpentry/40/ponceur_de_patience_badge.png",
+    "bytes": 10923,
+    "sha256": "3804b256b40d60b75322d864cdf16defca1650d21e4a47e43c3bd9cceba3c1e5"
+  },
+  {
+    "name": "assets/carpentry/40/ponceur_de_patience_center.png",
+    "bytes": 505,
+    "sha256": "35128b4ff680f19640957fe45350a92ec02cd4b59d2369dc38a6e013da773e17"
+  },
+  {
+    "name": "assets/carpentry/40/ponceur_de_patience_left.png",
+    "bytes": 11749,
+    "sha256": "19050670c6fc94c8b8248b11aae34b04eb9db7a70f13d3c3a1479c0acaae1d05"
+  },
+  {
+    "name": "assets/carpentry/40/ponceur_de_patience_preview.png",
+    "bytes": 76723,
+    "sha256": "c64ca03a4e5ad1a7ee83f71c614fba8775b194b08bfdbcf0378fe8aa9b08260f"
+  },
+  {
+    "name": "assets/carpentry/40/ponceur_de_patience_right.png",
+    "bytes": 11809,
+    "sha256": "90a785ed7011406ccd8c1fcedfd5f789f003affcf8276782ab5521c0b1a8cba5"
+  },
+  {
+    "name": "assets/carpentry/60/chuchoteur_de_poutres.json",
+    "bytes": 232,
+    "sha256": "0a22b4f3c78f082b31fc9713b9866cd51476e189c681f845915191272ad26197"
+  },
+  {
+    "name": "assets/carpentry/60/chuchoteur_de_poutres_badge.png",
+    "bytes": 17264,
+    "sha256": "4ca5561103b0eaa8ec3b143fae01a7e5aaace78987397c324221a083630ff7c1"
+  },
+  {
+    "name": "assets/carpentry/60/chuchoteur_de_poutres_center.png",
+    "bytes": 670,
+    "sha256": "8388cc4077a14197eae177ad9fdbdd3cdfacf1bdd442ee2cbfeeaee0b20b701b"
+  },
+  {
+    "name": "assets/carpentry/60/chuchoteur_de_poutres_left.png",
+    "bytes": 40604,
+    "sha256": "950dcb43aebae215f01d8122510dc5f19a33d9107812736ea7819d0953660b8d"
+  },
+  {
+    "name": "assets/carpentry/60/chuchoteur_de_poutres_preview.png",
+    "bytes": 232841,
+    "sha256": "5d6978a1687a8433a5659853dae80dd8ad5d0cc0b9955586dc9fef6e42e7cb53"
+  },
+  {
+    "name": "assets/carpentry/60/chuchoteur_de_poutres_right.png",
+    "bytes": 40755,
+    "sha256": "a8d73275d33a04aaafcad504bfd60f45708c7d932976a24a1f99c6fdad950981"
+  },
+  {
+    "name": "assets/carpentry/80/charpentier_de_legende.json",
+    "bytes": 235,
+    "sha256": "4eaadbea35fc77ecd56b565bcfb190a54f95e1444645e142f0c3b8b56f9443b0"
+  },
+  {
+    "name": "assets/carpentry/80/charpentier_de_legende_badge.png",
+    "bytes": 22026,
+    "sha256": "98f00f144866956b84e5b210f1c7f01510a1f39e3a08f6f230e743629dfd7a14"
+  },
+  {
+    "name": "assets/carpentry/80/charpentier_de_legende_center.png",
+    "bytes": 827,
+    "sha256": "b3ae0cf0b7b3861941405219d084c55e8534cde5aff4a300133f51efde0ce804"
+  },
+  {
+    "name": "assets/carpentry/80/charpentier_de_legende_left.png",
+    "bytes": 46373,
+    "sha256": "97bfff2e33e37b3dadee47e4b8156fa2170433d6c4e6d297d7ff749cd11f6dbe"
+  },
+  {
+    "name": "assets/carpentry/80/charpentier_de_legende_preview.png",
+    "bytes": 268011,
+    "sha256": "6316683e7c8169458a30f528b6e27cb0e555c59939cbf7c6110d34d53ce318fd"
+  },
+  {
+    "name": "assets/carpentry/80/charpentier_de_legende_right.png",
+    "bytes": 46362,
+    "sha256": "6cad2acdc8602bc6be95a9a5dffab8f6b85df2fc88cfe3626c6ba4a86ff87414"
+  },
+  {
+    "name": "assets/carpentry/90/menuiserie_palier_90.json",
+    "bytes": 234,
+    "sha256": "3ea82d688a692e6ebc5556503b9b2aa1b7fe98630779abd36c614999b1753929"
+  },
+  {
+    "name": "assets/carpentry/90/menuiserie_palier_90_badge.png",
+    "bytes": 28314,
+    "sha256": "2887a27821164fbd8c3c76b6fcbee1646b4f1f1356f16ac92b361d2ac4f5e9c9"
+  },
+  {
+    "name": "assets/carpentry/90/menuiserie_palier_90_center.png",
+    "bytes": 917,
+    "sha256": "fea342061e0668896e614355f721a462dea8861862940c1638f85760703f82a7"
+  },
+  {
+    "name": "assets/carpentry/90/menuiserie_palier_90_left.png",
+    "bytes": 34175,
+    "sha256": "56b60180a18712599d6c698970aea4f37dd57c9655d6e12def987b53f6960cf2"
+  },
+  {
+    "name": "assets/carpentry/90/menuiserie_palier_90_preview.png",
+    "bytes": 214401,
+    "sha256": "910cff6abeac0046502a7df815380d626d2abf4523ac33d492a25c9be231294a"
+  },
+  {
+    "name": "assets/carpentry/90/menuiserie_palier_90_right.png",
+    "bytes": 34164,
+    "sha256": "8b4be8ef576f7650bdfc63ad98150315a3e04fa046e184997125175657e74492"
+  },
+  {
+    "name": "assets/carpentry/99/sciure_d_or.json",
+    "bytes": 214,
+    "sha256": "a635bebb5a3b4968b3ee23e7b8e918135847a57b420a4876f38cd24f4802c9c0"
+  },
+  {
+    "name": "assets/carpentry/99/sciure_d_or_badge.png",
+    "bytes": 29596,
+    "sha256": "f2733387eb6755e5bfaf660650e1309016665325d2d036a801a8481ef5167772"
+  },
+  {
+    "name": "assets/carpentry/99/sciure_d_or_center.png",
+    "bytes": 933,
+    "sha256": "709be7490b2266190983887d70efba8020846b6f10102241f909f55e44db37e4"
+  },
+  {
+    "name": "assets/carpentry/99/sciure_d_or_left.png",
+    "bytes": 43246,
+    "sha256": "05cf58438dd802452802eba03966b90556b74a4b195c260de94813629f91d251"
+  },
+  {
+    "name": "assets/carpentry/99/sciure_d_or_preview.png",
+    "bytes": 263860,
+    "sha256": "bf50c3d07d8db88f525de1482998edaf153f20a337a37ef6c72bdb7edd1d1262"
+  },
+  {
+    "name": "assets/carpentry/99/sciure_d_or_right.png",
+    "bytes": 43433,
+    "sha256": "671a61f69507a5c8cde6532f640037ed46ce67b437ef86bf58075bd38565342c"
+  },
+  {
+    "name": "assets/cooking/20/remueur_de_marmites.json",
+    "bytes": 220,
+    "sha256": "dea3866c759276b86efa0c4a0e96edb62e5521c4b9916efd6ad23b8601744833"
+  },
+  {
+    "name": "assets/cooking/20/remueur_de_marmites_badge.png",
+    "bytes": 7801,
+    "sha256": "f006db328f37174bf9bebed8ed491b64d0f70952be41b0d53290afa1036e949f"
+  },
+  {
+    "name": "assets/cooking/20/remueur_de_marmites_center.png",
+    "bytes": 993,
+    "sha256": "d32b42da0bdb18b663a7e694f1a424173fd2ac0c56196089a4c55c8c121f6bf2"
+  },
+  {
+    "name": "assets/cooking/20/remueur_de_marmites_left.png",
+    "bytes": 3889,
+    "sha256": "1545f8f5e477692addceb50b17f935e40def92800441697a1d1b258cb1920a9b"
+  },
+  {
+    "name": "assets/cooking/20/remueur_de_marmites_preview.png",
+    "bytes": 30676,
+    "sha256": "367283c0fbe16c5359eb56ea5aecbd6612ab7bd65117c5d15dad6ac4b54bc5d3"
+  },
+  {
+    "name": "assets/cooking/20/remueur_de_marmites_right.png",
+    "bytes": 3908,
+    "sha256": "3da59f856e313f0ac62aaea5e1922ed35826147d514967fb330bac110dd024a7"
+  },
+  {
+    "name": "assets/cooking/40/fournisseur_de_siestes.json",
+    "bytes": 226,
+    "sha256": "10eb19a9aceaa27b02865560473aabd68b1f1c8d23e55abb26974a2b18c243c4"
+  },
+  {
+    "name": "assets/cooking/40/fournisseur_de_siestes_badge.png",
+    "bytes": 10686,
+    "sha256": "3b73a87da3c37b6f0565965a8081f6fa8a9b7e95e2319e23ba044adcf70f1dfa"
+  },
+  {
+    "name": "assets/cooking/40/fournisseur_de_siestes_center.png",
+    "bytes": 1406,
+    "sha256": "650d1e16dfd469e9d93e939324cde9563b34c281215bdd872f96c240b3141256"
+  },
+  {
+    "name": "assets/cooking/40/fournisseur_de_siestes_left.png",
+    "bytes": 14802,
+    "sha256": "8be1e603223372f92e7e5d5eaeeac05929476ec2fb92f3daba2e02ebb98c78e4"
+  },
+  {
+    "name": "assets/cooking/40/fournisseur_de_siestes_preview.png",
+    "bytes": 85185,
+    "sha256": "90c95e07fa9f4b7cfa994c6b7bb0687d23d1134310dd41056baf30b5253dd474"
+  },
+  {
+    "name": "assets/cooking/40/fournisseur_de_siestes_right.png",
+    "bytes": 14789,
+    "sha256": "2889af5fb631894a9153cb6a93fdecde6753b46055662b74370866d06c541d04"
+  },
+  {
+    "name": "assets/cooking/60/terreur_des_buffets.json",
+    "bytes": 220,
+    "sha256": "071e2a3e9bfdc06e04b4340832660871162c2730a6cc90c8ab31f40482e6e8df"
+  },
+  {
+    "name": "assets/cooking/60/terreur_des_buffets_badge.png",
+    "bytes": 17356,
+    "sha256": "f34e1ab1127dbc50575d8ad0a0c6086e3d36671a0afe79b93233ae60897d0788"
+  },
+  {
+    "name": "assets/cooking/60/terreur_des_buffets_center.png",
+    "bytes": 2163,
+    "sha256": "5bacb96880119a2253dda89ebd2d7e672faf30f63435f78bc344ff54865e9cca"
+  },
+  {
+    "name": "assets/cooking/60/terreur_des_buffets_left.png",
+    "bytes": 47195,
+    "sha256": "43f3d8f396747c68be45f8d13eee6e3cf59c75b66751e32999da07207f584e8a"
+  },
+  {
+    "name": "assets/cooking/60/terreur_des_buffets_preview.png",
+    "bytes": 255015,
+    "sha256": "9562e74b9bac1d79b480de4aa245741406621b2e976fdc53b23198ca8c693c70"
+  },
+  {
+    "name": "assets/cooking/60/terreur_des_buffets_right.png",
+    "bytes": 47266,
+    "sha256": "733263405a28865ccd536911b25cab5201062eff90607fd7450c2c6995d218ac"
+  },
+  {
+    "name": "assets/cooking/80/celui_qui_regale_les_rois.json",
+    "bytes": 233,
+    "sha256": "706c86f142a9b77eaf321184f029e71e10a81fab35b89d7359223ae44f44f2ca"
+  },
+  {
+    "name": "assets/cooking/80/celui_qui_regale_les_rois_badge.png",
+    "bytes": 20477,
+    "sha256": "11e39fdb21b6fcc821cae1b936d05193e0be03815b00fb70d975ed760c7743e3"
+  },
+  {
+    "name": "assets/cooking/80/celui_qui_regale_les_rois_center.png",
+    "bytes": 2520,
+    "sha256": "a6d1dec1e97178aa7bd4b2b14a43ce469952d435e3c8bc98be300db8c654b4e3"
+  },
+  {
+    "name": "assets/cooking/80/celui_qui_regale_les_rois_left.png",
+    "bytes": 48815,
+    "sha256": "79c72bf8d62154a341191790f45f5b770f7a4192d947e50aeb4b0da609a87025"
+  },
+  {
+    "name": "assets/cooking/80/celui_qui_regale_les_rois_preview.png",
+    "bytes": 268661,
+    "sha256": "27271b549cdd807529dcaf3b391719ccb8c4f4b1575e45024048ee9a7339f438"
+  },
+  {
+    "name": "assets/cooking/80/celui_qui_regale_les_rois_right.png",
+    "bytes": 48880,
+    "sha256": "3cea2a8796689cc75ff1d6799cb393dca2fb51a6c55910e7f5e857ab1dce8cd1"
+  },
+  {
+    "name": "assets/cooking/90/cuisine_palier_90.json",
+    "bytes": 220,
+    "sha256": "5f1383f0596490ff0ccf226c40e6638215de2b024cd7cb57a6cd48090c7178e1"
+  },
+  {
+    "name": "assets/cooking/90/cuisine_palier_90_badge.png",
+    "bytes": 27178,
+    "sha256": "3cae9a9e6a5dc8a46fefe82926ee1f2a23ef51ad4d6bcd7bcd4d5285a48616ca"
+  },
+  {
+    "name": "assets/cooking/90/cuisine_palier_90_center.png",
+    "bytes": 2714,
+    "sha256": "9b61845332d6a2d50b3299e5248410a8a96de52e18bd5b042a5821952bc3b291"
+  },
+  {
+    "name": "assets/cooking/90/cuisine_palier_90_left.png",
+    "bytes": 43074,
+    "sha256": "103f1d1656dfa324fc776cbde18bb45329f72ecca87a7162f6db90a8f2c76d92"
+  },
+  {
+    "name": "assets/cooking/90/cuisine_palier_90_preview.png",
+    "bytes": 247697,
+    "sha256": "aa0044e25a3103465c7c6b5b55b61c10587daacf5e267f0e73e80e7db9372b61"
+  },
+  {
+    "name": "assets/cooking/90/cuisine_palier_90_right.png",
+    "bytes": 43055,
+    "sha256": "492bc3c702fd837239df0552b7294bf1635f5c6cdcfe312b64937e0bce9af045"
+  },
+  {
+    "name": "assets/cooking/99/gourmet_de_legende.json",
+    "bytes": 219,
+    "sha256": "4d3d14af0ee12dc9b97b9b85c74b42e8b878389aeddbe153eaf9cc6cf4cc50ae"
+  },
+  {
+    "name": "assets/cooking/99/gourmet_de_legende_badge.png",
+    "bytes": 32845,
+    "sha256": "3cd2dd991e768b0e4c132a90c3b0b3374cf81f46c5abd4e6ae5298aea3ea42ed"
+  },
+  {
+    "name": "assets/cooking/99/gourmet_de_legende_center.png",
+    "bytes": 2690,
+    "sha256": "2acf00cacfd4835c5d041ae5eb7b9b1347893cfe94745847bcda25960dc101d3"
+  },
+  {
+    "name": "assets/cooking/99/gourmet_de_legende_left.png",
+    "bytes": 53253,
+    "sha256": "b1ff825e47a5d895ddc14aff2e630002d05ff211bbf848a780bf6dc7b5743b0a"
+  },
+  {
+    "name": "assets/cooking/99/gourmet_de_legende_preview.png",
+    "bytes": 309051,
+    "sha256": "7ffc5880e9ba95bb7d73ffb61c18284641352cd0ea8fcdc3fc9206a10722f4e1"
+  },
+  {
+    "name": "assets/cooking/99/gourmet_de_legende_right.png",
+    "bytes": 53536,
+    "sha256": "e8ae1bd20dc40d8d23a2740631442699895c329b2aeb17520bcab207fc60514b"
+  },
+  {
+    "name": "assets/fishing/20/lanceur_patient.json",
+    "bytes": 230,
+    "sha256": "a3674ad535e89751ccd19c3418b66ba8799bbcd51f9a35f3714df49e3bb07f1a"
+  },
+  {
+    "name": "assets/fishing/20/lanceur_patient_badge.png",
+    "bytes": 9866,
+    "sha256": "ab54eebd4ab47b23bf07beeee309585507db88f7e2abfd868f3b74c583b06d48"
+  },
+  {
+    "name": "assets/fishing/20/lanceur_patient_center.png",
+    "bytes": 627,
+    "sha256": "51eab1da6a4b2d743d4ad344305e24371c86ecf06d206048c496e9efa4d0850c"
+  },
+  {
+    "name": "assets/fishing/20/lanceur_patient_left.png",
+    "bytes": 4983,
+    "sha256": "93e0d0455042fd71473a9b91d40375cfd34692613a51e67acd22bbe60e8aa1e2"
+  },
+  {
+    "name": "assets/fishing/20/lanceur_patient_preview.png",
+    "bytes": 39696,
+    "sha256": "347ca85af8fda3e66cf1ed2434476eb6d1aa5b8f392b77595f2c58ddc4225e32"
+  },
+  {
+    "name": "assets/fishing/20/lanceur_patient_right.png",
+    "bytes": 4955,
+    "sha256": "eb0ff340a75d818836bda4a97feaa7fbece28290d1921e52ef9e24422230bf18"
+  },
+  {
+    "name": "assets/fishing/40/facheux_des_brochets.json",
+    "bytes": 241,
+    "sha256": "a26ba6d83d918e1b81d28cd09b38fb09a47716047c18f32025349f7fbb5800ac"
+  },
+  {
+    "name": "assets/fishing/40/facheux_des_brochets_badge.png",
+    "bytes": 14844,
+    "sha256": "96641845bd9f41acc233d0969e7edbc3ecf5e4771ab7136017f82917f1f16839"
+  },
+  {
+    "name": "assets/fishing/40/facheux_des_brochets_center.png",
+    "bytes": 840,
+    "sha256": "9c9a62c1519c530a22c2240923f9f0d5aca740fee431e2cf001d36f1dc13f3b7"
+  },
+  {
+    "name": "assets/fishing/40/facheux_des_brochets_left.png",
+    "bytes": 15675,
+    "sha256": "4de6e23fa7f8667a716a3943b9189411174c69b560c16da5f82fe35ba6f59aa3"
+  },
+  {
+    "name": "assets/fishing/40/facheux_des_brochets_preview.png",
+    "bytes": 98346,
+    "sha256": "6b01ff6006150ab033abb6d9830c7297bc5bbcfcb4e50755ed658c5aaead0643"
+  },
+  {
+    "name": "assets/fishing/40/facheux_des_brochets_right.png",
+    "bytes": 15755,
+    "sha256": "59045728ad2dafe27c727c3304b45e86721ef13891a552386de647b18aa6edd6"
+  },
+  {
+    "name": "assets/fishing/60/veilleur_de_lanternes.json",
+    "bytes": 242,
+    "sha256": "b71f7f86da5ca24e2a1c65d676b16b237fae6ddcaded48ea3db742ae1bf0f8b4"
+  },
+  {
+    "name": "assets/fishing/60/veilleur_de_lanternes_badge.png",
+    "bytes": 22025,
+    "sha256": "9f130a2824c8430b7e21af8c708c117cf09f6b2a4acbc00c970c1bc7ba67e0a6"
+  },
+  {
+    "name": "assets/fishing/60/veilleur_de_lanternes_center.png",
+    "bytes": 1326,
+    "sha256": "c82ecbad78b21cbdd9dc85205bcd74b8e4c9731208e0b5e0bea453ebb1b35658"
+  },
+  {
+    "name": "assets/fishing/60/veilleur_de_lanternes_left.png",
+    "bytes": 48926,
+    "sha256": "653432e010b8f6ca406f86179fdc0f41f7e2de33aa3c702baf71659f5c4f9423"
+  },
+  {
+    "name": "assets/fishing/60/veilleur_de_lanternes_preview.png",
+    "bytes": 270691,
+    "sha256": "a0053e909c19f58003c1a2aa21707cafd9fd470c64eecf16f13898767fa1d670"
+  },
+  {
+    "name": "assets/fishing/60/veilleur_de_lanternes_right.png",
+    "bytes": 49060,
+    "sha256": "e76ffb049bba9a7c5f1268a3163c2be25361cf19632d0b7b124262644deee558"
+  },
+  {
+    "name": "assets/fishing/80/seigneur_des_marees.json",
+    "bytes": 239,
+    "sha256": "f91641c202ec156de8887694609aaa2b8fdbe46e411eacc49eb24aea7d50e831"
+  },
+  {
+    "name": "assets/fishing/80/seigneur_des_marees_badge.png",
+    "bytes": 27268,
+    "sha256": "552caa553732132b6db21f63827d6657d79f658472030a4d816d84c677e3e5ca"
+  },
+  {
+    "name": "assets/fishing/80/seigneur_des_marees_center.png",
+    "bytes": 1518,
+    "sha256": "7f25a34d02613123a6b57c8c85a2f4c834b7a3a3870f3454b319146c6dc60d48"
+  },
+  {
+    "name": "assets/fishing/80/seigneur_des_marees_left.png",
+    "bytes": 44164,
+    "sha256": "9fc970d411d260ba37849fb19acd743d4518c6824473e407aa7d435cbad74819"
+  },
+  {
+    "name": "assets/fishing/80/seigneur_des_marees_preview.png",
+    "bytes": 256331,
+    "sha256": "552a5bda5d3679443c95bbe2c4371eab356dca01b07ba2ca41677e3e67984b9c"
+  },
+  {
+    "name": "assets/fishing/80/seigneur_des_marees_right.png",
+    "bytes": 44262,
+    "sha256": "2abcb8348ad152af822724283dc9bee8d366ab260ee88cfbd92819ff82d16b28"
+  },
+  {
+    "name": "assets/fishing/90/peche_palier_90.json",
+    "bytes": 235,
+    "sha256": "c7e95872a76035591b73f73dba493d6bdc8c3466df946b67473c86a4ea593a84"
+  },
+  {
+    "name": "assets/fishing/90/peche_palier_90_badge.png",
+    "bytes": 28353,
+    "sha256": "650a5949b33595be7916da12583e561539f3fd996950182b2548027e9fa455f7"
+  },
+  {
+    "name": "assets/fishing/90/peche_palier_90_center.png",
+    "bytes": 1590,
+    "sha256": "00cea29a9efbf8b2edbb3beabbba0495f7079609c222a706b3c94e007d431301"
+  },
+  {
+    "name": "assets/fishing/90/peche_palier_90_left.png",
+    "bytes": 45714,
+    "sha256": "0250ff6816ce32008e239c1ecc5655a82af544c45445b16a796d4187e5d6541e"
+  },
+  {
+    "name": "assets/fishing/90/peche_palier_90_preview.png",
+    "bytes": 267180,
+    "sha256": "e0307a350fd94fa5da0cc0bce8ed7c9359948f2541d860f06029028e4ea07ef3"
+  },
+  {
+    "name": "assets/fishing/90/peche_palier_90_right.png",
+    "bytes": 45876,
+    "sha256": "dc7bba939601238beb6735a48974a6019412121ed4f26a5cc6d229a0f31e2314"
+  },
+  {
+    "name": "assets/fishing/99/legende_de_la_jetee.json",
+    "bytes": 240,
+    "sha256": "18913457e80ddc6d1a58fddde216905b0d3c6e5217bf51864351bc74f9d461eb"
+  },
+  {
+    "name": "assets/fishing/99/legende_de_la_jetee_badge.png",
+    "bytes": 31226,
+    "sha256": "0b1971778bb077729e8c03f0398b912c89a8b3ad33a602344e20fb4c11fd451b"
+  },
+  {
+    "name": "assets/fishing/99/legende_de_la_jetee_center.png",
+    "bytes": 1597,
+    "sha256": "2af8b7866fa6576713c6f57e51d6e17b0a167d6a9a276f103ef3a65a2cc809a9"
+  },
+  {
+    "name": "assets/fishing/99/legende_de_la_jetee_left.png",
+    "bytes": 50181,
+    "sha256": "33c6c84732e816b72d17d088c778415f73c59c9a3e661c77cdf8110f6e8f47fd"
+  },
+  {
+    "name": "assets/fishing/99/legende_de_la_jetee_preview.png",
+    "bytes": 295913,
+    "sha256": "f44fe8a1179eeb6c69b03bd6390f8526bd659f4cecae407bbc5de0269c44755a"
+  },
+  {
+    "name": "assets/fishing/99/legende_de_la_jetee_right.png",
+    "bytes": 50127,
+    "sha256": "608da4a564772e3207d0fbc9eaf94e0fb77d37d3bc153f2cabf436d0c20ac842"
+  },
+  {
+    "name": "assets/herbalism/20/cueilleur_d_aube.json",
+    "bytes": 217,
+    "sha256": "31c6471ceb8da6cbc6953c1cbc4564a1e120d53e3cc355dc88a3a37372859923"
+  },
+  {
+    "name": "assets/herbalism/20/cueilleur_d_aube_badge.png",
+    "bytes": 8572,
+    "sha256": "6af49060eed48cf1318725a512a25a54ec3f022dc9e73039f1c53ff52b125f8f"
+  },
+  {
+    "name": "assets/herbalism/20/cueilleur_d_aube_center.png",
+    "bytes": 933,
+    "sha256": "6fef8c5d42e0c04fdc1c25e1f2630243a8aa7e7335aefb1781e98509c5bbeea2"
+  },
+  {
+    "name": "assets/herbalism/20/cueilleur_d_aube_left.png",
+    "bytes": 3506,
+    "sha256": "88e8739f6ef88f467016b7cad65ab3a0f7fac9cbca659ee64008dd8b94313151"
+  },
+  {
+    "name": "assets/herbalism/20/cueilleur_d_aube_preview.png",
+    "bytes": 29182,
+    "sha256": "a6e70aa23ed831128e9b086ddbd907dc6afb3f156e56c49354ef10ffd352d684"
+  },
+  {
+    "name": "assets/herbalism/20/cueilleur_d_aube_right.png",
+    "bytes": 3499,
+    "sha256": "a5e371198fdf9fd2cdd154d01c0b05e17ee267f4ba07f3751f3dc568ce9851f4"
+  },
+  {
+    "name": "assets/herbalism/40/ami_des_orties.json",
+    "bytes": 211,
+    "sha256": "716e2487369cd956f6f5fb92328d2ca6e01739efdb4bf091b5dcd08cd1ca0989"
+  },
+  {
+    "name": "assets/herbalism/40/ami_des_orties_badge.png",
+    "bytes": 14043,
+    "sha256": "d849c4efe13cb62297f282cc0efe9ef78e3c424924d8b514fd04c2cf21b676ee"
+  },
+  {
+    "name": "assets/herbalism/40/ami_des_orties_center.png",
+    "bytes": 1190,
+    "sha256": "03b721c969de82f97ef1d351192228c142385e2fcea489f44e1864ef33cb31a4"
+  },
+  {
+    "name": "assets/herbalism/40/ami_des_orties_left.png",
+    "bytes": 12936,
+    "sha256": "b7c05c7224f321ac0d930022264d0bb6581eeb427d1526e9acf3189ead885871"
+  },
+  {
+    "name": "assets/herbalism/40/ami_des_orties_preview.png",
+    "bytes": 81190,
+    "sha256": "025d30e48cbb16153c15e331625920bda7f4be53fa3a0430060c8ed8482fdce2"
+  },
+  {
+    "name": "assets/herbalism/40/ami_des_orties_right.png",
+    "bytes": 12938,
+    "sha256": "4dcc8a94c611ad1b9745320d34f78a11bf57685e120a7a9dea74670db8974358"
+  },
+  {
+    "name": "assets/herbalism/60/chuchoteur_de_givre.json",
+    "bytes": 221,
+    "sha256": "7646bbc18cad1058764bdcd106e7660d5e2d520c7691d591068f911c49adb55c"
+  },
+  {
+    "name": "assets/herbalism/60/chuchoteur_de_givre_badge.png",
+    "bytes": 18012,
+    "sha256": "71be84f32e457a3bce9176ca5afa4a6691197e17c371e5822c98cccc4677b114"
+  },
+  {
+    "name": "assets/herbalism/60/chuchoteur_de_givre_center.png",
+    "bytes": 1500,
+    "sha256": "bfa937b52fa66fa90cf57ce5d25de32c3beeee4aa6f131d143a9ef186effa39f"
+  },
+  {
+    "name": "assets/herbalism/60/chuchoteur_de_givre_left.png",
+    "bytes": 56026,
+    "sha256": "f3a6721abf546f66d696fe45bda34b9a9098cdc1fb60f4ba31ecf095ea205494"
+  },
+  {
+    "name": "assets/herbalism/60/chuchoteur_de_givre_preview.png",
+    "bytes": 295399,
+    "sha256": "ad0db2bcb783d8d024336d0713200d6af233449dd09cce64f180dfab3ec5b40e"
+  },
+  {
+    "name": "assets/herbalism/60/chuchoteur_de_givre_right.png",
+    "bytes": 56204,
+    "sha256": "785bc49bf09397256dfe08af4c875414cd2eff65200a96c9e2e79aea3275486b"
+  },
+  {
+    "name": "assets/herbalism/80/terreur_des_plates_bandes.json",
+    "bytes": 233,
+    "sha256": "dba539f85d59590b6471cd9a08c7ca23cad0f288c81bd8931e766e259e5a92b0"
+  },
+  {
+    "name": "assets/herbalism/80/terreur_des_plates_bandes_badge.png",
+    "bytes": 24224,
+    "sha256": "20ed4d959adcb88cc3de801a3e38859fcbcee5e27b589ffb9bf0582b8ab74842"
+  },
+  {
+    "name": "assets/herbalism/80/terreur_des_plates_bandes_center.png",
+    "bytes": 1792,
+    "sha256": "485a72cce7d5e6a4b9658d8f2e2bb7d6d4b7428ecc266a8ef98c629804b37338"
+  },
+  {
+    "name": "assets/herbalism/80/terreur_des_plates_bandes_left.png",
+    "bytes": 44154,
+    "sha256": "5c5bcf28f873f0eb54cda3853257508c80ffb4630b014352d10af7959d7c7acc"
+  },
+  {
+    "name": "assets/herbalism/80/terreur_des_plates_bandes_preview.png",
+    "bytes": 247667,
+    "sha256": "8387844297eb301ffe3523bec5ce0cb435844ecadeba0028f4933a508993a312"
+  },
+  {
+    "name": "assets/herbalism/80/terreur_des_plates_bandes_right.png",
+    "bytes": 44321,
+    "sha256": "016250f13f9d88c9df111098a0d210f0992c046ee98ba9ea7bfed9d21d6dcb0c"
+  },
+  {
+    "name": "assets/herbalism/90/herboristerie_palier_90.json",
+    "bytes": 233,
+    "sha256": "3ea678dc7f78b6e438a60ab04ec82d1f48d946570dfa62c91ae22d7e989ba28b"
+  },
+  {
+    "name": "assets/herbalism/90/herboristerie_palier_90_badge.png",
+    "bytes": 29790,
+    "sha256": "15e1d45a754ecaa2522e4d7589c5845bef177b084a09efdd541ae0fe0dd4df20"
+  },
+  {
+    "name": "assets/herbalism/90/herboristerie_palier_90_center.png",
+    "bytes": 1941,
+    "sha256": "d200dd6feba299c85a75449bdaa7e61323807cccce56f1dc1ca5395cdeb10fdd"
+  },
+  {
+    "name": "assets/herbalism/90/herboristerie_palier_90_left.png",
+    "bytes": 48270,
+    "sha256": "45c6b9e781a927de09008724229b9d04a65befcceabdb4a9c4e6e12fe134a62c"
+  },
+  {
+    "name": "assets/herbalism/90/herboristerie_palier_90_preview.png",
+    "bytes": 278744,
+    "sha256": "81f6bf57bcf7de5be651b5c45c1a75da11db423ca7312d5510233fae9bde7c0f"
+  },
+  {
+    "name": "assets/herbalism/90/herboristerie_palier_90_right.png",
+    "bytes": 48372,
+    "sha256": "727d5634d89f72f7ea1ef2c41af8b7c764115500d54e3f76ff592b12ee12c804"
+  },
+  {
+    "name": "assets/herbalism/99/la_brume_en_personne.json",
+    "bytes": 223,
+    "sha256": "9208d06fe5b3d909674e6b2059fdc936a4b2826cbac71a6735151611a53604d1"
+  },
+  {
+    "name": "assets/herbalism/99/la_brume_en_personne_badge.png",
+    "bytes": 30594,
+    "sha256": "163420f6b3c3235862040eb6a575984afdf6362030a2a82f5bbf96fb4eda914d"
+  },
+  {
+    "name": "assets/herbalism/99/la_brume_en_personne_center.png",
+    "bytes": 2049,
+    "sha256": "b9bebbbda0e69e7c456702d947de42c2a3a8abf9862a8d26d594c6e870cc4b93"
+  },
+  {
+    "name": "assets/herbalism/99/la_brume_en_personne_left.png",
+    "bytes": 55999,
+    "sha256": "954afd8f6a6fdd73daee828c3251823bb530455efe9b36d932730294ebe38d50"
+  },
+  {
+    "name": "assets/herbalism/99/la_brume_en_personne_preview.png",
+    "bytes": 317601,
+    "sha256": "bb3b2984c7b9ef13d53c9941e739ade3315fc40ce6d379c5c41d8a621a641e47"
+  },
+  {
+    "name": "assets/herbalism/99/la_brume_en_personne_right.png",
+    "bytes": 56111,
+    "sha256": "78e032615762836d281eb0495fcd1c1f41ab6745c5df4d06151395b34943a1d1"
+  },
+  {
+    "name": "assets/mining/20/gratteur_de_galeries.json",
+    "bytes": 215,
+    "sha256": "46943bc85c7a0063ebb7d4bdde256be73cd5353fc2eac22150162a525ca2574f"
+  },
+  {
+    "name": "assets/mining/20/gratteur_de_galeries_badge.png",
+    "bytes": 9757,
+    "sha256": "a47f8c6ea1e717ff3dc72d94bc688b4e9fdb3f9ca8337b8644749b8da25d98e8"
+  },
+  {
+    "name": "assets/mining/20/gratteur_de_galeries_center.png",
+    "bytes": 1515,
+    "sha256": "a66686d8f30191c6de1b431cdc9bf8c1cf98d59c3dfa13076a2431b284592909"
+  },
+  {
+    "name": "assets/mining/20/gratteur_de_galeries_left.png",
+    "bytes": 8390,
+    "sha256": "aa587727852b0869db3c74d6517a0764d40a8a0b1a6946252e6603b390b7700e"
+  },
+  {
+    "name": "assets/mining/20/gratteur_de_galeries_preview.png",
+    "bytes": 52233,
+    "sha256": "0af932308767fbb75af6b84d23015759211147806093ede217895b828ca9b3ee"
+  },
+  {
+    "name": "assets/mining/20/gratteur_de_galeries_right.png",
+    "bytes": 8333,
+    "sha256": "d3ebf9372f9cdd69788d93b070cd9ac46281f7a15bb690afb27c8385634c8892"
+  },
+  {
+    "name": "assets/mining/40/chuchoteur_de_filons.json",
+    "bytes": 233,
+    "sha256": "b209d525b088ce7b8032db963fac22ef69882ff5b7775def310a15dc22c7511a"
+  },
+  {
+    "name": "assets/mining/40/chuchoteur_de_filons_badge.png",
+    "bytes": 14186,
+    "sha256": "b5344bb03e00eb7ff525e7bf1629a09a93a7305ec9d2540299955cb3406de41c"
+  },
+  {
+    "name": "assets/mining/40/chuchoteur_de_filons_center.png",
+    "bytes": 1934,
+    "sha256": "649bcfb649f5e43de15dc091beb6cbf1f2b586e7573749d6f2ee7e98d8b85f86"
+  },
+  {
+    "name": "assets/mining/40/chuchoteur_de_filons_left.png",
+    "bytes": 14932,
+    "sha256": "e22ca353acb3649da0800a712ebf6f134bfbbd2c5cfc93aac9743de518346374"
+  },
+  {
+    "name": "assets/mining/40/chuchoteur_de_filons_preview.png",
+    "bytes": 90276,
+    "sha256": "228d4377b826fd468604610ce18ddf479c592514a34f6654517119542fbaeb41"
+  },
+  {
+    "name": "assets/mining/40/chuchoteur_de_filons_right.png",
+    "bytes": 14951,
+    "sha256": "b2e9b86a903bfecb221e83cfa0f6a351b50fc4723b96cfd11691df721e364fbf"
+  },
+  {
+    "name": "assets/mining/60/fleau_des_eboulements.json",
+    "bytes": 229,
+    "sha256": "56256a8ef5ca762d4277d7dd9a5fe0873affb7e06a364d602d298fcd0eba5f67"
+  },
+  {
+    "name": "assets/mining/60/fleau_des_eboulements_badge.png",
+    "bytes": 23573,
+    "sha256": "dbb4deb118273c036379aec85bf4f8dee36c883a457ee817a21b00da588aacb7"
+  },
+  {
+    "name": "assets/mining/60/fleau_des_eboulements_center.png",
+    "bytes": 2755,
+    "sha256": "43440ecbdd4f5760ab2285f06d128e23f58ae9736d30db67725b0134c67aba64"
+  },
+  {
+    "name": "assets/mining/60/fleau_des_eboulements_left.png",
+    "bytes": 35379,
+    "sha256": "1c7e0b3ccfe506d30f7d3ddb122c1108edbd5081a6c10a1dbf942275021fa2f5"
+  },
+  {
+    "name": "assets/mining/60/fleau_des_eboulements_preview.png",
+    "bytes": 204477,
+    "sha256": "a11f154c86956cd7552c63a51ef0a91aedb4210ea4376fd3f8a45a645a99fc50"
+  },
+  {
+    "name": "assets/mining/60/fleau_des_eboulements_right.png",
+    "bytes": 35423,
+    "sha256": "729b3a1e1dfea2c8da398c16884e21164e8f07573a2b3a752ccbf328df3365fa"
+  },
+  {
+    "name": "assets/mining/80/salue_par_les_nains.json",
+    "bytes": 225,
+    "sha256": "47cda094af9f5cb2c06f6ee42e1b0e18c727a52edfac101e76ebe08b840fd264"
+  },
+  {
+    "name": "assets/mining/80/salue_par_les_nains_badge.png",
+    "bytes": 28055,
+    "sha256": "076c096440b2fa68d00727243ee59c2970a4733ba4a51b18573d2415a1420660"
+  },
+  {
+    "name": "assets/mining/80/salue_par_les_nains_center.png",
+    "bytes": 3331,
+    "sha256": "ec9a378c36842b43eb44fa730c58b262fa0b812faf9c39a7dfdc30f10da08050"
+  },
+  {
+    "name": "assets/mining/80/salue_par_les_nains_left.png",
+    "bytes": 42420,
+    "sha256": "8638a7e1873d3e84876483b8804cb1c06415f97b2850b09f12038539bdd3f885"
+  },
+  {
+    "name": "assets/mining/80/salue_par_les_nains_preview.png",
+    "bytes": 246907,
+    "sha256": "2282bf2d3e86f195afc9897810a3a219d13c1be0b851bc3318b62eb06ae45c31"
+  },
+  {
+    "name": "assets/mining/80/salue_par_les_nains_right.png",
+    "bytes": 42443,
+    "sha256": "2b2a748e37343b4892ffd9d3eb74630f24f264d8489f82bf9cb221841b05be38"
+  },
+  {
+    "name": "assets/mining/90/minage_palier_90.json",
+    "bytes": 226,
+    "sha256": "54d82741708764b1409dbc69c5f7d544dbd8765897fa9c43c9ee7439b7c41e1c"
+  },
+  {
+    "name": "assets/mining/90/minage_palier_90_badge.png",
+    "bytes": 32072,
+    "sha256": "af2f31922e0848503295c10009725fb0fb2123689e21f5f5de6ace93d5e69ffa"
+  },
+  {
+    "name": "assets/mining/90/minage_palier_90_center.png",
+    "bytes": 2963,
+    "sha256": "7eb0b9e985d17191823ff292c134d647b5ab7667ae33059e73c39b80779cb29b"
+  },
+  {
+    "name": "assets/mining/90/minage_palier_90_left.png",
+    "bytes": 48645,
+    "sha256": "419fc92d2fa7f2452e2dd5ed9a2d7ff2094ab9e6f6e5e928ba057f072e440246"
+  },
+  {
+    "name": "assets/mining/90/minage_palier_90_preview.png",
+    "bytes": 283513,
+    "sha256": "4bdcdb21d25a0049bf7f68b2e9772f1001bb1184e604c6a504e69c98aee59a80"
+  },
+  {
+    "name": "assets/mining/90/minage_palier_90_right.png",
+    "bytes": 48754,
+    "sha256": "8b588bbb319d91c137b42a5e2059bdc640cbcf590e22b6676ba312a35917b140"
+  },
+  {
+    "name": "assets/mining/99/coeur_de_la_montagne.json",
+    "bytes": 238,
+    "sha256": "a61614434d52c578bc9114cc90009509f1f46923ac974dc122062cf2e7fc2212"
+  },
+  {
+    "name": "assets/mining/99/coeur_de_la_montagne_badge.png",
+    "bytes": 31348,
+    "sha256": "0f1b9fa856df27bb68bc082c83b9174796226a3793e5b557a706d896008893e3"
+  },
+  {
+    "name": "assets/mining/99/coeur_de_la_montagne_center.png",
+    "bytes": 3515,
+    "sha256": "c5935fd35ceb30318a7575412e5ca2e102485dd97b430fab95f76833386c47d2"
+  },
+  {
+    "name": "assets/mining/99/coeur_de_la_montagne_left.png",
+    "bytes": 60895,
+    "sha256": "13d07b2e177a4c465eb4d27a62c3cfd6ff40994d192e052aa30e6ff5797fc378"
+  },
+  {
+    "name": "assets/mining/99/coeur_de_la_montagne_preview.png",
+    "bytes": 344175,
+    "sha256": "3d29cf748842f4929bdb8ace33481ebd7b5781b3419d78e5c64744f6cfccbe65"
+  },
+  {
+    "name": "assets/mining/99/coeur_de_la_montagne_right.png",
+    "bytes": 60857,
+    "sha256": "248cea6a6537358d9a6f0c2c7cc85b4cb6fbb7debaf41538558d77bf527d3545"
+  },
+  {
+    "name": "assets/smithing/20/tapeur_d_enclume.json",
+    "bytes": 210,
+    "sha256": "e9d3f2b83049028344a6779297a88cf9c5d1556a2a37a1e022c957335966aae5"
+  },
+  {
+    "name": "assets/smithing/20/tapeur_d_enclume_badge.png",
+    "bytes": 6138,
+    "sha256": "3af920ecaae5192cdc1720763760668e9b9f2c44d1c7e8710e05e3aecec4de2d"
+  },
+  {
+    "name": "assets/smithing/20/tapeur_d_enclume_center.png",
+    "bytes": 625,
+    "sha256": "b6559519093c9ab7b76fc7c724e109a5a0249a8db2021bfb4dd073adf442e94b"
+  },
+  {
+    "name": "assets/smithing/20/tapeur_d_enclume_left.png",
+    "bytes": 3423,
+    "sha256": "9127ab8aef04c3e710177ff3e0ff310dc60f58bc69d0586c7c01434547f61190"
+  },
+  {
+    "name": "assets/smithing/20/tapeur_d_enclume_preview.png",
+    "bytes": 26502,
+    "sha256": "244fc09647eee972e2822d896447999112f7b3596221232a18d8766d4d708b03"
+  },
+  {
+    "name": "assets/smithing/20/tapeur_d_enclume_right.png",
+    "bytes": 3466,
+    "sha256": "e9f49455e554da43bb41a95c62703fb76d1f8c9e28054e9a685da242158ff629"
+  },
+  {
+    "name": "assets/smithing/40/semeur_d_etincelles.json",
+    "bytes": 217,
+    "sha256": "12ac446cb3639be0e344b8739f85e3cad2175647ae3b018cf1d45a8b3d9ebdfd"
+  },
+  {
+    "name": "assets/smithing/40/semeur_d_etincelles_badge.png",
+    "bytes": 8684,
+    "sha256": "b800467db0262151b4cdc72b80cc2e82b7a014d2ab46610a4ede0d9a4cf75f26"
+  },
+  {
+    "name": "assets/smithing/40/semeur_d_etincelles_center.png",
+    "bytes": 856,
+    "sha256": "aeee34494a51d578e85321a4a97897f23142a8e39405ef9be585df7238c59621"
+  },
+  {
+    "name": "assets/smithing/40/semeur_d_etincelles_left.png",
+    "bytes": 11657,
+    "sha256": "e54b6458261c8cdd79b01553fa886367c322519d407748082d2016e68b26f04e"
+  },
+  {
+    "name": "assets/smithing/40/semeur_d_etincelles_preview.png",
+    "bytes": 70201,
+    "sha256": "8e8fe5cf7738c1dd1bfb09f4702a3b00eab5f46a1a1aadb07d9a788c0575d3b7"
+  },
+  {
+    "name": "assets/smithing/40/semeur_d_etincelles_right.png",
+    "bytes": 11609,
+    "sha256": "51700f4fa932c2c52467969cb7646fce0bda1abc77a8be49c2507bb022b7f5b7"
+  },
+  {
+    "name": "assets/smithing/60/gardien_du_feu_sacre.json",
+    "bytes": 217,
+    "sha256": "87b91d0fa4139ea1331cfb1d12f7dc602eeafe1d2d9acb490b66b2abd7098ef0"
+  },
+  {
+    "name": "assets/smithing/60/gardien_du_feu_sacre_badge.png",
+    "bytes": 14268,
+    "sha256": "154da5969b6932f9149439d8d8788ae6f8dfa18d4fc4d13f3cee0b9f3f23c517"
+  },
+  {
+    "name": "assets/smithing/60/gardien_du_feu_sacre_center.png",
+    "bytes": 1177,
+    "sha256": "c8747880ba3de891e884190dc7a08cb07aa5e17b07ca42d1b21fd5b2a16a9c2f"
+  },
+  {
+    "name": "assets/smithing/60/gardien_du_feu_sacre_left.png",
+    "bytes": 39494,
+    "sha256": "4ff982bdf3065a9d1bf11aefa381132aba116b3becbb2f25a2a2e60261090f88"
+  },
+  {
+    "name": "assets/smithing/60/gardien_du_feu_sacre_preview.png",
+    "bytes": 214798,
+    "sha256": "921baf49371a0fd6262c541816fc777df2b986f69a28eb898c52c3f155d91528"
+  },
+  {
+    "name": "assets/smithing/60/gardien_du_feu_sacre_right.png",
+    "bytes": 39596,
+    "sha256": "54de049c4c7d907de58a1e037ee79d8aedbd2012572cc4480acd114f17e96e68"
+  },
+  {
+    "name": "assets/smithing/80/forgeron_des_rois.json",
+    "bytes": 210,
+    "sha256": "0e505fd0307923fb7e6593d23bb7daf30aa0c3a77e3478a7e0ddab2308c610f5"
+  },
+  {
+    "name": "assets/smithing/80/forgeron_des_rois_badge.png",
+    "bytes": 23071,
+    "sha256": "d457fa6323d170ed02c86b7a7f9cd26dcd2248936e047673ff4f8a1ab1f2a420"
+  },
+  {
+    "name": "assets/smithing/80/forgeron_des_rois_center.png",
+    "bytes": 1325,
+    "sha256": "b4619073a3337f8d2516690c1ddb497b6ae124776c38b4ddf78f32f73c3b414a"
+  },
+  {
+    "name": "assets/smithing/80/forgeron_des_rois_left.png",
+    "bytes": 46368,
+    "sha256": "d9d6a8d491f45f0af79fd9320d73d3f091498071d5e3e5a9f88e4718a1040232"
+  },
+  {
+    "name": "assets/smithing/80/forgeron_des_rois_preview.png",
+    "bytes": 264027,
+    "sha256": "c2475bc1cfaa9dde3652cc3d10f67fe1e026f7cafbac4f07b0412bdecd9b0588"
+  },
+  {
+    "name": "assets/smithing/80/forgeron_des_rois_right.png",
+    "bytes": 46131,
+    "sha256": "29cfbf06c87a78b93c0ab76398c363d1499c4f7ca18e3ef0642e6d48ddc56171"
+  },
+  {
+    "name": "assets/smithing/90/forge_palier_90.json",
+    "bytes": 210,
+    "sha256": "831821624eb2b8c6d1771c5cd91be9da096bd3dada675253a19dd7c4dc6316e1"
+  },
+  {
+    "name": "assets/smithing/90/forge_palier_90_badge.png",
+    "bytes": 31344,
+    "sha256": "2dc602af56b977e1e3bce23dde95dcbb9a8833a3350b444212ba88741096cddb"
+  },
+  {
+    "name": "assets/smithing/90/forge_palier_90_center.png",
+    "bytes": 1304,
+    "sha256": "60860612ba2124ae716186372c14eb6ad08ddaded6c51d7ea14aca87742cde5e"
+  },
+  {
+    "name": "assets/smithing/90/forge_palier_90_left.png",
+    "bytes": 50048,
+    "sha256": "35db389a05f57e2a1a7230a77bcf663803a31f19224ccb232f978d49a5aeb729"
+  },
+  {
+    "name": "assets/smithing/90/forge_palier_90_preview.png",
+    "bytes": 298312,
+    "sha256": "0f8f40f8348988bf8428f7ea9d266d18cce17aae30e6767b345bdf2b8d73848f"
+  },
+  {
+    "name": "assets/smithing/90/forge_palier_90_right.png",
+    "bytes": 49779,
+    "sha256": "5d2b31ce7bef9019bb3dfc13b7ec45c8890608eaf48b947f30ecc29501a898ee"
+  },
+  {
+    "name": "assets/smithing/99/enclume_vivante.json",
+    "bytes": 206,
+    "sha256": "fb4d17004c3ed208defa1ae9b1fea6231c35723fad10ddb83385987e7a6c7423"
+  },
+  {
+    "name": "assets/smithing/99/enclume_vivante_badge.png",
+    "bytes": 31412,
+    "sha256": "857e45ea43e644e3a10dac34c93718cc16fe9a853c58e83d38dffb04efa6c75e"
+  },
+  {
+    "name": "assets/smithing/99/enclume_vivante_center.png",
+    "bytes": 1536,
+    "sha256": "355a1cfb2711957962bddfa40347d878d9cb24a21984ffeedc1d80434c761a29"
+  },
+  {
+    "name": "assets/smithing/99/enclume_vivante_left.png",
+    "bytes": 51036,
+    "sha256": "738c6eb84f34b0f8ecad517f90d990b7a78564deb7d4a793222b07799ede2c6d"
+  },
+  {
+    "name": "assets/smithing/99/enclume_vivante_preview.png",
+    "bytes": 304027,
+    "sha256": "aa35379850556d6eaa07b8039d81cde23bb865227240fa01ec1979179f18b199"
+  },
+  {
+    "name": "assets/smithing/99/enclume_vivante_right.png",
+    "bytes": 50927,
+    "sha256": "804731e7891ace6042db30575c6cda99e44b4cb38ced78eac86f14483a42e1a7"
+  },
+  {
+    "name": "assets/woodcutting/20/collectionneur_d_ecorce.json",
+    "bytes": 243,
+    "sha256": "85482c2a7cd3a1180111a2f778503b9edb06ddf002b4b7ad2a691b2e77c547e6"
+  },
+  {
+    "name": "assets/woodcutting/20/collectionneur_d_ecorce_badge.png",
+    "bytes": 8665,
+    "sha256": "c7f1cf2a8f16c42735e10613a58a292e9809f7c7a2d026928f274e5a3933b38e"
+  },
+  {
+    "name": "assets/woodcutting/20/collectionneur_d_ecorce_center.png",
+    "bytes": 874,
+    "sha256": "59b6df943e63dbf9813414ba95e9f7dac452f77cdc6caaa6f90ae7f0cc75940f"
+  },
+  {
+    "name": "assets/woodcutting/20/collectionneur_d_ecorce_left.png",
+    "bytes": 4471,
+    "sha256": "e0d4a7955b0b455e64ba6d138297cb48d7bbef267b558b75314195cbae137f23"
+  },
+  {
+    "name": "assets/woodcutting/20/collectionneur_d_ecorce_preview.png",
+    "bytes": 34241,
+    "sha256": "fd2a37fdba8b9c59afbbfc568b6b9eea7047da8e0654b3797ba12e5d1209540e"
+  },
+  {
+    "name": "assets/woodcutting/20/collectionneur_d_ecorce_right.png",
+    "bytes": 4530,
+    "sha256": "58d4806ba3b2233ac4458935b80e93a4d9eaf4b7d241267ecdee20f440b3b5e2"
+  },
+  {
+    "name": "assets/woodcutting/40/fendeur_de_querelles.json",
+    "bytes": 234,
+    "sha256": "d28e203793f9debab485bfb9833fa261c9afc9263d11d42622edd94277581c01"
+  },
+  {
+    "name": "assets/woodcutting/40/fendeur_de_querelles_badge.png",
+    "bytes": 10820,
+    "sha256": "4a107f7fa1728f2eb1a7b3c1743dede3b5eba334c9ee5f2af07591d4b702ed31"
+  },
+  {
+    "name": "assets/woodcutting/40/fendeur_de_querelles_center.png",
+    "bytes": 1041,
+    "sha256": "8ba7b9efda8290fccd7169a6a4165e89c2505e9b254b4afaad6c467abc392be3"
+  },
+  {
+    "name": "assets/woodcutting/40/fendeur_de_querelles_left.png",
+    "bytes": 13673,
+    "sha256": "dab8a106a59e7d551fd47fec5385359634957ac049284784beb6cf483a64961d"
+  },
+  {
+    "name": "assets/woodcutting/40/fendeur_de_querelles_preview.png",
+    "bytes": 81167,
+    "sha256": "c96e3cfa1addb675ce2a3c6d8f5bd14e7fdb8561539acbd42c68c3de71e22a22"
+  },
+  {
+    "name": "assets/woodcutting/40/fendeur_de_querelles_right.png",
+    "bytes": 13562,
+    "sha256": "62f2cf27138262947566c01a0d61c9b733f8bf4148b1b658dc3a5fb169536a01"
+  },
+  {
+    "name": "assets/woodcutting/60/chuchoteur_de_chenes.json",
+    "bytes": 235,
+    "sha256": "89e96c0dd531353336496de74ce2bfae593173f9a585f782b8b6ad3c949f1c0b"
+  },
+  {
+    "name": "assets/woodcutting/60/chuchoteur_de_chenes_badge.png",
+    "bytes": 19356,
+    "sha256": "9075fe323ffacd61eaeefba76a8a2ec6051493ea1d67bc38ffe97cddf5176f48"
+  },
+  {
+    "name": "assets/woodcutting/60/chuchoteur_de_chenes_center.png",
+    "bytes": 1432,
+    "sha256": "13387eb488469e391b0e3855a03b0f26316760f74095e7d9612cad84bd28afe6"
+  },
+  {
+    "name": "assets/woodcutting/60/chuchoteur_de_chenes_left.png",
+    "bytes": 43622,
+    "sha256": "f27fb07fc6df784ad4592e39573908f6925b77eac70fff80d414765952b02a5e"
+  },
+  {
+    "name": "assets/woodcutting/60/chuchoteur_de_chenes_preview.png",
+    "bytes": 241947,
+    "sha256": "c4c133f8507ebe71eefc4faf7f2723b572111f58a78bcdf6eb6b5d6244147f80"
+  },
+  {
+    "name": "assets/woodcutting/60/chuchoteur_de_chenes_right.png",
+    "bytes": 43939,
+    "sha256": "0f0ac1855609dc7dfc0d8a86c7c832d4036bb2679325dbf02666febe30a82721"
+  },
+  {
+    "name": "assets/woodcutting/80/desespoir_des_castors.json",
+    "bytes": 237,
+    "sha256": "7b34044a3f56072012209ef5e4933b65bedc95e2896f3568c939a3db72e7c933"
+  },
+  {
+    "name": "assets/woodcutting/80/desespoir_des_castors_badge.png",
+    "bytes": 25527,
+    "sha256": "bfea442340cdbc21766d9a0a82cf6572514a816413fbfe946e380b028c4d87aa"
+  },
+  {
+    "name": "assets/woodcutting/80/desespoir_des_castors_center.png",
+    "bytes": 1542,
+    "sha256": "bf6b3254344ef26638b734eeec1459257f9d213382d635478ed1588f310bdc87"
+  },
+  {
+    "name": "assets/woodcutting/80/desespoir_des_castors_left.png",
+    "bytes": 49568,
+    "sha256": "3e8a64053bca67875d9a92c8f0a399fcd0c542b5d0da381d914301175f25cb88"
+  },
+  {
+    "name": "assets/woodcutting/80/desespoir_des_castors_preview.png",
+    "bytes": 281701,
+    "sha256": "a6b98c55b21c3dd9e3f7b1bfb4299c27a2298a34a6d66be0fdd2f2d476832303"
+  },
+  {
+    "name": "assets/woodcutting/80/desespoir_des_castors_right.png",
+    "bytes": 49652,
+    "sha256": "a2d573edcb99198a72414f1ffda7a40b5b106fc59d2c95fd2e3cf4d8ba8463ae"
+  },
+  {
+    "name": "assets/woodcutting/90/bucheronnage_palier_90.json",
+    "bytes": 243,
+    "sha256": "ac475a8fd208242e7f7f5640092da1abfff447cec0b78e75f264184fd263b7c2"
+  },
+  {
+    "name": "assets/woodcutting/90/bucheronnage_palier_90_badge.png",
+    "bytes": 27210,
+    "sha256": "309316b9ae128d471b6cd8918441f005c351ffb59bc64625be6263cf3e71baa4"
+  },
+  {
+    "name": "assets/woodcutting/90/bucheronnage_palier_90_center.png",
+    "bytes": 1639,
+    "sha256": "2f10ee47b4b771451d88ad75adf4a93ea31c4d032fe0cf8740b5ca74ddff31ab"
+  },
+  {
+    "name": "assets/woodcutting/90/bucheronnage_palier_90_left.png",
+    "bytes": 54682,
+    "sha256": "7ea41c710d0cae53ae4f3d45825c5a48e28a7fe84047285740b1cad8d8eb8c70"
+  },
+  {
+    "name": "assets/woodcutting/90/bucheronnage_palier_90_preview.png",
+    "bytes": 312050,
+    "sha256": "9707bef7aac1cb5dc32853bd8a5a07fcbe86826725b8ae6634c1c4dc0d7e38b3"
+  },
+  {
+    "name": "assets/woodcutting/90/bucheronnage_palier_90_right.png",
+    "bytes": 54543,
+    "sha256": "1be86fb7d0a1c39c77ecbac28c004a3ea2f7a3bd6c8d793a8d0b5ce76084d9e1"
+  },
+  {
+    "name": "assets/woodcutting/99/la_foret_a_lui_tout_seul.json",
+    "bytes": 244,
+    "sha256": "23bcf496f675b7baa5d691372a4e6be406030c746e8f5fe7c51adb5852f45179"
+  },
+  {
+    "name": "assets/woodcutting/99/la_foret_a_lui_tout_seul_badge.png",
+    "bytes": 37159,
+    "sha256": "2d86d841b522badf5b4cecc3eabf280e8f44431c704fca3fd26fae958140f42b"
+  },
+  {
+    "name": "assets/woodcutting/99/la_foret_a_lui_tout_seul_center.png",
+    "bytes": 1899,
+    "sha256": "504613ab92afb3e1b7771510c864ddf58c4ed48e61f5801941797281c2444255"
+  },
+  {
+    "name": "assets/woodcutting/99/la_foret_a_lui_tout_seul_left.png",
+    "bytes": 50557,
+    "sha256": "1b7d68d3d2281c1fdb3782848dcd17d668c5957068652df1d2b7f728aba52f8a"
+  },
+  {
+    "name": "assets/woodcutting/99/la_foret_a_lui_tout_seul_preview.png",
+    "bytes": 303085,
+    "sha256": "d944e1577dc01f384cf7dbc190d695dc76e5680e225fb6a144b2b24e9f42c55c"
+  },
+  {
+    "name": "assets/woodcutting/99/la_foret_a_lui_tout_seul_right.png",
+    "bytes": 50892,
+    "sha256": "a146fcbe8afca59fdc70378ee6a740f9105943efa1bcaee15940b85819cfd384"
   },
   {
     "name": "catalogue.json",
     "bytes": 18871,
     "sha256": "d98668a80a3c6e1517c315e7ea30eec7281af44036bcb563c77955fb67192598"
+  },
+  {
+    "name": "manifest.json",
+    "bytes": 39164,
+    "sha256": "e9686e957b77c67486920a54cd1d3f334a5da61d46abea772b58748616110b7b"
+  },
+  {
+    "name": "tools/finalize.py",
+    "bytes": 10568,
+    "sha256": "dd3180eb417129de306a9f5503edc6f5f8ec1dcc98e24211a93d4f8b38cfbbcf"
+  },
+  {
+    "name": "tools/render_preview.py",
+    "bytes": 1128,
+    "sha256": "10edc1222882e7ee8f4055d161a77a66c9ab72af0ab5f33701e1864a08fe3989"
+  },
+  {
+    "name": "tools/verify_assets.py",
+    "bytes": 2900,
+    "sha256": "7eb3b0b677e8344ade733a8090b304da2839c753b9ae8091bf858ed1fd0b480e"
+  },
+  {
+    "name": "validation.json",
+    "bytes": 26081,
+    "sha256": "7f2176cc5bdc2a6b5b059469a2eb4b1d91ae73c57bc3af491eec371ef670ae7b"
   }
 ]

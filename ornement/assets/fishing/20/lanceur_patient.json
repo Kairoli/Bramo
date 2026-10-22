@@ -1,0 +1,14 @@
+{
+  "id": "lanceur_patient",
+  "title": "Lanceur patient",
+  "palette": [
+    "#4CC9D6",
+    "#C59E64",
+    "#42637B"
+  ],
+  "motifs": [
+    "cordages et hameçons",
+    "vagues et nageoires",
+    "lanternes et coquillages"
+  ]
+}

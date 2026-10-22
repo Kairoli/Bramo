@@ -55,6 +55,13 @@ Bramo est un **idle-RPG multijoueur jouable dans le navigateur**, dans l'esprit 
 
 ## 5. État du projet (à jour au 22 octobre 2026)
 
+### Fait — livraison des ornements de métier (22 octobre)
+
+- **Dossier pour reprendre : [`ornement/README_CLAUDE.md`](ornement/README_CLAUDE.md)**. Sept familles × six paliers, 42 ornements, fichiers PNG/JSON décompressés dans `ornement/assets/`, ZIP et planches comparatives conservés.
+- **`ornement/manifest.json`** relie les 35 titres actuels à leurs `trialId`, métier, rang et chemins. Les sept variantes du 90 sont réservées (`enabled: false`, `provisional: true`, aucun `trialId`) ; aucun nouveau déblocage n'est appliqué.
+- Rendu et vérification reproductibles : `ornement/tools/render_preview.py`, `verify_assets.py`, `finalize.py`. Quatre pièces transparentes déjà en double résolution ; le jeu écrit le pseudo et le titre.
+- **Intégration en jeu à faire** : suivre `state.skills[profession].shownRank` et les surnoms débloqués, jamais le seul niveau. Contrat de découpe et exemple CSS dans le dossier de reprise. Cette livraison n'a pas modifié l'interface ni les règles des épreuves.
+
 ### Fait — analyse du dossier « Activités et artisanat » (22 octobre)
 
 - **Dossier GPT** : [`docs/design/activites-artisanat/`](docs/design/activites-artisanat/) (craft de tout l'équipement, 28 patrons de recettes, filières, donjons 1-4, escouades hors ligne, route solo 12 × 10, saisons, world boss, Routes franches). **Analyse de Claude, verdicts, essais et questions pour Louis : [`analyse.md`](docs/design/activites-artisanat/analyse.md)** — à lire avant toute suite du PvE, du craft ou du butin.
@@ -251,6 +258,8 @@ Bramo est un **idle-RPG multijoueur jouable dans le navigateur**, dans l'esprit 
 ## 6. À faire
 
 ### Prochaines étapes (ordre proposé)
+
+- **Ornements de métier — intégration à reprendre** : lire [`ornement/README_CLAUDE.md`](ornement/README_CLAUDE.md), utiliser les assets et le manifeste livrés ; conserver les déblocages existants et réserver le 90.
 
 0. **Combat : suite de [`docs/design/coeur-du-jeu/integration.md`](docs/design/coeur-du-jeu/integration.md) §5** (étapes 0 à 4 faites, questions Q1 à Q6 tranchées), revu par [`docs/design/activites-artisanat/analyse.md`](docs/design/activites-artisanat/analyse.md) §7 : (5a) statistiques réelles, (5b) ensembles et gemmes dans le moteur, mesurés sur les douze zones, et survie du Traqueur, (6a) boucle d'objets complète, (6b) six zones solo, (6c) Fonderie, puis filières et activités collectives. 
 0 bis. **Suite de `docs/design/arbitrages.md` §3** (étapes 1 à 4 faites pour l'essentiel ; reste les outils d'apprenti, les commandes artisanales et le simulateur de marché) : (5) clans, Construction, Agriculture, (6) combat et métiers d'équipement, (7) premier événement.

@@ -1,0 +1,77 @@
+[
+  {
+    "name": "Bramo-bucheronnage-famille.png",
+    "bytes": 432486,
+    "sha256": "cb75621019d6e38909784548d733c47bf4bf799f999cafabb70f604f8a96568f"
+  },
+  {
+    "name": "Bramo-bucheronnage-famille.zip",
+    "bytes": 2246606,
+    "sha256": "048666733c75060fc42807d65d3059c0fc9f1ac0ba82d8b38ca56e4c34741ec9"
+  },
+  {
+    "name": "Bramo-cuisine-famille.png",
+    "bytes": 412437,
+    "sha256": "13e1feb7112b90dca8fb35ac53751ffffe2e109eabe07e5fb8bd67c4f782bab6"
+  },
+  {
+    "name": "Bramo-cuisine-famille.zip",
+    "bytes": 2147284,
+    "sha256": "c84feb63408df6caaee6262caba8304298cb40be344b65e5c92c6122f3d88e86"
+  },
+  {
+    "name": "Bramo-forge-famille.png",
+    "bytes": 406445,
+    "sha256": "97b24a01d4b8ff787f9eed3eb211b2b849a1e5847b6e198f4a6842d605484c81"
+  },
+  {
+    "name": "Bramo-forge-famille.zip",
+    "bytes": 2096365,
+    "sha256": "73be8ab01f731790deb8ecfbb5751b3be3cc29e699e2873bf5e9b92a70290bee"
+  },
+  {
+    "name": "Bramo-herboristerie-famille.png",
+    "bytes": 429918,
+    "sha256": "10674e826c301167985421376845b33ad4d255236a7291b18467445eeee45adb"
+  },
+  {
+    "name": "Bramo-herboristerie-famille.zip",
+    "bytes": 2245875,
+    "sha256": "1d425eb63517e7472bd8ad4a4428aeafdd27527b6cfdf27aa9d6853a7aa7c3c5"
+  },
+  {
+    "name": "Bramo-menuiserie-famille.png",
+    "bytes": 377440,
+    "sha256": "2bdd60ad45adc560fb32373e7fcb0b33e207a8fc0caae2786160ef9d9c069f03"
+  },
+  {
+    "name": "Bramo-menuiserie-famille.zip",
+    "bytes": 1936934,
+    "sha256": "80f74b60c5c85473aec2f6894a2a1469bba7a87a837b413f947e224800fd5dac"
+  },
+  {
+    "name": "Bramo-ornements-tous-metiers.png",
+    "bytes": 885936,
+    "sha256": "b5d4921618690a6746cb5e276ed79b7203ae0bf4d698d3e006bb1bd45833fa96"
+  },
+  {
+    "name": "Bramo-peche-famille.png",
+    "bytes": 422740,
+    "sha256": "1a3faa1f6e1396e0f60f592763b9bda6f8a8d2977e6ffa523e1e49bc9e5d441a"
+  },
+  {
+    "name": "Bramo-peche-famille.zip",
+    "bytes": 2198291,
+    "sha256": "4fe6e8f948dcb71baaf49b5e94ccba1902d486274497595e438bc2da0c3a94d5"
+  },
+  {
+    "name": "README.md",
+    "bytes": 2605,
+    "sha256": "67a1c3a5efeb52e00a763a66199d1c8eda5d486955daa33a8d972df9e8eed282"
+  },
+  {
+    "name": "catalogue.json",
+    "bytes": 18871,
+    "sha256": "d98668a80a3c6e1517c315e7ea30eec7281af44036bcb563c77955fb67192598"
+  }
+]

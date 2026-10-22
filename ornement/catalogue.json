@@ -1,0 +1,638 @@
+[
+  {
+    "profession": "woodcutting",
+    "name": "Bûcheronnage",
+    "palette": [
+      "#8B6042",
+      "#7ED6A2",
+      "#C89562"
+    ],
+    "motifs": [
+      "branches de chêne",
+      "hache et écorce",
+      "feuilles de bois de lune"
+    ],
+    "levels": [
+      {
+        "level": 20,
+        "id": "collectionneur_d_ecorce",
+        "title": "Collectionneur d’écorce",
+        "provisional": false,
+        "asset_bytes": 18540,
+        "files": [
+          "20/collectionneur_d_ecorce.json",
+          "20/collectionneur_d_ecorce_badge.png",
+          "20/collectionneur_d_ecorce_center.png",
+          "20/collectionneur_d_ecorce_left.png",
+          "20/collectionneur_d_ecorce_preview.png",
+          "20/collectionneur_d_ecorce_right.png"
+        ]
+      },
+      {
+        "level": 40,
+        "id": "fendeur_de_querelles",
+        "title": "Fendeur de querelles",
+        "provisional": false,
+        "asset_bytes": 39096,
+        "files": [
+          "40/fendeur_de_querelles.json",
+          "40/fendeur_de_querelles_badge.png",
+          "40/fendeur_de_querelles_center.png",
+          "40/fendeur_de_querelles_left.png",
+          "40/fendeur_de_querelles_preview.png",
+          "40/fendeur_de_querelles_right.png"
+        ]
+      },
+      {
+        "level": 60,
+        "id": "chuchoteur_de_chenes",
+        "title": "Chuchoteur de chênes",
+        "provisional": false,
+        "asset_bytes": 108349,
+        "files": [
+          "60/chuchoteur_de_chenes.json",
+          "60/chuchoteur_de_chenes_badge.png",
+          "60/chuchoteur_de_chenes_center.png",
+          "60/chuchoteur_de_chenes_left.png",
+          "60/chuchoteur_de_chenes_preview.png",
+          "60/chuchoteur_de_chenes_right.png"
+        ]
+      },
+      {
+        "level": 80,
+        "id": "desespoir_des_castors",
+        "title": "Désespoir des castors",
+        "provisional": false,
+        "asset_bytes": 126289,
+        "files": [
+          "80/desespoir_des_castors.json",
+          "80/desespoir_des_castors_badge.png",
+          "80/desespoir_des_castors_center.png",
+          "80/desespoir_des_castors_left.png",
+          "80/desespoir_des_castors_preview.png",
+          "80/desespoir_des_castors_right.png"
+        ]
+      },
+      {
+        "level": 90,
+        "id": "bucheronnage_palier_90",
+        "title": "Bûcheronnage — palier 90",
+        "provisional": true,
+        "asset_bytes": 138074,
+        "files": [
+          "90/bucheronnage_palier_90.json",
+          "90/bucheronnage_palier_90_badge.png",
+          "90/bucheronnage_palier_90_center.png",
+          "90/bucheronnage_palier_90_left.png",
+          "90/bucheronnage_palier_90_preview.png",
+          "90/bucheronnage_palier_90_right.png"
+        ]
+      },
+      {
+        "level": 99,
+        "id": "la_foret_a_lui_tout_seul",
+        "title": "La forêt à lui tout seul",
+        "provisional": false,
+        "asset_bytes": 140507,
+        "files": [
+          "99/la_foret_a_lui_tout_seul.json",
+          "99/la_foret_a_lui_tout_seul_badge.png",
+          "99/la_foret_a_lui_tout_seul_center.png",
+          "99/la_foret_a_lui_tout_seul_left.png",
+          "99/la_foret_a_lui_tout_seul_preview.png",
+          "99/la_foret_a_lui_tout_seul_right.png"
+        ]
+      }
+    ]
+  },
+  {
+    "profession": "fishing",
+    "name": "Pêche",
+    "palette": [
+      "#4CC9D6",
+      "#C59E64",
+      "#42637B"
+    ],
+    "motifs": [
+      "cordages et hameçons",
+      "vagues et nageoires",
+      "lanternes et coquillages"
+    ],
+    "levels": [
+      {
+        "level": 20,
+        "id": "lanceur_patient",
+        "title": "Lanceur patient",
+        "provisional": false,
+        "asset_bytes": 20431,
+        "files": [
+          "20/lanceur_patient.json",
+          "20/lanceur_patient_badge.png",
+          "20/lanceur_patient_center.png",
+          "20/lanceur_patient_left.png",
+          "20/lanceur_patient_preview.png",
+          "20/lanceur_patient_right.png"
+        ]
+      },
+      {
+        "level": 40,
+        "id": "facheux_des_brochets",
+        "title": "Fâcheux des brochets",
+        "provisional": false,
+        "asset_bytes": 47114,
+        "files": [
+          "40/facheux_des_brochets.json",
+          "40/facheux_des_brochets_badge.png",
+          "40/facheux_des_brochets_center.png",
+          "40/facheux_des_brochets_left.png",
+          "40/facheux_des_brochets_preview.png",
+          "40/facheux_des_brochets_right.png"
+        ]
+      },
+      {
+        "level": 60,
+        "id": "veilleur_de_lanternes",
+        "title": "Veilleur de lanternes",
+        "provisional": false,
+        "asset_bytes": 121337,
+        "files": [
+          "60/veilleur_de_lanternes.json",
+          "60/veilleur_de_lanternes_badge.png",
+          "60/veilleur_de_lanternes_center.png",
+          "60/veilleur_de_lanternes_left.png",
+          "60/veilleur_de_lanternes_preview.png",
+          "60/veilleur_de_lanternes_right.png"
+        ]
+      },
+      {
+        "level": 80,
+        "id": "seigneur_des_marees",
+        "title": "Seigneur des marées",
+        "provisional": false,
+        "asset_bytes": 117212,
+        "files": [
+          "80/seigneur_des_marees.json",
+          "80/seigneur_des_marees_badge.png",
+          "80/seigneur_des_marees_center.png",
+          "80/seigneur_des_marees_left.png",
+          "80/seigneur_des_marees_preview.png",
+          "80/seigneur_des_marees_right.png"
+        ]
+      },
+      {
+        "level": 90,
+        "id": "peche_palier_90",
+        "title": "Pêche — palier 90",
+        "provisional": true,
+        "asset_bytes": 121533,
+        "files": [
+          "90/peche_palier_90.json",
+          "90/peche_palier_90_badge.png",
+          "90/peche_palier_90_center.png",
+          "90/peche_palier_90_left.png",
+          "90/peche_palier_90_preview.png",
+          "90/peche_palier_90_right.png"
+        ]
+      },
+      {
+        "level": 99,
+        "id": "legende_de_la_jetee",
+        "title": "Légende de la jetée",
+        "provisional": false,
+        "asset_bytes": 133131,
+        "files": [
+          "99/legende_de_la_jetee.json",
+          "99/legende_de_la_jetee_badge.png",
+          "99/legende_de_la_jetee_center.png",
+          "99/legende_de_la_jetee_left.png",
+          "99/legende_de_la_jetee_preview.png",
+          "99/legende_de_la_jetee_right.png"
+        ]
+      }
+    ]
+  },
+  {
+    "profession": "herbalism",
+    "name": "Herboristerie",
+    "palette": [
+      "#7ED6A2",
+      "#B39DF5",
+      "#BD985F"
+    ],
+    "motifs": [
+      "tiges et feuilles",
+      "fleurs de givre",
+      "rosée et brume"
+    ],
+    "levels": [
+      {
+        "level": 20,
+        "id": "cueilleur_d_aube",
+        "title": "Cueilleur d’aube",
+        "provisional": false,
+        "asset_bytes": 16510,
+        "files": [
+          "20/cueilleur_d_aube.json",
+          "20/cueilleur_d_aube_badge.png",
+          "20/cueilleur_d_aube_center.png",
+          "20/cueilleur_d_aube_left.png",
+          "20/cueilleur_d_aube_preview.png",
+          "20/cueilleur_d_aube_right.png"
+        ]
+      },
+      {
+        "level": 40,
+        "id": "ami_des_orties",
+        "title": "Ami des orties",
+        "provisional": false,
+        "asset_bytes": 41107,
+        "files": [
+          "40/ami_des_orties.json",
+          "40/ami_des_orties_badge.png",
+          "40/ami_des_orties_center.png",
+          "40/ami_des_orties_left.png",
+          "40/ami_des_orties_preview.png",
+          "40/ami_des_orties_right.png"
+        ]
+      },
+      {
+        "level": 60,
+        "id": "chuchoteur_de_givre",
+        "title": "Chuchoteur de givre",
+        "provisional": false,
+        "asset_bytes": 131742,
+        "files": [
+          "60/chuchoteur_de_givre.json",
+          "60/chuchoteur_de_givre_badge.png",
+          "60/chuchoteur_de_givre_center.png",
+          "60/chuchoteur_de_givre_left.png",
+          "60/chuchoteur_de_givre_preview.png",
+          "60/chuchoteur_de_givre_right.png"
+        ]
+      },
+      {
+        "level": 80,
+        "id": "terreur_des_plates_bandes",
+        "title": "Terreur des plates-bandes",
+        "provisional": false,
+        "asset_bytes": 114491,
+        "files": [
+          "80/terreur_des_plates_bandes.json",
+          "80/terreur_des_plates_bandes_badge.png",
+          "80/terreur_des_plates_bandes_center.png",
+          "80/terreur_des_plates_bandes_left.png",
+          "80/terreur_des_plates_bandes_preview.png",
+          "80/terreur_des_plates_bandes_right.png"
+        ]
+      },
+      {
+        "level": 90,
+        "id": "herboristerie_palier_90",
+        "title": "Herboristerie — palier 90",
+        "provisional": true,
+        "asset_bytes": 128373,
+        "files": [
+          "90/herboristerie_palier_90.json",
+          "90/herboristerie_palier_90_badge.png",
+          "90/herboristerie_palier_90_center.png",
+          "90/herboristerie_palier_90_left.png",
+          "90/herboristerie_palier_90_preview.png",
+          "90/herboristerie_palier_90_right.png"
+        ]
+      },
+      {
+        "level": 99,
+        "id": "la_brume_en_personne",
+        "title": "La Brume en personne",
+        "provisional": false,
+        "asset_bytes": 144753,
+        "files": [
+          "99/la_brume_en_personne.json",
+          "99/la_brume_en_personne_badge.png",
+          "99/la_brume_en_personne_center.png",
+          "99/la_brume_en_personne_left.png",
+          "99/la_brume_en_personne_preview.png",
+          "99/la_brume_en_personne_right.png"
+        ]
+      }
+    ]
+  },
+  {
+    "profession": "smithing",
+    "name": "Forge",
+    "palette": [
+      "#F08A4B",
+      "#71818B",
+      "#D3A85B"
+    ],
+    "motifs": [
+      "marteaux et enclumes",
+      "fer forgé",
+      "feu sacré"
+    ],
+    "levels": [
+      {
+        "level": 20,
+        "id": "tapeur_d_enclume",
+        "title": "Tapeur d’enclume",
+        "provisional": false,
+        "asset_bytes": 13652,
+        "files": [
+          "20/tapeur_d_enclume.json",
+          "20/tapeur_d_enclume_badge.png",
+          "20/tapeur_d_enclume_center.png",
+          "20/tapeur_d_enclume_left.png",
+          "20/tapeur_d_enclume_preview.png",
+          "20/tapeur_d_enclume_right.png"
+        ]
+      },
+      {
+        "level": 40,
+        "id": "semeur_d_etincelles",
+        "title": "Semeur d’étincelles",
+        "provisional": false,
+        "asset_bytes": 32806,
+        "files": [
+          "40/semeur_d_etincelles.json",
+          "40/semeur_d_etincelles_badge.png",
+          "40/semeur_d_etincelles_center.png",
+          "40/semeur_d_etincelles_left.png",
+          "40/semeur_d_etincelles_preview.png",
+          "40/semeur_d_etincelles_right.png"
+        ]
+      },
+      {
+        "level": 60,
+        "id": "gardien_du_feu_sacre",
+        "title": "Gardien du feu sacré",
+        "provisional": false,
+        "asset_bytes": 94535,
+        "files": [
+          "60/gardien_du_feu_sacre.json",
+          "60/gardien_du_feu_sacre_badge.png",
+          "60/gardien_du_feu_sacre_center.png",
+          "60/gardien_du_feu_sacre_left.png",
+          "60/gardien_du_feu_sacre_preview.png",
+          "60/gardien_du_feu_sacre_right.png"
+        ]
+      },
+      {
+        "level": 80,
+        "id": "forgeron_des_rois",
+        "title": "Forgeron des rois",
+        "provisional": false,
+        "asset_bytes": 116895,
+        "files": [
+          "80/forgeron_des_rois.json",
+          "80/forgeron_des_rois_badge.png",
+          "80/forgeron_des_rois_center.png",
+          "80/forgeron_des_rois_left.png",
+          "80/forgeron_des_rois_preview.png",
+          "80/forgeron_des_rois_right.png"
+        ]
+      },
+      {
+        "level": 90,
+        "id": "forge_palier_90",
+        "title": "Forge — palier 90",
+        "provisional": true,
+        "asset_bytes": 132475,
+        "files": [
+          "90/forge_palier_90.json",
+          "90/forge_palier_90_badge.png",
+          "90/forge_palier_90_center.png",
+          "90/forge_palier_90_left.png",
+          "90/forge_palier_90_preview.png",
+          "90/forge_palier_90_right.png"
+        ]
+      },
+      {
+        "level": 99,
+        "id": "enclume_vivante",
+        "title": "Enclume vivante",
+        "provisional": false,
+        "asset_bytes": 134911,
+        "files": [
+          "99/enclume_vivante.json",
+          "99/enclume_vivante_badge.png",
+          "99/enclume_vivante_center.png",
+          "99/enclume_vivante_left.png",
+          "99/enclume_vivante_preview.png",
+          "99/enclume_vivante_right.png"
+        ]
+      }
+    ]
+  },
+  {
+    "profession": "carpentry",
+    "name": "Menuiserie",
+    "palette": [
+      "#BA8B52",
+      "#7C969D",
+      "#D9C58F"
+    ],
+    "motifs": [
+      "assemblages de bois",
+      "ciseaux et rabots",
+      "volutes de copeaux"
+    ],
+    "levels": [
+      {
+        "level": 20,
+        "id": "equarrisseur_de_planches",
+        "title": "Équarrisseur de planches",
+        "provisional": false,
+        "asset_bytes": 16809,
+        "files": [
+          "20/equarrisseur_de_planches.json",
+          "20/equarrisseur_de_planches_badge.png",
+          "20/equarrisseur_de_planches_center.png",
+          "20/equarrisseur_de_planches_left.png",
+          "20/equarrisseur_de_planches_preview.png",
+          "20/equarrisseur_de_planches_right.png"
+        ]
+      },
+      {
+        "level": 40,
+        "id": "ponceur_de_patience",
+        "title": "Ponceur de patience",
+        "provisional": false,
+        "asset_bytes": 34986,
+        "files": [
+          "40/ponceur_de_patience.json",
+          "40/ponceur_de_patience_badge.png",
+          "40/ponceur_de_patience_center.png",
+          "40/ponceur_de_patience_left.png",
+          "40/ponceur_de_patience_preview.png",
+          "40/ponceur_de_patience_right.png"
+        ]
+      },
+      {
+        "level": 60,
+        "id": "chuchoteur_de_poutres",
+        "title": "Chuchoteur de poutres",
+        "provisional": false,
+        "asset_bytes": 99293,
+        "files": [
+          "60/chuchoteur_de_poutres.json",
+          "60/chuchoteur_de_poutres_badge.png",
+          "60/chuchoteur_de_poutres_center.png",
+          "60/chuchoteur_de_poutres_left.png",
+          "60/chuchoteur_de_poutres_preview.png",
+          "60/chuchoteur_de_poutres_right.png"
+        ]
+      },
+      {
+        "level": 80,
+        "id": "charpentier_de_legende",
+        "title": "Charpentier de légende",
+        "provisional": false,
+        "asset_bytes": 115588,
+        "files": [
+          "80/charpentier_de_legende.json",
+          "80/charpentier_de_legende_badge.png",
+          "80/charpentier_de_legende_center.png",
+          "80/charpentier_de_legende_left.png",
+          "80/charpentier_de_legende_preview.png",
+          "80/charpentier_de_legende_right.png"
+        ]
+      },
+      {
+        "level": 90,
+        "id": "menuiserie_palier_90",
+        "title": "Menuiserie — palier 90",
+        "provisional": true,
+        "asset_bytes": 97570,
+        "files": [
+          "90/menuiserie_palier_90.json",
+          "90/menuiserie_palier_90_badge.png",
+          "90/menuiserie_palier_90_center.png",
+          "90/menuiserie_palier_90_left.png",
+          "90/menuiserie_palier_90_preview.png",
+          "90/menuiserie_palier_90_right.png"
+        ]
+      },
+      {
+        "level": 99,
+        "id": "sciure_d_or",
+        "title": "Sciure d’or",
+        "provisional": false,
+        "asset_bytes": 117208,
+        "files": [
+          "99/sciure_d_or.json",
+          "99/sciure_d_or_badge.png",
+          "99/sciure_d_or_center.png",
+          "99/sciure_d_or_left.png",
+          "99/sciure_d_or_preview.png",
+          "99/sciure_d_or_right.png"
+        ]
+      }
+    ]
+  },
+  {
+    "profession": "cooking",
+    "name": "Cuisine",
+    "palette": [
+      "#D58A50",
+      "#91AE77",
+      "#E6D5AE"
+    ],
+    "motifs": [
+      "anses de cuivre",
+      "herbes et blé",
+      "cloches et vapeur"
+    ],
+    "levels": [
+      {
+        "level": 20,
+        "id": "remueur_de_marmites",
+        "title": "Remueur de marmites",
+        "provisional": false,
+        "asset_bytes": 16591,
+        "files": [
+          "20/remueur_de_marmites.json",
+          "20/remueur_de_marmites_badge.png",
+          "20/remueur_de_marmites_center.png",
+          "20/remueur_de_marmites_left.png",
+          "20/remueur_de_marmites_preview.png",
+          "20/remueur_de_marmites_right.png"
+        ]
+      },
+      {
+        "level": 40,
+        "id": "fournisseur_de_siestes",
+        "title": "Fournisseur de siestes",
+        "provisional": false,
+        "asset_bytes": 41683,
+        "files": [
+          "40/fournisseur_de_siestes.json",
+          "40/fournisseur_de_siestes_badge.png",
+          "40/fournisseur_de_siestes_center.png",
+          "40/fournisseur_de_siestes_left.png",
+          "40/fournisseur_de_siestes_preview.png",
+          "40/fournisseur_de_siestes_right.png"
+        ]
+      },
+      {
+        "level": 60,
+        "id": "terreur_des_buffets",
+        "title": "Terreur des buffets",
+        "provisional": false,
+        "asset_bytes": 113980,
+        "files": [
+          "60/terreur_des_buffets.json",
+          "60/terreur_des_buffets_badge.png",
+          "60/terreur_des_buffets_center.png",
+          "60/terreur_des_buffets_left.png",
+          "60/terreur_des_buffets_preview.png",
+          "60/terreur_des_buffets_right.png"
+        ]
+      },
+      {
+        "level": 80,
+        "id": "celui_qui_regale_les_rois",
+        "title": "Celui qui régale les rois",
+        "provisional": false,
+        "asset_bytes": 120692,
+        "files": [
+          "80/celui_qui_regale_les_rois.json",
+          "80/celui_qui_regale_les_rois_badge.png",
+          "80/celui_qui_regale_les_rois_center.png",
+          "80/celui_qui_regale_les_rois_left.png",
+          "80/celui_qui_regale_les_rois_preview.png",
+          "80/celui_qui_regale_les_rois_right.png"
+        ]
+      },
+      {
+        "level": 90,
+        "id": "cuisine_palier_90",
+        "title": "Cuisine — palier 90",
+        "provisional": true,
+        "asset_bytes": 116021,
+        "files": [
+          "90/cuisine_palier_90.json",
+          "90/cuisine_palier_90_badge.png",
+          "90/cuisine_palier_90_center.png",
+          "90/cuisine_palier_90_left.png",
+          "90/cuisine_palier_90_preview.png",
+          "90/cuisine_palier_90_right.png"
+        ]
+      },
+      {
+        "level": 99,
+        "id": "gourmet_de_legende",
+        "title": "Gourmet de légende",
+        "provisional": false,
+        "asset_bytes": 142324,
+        "files": [
+          "99/gourmet_de_legende.json",
+          "99/gourmet_de_legende_badge.png",
+          "99/gourmet_de_legende_center.png",
+          "99/gourmet_de_legende_left.png",
+          "99/gourmet_de_legende_preview.png",
+          "99/gourmet_de_legende_right.png"
+        ]
+      }
+    ]
+  }
+]

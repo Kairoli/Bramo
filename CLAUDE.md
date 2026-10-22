@@ -55,6 +55,10 @@ Bramo est un **idle-RPG multijoueur jouable dans le navigateur**, dans l'esprit 
 
 ## 5. État du projet (à jour au 22 octobre 2026)
 
+### Fait — icônes d'équipement dessinées (22 octobre, nuit)
+
+- **Demande de Louis** : des visuels d'équipement à la place des pictogrammes de case (« pas bien joli joli »). `components/GearIcon.tsx` : 30 dessins vectoriels (têtes, torses, mains, jambes, pieds par famille plaques / cuir et piste / tissu ; cape, ceinture, collier, anneau ; les neuf armes), teintés par la matière du palier (`MATERIALS` : métal, cuir, tissu, bois, dix teintes chacun), ornés par la rareté (Rare liseré d'argent ; Épique liseré d'or, gemme, lueur ; Légendaire halo, rayons, éclats). Un dessin par (emplacement, famille) : les 4 000 modèles ont tous une icône. Branchées dans les cases et le sac d'équipement (`GearTile`), le détail d'une pièce, les cases du personnage en mode Équipement et l'éditeur de préréglage. Page de développement `/#icones` (toutes les pièces par rareté, puis palier par palier).
+
 ### Fait — carte du personnage, journal et salle Clan plus visuels ; brief d'icônes pour ChatGPT (22 octobre, nuit)
 
 - **Demande de Louis** : carte du personnage de l'accueil plus soignée (équipement plus gros, niveau de classe visible) ; journal et clan moins « pâté de texte », le clan avec une vraie ambiance ; un prompt pour faire faire les icônes par ChatGPT.

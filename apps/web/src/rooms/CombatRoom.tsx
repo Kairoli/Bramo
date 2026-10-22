@@ -1,104 +1,419 @@
-import { useEffect, useMemo, useState } from 'react';
-import type { CombatView, EncounterView, PlanEntry, SpellView, TimelineEvent } from '@bramo/shared';
-import { CombatStage } from '../components/CombatStage';
+import { type ReactNode, useEffect, useMemo, useState } from 'react';
+import type { CombatView, EncounterView, PlanEntry, SpellView } from '@bramo/shared';
 import { api } from '../api';
 import { useGame } from '../game/GameContext';
 import { useNow } from '../game/useLive';
 import { decimal, num } from '../format';
-import { Bar } from '../components/ui';
+import { Bar, Modal } from '../components/ui';
 import { Scene } from '../components/Scene';
+import { LiveFight } from '../components/LiveFight';
+import { SpellIcon } from '../components/SpellIcon';
 
 const ROLE = { damage: 'Dégâts', control: 'Contrôle', support: 'Soutien' } as const;
-const ELEMENT: Record<SpellView['element'], string> = { physical: 'Physique', fire: 'Feu', frost: 'Givre', lightning: 'Foudre', inherit: 'Hérité' };
+
+type Sheet = 'prep' | 'class' | 'patrol' | 'log';
 
 /**
- * Salle Combat : la préparation est le jeu. À gauche la classe et sa voie, au centre le plan (sorts et minuteur de
- * première utilisation, puis les cooldowns), à droite les rencontres, l'activité en cours et le journal du dernier combat.
+ * Salle Combat, comme un écran de jeu : en haut le combat en direct (étape, barre de sorts avec leurs recharges) ; en
+ * bas la carte de la route et les modes de jeu. Les détails (préparation, classe, patrouilles, journal) s'ouvrent en
+ * fenêtre.
  */
 export function CombatRoom() {
   const { state, content } = useGame();
   const view = state.combat;
-  return (
-    <main className="room combat-room">
-      <section className="panel band">
-        <Scene ids={['combat']} />
-        {view && <CombatBand view={view} />}
-      </section>
-      {view ? (
-        <section className="panel combat-panel">
-          <ClassColumn view={view} />
-          <PlanColumn view={view} />
-          <FightColumn view={view} />
+  const [sheet, setSheet] = useState<Sheet | null>(null);
+  if (!view) {
+    return (
+      <main className="room combat-room">
+        <section className="panel band">
+          <Scene ids={['combat']} />
         </section>
-      ) : (
         <section className="panel soon-panel">
           <h1>Combat</h1>
           <p className="muted">{state.classId ? 'Le combat n’est pas encore disponible pour cette classe.' : `Choisissez d’abord une classe (${Object.values(content.classes).map((c) => c.name).join(', ')}).`}</p>
         </section>
+      </main>
+    );
+  }
+  return (
+    <main className="room combat-room">
+      <section className="panel band combat-arena">
+        <Scene ids={['combat']} />
+        <LiveFight view={view} insetTop={54} insetBottom={70} />
+        <ArenaHud view={view} />
+        <SpellBar view={view} onEdit={() => setSheet('prep')} />
+      </section>
+      <div className="combat-hub">
+        <RouteMap view={view} />
+        <ModeGrid view={view} open={setSheet} />
+      </div>
+      {sheet === 'prep' && (
+        <Modal onClose={() => setSheet(null)} className="combat-sheet">
+          <PrepSheet view={view} />
+        </Modal>
+      )}
+      {sheet === 'class' && (
+        <Modal onClose={() => setSheet(null)} className="combat-sheet">
+          <ClassSheet view={view} />
+        </Modal>
+      )}
+      {sheet === 'patrol' && (
+        <Modal onClose={() => setSheet(null)} className="combat-sheet">
+          <h2>Patrouilles</h2>
+          <p className="muted small">Choisissez une zone à farmer en boucle, au palier de votre choix : la route, elle, avance toute seule.</p>
+          <WorldPicker view={view} />
+        </Modal>
+      )}
+      {sheet === 'log' && (
+        <Modal onClose={() => setSheet(null)} className="combat-sheet">
+          <LogSheet view={view} />
+        </Modal>
       )}
     </main>
   );
 }
 
-/** Intervalle des coups d'essai sur le mannequin du Terrain d'entraînement (décor seulement : l'XP y est continue). */
-const TRAINING_PERIOD = 2.2;
+// --- Le combat en direct -------------------------------------------------------------------------------------------
 
-/**
- * Le combat en cours, montré dans la bande : la rencontre que le serveur a jouée, rejouée au rythme de la barre de progression.
- * Au Terrain d'entraînement, le personnage frappe un mannequin.
- */
-function CombatBand({ view }: { view: CombatView }) {
-  const { look, receivedAt } = useGame();
+/** Ce qui se passe, par-dessus la scène : classe et niveau, étape, victoires, arrêter ou reprendre. */
+function ArenaHud({ view }: { view: CombatView }) {
+  const { act, content } = useGame();
   const a = view.activity;
-  const training = !!a && a.encounter === null;
-  const spells = useMemo(() => Object.fromEntries(view.spells.map((s) => [s.id, { name: s.name, element: s.element === 'inherit' ? 'physical' : s.element, effects: s.effects }])), [view.spells]);
-  const timeline = useMemo<TimelineEvent[]>(
-    () => (training ? Array.from({ length: 400 }, (_, i) => ({ t: 1.2 + i * TRAINING_PERIOD, kind: 'basic' as const })) : (a?.timeline ?? [])),
-    [training, a?.timeline],
-  );
-  if (!look) return null;
-  const enemies = a?.encounter ? (view.encounters.find((e) => e.id === a.encounter)?.enemies ?? 1) : 1;
-  const clock = () => {
-    if (!a) return null;
-    if (training) return ((Date.now() - a.startedAt) / 1000) % (400 * TRAINING_PERIOD);
-    return a.timeline ? (a.progressMs + (Date.now() - receivedAt)) / 1000 : null;
-  };
+  const span = (view.nextLevelXp ?? view.xp) - view.levelXp;
+  const label = !a ? 'En attente' : a.encounter === null ? 'Entraînement' : a.route ? `Étape ${a.stageLabel}` : 'Patrouille';
   return (
-    <CombatStage
-      look={look}
-      enemy={a ? { count: enemies, kind: training ? 'dummy' : 'shadow' } : null}
-      timeline={timeline}
-      clock={clock}
-      fightTime={training ? null : (a?.fightTime ?? null)}
-      win={a?.win ?? null}
-      spells={spells}
-    />
+    <>
+      <div className="hud-class">
+        <span className="hud-level">{view.level}</span>
+        <span className="hud-class-text">
+          <strong>{content.classes[view.classId]?.name}</strong>
+          <Bar value={span > 0 ? (view.xp - view.levelXp) / span : 1} color="var(--alert)" />
+        </span>
+      </div>
+      <div className="hud-stage">
+        <span className={`hud-chip${a?.guardian ? ' guardian' : ''}`}>{label}</span>
+        <strong>{a ? a.name : 'Aucun combat'}</strong>
+        {a?.tier ? <span className="muted">palier {a.tier}</span> : null}
+      </div>
+      <div className="hud-right">
+        {a && a.encounter !== null && (
+          <span className="hud-score">
+            <span style={{ color: 'var(--good)' }}>{num(a.wins)}</span> / <span style={{ color: 'var(--alert)' }}>{num(a.losses)}</span>
+          </span>
+        )}
+        {a ? (
+          <button className="hud-btn" onClick={() => void act(api.combatStop)}>
+            Arrêter
+          </button>
+        ) : (
+          <button className="hud-btn primary" onClick={() => void act(() => api.combatRoute())}>
+            Prendre la route
+          </button>
+        )}
+      </div>
+      {!a && view.stopped && (
+        <div className="hud-note">
+          {view.stopped === 'losses'
+            ? 'Trois défaites de suite en patrouille : pause. Rien n’est perdu.'
+            : view.stopped === 'training_cap'
+              ? 'Le Terrain d’entraînement s’arrête ici : la suite se gagne en vraies rencontres.'
+              : 'Cette rencontre n’existe plus : le combat s’est arrêté.'}
+        </div>
+      )}
+    </>
   );
 }
 
-function ClassColumn({ view }: { view: CombatView }) {
+/** Barre de sorts : l'attaque de base, puis le plan, avec la recharge de chaque sort au fil du combat montré. */
+function SpellBar({ view, onEdit }: { view: CombatView; onEdit: () => void }) {
+  const { receivedAt } = useGame();
+  const now = useNow(100);
+  const a = view.activity;
+  const spells = useMemo(() => Object.fromEntries(view.spells.map((s) => [s.id, s])), [view.spells]);
+  const c = a?.timeline ? (a.progressMs + (now - receivedAt)) / 1000 : null;
+  const casts = a?.timeline?.filter((e) => e.kind === 'cast') ?? [];
+  const basics = a?.timeline?.filter((e) => e.kind === 'basic') ?? [];
+  const lastBasic = c === null ? null : [...basics].reverse().find((e) => e.t <= c + 0.3);
+  return (
+    <div className="spell-bar">
+      <div className={`spell-slot${lastBasic && c !== null && c - lastBasic.t < 0.25 && c >= lastBasic.t - 0.3 ? ' fire' : ''}`} title="Attaque de base">
+        <SpellIcon id={`basic_${view.classId}`} classId={view.classId} size={46} />
+      </div>
+      <span className="spell-bar-sep" />
+      {view.plan.map((p, i) => {
+        const s = spells[p.spell];
+        if (!s) return null;
+        const last = c === null ? null : [...casts].reverse().find((e) => e.spell === p.spell && e.t <= c);
+        let left = 0;
+        if (c !== null) left = last ? Math.max(0, s.cooldown - (c - last.t)) : Math.max(0, p.at - c);
+        const share = last ? left / s.cooldown : p.at > 0 ? left / p.at : 0;
+        const just = last && c !== null && c - last.t < 0.3;
+        return (
+          <div key={i} className={`spell-slot${just ? ' fire' : ''}`} title={`${s.name} · ${s.text}`}>
+            <SpellIcon id={s.id} classId={view.classId} element={s.element === 'inherit' ? undefined : s.element} ultimate={s.tags.includes('ultimate')} size={46} />
+            {left > 0.05 && (
+              <>
+                <span className="spell-cd" style={{ ['--cd' as string]: `${Math.min(1, share) * 360}deg` }} />
+                <span className="spell-cd-text">{Math.ceil(left)}</span>
+              </>
+            )}
+          </div>
+        );
+      })}
+      {Array.from({ length: Math.max(0, view.slots - view.plan.length) }, (_, i) => (
+        <button key={`e${i}`} className="spell-slot empty" onClick={onEdit} title="Place libre : préparer">
+          +
+        </button>
+      ))}
+      <button className="spell-bar-edit" onClick={onEdit} title="Préparer les sorts">
+        ✎
+      </button>
+    </div>
+  );
+}
+
+// --- La route ----------------------------------------------------------------------------------------------------------
+
+/** Carte de la route : les chapitres, et les étapes du chapitre affiché reliées comme un chemin. */
+function RouteMap({ view }: { view: CombatView }) {
+  const { act } = useGame();
+  const route = view.route;
+  const currentChapter = route ? (route.chapters.find((c) => c.stages.some((s) => s.index === route.stage))?.number ?? 1) : 1;
+  const [chapterNo, setChapterNo] = useState<number | null>(null);
+  const [picked, setPicked] = useState<number | null>(null);
+  if (!route) return <section className="panel route-map" />;
+  const chapter = route.chapters[(chapterNo ?? currentChapter) - 1] ?? route.chapters[0]!;
+  const sel = chapter.stages.find((s) => s.index === picked) ?? chapter.stages.find((s) => s.index === route.stage) ?? chapter.stages[0]!;
+  const e = view.encounters.find((x) => x.id === sel.encounter);
+  const open = sel.index <= route.best;
+  const playing = route.running && route.stage === sel.index;
+  const unlockedChapters = route.chapters.filter((c) => c.stages[0]!.index <= route.best).length;
+  return (
+    <section className="panel route-map">
+      <header className="route-map-head">
+        <button className="round-btn" disabled={chapter.number <= 1} onClick={() => { setChapterNo(chapter.number - 1); setPicked(null); }} aria-label="Chapitre précédent">
+          ‹
+        </button>
+        <div className="route-map-title">
+          <span className="eyebrow">Route des Lointains · chapitre {chapter.number} / {route.chapters.length}</span>
+          <strong>{chapter.name}</strong>
+        </div>
+        <button className="round-btn" disabled={chapter.number >= Math.max(unlockedChapters, currentChapter)} onClick={() => { setChapterNo(chapter.number + 1); setPicked(null); }} aria-label="Chapitre suivant">
+          ›
+        </button>
+      </header>
+      <div className="route-path">
+        <svg className="route-path-line" preserveAspectRatio="none" viewBox="0 0 100 10" aria-hidden>
+          <path d="M5 5 L95 5" />
+        </svg>
+        {chapter.stages.map((s) => {
+          const done = s.index < route.best;
+          const cur = s.index === route.stage;
+          const locked = s.index > route.best;
+          return (
+            <button key={s.index} className={`path-node${done ? ' done' : ''}${cur ? ' current' : ''}${locked ? ' locked' : ''}${s.guardian ? ' guardian' : ''}${sel.index === s.index ? ' selected' : ''}`} onClick={() => setPicked(s.index)}>
+              <span className="path-node-dot">{s.guardian ? '♛' : locked ? '🔒' : s.label}</span>
+              <span className="path-node-name">{s.name}</span>
+            </button>
+          );
+        })}
+      </div>
+      <div className="route-detail">
+        <div className="route-detail-text">
+          <div className="route-detail-title">
+            <span className={`hud-chip${sel.guardian ? ' guardian' : ''}`}>{sel.label}</span>
+            <strong>{sel.name}</strong>
+            <span className="chip">Palier {sel.tier}</span>
+            {sel.tier > view.classTier && <span className="chip chip-hard">Au-dessus de votre palier</span>}
+          </div>
+          {e?.blurb && <p className="small muted route-blurb">{e.blurb}</p>}
+          {e && <p className="small route-mech">{e.text}</p>}
+        </div>
+        <div className="route-detail-actions">
+          {playing ? (
+            <span className="chip chip-own">En cours, en boucle</span>
+          ) : (
+            <button className="btn btn-primary" disabled={!open} onClick={() => void act(() => api.combatRoute(sel.index))}>
+              {open ? (sel.index === route.stage ? 'Combattre' : 'Rejouer ici') : 'Étape fermée'}
+            </button>
+          )}
+          <span className="muted small">{num(route.best)} étape{route.best > 1 ? 's' : ''} franchie{route.best > 1 ? 's' : ''}</span>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// --- Les modes ---------------------------------------------------------------------------------------------------------
+
+function ModeGrid({ view, open }: { view: CombatView; open: (s: Sheet) => void }) {
+  const a = view.activity;
+  const patrol = a && !a.route && a.encounter !== null;
+  return (
+    <section className="panel mode-grid">
+      <ModeTile tone="var(--action)" icon={<PrepIcon />} title="Préparation" sub={`${view.plan.length} / ${view.slots} sorts`} onClick={() => open('prep')}>
+        <span className="mode-mini">
+          {view.plan.slice(0, 4).map((p) => {
+            const s = view.spells.find((x) => x.id === p.spell);
+            return s ? <SpellIcon key={p.spell} id={s.id} classId={view.classId} element={s.element === 'inherit' ? undefined : s.element} ultimate={s.tags.includes('ultimate')} size={20} /> : null;
+          })}
+        </span>
+      </ModeTile>
+      <ModeTile tone="var(--magic)" icon={<ClassIcon />} title="Classe et voie" sub={`Niveau ${view.level} · palier ${view.classTier}`} onClick={() => open('class')} />
+      <ModeTile tone="var(--alert)" icon={<PatrolIcon />} title="Patrouilles" sub={patrol ? `En cours : ${a.name}` : 'Farmer une zone'} onClick={() => open('patrol')} />
+      <ModeTile tone="var(--text-muted)" icon={<LogIcon />} title="Dernier combat" sub={view.lastFight ? `${view.lastFight.win ? 'Victoire' : 'Défaite'} · ${decimal(view.lastFight.time)} s` : 'Rien encore'} onClick={() => open('log')} />
+      <ModeTile tone="var(--event)" icon={<DungeonIcon />} title="Profondeurs" sub="Donjons à salles" soon />
+      <ModeTile tone="var(--good)" icon={<ScoutIcon />} title="Éclaireurs" sub="Envoyer en expédition" soon />
+      <ModeTile tone="var(--event)" icon={<TideIcon />} title="Marée du soir" sub="Chaque soir à 20 h" soon />
+      <ModeTile tone="var(--clan)" icon={<CaravanIcon />} title="Routes franches" sub="Caravane de clan" soon />
+    </section>
+  );
+}
+
+function ModeTile({ tone, icon, title, sub, onClick, soon, children }: { tone: string; icon: ReactNode; title: string; sub: string; onClick?: () => void; soon?: boolean; children?: ReactNode }) {
+  return (
+    <button className={`mode-tile${soon ? ' soon' : ''}`} style={{ ['--tone' as string]: tone }} onClick={onClick} disabled={soon}>
+      <span className="mode-icon">{icon}</span>
+      <span className="mode-text">
+        <strong>{title}</strong>
+        <span className="muted">{sub}</span>
+        {children}
+      </span>
+      {soon && <span className="mode-soon">Bientôt</span>}
+    </button>
+  );
+}
+
+const ico = (d: string) => (
+  <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
+    <path d={d} />
+  </svg>
+);
+const PrepIcon = () => ico('M4 6h16M4 12h16M4 18h10M18 16l2 2-2 2');
+const ClassIcon = () => ico('M12 3l7 4v5c0 4-3 7-7 9-4-2-7-5-7-9V7z M12 8v6 M9 11h6');
+const PatrolIcon = () => ico('M3 20l5-14 4 8 3-5 6 11z M8 6l1-3');
+const LogIcon = () => ico('M6 3h9l3 3v15H6z M9 9h6 M9 13h6 M9 17h4');
+const DungeonIcon = () => ico('M4 21V10l8-6 8 6v11 M9 21v-6h6v6 M12 4v3');
+const ScoutIcon = () => ico('M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18z M15 9l-2 5-4 1 2-5z');
+const TideIcon = () => ico('M2 14c3-3 5-3 8 0s5 3 8 0 M2 19c3-3 5-3 8 0s5 3 8 0 M14 4l2 4h-4z');
+const CaravanIcon = () => ico('M3 16h13V9H3z M16 12h3l2 3v1h-5 M6 18a1.5 1.5 0 1 0 0 .1 M16 18a1.5 1.5 0 1 0 0 .1');
+
+// --- Fenêtres ----------------------------------------------------------------------------------------------------------
+
+/**
+ * Préparation : la barre de sorts (ordre et premier lancer) et le répertoire. On choisit une place, puis un sort du
+ * répertoire ; le minuteur dit quand le sort part la première fois (ensuite il revient sur sa recharge).
+ */
+function PrepSheet({ view }: { view: CombatView }) {
+  const { act } = useGame();
+  const [draft, setDraft] = useState<PlanEntry[]>(view.plan);
+  const key = JSON.stringify(view.plan);
+  useEffect(() => setDraft(view.plan), [key]); // eslint-disable-line react-hooks/exhaustive-deps
+  const [slot, setSlot] = useState(0);
+  const [hover, setHover] = useState<SpellView | null>(null);
+  const spells = useMemo(() => Object.fromEntries(view.spells.map((s) => [s.id, s])), [view.spells]);
+  const dirty = JSON.stringify(draft) !== key;
+  const rows = Array.from({ length: view.slots }, (_, i) => draft[i] ?? null);
+  const put = (spell: string) => {
+    const at = rows[slot]?.at ?? 0;
+    const next = rows.map((r) => (r?.spell === spell ? null : r));
+    next[slot] = { spell, at };
+    setDraft(next.filter((r): r is PlanEntry => !!r));
+    setSlot(Math.min(view.slots - 1, next.filter(Boolean).length));
+  };
+  const remove = (i: number) => setDraft(rows.filter((r, j) => j !== i && r).filter((r): r is PlanEntry => !!r));
+  const time = (i: number, d: number) => setDraft(draft.map((r, j) => (j === i ? { ...r, at: Math.max(0, Math.min(view.maxFirstUse, r.at + d)) } : r)));
+  const move = (i: number, d: -1 | 1) => {
+    const next = [...draft];
+    const j = i + d;
+    if (j < 0 || j >= next.length) return;
+    [next[i], next[j]] = [next[j]!, next[i]!];
+    setDraft(next);
+  };
+  const info = hover ?? (rows[slot] ? spells[rows[slot]!.spell] : null);
+  return (
+    <div className="prep">
+      <header className="prep-head">
+        <h2>Préparation</h2>
+        <span className={`chip${view.advised ? '' : ' chip-own'}`}>{view.advised && !dirty ? 'Plan conseillé' : 'Votre plan'}</span>
+      </header>
+      <div className="prep-bar">
+        {rows.map((r, i) => {
+          const s = r ? spells[r.spell] : undefined;
+          return (
+            <div key={i} className={`prep-slot${slot === i ? ' on' : ''}`}>
+              <button className="prep-slot-icon" onClick={() => setSlot(i)} onMouseEnter={() => s && setHover(s)} onMouseLeave={() => setHover(null)}>
+                {s ? <SpellIcon id={s.id} classId={view.classId} element={s.element === 'inherit' ? undefined : s.element} ultimate={s.tags.includes('ultimate')} size={52} /> : <span className="prep-empty">+</span>}
+                <span className="prep-n">{i + 1}</span>
+              </button>
+              {r && (
+                <div className="prep-slot-tools">
+                  <button className="mini" onClick={() => time(i, -1)} aria-label="Plus tôt">−</button>
+                  <span title="Premier lancer (s)">{r.at} s</span>
+                  <button className="mini" onClick={() => time(i, 1)} aria-label="Plus tard">+</button>
+                </div>
+              )}
+              {r && (
+                <div className="prep-slot-tools">
+                  <button className="mini" disabled={i === 0} onClick={() => move(i, -1)} aria-label="Avant">‹</button>
+                  <button className="mini" onClick={() => remove(i)} aria-label="Retirer">×</button>
+                  <button className="mini" disabled={i >= draft.length - 1} onClick={() => move(i, 1)} aria-label="Après">›</button>
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+      <div className="prep-info">
+        {info ? (
+          <>
+            <strong>{info.name}</strong> <span className="muted small">niveau {info.level} · recharge {info.cooldown} s</span>
+            <div className="small">{info.text}</div>
+          </>
+        ) : (
+          <span className="muted small">Choisissez une place, puis un sort. Chaque sort part à son minuteur (au plus {view.maxFirstUse} s), puis revient sur sa recharge ; l’ordre départage deux sorts prêts ensemble.</span>
+        )}
+      </div>
+      <div className="prep-book">
+        {view.spells.map((s) => {
+          const used = draft.some((d) => d.spell === s.id);
+          return (
+            <button key={s.id} className={`book-spell${used ? ' used' : ''}`} disabled={!s.available} onClick={() => put(s.id)} onMouseEnter={() => setHover(s)} onMouseLeave={() => setHover(null)} title={s.available ? s.name : `${s.name} · niveau ${s.level}`}>
+              <SpellIcon id={s.id} classId={view.classId} element={s.element === 'inherit' ? undefined : s.element} ultimate={s.tags.includes('ultimate')} size={44} dim={!s.available} />
+              <span className="book-name">{s.available ? s.name : `Niv. ${s.level}`}</span>
+            </button>
+          );
+        })}
+      </div>
+      <footer className="row-gap prep-foot">
+        <button className="btn btn-primary" disabled={!dirty || !draft.length} onClick={() => void act(() => api.combatPlan(draft))}>
+          Enregistrer
+        </button>
+        <button className="btn" disabled={view.advised && !dirty} onClick={() => (dirty ? setDraft(view.plan) : void act(() => api.combatPlan(null)))}>
+          {dirty ? 'Annuler' : 'Revenir au plan conseillé'}
+        </button>
+      </footer>
+    </div>
+  );
+}
+
+const pct = (x: number) => `${Math.round(x * 100)} %`;
+
+function ClassSheet({ view }: { view: CombatView }) {
   const { act, content } = useGame();
   const span = (view.nextLevelXp ?? view.xp) - view.levelXp;
   const locked = view.level < view.pathLevel;
   return (
-    <div className="combat-col scroll">
-      <div className="eyebrow">Classe</div>
-      <div className="combat-class">
+    <div className="class-sheet">
+      <header className="prep-head">
         <h2>{content.classes[view.classId]?.name}</h2>
         <span className="chip">Niveau {view.level}</span>
-      </div>
+        <span className="chip" title="Le palier de la classe ouvre les cercles des régions hautes.">Palier {view.classTier}</span>
+      </header>
       <Bar value={span > 0 ? (view.xp - view.levelXp) / span : 1} color="var(--alert)" />
       <p className="muted small">
         {num(Math.floor(view.xp))} XP{view.nextLevelXp ? ` · niveau suivant à ${num(view.nextLevelXp)}` : ''} · {num(Math.round(view.xpPerHour))} XP par heure de combat
       </p>
-      <div className="combat-mechanic">
-        <strong>{view.mechanic.label}</strong>
-        <span className="muted small">{view.mechanic.state}</span>
-      </div>
-      <div className="combat-head">
-        <div className="eyebrow">Au combat</div>
-        <span className="chip" title="Le palier de la classe ouvre les cercles des régions hautes.">Palier {view.classTier}</span>
-      </div>
       <div className="combat-stats">
         <Stat label="Puissance" value={num(Math.round(view.stats.power))} />
         <Stat label="PV" value={num(Math.round(view.stats.maxHp))} />
@@ -107,17 +422,16 @@ function ClassColumn({ view }: { view: CombatView }) {
         <Stat label="Critique" value={pct(view.stats.critChance)} />
         <Stat label="Dégâts crit." value={`×${decimal(view.stats.critMultiplier)}`} />
       </div>
-      {view.floored && <p className="muted small" title="Les rencontres font tomber de meilleur équipement.">Équipement sous votre palier : le combat compte le plancher du palier.</p>}
+      {view.floored && <p className="muted small">Équipement sous votre palier : le combat compte le plancher du palier. Les rencontres font tomber de meilleur équipement.</p>}
+      <div className="combat-mechanic">
+        <strong>{view.mechanic.label}</strong>
+        <span className="muted small">{view.mechanic.state}</span>
+      </div>
       <div className="eyebrow">Voie</div>
       {locked && <p className="muted small">Les voies s’ouvrent au niveau {view.pathLevel} : dégâts, contrôle ou soutien. Le choix est gratuit et se change quand on veut.</p>}
       <div className="combat-paths">
         {view.paths.map((p) => (
-          <button
-            key={p.id}
-            className={`combat-path${view.path === p.id ? ' on' : ''}`}
-            disabled={locked || view.path === p.id}
-            onClick={() => void act(() => api.combatPath(p.id))}
-          >
+          <button key={p.id} className={`combat-path${view.path === p.id ? ' on' : ''}`} disabled={locked || view.path === p.id} onClick={() => void act(() => api.combatPath(p.id))}>
             <span className="combat-path-role">{ROLE[p.role]}</span>
             <strong>{p.name}</strong>
             <span className="muted small">{p.passive}</span>
@@ -138,8 +452,6 @@ function ClassColumn({ view }: { view: CombatView }) {
   );
 }
 
-const pct = (x: number) => `${Math.round(x * 100)} %`;
-
 function Stat({ label, value }: { label: string; value: string }) {
   return (
     <div className="combat-stat">
@@ -149,159 +461,26 @@ function Stat({ label, value }: { label: string; value: string }) {
   );
 }
 
-function PlanColumn({ view }: { view: CombatView }) {
-  const { act } = useGame();
-  const [draft, setDraft] = useState<PlanEntry[]>(view.plan);
-  const key = JSON.stringify(view.plan);
-  useEffect(() => setDraft(view.plan), [key]); // eslint-disable-line react-hooks/exhaustive-deps
-  const spells = useMemo(() => Object.fromEntries(view.spells.map((s) => [s.id, s])), [view.spells]);
-  const available = view.spells.filter((s) => s.available);
-  const dirty = JSON.stringify(draft) !== key;
-  const rows = Array.from({ length: view.slots }, (_, i) => draft[i] ?? null);
-  const set = (i: number, entry: PlanEntry | null) => {
-    const next = rows.map((r, j) => (j === i ? entry : r)).filter((r): r is PlanEntry => !!r);
-    setDraft(next);
-  };
-  const move = (i: number, d: -1 | 1) => {
-    const next = [...draft];
-    const j = i + d;
-    if (j < 0 || j >= next.length) return;
-    [next[i], next[j]] = [next[j]!, next[i]!];
-    setDraft(next);
-  };
+function LogSheet({ view }: { view: CombatView }) {
+  const f = view.lastFight;
   return (
-    <div className="combat-col">
-      <div className="combat-head">
-        <div className="eyebrow">Plan de combat</div>
-        <span className={`chip${view.advised ? '' : ' chip-own'}`}>{view.advised ? 'Plan conseillé' : 'Votre plan'}</span>
-      </div>
-      <p className="muted small">
-        Chaque sort part à son horaire (au plus {view.maxFirstUse} s), puis le combat tourne seul sur les cooldowns. L’ordre départage deux sorts prêts en même temps. Le plan conseillé, sans horaire, suffit pour commencer.
-      </p>
-      <div className="combat-plan scroll">
-        {rows.map((entry, i) => {
-          const s = entry ? spells[entry.spell] : undefined;
-          return (
-            <div key={i} className="combat-slot">
-              <span className="combat-slot-n">{i + 1}</span>
-              <select value={entry?.spell ?? ''} onChange={(e) => set(i, e.target.value ? { spell: e.target.value, at: entry?.at ?? 0 } : null)}>
-                <option value="">— place vide —</option>
-                {available.map((x) => (
-                  <option key={x.id} value={x.id} disabled={x.id !== entry?.spell && draft.some((d) => d.spell === x.id)}>
-                    {x.name} · {x.cooldown} s{x.tags.includes('ultimate') ? ' · ultime' : ''}
-                  </option>
-                ))}
-              </select>
-              <label className="combat-at" title="Première utilisation (secondes après le début du combat)">
-                <input
-                  type="number"
-                  min={0}
-                  max={view.maxFirstUse}
-                  step={1}
-                  value={entry?.at ?? 0}
-                  disabled={!entry}
-                  onChange={(e) => entry && set(i, { ...entry, at: Math.max(0, Math.min(view.maxFirstUse, Number(e.target.value) || 0)) })}
-                />
-                s
-              </label>
-              <span className="combat-slot-moves">
-                <button className="link" disabled={!entry || i === 0} onClick={() => move(i, -1)} aria-label="Monter">↑</button>
-                <button className="link" disabled={!entry || i >= draft.length - 1} onClick={() => move(i, 1)} aria-label="Descendre">↓</button>
-              </span>
-              {s && <span className="combat-slot-text muted small">{ELEMENT[s.element]} · {s.text}</span>}
-            </div>
-          );
-        })}
-      </div>
-      <div className="row-gap">
-        <button className="btn btn-primary btn-sm" disabled={!dirty || !draft.length} onClick={() => void act(() => api.combatPlan(draft))}>
-          Enregistrer le plan
-        </button>
-        <button className="btn btn-sm" disabled={view.advised && !dirty} onClick={() => (dirty && !view.advised ? setDraft(view.plan) : void act(() => api.combatPlan(null)))}>
-          {dirty && !view.advised ? 'Annuler' : 'Plan conseillé'}
-        </button>
-        {dirty && view.advised && (
-          <button className="link" onClick={() => setDraft(view.plan)}>
-            Annuler
-          </button>
-        )}
-      </div>
-      <details className="combat-spells">
-        <summary className="muted small">Répertoire ({available.length} sorts accessibles)</summary>
-        <div className="scroll combat-spell-list">
-          {view.spells.map((s) => (
-            <div key={s.id} className={`combat-spell${s.available ? '' : ' locked'}`}>
-              <strong>{s.name}</strong> <span className="muted small">niveau {s.level} · {s.cooldown} s</span>
-              <div className="muted small">{s.text}</div>
-            </div>
-          ))}
-        </div>
-      </details>
-    </div>
-  );
-}
-
-function FightColumn({ view }: { view: CombatView }) {
-  const { act, receivedAt } = useGame();
-  const now = useNow(250);
-  const a = view.activity;
-  // Interpolation pour l'animation seulement : le serveur reste seul juge (rendement actif = 1).
-  const progress = a?.fightMs ? Math.min(1, (a.progressMs + (now - receivedAt)) / a.fightMs) : 0;
-  const trainingOff = view.level >= view.training.maxLevel;
-  // Une rencontre finit avant le prochain signe de vie : on redemande l'état à ce moment-là.
-  const left = a?.fightMs ? a.fightMs - a.progressMs : null;
-  useEffect(() => {
-    if (left === null) return;
-    const id = window.setTimeout(() => void act(api.state), Math.max(500, left - (Date.now() - receivedAt) + 300));
-    return () => window.clearTimeout(id);
-  }, [left, receivedAt, act]);
-  return (
-    <div className="combat-col">
-      <div className="eyebrow">En cours</div>
-      {a ? (
-        <div className="combat-activity">
-          <div className="combat-head">
-            <strong>
-              {a.name}
-              {a.tier ? <span className="muted"> · palier {a.tier}</span> : null}
-            </strong>
-            <button className="btn btn-sm" onClick={() => void act(api.combatStop)}>
-              Arrêter
-            </button>
+    <div className="log-sheet">
+      <h2>Dernier combat</h2>
+      {f ? (
+        <>
+          <p>
+            <strong style={{ color: f.win ? 'var(--good)' : 'var(--alert)' }}>{f.win ? 'Victoire' : 'Défaite'}</strong> · {f.name} · {decimal(f.time)} s
+          </p>
+          <div className="combat-log scroll">
+            {f.lines.map((l, i) => (
+              <div key={i} className="combat-line small">
+                <span className="muted">{decimal(l.t)} s</span> {l.text}
+              </div>
+            ))}
           </div>
-          {a.encounter !== null && <Bar value={progress} color="var(--alert)" />}
-          <p className="muted small">
-            {a.encounter === null
-              ? `XP à ${Math.round(view.training.xpShare * 100)} %, sans butin ni risque, jusqu’au niveau ${view.training.maxLevel}.`
-              : `${num(a.wins)} victoire${a.wins > 1 ? 's' : ''}${a.losses ? ` · ${num(a.losses)} défaite${a.losses > 1 ? 's' : ''}` : ''}${a.streak ? ` (${a.streak} de suite)` : ''}`}
-          </p>
-        </div>
+        </>
       ) : (
-        <p className="muted small">
-          {view.stopped === 'losses'
-            ? 'Trois défaites de suite : le combat s’est mis en pause. Rien n’est perdu ; changez de plan ou de rencontre.'
-            : view.stopped === 'unavailable'
-              ? 'Cette rencontre n’existe plus : le combat s’est arrêté.'
-              : view.stopped === 'training_cap'
-              ? 'Le Terrain d’entraînement s’arrête ici : la suite se gagne en vraies rencontres.'
-              : 'Aucun combat. Une rencontre se rejoue en boucle, en ligne comme hors ligne, et remplace l’activité de métier.'}
-        </p>
-      )}
-      <WorldPicker view={view} trainingOff={trainingOff} />
-      <div className="eyebrow">Dernier combat</div>
-      {view.lastFight ? (
-        <div className="combat-log scroll">
-          <p className="small">
-            <strong style={{ color: view.lastFight.win ? 'var(--good)' : 'var(--alert)' }}>{view.lastFight.win ? 'Victoire' : 'Défaite'}</strong> · {view.lastFight.name} · {decimal(view.lastFight.time)} s
-          </p>
-          {view.lastFight.lines.map((l, i) => (
-            <div key={i} className="combat-line small">
-              <span className="muted">{decimal(l.t)} s</span> {l.text}
-            </div>
-          ))}
-        </div>
-      ) : (
-        <p className="muted small">Le journal du dernier combat s’affichera ici : sorts lancés, Braises dépensées, runes lues, Ruptures.</p>
+        <p className="muted">Le journal du dernier combat s’affichera ici : sorts lancés, Braises dépensées, runes lues, Ruptures.</p>
       )}
     </div>
   );
@@ -310,12 +489,13 @@ function FightColumn({ view }: { view: CombatView }) {
 const ESSAIS = 'Essais';
 
 /**
- * Où combattre : les régions de la route, de la plus proche à la plus lointaine, puis le Terrain et les rencontres d'essai.
+ * Patrouilles : les régions du monde, de la plus proche à la plus lointaine, puis le Terrain et les rencontres d'essai.
  * Une carte se déplie pour son histoire, son butin et, dans une région haute, le choix du cercle.
  */
-function WorldPicker({ view, trainingOff }: { view: CombatView; trainingOff: boolean }) {
+function WorldPicker({ view }: { view: CombatView }) {
   const { act } = useGame();
   const a = view.activity;
+  const trainingOff = view.level >= view.training.maxLevel;
   const regions = useMemo(() => {
     const byRegion = new Map<string, EncounterView[]>();
     for (const e of view.encounters) {
@@ -336,7 +516,6 @@ function WorldPicker({ view, trainingOff }: { view: CombatView; trainingOff: boo
   const [circle, setCircle] = useState<Record<string, number>>({});
   return (
     <>
-      <div className="eyebrow">Où combattre</div>
       <div className="combat-regions" role="tablist">
         {regions.map((r) => (
           <button key={r.name} role="tab" aria-selected={shown?.name === r.name} className={`combat-region${shown?.name === r.name ? ' on' : ''}`} onClick={() => setRegion(r.name)}>
@@ -345,11 +524,11 @@ function WorldPicker({ view, trainingOff }: { view: CombatView; trainingOff: boo
           </button>
         ))}
       </div>
-      <div className="combat-encounters scroll">
+      <div className="combat-encounters patrol-list scroll">
         {shown?.list.map((e) => {
           const tiers = e.tiers;
           const chosen = circle[e.id] ?? tiers[tiers.length - 1] ?? e.tier ?? null;
-          const running = a?.encounter === e.id && (!e.circles || a.tier === chosen);
+          const running = a?.encounter === e.id && !a.route && (!e.circles || a.tier === chosen);
           const hard = chosen !== null && chosen > view.classTier;
           const expanded = open === e.id;
           return (
@@ -383,7 +562,7 @@ function WorldPicker({ view, trainingOff }: { view: CombatView; trainingOff: boo
                   </label>
                 )}
                 <button className="btn btn-sm" disabled={running} onClick={() => void act(() => api.combatStart(e.id, e.circles ? (chosen ?? undefined) : undefined))}>
-                  {running ? 'En cours' : 'Combattre'}
+                  {running ? 'En cours' : 'Patrouiller'}
                 </button>
               </div>
             </div>

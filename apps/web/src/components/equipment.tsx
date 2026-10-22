@@ -50,6 +50,9 @@ const COSMETIC: { id: EquipSlotId; label: string; slots: Slot[] }[] = [
 
 export const DOLL_LEFT: EquipSlotId[] = ['headwear', 'shoulders', 'top', 'gloves', 'belt'];
 export const DOLL_RIGHT: EquipSlotId[] = ['weapon', 'tool', 'meal', 'cape', 'robe', 'boots'];
+/** Carte de l'accueil : quatre grandes cases de chaque côté ; l'outil et le repas sont dans le bandeau du dessous. */
+const CARD_LEFT: EquipSlotId[] = ['headwear', 'top', 'gloves', 'belt'];
+const CARD_RIGHT: EquipSlotId[] = ['weapon', 'cape', 'robe', 'boots'];
 
 /**
  * Ce que le personnage porte : pièces de tenue (cosmétiques), arme de classe,
@@ -236,7 +239,7 @@ export function PaperDoll({ size, mode = 'look', gear = null }: { size: 'card' |
   return (
     <div className={`doll doll-${size}`}>
       <div className="doll-col">
-        {DOLL_LEFT.map((id) => (
+        {(size === 'card' ? CARD_LEFT : DOLL_LEFT).map((id) => (
           <EquipSlot key={id} entry={equipment[id]} side="left" onHover={setHighlight} />
         ))}
       </div>
@@ -245,7 +248,7 @@ export function PaperDoll({ size, mode = 'look', gear = null }: { size: 'card' |
         <Character appearance={look} lod="scene" highlight={highlight} centered />
       </div>
       <div className="doll-col">
-        {DOLL_RIGHT.map((id) => (
+        {(size === 'card' ? CARD_RIGHT : DOLL_RIGHT).map((id) => (
           <EquipSlot key={id} entry={equipment[id]} side="right" onHover={setHighlight} />
         ))}
       </div>

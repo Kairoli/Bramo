@@ -15,10 +15,11 @@ export interface StatusSource {
   col: string;
 }
 
-type Kind = 'shield' | 'dot' | 'mark' | 'slow' | 'stun' | 'weaken' | 'antiheal';
+export type StatusKind = 'shield' | 'dot' | 'mark' | 'slow' | 'stun' | 'weaken' | 'antiheal';
+type Kind = StatusKind;
 
 /** Le plus récent de chaque sorte encore actif à l'instant `c`, avec sa part écoulée. */
-function active(sources: StatusSource[], c: number): Partial<Record<Kind, { src: StatusSource; u: number; left: number; dur: number; type?: 'burn' | 'bleed' }>> {
+export function activeStatuses(sources: StatusSource[], c: number): Partial<Record<Kind, { src: StatusSource; u: number; left: number; dur: number; type?: 'burn' | 'bleed' }>> {
   const out: Partial<Record<Kind, { src: StatusSource; u: number; left: number; dur: number; type?: 'burn' | 'bleed' }>> = {};
   for (const src of sources) {
     const t = src.e.t;
@@ -40,7 +41,7 @@ function active(sources: StatusSource[], c: number): Partial<Record<Kind, { src:
 }
 
 export function statusLayer(st: Stage, sources: StatusSource[], c: number, enemyAlive: boolean): { back: ReactNode; front: ReactNode } {
-  const a = active(sources, c);
+  const a = activeStatuses(sources, c);
   const k = st.k;
   const hit = st.hits[0] ?? [st.enemyX, st.groundY - st.enemyH * 0.5];
   const ground: Pt = [hit[0], st.groundY];

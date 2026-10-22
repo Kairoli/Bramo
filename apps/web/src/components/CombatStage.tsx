@@ -7,6 +7,7 @@ import { apply, orderedBones, worldMatrices } from '../rig/skeleton';
 import { BASIC_FX, FxDefs, GESTURE_POINT, SPELL_FX, type Cast, type Pt, type SpellFx, type Stage, type StatusSource, clamp01, easeOut, floatText, statusLayer } from '../combat-fx';
 import { Dummy, Shade } from '../combat-fx/enemy';
 import { BESTIARY } from '../combat-fx/bestiary';
+import { StatusBadges } from '../combat-fx/badges';
 
 /**
  * Scène de combat : le personnage à gauche, l'ennemi à droite, et le déroulé du combat (`timeline`) rejoué à l'écran au
@@ -336,6 +337,9 @@ export function CombatStage({ look, enemy, timeline, clock, fightTime, win, spel
               </text>
             )}
           </svg>
+          {/* États en icônes sous les barres de vie : ce que subit l'ennemi, la protection du personnage. */}
+          {enemy?.kind === 'shadow' && c !== null && alive > 0 && <StatusBadges sources={statuses} c={c} side="enemy" x={enemyX} y={groundY - enemyH - 26 * k + barH + 5} center />}
+          {enemy?.kind === 'shadow' && c !== null && <StatusBadges sources={statuses} c={c} side="self" x={toPx([212, 0])[0]} y={Math.max(4, toPx([0, 4])[1]) + barH + 5} center />}
         </>
       )}
     </div>

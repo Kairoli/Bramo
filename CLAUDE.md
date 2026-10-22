@@ -55,6 +55,12 @@ Bramo est un **idle-RPG multijoueur jouable dans le navigateur**, dans l'esprit 
 
 ## 5. État du projet (à jour au 22 octobre 2026)
 
+### Fait — le bestiaire de la route : un ennemi dessiné par zone et par gardien (22 octobre, nuit)
+
+- **Demande de Louis** : commencer les visuels des monstres et des boss du PvE solo, fidèles au lore, beaux, originaux, variés. **18 ennemis** (12 zones, 6 gardiens), un par rencontre, tirés des régions de `le-monde.md` : du familier qui a mal tourné (lanterne à pattes, vase des fossés, Mère Grise la lavandière) aux Forges éteintes (marteau-pilon, arbre de verre, Contremaître rouge), à la Lisière (moine-balance, cerf de braise, Matriarche de résine), aux Archives (écho de pages, brochet du gué, Notaire des marées), au Bastion (gardiennes au sceau, Vigie, Gardien des trois portes) et à la Cicatrice (établi grincheux, Rafale, Régent des courants). Détail : [`docs/design/combat-visuels.md`](docs/design/combat-visuels.md), « Le bestiaire de la route ».
+- Code : `apps/web/src/combat-fx/bestiary/` (`common.tsx` : repère 200 × 260, volume commun `ShadeDefs`/`Shaded` ; `low.tsx`, `high.tsx` : les dessins animés au temps, qui réagissent à la frappe et aux coups ; `index.ts` : `BESTIARY` par identifiant de rencontre). La scène (`CombatStage`, `StageEnemy.id`) montre l'ennemi de la rencontre ; les gardiens sont plus grands ; l'Ombre de la Marée reste pour les rencontres d'essai. Page de développement `/#bestiaire` ; l'Arène a un choix d'ennemi.
+- **Reste** : les renforts dessinés (ils n'apparaissent pas encore à l'écran), des poses d'attaque propres à chacun.
+
 ### Fait — préréglages de build, salle Personnage en inventaire, scène centrée (22 octobre, nuit)
 
 - **Demande de Louis** : centrer les visuels du combat ; Routes franches dans l'onglet Clan ; Marée du soir hors du combat (elle viendra sur l'accueil le moment venu) ; un système de préréglages dans la salle Personnage, changeable vite depuis l'accueil ; la salle Personnage moins « pâté de texte ».

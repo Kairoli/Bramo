@@ -10,6 +10,21 @@
 - **Lisibilité** : nombres de dégâts (blancs, jaunes en critique, rouges pour les coups reçus), barres de vie du personnage et de l'ennemi, nom du sort à côté du personnage, décor assombri sous la scène.
 - **Ennemi provisoire** : une Ombre de la Marée (corps ombré, lueur de contour, yeux, volutes qui ondulent, recule sous les coups). Les ennemis propres à chaque région restent à dessiner.
 
+## Le bestiaire de la route
+
+Chaque zone et chaque gardien a son ennemi dessiné (`apps/web/src/combat-fx/bestiary/`), tiré du lore des régions (`docs/design/contenu/le-monde.md` §1.2). Dessinés en SVG, avec du volume (lumière à gauche, côté personnage et braseros ; ombre derrière ; liseré de lumière), animés au repos, et qui réagissent quand ils frappent et quand ils sont touchés. Les gardiens sont plus grands. Page de développement : `/#bestiaire` (clic : il frappe ; Maj + clic : il encaisse ; `?big` pour les voir en grand).
+
+| Région | Zone 1 | Zone 2 | Gardien |
+|---|---|---|---|
+| Abords du bourg (le familier qui a mal tourné) | **Lanterne errante** : une lanterne de rue sur trois pattes de fer, une flamme à visage, des phalènes | **Rôdeur des fossés** : une vase grise sortie de la flaque, un godillot et une roue pris dedans, des algues, un grand œil pâle | **Mère Grise** : esprit de lavandière, long visage creusé, mèches grises, qui tord son drap au-dessus du baquet ; sa robe se défait en brume |
+| Forges éteintes (le travail sans personne) | **Marteau-pilon** : il frappe seul, ses trois lampes comptent les coups, le troisième fait jaillir les étincelles | **Gardien du verger** : un arbre de verre soufflé, sève qui monte, fruits de verre, éclats qui tombent | **Le Contremaître rouge** : brute voûtée au masque de fer, avant-bras aux veines de braise, fournaise au ventre, presse à la main |
+| Lisière des veilleurs (la forêt qui garde) | **Le Peseur** : moine de pierre moussue sous son capuchon, une balance dont un plateau sert de bouclier | **Cerf de braise** : corps de charbon fendu de feu, bois en flammes | **La Matriarche de résine** : reine-phalène dans un cocon d'ambre, ses ailes battent dedans, la sève coule |
+| Archives englouties (le savoir noyé) | **Écho des archives** : une cloche de papier, des pages qui tournent, l'onde de l'écho | **Brochet du gué** : nageoires de parchemin, mâchoire de pieux, il jaillit de l'eau | **Le Notaire des marées** : clerc noyé, perruque à bernacles, tricorne, plume géante qui goutte d'encre, registre ouvert |
+| Bastion des longues veilles (la forteresse qui ne s'est pas rendue) | **Gardienne au sceau** (elles vont par deux) : statue voilée, un grand sceau rond tenu devant elle | **La Vigie** : une tour qui marche, un œil-lanterne qui guette, une baliste qui arme un trait énorme | **Le Gardien des trois portes** : chevalier dont le corps est une porte cloutée et une herse, trois heurtoirs, un pavois |
+| Cicatrice des trois vents (là où la Marée a frappé le plus fort) | **Le Patron d'atelier** : un établi qui marche, mâchoire d'étau, sourcils en clés plates, de mauvaise humeur | **La Rafale** : un masque blanc dans des rubans de vent, des débris qui tournent | **Le Régent des courants** : couronne d'éclats de verre, manteau de vent traversé de courants, ses éclats vivants qui tournent autour de lui |
+
+Reste à faire : les renforts (éclats de verre, apprentis de forge, auxiliaire mal luné, éclats vivants) qui arrivent pendant le combat, et des poses d'attaque plus marquées pour chacun.
+
 ## Les icônes
 
 Chaque sort a son icône (`apps/web/src/components/SpellIcon.tsx`) : un médaillon à la couleur de son élément (feu, givre, foudre ; la couleur de la classe pour le physique), un symbole repris de son effet à l'écran (l'enclume qui tombe, le piège à loup, le nœud sans fin…), un cadre doré pour les ultimes. Elles servent dans la barre de sorts de l'arène (avec la recharge en direct) et dans la Préparation. Elles sont dessinées en SVG pour être nettes à toutes les tailles ; des icônes peintes (comme les décors) pourront les remplacer une à une.

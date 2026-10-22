@@ -5,6 +5,7 @@ import { useTown } from '../../game/useTown';
 import { Character } from '../../rig/Character';
 import { hhmm } from '../../format';
 import { Scene } from '../../components/Scene';
+import { PlayerCard } from '../../components/PlayerCard';
 
 /** Où se tient quelqu'un qui pratique ce métier (en % de la largeur ; centre de l'image, jamais recadré). */
 const WORKPLACES: Record<string, number> = {
@@ -30,7 +31,7 @@ const KIND: Record<TownEvent['kind'], { label: string; color: string }> = {
 const spread = (id: number, mod: number) => ((id * 2654435761) >>> 0) % mod;
 
 /** Un joueur dans la scène : au travail près de son lieu, ou en promenade s'il ne fait rien. */
-function Walker({ p, slot }: { p: TownPlayer; slot: number }) {
+function Walker({ p, slot, onOpen }: { p: TownPlayer; slot: number; onOpen: () => void }) {
   const place = p.doingProfession ? WORKPLACES[p.doingProfession] : undefined;
   const working = place !== undefined;
   const depth = spread(p.id, 3); // 0, 1, 2 : un peu d'étagement vertical
@@ -42,7 +43,7 @@ function Walker({ p, slot }: { p: TownPlayer; slot: number }) {
     zIndex: 3 - depth,
   } as React.CSSProperties;
   return (
-    <div className={`walker ${working ? 'walker-working' : 'walker-strolling'}`} style={style}>
+    <div className={`walker clickable ${working ? 'walker-working' : 'walker-strolling'}`} style={style} onClick={onOpen} role="button" tabIndex={0} title={`Voir la fiche de ${p.name}`}>
       <div className="walker-card">
         <strong>{p.name}</strong>
         <span>
@@ -166,6 +167,7 @@ export function Town() {
   const { openMarket, name, content } = useGame();
   const town = useTown();
   const [onlyMine, setOnlyMine] = useState(false);
+  const [profile, setProfile] = useState<number | null>(null);
   const others = useMemo(() => (town?.players ?? []).filter((p) => !p.self), [town]);
   // Positions (en %) des vrais joueurs qui travaillent, pour que les habitants ne se mettent pas dessus.
   const busy = useMemo(() => others.flatMap((p, i) => (p.doingProfession && WORKPLACES[p.doingProfession] !== undefined ? [WORKPLACES[p.doingProfession]! + (i % 3) * 4 - 4] : [])), [others]);
@@ -178,7 +180,7 @@ export function Town() {
         <Scene ids={['town']} position="50% 50%" shade={false} />
         <div className="town-walkers" aria-label="Joueurs dans le bourg">
           {others.map((p, i) => (
-            <Walker key={p.id} p={p} slot={i} />
+            <Walker key={p.id} p={p} slot={i} onOpen={() => setProfile(p.id)} />
           ))}
           {villagers.map((v) => (
             <VillagerFigure key={v.key} v={v} />
@@ -219,6 +221,7 @@ export function Town() {
           </button>
         </div>
       </aside>
+      {profile !== null && <PlayerCard id={profile} onClose={() => setProfile(null)} />}
     </section>
   );
 }

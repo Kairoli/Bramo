@@ -670,10 +670,8 @@ p {
   width: 40px;
   height: 40px;
   border-radius: 8px;
-  border: 1px dashed currentColor;
-  background:
-    repeating-linear-gradient(135deg, rgb(255 255 255 / 0.04) 0 4px, transparent 4px 8px),
-    var(--sunken);
+  border: 1px solid color-mix(in srgb, currentColor 45%, transparent);
+  background: radial-gradient(circle at 50% 35%, color-mix(in srgb, currentColor 16%, transparent), transparent 70%), var(--sunken);
   font-weight: 700;
   font-size: 15px;
 }
@@ -736,4 +734,12 @@ p {
   color: var(--clan);
   font-size: calc(14px * var(--s));
   font-weight: 600;
+}
+/* Le dessin remplit le cadre de l'icône, quelle que soit sa taille. */
+.item-icon .item-art {
+  width: 84%;
+  height: 84%;
+}
+.item-icon.dim .item-art {
+  filter: grayscale(1) brightness(0.55);
 }

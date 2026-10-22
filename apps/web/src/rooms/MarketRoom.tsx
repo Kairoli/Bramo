@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { type ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
 import type { MarketItemSummary, MarketOrderView, MyOrderView, RepairRequestView } from '@bramo/shared';
 import { api } from '../api';
 import { useGame } from '../game/GameContext';
@@ -6,13 +6,36 @@ import { duration, num } from '../format';
 import { ItemIcon } from '../components/ui';
 import { Scene } from '../components/Scene';
 
-type Tab = 'book' | 'craft' | 'mine' | 'npc';
+type Tab = 'book' | 'mine' | 'craft' | 'npc';
+type Run = (call: () => ReturnType<typeof api.state>) => Promise<boolean>;
 
-/** Salle Marché : ordres d'achat et de vente entre joueurs, mes ordres, commandes PNJ du jour. */
+/** Rayons du marché : des catégories d'objets regroupées comme sur les étals. */
+const SHELVES: { id: string; name: string; cats: string[] }[] = [
+  { id: 'all', name: 'Tout', cats: [] },
+  { id: 'mine', name: 'Mon sac', cats: [] },
+  { id: 'ores', name: 'Minerais et métaux', cats: ['ore', 'stone', 'gem', 'bar'] },
+  { id: 'wood', name: 'Bois', cats: ['log', 'plank', 'handle', 'archery'] },
+  { id: 'nature', name: 'Herbes, poissons, cultures', cats: ['herb', 'fish', 'crop', 'grain', 'fiber', 'dye'] },
+  { id: 'hunt', name: 'Chasse et cuir', cats: ['hide', 'meat', 'feather', 'leather'] },
+  { id: 'cloth', name: 'Fils, toiles, vêtements', cats: ['thread', 'cloth', 'garment'] },
+  { id: 'arcane', name: 'Potions et runes', cats: ['vial', 'potion', 'reagent', 'rune', 'scroll', 'core'] },
+  { id: 'jewels', name: 'Bijoux', cats: ['jewelry'] },
+  { id: 'works', name: 'Mécanismes et chantier', cats: ['mechanism', 'powder', 'device', 'element'] },
+  { id: 'food', name: 'Repas', cats: ['meal'] },
+  { id: 'tools', name: 'Outils et pièces', cats: ['tool', 'tool_part', 'hardware', 'weapon'] },
+  { id: 'finds', name: 'Cartes et trouvailles', cats: ['map', 'curio', 'vestige'] },
+];
+
+/**
+ * Salle Marché, refaite pour être lisible d'un coup d'œil (demande de Louis du 23 octobre) : en haut l'étal (or, ventes à
+ * récupérer, ordres ouverts) et les quatre espaces ; au marché, des rayons et des cartes d'objets avec leur prix, puis la
+ * fiche de l'objet : acheter ou vendre tout de suite au meilleur prix, ou fixer son prix et attendre.
+ */
 export function MarketRoom() {
   const { content, state, act, marketItem } = useGame();
   const [tab, setTab] = useState<Tab>('book');
   const [selected, setSelected] = useState<string | null>(marketItem);
+  const [shelf, setShelf] = useState(marketItem ? 'all' : 'mine');
   const [query, setQuery] = useState('');
   const [summary, setSummary] = useState<MarketItemSummary[]>([]);
   const [book, setBook] = useState<MarketOrderView[]>([]);
@@ -37,80 +60,129 @@ export function MarketRoom() {
     };
   }, [tick, selected]);
 
-  const run = async (call: () => ReturnType<typeof api.state>) => {
+  const run: Run = async (call) => {
     const ok = await act(call);
     refresh();
     return ok;
   };
 
-  // Les objets du marché : ceux qui ont des ordres, ceux que je possède.
-  const rows = useMemo(() => {
-    const ids = new Set([...summary.map((s) => s.itemId), ...Object.keys(state.inventory), ...(selected ? [selected] : [])]);
+  const cards = useMemo(() => {
     const q = query.trim().toLowerCase();
-    return [...ids]
-      .map((id) => ({ item: content.items[id]!, s: summary.find((x) => x.itemId === id) }))
-      .filter((x) => x.item && (!q || x.item.name.toLowerCase().includes(q)))
+    const sh = SHELVES.find((s) => s.id === shelf)!;
+    return Object.values(content.items)
+      .filter((it) => (sh.id === 'mine' ? (state.inventory[it.id] ?? 0) > 0 : sh.id === 'all' || sh.cats.includes(it.category)))
+      .filter((it) => !q || it.name.toLowerCase().includes(q))
+      .map((item) => ({ item, s: summary.find((x) => x.itemId === item.id) }))
       .sort((a, b) => Number(!!b.s) - Number(!!a.s) || a.item.name.localeCompare(b.item.name));
-  }, [summary, state.inventory, selected, query, content.items]);
+  }, [content.items, shelf, query, summary, state.inventory]);
 
-  const openCount = mine.length;
+  const waiting = mine.reduce((s, o) => s + o.waitingGold, 0);
+  const doneNpc = state.npcOrders.filter((o) => o.done).length;
   return (
-    <main className="room market-room">
-      <section className="panel band">
+    <main className="room market-room2">
+      <section className="panel band market-band">
         <Scene ids={['market']} />
+        <div className="market-hud">
+          <div className="market-title">
+            <span className="eyebrow">Le marché du bourg</span>
+            <h1>Acheter, vendre, commander</h1>
+            <span className="muted small">Entre joueurs · taxe de {Math.round(settings.market.taxShare * 100)} % sur chaque vente</span>
+          </div>
+          <div className="market-stats">
+            <MarketStat value={`${num(state.gold)} or`} label="dans votre bourse" tone="var(--action)" />
+            <MarketStat value={`${num(mine.length)}`} label="ordres ouverts" />
+            <MarketStat value={waiting ? `+${num(waiting)} or` : '—'} label="à récupérer" tone="var(--good)" />
+          </div>
+        </div>
+        <nav className="market-tabs" role="tablist">
+          {(
+            [
+              ['book', 'Acheter et vendre', 'M3 9h18l-2 11H5zM8 9V6a4 4 0 0 1 8 0v3'],
+              ['mine', `Mes ordres${mine.length ? ` · ${mine.length}` : ''}`, 'M6 3h9l3 3v15H6zM9 9h6M9 13h6M9 17h4'],
+              ['craft', 'Artisans', 'M14 6l4 4M12 8l-8 8 2 2 8-8M13 4l7 7-2 2-7-7z'],
+              ['npc', `Comptoir · ${doneNpc}/${state.npcOrders.length}`, 'M4 20V10l8-6 8 6v10M9 20v-6h6v6'],
+            ] as [Tab, string, string][]
+          ).map(([id, label, d]) => (
+            <button key={id} role="tab" aria-selected={tab === id} onClick={() => setTab(id)}>
+              <svg viewBox="0 0 24 24" aria-hidden>
+                <path d={d} />
+              </svg>
+              {label}
+            </button>
+          ))}
+        </nav>
       </section>
-      <section className="panel market-panel">
-        <header className="market-head">
-          <div className="tabs" role="tablist">
-            <button role="tab" aria-selected={tab === 'book'} onClick={() => setTab('book')}>
-              Marché
-            </button>
-            <button role="tab" aria-selected={tab === 'craft'} onClick={() => setTab('craft')}>
-              Artisans
-            </button>
-            <button role="tab" aria-selected={tab === 'mine'} onClick={() => setTab('mine')}>
-              Mes ordres{openCount ? ` · ${openCount}` : ''}
-            </button>
-            <button role="tab" aria-selected={tab === 'npc'} onClick={() => setTab('npc')}>
-              Comptoir de la guilde
-            </button>
-          </div>
-          <span className="muted small">
-            Entre joueurs, taxe de {Math.round(settings.market.taxShare * 100)} % sur chaque vente · {num(state.gold)} or
-          </span>
-        </header>
 
-        {tab === 'book' && (
-          <div className="market-body">
-            <div className="market-items">
+      {tab === 'book' && (
+        <div className="market-hub">
+          <section className="panel market-shelves">
+            <div className="market-search">
               <input className="input" placeholder="Chercher un objet…" value={query} onChange={(e) => setQuery(e.target.value)} />
-              <div className="scroll market-item-list">
-                {rows.map(({ item, s }) => (
-                  <button
-                    key={item.id}
-                    className={`market-item${selected === item.id ? ' selected' : ''}`}
-                    onClick={() => setSelected(item.id)}
-                  >
-                    <ItemIcon item={item} small />
-                    <span className="bag-name">{item.name}</span>
-                    <span className="muted small">
-                      {s?.bestSell != null ? `dès ${num(s.bestSell)} or` : s?.bestBuy != null ? `cherché ${num(s.bestBuy)} or` : ''}
-                    </span>
-                    {state.inventory[item.id] ? <span className="chip">×{num(state.inventory[item.id]!)}</span> : <span />}
-                  </button>
-                ))}
-                {rows.length === 0 && <p className="muted">Aucune offre pour le moment : mettez en vente ce que vous produisez.</p>}
-              </div>
             </div>
-            {selected ? (
-              <ItemMarket itemId={selected} book={book} run={run} />
-            ) : (
-              <div className="market-empty muted">Choisissez un objet pour voir les offres, ou pour passer un ordre.</div>
-            )}
-          </div>
-        )}
+            <div className="shelf-chips">
+              {SHELVES.map((s) => (
+                <button key={s.id} className={`shelf-chip${shelf === s.id ? ' on' : ''}`} onClick={() => setShelf(s.id)}>
+                  {s.name}
+                </button>
+              ))}
+            </div>
+            <div className="market-cards scroll">
+              {cards.length === 0 && <p className="muted small">Rien sur ce rayon pour le moment.</p>}
+              {cards.map(({ item, s }) => (
+                <button key={item.id} className={`market-card${selected === item.id ? ' selected' : ''}`} onClick={() => setSelected(item.id)}>
+                  <ItemIcon item={item} />
+                  <span className="market-card-name">{item.name}</span>
+                  <span className="market-card-prices">
+                    {s?.bestSell != null ? <span className="p-sell">{num(s.bestSell)} or</span> : <span className="muted">—</span>}
+                    {s?.bestBuy != null && <span className="p-buy">cherché {num(s.bestBuy)}</span>}
+                  </span>
+                  {(state.inventory[item.id] ?? 0) > 0 && <span className="market-card-own">×{num(state.inventory[item.id]!)}</span>}
+                </button>
+              ))}
+            </div>
+          </section>
+          <section className="panel market-detail">
+            {selected ? <ItemMarket itemId={selected} book={book} run={run} /> : <div className="market-empty muted">Choisissez un objet : vous verrez son prix, et vous pourrez l’acheter ou le vendre en un clic.</div>}
+          </section>
+        </div>
+      )}
 
-        {tab === 'craft' && (
+      {tab === 'mine' && (
+        <section className="panel market-page scroll">
+          <h2>Mes ordres</h2>
+          <p className="muted small">Ce que vous avez mis en vente ou demandé. L’or des ventes et les achats arrivent à votre prochain passage.</p>
+          {mine.length === 0 && <p className="muted">Aucun ordre ouvert.</p>}
+          <div className="order-cards">
+            {mine.map((o) => (
+              <div key={o.id} className={`order-card ${o.side}`}>
+                <ItemIcon item={content.items[o.itemId]} />
+                <div className="order-card-text">
+                  <span className={`order-side ${o.side}`}>{o.side === 'sell' ? 'Je vends' : 'Je cherche'}</span>
+                  <strong>
+                    {num(o.qty)} × {content.items[o.itemId]?.name}
+                  </strong>
+                  <span className="muted small">
+                    à {num(o.price)} or l’unité
+                    {o.wear > 0 ? ` · usé de ${duration(o.wear)}` : ''}
+                  </span>
+                  {(o.waitingGold > 0 || o.waitingQty > 0) && (
+                    <span className="order-waiting">
+                      {o.waitingGold ? `+${num(o.waitingGold)} or` : ''}
+                      {o.waitingQty ? ` ${num(o.waitingQty)} reçus` : ''} à récupérer
+                    </span>
+                  )}
+                </div>
+                <button className="btn btn-sm" onClick={() => run(() => api.cancelOrder(o.id))}>
+                  Annuler
+                </button>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {tab === 'craft' && (
+        <section className="panel market-page">
           <ArtisansTab
             summary={summary}
             run={run}
@@ -119,80 +191,111 @@ export function MarketRoom() {
               setTab('book');
             }}
           />
-        )}
+        </section>
+      )}
 
-        {tab === 'mine' && (
-          <div className="scroll market-mine">
-            {mine.length === 0 && <p className="muted">Aucun ordre ouvert.</p>}
-            {mine.map((o) => (
-              <div key={o.id} className="market-row">
-                <ItemIcon item={content.items[o.itemId]} small />
-                <span className="bag-name">{content.items[o.itemId]?.name}</span>
-                <span className={o.side === 'sell' ? 'sell' : 'buy'}>{o.side === 'sell' ? 'Vente' : 'Achat'}</span>
-                <span>
-                  {num(o.qty)} × {num(o.price)} or
-                </span>
-                <span className="muted small">
-                  {o.wear > 0 ? `exemplaire usé (${duration(o.wear)})` : ''}
-                  {o.waitingGold ? ` +${num(o.waitingGold)} or à recevoir` : ''}
-                  {o.waitingQty ? ` ${num(o.waitingQty)} à recevoir` : ''}
-                </span>
-                <button className="btn btn-sm" onClick={() => run(() => api.cancelOrder(o.id))}>
-                  Annuler
-                </button>
-              </div>
-            ))}
-          </div>
-        )}
-
-        {tab === 'npc' && (
-          <div className="scroll market-npc">
-            <p className="muted">
-              Le PNJ n’achète pas à la demande : le Comptoir vous passe {settings.npcOrders.perDay} commandes par jour, dans des métiers tirés au hasard
-              et adaptées à votre niveau dans chacun, à honorer une fois chacune. Le reste du commerce se fait entre joueurs.
-            </p>
+      {tab === 'npc' && (
+        <section className="panel market-page scroll">
+          <h2>Comptoir de la guilde</h2>
+          <p className="muted small">
+            {settings.npcOrders.perDay} commandes par jour, dans des métiers tirés au hasard et à votre niveau. Chacune ne s’honore qu’une fois ; le reste du commerce se fait entre joueurs.
+          </p>
+          <div className="npc-cards">
             {state.npcOrders.map((o) => {
               const ready = o.items.every((i) => (state.inventory[i.item] ?? 0) >= i.qty);
               return (
-                <div key={o.id} className={`npc-order${o.done ? ' done' : ''}`}>
-                  <div>
+                <div key={o.id} className={`npc-card${o.done ? ' done' : ready ? ' ready' : ''}`}>
+                  <div className="npc-card-head">
                     <strong>{o.client}</strong>
-                    <span className="muted small"> · {content.professions.find((p) => p.id === o.profession)?.name} niv. {o.level}+</span>
-                    <p className="muted">{o.text}</p>
-                    <div className="npc-items">
-                      {o.items.map((i) => (
-                        <span key={i.item} className="chip" style={{ color: (state.inventory[i.item] ?? 0) >= i.qty ? 'var(--good)' : undefined }}>
-                          {num(state.inventory[i.item] ?? 0)} / {num(i.qty)} {content.items[i.item]?.name}
-                        </span>
-                      ))}
-                    </div>
+                    <span className="muted small">
+                      {content.professions.find((p) => p.id === o.profession)?.name} niv. {o.level}+
+                    </span>
                   </div>
-                  <div className="npc-reward">
-                    <strong style={{ color: 'var(--action)' }}>{num(o.gold)} or</strong>
-                    <button className="btn btn-sm" disabled={o.done || !ready} onClick={() => run(() => api.npcComplete(o.id))}>
-                      {o.done ? 'Honorée' : 'Remettre'}
+                  <p className="muted small">{o.text}</p>
+                  <div className="npc-card-items">
+                    {o.items.map((i) => {
+                      const have = state.inventory[i.item] ?? 0;
+                      return (
+                        <span key={i.item} className={`npc-need${have >= i.qty ? ' ok' : ''}`}>
+                          <ItemIcon item={content.items[i.item]} small />
+                          {num(Math.min(have, i.qty))}/{num(i.qty)}
+                        </span>
+                      );
+                    })}
+                  </div>
+                  <div className="npc-card-foot">
+                    <strong className="npc-gold">{num(o.gold)} or</strong>
+                    <button className="btn btn-sm btn-primary" disabled={o.done || !ready} onClick={() => run(() => api.npcComplete(o.id))}>
+                      {o.done ? 'Honorée' : ready ? 'Remettre' : 'Il manque des objets'}
                     </button>
                   </div>
                 </div>
               );
             })}
           </div>
-        )}
-      </section>
+        </section>
+      )}
     </main>
   );
 }
 
-/** Offres, demandes et formulaire d'ordre pour un objet. */
-function ItemMarket({
-  itemId,
-  book,
-  run,
-}: {
-  itemId: string;
-  book: MarketOrderView[];
-  run: (call: () => ReturnType<typeof api.state>) => Promise<boolean>;
-}) {
+function MarketStat({ value, label, tone }: { value: string; label: string; tone?: string }) {
+  return (
+    <div className="market-stat">
+      <strong style={{ color: tone }}>{value}</strong>
+      <span>{label}</span>
+    </div>
+  );
+}
+
+const CATEGORY_NAME: Record<string, string> = {
+  ore: 'Minerai',
+  stone: 'Pierre',
+  gem: 'Gemme',
+  bar: 'Lingot',
+  log: 'Bois',
+  plank: 'Planche',
+  handle: 'Manche',
+  archery: 'Archerie',
+  herb: 'Herbe',
+  fish: 'Poisson',
+  meal: 'Repas',
+  tool: 'Outil',
+  tool_part: 'Pièce d’outil',
+  hardware: 'Quincaillerie',
+  weapon: 'Arme',
+  vestige: 'Vestige de combat',
+  hide: 'Peau',
+  meat: 'Viande',
+  feather: 'Plumes',
+  crop: 'Récolte',
+  grain: 'Grain et farine',
+  fiber: 'Fibre',
+  dye: 'Teinture',
+  leather: 'Cuir',
+  thread: 'Fil',
+  cloth: 'Toile',
+  garment: 'Vêtement',
+  vial: 'Verrerie',
+  potion: 'Potion',
+  reagent: 'Réactif',
+  jewelry: 'Bijou',
+  rune: 'Rune',
+  scroll: 'Parchemin',
+  core: 'Noyau',
+  mechanism: 'Mécanisme',
+  powder: 'Poudre',
+  device: 'Engin',
+  element: 'Élément de construction',
+  map: 'Carte',
+  curio: 'Curiosité',
+};
+
+/**
+ * Fiche d'un objet au marché : ce qu'il coûte maintenant, et deux façons de faire. Tout de suite : acheter la meilleure
+ * offre ou vendre à la meilleure demande. Ou fixer son prix : l'ordre attend un acheteur ou un vendeur.
+ */
+function ItemMarket({ itemId, book, run }: { itemId: string; book: MarketOrderView[]; run: Run }) {
   const { content, state } = useGame();
   const item = content.items[itemId]!;
   const durable = !!item.tool?.durabilityHours;
@@ -200,23 +303,21 @@ function ItemMarket({
   const sells = book.filter((o) => o.side === 'sell');
   const buys = book.filter((o) => o.side === 'buy').sort((a, b) => b.price - a.price || a.id - b.id);
   const copies = state.durability[itemId]?.copies ?? [];
-  const best = sells[0]?.price ?? buys[0]?.price;
+  const have = state.inventory[itemId] ?? 0;
+  const bestSell = sells.find((o) => !o.mine);
+  const bestBuy = buys.find((o) => !o.mine);
 
-  const [side, setSide] = useState<'buy' | 'sell'>('buy');
+  const [side, setSide] = useState<'buy' | 'sell'>('sell');
   const [qty, setQty] = useState(1);
-  const [price, setPrice] = useState(best ?? item.value);
+  const [price, setPrice] = useState(item.value);
   const [copy, setCopy] = useState(0);
-  const [touched, setTouched] = useState(false);
-  // Le prix proposé suit le meilleur prix du livre tant que le joueur n'y a pas touché.
+  const [showBook, setShowBook] = useState(false);
   useEffect(() => {
-    if (!touched && best) setPrice(best);
-  }, [best, touched]);
-  useEffect(() => {
-    setTouched(false);
     setQty(1);
     setCopy(0);
-    setPrice(best ?? item.value);
-    setSide(durable || (state.inventory[itemId] ?? 0) > 0 ? 'sell' : 'buy');
+    const s = durable || have > 0 ? 'sell' : 'buy';
+    setSide(s);
+    setPrice((s === 'sell' ? (sells[0]?.price ?? buys[0]?.price) : (buys[0]?.price ?? sells[0]?.price)) ?? item.value);
     // On repart des prix du marché quand on change d'objet seulement.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [itemId]);
@@ -224,91 +325,80 @@ function ItemMarket({
   const { taxShare, maxPrice, maxQuantity } = content.settings.market;
   const gross = price * (durable ? 1 : qty);
   const net = gross - Math.ceil(gross * taxShare);
-  const valid = price >= 1 && price <= maxPrice && (durable || (qty >= 1 && qty <= maxQuantity));
   const clamp = (n: number, max: number) => Math.max(1, Math.min(max, Math.floor(n) || 1));
-  const wearLabel = (wear: number) => (total ? `reste ${duration(Math.max(0, total - wear))} sur ${duration(total)}` : '');
+  const maxQty = side === 'sell' ? Math.max(1, Math.min(maxQuantity, have)) : maxQuantity;
+  const valid = price >= 1 && price <= maxPrice && (durable || (qty >= 1 && qty <= maxQuantity));
+  const canPlace = valid && (side === 'buy' ? !durable && state.gold >= gross : durable ? copies.length > 0 : have >= qty);
+  const wearLabel = (wear: number) => (total ? `reste ${duration(Math.max(0, total - wear))}` : '');
+  const sellNowQty = bestBuy ? Math.min(have, bestBuy.qty) : 0;
 
   return (
-    <div className="market-item-view">
-      <header className="market-item-head">
+    <div className="item-market">
+      <header className="item-market-head">
         <ItemIcon item={item} />
         <div>
+          <span className="eyebrow">{CATEGORY_NAME[item.category] ?? item.category}</span>
           <h2>{item.name}</h2>
-          <span className="muted small">Vous en avez {num(state.inventory[itemId] ?? 0)}</span>
+          <span className="muted small">
+            Vous en avez <strong>{num(have)}</strong> · valeur de référence {num(item.value)} or
+          </span>
         </div>
       </header>
 
-      <div className="market-columns">
-        <div>
-          <span className="eyebrow">Offres</span>
-          <div className="scroll market-list">
-            {sells.length === 0 && <p className="muted small">Personne n’en vend.</p>}
-            {sells.length === 0 && item.stallPrice && (
-              <div className="market-row">
-                <strong>{num(item.stallPrice)} or</strong>
-                <span className="muted small">Étal de la guilde (neuf, tant que personne n’en vend)</span>
-                <span />
-                <button className="btn btn-sm" disabled={state.gold < item.stallPrice} onClick={() => run(() => api.stallBuy(itemId, 1))}>
-                  Acheter
-                </button>
-              </div>
-            )}
-            {sells.map((o) => (
-              <div key={o.id} className="market-row">
-                <strong>{num(o.price)} or</strong>
-                <span>
-                  ×{num(o.qty)}
-                  {durable && <span className="muted small"> · {wearLabel(o.wear)}</span>}
-                </span>
-                <span className="muted small">{o.mine ? 'vous' : o.ownerName}</span>
-                {o.mine ? (
-                  <span />
-                ) : (
-                  <span className="bag-actions">
-                    <button className="btn btn-sm" disabled={state.gold < o.price} onClick={() => run(() => api.fillOrder(o.id, 1))}>
-                      Acheter
-                    </button>
-                    {o.qty > 1 && (
-                      <button
-                        className="btn btn-sm"
-                        disabled={state.gold < o.price * o.qty}
-                        onClick={() => run(() => api.fillOrder(o.id, o.qty))}
-                      >
-                        Tout
-                      </button>
-                    )}
-                  </span>
-                )}
-              </div>
-            ))}
-          </div>
+      <div className="quick-trade">
+        <div className="quick-box buy">
+          <span className="eyebrow">Acheter maintenant</span>
+          {bestSell ? (
+            <>
+              <strong>{num(bestSell.price)} or</strong>
+              <span className="muted small">
+                {num(sells.filter((o) => !o.mine).reduce((s, o) => s + o.qty, 0))} en vente{durable ? ` · ${wearLabel(bestSell.wear)}` : ''}
+              </span>
+              <button className="btn btn-primary" disabled={state.gold < bestSell.price} onClick={() => run(() => api.fillOrder(bestSell.id, 1))}>
+                Acheter 1
+              </button>
+            </>
+          ) : item.stallPrice ? (
+            <>
+              <strong>{num(item.stallPrice)} or</strong>
+              <span className="muted small">à l’étal de la guilde (neuf)</span>
+              <button className="btn btn-primary" disabled={state.gold < item.stallPrice} onClick={() => run(() => api.stallBuy(itemId, 1))}>
+                Acheter 1
+              </button>
+            </>
+          ) : (
+            <span className="muted small">Personne n’en vend. Fixez votre prix ci-dessous : votre demande attendra un vendeur.</span>
+          )}
         </div>
-        <div>
-          <span className="eyebrow">Demandes</span>
-          <div className="scroll market-list">
-            {buys.length === 0 && <p className="muted small">Personne n’en cherche.</p>}
-            {buys.map((o) => (
-              <div key={o.id} className="market-row">
-                <strong>{num(o.price)} or</strong>
-                <span>×{num(o.qty)}</span>
-                <span className="muted small">{o.mine ? 'vous' : o.ownerName}</span>
-                <span />
-              </div>
-            ))}
-          </div>
+        <div className="quick-box sell">
+          <span className="eyebrow">Vendre maintenant</span>
+          {bestBuy && !durable ? (
+            <>
+              <strong>{num(bestBuy.price)} or</strong>
+              <span className="muted small">demandé ×{num(bestBuy.qty)} · vous touchez {num(bestBuy.price - Math.ceil(bestBuy.price * taxShare))} or l’unité</span>
+              <button className="btn btn-primary" disabled={sellNowQty < 1} onClick={() => run(() => api.placeOrder({ side: 'sell', itemId, qty: sellNowQty, price: bestBuy.price }))}>
+                {sellNowQty > 0 ? `Vendre ${num(sellNowQty)}` : 'Vous n’en avez pas'}
+              </button>
+            </>
+          ) : (
+            <span className="muted small">Personne n’en cherche. Mettez-le en vente ci-dessous : il partira dès qu’un acheteur passe.</span>
+          )}
         </div>
       </div>
 
-      <div className="market-form sunken">
-        <div className="tabs tabs-sm" role="tablist">
-          <button role="tab" aria-selected={side === 'buy'} disabled={durable} onClick={() => setSide('buy')}>
-            Acheter
-          </button>
-          <button role="tab" aria-selected={side === 'sell'} onClick={() => setSide('sell')}>
-            Vendre
-          </button>
+      <div className="order-builder">
+        <div className="order-builder-head">
+          <span className="eyebrow">Ou fixer votre prix</span>
+          <div className="seg-toggle">
+            <button aria-pressed={side === 'buy'} disabled={durable} onClick={() => setSide('buy')}>
+              Je cherche
+            </button>
+            <button aria-pressed={side === 'sell'} onClick={() => setSide('sell')}>
+              Je vends
+            </button>
+          </div>
         </div>
-        {durable && side === 'sell' && (
+        {durable && side === 'sell' ? (
           <label className="field">
             <span className="muted small">Exemplaire</span>
             <select className="input" value={copy} onChange={(e) => setCopy(Number(e.target.value))}>
@@ -319,43 +409,82 @@ function ItemMarket({
               ))}
             </select>
           </label>
+        ) : (
+          !durable && (
+            <Stepper label="Quantité" value={qty} onChange={(v) => setQty(clamp(v, maxQuantity))} presets={[1, 10, 100, ...(side === 'sell' && have > 0 ? [maxQty] : [])]} presetLabel={(v) => (side === 'sell' && v === maxQty && have > 0 ? 'Tout' : String(v))} />
+          )
         )}
-        {!durable && (
-          <label className="field">
-            <span className="muted small">Quantité</span>
-            <input className="input" type="number" min={1} value={qty} onChange={(e) => setQty(clamp(Number(e.target.value), maxQuantity))} />
-          </label>
-        )}
-        <label className="field">
-          <span className="muted small">Prix unitaire (or)</span>
-          <input className="input" type="number" min={1} value={price} onChange={(e) => {
-              setTouched(true);
-              setPrice(clamp(Number(e.target.value), maxPrice));
-            }} />
-        </label>
-        <div className="market-total">
+        <Stepper label="Prix de l’unité (or)" value={price} onChange={(v) => setPrice(clamp(v, maxPrice))} presets={[...new Set([bestSell?.price, bestBuy?.price, item.value].filter((x): x is number => !!x))]} presetLabel={(v) => (v === bestSell?.price ? `${v} · offre` : v === bestBuy?.price ? `${v} · demande` : `${v} · réf.`)} />
+        <p className="order-sentence">
           {side === 'sell' ? (
-            <span>
-              Vous recevrez <strong style={{ color: 'var(--action)' }}>{num(net)} or</strong> <span className="muted small">après taxe</span>
-            </span>
+            <>
+              Je vends <strong>{durable ? 1 : num(qty)} × {item.name}</strong> à <strong>{num(price)} or</strong> : je recevrai <strong className="gold">{num(net)} or</strong> après la taxe.
+            </>
           ) : (
-            <span>
-              Jusqu’à <strong style={{ color: 'var(--action)' }}>{num(gross)} or</strong> <span className="muted small">mis de côté</span>
-            </span>
+            <>
+              Je cherche <strong>{num(qty)} × {item.name}</strong> à <strong>{num(price)} or</strong> : <strong className="gold">{num(gross)} or</strong> sont mis de côté en attendant.
+            </>
           )}
-        </div>
-        <button
-          className="btn btn-primary"
-          disabled={!valid || (side === 'buy' && (durable || state.gold < gross)) || (side === 'sell' && (durable ? copies.length === 0 : (state.inventory[itemId] ?? 0) < qty))}
-          onClick={() => run(() => api.placeOrder({ side, itemId, qty: durable ? 1 : qty, price, ...(durable && side === 'sell' ? { copy } : {}) }))}
-        >
-          Placer l’ordre
+        </p>
+        <button className="btn btn-primary order-go" disabled={!canPlace} onClick={() => run(() => api.placeOrder({ side, itemId, qty: durable ? 1 : qty, price, ...(durable && side === 'sell' ? { copy } : {}) }))}>
+          {side === 'sell' ? 'Mettre en vente' : 'Passer la demande'}
         </button>
       </div>
-      {durable && <p className="muted small">Les objets qui s’usent s’achètent à l’étal : l’état de chaque exemplaire compte.</p>}
+
+      <button className="link small" onClick={() => setShowBook(!showBook)}>
+        {showBook ? 'Masquer' : 'Voir'} toutes les offres ({sells.length}) et demandes ({buys.length})
+      </button>
+      {showBook && (
+        <div className="book-columns">
+          <BookList title="Offres (on vend)" orders={sells} tone="sell" wearLabel={durable ? wearLabel : undefined} />
+          <BookList title="Demandes (on cherche)" orders={buys} tone="buy" />
+        </div>
+      )}
     </div>
   );
 }
+
+function Stepper({ label, value, onChange, presets, presetLabel }: { label: string; value: number; onChange: (v: number) => void; presets: number[]; presetLabel: (v: number) => ReactNode }) {
+  return (
+    <div className="stepper">
+      <span className="muted small">{label}</span>
+      <div className="stepper-row">
+        <button className="mini" onClick={() => onChange(value - 1)} aria-label="Moins">
+          −
+        </button>
+        <input className="input" type="number" min={1} value={value} onChange={(e) => onChange(Number(e.target.value))} />
+        <button className="mini" onClick={() => onChange(value + 1)} aria-label="Plus">
+          +
+        </button>
+        {presets.map((v) => (
+          <button key={v} className={`chip stepper-preset${v === value ? ' on' : ''}`} onClick={() => onChange(v)}>
+            {presetLabel(v)}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function BookList({ title, orders, tone, wearLabel }: { title: string; orders: MarketOrderView[]; tone: 'sell' | 'buy'; wearLabel?: (w: number) => string }) {
+  return (
+    <div className="book-list">
+      <span className="eyebrow">{title}</span>
+      {orders.length === 0 && <p className="muted small">Aucune.</p>}
+      {orders.map((o) => (
+        <div key={o.id} className={`book-row ${tone}`}>
+          <strong>{num(o.price)} or</strong>
+          <span>×{num(o.qty)}</span>
+          <span className="muted small">
+            {o.mine ? 'vous' : o.ownerName}
+            {wearLabel ? ` · ${wearLabel(o.wear)}` : ''}
+          </span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 
 /** Artisans : commandes à servir (ordres d'achat d'objets fabriqués, avec une prime d'XP) et réparations d'outils. */
 function ArtisansTab({

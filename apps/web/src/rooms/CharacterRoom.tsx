@@ -61,6 +61,20 @@ export function CharacterRoom() {
       </section>
 
       <section className="panel band char-stage">
+        {/* Ce que montrent les cases : l'équipement (le build) ou l'apparence (sans effet). */}
+        <div className="mode-switch" role="group" aria-label="Affichage du personnage">
+          <button aria-pressed={mode === 'gear'} onClick={() => setMode('gear')} title="Équipement : ce qui compte pour le combat">
+            <svg viewBox="0 0 24 24" aria-hidden>
+              <path d="M12 3l7 3v5c0 5-3 8-7 10-4-2-7-5-7-10V6z" />
+            </svg>
+          </button>
+          <button aria-pressed={mode === 'look'} onClick={() => setMode('look')} title="Apparence : l'aspect de chaque pièce, sans effet">
+            <svg viewBox="0 0 24 24" aria-hidden>
+              <path d="M12 3a9 9 0 1 0 0 18c1.5 0 2-1 2-2 0-1.5-1-2 0-3s3 0 4-1 3-3 3-5a9 9 0 0 0-9-7zM7.5 12a1.5 1.5 0 1 0 0-.01M10 7.5a1.5 1.5 0 1 0 0-.01M15 7.5a1.5 1.5 0 1 0 0-.01" />
+            </svg>
+          </button>
+          <span className="mode-switch-label">{mode === 'gear' ? 'Équipement' : 'Apparence'}</span>
+        </div>
         <header className="char-stage-head">
           {cls && (
             <div className="eyebrow" style={{ color: cls.affinityColor }}>
@@ -68,17 +82,7 @@ export function CharacterRoom() {
               {state.combat ? ` · niveau ${state.combat.level}` : ''}
             </div>
           )}
-          <div className="char-name-row">
-            {ornament ? <OrnamentPlate ornament={ornament} name={name} title={ornamentTitle(ornament, content, state)} width={352} className="char-plate" /> : <h1>{name}</h1>}
-            <div className="seg-toggle" role="group" aria-label="Affichage du personnage">
-              <button aria-pressed={mode === 'gear'} onClick={() => setMode('gear')}>
-                Équipement
-              </button>
-              <button aria-pressed={mode === 'look'} onClick={() => setMode('look')}>
-                Apparence
-              </button>
-            </div>
-          </div>
+          {ornament ? <OrnamentPlate ornament={ornament} name={name} title={ornamentTitle(ornament, content, state)} width={352} className="char-plate" /> : <h1>{name}</h1>}
           {!ornament && (
             <div style={{ color: 'var(--clan)' }}>
               {best.s.nickname} · {best.p.name} {best.s.level}

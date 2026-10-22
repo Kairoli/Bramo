@@ -1,5 +1,7 @@
 import type { CSSProperties } from 'react';
 import { GearIcon, type GearRarity } from '../components/GearIcon';
+import { ItemIcon } from '../components/ui';
+import { useContent } from '../game/ContentContext';
 
 /** Page de développement (/#icones) : toutes les icônes d'équipement, par rareté, puis la même pièce palier par palier. */
 const PIECES: [string, string, string][] = [
@@ -43,8 +45,21 @@ const COLUMNS: { rarity: GearRarity; tier: number; label: string }[] = [
 const TIERS = [1, 10, 20, 30, 40, 50, 60, 70, 80, 90];
 
 export function GearIcons() {
+  const content = useContent();
+  const items = Object.values(content.items).sort((a, b) => a.category.localeCompare(b.category));
   return (
     <div className="gi-page">
+      <section className="panel gi-panel">
+        <h2>Objets · {items.length}</h2>
+        <div className="gi-items">
+          {items.map((it) => (
+            <span key={it.id} className="gi-item" title={`${it.name} · ${it.category}`}>
+              <ItemIcon item={it} />
+              <small>{it.name}</small>
+            </span>
+          ))}
+        </div>
+      </section>
       <section className="panel gi-panel">
         <h2>Icônes d’équipement</h2>
         <div className="gi-grid" style={{ gridTemplateColumns: `170px repeat(${COLUMNS.length}, 1fr)` }}>

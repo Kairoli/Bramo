@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState, type CSSProperties, type ReactNode } from
 import type { GearItemView, GearModel, GearView } from '@bramo/shared';
 import { api } from '../api';
 import { GearIcon } from './GearIcon';
+import { GearCard } from './GearCard';
 import { useGame } from '../game/GameContext';
 
 export const STAT_NAMES: Record<string, string> = {
@@ -40,10 +41,6 @@ export function SlotGlyph({ slot, size = 26 }: { slot: string; size?: number }) 
   );
 }
 
-function lineText(l: GearItemView['lines'][number]) {
-  return `${l.name} +${l.value} %${l.bonus ? ' (chef-d’œuvre)' : ''}`;
-}
-
 /** Une pièce en tuile : le pictogramme de son emplacement dans la couleur de sa rareté, son palier, ★ pour un chef-d'œuvre. */
 export function GearTile({ g, slot, selected, onClick, label }: { g?: GearItemView; slot: string; selected?: boolean; onClick?: () => void; label?: string }) {
   return (
@@ -59,42 +56,6 @@ export function GearTile({ g, slot, selected, onClick, label }: { g?: GearItemVi
       {g?.set && <span className="gear-tile-set" />}
       {label && !g && <span className="gear-tile-label">{label}</span>}
     </button>
-  );
-}
-
-/** Détail d'une pièce : nom, rareté, statistiques, lignes, effet, et ses actions. */
-function GearDetail({ g, children }: { g: GearItemView; children?: ReactNode }) {
-  return (
-    <div className="gear-detail" style={{ '--rc': rarityColor(g.rarity) } as CSSProperties}>
-      <div className="gear-detail-head">
-        <span className="gear-detail-icon">
-          <GearIcon slot={g.slot} family={g.family} tier={g.tier} rarity={g.rarity} size={44} />
-        </span>
-        <span className="gear-detail-title">
-          <strong>{g.masterpiece ? `Chef-d’œuvre ${g.name}` : g.name}</strong>
-          <span className="muted small">
-            {RARITY_NAMES[g.rarity]} · palier {g.tier}
-            {g.bound ? ' · lié' : ''}
-            {g.worn ? ' · usé' : g.wearShare > 0 ? ` · usure ${Math.round(g.wearShare * 100)} %` : ''}
-          </span>
-        </span>
-        <span className="gear-detail-actions">{children}</span>
-      </div>
-      <div className="gear-lines">
-        {g.stats.map((s) => (
-          <span key={s.stat} className="gear-stat">
-            {STAT_NAMES[s.stat] ?? s.stat} <b>{s.value}</b>
-          </span>
-        ))}
-        {g.lines.map((l) => (
-          <span key={l.name} className={l.bonus ? 'bonus' : 'rolled'}>
-            {lineText(l)}
-          </span>
-        ))}
-      </div>
-      {g.conditional && <p className="gear-cond small">{g.conditional}</p>}
-      {g.signedBy && <p className="muted small">Signé : {g.signedBy}</p>}
-    </div>
   );
 }
 
@@ -170,20 +131,25 @@ export function GearPanel({ gear, onChange }: { gear: GearView | null; onChange:
           <GearTile key={g.id} g={g} slot={g.slot} selected={pick?.id === g.id} onClick={() => setPick({ id: g.id, slot: pick?.slot })} />
         ))}
       </div>
-      {selected ? (
-        <GearDetail g={selected}>
-          {selected.equipped ? (
-            <button className="btn btn-sm" disabled={busy} onClick={() => void call(() => api.gearUnequip(selected.id))}>
-              Ranger
-            </button>
-          ) : (
-            <button className="btn btn-sm btn-primary" disabled={busy || !selected.wearable} title={selected.wearable ? '' : 'Pas du style de votre classe'} onClick={() => void call(() => api.gearEquip(selected.id))}>
-              {selected.wearable ? 'Équiper' : 'Autre classe'}
-            </button>
-          )}
-        </GearDetail>
-      ) : (
-        <p className="muted small gear-hint">Touchez une pièce pour la voir et l’équiper.</p>
+      <p className="muted small gear-hint">Touchez une pièce pour voir sa fiche et la comparer à celle que vous portez.</p>
+      {selected && (
+        <GearCard
+          g={selected}
+          // Comparée à la pièce portée au même emplacement (la première, pour les anneaux).
+          compare={selected.equipped ? null : (items.find((x) => x.equipped && x.slot === selected.slot) ?? null)}
+          onClose={() => setPick(pick?.slot ? { slot: pick.slot } : null)}
+          actions={
+            selected.equipped ? (
+              <button className="btn" disabled={busy} onClick={() => void call(() => api.gearUnequip(selected.id)).then(() => setPick(null))}>
+                Ranger au sac
+              </button>
+            ) : (
+              <button className="btn btn-primary" disabled={busy || !selected.wearable} title={selected.wearable ? '' : 'Pas du style de votre classe'} onClick={() => void call(() => api.gearEquip(selected.id)).then(() => setPick(null))}>
+                {selected.wearable ? 'Équiper' : 'Pour une autre classe'}
+              </button>
+            )
+          }
+        />
       )}
       {state.classId && import.meta.env.DEV && <DevGrant onChange={onChange} />}
     </div>

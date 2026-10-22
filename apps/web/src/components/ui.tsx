@@ -1,6 +1,7 @@
 import { useEffect, type CSSProperties, type ReactNode } from 'react';
 import { createPortal } from 'react-dom';
 import type { Item, ProfessionFamily } from '@bramo/shared';
+import { ItemArt } from './ItemArt';
 
 export function Bar({ value, color, style }: { value: number; color?: string; style?: CSSProperties }) {
   return (
@@ -63,15 +64,15 @@ const CATEGORY_COLOR: Record<string, string> = {
   masterwork: 'var(--clan)',
 };
 
-/** Icône provisoire : initiale dans un carré pointillé, couleur selon la catégorie. */
+/** Icône d'un objet : son dessin (`ItemArt`) dans un cadre à la couleur de sa catégorie. */
 export function ItemIcon({ item, small, dim }: { item: Item | undefined; small?: boolean; dim?: boolean }) {
   return (
     <span
-      className={`item-icon${small ? ' sm' : ''}`}
+      className={`item-icon${small ? ' sm' : ''}${dim ? ' dim' : ''}`}
       style={{ color: dim ? 'var(--border)' : (CATEGORY_COLOR[item?.category ?? ''] ?? 'var(--text-muted)') }}
       aria-hidden
     >
-      {item?.name[0] ?? '?'}
+      {item ? <ItemArt item={item} size={64} /> : '?'}
     </span>
   );
 }

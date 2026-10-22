@@ -6,6 +6,7 @@ import { hhmm, num, signedPct } from '../format';
 import { Bar, ItemIcon, Modal } from '../components/ui';
 import { Scene } from '../components/Scene';
 import { Character } from '../rig/Character';
+import { PlayerCard } from '../components/PlayerCard';
 
 type Tab = 'log' | 'members' | 'roads';
 type Run = (call: () => ReturnType<typeof api.state>) => Promise<boolean>;
@@ -175,6 +176,7 @@ function ClanHall({ clan, run }: { clan: ClanView; run: Run }) {
   const { content } = useGame();
   const [tab, setTab] = useState<Tab>('log');
   const [open, setOpen] = useState<string | null>(null);
+  const [profile, setProfile] = useState<number | null>(null);
   const h = heraldry(clan.name);
   const raw = Object.values(clan.bonuses).reduce((a, b) => Math.max(a, b), 0);
   const built = clan.buildings.reduce((s, b) => s + b.level, 0);
@@ -184,7 +186,7 @@ function ClanHall({ clan, run }: { clan: ClanView; run: Run }) {
     <main className="room clan-room" style={{ '--hc': h.color } as CSSProperties}>
       <section className="panel band clan-band">
         <Scene ids={['clan']} />
-        <ClanYard clan={clan} />
+        <ClanYard clan={clan} onOpen={setProfile} />
         <div className="clan-id">
           <Crest name={clan.name} />
           <div className="clan-id-text">
@@ -230,7 +232,7 @@ function ClanHall({ clan, run }: { clan: ClanView; run: Run }) {
             ))}
           </div>
           {tab === 'log' && <ClanLog clan={clan} />}
-          {tab === 'members' && <Members clan={clan} run={run} />}
+          {tab === 'members' && <Members clan={clan} run={run} onOpen={setProfile} />}
           {tab === 'roads' && (
             <div className="clan-soon">
               <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="var(--clan)" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
@@ -243,6 +245,7 @@ function ClanHall({ clan, run }: { clan: ClanView; run: Run }) {
           )}
         </section>
       </div>
+      {profile !== null && <PlayerCard id={profile} onClose={() => setProfile(null)} />}
       {building && (
         <Modal onClose={() => setOpen(null)} className="building-modal">
           <BuildingSheet b={building} run={run} />
@@ -262,7 +265,7 @@ function Stat({ value, label, tone }: { value: string; label: string; tone?: str
 }
 
 /** La place du clan : ses membres debout dans le décor, le chef au centre ; les absents en retrait, estompés. */
-function ClanYard({ clan }: { clan: ClanView }) {
+function ClanYard({ clan, onOpen }: { clan: ClanView; onOpen: (id: number) => void }) {
   const { content } = useGame();
   const order: Record<ClanRank, number> = { leader: 0, officer: 1, member: 2 };
   const shown = [...clan.members].sort((a, b) => Number(b.active) - Number(a.active) || order[a.rank] - order[b.rank]).slice(0, 9);
@@ -274,7 +277,7 @@ function ClanYard({ clan }: { clan: ClanView }) {
         const s = slots[i]!;
         const style = { '--x': `${64 + s * 7.6}%`, '--dy': `${Math.abs(s) * 4}px`, '--shrink': `${Math.min(10, Math.abs(s) * 2.2)}%`, zIndex: 10 - Math.abs(s) } as CSSProperties;
         return (
-          <div key={m.id} className={`clan-member-figure${m.active ? '' : ' away'}`} style={style}>
+          <div key={m.id} className={`clan-member-figure${m.active ? '' : ' away'}`} style={style} onClick={() => onOpen(m.id)} role="button" tabIndex={0}>
             <div className="walker-card">
               <strong>{m.name}</strong>
               <span>
@@ -476,7 +479,7 @@ function ClanLog({ clan }: { clan: ClanView }) {
   );
 }
 
-function Members({ clan, run }: { clan: ClanView; run: Run }) {
+function Members({ clan, run, onOpen }: { clan: ClanView; run: Run; onOpen: (id: number) => void }) {
   const { name, content } = useGame();
   const leader = clan.myRank === 'leader';
   const officer = clan.myRank !== 'member';
@@ -493,10 +496,10 @@ function Members({ clan, run }: { clan: ClanView; run: Run }) {
         if (officer && !me && m.rank !== 'leader' && (leader || m.rank === 'member')) actions.push(<button key="k" className="btn btn-sm" onClick={() => run(() => api.clanKick(m.id))}>Exclure</button>);
         return (
           <div key={m.id} className={`clan-member${m.active ? '' : ' away'}`}>
-            <span className="clan-portrait">
+            <button className="clan-portrait" onClick={() => onOpen(m.id)} title={`Voir la fiche de ${m.name}`}>
               <Character appearance={lookOf(m, content.classes)} lod="portrait" animate={false} />
               <span className={`clan-dot${m.active ? ' on' : ''}`} />
-            </span>
+            </button>
             <span className="clan-member-text">
               <strong>
                 {m.name} {me && <span className="muted small">(vous)</span>}

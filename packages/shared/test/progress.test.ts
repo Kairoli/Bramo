@@ -71,6 +71,20 @@ describe('activité de combat', () => {
     expect(classLevel(end.state, 'forgefire', content)).toBe(40);
   });
 
+  it('le déroulé de la rencontre en cours est rejoué pour l’écran : attaques de base, sorts, PV ennemis qui baissent', () => {
+    const s = advance(startCombat(forge(), 'duel', T0, content), T0 + 10_000, content).state;
+    const a = viewCombat(s, content)!.activity!;
+    expect(a.timeline!.some((e) => e.kind === 'basic')).toBe(true);
+    expect(a.timeline!.some((e) => e.kind === 'cast' && content.combat!.spells[e.spell!])).toBe(true);
+    const hp = a.timeline!.filter((e) => e.hp !== undefined).map((e) => e.hp!);
+    expect(hp.every((h, i) => i === 0 || h <= hp[i - 1]! + 1e-9)).toBe(true);
+    expect(a.fightTime! * 1000).toBeCloseTo(s.combat.activity!.current!.ms, -1);
+    expect(a.win).toBe(s.combat.activity!.current!.win);
+    // Le journal du dernier combat ne liste pas chaque attaque de base.
+    const done = advance(s, T0 + HOUR, content).state;
+    expect(viewCombat(done, content)!.lastFight!.lines.some((l) => l.text.startsWith('attaque de base'))).toBe(false);
+  });
+
   it('arrêter le combat garde l’XP acquise', () => {
     const s = advance(startCombat(forge(), 'duel', T0, content), T0 + HOUR, content).state;
     const stopped = stopCombat(s);

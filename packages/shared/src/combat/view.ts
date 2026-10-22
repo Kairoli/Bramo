@@ -19,6 +19,44 @@ export interface SpellView {
   text: string;
   /** Accessible maintenant (niveau et voie). */
   available: boolean;
+  /** Ce que le sort fait, pour le montrer à l'écran (durées en secondes). */
+  effects: SpellEffects;
+}
+
+export interface SpellEffects {
+  targets: number;
+  ultimate: boolean;
+  shield?: number;
+  heal?: boolean;
+  dot?: { type: 'burn' | 'bleed'; duration: number };
+  slow?: number;
+  stun?: number;
+  mark?: number;
+  weaken?: number;
+  antiheal?: number;
+  dispel?: boolean;
+  cleanse?: boolean;
+  pressure?: boolean;
+}
+
+/** Durées des effets d'un sort (mêmes défauts que le moteur). */
+export function spellEffects(s: Spell): SpellEffects {
+  const d = s.duration;
+  return {
+    targets: s.targets,
+    ultimate: s.tags.includes('ultimate'),
+    ...(s.shield ? { shield: d ?? 6 } : {}),
+    ...(s.heal ? { heal: true } : {}),
+    ...(s.dot ? { dot: { type: s.dot.type, duration: s.dot.duration } } : {}),
+    ...(s.slow ? { slow: d ?? 4 } : {}),
+    ...(s.stun ? { stun: s.stun } : {}),
+    ...(s.mark ? { mark: s.mark } : {}),
+    ...(s.weaken ? { weaken: d ?? 6 } : {}),
+    ...(s.antiheal ? { antiheal: d ?? 6 } : {}),
+    ...(s.dispel ? { dispel: true } : {}),
+    ...(s.cleanse ? { cleanse: true } : {}),
+    ...(s.pressure ? { pressure: true } : {}),
+  };
 }
 
 export interface CombatView {
@@ -63,12 +101,35 @@ export interface CombatView {
     progressMs: number;
     fightMs: number | null;
     startedAt: number;
+    /** Déroulé de la rencontre en cours (rejouée : mêmes graine et build), pour la montrer à l'écran ; null à l'entraînement. */
+    timeline: TimelineEvent[] | null;
+    /** Durée du combat lui-même (s), sans le repos ; la victoire ou la défaite tombe à cet instant. */
+    fightTime: number | null;
+    win: boolean | null;
   } | null;
   stopped: 'losses' | 'training_cap' | 'unavailable' | null;
   lastFight: { encounter: string; name: string; win: boolean; time: number; lines: { t: number; text: string }[]; contributions: Contributions } | null;
   /** Niveau de chaque classe du personnage. */
   classLevels: Record<string, number>;
 }
+
+/**
+ * Un instant du combat montré à l'écran : attaque de base, sort (`spell`), coup ennemi, ennemi vaincu, Rupture.
+ * `hp` : PV ennemis restants après l'action, en part du total.
+ */
+export interface TimelineEvent {
+  t: number;
+  kind: 'basic' | 'cast' | 'attack' | 'charge' | 'kill' | 'break';
+  spell?: string;
+  hp?: number;
+  crit?: boolean;
+  /** Dégâts directs de l'action, ou du coup reçu. */
+  dmg?: number;
+  /** PV du personnage après l'instant, en part de son maximum. */
+  self?: number;
+}
+
+const SHOWN = new Set(['basic', 'cast', 'attack', 'charge', 'kill', 'break']);
 
 /** Une rencontre telle que le joueur la choisit : où, quel palier, ce qui s'y passe, ce qui y tombe. */
 export interface EncounterView {
@@ -156,6 +217,26 @@ export function viewCombat(state: CharacterState, content: Content): CombatView 
   } catch {
     r = null;
   }
+  // La rencontre en cours, rejouée pour l'écran (le serveur l'a déjà jouée : même résultat).
+  let now: ReturnType<typeof replayFight> | null = null;
+  try {
+    now = a?.current && combat.encounters[a.current.encounter] ? replayFight(state, a.current, content) : null;
+  } catch {
+    now = null;
+  }
+  const timeline: TimelineEvent[] | null = now
+    ? (now.trace ?? [])
+        .filter((x) => SHOWN.has(x.kind) && (x.who === 'p1' || x.who === 'ennemi'))
+        .map((x) => ({
+          t: x.t,
+          kind: x.kind as TimelineEvent['kind'],
+          ...(x.ref ? { spell: x.ref } : {}),
+          ...(x.hp !== undefined ? { hp: Math.round(x.hp * 1000) / 1000 } : {}),
+          ...(x.dmg !== undefined ? { dmg: x.dmg } : {}),
+          ...(x.self !== undefined ? { self: Math.round(x.self * 1000) / 1000 } : {}),
+          ...(x.text.includes('critique') ? { crit: true } : {}),
+        }))
+    : null;
   if (last && r) {
     lastFight = {
       encounter: last.encounter,
@@ -163,7 +244,7 @@ export function viewCombat(state: CharacterState, content: Content): CombatView 
       win: r.win,
       time: r.time,
       // Le journal lisible : sorts, Ruptures, attaques chargées, ennemis vaincus (pas chaque coup reçu).
-      lines: (r.trace ?? []).filter((x) => x.kind !== 'attack' && x.kind !== 'guard').slice(0, 60).map((x) => ({ t: x.t, text: x.text })),
+      lines: (r.trace ?? []).filter((x) => x.kind !== 'attack' && x.kind !== 'guard' && x.kind !== 'basic').slice(0, 60).map((x) => ({ t: x.t, text: x.text })),
       contributions: r.team[0]!.contributions,
     };
   }
@@ -187,7 +268,7 @@ export function viewCombat(state: CharacterState, content: Content): CombatView 
     spells: Object.values(combat.spells)
       .filter((s) => s.class === classId && (!s.path || s.path === path || !path))
       .sort((x, y) => x.level - y.level)
-      .map((s) => ({ id: s.id, name: s.name, level: s.level, path: s.path ?? null, cooldown: s.cooldown, element: s.element, tags: s.tags, form: s.form ?? null, text: describeSpell(s), available: available.has(s.id) })),
+      .map((s) => ({ id: s.id, name: s.name, level: s.level, path: s.path ?? null, cooldown: s.cooldown, element: s.element, tags: s.tags, form: s.form ?? null, text: describeSpell(s), available: available.has(s.id), effects: spellEffects(s) })),
     encounters: Object.values(combat.encounters).map((e) => ({
       id: e.id,
       name: e.name,
@@ -225,6 +306,9 @@ export function viewCombat(state: CharacterState, content: Content): CombatView 
           progressMs: a.progress,
           fightMs: a.current ? a.current.ms + combat.rules.progression.rest * 1000 : null,
           startedAt: a.startedAt,
+          timeline,
+          fightTime: now ? now.time : null,
+          win: now ? now.win : null,
         }
       : null,
     stopped: state.combat.stopped,

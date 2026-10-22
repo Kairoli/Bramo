@@ -131,6 +131,14 @@ export interface TraceEntry {
   who: string;
   kind: string;
   text: string;
+  /** Sort lancé (`cast`). */
+  ref?: string;
+  /** PV ennemis restants après l'action, en part du total (`basic`, `cast`) : pour rejouer le combat à l'écran. */
+  hp?: number;
+  /** Dégâts directs de l'action (`basic`, `cast`) ou du coup reçu (`attack`, `charge`), arrondis. */
+  dmg?: number;
+  /** PV du combattant après l'action ou le coup reçu, en part de son maximum. */
+  self?: number;
 }
 
 export interface FightResult {
@@ -357,8 +365,8 @@ export function fight(combat: CombatContent, setups: CombatantSetup[], encounter
   const trace: TraceEntry[] | undefined = options.trace ? [] : undefined;
   let t = 0;
 
-  const log = (who: Combatant | null, kind: string, text: string) => {
-    if (trace) trace.push({ t: t / 1000, who: who?.setup.id ?? 'ennemi', kind, text });
+  const log = (who: Combatant | null, kind: string, text: string, extra?: Pick<TraceEntry, 'ref' | 'hp' | 'dmg' | 'self'>) => {
+    if (trace) trace.push({ t: t / 1000, who: who?.setup.id ?? 'ennemi', kind, text, ...extra });
   };
   const inc = (c: Combatant, key: string, n = 1) => {
     c.m[key] = (c.m[key] ?? 0) + n;
@@ -483,6 +491,8 @@ export function fight(combat: CombatContent, setups: CombatantSetup[], encounter
   const aliveEnemies = () => enemies.filter((e) => e.hp > 0 && e.arriveAt <= t);
   /** La rencontre se gagne quand le groupe principal est vaincu : un renfort ne rend jamais le chef invulnérable. */
   const chiefsAlive = () => enemies.some((e) => !e.add && e.hp > 0);
+  const hpSum = () => enemies.reduce((a, e) => a + Math.max(0, e.hp), 0);
+  const hpLeft = () => hpSum() / enemies.reduce((a, e) => a + e.maxHp, 0);
   let regenUses = 0;
   let guardTurn = 0;
   /** Au moins un talent dans l'équipe : sinon aucun événement n'est préparé (combats sans talents inchangés). */
@@ -1013,6 +1023,8 @@ export function fight(combat: CombatContent, setups: CombatantSetup[], encounter
     if (!aliveEnemies().length) return;
     c.action++;
     const e = current(c);
+    const hpBefore = trace ? hpSum() : 0;
+    const shown = () => ({ hp: hpLeft(), dmg: Math.round(hpBefore - hpSum()), self: Math.max(0, c.hp) / c.maxHp0 });
     const basic = !spell;
     const element = spell ? elementOf(c, spell) : c.basicElement;
     const tags = spell?.tags ?? [];
@@ -1188,8 +1200,8 @@ export function fight(combat: CombatContent, setups: CombatantSetup[], encounter
         notes.push('Interdit');
       }
       if (control) inc(c, 'controlActions');
-      log(c, 'cast', `${spell.name} (${ELEMENT_LABEL[element]})${notes.length ? ` : ${notes.join(', ')}` : ''}`);
-    }
+      log(c, 'cast', `${spell.name} (${ELEMENT_LABEL[element]})${notes.length ? ` : ${notes.join(', ')}` : ''}`, trace ? { ref: spell.id, ...shown() } : undefined);
+    } else log(c, 'basic', `attaque de base${crit ? ' (critique)' : ''}`, trace ? shown() : undefined);
     // Talents : événements de l'action, dans l'ordre (la mécanique de classe d'abord, l'action directe ensuite).
     if (talents) {
       const ev = { ...ev0, heat: heatSpent };
@@ -1239,6 +1251,7 @@ export function fight(combat: CombatContent, setups: CombatantSetup[], encounter
       raw *= 1 + encounter.guard.empower;
       inc(c, 'guardedHits');
     }
+    const traced = trace?.length ?? 0;
     log(null, source, `${source === 'charge' ? 'attaque chargée' : 'attaque'} de l'ennemi ${e.i + 1} sur ${c.setup.id}`);
     const active = e.weaken.filter((w) => w.until > t);
     // Un affaiblissement « une attaque » peut être gardé pour le coup qui compte (attaque lourde ou chargée).
@@ -1296,6 +1309,9 @@ export function fight(combat: CombatContent, setups: CombatantSetup[], encounter
       c.lastHitBy = source;
       inc(c, 'hpLost', amount);
     }
+    // Pour l'écran : ce que le coup a vraiment retiré (après boucliers) et les PV restants.
+    const entry = trace?.[traced];
+    if (entry) Object.assign(entry, { dmg: Math.round(Math.max(0, amount)), self: Math.max(0, c.hp) / c.maxHp0 });
     if (anyFx) {
       for (const [owner, a] of absorbedBy) emit(owner, { kind: 'absorbed', target: e, amount: a });
       if (broke) emit(c, { kind: 'shield_broken', target: e });

@@ -57,6 +57,7 @@ import {
   startBody,
   tradeBody,
   trialBody,
+  spellEffects,
 } from '@bramo/shared';
 import type { Db } from './db/index.js';
 import { accounts, characters } from './db/schema.js';
@@ -417,6 +418,11 @@ export async function buildApp({ db, content, clock = Date.now, secureCookies = 
 
   /** Catalogue public : tous les modèles, sous forme compacte (pour l'interface et pour les curieux). */
   app.get('/api/gear/catalogue', async () => ({ models: Object.values(content.gearModels) }));
+
+  // Sorts des classes (noms, éléments, effets), publics comme le catalogue : l'Arène de développement les montre.
+  app.get('/api/combat/spells', async () => ({
+    spells: Object.values(content.combat?.spells ?? {}).map((s) => ({ id: s.id, name: s.name, class: s.class, level: s.level, path: s.path ?? null, element: s.element, effects: spellEffects(s) })),
+  }));
 
   app.get('/api/gear', async (req) => {
     const me = await myCharacter(req);

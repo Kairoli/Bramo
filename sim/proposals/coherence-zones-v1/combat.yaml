@@ -1,0 +1,45 @@
+# Douze zones du PvE v2 (zones-v2), avec trois zones refaites par Claude pour Fracture et Battue (docs/design/coherence/).
+# Loi mesurée (verification-claude.md §3) : avec PV × D^1,5 et dégâts × D, un cran demande ~+75 % de vitesse ou ~−43 % de
+# dégâts subis. Un outil offensif ne gagne un cran que si ce qu'il contre est la source des dégâts. Donc :
+#  - Cloître (Fracture) : tant que la garde tient, le chef frappe deux fois plus fort (empower 1) ; la garde suit le danger D
+#    (pas D^1,5), elle reste une part fixe de l'effort ; briser la garde vite coupe la menace.
+#  - Vergers (Battue) : les renforts portent l'essentiel des dégâts (trois par vague, trois vagues) ; le chef frappe peu.
+#  - Atelier (Battue) : l'auxiliaire soigne beaucoup (5 × 700) et frappe ; le tuer vite raccourcit le combat de moitié.
+# Les neuf autres zones sont celles de zones-v2, inchangées. Proposition, chiffres à équilibrer, rien d'adopté.
+note: "Zones-v2 avec Cloître, Vergers et Atelier refaits pour Fracture et Battue. Non adoptée."
+rules:
+  enemy:
+    onceWeakenTarget: heavy
+encounters:
+  - {id: z01_lantern_road, name: La Chaussée des lanternes, enemies: 1, hp: 4300, attack: {damage: 64, period: 2.8}, windows: {period: 14, open: 6, closedReduction: 0.8}}
+  - {id: z02_gray_ditches, name: Les Fossés gris, enemies: 1, hp: 5300, attack: {damage: 60, period: 3}, erosion: {period: 8, damage: 10, maxStacks: 3}}
+  - {id: z03_three_blows, name: La Cour des trois coups, enemies: 1, hp: 5200, attack: {damage: 82, period: 2.8, heavyEvery: 3, heavyMultiplier: 6}}
+  - id: z04_glass_orchard
+    name: Les Vergers de verre (refaits)
+    enemies: 1
+    hp: 4600
+    attack: {damage: 30, period: 3}
+    adds:
+      - {name: Éclat de verre, count: 3, hp: 450, attack: {damage: 70, period: 2.5}, arrive: 6}
+      - {name: Éclat de verre, count: 3, hp: 450, attack: {damage: 70, period: 2.5}, arrive: 24}
+      - {name: Éclat de verre, count: 3, hp: 450, attack: {damage: 70, period: 2.5}, arrive: 42}
+  - id: z05_balance_cloister
+    name: Le Cloître des balances (refait)
+    enemies: 1
+    hp: 4100
+    attack: {damage: 60, period: 3}
+    guard: {period: 12, amount: 900, duration: 9, empower: 1, scale: damage}
+  - {id: z06_reheat_furnace, name: Les Fours de recuit, enemies: 1, hp: 5400, attack: {damage: 48, period: 3}, aura: {damage: 23}}
+  - {id: z07_echo_hall, name: La Salle des échos, enemies: 1, hp: 3900, attack: {damage: 62, period: 2.8}, windows: {period: 18, open: 7, closedReduction: 0.85}}
+  - {id: z08_wound_ford, name: Le Gué des plaies, enemies: 1, hp: 5200, attack: {damage: 55, period: 3}, erosion: {period: 6, damage: 9, maxStacks: 3}, charge: {period: 22, damage: 160}}
+  - {id: z09_two_seals, name: La Chambre aux deux sceaux, enemies: 2, hp: 2300, attack: {damage: 38, period: 3}, guard: {period: 10, amount: 600, duration: 8, on: alternate}}
+  - {id: z10_watch_terraces, name: Les Terrasses de la vigie, enemies: 1, hp: 5400, attack: {damage: 48, period: 3}, charge: {period: 16, damage: 760}}
+  - id: z11_bad_day_workshop
+    name: L’Atelier des mauvais jours (refait)
+    enemies: 1
+    hp: 4600
+    attack: {damage: 55, period: 3}
+    adds:
+      - {name: Auxiliaire mal luné, count: 1, hp: 900, attack: {damage: 45, period: 3}, arrive: 0}
+    regen: {period: 9, amount: 700, uses: 5, requiresAdds: true}
+  - {id: z12_threewind_belvedere, name: Le Belvédère des trois vents, enemies: 1, hp: 5400, attack: {damage: 46, period: 3}, aura: {damage: 25}, charge: {period: 20, damage: 160}}

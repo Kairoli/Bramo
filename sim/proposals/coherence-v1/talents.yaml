@@ -1,0 +1,187 @@
+# Talents du dossier « Le cœur du jeu » v0.2 (§11 à §13), traduits dans le schéma commun du moteur (talentCatalogSchema,
+# packages/shared/src/schemas/combat.ts). Coefficients du dossier, sans retouche : c'est l'état « avant » de la cohérence.
+# Lu par `sim combat-coherence`, jamais par le jeu. Écarts de traduction (le texte du dossier reste la référence) :
+#  - « action de classe qui retire de la Stabilité » est lue comme `control` (ralentir, étourdir ou retirer de la Stabilité) ;
+#  - les effets à délai partagé (Éclat de passage, Passeurs 4) ont deux effets à délai séparé ;
+#  - Ténacité (Veilleurs 3) n'a aucun effet : aucun ennemi ne contrôle le joueur ;
+#  - Petit Arrangement : soin immédiat au lieu de 4 s ; Bénéfice du doute : tout contrôle, pas seulement un contrôle dur sur boss.
+
+gems:
+  - {id: cendre_vive, name: Cendre vive, text: "Une action directe applique une Brûlure de 0,20 P sur 6 s ; délai 8 s.",
+     effects: [{when: direct, cooldown: 8, do: {dot: {type: burn, amount: 0.2, duration: 6}}}]}
+  - {id: plaie_ouverte, name: Plaie ouverte, text: "Un critique primaire applique un Saignement de 0,25 P sur 6 s ; délai 8 s.",
+     effects: [{when: crit, cooldown: 8, do: {dot: {type: bleed, amount: 0.25, duration: 6}}}]}
+  - {id: oeil_chasseur, name: Œil du chasseur, text: "Votre prochaine action directe applique Marque pendant 6 s ; délai 10 s.",
+     effects: [{when: direct, cooldown: 10, do: {mark: 6}}]}
+  - {id: bastion, name: Bastion, text: "Au début d'une rencontre, protégez-vous pour 0,65 P pendant 8 s.",
+     effects: [{when: fight_start, do: {shield: {coef: 0.65, duration: 8}}}]}
+  - {id: souffle_polaire, name: Souffle polaire, text: "Une action directe ralentit de 10 % pendant 2 s ; délai 8 s.",
+     effects: [{when: direct, cooldown: 8, do: {slow: {amount: 0.1, duration: 2}}}]}
+  - {id: rythme, name: Rythme, text: "Après quatre actions directes, votre prochaine attaque de base ajoute 0,30 P ; délai 10 s.",
+     effects: [{when: direct, every: 4, cooldown: 10, do: {next: basic, damage: 0.3}}]}
+  - {id: retour_onde, name: Retour d'onde, text: "Un vrai coup ennemi qui brise votre bouclier déclenche 0,25 P sur l'attaquant ; délai 10 s.",
+     effects: [{when: shield_broken, cooldown: 10, do: {damage: 0.25, to: attacker}}]}
+  - {id: assistance_fine, name: Assistance fine, text: "Une action de classe qui contrôle soigne un bénéficiaire pour 0,30 P ; délai 10 s.",
+     effects: [{when: control, cooldown: 10, do: {heal: {coef: 0.3, to: beneficiary}}}]}
+  - {id: garde_alternee, name: Garde alternée, text: "Après une compétence de soin ou de protection, protégez-vous pour 0,30 P pendant 6 s ; délai 10 s.",
+     effects: [{when: [heal_done, protect_done], cooldown: 10, do: {shield: {coef: 0.3, duration: 6}}}]}
+  - {id: marque_retour, name: Marque de retour, text: "Une action directe sur une cible marquée soigne pour 0,25 P ; délai 6 s.",
+     effects: [{when: direct, target: [marked], cooldown: 6, do: {heal: {coef: 0.25}}}]}
+  - {id: frimas_tenace, name: Frimas tenace, text: "Une action directe sur une cible ralentie ajoute 0,25 P du même type ; délai 8 s.",
+     effects: [{when: direct, target: [slowed], cooldown: 8, do: {damage: 0.25}}]}
+  - {id: abri_cendre, name: Abri de cendre, text: "Un critique primaire sur une cible brûlée ou saignante protège pour 0,30 P pendant 6 s ; délai 10 s.",
+     effects: [{when: crit, target: [afflicted], cooldown: 10, do: {shield: {coef: 0.3, duration: 6}}}]}
+  - {id: patience_taillee, name: Patience taillée, text: "Une compétence à cooldown de base ≥ 18 s prépare un soin de 0,30 P sur la prochaine attaque de base ; délai 12 s.",
+     effects: [{when: skill, minCooldown: 18, cooldown: 12, do: {next: basic, heal: {coef: 0.3}}}]}
+  - {id: grace_oblique, name: Grâce oblique, text: "Un soin effectif de compétence prépare 0,25 P pour votre prochaine action directe ; délai 10 s.",
+     effects: [{when: heal_done, cooldown: 10, do: {next: direct, damage: 0.25}}]}
+  - {id: eclat_passage, name: Éclat de passage, text: "À la mort de votre cible, la prochaine attaque de base ajoute 0,35 P ; sur une cible durable, chaque cinquième compétence prépare le même effet ; délai 12 s.",
+     effects: [{when: kill, cooldown: 12, do: {next: basic, damage: 0.35}}, {when: skill, every: 5, cooldown: 12, do: {next: basic, damage: 0.35}}]}
+  - {id: tranchant_net, name: Tranchant net, text: "Une dissipation, purification utile ou perte de Stabilité infligée par une compétence prépare 0,30 P pour la prochaine action directe ; délai 10 s.",
+     effects: [{when: [dispel, control], cooldown: 10, do: {next: direct, damage: 0.3}}]}
+  - {id: pouls_regulier, name: Pouls régulier, text: "Deux compétences différentes de cooldown de base ≤ 12 s préparent un bouclier de 0,30 P pour votre prochaine attaque de base ; délai 10 s.",
+     effects: [{when: skill, maxCooldown: 12, pattern: distinct_pair, cooldown: 10, do: {next: basic, shield: {coef: 0.3, duration: 6}}}]}
+  - {id: derniere_etincelle, name: Dernière étincelle, text: "Sous 40 % de PV, votre prochaine compétence protège pour 0,55 P pendant 6 s ; délai 20 s.",
+     effects: [{when: hp_below, hpBelow: 0.4, cooldown: 20, do: {next: skill, shield: {coef: 0.55, duration: 6}}}]}
+
+named:
+  - {id: la_rancune, name: La Rancune, class: forgefire, weapon: hammer, text: "Une perte réelle de PV due à une attaque ennemie donne une Rancune (une par seconde, trois au plus) ; la prochaine action directe les dépense pour 0,12 P chacune ; délai 8 s.",
+     effects: [{when: hit_taken, cooldown: 8, do: {next: direct, damage: 0.12, stack: {max: 3, gap: 1}}}]}
+  - {id: bonnes_manieres, name: Les Bonnes Manières, class: forgefire, weapon: sword_shield, text: "Une action de classe qui contrôle protège un bénéficiaire pour 0,35 P pendant 6 s ; délai 10 s.",
+     effects: [{when: control, cooldown: 10, do: {shield: {coef: 0.35, duration: 6, to: beneficiary}}}]}
+  - {id: murmure_epine, name: Murmure-d'épine, class: tracker, weapon: longbow, text: "Un critique primaire sur une cible marquée ajoute 0,25 P sur un autre ennemi, ou sur la même cible si elle est seule ; délai 8 s.",
+     effects: [{when: crit, target: [marked], cooldown: 8, do: {damage: 0.25, to: other_or_target}}]}
+  - {id: la_ponctuelle, name: La Ponctuelle, class: tracker, weapon: crossbow, text: "Une action directe sur une cible ralentie ou étourdie ajoute 0,45 P ; délai 12 s.",
+     effects: [{when: direct, target: [controlled], cooldown: 12, do: {damage: 0.45}}]}
+  - {id: dernier_avertissement, name: Le Dernier Avertissement, class: runist, weapon: staff, text: "Lancer une même compétence deux fois en 14 s prépare une Sommation : votre prochain sort marque sa cible pendant 6 s et rejoue à 100 % la rune qu'il lit ; délai 10 s.",
+     effects: [{when: skill, pattern: same_skill, within: 14, cooldown: 10, do: {next: skill, mark: 6, replayRune: 1}}]}
+  - {id: sceau_qui_tient, name: Le Sceau qui tient, class: runist, weapon: scepter, text: "Un bouclier de compétence qui expire avec un reste soigne son bénéficiaire pour 0,35 P ; délai 12 s.",
+     effects: [{when: shield_expired, cooldown: 12, do: {heal: {coef: 0.35, to: beneficiary}}}]}
+  - {id: benefice_doute, name: Le Bénéfice du doute, text: "Une tentative de contrôle convertie en Pression protège pour 0,40 P pendant 6 s ; délai 12 s.",
+     effects: [{when: control, cooldown: 12, do: {shield: {coef: 0.4, duration: 6}}}]}
+  - {id: fil_retour, name: Le Fil du retour, text: "Un soin effectif de compétence prépare un Fil : la prochaine action directe marque sa cible 6 s et rend 0,25 P de soin ; délai 10 s.",
+     effects: [{when: heal_done, cooldown: 10, do: {next: direct, mark: 6, heal: {coef: 0.25, to: beneficiary}}}]}
+  - {id: petit_arrangement, name: Le Petit Arrangement, text: "Une action directe pendant un bouclier personnel soigne pour 0,30 P ; délai 10 s.",
+     effects: [{when: direct, selfShielded: true, cooldown: 10, do: {heal: {coef: 0.3}}}]}
+  - {id: dette_legere, name: La Dette légère, text: "Après 0,60 P absorbé par un bouclier de compétence, la prochaine compétence de soin gagne 0,40 P ; délai 12 s.",
+     effects: [{when: absorbed, amountAtLeast: 0.6, within: 30, cooldown: 12, do: {next: support_skill, heal: {coef: 0.4, to: beneficiary}}}]}
+  - {id: heures_supplementaires, name: Les Heures supplémentaires, text: "Une compétence à cooldown de base ≥ 18 s prépare 0,35 P pour la prochaine attaque de base ; délai 12 s.",
+     effects: [{when: skill, minCooldown: 18, cooldown: 12, do: {next: basic, damage: 0.35}}]}
+  - {id: mauvais_presage, name: Le Mauvais Présage, text: "Après une Rupture ou une dissipation réussie, votre prochaine action directe ajoute 0,45 P ; délai 12 s.",
+     effects: [{when: [break, dispel], cooldown: 12, do: {next: direct, damage: 0.45}}]}
+
+sets:
+  - id: cendres
+    name: Cendres persistantes
+    pieces:
+      "2": {mods: {dotDuration: 0.1}}
+      "3": {mods: {dotDamage: 0.05}}
+      "4": {effects: [{when: direct, target: [afflicted], every: 3, cooldown: 8, do: {next: direct, damage: 0.35, other: 0.2}}]}
+  - id: enclume
+    name: L'Enclume patiente
+    pieces:
+      "2": {mods: {defenseScore: 0.08}}
+      "3": {mods: {shieldPower: 0.06}}
+      "4": {effects: [{when: absorbed, amountAtLeast: 0.75, within: 4, cooldown: 8, do: {damage: 0.35, to: attacker, shield: {coef: 0.25, duration: 6, to: beneficiary}}}]}
+  - id: empreinte
+    name: La Dernière empreinte
+    pieces:
+      "2": {effects: [{when: direct, target: [marked], do: {critBonus: 0.04}}]}
+      "3": {mods: {markDuration: 0.15}}
+      "4": {effects: [{when: direct, target: [marked], every: 3, sameTarget: true, cooldown: 7, do: {next: direct, damage: 0.45}}]}
+  - id: ronces
+    name: Ronces vives
+    pieces:
+      "2": {mods: {slowDuration: 0.1}}
+      "3": {mods: {slowedTakenReduction: 0.05}}
+      "4": {effects: [{when: control, every: 2, cooldown: 8, do: {next: direct, vuln: {amount: 0.06, duration: 4}}}]}
+  - id: orage
+    name: L'Orage contenu
+    pieces:
+      "2": {mods: {hasteScore: 0.05}}
+      "3": {effects: [{when: skill, pattern: distinct_pair, within: 2, do: {buff: {amount: 0.04, duration: 4}}}]}
+      "4": {effects: [{when: skill, pattern: distinct_pair, within: 2, cooldown: 10, do: {next: skill, damage: 0.35}}]}
+  - id: veilleurs
+    name: Veilleurs du sceau
+    pieces:
+      "2": {mods: {shieldPower: 0.06, healPower: 0.06}}
+      "4": {effects: [{when: [heal_done, absorbed], do: {bank: {share: 0.2, cap: 1.5}}}, {when: every, period: 8, do: {spend: {as: shield, duration: 6}}}]}
+  - id: relais
+    name: Les Relais du chemin gris
+    pieces:
+      "2": {mods: {healPower: 0.05}}
+      "3": {effects: [{when: heal_done, cooldown: 6, do: {next: basic, damage: 0.15}}]}
+      "4": {effects: [{when: direct, cooldown: 9, do: {next: support_skill, damage: 0.4, within: 6}}]}
+  - id: heures_creuses
+    name: Les Heures creuses
+    pieces:
+      "2": {effects: [{when: skill, minCooldown: 18, do: {amplify: 0.04}}]}
+      "3": {effects: [{when: skill, minCooldown: 18, cooldown: 8, do: {next: basic, damage: 0.15}}]}
+      "4": {effects: [{when: skill, minCooldown: 18, cooldown: 10, do: {next: skill, nextMaxCooldown: 12, damage: 0.45, within: 6}}]}
+  - id: autre_revers
+    name: L'Autre revers
+    pieces:
+      "2": {mods: {shieldDuration: 1}}
+      "3": {effects: [{when: shield_expired, do: {healShare: 0.1}}]}
+      "4": {effects: [{when: shield_expired, do: {bank: {share: 0.35, max: 0.5, cap: 0.5}}}, {when: direct, cooldown: 10, do: {spend: {as: damage}}}]}
+  - id: passeurs
+    name: Les Passeurs de braise
+    pieces:
+      "2": {mods: {dotDamage: 0.04}}
+      "3": {effects: [{when: kill, target: [afflicted], cooldown: 8, do: {next: basic, damage: 0.15}}]}
+      "4": {effects: [{when: kill, cooldown: 10, do: {transferDots: true, fallback: {next: direct, damage: 0.3}}}, {when: dot_expired, cooldown: 10, do: {next: direct, damage: 0.3}}]}
+  - id: vigie
+    name: La Vigie sans sommeil
+    pieces:
+      "2": {effects: [{when: basic, do: {amplify: 0.05}}]}
+      "3": {effects: [{when: basic, target: [marked], cooldown: 6, do: {shield: {coef: 0.1, duration: 6}}}]}
+      "4": {effects: [{when: basic, noSkillFor: 3, cooldown: 8, do: {damage: 0.55, lowHpHeal: {below: 0.6, coef: 0.15}}}]}
+  - id: mains_traverse
+    name: Les Mains de traverse
+    pieces:
+      "2": {mods: {pressure: 0.08}}
+      "3": {effects: [{when: [control, dispel], do: {buff: {amount: 0.04, duration: 4}}}]}
+      "4": {effects: [{when: [control, dispel], cooldown: 9, do: {next: skill, damage: 0.4, vuln: {amount: 0.05, duration: 4}}}]}
+  # Ensembles de classe.
+  - id: second_feu
+    name: Le Fer du second feu
+    class: forgefire
+    pieces:
+      "2": {effects: [{when: skill, skill: [heat], do: {amplify: 0.04}}]}
+      "3": {effects: [{when: temper, heatAtLeast: 3, do: {shield: {coef: 0.2, duration: 4}}}]}
+      "4": {effects: [{when: temper, heatAtLeast: 2, cooldown: 8, do: {heat: 1}}]}
+  - id: rivets
+    name: Les Rivets du serment
+    class: forgefire
+    pieces:
+      "2": {mods: {shieldPower: 0.05}}
+      "3": {effects: [{when: temper, cooldown: 6, do: {next: basic, damage: 0.15}}]}
+      "4": {effects: [{when: temper, do: {next: basic, usesPerHeat: true, within: 8, shield: {coef: 0.18, duration: 6}}}]}
+  - id: battue_silencieuse
+    name: La Battue silencieuse
+    class: tracker
+    pieces:
+      "2": {mods: {angleDuration: 2}}
+      "3": {effects: [{when: skill, skill: [setup], do: {amplify: 0.04}}]}
+      "4": {effects: [{when: angle, cooldown: 8, do: {damage: 0.35, to: other, fallback: {next: basic, damage: 0.25}}}]}
+  - id: pas_dans_les_pas
+    name: Les Pas dans les pas
+    class: tracker
+    pieces:
+      "2": {effects: [{when: skill, skill: [companion], do: {amplify: 0.05}}]}
+      "3": {effects: [{when: companion, cooldown: 6, do: {next: basic, damage: 0.15}}]}
+      "4": {effects: [{when: skill, skill: [noncompanion], cooldown: 9, do: {next: companion, damage: 0.35, heal: {coef: 0.25}, within: 6}}]}
+  - id: palimpseste
+    name: Le Palimpseste
+    class: runist
+    pieces:
+      "2": {mods: {runeValue: 0.08}}
+      "3": {effects: [{when: rune_read, rune: seal, cooldown: 8, do: {next: basic, damage: 0.15}}]}
+      "4": {effects: [{when: rune_read, pattern: repeat_read, cooldown: 8, do: {next: skill, replayRune: 1.5, replayFrom: prepared}}]}
+  - id: phrase_inachevee
+    name: La Phrase inachevée
+    class: runist
+    pieces:
+      "2": {effects: [{when: skill, pattern: form_change, do: {buff: {amount: 0.04, duration: 3}}}]}
+      "3": {effects: [{when: skill, form: trait, rune: seal, cooldown: 8, do: {shield: {coef: 0.15, duration: 6}}}]}
+      "4": {effects: [{when: skill, pattern: aba, cooldown: 10, do: {next: skill, damage: 0.4, shield: {coef: 0.25, duration: 6}}}]}

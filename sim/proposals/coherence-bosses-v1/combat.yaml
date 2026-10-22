@@ -1,0 +1,65 @@
+# Les six gardiens de région (docs/design/coherence/build.md §6) : un par région, chacun mêle les deux familles de mécaniques
+# de sa région (deux réponses de situation possibles, ou un bon build, ou un bon plan). Format du moteur, statistiques
+# normalisées (témoin P 100, PV 2 800). Proposition de Claude, chiffres à équilibrer.
+note: "Six gardiens de région, deux familles chacun. Non adoptés."
+rules:
+  enemy:
+    onceWeakenTarget: heavy
+encounters:
+  # Les Abords du bourg (1-19) : Interstice + Pluie.
+  - id: b1_lavandiere
+    name: Mère Grise, la Lavandière du Puits
+    inspiredBy: "Elle essore son linge (on ne l'atteint vraiment que pendant l'essorage) et éclabousse d'eau de lessive (érosion)."
+    enemies: 1
+    hp: 4800
+    attack: {damage: 58, period: 3}
+    windows: {period: 15, open: 7, closedReduction: 0.6}
+    erosion: {period: 9, damage: 8, maxStacks: 3}
+  # Les Forges éteintes (20-39) : Impact + Battue.
+  - id: b2_contremaitre
+    name: Le Contremaître rouge
+    inspiredBy: "Tous les trois coups, il frappe comme une presse ; ses apprentis arrivent par deux et cognent dur."
+    enemies: 1
+    hp: 5000
+    attack: {damage: 62, period: 2.8, heavyEvery: 3, heavyMultiplier: 5}
+    adds:
+      - {name: Apprenti de forge, count: 2, hp: 450, attack: {damage: 55, period: 2.5}, arrive: 8}
+      - {name: Apprenti de forge, count: 2, hp: 450, attack: {damage: 55, period: 2.5}, arrive: 32}
+  # La Lisière des veilleurs (40) : Fracture + Reprise.
+  - id: b3_matriarche
+    name: La Matriarche de résine
+    inspiredBy: "Elle s'enferme dans un cocon qui la rend furieuse tant qu'il tient ; sa sève poisseuse colle à la peau (aura)."
+    enemies: 1
+    hp: 4900
+    attack: {damage: 52, period: 3}
+    guard: {period: 13, amount: 400, duration: 8, empower: 0.8, scale: damage}
+    aura: {damage: 18}
+  # Les Archives englouties (40) : Interstice + Pluie, en plus serré.
+  - id: b4_notaire
+    name: Le Notaire des marées
+    inspiredBy: "Il ne signe qu'à marée haute (fenêtres courtes) et son encre salée ronge tout ce qu'elle touche (érosion rapide)."
+    enemies: 1
+    hp: 4600
+    attack: {damage: 56, period: 3}
+    windows: {period: 16, open: 6, closedReduction: 0.75}
+    erosion: {period: 7, damage: 9, maxStacks: 3}
+  # Le Bastion des longues veilles (40) : Fracture + Impact.
+  - id: b5_gardien_portes
+    name: Le Gardien des trois portes
+    inspiredBy: "Trois coups, le troisième enfonce les portes ; entre deux, il lève son pavois et frappe deux fois plus fort derrière."
+    enemies: 1
+    hp: 5100
+    attack: {damage: 60, period: 2.8, heavyEvery: 3, heavyMultiplier: 5}
+    guard: {period: 14, amount: 420, duration: 7, empower: 1, scale: damage}
+  # La Cicatrice des trois vents (40) : Battue + Reprise.
+  - id: b6_regent
+    name: Le Régent des courants
+    inspiredBy: "Le vent écorche sans répit (aura) et chaque rafale apporte trois éclats de verre vivants qui visent les yeux."
+    enemies: 1
+    hp: 4800
+    attack: {damage: 34, period: 3}
+    aura: {damage: 16}
+    adds:
+      - {name: Éclat vivant, count: 3, hp: 380, attack: {damage: 60, period: 2.5}, arrive: 6}
+      - {name: Éclat vivant, count: 3, hp: 380, attack: {damage: 60, period: 2.5}, arrive: 28}
+      - {name: Éclat vivant, count: 3, hp: 380, attack: {damage: 60, period: 2.5}, arrive: 50}

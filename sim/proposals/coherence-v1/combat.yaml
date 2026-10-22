@@ -1,0 +1,37 @@
+# Proposition « cohérence v1 » (docs/design/coherence/) : conversion de l'équipement en statistiques de combat (étape 5a).
+# Rien n'est adopté. Témoin : le kit « palier 20, Rare, mixte » (moyenne des trois classes, sans ligne aléatoire) donne
+# P 100, PV 2 800, 25 % de réduction, 20 % de critique, 12 % de Cadence, comme rules.referenceStats.
+#   Puissance brute moyenne 386 → 0,259 P par point ; Vitalité 167 → 2 000 + 4,8 par point ;
+#   Défense 265, K du palier 20 = 212 (K suit le budget de Défense du catalogue : 0,21 au palier 1, 0,585 au palier 10) ;
+#   Critique 172 → K 172 (101, 37) ; Cadence : 12 % de base (le catalogue n'en donne qu'au Forgefeu), K 200 (118, 42).
+note: "Conversion calibrée sur le témoin palier 20 Rare mixte. Non adoptée."
+rules:
+  gearStats:
+    power: {base: 0, perPoint: 0.259}
+    maxHp: {base: 2000, perPoint: 4.8}
+    defense: {cap: 0.45, k: {"1": 45, "10": 124, "20": 212}}
+    haste: {cap: 0.23, base: 0.12, k: {"1": 42, "10": 118, "20": 200}}
+    crit: {cap: 0.3, base: 0.05, k: {"1": 37, "10": 101, "20": 172}}
+    critMultiplier: 1.6
+    startShieldDuration: 8
+    lines:
+      Critique: critChance
+      Cadence: haste
+      Vitalité: maxHp
+      Défense: damageReduction
+      Pénétration: penetration
+      Dégâts critiques: critMultiplier
+      Dégâts physiques: physical
+      Dégâts de Feu: fire
+      Dégâts de Givre: frost
+      Dégâts de Foudre: lightning
+      Bouclier de début de combat: startShield
+      # Sans effet en combat : aucun ennemi ne ralentit ni ne contrôle le joueur ; la Régénération n'a ni période ni base ;
+      # « l'élément de l'arme » n'existe pas (l'élément vient des sorts, décision de Louis du 21 octobre).
+      Ténacité: none
+      Résistance au ralentissement: none
+      Régénération: none
+      Dégâts de l'élément de l'arme: none
+  # Affaiblissement « une attaque » gardé pour le coup lourd (retenu par GPT et Claude, comme zones-v2).
+  enemy:
+    onceWeakenTarget: heavy

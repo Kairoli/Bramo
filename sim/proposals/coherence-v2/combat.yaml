@@ -1,0 +1,61 @@
+# Proposition « cohérence v2 » (docs/design/coherence/build.md). Rien n'est adopté.
+# 1. Courbe de palier : les points du catalogue sont ramenés au palier 20 (`norm`), puis la Puissance et les PV suivent +12 %
+#    par palier (`factor` : palier 20 = 1, palier 10 = 1/1,12, palier 1 = 1/1,12²). Témoin palier 20 Rare mixte : P 100, PV 2 800.
+#    norm = Puissance brute moyenne du kit Rare mixte du palier 20 / celle du palier ; dix paliers (catalogue gear_base.yaml).
+#    Puissance 0,230 par point (0,259 avant) : les bijoux du catalogue des dix paliers existent en offensif à chaque rareté, la
+#    Puissance brute du témoin palier 20 passe de 386 à 435 points ; le témoin reste à P ≈ 100.
+# 2. Orientation : la Défense encaisse aussi (1,5 PV par point), pour qu'une armure protectrice vaille une offensive.
+# 3. Lignes aléatoires : plus de ligne morte ; des lignes de build (modificateurs de talent, plafonds de réserve).
+# 4. Le Traqueur réparé (docs/design/coherence/classes.md) : à statistiques égales, le Tue-Bête allait 17 % moins vite que le
+#    Trempe-Rouge et le Piégeur était le contrôle le plus faible ; il n'avait ni purification avant le niveau 85, ni dissipation.
+#    Les armes sont égalisées à part (gear.yaml, `sim combat-weapons`).
+note: "Courbe +12 % par palier, Défense qui encaisse, lignes de build, Traqueur réparé. Non adoptée."
+classes:
+  # L'affût : les fenêtres fermées retirent 35 % de moins de leur réduction aux dégâts du Traqueur (il vise les interstices).
+  # 0,5 au départ : trop fort avec le catalogue des dix paliers (−30 à −40 % de temps dans les zones à fenêtres).
+  tracker: {params: {windowPierce: 0.35}}
+paths:
+  beastslayer: {params: {bleed: 0.9}}      # La morsure après le trait : 0,65 -> 0,9
+  trapper: {params: {damage: 0.55}}        # Contrepiège : 0,35 -> 0,55
+spells:
+  tr_retreat: {cleanse: true}              # Repli couvert (niveau 20) purifie, comme Refroidissement et Sceau de répit
+  tr_stare: {dispel: true}                 # Regard fixe (niveau 55) trouve la faille : dissipe une garde
+  tr_seam: {damage: 2.05}                  # Tir à la couture : 1,75 -> 2,05
+  tr_sidestep: {damage: 2.2}               # Pas de côté : 1,9 -> 2,2
+  tr_harass: {damage: 1.3}                 # Flèches de gêne : 1,1 -> 1,3
+rules:
+  enemy:
+    onceWeakenTarget: heavy
+  gearStats:
+    power: {base: 0, perPoint: 0.230}
+    maxHp: {base: 1602, perPoint: 4.8, perDefense: 1.5}
+    tiers: {"1": {norm: 4.69, factor: 0.797}, "10": {norm: 1.698, factor: 0.893}, "20": {norm: 1, factor: 1}, "30": {norm: 0.691, factor: 1.12}, "40": {norm: 0.534, factor: 1.254}, "50": {norm: 0.436, factor: 1.405}, "60": {norm: 0.368, factor: 1.574}, "70": {norm: 0.32, factor: 1.762}, "80": {norm: 0.282, factor: 1.974}, "90": {norm: 0.251, factor: 2.211}}
+    defense: {cap: 0.45, k: {"1": 212}}
+    haste: {cap: 0.23, base: 0.12, k: {"1": 200}}
+    crit: {cap: 0.3, base: 0.05, k: {"1": 172}}
+    critMultiplier: 1.6
+    startShieldDuration: 8
+    lines:
+      Puissance: power
+      Vitalité: maxHp
+      Défense: damageReduction
+      Cadence: haste
+      Critique: critChance
+      Dégâts critiques: critMultiplier
+      Dégâts des afflictions: mod:dotDamage
+      Durée des afflictions: mod:dotDuration
+      Durée des ralentissements: mod:slowDuration
+      Puissance des boucliers: mod:shieldPower
+      Puissance des soins: mod:healPower
+      Attaques de base: mod:basicDamage
+      Compétences: mod:skillDamage
+      Pression: mod:pressure
+      Dépenses de réserve: mod:spendPower
+      Tisons au plafond: pool:tisons
+      Entailles au plafond: pool:entailles
+      Frimas au plafond: pool:frimas
+      Rancœur au plafond: pool:rancoeur
+      Ferveur au plafond: pool:ferveur
+      Mesure au plafond: pool:mesure
+      Échos au plafond: pool:echos
+      Trophées au plafond: pool:trophees

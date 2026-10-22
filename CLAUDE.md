@@ -55,6 +55,14 @@ Bramo est un **idle-RPG multijoueur jouable dans le navigateur**, dans l'esprit 
 
 ## 5. État du projet (à jour au 22 octobre 2026)
 
+### Fait — analyse du dossier « Activités et artisanat » (22 octobre)
+
+- **Dossier GPT** : [`docs/design/activites-artisanat/`](docs/design/activites-artisanat/) (craft de tout l'équipement, 28 patrons de recettes, filières, donjons 1-4, escouades hors ligne, route solo 12 × 10, saisons, world boss, Routes franches). **Analyse de Claude, verdicts, essais et questions pour Louis : [`analyse.md`](docs/design/activites-artisanat/analyse.md)** — à lire avant toute suite du PvE, du craft ou du butin.
+- **Moteur étendu, options inactives par défaut** (les combats existants sont identiques) : renforts à heure fixe (`adds`), coups lourds en série (`heavyEvery`), garde à tour de rôle ou renforcée par les renforts, soin ennemi limité (`uses`, `requiresAdds`), érosion purifiable, fenêtres de vulnérabilité, groupes (`enemyHpScale`, `enemyAttackRateScale`, `targeting: rotate`), PV de départ (`startHp`), affaiblissements gardés pour le coup lourd (`rules.enemy.onceWeakenTarget`). 8 tests.
+- **Simulateur** : `combat-search` classe les plans par rencontres gagnées puis vitesse et garde aussi les plus sûrs ; `combat-groups`, `combat-dungeon` ; propositions `zones-v0`, `zones-v1`, `zones-v1-defense`, `zones-v1-heavy` ; `CombatPatch.encounters/addEncounters`.
+- **Résultats** : les douze zones ne font **pas** alterner les voies (écarts de 0,5 à 2 crans, liés aux classes : Traqueur le plus fragile) ; groupes : **PV × N, cadence × N, coups répartis** ; donjon : 20 % de PV rendus entre deux salles impose un soutien, **40 % recommandé**. Chantier prioritaire proposé : **identité des voies** avant de chiffrer la route solo.
+- **Corrigé** : taxe du marché arrondie au plus proche (elle prenait 100 % d'une vente de 1 or) ; 5 noms de modèles qui doublonnaient des nommés ou un passif, renommés (identifiants inchangés).
+
 ### Fait — décors des métiers (22 octobre)
 
 - **17 illustrations 3200 × 640 px** (livrées par Louis via ChatGPT, une par métier, sans personnage ni texte) converties en WebP (≈ 2 Mo au total) dans `apps/web/public/scenes/<id du métier>.webp`. Originaux PNG non versionnés (gardés dans les téléchargements de Louis : `Bramo-17-metiers-v3.zip`).
@@ -242,7 +250,7 @@ Bramo est un **idle-RPG multijoueur jouable dans le navigateur**, dans l'esprit 
 
 ### Prochaines étapes (ordre proposé)
 
-0. **Combat : suite de [`docs/design/coeur-du-jeu/integration.md`](docs/design/coeur-du-jeu/integration.md) §5** (étapes 0 à 4 faites, questions Q1 à Q6 tranchées) : (5) statistiques réelles et progression solo à murs, (6) gemmes, ensembles, butin.
+0. **Combat : suite de [`docs/design/coeur-du-jeu/integration.md`](docs/design/coeur-du-jeu/integration.md) §5** (étapes 0 à 4 faites, questions Q1 à Q6 tranchées), revu par [`docs/design/activites-artisanat/analyse.md`](docs/design/activites-artisanat/analyse.md) §7 : (5a) identité des voies et survie du Traqueur, (5b) statistiques réelles, (6a) boucle d'objets complète, (6b) six zones solo, (6c) Fonderie, puis filières et activités collectives. Questions Q1 à Q4 de l'analyse en attente.
 0 bis. **Suite de `docs/design/arbitrages.md` §3** (étapes 1 à 4 faites pour l'essentiel ; reste les outils d'apprenti, les commandes artisanales et le simulateur de marché) : (5) clans, Construction, Agriculture, (6) combat et métiers d'équipement, (7) premier événement.
 1. **Mise en service sur le homeserver** : Postgres (docker compose), `.env` avec `DATABASE_URL`, build du client (`pnpm --filter @bramo/web build`), le serveur Fastify sert `apps/web/dist` (ou un reverse proxy devant), HTTPS, `NODE_ENV=production`, service systemd ou conteneur, sauvegardes de la base. Limite de tentatives de connexion.
 2. ~~Accueil à refaire~~ **Fait le 21 octobre** (scène du bourg et fil du serveur). Reste : annonces de saison, discussion, popup « Voyager ».

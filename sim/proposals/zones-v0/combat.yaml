@@ -1,0 +1,96 @@
+# Les douze zones de la Route des Lointains (dossier « Activités et artisanat » §12), traduites en rencontres d'essai.
+# [Proposé par Claude, prototype] : chiffres choisis pour un personnage de référence (P = 100, 2 800 PV) au répertoire 80,
+# afin de MESURER quelles voies chaque zone favorise réellement. Ce n'est ni le contenu final ni une courbe de difficulté.
+# Chaque zone garde une mécanique dominante ; l'affinité annoncée par le dossier est notée en commentaire pour comparaison.
+note: Zones solo v0 (mesure des affinités de voie), remplace les six profils du banc dans cette proposition.
+encounters:
+  # 1. DPS — cible résistante, coups espacés ; un porte-lanterne fragile double la garde du chef tant qu'il vit.
+  - id: z01_lantern_road
+    name: La Chaussée des lanternes
+    enemies: 1
+    hp: 4200
+    attack: {damage: 95, period: 2.6}
+    adds: [{name: Porte-lanterne, count: 1, hp: 700, attack: {damage: 30, period: 3}, arrive: 0}]
+    guard: {period: 14, amount: 260, duration: 5, boostedByAdds: 2}
+  # 2. Soutien — érosion qui s'accumule (3 charges) ; une purification la retire.
+  - id: z02_gray_ditches
+    name: Les Fossés gris
+    enemies: 1
+    hp: 4600
+    attack: {damage: 70, period: 2.5}
+    erosion: {period: 6, damage: 4, maxStacks: 3}
+  # 3. Contrôle / soutien — deux coups ordinaires puis un coup renforcé.
+  - id: z03_three_blows
+    name: La Cour des trois coups
+    enemies: 1
+    hp: 4600
+    attack: {damage: 80, period: 2.5, heavyEvery: 3, heavyMultiplier: 3.5}
+  # 4. DPS / contrôle — renforts fragiles à heure fixe ; le chef reste attaquable.
+  - id: z04_glass_orchard
+    name: Les Vergers de verre
+    enemies: 1
+    hp: 3800
+    attack: {damage: 80, period: 3}
+    adds:
+      - {name: Éclat de verre, count: 2, hp: 600, attack: {damage: 60, period: 2.5}, arrive: 12}
+      - {name: Éclat de verre, count: 2, hp: 600, attack: {damage: 60, period: 2.5}, arrive: 32}
+  # 5. Contrôle — garde épaisse renouvelée : la dissiper, la rompre ou l'user.
+  - id: z05_balance_cloister
+    name: Le Cloître des balances
+    enemies: 1
+    hp: 4400
+    attack: {damage: 85, period: 3}
+    guard: {period: 15, amount: 420, duration: 6}
+  # 6. Soutien — exposition régulière et lourde charge.
+  - id: z06_reheat_furnace
+    name: Les Fours de recuit
+    enemies: 1
+    hp: 4600
+    attack: {damage: 70, period: 2.5}
+    aura: {damage: 6}
+    charge: {period: 18, damage: 320}
+  # 7. Mixte — alternance garde / vulnérabilité (dégâts réduits de moitié hors des fenêtres de 7 s).
+  - id: z07_echo_hall
+    name: La Salle des échos
+    enemies: 1
+    hp: 4000
+    attack: {damage: 85, period: 2.8}
+    windows: {period: 16, open: 7, closedReduction: 0.5}
+  # 8. Soutien — éclats périodiques qui laissent une érosion courte, et une charge.
+  - id: z08_wound_ford
+    name: Le Gué des plaies
+    enemies: 1
+    hp: 4400
+    attack: {damage: 75, period: 2.5}
+    erosion: {period: 9, damage: 6, maxStacks: 2}
+    charge: {period: 20, damage: 220}
+  # 9. DPS — deux adversaires qui se gardent à tour de rôle ; tous deux restent vulnérables.
+  - id: z09_two_seals
+    name: La Chambre aux deux sceaux
+    enemies: 2
+    hp: 2500
+    attack: {damage: 70, period: 3}
+    guard: {period: 8, amount: 300, duration: 6, on: alternate}
+  # 10. Contrôle — frappe de cloche annoncée, puis garde courte.
+  - id: z10_watch_terraces
+    name: Les Terrasses de la vigie
+    enemies: 1
+    hp: 4600
+    attack: {damage: 80, period: 2.8}
+    charge: {period: 16, damage: 360}
+    guard: {period: 16, amount: 250, duration: 4}
+  # 11. DPS / contrôle — un auxiliaire soigne le chef, trois fois au plus, tant qu'il vit.
+  - id: z11_bad_day_workshop
+    name: L'Atelier des mauvais jours
+    enemies: 1
+    hp: 4200
+    attack: {damage: 85, period: 2.8}
+    adds: [{name: Auxiliaire, count: 1, hp: 900, attack: {damage: 30, period: 3}, arrive: 0}]
+    regen: {period: 12, amount: 450, uses: 3, requiresAdds: true}
+  # 12. Mixte — deux règles déjà vues : série de coups lourds et renforts.
+  - id: z12_threewind_belvedere
+    name: Le Belvédère des trois vents
+    enemies: 1
+    hp: 4400
+    attack: {damage: 85, period: 2.6, heavyEvery: 4, heavyMultiplier: 3}
+    adds: [{name: Éclat de rafale, count: 2, hp: 600, attack: {damage: 55, period: 2.5}, arrive: 15}]

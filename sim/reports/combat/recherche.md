@@ -44,7 +44,7 @@ Sorts de voie dans le plan le plus rapide en moyenne :
 | Meneur de meute | Lecture de piste, Trait de poursuite, Flèche barbelée, Garde de meute, Regard fixe | 51,0 s | 42,8 s (+12 %) · 73 % · mur ×2,5 | 69,3 s (+16 %) · 59 % · mur ×2,0 | 45,3 s (+15 %) · 72 % · mur ×2,5 | 50,1 s (+12 %) · 80 % · mur ×3,0 | 50,1 s (+12 %) · 94 % · mur ×3,0 | 46,5 s (+14 %) · 84 % · mur ×3,0 |
 | Fulgurant | Trait incandescent, Trait fulgurant, Trait de gel, Trait des éclats, Rature ardente | 41,4 s | 34,5 s · 68 % · mur ×3,0 | 57,3 s · 43 % · mur ×2,0 | 37,3 s · 60 % · mur ×2,5 | 40,8 s · 60 % · mur ×3,0 | 40,8 s · 72 % · mur ×3,0 | 37,5 s · 74 % · mur ×3,0 |
 | Sigillaire | Trait incandescent, Cercle de givre, Trait fulgurant, Trait de gel, Ligne de partage | 45,6 s | 38,0 s (+10 %) · 69 % · mur ×3,0 | 60,0 s (+5 %) · 49 % · mur ×2,0 | 39,3 s (+5 %) · 66 % · mur ×3,0 | 45,5 s (+12 %) · 61 % · mur ×3,0 | 45,5 s (+12 %) · 73 % · mur ≥ ×4,0 | 40,3 s (+7 %) · 78 % · mur ≥ ×4,0 |
-| Glyphiste | Trait incandescent, Trait fulgurant, Trait de gel, Sceau de résonance, Ligne de partage | 46,3 s | 38,5 s (+12 %) · 77 % · mur ×3,0 | 60,6 s (+6 %) · 66 % · mur ×2,0 | 41,0 s (+10 %) · 69 % · mur ×2,5 | 45,8 s (+12 %) · 71 % · mur ×3,0 | 45,4 s (+11 %) · 88 % · mur ×3,0 | 41,0 s (+9 %) · 94 % · mur ×3,0 |
+| Glyphiste | Trait incandescent, Trait fulgurant, Trait de gel, Sceau de résonance, Ligne de partage | 46,3 s | 38,5 s (+12 %) · 77 % · mur ×3,0 | 60,6 s (+6 %) · 66 % · mur ×2,0 | 41,0 s (+10 %) · 69 % · mur ×3,0 | 45,8 s (+12 %) · 71 % · mur ×3,0 | 45,4 s (+11 %) · 88 % · mur ≥ ×4,0 | 41,0 s (+9 %) · 94 % · mur ≥ ×4,0 |
 
 Sorts de voie dans le plan le plus rapide en moyenne :
 

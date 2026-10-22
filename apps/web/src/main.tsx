@@ -16,6 +16,8 @@ import { CharacterRoom } from './rooms/CharacterRoom';
 import { CombatRoom } from './rooms/CombatRoom';
 import { Atelier } from './rooms/Atelier';
 import { OrnamentGallery } from './rooms/OrnamentGallery';
+import { Arena } from './rooms/Arena';
+import { SpellSheet } from './rooms/SpellSheet';
 import { ContentContext } from './game/ContentContext';
 import './styles/global.css';
 import './styles/rooms.css';
@@ -81,6 +83,10 @@ function App() {
         <Atelier />
       ) : hash === '#ornements' ? (
         <OrnamentGallery />
+      ) : hash === '#arene' && import.meta.env.DEV ? (
+        <Arena />
+      ) : hash === '#planche' && import.meta.env.DEV ? (
+        <SpellSheet />
       ) : !session ? (
         <LoginScreen onLoggedIn={loadState} />
       ) : (

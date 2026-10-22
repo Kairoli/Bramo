@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
-import type { CombatView, EncounterView, PlanEntry, SpellView } from '@bramo/shared';
+import type { CombatView, EncounterView, PlanEntry, SpellView, TimelineEvent } from '@bramo/shared';
+import { CombatStage } from '../components/CombatStage';
 import { api } from '../api';
 import { useGame } from '../game/GameContext';
 import { useNow } from '../game/useLive';
@@ -21,6 +22,7 @@ export function CombatRoom() {
     <main className="room combat-room">
       <section className="panel band">
         <Scene ids={['combat']} />
+        {view && <CombatBand view={view} />}
       </section>
       {view ? (
         <section className="panel combat-panel">
@@ -35,6 +37,42 @@ export function CombatRoom() {
         </section>
       )}
     </main>
+  );
+}
+
+/** Intervalle des coups d'essai sur le mannequin du Terrain d'entraînement (décor seulement : l'XP y est continue). */
+const TRAINING_PERIOD = 2.2;
+
+/**
+ * Le combat en cours, montré dans la bande : la rencontre que le serveur a jouée, rejouée au rythme de la barre de progression.
+ * Au Terrain d'entraînement, le personnage frappe un mannequin.
+ */
+function CombatBand({ view }: { view: CombatView }) {
+  const { look, receivedAt } = useGame();
+  const a = view.activity;
+  const training = !!a && a.encounter === null;
+  const spells = useMemo(() => Object.fromEntries(view.spells.map((s) => [s.id, { name: s.name, element: s.element === 'inherit' ? 'physical' : s.element, effects: s.effects }])), [view.spells]);
+  const timeline = useMemo<TimelineEvent[]>(
+    () => (training ? Array.from({ length: 400 }, (_, i) => ({ t: 1.2 + i * TRAINING_PERIOD, kind: 'basic' as const })) : (a?.timeline ?? [])),
+    [training, a?.timeline],
+  );
+  if (!look) return null;
+  const enemies = a?.encounter ? (view.encounters.find((e) => e.id === a.encounter)?.enemies ?? 1) : 1;
+  const clock = () => {
+    if (!a) return null;
+    if (training) return ((Date.now() - a.startedAt) / 1000) % (400 * TRAINING_PERIOD);
+    return a.timeline ? (a.progressMs + (Date.now() - receivedAt)) / 1000 : null;
+  };
+  return (
+    <CombatStage
+      look={look}
+      enemy={a ? { count: enemies, kind: training ? 'dummy' : 'shadow' } : null}
+      timeline={timeline}
+      clock={clock}
+      fightTime={training ? null : (a?.fightTime ?? null)}
+      win={a?.win ?? null}
+      spells={spells}
+    />
   );
 }
 

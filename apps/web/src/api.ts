@@ -1,4 +1,5 @@
 import type {
+  SpellEffects,
   ApiError,
   ClanListItem,
   ClanView,
@@ -89,6 +90,8 @@ export const api = {
   unstockPantry: (itemId: string, qty: number) => request<StateResponse>('POST', '/pantry/unstock', { itemId, qty }),
   gear: () => request<GearView>('GET', '/gear'),
   gearCatalogue: () => request<{ models: GearModel[] }>('GET', '/gear/catalogue'),
+  combatSpells: () =>
+    request<{ spells: { id: string; name: string; class: string; level: number; path: string | null; element: string; effects: SpellEffects }[] }>('GET', '/combat/spells'),
   gearEquip: (id: number) => request<GearView>('POST', '/gear/equip', { id }),
   gearUnequip: (id: number) => request<GearView>('POST', '/gear/unequip', { id }),
   devGrantGear: (modelId: string, masterpiece = false) => request<GearView>('POST', '/dev/gear/grant', { modelId, masterpiece }),

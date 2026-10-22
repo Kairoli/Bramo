@@ -4,6 +4,7 @@ import { api } from '../api';
 import { useContent } from '../game/ContentContext';
 import { CombatStage, type StageSpell, attackLead, fxOf, leadOf } from '../components/CombatStage';
 import { Scene } from '../components/Scene';
+import { BESTIARY } from '../combat-fx/bestiary';
 
 type ArenaSpell = StageSpell & { id: string; class: string; level: number; path: string | null };
 
@@ -34,6 +35,7 @@ export function Arena() {
   const [events, setEvents] = useState<TimelineEvent[]>([]);
   const [end, setEnd] = useState<{ t: number; win: boolean } | null>(null);
   const [count, setCount] = useState(1);
+  const [enemyId, setEnemyId] = useState<string>('z01_lantern_road');
   (window as unknown as { __arena: unknown }).__arena = {
     at: (t: number) => setScale(0, t),
     play: (s = 1) => setScale(s),
@@ -99,7 +101,7 @@ export function Arena() {
     <div className="arena">
       <section className="panel band arena-band">
         <Scene ids={['combat']} />
-        <CombatStage look={look} enemy={{ count, kind: 'shadow' }} timeline={events} clock={clock} fightTime={end?.t ?? null} win={end?.win ?? null} spells={spells} timeScale={scale} />
+        <CombatStage look={look} enemy={{ count, kind: 'shadow', id: enemyId }} timeline={events} clock={clock} fightTime={end?.t ?? null} win={end?.win ?? null} spells={spells} timeScale={scale} />
       </section>
       <section className="panel arena-tools scroll">
         <div className="row-gap">
@@ -114,6 +116,14 @@ export function Arena() {
               {n}
             </button>
           ))}
+          <select value={enemyId} onChange={(e) => setEnemyId(e.target.value)} aria-label="Ennemi">
+            <option value="">Ombre de la Marée</option>
+            {Object.entries(BESTIARY).map(([id, c]) => (
+              <option key={id} value={id}>
+                {c.name}
+              </option>
+            ))}
+          </select>
           <span className="muted small">Vitesse</span>
           {[1, 0.5, 0.25, 0].map((s) => (
             <button key={s} className={`btn btn-sm${s === scale ? ' btn-primary' : ''}`} onClick={() => setScale(s)}>

@@ -3363,6 +3363,29 @@
   height: 200px;
   padding: 0;
 }
+.bestiary-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+.bestiary-grid.big {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.bestiary-grid.big .bestiary-band {
+  height: 460px;
+}
+.bestiary-band {
+  height: 300px;
+  padding: 0;
+  cursor: pointer;
+}
+.bestiary-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
 .arena-spells {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));

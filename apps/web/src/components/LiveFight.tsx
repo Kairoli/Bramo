@@ -37,7 +37,7 @@ export function LiveFight({ view, insetTop, insetBottom }: { view: CombatView; i
   return (
     <CombatStage
       look={look}
-      enemy={a ? { count: a.enemies, kind: training ? 'dummy' : 'shadow' } : null}
+      enemy={a ? { count: a.enemies, kind: training ? 'dummy' : 'shadow', id: a.encounter } : null}
       timeline={timeline}
       clock={clock}
       fightTime={training ? null : (a?.fightTime ?? null)}

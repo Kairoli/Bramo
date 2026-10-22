@@ -18,6 +18,7 @@ import { Atelier } from './rooms/Atelier';
 import { OrnamentGallery } from './rooms/OrnamentGallery';
 import { Arena } from './rooms/Arena';
 import { SpellSheet } from './rooms/SpellSheet';
+import { BestiaryPage } from './rooms/Bestiary';
 import { ContentContext } from './game/ContentContext';
 import './styles/global.css';
 import './styles/rooms.css';
@@ -87,6 +88,8 @@ function App() {
         <Arena />
       ) : hash === '#planche' && import.meta.env.DEV ? (
         <SpellSheet />
+      ) : hash === '#bestiaire' && import.meta.env.DEV ? (
+        <BestiaryPage />
       ) : !session ? (
         <LoginScreen onLoggedIn={loadState} />
       ) : (

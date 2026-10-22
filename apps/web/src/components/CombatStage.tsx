@@ -6,6 +6,7 @@ import { animations, rig } from '../rig/assets';
 import { apply, orderedBones, worldMatrices } from '../rig/skeleton';
 import { BASIC_FX, FxDefs, GESTURE_POINT, SPELL_FX, type Cast, type Pt, type SpellFx, type Stage, type StatusSource, clamp01, easeOut, floatText, statusLayer } from '../combat-fx';
 import { Dummy, Shade } from '../combat-fx/enemy';
+import { BESTIARY } from '../combat-fx/bestiary';
 
 /**
  * Scène de combat : le personnage à gauche, l'ennemi à droite, et le déroulé du combat (`timeline`) rejoué à l'écran au
@@ -22,6 +23,8 @@ export const ELEMENT_COLOR: Record<string, string> = { physical: '#EDE6D2', fire
 export interface StageEnemy {
   count: number;
   kind: 'shadow' | 'dummy';
+  /** Rencontre : son ennemi du bestiaire (sinon l'Ombre de la Marée). */
+  id?: string | null;
 }
 
 export interface StageSpell {
@@ -104,7 +107,9 @@ export function CombatStage({ look, enemy, timeline, clock, fightTime, win, spel
   const top = h - insetBottom - sh;
   const k = sh / VB[3]!;
   const charW = VB[2]! * k;
-  const enemyH = sh * 0.74;
+  const creature = enemy?.kind === 'shadow' && enemy.id ? BESTIARY[enemy.id] : undefined;
+  // Un gardien est plus grand que les ennemis ordinaires.
+  const enemyH = sh * 0.74 * (creature?.scale ?? 1);
   const total = enemy?.count ?? 0;
   const shown = Math.min(3, total);
   // Le duel est centré : personnage, écart, ennemi (et ceux derrière lui). Une scène large garde plus d'air entre eux.
@@ -288,8 +293,16 @@ export function CombatStage({ look, enemy, timeline, clock, fightTime, win, spel
                   const sc = (enemyH / 260) * (j === 0 ? 1 : 0.82);
                   const x = figX(j) + (j === 0 ? knock - lunge : 0);
                   return (
-                    <g key={j} opacity={Math.max(0, fade) * (j === 0 ? 1 : 0.7)} transform={`translate(${x} ${groundY + (j === 0 ? 0 : bob * 0.5)}) scale(${sc})`}>
-                      {enemy.kind === 'dummy' ? <Dummy hurt={j === 0 ? hurt : 0} /> : <Shade t={t + j * 1.3} hurt={j === 0 ? hurt : 0} uid={`${uid}e${j}`} />}
+                    <g key={j} opacity={Math.max(0, fade) * (j === 0 ? 1 : 0.7)} transform={`translate(${x} ${groundY + (j === 0 || creature ? 0 : bob * 0.5)}) scale(${sc})`}>
+                      {enemy.kind === 'dummy' ? (
+                        <Dummy hurt={j === 0 ? hurt : 0} />
+                      ) : creature ? (
+                        <g style={j === 0 && hurt > 0 ? { filter: `brightness(${1 + hurt * 0.9})` } : undefined}>
+                          <g transform="translate(-100 -260)">{creature.draw({ t: t + j * 1.3, strike: j === 0 ? Math.min(1, lunge / (46 * k)) : 0, hurt: j === 0 ? hurt : 0, u: `${uid}e${j}` })}</g>
+                        </g>
+                      ) : (
+                        <Shade t={t + j * 1.3} hurt={j === 0 ? hurt : 0} uid={`${uid}e${j}`} />
+                      )}
                     </g>
                   );
                 })}
@@ -297,7 +310,7 @@ export function CombatStage({ look, enemy, timeline, clock, fightTime, win, spel
                   Array.from({ length: 10 }, (_, j) => {
                     const u = (c! - dying) / 0.9;
                     const x = enemyX + (Math.sin(j * 7.3) * 0.5) * 140 * k;
-                    return <circle key={j} cx={x} cy={groundY - enemyH * 0.5 - (20 + 180 * ((j * 0.37) % 1)) * k * u} r={(4 + 6 * ((j * 0.53) % 1)) * k} fill="#4CC9D6" opacity={(1 - u) * 0.6} />;
+                    return <circle key={j} cx={x} cy={groundY - enemyH * 0.5 - (20 + 180 * ((j * 0.37) % 1)) * k * u} r={(4 + 6 * ((j * 0.53) % 1)) * k} fill={creature?.glow ?? '#4CC9D6'} opacity={(1 - u) * 0.6} />;
                   })}
               </g>
             )}

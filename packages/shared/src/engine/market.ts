@@ -19,9 +19,12 @@ export interface Fill {
   qty: number;
 }
 
-/** Produit net d'une vente après la taxe (arrondie à l'avantage de la taxe : jamais d'or créé). */
+/**
+ * Produit net d'une vente après la taxe. La taxe est arrondie au plus proche : 5 % en moyenne, même sur les petits lots
+ * (arrondie au supérieur, elle prenait 1 or sur une vente de 1 or, soit 100 %). Le vendeur ne reçoit jamais plus que le prix : aucun or créé.
+ */
 export function netProceeds(gross: number, content: Content): number {
-  return gross - Math.ceil(gross * content.settings.market.taxShare);
+  return gross - Math.round(gross * content.settings.market.taxShare);
 }
 
 /** Vérifie un nouvel ordre : objet, prix, quantité, règles des objets durables. */

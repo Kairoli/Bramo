@@ -30,10 +30,12 @@ describe('marché : appariement', () => {
     expect(match(picks, 'buy', 'pick', 1, 10, 99)[0]!.order.id).toBe(2);
   });
 
-  it('la taxe est arrondie à l’avantage de la taxe', () => {
+  it('la taxe est arrondie au plus proche : 5 % en moyenne, sans écraser les petits lots ni créer d’or', () => {
     expect(netProceeds(50, content)).toBe(47);
     expect(netProceeds(10, content)).toBe(9);
-    expect(netProceeds(1, content)).toBe(0);
+    expect(netProceeds(1, content)).toBe(1);
+    expect(netProceeds(19, content)).toBe(18);
+    for (let g = 1; g <= 500; g++) expect(netProceeds(g, content)).toBeLessThanOrEqual(g);
   });
 
   it('valide prix, quantité et règles des objets durables', () => {

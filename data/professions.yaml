@@ -1,6 +1,6 @@
 # Métiers (docs/design/metiers.md). status: soon = visible mais pas encore jouable.
-# Jouables : la boucle récolte → transformation → fabrication → usage (Minage, Bûcheronnage,
-# Herboristerie, Forge, Menuiserie, Cuisine).
+# Les 17 métiers sont jouables (les dix derniers branchés le 23 octobre 2026 : recettes de la proposition boucle-v0,
+# complétées ; Artificerie et Exploration écrites par Claude). Recettes, durées et quantités à équilibrer.
 
 # --- Récolte ---
 - id: mining
@@ -51,20 +51,25 @@
 
 - id: hunting
   name: Chasse
+  nickname: Pisteur du dimanche
   family: gathering
-  status: soon
+  status: playable
   place: Landes du Nord
   description: Peaux, viandes, plumes et trophées.
+  master: { name: Maîtresse Brenna, line: "« Une bête, ça se lit avant de se chasser. Les traces ne mentent jamais, les chasseurs si. »" }
   categories:
     - { id: game, name: Gibier }
 
 - id: agriculture
   name: Agriculture
+  nickname: Gratte-sillon
   family: gathering
-  status: soon
+  status: playable
   place: Terrasses du Val
-  description: Parcelles qui poussent seules (lin, blé, légumes, plantes tinctoriales) et leur préparation.
+  description: Lin, blé, légumes et plantes tinctoriales, puis leur préparation (filasse, farine, teinture).
+  master: { name: Maître Anselme, line: "« La terre rend ce qu'on lui donne. Un peu moins les années de grêle. »" }
   categories:
+    - { id: fields, name: Cultures }
     - { id: processing, name: Préparation }
 
 # --- Artisanat ---
@@ -98,20 +103,24 @@
 
 - id: tanning
   name: Tannerie
+  nickname: Racleur de peaux
   family: crafting
-  status: soon
+  status: playable
   place: Fosses du tanneur
   description: Tanner les peaux et travailler le cuir.
+  master: { name: Maître Hugon, line: "« Ça sent mauvais, oui. Le bon cuir sent toujours mauvais avant de sentir bon. »" }
   categories:
     - { id: tanning, name: Tannage }
     - { id: leather_goods, name: Cuir ouvré }
 
 - id: tailoring
   name: Couture
+  nickname: Enfileur d'aiguilles
   family: crafting
-  status: soon
+  status: playable
   place: Atelier du campement
   description: Filer, tisser, teindre et coudre les vêtements.
+  master: { name: Maîtresse Lise, line: "« Un point droit, puis un autre. La patience, c'est juste beaucoup de points droits. »" }
   categories:
     - { id: spinning, name: Fil et toile }
     - { id: garments, name: Vêtements }
@@ -129,10 +138,12 @@
 
 - id: alchemy
   name: Alchimie
+  nickname: Touilleur de chaudrons
   family: crafting
-  status: soon
+  status: playable
   place: Laboratoire
-  description: Fioles, potions de combat, élixirs de métier et réactifs.
+  description: Fioles, potions, élixirs et réactifs.
+  master: { name: Maître Évariste, line: "« Si ça fume vert, recule. Si ça fume violet, cours. Si ça ne fume pas, recommence. »" }
   categories:
     - { id: glass, name: Verrerie }
     - { id: potions, name: Potions }
@@ -140,9 +151,11 @@
 
 - id: jewelcrafting
   name: Joaillerie
+  nickname: Polisseur de cailloux
   family: crafting
-  status: soon
+  status: playable
   place: Comptoir du lapidaire
+  master: { name: Maîtresse Sidonie, line: "« Toute pierre est belle. Il suffit d'enlever ce qui ne l'est pas. »" }
   description: Affiner l'argent et l'or, tailler les gemmes, sertir anneaux et amulettes.
   categories:
     - { id: refining, name: Affinage }
@@ -151,34 +164,49 @@
 
 - id: enchanting
   name: Enchantement
+  nickname: Gribouilleur de runes
   family: crafting
-  status: soon
+  status: playable
   place: Cercle des runes
-  description: Graver des runes et les poser sur l'équipement.
+  description: Graver des runes, lier des noyaux et runer les vêtements.
+  master: { name: Maître Ilian, line: "« Une rune mal tracée ne fait rien. Une rune presque bien tracée, c'est pire. »" }
   categories:
     - { id: runes, name: Runes }
     - { id: enchant, name: Enchantements }
 
 - id: artificing
   name: Artificerie
+  nickname: Tourneur de vis
   family: crafting
-  status: soon
+  status: playable
   place: Atelier des artificiers
   description: Mécanismes, pièges, poudres et engins.
+  master: { name: Maîtresse Capucine, line: "« Tout ce qui tourne peut tourner mieux. Tout ce qui explose aussi, mais ailleurs. »" }
+  categories:
+    - { id: mechanisms, name: Mécanismes }
+    - { id: powders, name: Poudres }
+    - { id: devices, name: Engins }
 
 # --- Monde et clan ---
 - id: construction
   name: Construction
+  nickname: Porteur de moellons
   family: world
-  status: soon
+  status: playable
   place: Chantiers
   description: Éléments de charpente et de maçonnerie, posés dans l'atelier personnel et la halle du clan.
+  master: { name: Maître Gautier, line: "« Un mur droit, c'est un mur qui n'a pas d'histoire. Fais-moi des murs sans histoire. »" }
   categories:
+    - { id: materials, name: Matériaux }
     - { id: elements, name: Éléments }
 
 - id: exploration
   name: Exploration
+  nickname: Promeneur du dimanche
   family: world
-  status: soon
+  status: playable
   place: Carte du monde
   description: Expéditions qui rapportent des cartes de gisement, des curiosités et des sites.
+  master: { name: Maîtresse Ombeline, line: "« Une carte, c'est une promesse. Le terrain, lui, n'a rien promis. »" }
+  categories:
+    - { id: expeditions, name: Expéditions }

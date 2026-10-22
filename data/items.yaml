@@ -97,3 +97,130 @@
 - {id: encre_fossile, name: Encre fossile, category: vestige, value: 3}
 - {id: eclat_de_serment, name: Éclat de serment, category: vestige, value: 3}
 - {id: quartz_de_faille, name: Quartz de faille, category: vestige, value: 3}
+
+# --- Métiers branchés le 23 octobre 2026 (source : sim/proposals/boucle-v0, complétée ; Artificerie et Exploration
+#     écrites par Claude). Valeurs recalculées par `sim calibrate --data --write`. ---
+
+# --- Chasse ---
+- {id: small_hide, name: Peau de lapin, category: hide, value: 1}
+- {id: game_meat, name: Viande de gibier, category: meat, value: 1}
+- {id: feather, name: Plumes de faisan, category: feather, value: 1}
+- {id: boar_hide, name: Peau de sanglier, category: hide, value: 1}
+- {id: deer_hide, name: Peau de cerf, category: hide, value: 1}
+- {id: venison, name: Venaison, category: meat, value: 1}
+- {id: wolf_pelt, name: Fourrure de loup, category: hide, value: 1}
+- {id: bear_hide, name: Peau d'ours, category: hide, value: 1}
+- {id: elk_hide, name: Peau d'élan des neiges, category: hide, value: 1}
+
+# --- Agriculture ---
+- {id: flax_stalk, name: Tiges de lin, category: crop, value: 1}
+- {id: wheat_sheaf, name: Gerbe de blé, category: crop, value: 1}
+- {id: carrot, name: Carottes, category: crop, value: 1}
+- {id: woad_leaves, name: Feuilles de guède, category: crop, value: 1}
+- {id: cotton_boll, name: Capsules de coton, category: crop, value: 1}
+- {id: flax_fiber, name: Filasse de lin, category: fiber, value: 1}
+- {id: grain, name: Grain, category: grain, value: 1}
+- {id: flour, name: Farine, category: grain, value: 1}
+- {id: woad_dye, name: Pâte de guède, category: dye, value: 1}
+- {id: cotton_fiber, name: Fibre de coton, category: fiber, value: 1}
+
+# --- Tannerie ---
+- {id: small_leather, name: Cuir souple, category: leather, value: 1}
+- {id: leather_strap, name: Lanières de cuir, category: leather, value: 1}
+- {id: tough_leather, name: Cuir de sanglier, category: leather, value: 2}
+- {id: thick_leather, name: Cuir épais, category: leather, value: 2}
+- {id: wolf_fur, name: Fourrure apprêtée, category: leather, value: 2}
+- {id: heavy_leather, name: Cuir d'ours, category: leather, value: 3}
+- {id: leather_satchel, name: Sacoche de cuir, category: garment, value: 10}
+- {id: leather_jerkin, name: Pourpoint de cuir, category: garment, value: 111}
+
+# --- Couture ---
+- {id: linen_thread, name: Fil de lin, category: thread, value: 1}
+- {id: linen_cloth, name: Rouleau de toile de lin, category: cloth, value: 11}
+- {id: blue_linen, name: Toile teinte en bleu, category: cloth, value: 12}
+- {id: cotton_thread, name: Fil de coton, category: thread, value: 1}
+- {id: cotton_cloth, name: Rouleau de toile de coton, category: cloth, value: 14}
+- {id: linen_hood, name: Capuche de lin, category: garment, value: 49}
+- {id: linen_gloves, name: Mitaines de lin, category: garment, value: 37}
+- {id: linen_robe, name: Robe de lin, category: garment, value: 122}
+- {id: linen_breeches, name: Chausses de lin, category: garment, value: 73}
+- {id: adept_robe, name: Robe d'adepte, category: garment, value: 225}
+
+# --- Alchimie ---
+- {id: vial, name: Fioles, category: vial, value: 1}
+- {id: minor_healing_potion, name: Potion de soin mineure, category: potion, value: 2}
+- {id: miner_elixir, name: Élixir du mineur, category: potion, value: 4}
+- {id: rune_ink, name: Encre runique, category: reagent, value: 1}
+- {id: frost_tonic, name: Tonique de givre, category: potion, value: 3}
+- {id: lantern_draught, name: Philtre des lanternes, category: potion, value: 3}
+
+# --- Joaillerie ---
+- {id: copper_wire, name: Fil de cuivre, category: bar, value: 1}
+- {id: copper_ring, name: Bague de cuivre, category: jewelry, value: 5}
+- {id: glass_bead, name: Perles de verre, category: jewelry, value: 1}
+- {id: silver_bar, name: Lingot d'argent, category: bar, value: 1}
+- {id: silver_band, name: Anneau d'argent, category: jewelry, value: 22}
+- {id: amethyst, name: Améthyste taillée, category: gem, value: 5}
+- {id: amethyst_ring, name: Bague aux deux améthystes, category: jewelry, value: 40}
+- {id: gold_bar, name: Lingot d'or, category: bar, value: 2}
+- {id: gold_chain, name: Chaîne d'or, category: jewelry, value: 18}
+
+# --- Enchantement ---
+- {id: rune_dust, name: Poussière de rune, category: rune, value: 1}
+- {id: glyph_scroll, name: Parchemin de glyphe, category: scroll, value: 1}
+- {id: ward_rune, name: Rune de garde, category: rune, value: 2}
+- {id: warded_adept_robe, name: Robe d'adepte runée, category: garment, value: 256}
+- {id: runic_core, name: Noyau runique, category: core, value: 11}
+- {id: memory_binder, name: Liant de mémoire, category: core, value: 7}
+
+# --- Artificerie ---
+- {id: bronze_gears, name: Rouages de bronze, category: mechanism, value: 1}
+- {id: iron_springs, name: Ressorts de fer, category: mechanism, value: 1}
+- {id: flash_powder, name: Poudre d'éclat, category: powder, value: 1}
+- {id: spring_snare, name: Collet à ressort, category: device, value: 4}
+- {id: clockwork, name: Mécanisme d'horloge, category: mechanism, value: 16}
+- {id: artificer_lantern, name: Lanterne d'artificier, category: device, value: 8}
+- {id: flare_rocket, name: Fusée d'éclat, category: device, value: 16}
+
+# --- Construction ---
+- {id: stone_wall, name: Pan de mur en pierre, category: element, value: 18}
+- {id: oak_frame, name: Charpente de chêne, category: element, value: 26}
+- {id: mortar, name: Mortier, category: element, value: 1}
+- {id: dressed_stone, name: Moellons taillés, category: element, value: 2}
+- {id: wooden_stairs, name: Escalier de bois, category: element, value: 16}
+- {id: stone_arch, name: Arche de pierre, category: element, value: 53}
+- {id: roof_truss, name: Ferme de toit, category: element, value: 82}
+
+# --- Exploration ---
+- {id: survey_notes, name: Relevés de terrain, category: map, value: 1}
+- {id: old_coin, name: Pièces anciennes, category: curio, value: 1}
+- {id: forest_map, name: Carte du Bois des Murmures, category: map, value: 1}
+- {id: vein_map, name: Carte de gisement, category: map, value: 1}
+- {id: watch_curio, name: Curiosité de la Lisière, category: curio, value: 1}
+- {id: sunken_relic, name: Relique engloutie, category: curio, value: 1}
+
+# --- Cuisine : repas des nouveaux métiers ---
+- {id: country_bread, name: Pain de campagne, category: meal, value: 3, meal: {bonus: 0.04, durationMin: 90}}
+- {id: hunter_stew, name: Ragoût du chasseur, category: meal, value: 2, meal: {bonus: 0.05, durationMin: 45}}
+
+# Outils des métiers branchés le 23 octobre : fer d'outil + manche, comme les autres.
+- {id: bronze_spear, name: Épieu de bronze, category: tool, value: 13, tool: {profession: hunting, bonus: 0.10, durabilityHours: 40}, stallPrice: 150, repair: {profession: smithing, level: 1, materials: [{item: bronze_bar, qty: 3}]}}
+- {id: iron_spear, name: Épieu de fer, category: tool, value: 61, tool: {profession: hunting, bonus: 0.15, durabilityHours: 60}, repair: {profession: smithing, level: 10, materials: [{item: iron_bar, qty: 3}]}}
+- {id: bronze_hoe, name: Houe de bronze, category: tool, value: 13, tool: {profession: agriculture, bonus: 0.10, durabilityHours: 40}, stallPrice: 150, repair: {profession: smithing, level: 1, materials: [{item: bronze_bar, qty: 3}]}}
+- {id: iron_hoe, name: Houe de fer, category: tool, value: 61, tool: {profession: agriculture, bonus: 0.15, durabilityHours: 60}, repair: {profession: smithing, level: 10, materials: [{item: iron_bar, qty: 3}]}}
+- {id: bronze_scraper, name: Racloir de bronze, category: tool, value: 13, tool: {profession: tanning, bonus: 0.10, durabilityHours: 40}, stallPrice: 150, repair: {profession: smithing, level: 1, materials: [{item: bronze_bar, qty: 3}]}}
+- {id: iron_scraper, name: Racloir de fer, category: tool, value: 61, tool: {profession: tanning, bonus: 0.15, durabilityHours: 60}, repair: {profession: smithing, level: 10, materials: [{item: iron_bar, qty: 3}]}}
+- {id: bronze_shears, name: Ciseaux de bronze, category: tool, value: 13, tool: {profession: tailoring, bonus: 0.10, durabilityHours: 40}, stallPrice: 150, repair: {profession: smithing, level: 1, materials: [{item: bronze_bar, qty: 3}]}}
+- {id: iron_shears, name: Ciseaux de fer, category: tool, value: 61, tool: {profession: tailoring, bonus: 0.15, durabilityHours: 60}, repair: {profession: smithing, level: 10, materials: [{item: iron_bar, qty: 3}]}}
+- {id: bronze_pestle, name: Pilon de bronze, category: tool, value: 13, tool: {profession: alchemy, bonus: 0.10, durabilityHours: 40}, stallPrice: 150, repair: {profession: smithing, level: 1, materials: [{item: bronze_bar, qty: 3}]}}
+- {id: iron_pestle, name: Pilon de fer, category: tool, value: 61, tool: {profession: alchemy, bonus: 0.15, durabilityHours: 60}, repair: {profession: smithing, level: 10, materials: [{item: iron_bar, qty: 3}]}}
+- {id: bronze_graver, name: Burin de bronze, category: tool, value: 13, tool: {profession: jewelcrafting, bonus: 0.10, durabilityHours: 40}, stallPrice: 150, repair: {profession: smithing, level: 1, materials: [{item: bronze_bar, qty: 3}]}}
+- {id: iron_graver, name: Burin de fer, category: tool, value: 61, tool: {profession: jewelcrafting, bonus: 0.15, durabilityHours: 60}, repair: {profession: smithing, level: 10, materials: [{item: iron_bar, qty: 3}]}}
+- {id: bronze_stylus, name: Stylet de bronze, category: tool, value: 13, tool: {profession: enchanting, bonus: 0.10, durabilityHours: 40}, stallPrice: 150, repair: {profession: smithing, level: 1, materials: [{item: bronze_bar, qty: 3}]}}
+- {id: iron_stylus, name: Stylet de fer, category: tool, value: 61, tool: {profession: enchanting, bonus: 0.15, durabilityHours: 60}, repair: {profession: smithing, level: 10, materials: [{item: iron_bar, qty: 3}]}}
+- {id: bronze_wrench, name: Clé de bronze, category: tool, value: 13, tool: {profession: artificing, bonus: 0.10, durabilityHours: 40}, stallPrice: 150, repair: {profession: smithing, level: 1, materials: [{item: bronze_bar, qty: 3}]}}
+- {id: iron_wrench, name: Clé de fer, category: tool, value: 61, tool: {profession: artificing, bonus: 0.15, durabilityHours: 60}, repair: {profession: smithing, level: 10, materials: [{item: iron_bar, qty: 3}]}}
+- {id: bronze_trowel, name: Truelle de bronze, category: tool, value: 13, tool: {profession: construction, bonus: 0.10, durabilityHours: 40}, stallPrice: 150, repair: {profession: smithing, level: 1, materials: [{item: bronze_bar, qty: 3}]}}
+- {id: iron_trowel, name: Truelle de fer, category: tool, value: 61, tool: {profession: construction, bonus: 0.15, durabilityHours: 60}, repair: {profession: smithing, level: 10, materials: [{item: iron_bar, qty: 3}]}}
+- {id: bronze_spyglass, name: Longue-vue de bronze, category: tool, value: 13, tool: {profession: exploration, bonus: 0.10, durabilityHours: 40}, stallPrice: 150, repair: {profession: smithing, level: 1, materials: [{item: bronze_bar, qty: 3}]}}
+- {id: iron_spyglass, name: Longue-vue de fer, category: tool, value: 61, tool: {profession: exploration, bonus: 0.15, durabilityHours: 60}, repair: {profession: smithing, level: 10, materials: [{item: iron_bar, qty: 3}]}}

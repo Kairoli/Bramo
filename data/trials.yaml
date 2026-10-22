@@ -429,3 +429,255 @@
     - { item: frost_feast, qty: 120 }
     - { item: lantern_soup, qty: 180 }
   reward: { gold: 6000 }
+
+# --- Métiers branchés le 23 octobre 2026 : deux commandes de maître chacun (20 et 40), les suivantes viendront. ---
+
+# --- Maîtresse Brenna (hunting) ---
+- id: hunting_20
+  profession: hunting
+  rank: 20
+  name: "Le garde-manger de Brenna"
+  nickname: "Traqueur de cerfs"
+  intro: "« L'hiver arrive et mon fumoir est vide. Des peaux de cerf et de la viande, et vite. »"
+  outro: "Brenna a pendu tes prises au fumoir en sifflotant. Elle siffle faux, mais c'est bon signe."
+  tasks:
+    - { item: deer_hide, qty: 40 }
+    - { item: game_meat, qty: 60 }
+  reward: { gold: 300 }
+
+- id: hunting_40
+  profession: hunting
+  rank: 40
+  name: "Les loups de la lande"
+  nickname: "Fléau des loups"
+  intro: "« Une meute rôde près des bergeries. Ramène-moi leurs fourrures, et de quoi nourrir les bergers. »"
+  outro: "Les bergers dorment enfin. Brenna dit que c'est grâce à toi ; les moutons ne disent rien, mais ils approuvent."
+  tasks:
+    - { item: wolf_pelt, qty: 120 }
+    - { item: venison, qty: 60 }
+  reward: { gold: 800 }
+
+# --- Maître Anselme (agriculture) ---
+- id: agriculture_20
+  profession: agriculture
+  rank: 20
+  name: "Le pain de la fête"
+  nickname: "Semeur des terrasses"
+  intro: "« La fête des moissons approche. Il me faut de la farine pour le pain, et du bleu pour les bannières. »"
+  outro: "Les bannières claquent au vent, le pain est doré. Anselme a pleuré un peu ; il dit que c'est la farine."
+  tasks:
+    - { item: flour, qty: 40 }
+    - { item: woad_dye, qty: 30 }
+  reward: { gold: 300 }
+
+- id: agriculture_40
+  profession: agriculture
+  rank: 40
+  name: "Le coton du Val"
+  nickname: "Maître des récoltes"
+  intro: "« Les couturiers du bourg réclament du coton. Le Val peut en donner, si on sait lui parler. »"
+  outro: "Les balles de coton s'empilent jusqu'au toit de la grange. Anselme t'a offert une gerbe tressée : chez lui, c'est une médaille."
+  tasks:
+    - { item: cotton_fiber, qty: 120 }
+    - { item: flour, qty: 80 }
+  reward: { gold: 800 }
+
+# --- Maître Hugon (tanning) ---
+- id: tanning_20
+  profession: tanning
+  rank: 20
+  name: "Les sacoches du courrier"
+  nickname: "Tanneur de la fosse"
+  intro: "« Le courrier perd ses lettres en route. Des sacoches solides, et du cuir épais pour les réparer. »"
+  outro: "Le courrier n'a plus rien perdu depuis. Sauf son chapeau, mais ce n'est pas ta faute."
+  tasks:
+    - { item: thick_leather, qty: 30 }
+    - { item: leather_satchel, qty: 3 }
+  reward: { gold: 300 }
+
+- id: tanning_40
+  profession: tanning
+  rank: 40
+  name: "L'équipée du nord"
+  nickname: "Cuirassier des landes"
+  intro: "« Une expédition part vers le nord. Ils auront froid. Fourrures et pourpoints, le meilleur que tu sais faire. »"
+  outro: "L'expédition est partie bien couverte. Hugon a gardé un pourpoint « pour vérifier les coutures ». Depuis, il ne l'enlève plus."
+  tasks:
+    - { item: wolf_fur, qty: 60 }
+    - { item: leather_jerkin, qty: 2 }
+  reward: { gold: 800 }
+
+# --- Maîtresse Lise (tailoring) ---
+- id: tailoring_20
+  profession: tailoring
+  rank: 20
+  name: "Les robes des novices"
+  nickname: "Couseuse de lin"
+  intro: "« Les novices du Cercle grelottent dans leurs vieilles robes. Du lin, du bleu, et des robes dignes de ce nom. »"
+  outro: "Les novices défilent dans tes robes bleues. Lise a corrigé un ourlet, par principe, puis elle a souri."
+  tasks:
+    - { item: linen_robe, qty: 3 }
+    - { item: blue_linen, qty: 20 }
+  reward: { gold: 300 }
+
+- id: tailoring_40
+  profession: tailoring
+  rank: 40
+  name: "La robe d'adepte"
+  nickname: "Tailleur des adeptes"
+  intro: "« Deux adeptes passent l'épreuve des runes. Il leur faut des robes, et de la toile de coton pour la doublure. »"
+  outro: "Les deux adeptes ont réussi leur épreuve. Ils remercient les runes ; Lise sait très bien à qui revient le mérite."
+  tasks:
+    - { item: adept_robe, qty: 2 }
+    - { item: cotton_cloth, qty: 10 }
+  reward: { gold: 800 }
+
+# --- Maître Évariste (alchemy) ---
+- id: alchemy_20
+  profession: alchemy
+  rank: 20
+  name: "Les élixirs de la mine"
+  nickname: "Distillateur d'élixirs"
+  intro: "« Les mineurs d'Orvald veulent des élixirs, et les runistes de l'encre. Tout le monde veut tout, tout de suite. »"
+  outro: "Orvald jure que ses mineurs creusent deux fois plus vite. Évariste soupçonne qu'ils boivent surtout pour le goût."
+  tasks:
+    - { item: miner_elixir, qty: 40 }
+    - { item: rune_ink, qty: 60 }
+  reward: { gold: 300 }
+
+- id: alchemy_40
+  profession: alchemy
+  rank: 40
+  name: "La réserve du dispensaire"
+  nickname: "Apothicaire du bourg"
+  intro: "« Le dispensaire est à sec. Des toniques contre le froid, des potions contre le reste. »"
+  outro: "Les étagères du dispensaire débordent. Évariste a classé tes fioles par couleur, puis par odeur, puis il a abandonné."
+  tasks:
+    - { item: frost_tonic, qty: 80 }
+    - { item: minor_healing_potion, qty: 100 }
+  reward: { gold: 800 }
+
+# --- Maîtresse Sidonie (jewelcrafting) ---
+- id: jewelcrafting_20
+  profession: jewelcrafting
+  rank: 20
+  name: "Les bagues du marché"
+  nickname: "Sertisseur de perles"
+  intro: "« Le marché de printemps arrive. Des bagues de cuivre et des perles de verre : les gens aiment ce qui brille. »"
+  outro: "Tout s'est vendu avant midi. Sidonie a gardé une bague, « pour l'étalage ». Elle la porte depuis."
+  tasks:
+    - { item: copper_ring, qty: 10 }
+    - { item: glass_bead, qty: 120 }
+  reward: { gold: 300 }
+
+- id: jewelcrafting_40
+  profession: jewelcrafting
+  rank: 40
+  name: "Les fiançailles du bourgmestre"
+  nickname: "Orfèvre des améthystes"
+  intro: "« Le bourgmestre se fiance. Il veut une bague aux améthystes, et des anneaux pour toute la famille. Toute. »"
+  outro: "La fiancée a dit oui en regardant la bague. Le bourgmestre préfère croire qu'elle le regardait, lui."
+  tasks:
+    - { item: amethyst_ring, qty: 2 }
+    - { item: silver_band, qty: 4 }
+  reward: { gold: 800 }
+
+# --- Maître Ilian (enchanting) ---
+- id: enchanting_20
+  profession: enchanting
+  rank: 20
+  name: "Les gardes du Cercle"
+  nickname: "Graveur de gardes"
+  intro: "« Les murs du Cercle s'effacent. Des runes de garde, et des parchemins pour les élèves maladroits. »"
+  outro: "Les murs tiennent, les élèves aussi. Ilian a relu chaque glyphe deux fois ; tu en as raté un, il l'a gardé comme souvenir."
+  tasks:
+    - { item: ward_rune, qty: 20 }
+    - { item: glyph_scroll, qty: 40 }
+  reward: { gold: 300 }
+
+- id: enchanting_40
+  profession: enchanting
+  rank: 40
+  name: "Le cœur des runes"
+  nickname: "Lieur de noyaux"
+  intro: "« Il faut des noyaux runiques pour la grande porte, et une robe runée pour celui qui l'ouvrira. »"
+  outro: "La grande porte s'est ouverte toute seule, en grinçant poliment. Ilian dit que c'est normal. Il a quand même sursauté."
+  tasks:
+    - { item: runic_core, qty: 6 }
+    - { item: warded_adept_robe, qty: 1 }
+  reward: { gold: 800 }
+
+# --- Maîtresse Capucine (artificing) ---
+- id: artificing_20
+  profession: artificing
+  rank: 20
+  name: "L'horloge du beffroi"
+  nickname: "Horloger du beffroi"
+  intro: "« L'horloge du beffroi sonne quand elle veut. Des mécanismes neufs, et des collets pour les rats qui rongent les cordes. »"
+  outro: "L'horloge sonne enfin à l'heure. Capucine l'a avancée de deux minutes, « pour que les gens soient en avance »."
+  tasks:
+    - { item: clockwork, qty: 3 }
+    - { item: spring_snare, qty: 15 }
+  reward: { gold: 300 }
+
+- id: artificing_40
+  profession: artificing
+  rank: 40
+  name: "La nuit des fusées"
+  nickname: "Artificier de la Marée"
+  intro: "« La Marée monte plus haut chaque soir. Il nous faut des fusées pour voir venir, et des lanternes pour les guetteurs. »"
+  outro: "Le ciel s'est illuminé au-dessus de la Marée. Les guetteurs ont tout vu venir ; Capucine, elle, regardait surtout les couleurs."
+  tasks:
+    - { item: flare_rocket, qty: 20 }
+    - { item: artificer_lantern, qty: 6 }
+  reward: { gold: 800 }
+
+# --- Maître Gautier (construction) ---
+- id: construction_20
+  profession: construction
+  rank: 20
+  name: "Le mur du lavoir"
+  nickname: "Bâtisseur du lavoir"
+  intro: "« Le mur du lavoir s'effondre, et l'escalier qui y mène aussi. Des pans de mur et des marches, solides cette fois. »"
+  outro: "Le lavoir tient debout. Mère Grise elle-même aurait approuvé, dit Gautier, avant de vérifier que personne n'avait entendu."
+  tasks:
+    - { item: stone_wall, qty: 4 }
+    - { item: wooden_stairs, qty: 3 }
+  reward: { gold: 300 }
+
+- id: construction_40
+  profession: construction
+  rank: 40
+  name: "La halle neuve"
+  nickname: "Maître d'œuvre"
+  intro: "« Le bourg veut une halle neuve. Des arches de pierre, des fermes de toit, et pas de fissures. »"
+  outro: "La halle neuve résonne de voix. Gautier a gravé ton nom sous une arche ; personne ne le voit, c'est comme ça qu'il aime les honneurs."
+  tasks:
+    - { item: stone_arch, qty: 4 }
+    - { item: roof_truss, qty: 2 }
+  reward: { gold: 800 }
+
+# --- Maîtresse Ombeline (exploration) ---
+- id: exploration_20
+  profession: exploration
+  rank: 20
+  name: "La carte du bois"
+  nickname: "Arpenteur du bois"
+  intro: "« On se perd dans le Bois des Murmures. Des cartes, et ce que les ruines voudront bien te donner. »"
+  outro: "Plus personne ne se perd dans le bois. Ombeline, si : elle préfère, dit-elle, « pour le plaisir de retrouver son chemin »."
+  tasks:
+    - { item: forest_map, qty: 40 }
+    - { item: old_coin, qty: 100 }
+  reward: { gold: 300 }
+
+- id: exploration_40
+  profession: exploration
+  rank: 40
+  name: "Ce que garde la Lisière"
+  nickname: "Éclaireur des Lointains"
+  intro: "« Les mineurs veulent des cartes de gisement, et moi, je veux savoir ce qui dort à la Lisière. »"
+  outro: "Tu as rapporté des curiosités qu'Ombeline n'avait jamais vues. Elle en a classé la moitié ; l'autre moitié la regarde encore."
+  tasks:
+    - { item: vein_map, qty: 80 }
+    - { item: watch_curio, qty: 30 }
+  reward: { gold: 800 }

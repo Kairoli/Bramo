@@ -39,3 +39,27 @@
 - {id: fish_pike, name: Brochet, profession: fishing, category: fish, level: 35, durationSec: 18, xp: 3.1, outputs: [{item: pike, qty: 1}]}
 - {id: fish_lantern, name: Poisson-lanterne, profession: fishing, category: fish, level: 50, durationSec: 22, xp: 4.5, outputs: [{item: lantern_fish, qty: 1}]}
 - {id: fish_ray, name: Raie des abysses, profession: fishing, category: fish, level: 70, durationSec: 26, xp: 6.9, outputs: [{item: abyss_ray, qty: 1}]}
+
+# --- Chasse : chaque prise donne une peau (ou des plumes) et de la viande (métier branché le 23 octobre) ---
+- {id: hunt_rabbit, name: Lapins de garenne, profession: hunting, category: game, level: 1, durationSec: 12, xp: 1.3, outputs: [{item: small_hide, qty: 1}, {item: game_meat, qty: 1}]}
+- {id: hunt_pheasant, name: Faisans, profession: hunting, category: game, level: 5, durationSec: 12, xp: 1.4, outputs: [{item: feather, qty: 5}, {item: game_meat, qty: 1}]}
+- {id: hunt_boar, name: Sangliers, profession: hunting, category: game, level: 15, durationSec: 14, xp: 1.9, outputs: [{item: boar_hide, qty: 1}, {item: game_meat, qty: 2}]}
+- {id: hunt_deer, name: Cerfs, profession: hunting, category: game, level: 20, durationSec: 16, xp: 2.3, outputs: [{item: deer_hide, qty: 1}, {item: venison, qty: 1}]}
+- {id: hunt_wolf, name: Loups des landes, profession: hunting, category: game, level: 35, durationSec: 18, xp: 3.1, outputs: [{item: wolf_pelt, qty: 1}]}
+- {id: hunt_bear, name: Ours bruns, profession: hunting, category: game, level: 50, durationSec: 22, xp: 4.5, outputs: [{item: bear_hide, qty: 1}, {item: venison, qty: 2}]}
+- {id: hunt_elk, name: Élans des neiges, profession: hunting, category: game, level: 70, durationSec: 26, xp: 6.9, outputs: [{item: elk_hide, qty: 1}, {item: venison, qty: 2}]}
+
+# --- Agriculture : les cultures (en attendant les parcelles qui poussent seules, plots.yaml de la proposition) ---
+- {id: grow_flax, name: Lin, profession: agriculture, category: fields, level: 1, durationSec: 12, xp: 1.3, outputs: [{item: flax_stalk, qty: 2}]}
+- {id: grow_wheat, name: Blé, profession: agriculture, category: fields, level: 1, durationSec: 12, xp: 1.3, outputs: [{item: wheat_sheaf, qty: 1}]}
+- {id: grow_carrots, name: Carottes, profession: agriculture, category: fields, level: 5, durationSec: 12, xp: 1.4, outputs: [{item: carrot, qty: 2}]}
+- {id: grow_woad, name: Guède, profession: agriculture, category: fields, level: 15, durationSec: 14, xp: 1.9, outputs: [{item: woad_leaves, qty: 2}]}
+- {id: grow_cotton, name: Coton, profession: agriculture, category: fields, level: 30, durationSec: 18, xp: 2.9, outputs: [{item: cotton_boll, qty: 2}]}
+
+# --- Exploration : des expéditions qui rapportent cartes et curiosités (écrites par Claude, à équilibrer) ---
+- {id: explore_trails, name: Relever les sentiers du bourg, profession: exploration, category: expeditions, level: 1, durationSec: 12, xp: 1.3, outputs: [{item: survey_notes, qty: 1}]}
+- {id: explore_ruins, name: Fouiller les ruines des Abords, profession: exploration, category: expeditions, level: 5, durationSec: 12, xp: 1.4, outputs: [{item: old_coin, qty: 2}]}
+- {id: explore_forest, name: Cartographier le Bois des Murmures, profession: exploration, category: expeditions, level: 15, durationSec: 14, xp: 1.9, outputs: [{item: forest_map, qty: 1}]}
+- {id: explore_mountains, name: Sonder les Monts de Brisefer, profession: exploration, category: expeditions, level: 25, durationSec: 16, xp: 2.4, outputs: [{item: vein_map, qty: 1}]}
+- {id: explore_watch, name: Explorer la Lisière des veilleurs, profession: exploration, category: expeditions, level: 40, durationSec: 20, xp: 3.6, outputs: [{item: watch_curio, qty: 1}]}
+- {id: explore_archives, name: Plonger aux Archives englouties, profession: exploration, category: expeditions, level: 60, durationSec: 24, xp: 5.6, outputs: [{item: sunken_relic, qty: 1}]}

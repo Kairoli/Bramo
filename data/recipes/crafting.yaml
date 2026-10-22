@@ -46,3 +46,105 @@
 - {id: cook_sage_trout, name: Truite à la sauge, profession: cooking, category: dishes, level: 30, durationSec: 30, xp: 8.4, inputs: [{item: trout, qty: 4}, {item: sage, qty: 4}], outputs: [{item: sage_trout, qty: 1}]}
 - {id: cook_lantern_soup, name: Soupe aux lys-lanternes, profession: cooking, category: dishes, level: 45, durationSec: 40, xp: 13.5, inputs: [{item: lantern_lily, qty: 5}, {item: raw_fish, qty: 4}], outputs: [{item: lantern_soup, qty: 1}]}
 - {id: cook_frost_feast, name: Festin du givre, profession: cooking, category: dishes, level: 65, durationSec: 60, xp: 26.1, inputs: [{item: frost_flower, qty: 5}, {item: trout, qty: 4}, {item: sage, qty: 4}], outputs: [{item: frost_feast, qty: 1}]}
+
+# --- Métiers branchés le 23 octobre 2026 (proposition boucle-v0 complétée ; durées et quantités à équilibrer) ---
+
+# Outils des nouveaux métiers (Forge).
+- {id: make_bronze_spear, name: Épieu de bronze, profession: smithing, category: tools, level: 1, durationSec: 20, xp: 3.9, inputs: [{item: bronze_tool_head, qty: 1}, {item: pine_handle, qty: 1}], outputs: [{item: bronze_spear, qty: 1}]}
+- {id: make_bronze_hoe, name: Houe de bronze, profession: smithing, category: tools, level: 1, durationSec: 20, xp: 3.9, inputs: [{item: bronze_tool_head, qty: 1}, {item: pine_handle, qty: 1}], outputs: [{item: bronze_hoe, qty: 1}]}
+- {id: make_bronze_scraper, name: Racloir de bronze, profession: smithing, category: tools, level: 1, durationSec: 20, xp: 3.9, inputs: [{item: bronze_tool_head, qty: 1}, {item: pine_handle, qty: 1}], outputs: [{item: bronze_scraper, qty: 1}]}
+- {id: make_bronze_shears, name: Ciseaux de bronze, profession: smithing, category: tools, level: 1, durationSec: 20, xp: 3.9, inputs: [{item: bronze_tool_head, qty: 1}, {item: pine_handle, qty: 1}], outputs: [{item: bronze_shears, qty: 1}]}
+- {id: make_bronze_pestle, name: Pilon de bronze, profession: smithing, category: tools, level: 1, durationSec: 20, xp: 3.9, inputs: [{item: bronze_tool_head, qty: 1}, {item: pine_handle, qty: 1}], outputs: [{item: bronze_pestle, qty: 1}]}
+- {id: make_bronze_graver, name: Burin de bronze, profession: smithing, category: tools, level: 1, durationSec: 20, xp: 3.9, inputs: [{item: bronze_tool_head, qty: 1}, {item: pine_handle, qty: 1}], outputs: [{item: bronze_graver, qty: 1}]}
+- {id: make_bronze_stylus, name: Stylet de bronze, profession: smithing, category: tools, level: 1, durationSec: 20, xp: 3.9, inputs: [{item: bronze_tool_head, qty: 1}, {item: pine_handle, qty: 1}], outputs: [{item: bronze_stylus, qty: 1}]}
+- {id: make_bronze_wrench, name: Clé de bronze, profession: smithing, category: tools, level: 1, durationSec: 20, xp: 3.9, inputs: [{item: bronze_tool_head, qty: 1}, {item: pine_handle, qty: 1}], outputs: [{item: bronze_wrench, qty: 1}]}
+- {id: make_bronze_trowel, name: Truelle de bronze, profession: smithing, category: tools, level: 1, durationSec: 20, xp: 3.9, inputs: [{item: bronze_tool_head, qty: 1}, {item: pine_handle, qty: 1}], outputs: [{item: bronze_trowel, qty: 1}]}
+- {id: make_bronze_spyglass, name: Longue-vue de bronze, profession: smithing, category: tools, level: 1, durationSec: 20, xp: 3.9, inputs: [{item: bronze_tool_head, qty: 1}, {item: pine_handle, qty: 1}], outputs: [{item: bronze_spyglass, qty: 1}]}
+- {id: make_iron_spear, name: Épieu de fer, profession: smithing, category: tools, level: 10, durationSec: 60, xp: 13.1, inputs: [{item: iron_tool_head, qty: 1}, {item: oak_handle, qty: 1}], outputs: [{item: iron_spear, qty: 1}]}
+- {id: make_iron_hoe, name: Houe de fer, profession: smithing, category: tools, level: 10, durationSec: 60, xp: 13.1, inputs: [{item: iron_tool_head, qty: 1}, {item: oak_handle, qty: 1}], outputs: [{item: iron_hoe, qty: 1}]}
+- {id: make_iron_scraper, name: Racloir de fer, profession: smithing, category: tools, level: 10, durationSec: 60, xp: 13.1, inputs: [{item: iron_tool_head, qty: 1}, {item: oak_handle, qty: 1}], outputs: [{item: iron_scraper, qty: 1}]}
+- {id: make_iron_shears, name: Ciseaux de fer, profession: smithing, category: tools, level: 10, durationSec: 60, xp: 13.1, inputs: [{item: iron_tool_head, qty: 1}, {item: oak_handle, qty: 1}], outputs: [{item: iron_shears, qty: 1}]}
+- {id: make_iron_pestle, name: Pilon de fer, profession: smithing, category: tools, level: 10, durationSec: 60, xp: 13.1, inputs: [{item: iron_tool_head, qty: 1}, {item: oak_handle, qty: 1}], outputs: [{item: iron_pestle, qty: 1}]}
+- {id: make_iron_graver, name: Burin de fer, profession: smithing, category: tools, level: 10, durationSec: 60, xp: 13.1, inputs: [{item: iron_tool_head, qty: 1}, {item: oak_handle, qty: 1}], outputs: [{item: iron_graver, qty: 1}]}
+- {id: make_iron_stylus, name: Stylet de fer, profession: smithing, category: tools, level: 10, durationSec: 60, xp: 13.1, inputs: [{item: iron_tool_head, qty: 1}, {item: oak_handle, qty: 1}], outputs: [{item: iron_stylus, qty: 1}]}
+- {id: make_iron_wrench, name: Clé de fer, profession: smithing, category: tools, level: 10, durationSec: 60, xp: 13.1, inputs: [{item: iron_tool_head, qty: 1}, {item: oak_handle, qty: 1}], outputs: [{item: iron_wrench, qty: 1}]}
+- {id: make_iron_trowel, name: Truelle de fer, profession: smithing, category: tools, level: 10, durationSec: 60, xp: 13.1, inputs: [{item: iron_tool_head, qty: 1}, {item: oak_handle, qty: 1}], outputs: [{item: iron_trowel, qty: 1}]}
+- {id: make_iron_spyglass, name: Longue-vue de fer, profession: smithing, category: tools, level: 10, durationSec: 60, xp: 13.1, inputs: [{item: iron_tool_head, qty: 1}, {item: oak_handle, qty: 1}], outputs: [{item: iron_spyglass, qty: 1}]}
+
+# --- Agriculture : préparation des récoltes ---
+- {id: scutch_flax, name: Teiller le lin, profession: agriculture, category: processing, level: 1, durationSec: 10, xp: 1.9, inputs: [{item: flax_stalk, qty: 2}], outputs: [{item: flax_fiber, qty: 1}]}
+- {id: thresh_wheat, name: Battre le blé, profession: agriculture, category: processing, level: 1, durationSec: 8, xp: 1.6, inputs: [{item: wheat_sheaf, qty: 1}], outputs: [{item: grain, qty: 2}]}
+- {id: mill_flour, name: Moudre la farine, profession: agriculture, category: processing, level: 10, durationSec: 10, xp: 2.2, inputs: [{item: grain, qty: 3}], outputs: [{item: flour, qty: 1}]}
+- {id: prepare_woad, name: Pâte de guède, profession: agriculture, category: processing, level: 15, durationSec: 10, xp: 2.3, inputs: [{item: woad_leaves, qty: 3}], outputs: [{item: woad_dye, qty: 1}]}
+- {id: gin_cotton, name: Égrener le coton, profession: agriculture, category: processing, level: 30, durationSec: 12, xp: 3.4, inputs: [{item: cotton_boll, qty: 2}], outputs: [{item: cotton_fiber, qty: 1}]}
+
+# --- Tannerie ---
+- {id: tan_small_hide, name: Cuir souple, profession: tanning, category: tanning, level: 1, durationSec: 10, xp: 1.9, inputs: [{item: small_hide, qty: 1}, {item: bark, qty: 1}], outputs: [{item: small_leather, qty: 1}]}
+- {id: cut_straps, name: Lanières de cuir, profession: tanning, category: leather_goods, level: 1, durationSec: 6, xp: 1.2, inputs: [{item: small_leather, qty: 1}], outputs: [{item: leather_strap, qty: 3}]}
+- {id: sew_satchel, name: Sacoche de cuir, profession: tanning, category: leather_goods, level: 10, durationSec: 120, xp: 26.1, inputs: [{item: small_leather, qty: 6}, {item: leather_strap, qty: 4}], outputs: [{item: leather_satchel, qty: 1}]}
+- {id: tan_boar_hide, name: Cuir de sanglier, profession: tanning, category: tanning, level: 15, durationSec: 20, xp: 4.6, inputs: [{item: boar_hide, qty: 1}, {item: bark, qty: 2}], outputs: [{item: tough_leather, qty: 1}]}
+- {id: tan_deer_hide, name: Cuir épais, profession: tanning, category: tanning, level: 20, durationSec: 30, xp: 7.4, inputs: [{item: deer_hide, qty: 1}, {item: bark, qty: 3}], outputs: [{item: thick_leather, qty: 1}]}
+- {id: craft_leather_jerkin, name: Pourpoint de cuir, profession: tanning, category: leather_goods, level: 25, durationSec: 1200, xp: 315.7, inputs: [{item: thick_leather, qty: 30}, {item: linen_thread, qty: 12}, {item: rivets, qty: 40}], outputs: [{item: leather_jerkin, qty: 1}]}
+- {id: cure_wolf_pelt, name: Fourrure apprêtée, profession: tanning, category: tanning, level: 35, durationSec: 30, xp: 9, inputs: [{item: wolf_pelt, qty: 1}, {item: bark, qty: 3}], outputs: [{item: wolf_fur, qty: 1}]}
+- {id: tan_bear_hide, name: Cuir d'ours, profession: tanning, category: tanning, level: 50, durationSec: 40, xp: 14.4, inputs: [{item: bear_hide, qty: 1}, {item: bark, qty: 4}], outputs: [{item: heavy_leather, qty: 1}]}
+
+# --- Couture ---
+- {id: spin_flax, name: Fil de lin, profession: tailoring, category: spinning, level: 1, durationSec: 8, xp: 1.6, inputs: [{item: flax_fiber, qty: 1}], outputs: [{item: linen_thread, qty: 2}]}
+- {id: weave_linen, name: Rouleau de toile de lin, profession: tailoring, category: spinning, level: 5, durationSec: 90, xp: 18.4, inputs: [{item: linen_thread, qty: 20}], outputs: [{item: linen_cloth, qty: 1}]}
+- {id: sew_linen_hood, name: Capuche de lin, profession: tailoring, category: garments, level: 5, durationSec: 120, xp: 24.5, inputs: [{item: linen_cloth, qty: 4}, {item: linen_thread, qty: 6}], outputs: [{item: linen_hood, qty: 1}]}
+- {id: sew_linen_gloves, name: Mitaines de lin, profession: tailoring, category: garments, level: 5, durationSec: 120, xp: 24.5, inputs: [{item: linen_cloth, qty: 3}, {item: leather_strap, qty: 4}], outputs: [{item: linen_gloves, qty: 1}]}
+- {id: sew_linen_robe, name: Robe de lin, profession: tailoring, category: garments, level: 10, durationSec: 300, xp: 65.3, inputs: [{item: linen_cloth, qty: 10}, {item: linen_thread, qty: 12}], outputs: [{item: linen_robe, qty: 1}]}
+- {id: sew_linen_breeches, name: Chausses de lin, profession: tailoring, category: garments, level: 10, durationSec: 180, xp: 39.2, inputs: [{item: linen_cloth, qty: 6}, {item: linen_thread, qty: 8}], outputs: [{item: linen_breeches, qty: 1}]}
+- {id: dye_linen_blue, name: Toile teinte en bleu, profession: tailoring, category: spinning, level: 15, durationSec: 10, xp: 2.3, inputs: [{item: linen_cloth, qty: 1}, {item: woad_dye, qty: 1}], outputs: [{item: blue_linen, qty: 1}]}
+- {id: sew_adept_robe, name: Robe d'adepte, profession: tailoring, category: garments, level: 25, durationSec: 900, xp: 236.8, inputs: [{item: blue_linen, qty: 16}, {item: linen_thread, qty: 20}], outputs: [{item: adept_robe, qty: 1}]}
+- {id: spin_cotton, name: Fil de coton, profession: tailoring, category: spinning, level: 30, durationSec: 10, xp: 2.8, inputs: [{item: cotton_fiber, qty: 1}], outputs: [{item: cotton_thread, qty: 2}]}
+- {id: weave_cotton, name: Rouleau de toile de coton, profession: tailoring, category: spinning, level: 35, durationSec: 120, xp: 35.8, inputs: [{item: cotton_thread, qty: 20}], outputs: [{item: cotton_cloth, qty: 1}]}
+
+# --- Alchimie ---
+- {id: blow_vials, name: Fioles, profession: alchemy, category: glass, level: 1, durationSec: 10, xp: 1.9, inputs: [{item: sand, qty: 2}, {item: pine_log, qty: 1}], outputs: [{item: vial, qty: 4}]}
+- {id: brew_minor_healing, name: Potion de soin mineure, profession: alchemy, category: potions, level: 5, durationSec: 20, xp: 4.1, inputs: [{item: vial, qty: 1}, {item: mint, qty: 4}], outputs: [{item: minor_healing_potion, qty: 1}]}
+- {id: brew_miner_elixir, name: Élixir du mineur, profession: alchemy, category: potions, level: 20, durationSec: 30, xp: 7.4, inputs: [{item: vial, qty: 1}, {item: nettle_root, qty: 4}, {item: thyme, qty: 2}], outputs: [{item: miner_elixir, qty: 1}]}
+- {id: brew_rune_ink, name: Encre runique, profession: alchemy, category: reagents, level: 20, durationSec: 14, xp: 3.5, inputs: [{item: vial, qty: 1}, {item: nettle_root, qty: 1}, {item: coal, qty: 1}], outputs: [{item: rune_ink, qty: 3}]}
+- {id: brew_frost_tonic, name: Tonique de givre, profession: alchemy, category: potions, level: 35, durationSec: 30, xp: 9, inputs: [{item: vial, qty: 1}, {item: frost_flower, qty: 2}, {item: sage, qty: 2}], outputs: [{item: frost_tonic, qty: 1}]}
+- {id: brew_lantern_draught, name: Philtre des lanternes, profession: alchemy, category: potions, level: 45, durationSec: 40, xp: 13.5, inputs: [{item: vial, qty: 1}, {item: lantern_lily, qty: 3}], outputs: [{item: lantern_draught, qty: 1}]}
+
+# --- Joaillerie ---
+- {id: draw_copper_wire, name: Fil de cuivre, profession: jewelcrafting, category: refining, level: 1, durationSec: 8, xp: 1.6, inputs: [{item: copper_ore, qty: 2}], outputs: [{item: copper_wire, qty: 1}]}
+- {id: craft_copper_ring, name: Bague de cuivre, profession: jewelcrafting, category: jewelry, level: 5, durationSec: 60, xp: 12.3, inputs: [{item: copper_wire, qty: 4}], outputs: [{item: copper_ring, qty: 1}]}
+- {id: melt_glass_beads, name: Perles de verre, profession: jewelcrafting, category: jewelry, level: 10, durationSec: 12, xp: 2.6, inputs: [{item: sand, qty: 2}, {item: coal, qty: 1}], outputs: [{item: glass_bead, qty: 4}]}
+- {id: refine_silver, name: Lingot d'argent, profession: jewelcrafting, category: refining, level: 25, durationSec: 12, xp: 3.2, inputs: [{item: silver_ore, qty: 2}], outputs: [{item: silver_bar, qty: 1}]}
+- {id: craft_silver_band, name: Anneau d'argent, profession: jewelcrafting, category: jewelry, level: 30, durationSec: 300, xp: 84.1, inputs: [{item: silver_bar, qty: 10}], outputs: [{item: silver_band, qty: 1}]}
+- {id: cut_amethyst, name: Améthyste taillée, profession: jewelcrafting, category: cutting, level: 35, durationSec: 120, xp: 35.8, inputs: [{item: rough_amethyst, qty: 1}], outputs: [{item: amethyst, qty: 1}]}
+- {id: set_amethyst_ring, name: Sertir deux améthystes, profession: jewelcrafting, category: jewelry, level: 40, durationSec: 300, xp: 95.4, inputs: [{item: silver_band, qty: 1}, {item: amethyst, qty: 2}], outputs: [{item: amethyst_ring, qty: 1}]}
+- {id: refine_gold, name: Lingot d'or, profession: jewelcrafting, category: refining, level: 50, durationSec: 16, xp: 5.8, inputs: [{item: gold_ore, qty: 2}], outputs: [{item: gold_bar, qty: 1}]}
+- {id: craft_gold_chain, name: Chaîne d'or, profession: jewelcrafting, category: jewelry, level: 55, durationSec: 300, xp: 115.2, inputs: [{item: gold_bar, qty: 6}], outputs: [{item: gold_chain, qty: 1}]}
+
+# --- Enchantement ---
+- {id: grind_rune_dust, name: Poussière de rune, profession: enchanting, category: runes, level: 1, durationSec: 10, xp: 1.9, inputs: [{item: rune_stone, qty: 1}], outputs: [{item: rune_dust, qty: 3}]}
+- {id: inscribe_glyph_scroll, name: Parchemin de glyphe, profession: enchanting, category: runes, level: 5, durationSec: 20, xp: 4.1, inputs: [{item: bark, qty: 2}, {item: rune_dust, qty: 1}], outputs: [{item: glyph_scroll, qty: 1}]}
+- {id: carve_ward_rune, name: Rune de garde, profession: enchanting, category: runes, level: 15, durationSec: 30, xp: 7, inputs: [{item: rune_stone, qty: 2}, {item: rune_ink, qty: 1}], outputs: [{item: ward_rune, qty: 1}]}
+- {id: ward_adept_robe, name: Runer une robe d'adepte, profession: enchanting, category: enchant, level: 25, durationSec: 300, xp: 78.9, inputs: [{item: adept_robe, qty: 1}, {item: ward_rune, qty: 10}], outputs: [{item: warded_adept_robe, qty: 1}]}
+- {id: shape_runic_core, name: Noyau runique, profession: enchanting, category: enchant, level: 35, durationSec: 120, xp: 35.8, inputs: [{item: rune_stone, qty: 3}, {item: amethyst, qty: 1}, {item: rune_ink, qty: 2}], outputs: [{item: runic_core, qty: 1}]}
+- {id: bind_memory, name: Liant de mémoire, profession: enchanting, category: enchant, level: 45, durationSec: 120, xp: 40.6, inputs: [{item: rune_dust, qty: 6}, {item: lantern_lily, qty: 2}, {item: rune_ink, qty: 2}], outputs: [{item: memory_binder, qty: 1}]}
+
+# --- Artificerie (écrite par Claude) ---
+- {id: cast_bronze_gears, name: Rouages de bronze, profession: artificing, category: mechanisms, level: 1, durationSec: 10, xp: 1.9, inputs: [{item: bronze_bar, qty: 2}], outputs: [{item: bronze_gears, qty: 4}]}
+- {id: grind_flash_powder, name: Poudre d'éclat, profession: artificing, category: powders, level: 5, durationSec: 12, xp: 2.5, inputs: [{item: coal, qty: 2}, {item: sand, qty: 1}], outputs: [{item: flash_powder, qty: 3}]}
+- {id: coil_iron_springs, name: Ressorts de fer, profession: artificing, category: mechanisms, level: 10, durationSec: 12, xp: 2.6, inputs: [{item: iron_bar, qty: 1}], outputs: [{item: iron_springs, qty: 4}]}
+- {id: build_spring_snare, name: Collet à ressort, profession: artificing, category: devices, level: 15, durationSec: 60, xp: 13.9, inputs: [{item: iron_springs, qty: 2}, {item: leather_strap, qty: 2}, {item: rivets, qty: 4}], outputs: [{item: spring_snare, qty: 1}]}
+- {id: assemble_clockwork, name: Mécanisme d'horloge, profession: artificing, category: mechanisms, level: 20, durationSec: 300, xp: 74.1, inputs: [{item: bronze_gears, qty: 10}, {item: iron_springs, qty: 4}, {item: oak_plank, qty: 2}], outputs: [{item: clockwork, qty: 1}]}
+- {id: build_artificer_lantern, name: Lanterne d'artificier, profession: artificing, category: devices, level: 30, durationSec: 180, xp: 50.4, inputs: [{item: vial, qty: 2}, {item: iron_bar, qty: 2}, {item: lantern_lily, qty: 1}], outputs: [{item: artificer_lantern, qty: 1}]}
+- {id: build_flare_rocket, name: Fusée d'éclat, profession: artificing, category: devices, level: 40, durationSec: 60, xp: 19.1, inputs: [{item: flash_powder, qty: 6}, {item: linen_cloth, qty: 1}, {item: pine_handle, qty: 1}], outputs: [{item: flare_rocket, qty: 1}]}
+
+# --- Construction ---
+- {id: build_stone_wall, name: Pan de mur en pierre, profession: construction, category: elements, level: 1, durationSec: 300, xp: 58.3, inputs: [{item: stone_block, qty: 30}], outputs: [{item: stone_wall, qty: 1}]}
+- {id: mix_mortar, name: Mortier, profession: construction, category: materials, level: 1, durationSec: 10, xp: 1.9, inputs: [{item: sand, qty: 3}, {item: stone_block, qty: 1}], outputs: [{item: mortar, qty: 2}]}
+- {id: dress_stone, name: Moellons taillés, profession: construction, category: materials, level: 5, durationSec: 12, xp: 2.5, inputs: [{item: stone_block, qty: 4}], outputs: [{item: dressed_stone, qty: 1}]}
+- {id: build_wooden_stairs, name: Escalier de bois, profession: construction, category: elements, level: 10, durationSec: 240, xp: 52.3, inputs: [{item: pine_plank, qty: 12}, {item: rivets, qty: 20}], outputs: [{item: wooden_stairs, qty: 1}]}
+- {id: build_oak_frame, name: Charpente de chêne, profession: construction, category: elements, level: 15, durationSec: 300, xp: 69.6, inputs: [{item: oak_plank, qty: 20}, {item: rivets, qty: 40}], outputs: [{item: oak_frame, qty: 1}]}
+- {id: build_stone_arch, name: Arche de pierre, profession: construction, category: elements, level: 25, durationSec: 420, xp: 110.5, inputs: [{item: dressed_stone, qty: 20}, {item: mortar, qty: 10}], outputs: [{item: stone_arch, qty: 1}]}
+- {id: build_roof_truss, name: Ferme de toit, profession: construction, category: elements, level: 35, durationSec: 480, xp: 143.3, inputs: [{item: oak_frame, qty: 2}, {item: pine_plank, qty: 30}], outputs: [{item: roof_truss, qty: 1}]}
+
+# --- Cuisine : repas des nouveaux métiers ---
+- {id: bake_country_bread, name: Pain de campagne, profession: cooking, category: dishes, level: 10, durationSec: 20, xp: 4.4, inputs: [{item: flour, qty: 2}], outputs: [{item: country_bread, qty: 1}]}
+- {id: cook_hunter_stew, name: Ragoût du chasseur, profession: cooking, category: dishes, level: 20, durationSec: 30, xp: 7.4, inputs: [{item: game_meat, qty: 3}, {item: carrot, qty: 2}, {item: thyme, qty: 1}], outputs: [{item: hunter_stew, qty: 1}]}

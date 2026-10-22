@@ -70,6 +70,7 @@ export const api = {
   myClan: () => request<ClanView | null>('GET', '/clan'),
   clanCreate: (name: string, description: string) => request<StateResponse>('POST', '/clan/create', { name, description }),
   clanJoin: (clanId: number) => request<StateResponse>('POST', '/clan/join', { clanId }),
+  devClanTest: () => request<StateResponse>('POST', '/dev/clan/test'),
   clanLeave: () => request<StateResponse>('POST', '/clan/leave'),
   clanKick: (characterId: number) => request<StateResponse>('POST', '/clan/kick', { characterId }),
   clanRank: (characterId: number, rank: 'officer' | 'member') => request<StateResponse>('POST', '/clan/rank', { characterId, rank }),

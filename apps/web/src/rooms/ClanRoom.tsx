@@ -96,6 +96,11 @@ function NoClan({ clans, run }: { clans: ClanListItem[]; run: Run }) {
           <p className="muted small" style={{ width: '100%' }}>
             Un clan se construit : ses membres apportent de l’or et des matériaux pour bâtir des bâtiments (forge, scierie, jardin…), et chaque niveau accélère le métier concerné pour tous.
           </p>
+          {import.meta.env.DEV && (
+            <button className="btn btn-sm dev-clan" style={{ width: '100%' }} onClick={() => run(api.devClanTest)} title="Développement : un clan déjà vivant (membres de test, bâtiments, apports en cours)">
+              Test : rejoindre le clan d’essai
+            </button>
+          )}
         </div>
         <div className="scroll market-mine">
           <span className="eyebrow">Clans à rejoindre</span>

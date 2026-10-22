@@ -86,6 +86,7 @@ import { type Action, NoCharacterError, play } from './game.js';
 import { recentEntries } from './journal.js';
 import { joinEvent, recordEvents, townView } from './town.js';
 import { contribute, createClan, joinClan, kickMember, leaveClan, listClans, myClanView, setRank } from './clans.js';
+import { joinTestClan } from './devClan.js';
 import { cancelRepair, openRepairs, requestRepair, takeRepair } from './repairs.js';
 import { dropMismatchedOwned, equipOwned, giveStarterGear, grantGear, loadGear, unequipOwned, wearGearSet } from './gear.js';
 import { buyFromStall, cancelOrder, fillOrder, marketBook, marketSummary, myOrders, placeOrder } from './market.js';
@@ -524,6 +525,10 @@ export async function buildApp({ db, content, clock = Date.now, secureCookies = 
       const me = await myCharacter(req);
       return viewGear(await loadGear(db, me.id), me.classId, content);
     });
+    /** Test : rejoindre le clan d'essai (créé au premier appel, déjà vivant), pour voir l'intérieur d'un clan. */
+    app.post('/api/dev/clan/test', (req) =>
+      playAs(req, (state, now, { tx, characterId, characterName }) => joinTestClan(tx, content, characterId, characterName, state, now)),
+    );
   }
 
   app.post('/api/trials/complete', (req) => {

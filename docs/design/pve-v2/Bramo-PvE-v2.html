@@ -1,0 +1,669 @@
+<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Bramo — zones & outils de situation</title><style>
+:root{color-scheme:dark;--bg:#12191e;--panel:#1b252c;--line:#34424b;--ink:#eef0ed;--muted:#acb8bd;--gold:#d4aa74;--green:#85c4b3}*{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:24px}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.65 system-ui,-apple-system,Segoe UI,sans-serif}a{color:#d9ba91;text-underline-offset:4px}a:focus-visible,button:focus-visible{outline:3px solid #d4aa74;outline-offset:4px}header{max-width:1450px;margin:auto;padding:65px 5vw 42px;border-bottom:1px solid var(--line)}.eyebrow{font-size:12px;text-transform:uppercase;letter-spacing:.16em;color:var(--gold)}h1{font-size:clamp(34px,4vw,64px);line-height:1.1;letter-spacing:-.04em;max-width:1050px;margin:22px 0}header p{max-width:780px;color:var(--muted);font-size:18px}.status{display:inline-block;font-size:12px;border:1px solid #697663;border-radius:99px;padding:6px 12px;color:#c8d5bf}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:30px}.stat{padding:18px 20px;background:var(--panel);border:1px solid var(--line);border-radius:10px}.stat b{display:block;font-size:28px;font-weight:650;color:var(--gold)}.stat span{font-size:13px;color:var(--muted)}.layout{display:grid;grid-template-columns:245px minmax(0,1fr);gap:42px;max-width:1450px;margin:auto;padding:36px 5vw 80px}aside{align-self:start;position:sticky;top:24px;font-size:13px;max-height:90vh;overflow:auto}aside a{display:block;text-decoration:none;color:var(--muted);padding:8px 0;border-bottom:1px solid #26343c}aside a:hover{color:var(--gold)}main{min-width:0}.intro{padding:24px;border:1px solid var(--line);border-left:3px solid var(--gold);background:#1c272d;border-radius:7px}.intro p{margin:0}.intro strong{color:var(--gold)}.tools{display:flex;gap:8px;flex-wrap:wrap;margin:28px 0 18px}.tools button{font:inherit;font-size:12px;background:transparent;border:1px solid var(--line);border-radius:99px;color:var(--muted);padding:7px 11px;cursor:pointer}.tools button.active{background:#324239;color:#e4eddf;border-color:#7c9a81}.count{font-size:12px;color:var(--muted);margin-bottom:14px}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.zone{padding:20px;border:1px solid var(--line);border-top:2px solid var(--accent);border-radius:9px;background:var(--panel)}.zone[hidden]{display:none}.zone-top{display:flex;justify-content:space-between;gap:12px;align-items:center}.num{font-size:23px;font-weight:650;color:var(--accent)}.chip{font-size:10px;letter-spacing:.05em;text-transform:uppercase;color:var(--accent);text-align:right}.zone h3{font-size:18px;margin:14px 0 9px}.zone p{font-size:13px;color:#d6deda;margin:0 0 10px}.zone small{font-size:12px;line-height:1.55;color:var(--muted);display:block}.report{margin-top:45px;padding-top:20px;border-top:1px solid var(--line)}.report>h1{display:none}.report>h2:first-of-type{margin-top:30px}h2{font-size:27px;line-height:1.25;margin-top:52px;letter-spacing:-.025em;color:#e5cfb2}h3{font-size:20px;line-height:1.35;margin-top:28px;color:#d6e0da}p,li{color:#d5dcdf}strong{color:#f2f1eb}code{font-size:.85em;color:#c3d6d8;overflow-wrap:anywhere;background:#223039;padding:2px 4px;border-radius:3px}pre{white-space:pre-wrap;overflow:auto;background:#0d1418;border:1px solid var(--line);padding:15px;border-radius:6px}table{border-collapse:collapse;width:100%;font-size:12px;margin:23px 0;line-height:1.55}th,td{border:1px solid var(--line);padding:10px 9px;vertical-align:top}th{text-align:left;background:#29353d;color:#eee2d2}tr:nth-child(even){background:#182229}details{border:1px solid var(--line);border-radius:8px;padding:20px;margin-top:40px}summary{cursor:pointer;color:var(--gold);font-weight:650}footer{color:var(--muted);font-size:12px;border-top:1px solid var(--line);padding-top:25px;margin-top:40px}body .results h1{font-size:28px}.results h2{font-size:22px}.table-wrap{max-width:100%;overflow-x:auto}ul,ol{padding-left:23px}@media(max-width:1050px){.layout{grid-template-columns:1fr}aside{position:static;max-height:none;display:flex;flex-wrap:wrap;gap:5px 20px}aside a{font-size:11px;border:0;max-width:46%}.stats{grid-template-columns:repeat(2,1fr)}}@media(max-width:650px){header{padding-top:38px}.layout{padding-top:25px}.grid{grid-template-columns:1fr}.stats{gap:8px}.stat{padding:12px}.stat b{font-size:24px}.stat span{font-size:11px}h2{font-size:23px}table{min-width:580px}}@media print{body{background:#fff;color:#111;font-size:10pt}header,main,.layout{display:block;padding:0;max-width:none}aside,.tools,.grid,.count,.status{display:none}h1,h2,h3,p,li,strong,code{color:#111!important}.stats{display:flex;gap:15px}.stat{background:#fff;border-color:#bbb}.intro{background:#fff;border-color:#aaa}table{font-size:8pt}th,td{border-color:#bbb}th,tr:nth-child(even){background:#f1f1f1}details{border-color:#bbb}summary{color:#111}.report{margin-top:20px}h2{break-after:avoid}tr{break-inside:avoid}}
+</style></head><body><header><div class="eyebrow">Bramo · carnet de conception · révision 02</div><h1>Changer d’outil.<br>Garder sa classe.</h1><p>Douze zones, six réponses d’équipement. Une préparation lisible, des identités de classe préservées et des gains à vérifier dans le moteur du jeu.</p><span class="status">Proposition · effets d’équipement à intégrer</span><div class="stats"><div class="stat"><b>12</b><span>rencontres natives</span></div><div class="stat"><b>6 + 6</b><span>ensembles et gemmes</span></div><div class="stat"><b>2 736</b><span>combats de base exécutés</span></div><div class="stat"><b>+25 %</b><span>gain de mur visé, non mesuré</span></div></div></header><div class="layout"><aside aria-label="Sommaire"><a href="#section-1">1. Mon verdict sur les essais de Claude</a><a href="#section-2">2. Une structure assez petite pour apprendre, assez ouverte pour construire</a><a href="#section-3">3. Les effets proposés</a><a href="#section-4">4. Les douze rencontres et leurs réponses</a><a href="#section-5">5. Obtention : ne jamais enfermer l’outil derrière son propre mur</a><a href="#section-6">6. Le Traqueur : une survie de classe, pas un soutien universel</a><a href="#section-7">7. Route profonde : pente couplée, fureur et ancrage réel</a><a href="#section-8">8. Tableau d’affinité attendu : objectifs, pas observations</a><a href="#section-9">9. Comment vérifier sans choisir les résultats qui nous arrangent</a><a href="#section-10">10. Ce qui est livré et l’ordre de travail conseillé</a><a href="#essais">Résultats réellement mesurés</a></aside><main><div class="intro"><p><strong>Ce que le dossier prouve :</strong> les rencontres sont compatibles et passent le normal avec les plans testés. <strong>Ce qu’il propose :</strong> les ensembles, gemmes et leurs gains de mur. La matrice d’affinité reste une cible jusqu’à leur intégration.</p></div><div class="tools" role="group" aria-label="Filtrer les zones par famille"><button type="button" data-filter="all" class="active" aria-pressed="true">Toutes les zones</button><button type="button" data-filter="interstice" aria-pressed="false">Les Heures creuses</button><button type="button" data-filter="rain" aria-pressed="false">Les Habits de pluie</button><button type="button" data-filter="impact" aria-pressed="false">L’Enclume patiente</button><button type="button" data-filter="beat" aria-pressed="false">Les Passeurs de braise</button><button type="button" data-filter="fracture" aria-pressed="false">Les Mains de traverse</button><button type="button" data-filter="breath" aria-pressed="false">Les Veilleurs du Sceau</button></div><div class="count" aria-live="polite" id="zone-count">12 zones affichées</div><section class="grid" aria-label="Zones et réponses"><article class="zone" data-family="interstice" style="--accent:#c3b5f0"><div class="zone-top"><span class="num">01</span><span class="chip">Les Heures creuses</span></div><h3>La Chaussée des lanternes</h3><p>Retarder un gros sort à 8 s ; regarder aussi son retour au prochain cycle de 14 s.</p><small>Concentrer les dégâts natifs dans les 6 dernières secondes de chaque cycle ; le set restitue seulement les pertes hors fenêtre.</small></article><article class="zone" data-family="rain" style="--accent:#87bbd2"><div class="zone-top"><span class="num">02</span><span class="chip">Les Habits de pluie</span></div><h3>Les Fossés gris</h3><p>Forgefeu : Refroidissement ; Runiste : Sceau de répit. Traqueur avant 85 : raccourcir le combat avec un plan de dégâts soutenus ; ne pas lui inventer une purification commune.</p><small>Une seule purge ne suffit pas à une rencontre longue ; le Traqueur peut utiliser l’outil universel sans changer de voie.</small></article><article class="zone" data-family="impact" style="--accent:#d4aa74"><div class="zone-top"><span class="num">03</span><span class="chip">L’Enclume patiente</span></div><h3>La Cour des trois coups</h3><p>Placer Repli/protection avant le troisième coup ; conserver l’affaiblissement pour les lourds.</p><small>Le ralentissement décale ici les attaques ordinaires, donc aussi leur troisième coup ; il ne modifie pas une phase fixe.</small></article><article class="zone" data-family="beat" style="--accent:#d5987c"><div class="zone-top"><span class="num">04</span><span class="chip">Les Passeurs de braise</span></div><h3>Les Vergers de verre</h3><p>Privilégier les dégâts de zone ; après extension, viser les renforts puis revenir au chef.</p><small>Alternative de plan actuelle : course au chef avec burst ; les renforts vivants ne bloquent jamais la victoire.</small></article><article class="zone" data-family="fracture" style="--accent:#b9c695"><div class="zone-top"><span class="num">05</span><span class="chip">Les Mains de traverse</span></div><h3>Le Cloître des balances</h3><p>Runiste : Cercle révélateur dès 35 ; Forgefeu : Décrassage dès 65 ; Traqueur : dégâts soutenus.</p><small>Plan sans dissipation : dégâts continus ou zone, renforcés par Fracture. Aucun sort nouveau obligatoire.</small></article><article class="zone" data-family="breath" style="--accent:#85c4b3"><div class="zone-top"><span class="num">06</span><span class="chip">Les Veilleurs du Sceau</span></div><h3>Les Fours de recuit</h3><p>Forgefeu/Runiste : purification, pour ses 6 s d’immunité à l’aura ; Traqueur : vitesse de mise à mort et soins communs, purification commune au niveau 85.</p><small>Le soin compte en solo ; en groupe, un bénéficiaire par soin, jamais une protection gratuite d’équipe.</small></article><article class="zone" data-family="interstice" style="--accent:#c3b5f0"><div class="zone-top"><span class="num">07</span><span class="chip">Les Heures creuses</span></div><h3>La Salle des échos</h3><p>Décaler un premier gros sort à 10 s maximum ; choisir des cooldowns qui recoupent les fenêtres suivantes.</p><small>L’ouverture est de 11 à 18 s ; on ne permet pas de programmer un sort à 11 s : on exploite son cooldown ou on accepte un premier lancer moins efficace.</small></article><article class="zone" data-family="rain" style="--accent:#87bbd2"><div class="zone-top"><span class="num">08</span><span class="chip">Les Habits de pluie</span></div><h3>Le Gué des plaies</h3><p>Forgefeu/Runiste : purification ; Traqueur avant 85 : plan de dégâts soutenus et outil Pluie. Protection avant la petite charge.</p><small>Une variante plus défensive reste dans la même classe ; une purge ne réduit pas la charge.</small></article><article class="zone" data-family="fracture" style="--accent:#b9c695"><div class="zone-top"><span class="num">09</span><span class="chip">Les Mains de traverse</span></div><h3>La Chambre aux deux sceaux</h3><p>Dissipation et dégâts de zone ; éviter de diluer tout le plan sur des monocibles lents.</p><small>Après extension, priorité à la cible sans garde est une autre option ; sinon le plan de zone existe déjà.</small></article><article class="zone" data-family="impact" style="--accent:#d4aa74"><div class="zone-top"><span class="num">10</span><span class="chip">L’Enclume patiente</span></div><h3>Les Terrasses de la vigie</h3><p>Décaler une protection vers 8–10 s puis vérifier le retour du cooldown ; affaiblissement conservé pour les charges.</p><small>Le ralentissement réduit le fond de dégâts, pas la charge à 16 s ; la Pression est un complément, pas une annulation garantie.</small></article><article class="zone" data-family="beat" style="--accent:#d5987c"><div class="zone-top"><span class="num">11</span><span class="chip">Les Passeurs de braise</span></div><h3>L’Atelier des mauvais jours</h3><p>Après extension : auxiliaire en premier ; immédiatement : zone et anti-soin, ou course au chef.</p><small>Le soin est limité à trois usages. L’anti-soin ou les dégâts de zone offrent une solution sans changer d’arme ni classe.</small></article><article class="zone" data-family="breath" style="--accent:#85c4b3"><div class="zone-top"><span class="num">12</span><span class="chip">Les Veilleurs du Sceau</span></div><h3>Le Belvédère des trois vents</h3><p>Purification si accessible, sinon plan de dégâts soutenus et soin régulier ; garder une défense simple pour la petite charge.</p><small>La charge reste secondaire, l’attrition vient de l’aura : l’outil Impact peut aider mais ne doit pas être premier.</small></article></section><article class="report"><h1>Bramo — les zones doivent faire changer les outils</h1>
+<p><strong>Révision PvE solo, ensembles et gemmes de situation — 22 octobre 2026.</strong></p>
+<p>Base relue : <code>Kairoli/Bramo</code>, <code>main</code>, commit <code>c120336036ae2ee6bff6d9f509ede1d26c892094</code>. Cette proposition répond au message de Claude et remplace les réponses de zones du précédent dossier. Elle ne remet pas en chantier l’économie, les filières, les escouades, les donjons sans quota ni la branche saisonnière retenus par Louis.</p>
+<p><strong>Statut : proposition livrée en données, pas équilibrage adopté.</strong> Les rencontres utilisent les schémas et le moteur TypeScript du jeu. Les ensembles et gemmes de ce dossier sont des contrats à intégrer ; leurs affinités chiffrées sont des cibles, pas des résultats simulés. Aucun banc Python de combat n’a été utilisé.</p>
+<h2 id="section-1">1. Mon verdict sur les essais de Claude</h2>
+<p>La critique principale est juste. J’avais donné des noms de réponses — dégâts, soutien, contrôle — à des zones qui ne forçaient pas réellement ces arbitrages dans le moteur. Une compétence de protection trop petite ne devient pas une réponse intéressante simplement parce que le texte conseille de se protéger. Et un ensemble presque aussi bon partout rend le changement de build peu utile.</p>
+<p>Il faut donc <strong>partir de la mécanique ennemie et lui relier un outil mesurable</strong>, puis laisser les kits de classe l’exploiter différemment. L’équipement aide une classe à franchir son mur plus tôt ; il ne doit pas donner à toutes les classes le même nouveau moteur de dégâts. Braises, Angle et runes restent natifs, et les effets secondaires ne les redéclenchent pas.</p>
+<p>Je retiens les corrections testées : PV et dégâts ennemis montent ensemble ; récupération de donjon à 30 % avec préparation ; vrais plans de groupe pour les soutiens ; affaiblissement réservé au coup lourd ; aucune composition obligatoire. Changer de voie reste une option gratuite dans sa classe, sans exiger d’en remonter une autre.</p>
+<p>Trois limites doivent toutefois rester visibles :</p>
+<ol>
+<li><strong>Le critère strict du groupe n’est pas entièrement acquis.</strong> <code>ecart-equipement.md</code> montre que quatre DPS demandent +15 % de P et PV pour passer le mur, alors que le critère §9 fixe au plus un palier d’environ +10 %. Le résultat est proche du but ; ce n’est pas encore la même chose. On garde+10 % comme cible et on rejoue après les nouveaux outils.</li>
+<li><strong>Le « palier à +10 % » est synthétique.</strong> Les essais augmentent P et PV. Les pools d’affixes publiés ont pour multiplicateurs 1 / 1,45 / 1,9 aux paliers 1 / 10 / 20, et leurs statistiques ne sont pas encore branchées dans les combats. Je ne prétends donc pas avoir calé la route sur une vraie courbe d’équipement qui n’existe pas encore dans le moteur.</li>
+<li><strong>La difficulté périodique est incomplète dans le code actuel.</strong> L’aura ignore le multiplicateur de danger ; aura et érosion ignorent la fureur. Cela doit être corrigé avant de valider une route profonde, sans leur appliquer deux fois les multiplicateurs.</li>
+</ol>
+<p>Les treize rapports JSON pertinents ont été relus par données, échecs inclus ; leurs empreintes et comptes sont dans <code>verification/sources-et-rapports.json</code>. Exemple : 2491 échecs parmi 6480 parcours du rapport donjon initial, toutes variantes confondues. Ce chiffre ne décrit pas la seule préparation finalement retenue. Les tableaux de recherche agrègent plusieurs graines par plan : je ne les présente pas comme des journaux individuels.</p>
+<h2 id="section-2">2. Une structure assez petite pour apprendre, assez ouverte pour construire</h2>
+<p>Je propose <strong>six familles de réponses, chacune présente dans deux zones</strong>, avec trois manières de s’en approcher : ensemble, gemme majeure ou préparation. Le plan complète la réponse. Une même famille garde le même mot-clé partout ; le joueur apprend ce que signifie « Pluie » plutôt que douze exceptions.</p>
+<table>
+<thead>
+<tr>
+<th>Famille</th>
+<th>Bon outil contre</th>
+<th>Ensemble</th>
+<th>Gemme majeure</th>
+<th>Deux zones principales</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Interstice</td>
+<td>Fenêtres fermées</td>
+<td>Les Heures creuses</td>
+<td>Opale d’interstice</td>
+<td>1 et7</td>
+</tr>
+<tr>
+<td>Pluie</td>
+<td>Érosion qui s’accumule</td>
+<td>Les Habits de pluie</td>
+<td>Perle de lessive</td>
+<td>2 et8</td>
+</tr>
+<tr>
+<td>Impact</td>
+<td>Lourds et charges</td>
+<td>L’Enclume patiente</td>
+<td>Hématite d’arrêt</td>
+<td>3 et10</td>
+</tr>
+<tr>
+<td>Battue</td>
+<td>Renforts</td>
+<td>Les Passeurs de braise</td>
+<td>Grenat de battue</td>
+<td>4 et11</td>
+</tr>
+<tr>
+<td>Fracture</td>
+<td>Garde ennemie</td>
+<td>Les Mains de traverse</td>
+<td>Œil de faille</td>
+<td>5 et9</td>
+</tr>
+<tr>
+<td>Reprise</td>
+<td>Aura d’usure</td>
+<td>Les Veilleurs du Sceau</td>
+<td>Ambre de reprise</td>
+<td>6 et12</td>
+</tr>
+</tbody></table>
+<p><strong>Ce ne sont pas six ensembles réservés aux six zones correspondantes.</strong> Ils restent utilisables dans les donjons, les variantes de boss et les mutations qui partagent ces mots-clés. Leur valeur vient de la mécanique réellement présente, jamais d’un bonus codé « dans la zone5 ». Un futur donjon à renforts réutilise Battue sans nouvelle exception.</p>
+<p>Au départ, chaque rencontre a une menace principale et au plus une menace secondaire discrète. Sinon, le joueur ne comprend pas ce qui l’a tué et le catalogue devient une liste de résistances à cocher. Plus tard, une mutation peut associer deux familles, avec des récompenses et un budget de difficulté distincts. La route permanente n’est pas réécrite pendant une saison.</p>
+<h3>Un coût de choix réel</h3>
+<ul>
+<li>Un ensemble de situation utilise les mêmes emplacements et le même budget de lignes qu’un autre ensemble. Son effet fort n’est pas ajouté gratuitement au meilleur équipement généraliste.</li>
+<li>Une gemme de situation occupe <strong>une majeure existante</strong> ; elle remplace un talent de build ou un talent de nommé. On ne crée pas d’emplacement supplémentaire. Le maximum de majeures décidé ailleurs reste inchangé.</li>
+<li>Set, gemme et préparation de <strong>même famille ne se cumulent pas</strong>. La variante la plus forte s’applique ; leurs délais sont partagés. La gemme donne une autre façon de répondre en conservant son 4+4 habituel, pas un renfort automatique du set adapté.</li>
+<li>Les paliers2/3/4 des nouveaux sets <strong>améliorent un même effet</strong>. Ils remplacent la version précédente. Ce choix proposé évite d’afficher trois déclencheurs supplémentaires par set et de rendre le2+2+2 systématiquement supérieur.</li>
+<li>Le set ne devient pas plus puissant avec la rareté ; la rareté conserve son budget de lignes et de rolls. Les valeurs de gemmes fournies sont une référence Rare à tester : les anciens multiplicateurs de rang ne s’appliquent pas aveuglément aux purges, pourcentages et délais. Une gemme légendaire ne doit jamais produire une immunité permanente par multiplication automatique.</li>
+</ul>
+<p>Avec 11 places, deux sets de4 restent possibles. Les huit emplacements proposés par famille sont tête, torse, mains, jambes, pieds, ceinture, collier et anneau ; arme, cape et second anneau laissent de la place à d’autres choix. Aucun set de situation n’exige un type d’arme. Une copie du même modèle ne compte qu’une fois pour le bonus d’ensemble, même avec deux anneaux ; les deux instances gardent leurs statistiques.</p>
+<p>Les trois classes utilisent ces familles avec leurs silhouettes et armes habituelles. Un Runiste n’a pas besoin d’un marteau ni un Traqueur d’un heaume lourd pour obtenir Fracture. Le nom d’une famille n’est pas une restriction de classe. Les gemmes n’imposent pas d’élément ; les résistances/faiblesses élémentaires ennemies restent reportées.</p>
+<h2 id="section-3">3. Les effets proposés</h2>
+<p>Les24 fiches complètes — déclencheur, condition, opération, paramètres, délai, plafond et cumul — sont dans <code>design/equipements-situation.yaml</code>. Voici les chiffres nécessaires pour juger le projet sans lire le contrat technique.</p>
+<table>
+<thead>
+<tr>
+<th>Ensemble</th>
+<th>2 pièces</th>
+<th>3 pièces, remplace2</th>
+<th>4 pièces, remplace3</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Heures creuses</td>
+<td>Stocke20 % des pertes de fenêtre, plafond2 P</td>
+<td>35 %, plafond4 P</td>
+<td>100 %, plafond12 P ; restitution unique à l’ouverture</td>
+</tr>
+<tr>
+<td>Habits de pluie</td>
+<td>Retire1 charge à partir de2, délai18 s</td>
+<td>1 charge, délai12 s</td>
+<td>2 charges, délai10 s ; aucune immunité</td>
+</tr>
+<tr>
+<td>Enclume patiente</td>
+<td>Atténue15 % d’un lourd, au plus6 % PV max</td>
+<td>25 %, au plus12 % PV max</td>
+<td>65 %, au plus25 % PV max ; délai 6 s</td>
+</tr>
+<tr>
+<td>Passeurs de braise</td>
+<td>×1,20 contre les renforts</td>
+<td>×1,40</td>
+<td>×1,80 ; aucun bonus contre le chef</td>
+</tr>
+<tr>
+<td>Mains de traverse</td>
+<td>×1,25 contre la garde</td>
+<td>×1,50</td>
+<td>×2 contre la garde ; aucun surplus en dégâts PV</td>
+</tr>
+<tr>
+<td>Veilleurs du Sceau</td>
+<td>Récupère25 % de l’aura réellement prise</td>
+<td>40 %</td>
+<td>75 % ; réserve8 % PV, délai 6 s, soins plafonnés30 % PV/30 s</td>
+</tr>
+</tbody></table>
+<p><code>P</code> désigne la Puissance du personnage ; elle n’est utilisée que pour le stockage offensif. Les défenses sont calculées sur les PV maximum réels de début de combat. À P100/PV2800, le plafond d’Impact4 est700 PV, pas700 à tous les niveaux.</p>
+<p><strong>Pourquoi des effets aussi forts ?</strong> Un cran de danger à×1,25 n’est pas «25 % de dégâts ennemis en plus » : avec PV×danger^1,5, l’ennemi a aussi environ40 % de PV supplémentaires. Sans accélération du combat, l’exposition cumulée peut augmenter d’environ75 %. Un minuscule bonus de5 % ne peut pas fournir le gain demandé. Les gros coefficients sont donc conditionnels et plafonnés ; leur valeur hors mécanique est presque nulle. Ils restent des hypothèses à mesurer.</p>
+<h3>Les gemmes, une autre allocation du build</h3>
+<table>
+<thead>
+<tr>
+<th>Gemme</th>
+<th>Effet de référence</th>
+<th>Coût de choix</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Opale d’interstice</td>
+<td>Stocke70 % des pertes de fenêtre, plafond8 P/cycle</td>
+<td>Une majeure ; garde ses sets habituels</td>
+</tr>
+<tr>
+<td>Perle de lessive</td>
+<td>Retire2 charges à partir de2, délai16 s</td>
+<td>Une majeure ; aucune immunité ni soin</td>
+</tr>
+<tr>
+<td>Hématite d’arrêt</td>
+<td>Atténue50 % du lourd, au plus20 % PV max, délai 6 s</td>
+<td>Une majeure ; aucun bénéfice sur coups simples</td>
+</tr>
+<tr>
+<td>Grenat de battue</td>
+<td>×1,55 contre les renforts natifs</td>
+<td>Une majeure ; zéro contre un boss isolé</td>
+</tr>
+<tr>
+<td>Œil de faille</td>
+<td>×1,65 contre la garde uniquement</td>
+<td>Une majeure ; zéro après sa disparition</td>
+</tr>
+<tr>
+<td>Ambre de reprise</td>
+<td>Récupère45 % de l’aura prise ; réserve5 % PV, délai 8 s, plafond20 % PV/30 s</td>
+<td>Une majeure ; ne soigne pas les dégâts d’érosion</td>
+</tr>
+</tbody></table>
+<p>Chaque préparation est une version moins forte, disponible avant le mur. Exemples : Baume de parade, Poudre de coin, Rinçage clair. Une seule préparation utilitaire équipée, en plus du repas et des potions de secours existants. Pas six potions automatiques supplémentaires à surveiller. Les détails sont dans <code>design/consommables.yaml</code> ; leurs coûts doivent être calés sur les filières économiques déjà retenues.</p>
+<h3>Ce qu’on préserve dans les builds</h3>
+<p>Un Forgefeu peut garder son moteur de Braises et remplacer une famille de set par Impact. Un Traqueur peut conserver sa Morsure et prendre une Perle de lessive pour les Fossés. Un Runiste peut choisir une Opale et sacrifier un talent offensif plutôt que démonter ses deux ensembles. Ces trois décisions ont des coûts différents ; elles ne donnent pas aux trois classes une attaque identique.</p>
+<p>Interstice ne critique pas une seconde fois et ne produit pas de rune. Fracture ne transforme pas une garde cassée en dégâts gratuits sur les PV. Reprise ne nourrit ni Encre ni talent de soin. Battue n’accorde pas un buff cumulable à chaque renfort mort. Ces garde-fous évitent les boucles les plus évidentes ; seuls les tests de paires et de nommés peuvent vérifier les synergies restantes.</p>
+<h2 id="section-4">4. Les douze rencontres et leurs réponses</h2>
+<p>Le fichier natif est <code>sim/proposals/zones-v2/combat.yaml</code>. Les identifiants des douze zones sont conservés, mais leurs mécaniques sont redistribuées. La version de base sert à isoler les réponses sans fureur ; la variante <code>zones-v2-fury</code> ajoute des délais issus du groupe de référence et sert de point de départ pour la route. Elles ne doivent pas remplacer silencieusement les rencontres de production.</p>
+<table>
+<thead>
+<tr>
+<th>Zone</th>
+<th>Menace lisible</th>
+<th>Outil adapté</th>
+<th>Réponse de plan / autre approche</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1. Chaussée des lanternes</td>
+<td>Cycle14 s, ouverte8–14 ; réduction80 % hors ouverture</td>
+<td>Interstice</td>
+<td>Premier gros sort vers8 s ; cooldowns qui recoupent l’ouverture ; tonic à la place d’une majeure</td>
+</tr>
+<tr>
+<td>2. Fossés gris</td>
+<td>Érosion toutes les8 s, jusqu’à3 charges</td>
+<td>Pluie</td>
+<td>Forgefeu : Refroidissement ; Runiste : Sceau de répit ; Traqueur : dégâts soutenus et outil universel</td>
+</tr>
+<tr>
+<td>3. Cour des trois coups</td>
+<td>Une attaque sur3 frappe×6</td>
+<td>Impact</td>
+<td>Protection/Repli, affaiblissement réservé au lourd ; ralentissement des attaques ordinaires</td>
+</tr>
+<tr>
+<td>4. Vergers de verre</td>
+<td>Deux renforts à10 s puis à30 s</td>
+<td>Battue</td>
+<td>Dégâts de zone ; priorité renforts après extension ; course au chef reste possible</td>
+</tr>
+<tr>
+<td>5. Cloître des balances</td>
+<td>Garde750 toutes les12 s, durant9 s</td>
+<td>Fracture</td>
+<td>Dissipation si disponible, ou dégâts continus ; la garde ne rend pas invulnérable</td>
+</tr>
+<tr>
+<td>6. Fours de recuit</td>
+<td>Aura23 PV/s et petits coups</td>
+<td>Reprise</td>
+<td>Purification si disponible, soin régulier ou course au chef ; infusion utilitaire</td>
+</tr>
+<tr>
+<td>7. Salle des échos</td>
+<td>Cycle18 s, ouverte11–18 ; réduction85 % hors ouverture</td>
+<td>Interstice</td>
+<td>Ouverture programmée au plus10 s, puis cooldowns ; aucune première utilisation à11 s autorisée</td>
+</tr>
+<tr>
+<td>8. Gué des plaies</td>
+<td>Érosion plus rapide, petite charge toutes les22 s</td>
+<td>Pluie</td>
+<td>Purge si disponible, sinon dégâts soutenus ; défense pour la charge séparément</td>
+</tr>
+<tr>
+<td>9. Chambre aux deux sceaux</td>
+<td>Deux ennemis, garde alternée toutes les10 s</td>
+<td>Fracture</td>
+<td>Dégâts de zone, dissipation si disponible ; priorité sans garde après extension</td>
+</tr>
+<tr>
+<td>10. Terrasses de la vigie</td>
+<td>Charge760 toutes les16 s, petits coups entre deux</td>
+<td>Impact</td>
+<td>Protection/repli et affaiblissement sur charge ; le ralentissement ne retarde pas la charge</td>
+</tr>
+<tr>
+<td>11. Atelier des mauvais jours</td>
+<td>Auxiliaire qui permet trois soins ennemis au maximum</td>
+<td>Battue</td>
+<td>Zone + anti-soin ; priorité auxiliaire après extension ; course au chef sans détour possible</td>
+</tr>
+<tr>
+<td>12. Belvédère des trois vents</td>
+<td>Aura25 PV/s, petite charge toutes les20 s</td>
+<td>Reprise</td>
+<td>Soin/purification selon répertoire, défense simple contre la petite charge</td>
+</tr>
+</tbody></table>
+<p>Les dégâts présentés sont les valeurs de données <strong>avant</strong> les règles de réduction qui s’appliquent à leur source. Aura et érosion gardent leur traitement périodique propre. Les horaires des fenêtres reprennent exactement la convention du moteur : l’ouverture est à la fin du cycle, pas au début.</p>
+<h3>Une précision sur les sorts disponibles</h3>
+<p>Je ne donne pas à toutes les classes une purification fictive. Forgefeu et Runiste en ont une commune au niveau20. Le Traqueur n’en a une commune qu’au niveau85 (<code>tr_cover</code>) ; le Meneur de meute en a une de voie au70. Avant cela, le Traqueur répond à l’érosion par l’équipement universel, la préparation et la vitesse de mise à mort. Changer de voie peut aider, jamais devenir un péage.</p>
+<p>Même prudence pour la dissipation : Cercle révélateur est commun au Runiste au35, Décrassage au Forgefeu au65 ; le Traqueur n’a pas de dissipation native commune. Fracture couvre ce manque sans effacer les différences de kits.</p>
+<p>Les horaires d’ouverture du tableau sont des points de départ, <strong>pas des rotations optimales certifiées</strong>. Cadence, GCD, ordre et cooldowns font dériver la suite ; le moteur doit rechercher de vrais plans limités à10 s d’ouverture, puis jouer normalement. Aucun script « attendre chaque fenêtre » ni interrupteur automatique de classe n’est ajouté.</p>
+<h2 id="section-5">5. Obtention : ne jamais enfermer l’outil derrière son propre mur</h2>
+<p>Chaque famille est reliée à ses deux régions sources. Son premier patron ou une préparation d’entrée est accessible par une <strong>commande de préparation avant la zone</strong>, avec des ressources ordinaires du palier. Le joueur peut récolter, fabriquer, faire une commande ou acheter : ni boss obligatoire pour l’artisan, ni métier obligatoire pour le combattant.</p>
+<p>Les régions donnent ensuite composants thématiques, exemplaires finis, rolls plus intéressants et qualité. Le patron de maîtrise peut demander du contenu de la région ; <strong>le premier outil fonctionnel ne le demande pas</strong>. Un marché vide ne doit pas empêcher le premier joueur de fabriquer sa réponse.</p>
+<p>Les ensembles d’armure passent par Forge/Couture et les bijoux/gemmes par Joaillerie. Les recettes de famille réutilisent les patrons de recettes du précédent dossier ; je ne crée pas une deuxième économie ni48 nouvelles matières exclusives. Deux régions peuvent fournir une même catégorie de composant avec des variantes de rendement. Argent et or restent à la Joaillerie. Les nommés restent non fabricables en V1 : butin, garantie et marché.</p>
+<p>Les effets sont séparés des modèles visuels et des matériaux. Bronze, fer ou acier restent des bases de palier ; le trait d’ensemble ne requiert pas de dessiner une nouvelle banque par élément. Six noms d’objets par famille sont fournis comme pistes sérieuses ou légèrement amusantes, pas comme un nouveau pool fermé.</p>
+<h3>Migration des anciens ensembles</h3>
+<p><strong>Ne pas additionner ce catalogue à tous les anciens effets portant le même nom.</strong> Les versions proposées d’Enclume patiente, Passeurs de braise, Mains de traverse, Heures creuses et Veilleurs remplacent leurs anciens effets de dossier après comparaison des identifiants. Habits de pluie est une nouvelle famille de réponse. Les noms publics peuvent rester ; les anciens coefficients ne restent pas actifs en parallèle.</p>
+<p>Les autres sets de build peuvent subsister. Il faut toutefois rejouer la Vigie et les meilleurs généralistes à budget égal avant d’en conserver les effets tels quels. Objectif proposé : un généraliste confortable, dont le gain de mur médian reste autour de0–5 %, et qui perd face à l’outil précis dans sa mécanique. Il ne s’agit pas de nerfer la Vigie au hasard d’un pourcentage : son moteur doit d’abord être branché et mesuré.</p>
+<h2 id="section-6">6. Le Traqueur : une survie de classe, pas un soutien universel</h2>
+<p>Je reprends <strong>Repli couvert</strong>, sort commun existant au niveau20, plutôt que d’ajouter une ressource.</p>
+<p><strong>Proposition :</strong> conserve son dégât0,65 P, son tag de préparation et sa cible ; cooldown18 s ; réserve de protection personnelle de <strong>12 % des PV max pendant8 s</strong>. Remplace l’ancien bouclier0,8 P. À PV2800 : 336 absorbables au lieu de 80. Le coût reste une des cinq places du plan.</p>
+<p>Cette réserve protège contre coups et charges, pas contre aura/érosion ; elle ne soigne pas, ne protège pas un allié et ne se cumule pas avec elle-même. Les boucliers de soutien conservent leur fonctionnement. Le passif <code>supportPower</code> ne l’augmente pas. Elle s’épuise et laisse des périodes découvertes, ce qui garde une différence avec un vrai soutien.</p>
+<p><strong>Point d’implémentation important :</strong> ne pas écrire simplement <code>shield:3.36</code>. Ce serait une approximation à P100/PV2800, puis la protection risquerait d’être plafonnée par les caps en P du moteur actuel. Le contrat <code>design/traqueur.yaml</code> crée une réserve native personnelle indexée sur les PV, comptée séparément, sans relever tous les boucliers du jeu.</p>
+<p>Ce rework n’est pas actif dans les essais de base livrés. Il faudra le comparer A/B : améliore-t-il le Tue-Bête au mur, sans faire du Meneur de meute le meilleur partout ? Les classes ne sont pas équilibrées par un simple multiplicateur de PV distribué au hasard.</p>
+<h2 id="section-7">7. Route profonde : pente couplée, fureur et ancrage réel</h2>
+<p>Conserver douze zones de dix nœuds, puis réutiliser leurs mécaniques aux circuits suivants. Un nœud perdu ne retire aucun acquis. Les récompenses de checkpoint restent uniques, et les bonus économiques restent plafonnés selon le dossier précédent.</p>
+<p>Point de départ proposé, avant calibration réelle :</p>
+<p><code>s = circuit ×120 + zoneIndex ×10 + nœudLocal</code></p>
+<p><code>D(s) = calibrationDeZone ×1,008^s</code></p>
+<p><code>PV ennemis = PV de base × N engagé × D^1,5</code></p>
+<p><code>Dégâts de toutes les sources = dégâts de base × D</code></p>
+<p><code>Cadence ordinaire = cadence de base × N engagé</code> ; ciblage réparti. N est figé au départ, pas recalculé après chaque mort. Garde et soins ennemis suivent les PV, comme actuellement ; les charges, renforts et fenêtres gardent leurs horaires fixes. Le ralentissement ne touche pas leurs calendriers.</p>
+<p>Cela définit une pente d’essai cohérente, <strong>pas une promesse que le nœud120 sera atteint en tel nombre de jours</strong>. Une fois les objets branchés, enregistrer pour chaque ancre de progression P, PV, réduction, critique, cadence, budget de rolls et heures d’obtention attendues. Rejouer le premier circuit avec ces objets et ajuster les bases des zones ; ne pas utiliser le seul niveau affiché comme approximation de la puissance.</p>
+<h3>Fureur</h3>
+<p>Garder la fureur linéaire testée : après le délai, <code>multiplicateur =1 +0,10 × secondes dépassées</code>. Ce n’est pas un+10 % composé chaque seconde. La fureur affecte aussi aura et érosion après correction du moteur.</p>
+<p>Le délai est fixé depuis un <strong>groupe équilibré de référence, pour l’effectif et l’ancre de progression</strong>, jamais depuis la composition réellement amenée. À profondeur croissante, point de départ :</p>
+<p><code>délai =1,1 × tempsDeRéférenceZone × D^1,5 / ratioDePuissanceAttendueAuNœud</code>.</p>
+<p>La puissance attendue est une table de progression fixée par les concepteurs ; améliorer son équipement réel ne fait pas reculer arbitrairement la ligne d’arrivée. La fureur laisse le bon build gagner plus tôt et empêche les quatre soutiens de tout résoudre par attente illimitée. Sa pente actuelle est sévère : on la conserve comme contrôle, puis on la mesure sur les outils et compositions, plutôt que de l’annoncer équilibrée par intuition.</p>
+<p>La variante avec fureur du ZIP contient des seuils ancrés sur un vrai passage du groupe de référence au danger1 ; le suivi de profondeur et la courbe réelle restent à intégrer. Le fichier <code>design/route.yaml</code> indique exactement les hypothèses et ce qui manque.</p>
+<h2 id="section-8">8. Tableau d’affinité attendu : objectifs, pas observations</h2>
+<p>Chaque case principale ci-dessous vise un ratio de mur <strong>de1,25 à1,40 avec le set 4</strong>, et <strong>de1,15 à1,30 avec la gemme</strong> par rapport au meilleur généraliste de même voie et budget. La gemme peut gagner le cran demandé dans certaines configurations, sans prétendre égaler partout le set 4. Les préparations visent un appoint plus petit. En l’absence du mot-clé, l’effet vaut zéro et remplacer un généraliste peut coûter jusqu’à8 % de mur pour un set,7 % pour une gemme : l’outil n’est pas un bonus gratuit à conserver partout. Impact peut néanmoins donner un petit appoint contre les charges secondaires des zones8 et12, sans y devenir premier.</p>
+<table>
+<thead>
+<tr>
+<th>Zone</th>
+<th align="center">Interstice</th>
+<th align="center">Pluie</th>
+<th align="center">Impact</th>
+<th align="center">Battue</th>
+<th align="center">Fracture</th>
+<th align="center">Reprise</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1 Lanternes</td>
+<td align="center"><strong>Premier</strong></td>
+<td align="center">—</td>
+<td align="center">—</td>
+<td align="center">—</td>
+<td align="center">—</td>
+<td align="center">—</td>
+</tr>
+<tr>
+<td>2 Fossés</td>
+<td align="center">—</td>
+<td align="center"><strong>Premier</strong></td>
+<td align="center">—</td>
+<td align="center">—</td>
+<td align="center">—</td>
+<td align="center">—</td>
+</tr>
+<tr>
+<td>3 Trois coups</td>
+<td align="center">—</td>
+<td align="center">—</td>
+<td align="center"><strong>Premier</strong></td>
+<td align="center">—</td>
+<td align="center">—</td>
+<td align="center">—</td>
+</tr>
+<tr>
+<td>4 Vergers</td>
+<td align="center">—</td>
+<td align="center">—</td>
+<td align="center">—</td>
+<td align="center"><strong>Premier</strong></td>
+<td align="center">—</td>
+<td align="center">—</td>
+</tr>
+<tr>
+<td>5 Balances</td>
+<td align="center">—</td>
+<td align="center">—</td>
+<td align="center">—</td>
+<td align="center">—</td>
+<td align="center"><strong>Premier</strong></td>
+<td align="center">—</td>
+</tr>
+<tr>
+<td>6 Fours</td>
+<td align="center">—</td>
+<td align="center">—</td>
+<td align="center">—</td>
+<td align="center">—</td>
+<td align="center">—</td>
+<td align="center"><strong>Premier</strong></td>
+</tr>
+<tr>
+<td>7 Échos</td>
+<td align="center"><strong>Premier</strong></td>
+<td align="center">—</td>
+<td align="center">—</td>
+<td align="center">—</td>
+<td align="center">—</td>
+<td align="center">—</td>
+</tr>
+<tr>
+<td>8 Gué</td>
+<td align="center">—</td>
+<td align="center"><strong>Premier</strong></td>
+<td align="center">Appoint</td>
+<td align="center">—</td>
+<td align="center">—</td>
+<td align="center">—</td>
+</tr>
+<tr>
+<td>9 Sceaux</td>
+<td align="center">—</td>
+<td align="center">—</td>
+<td align="center">—</td>
+<td align="center">—</td>
+<td align="center"><strong>Premier</strong></td>
+<td align="center">—</td>
+</tr>
+<tr>
+<td>10 Terrasses</td>
+<td align="center">—</td>
+<td align="center">—</td>
+<td align="center"><strong>Premier</strong></td>
+<td align="center">—</td>
+<td align="center">—</td>
+<td align="center">—</td>
+</tr>
+<tr>
+<td>11 Atelier</td>
+<td align="center">—</td>
+<td align="center">—</td>
+<td align="center">—</td>
+<td align="center"><strong>Premier</strong></td>
+<td align="center">—</td>
+<td align="center">—</td>
+</tr>
+<tr>
+<td>12 Vents</td>
+<td align="center">—</td>
+<td align="center">—</td>
+<td align="center">Appoint</td>
+<td align="center">—</td>
+<td align="center">—</td>
+<td align="center"><strong>Premier</strong></td>
+</tr>
+</tbody></table>
+<p>« Premier » signifie meilleur <strong>dans sa catégorie</strong> : set comparé aux autres sets, gemme comparée aux autres majeures, avec le reste du build réoptimisé. Une gemme, qui coûte une majeure plutôt que quatre pièces, n’a pas à battre le set correspondant dans un duel de coefficients bruts. Les tableaux JSON/CSV fournissent les cibles exactes et leur statut <code>non mesuré</code>.</p>
+<p>Si Fracture ne gagne que10 % de mur malgré une bonne accélération, on ne remplace pas ce résultat par « réussite » : on augmente son levier conditionnel ou on réduit la cadence de garde et revoit la répartition des menaces. Si un kit dissipe déjà toutes les gardes à faible coût, cet outil peut être moins utile à cette voie ; il faut le publier et vérifier que l’acceptation sur six zones reste tenue pour chacune des neuf voies. Une différence entre classes n’est pas une anomalie à gommer automatiquement.</p>
+<h2 id="section-9">9. Comment vérifier sans choisir les résultats qui nous arrangent</h2>
+<p><strong>Le ratio est multiplicatif :</strong> mur outil / mur générique. Passer de×2 à×2,25 représente12,5 %, pas25 %. L’ancienne grille1 /1,5 /2 /2,5 /3 /4 est trop grossière pour trancher seule. Échantillonner plus finement, puis resserrer les deux murs à3 % ; si le meilleur danger essayé passe encore, prolonger la grille au lieu de conclure à une égalité.</p>
+<p>Faire deux comparaisons : même plan pour isoler l’effet, puis meilleur plan de chaque candidat pour mesurer le jeu réel. Conserver les plans rapides, sûrs et spécialisés au mur, pas seulement ceux qui gagnent la moyenne au danger1. Rechercher des ouvertures valides au plus10 s et leurs retours de cooldown ; l’actuel <code>combat-search</code> commence tout à0 et ne suffit pas à vérifier ce levier.</p>
+<p>De même, l’actuel <code>combat-search</code> ne passe que <code>enemyDamageScale</code>. Il faut lui brancher PV×danger^1,5, les équipements et la priorité de cible avant d’utiliser ses résultats comme verdict de ce dossier. Ces options sont décrites dans <code>design/verification.yaml</code> ; elles ne sont pas des flags CLI prétendument déjà disponibles.</p>
+<p>Cribler sur quelques graines, confirmer sur64, puis juger sur128 graines réservées, sans modifier le plan après avoir vu la graine. Publier tous les échecs, morts et consommables, ainsi que les médianes et cas les plus faibles. Un12/12 observé sur un petit échantillon n’est pas une garantie générale de90 %.</p>
+<h3>Acceptation solo</h3>
+<ol>
+<li>Au moins six zones sur douze : outil adapté≥1,25 fois le mur du généraliste, <strong>vérifié pour chaque voie</strong>, pas seulement la meilleure classe.</li>
+<li>Chaque set et chaque gemme de situation est premier dans au moins deux zones de sa catégorie. Sinon, fusionner, revoir ou retirer l’objet.</li>
+<li>Aucune des neuf voies sous×1,5 dans une zone avec son meilleur outil et la préparation de référence.</li>
+<li>Dans chaque classe, la voie DPS est la plus rapide dans au moins sept zones, à budget égal et succès≥90 %. Comparer les mêmes nœuds, pas chacun à son mur personnel.</li>
+<li>Vérifier les paires4+4 et les assemblages partiels, les talents de nommés et les autres majeures. Deux familles utiles ensemble ne doivent pas créer de proc récursif ou d’immunité totale. Les restrictions d’emplacements, doublons et budget de talents sont réellement appliquées.</li>
+</ol>
+<h3>Acceptation groupe — principes de Louis conservés</h3>
+<p>Au normal : chaque composition cohérente testée de1–4 joueurs et chaque voie solo atteint≥90 % avec préparation ordinaire. Au mur suivant : le bon groupe garde au plus+10 % d’avance de P/PV sur les compositions monorôles après adaptation de leur build. Aucun groupe sans DPS n’atteint un mur plus haut à budget égal. Le rendement attendu tient compte des échecs, repos, potions et durée : objectif proposé≤10 % d’écart de butin/h au dernier palier stable.</p>
+<p>Il existe 714 multiensembles de voies pour les effectifs1 à4 si les neuf voies peuvent se répéter :9 +45 +165 +495. Les huit groupes du rapport actuel sont d’excellentes sentinelles, pas toutes les compositions possibles. Cribler les 714 puis confirmer les cas limites et leurs ordres de ciblage est une couverture raisonnable. Les plans de groupe des soutiens gardent <code>beneficiary: lowest</code>, les ressources sont par membre et le repos de donjon reste30 % avec la même préparation.</p>
+<p>« Tout build peut progresser » signifie qu’aucune classe/voie/composition n’a de mur infranchissable par son équipement et sa préparation. Cela ne signifie pas qu’un plan incohérent ou sans statistiques doit vaincre immédiatement le même nœud qu’un build étudié. On ne promet ni l’équivalence des vitesses ni un contenu gagné à tout moment.</p>
+<h2 id="section-10">10. Ce qui est livré et l’ordre de travail conseillé</h2>
+<p><strong>Déjà exécutable :</strong> les deux variantes de rencontres au format natif, leur validation et les essais de base dans le moteur partagé. <strong>À intégrer :</strong> les six primitives de situation, la priorité de cible, Repli en PV maximum, l’échelle périodique et la recherche équipée. <strong>À mesurer ensuite :</strong> les gains de mur, la courbe réelle du premier circuit, les 714 compositions et le rendement horaire.</p>
+<p>Ordre conseillé à Claude :</p>
+<ol>
+<li>Brancher les statistiques réelles des objets, en gardant un témoin normalisé.</li>
+<li>Ajouter les six primitives et leurs tests de conservation ; régler les anciens effets du même nom avant d’activer les nouveaux.</li>
+<li>Ajouter Repli et la priorité préparée ; corriger danger/fureur périodiques. Vérifier les cas limites listés dans le contrat.</li>
+<li>Rejouer les douze zones : isolation puis recherche équipée, mêmes budgets, graines réservées et échecs conservés.</li>
+<li>Corriger les valeurs qui ratent les critères, puis seulement calibrer la route sur les objets et les heures d’obtention. Les effets visuels et nouvelles matières viennent après.</li>
+</ol>
+<p>Le résultat attendu est un cycle simple : <strong>je comprends le mur → je choisis un outil → je l’achète, le fais fabriquer ou le gagne → j’avance plus tôt → je garde cet outil pour la prochaine mécanique semblable.</strong> Pas une collection de douze uniformes imposés, ni une obligation de changer de classe.</p>
+<h3>Fichiers de travail</h3>
+<table>
+<thead>
+<tr>
+<th>Fichier</th>
+<th>Usage</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>sim/proposals/zones-v2/combat.yaml</code></td>
+<td>Douze rencontres natives, témoin sans fureur</td>
+</tr>
+<tr>
+<td><code>sim/proposals/zones-v2-fury/combat.yaml</code></td>
+<td>Même base avec seuils de fureur de référence</td>
+</tr>
+<tr>
+<td><code>design/equipements-situation.yaml</code></td>
+<td>Six sets, six majeures,24 fiches d’effet</td>
+</tr>
+<tr>
+<td><code>design/consommables.yaml</code></td>
+<td>Six préparations alternatives</td>
+</tr>
+<tr>
+<td><code>design/zones-reponses.yaml</code></td>
+<td>Liens zone/outils/plans/régions</td>
+</tr>
+<tr>
+<td><code>design/extensions-moteur.md</code></td>
+<td>Ordre de calcul, effets, limites et tests</td>
+</tr>
+<tr>
+<td><code>design/traqueur.yaml</code></td>
+<td>Contrat du Repli couvert personnel</td>
+</tr>
+<tr>
+<td><code>design/route.yaml</code></td>
+<td>Pente, fureur, ancrage réel à compléter</td>
+</tr>
+<tr>
+<td><code>design/affinites-attendues.json</code> et <code>.csv</code></td>
+<td>Cibles quantitatives, jamais résultats</td>
+</tr>
+<tr>
+<td><code>design/verification.yaml</code></td>
+<td>Recherche et critères d’acceptation</td>
+</tr>
+<tr>
+<td><code>verification/</code></td>
+<td>Validation, essais natifs, sources et échecs</td>
+</tr>
+<tr>
+<td><code>MESSAGE-CLAUDE.md</code></td>
+<td>Handoff prêt à transmettre</td>
+</tr>
+</tbody></table>
+<p>Les tableaux d’essais effectifs et leurs limites sont ajoutés dans <code>verification/RESULTATS.md</code>. Ils priment sur une hypothèse narrative de cette note ; aucune affinité d’équipement n’est déclarée validée avant intégration.</p>
+</article><details id="essais" open><summary>Résultats réellement mesurés et limites</summary><div class="results"><h1>Essais réellement exécutés</h1>
+<p>Source : moteur TypeScript du jeu au commit c120336036ae2ee6bff6d9f509ede1d26c892094. Date :22 octobre2026. Scripts portables fournis dans ce dossier ; ils importent directement les sources du dépôt. Aucun simulateur de combat indépendant.</p>
+<h2>Compatibilité</h2>
+<p>-12 rencontres validées par le schéma actuel, sans aucun champ inconnu retiré silencieusement.
+-Construction du contenu combat :0 erreur de référence.
+-6 familles couvrant exactement2 zones chacune ;24 fiches d’effet structurées et six gemmes majeures. Ce contrôle vérifie les données, pas leur exécution.
+-Variante avec fureur également validée au format natif.</p>
+<h2>Base, sans ensemble ni rework de classe</h2>
+<p>Répertoire80 ; plans *_advised actuellement dans le jeu, sans nouvelle recherche ; P100, PV2800+3 % de repas ; trois potions8 % sous35 % des PV, délai90 s. Danger1. Douze graines par case (1000 à1011), soit1296 combats. <strong>0 échec ; 0 case sous90 %.</strong></p>
+<p>La plage des temps est celle des médianes par voie ; elle n’est pas un intervalle de confiance. Certains plans génériques restent plus lents que80 s face aux gardes ; les temps de référence sont mesurés séparément.</p>
+<table>
+<thead>
+<tr>
+<th>Zone</th>
+<th align="right">Pire succès des9 voies</th>
+<th align="right">Temps des3 DPS</th>
+<th align="right">Temps des9 voies</th>
+<th align="right">Groupe équilibré témoin</th>
+<th align="right">Seuil de fureur proposé</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>La Chaussée des lanternes</td>
+<td align="right">100 %</td>
+<td align="right">68,5–72,4 s</td>
+<td align="right">68,5–82,6 s</td>
+<td align="right">79,3 s</td>
+<td align="right">87,18 s</td>
+</tr>
+<tr>
+<td>Les Fossés gris</td>
+<td align="right">100 %</td>
+<td align="right">40,8–46,1 s</td>
+<td align="right">40,8–53,3 s</td>
+<td align="right">47,3 s</td>
+<td align="right">51,98 s</td>
+</tr>
+<tr>
+<td>La Cour des trois coups</td>
+<td align="right">100 %</td>
+<td align="right">40,6–45,5 s</td>
+<td align="right">40,6–51,3 s</td>
+<td align="right">46,3 s</td>
+<td align="right">50,88 s</td>
+</tr>
+<tr>
+<td>Les Vergers de verre</td>
+<td align="right">100 %</td>
+<td align="right">40,6–45,5 s</td>
+<td align="right">40,6–51,3 s</td>
+<td align="right">46,3 s</td>
+<td align="right">50,88 s</td>
+</tr>
+<tr>
+<td>Le Cloître des balances</td>
+<td align="right">100 %</td>
+<td align="right">56,5–69,3 s</td>
+<td align="right">56,5–84,0 s</td>
+<td align="right">69,3 s</td>
+<td align="right">76,18 s</td>
+</tr>
+<tr>
+<td>Les Fours de recuit</td>
+<td align="right">100 %</td>
+<td align="right">42,3–47,0 s</td>
+<td align="right">42,3–53,8 s</td>
+<td align="right">47,8 s</td>
+<td align="right">52,53 s</td>
+</tr>
+<tr>
+<td>La Salle des échos</td>
+<td align="right">100 %</td>
+<td align="right">66,0–71,3 s</td>
+<td align="right">66,0–85,3 s</td>
+<td align="right">69,3 s</td>
+<td align="right">76,18 s</td>
+</tr>
+<tr>
+<td>Le Gué des plaies</td>
+<td align="right">100 %</td>
+<td align="right">40,6–45,5 s</td>
+<td align="right">40,6–51,3 s</td>
+<td align="right">46,3 s</td>
+<td align="right">50,88 s</td>
+</tr>
+<tr>
+<td>La Chambre aux deux sceaux</td>
+<td align="right">100 %</td>
+<td align="right">59,3–69,5 s</td>
+<td align="right">59,3–87,0 s</td>
+<td align="right">68,5 s</td>
+<td align="right">75,35 s</td>
+</tr>
+<tr>
+<td>Les Terrasses de la vigie</td>
+<td align="right">100 %</td>
+<td align="right">42,3–47,0 s</td>
+<td align="right">42,3–53,8 s</td>
+<td align="right">47,8 s</td>
+<td align="right">52,53 s</td>
+</tr>
+<tr>
+<td>L’Atelier des mauvais jours</td>
+<td align="right">100 %</td>
+<td align="right">53,3–59,5 s</td>
+<td align="right">53,3–67,8 s</td>
+<td align="right">60,0 s</td>
+<td align="right">66,00 s</td>
+</tr>
+<tr>
+<td>Le Belvédère des trois vents</td>
+<td align="right">100 %</td>
+<td align="right">42,3–47,0 s</td>
+<td align="right">42,3–53,8 s</td>
+<td align="right">47,6 s</td>
+<td align="right">52,39 s</td>
+</tr>
+</tbody></table>
+<p>Au normal de ce témoin seulement, Trempe-Rouge est le plus rapide de sa classe dans12/12 zones, Tue-Bête dans11/12, Fulgurant dans12/12. Les combinaisons équipées au mur peuvent modifier ce classement : le critère final reste à rejouer.</p>
+<h2>Référence de groupe et variante avec fureur</h2>
+<p>Référence : Trempe-Rouge + Fulgurant + Glyphiste + Sigillaire ; plans de groupe pour le soutien ; P100 par membre ; mêmes repas/potions ; PV ennemis×4, cadence ordinaire×4, ciblage réparti. Douze graines (3000 à3011) par zone :144 combats, <strong>0 échec</strong>. Les délais YAML sont1,1 fois la médiane de ce groupe au danger1, arrondis au centième.</p>
+<p>Puis les9 voies solo sont rejouées sur cette variante avec12 autres graines (4000 à4011) :1296 combats, <strong>0 échec</strong>. Ce contrôle porte sur le normal, sans ensemble et sans Repli revalorisé. Il ne vérifie ni les714 compositions, ni le donjon enchaîné, ni la difficulté profonde. Les seuils devront être recalibrés après correction de la fureur des périodiques et intégration des outils.</p>
+<p>Total : <strong>2736 combats dans le moteur partagé</strong>. Fichiers bruts : fumee-moteur.json et reference-fureur.json ; tous les résultats, y compris une défaite si elle apparaît lors d’un rejeu, sont conservés.</p>
+<h2>Ce qui n’a PAS été validé</h2>
+<table>
+<thead>
+<tr>
+<th>Acceptation demandée</th>
+<th>Statut</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Outil adapté :+25 % de mur dans au moins6 zones</td>
+<td>Non mesuré : effets absents du moteur</td>
+</tr>
+<tr>
+<td>Chaque set/gemme premier dans2 zones</td>
+<td>Matrice cible livrée ; pas un résultat</td>
+</tr>
+<tr>
+<td>Toutes les voies atteignent×1,5 avec meilleur outil</td>
+<td>Non mesuré</td>
+</tr>
+<tr>
+<td>DPS le plus rapide dans la majorité des zones équipées</td>
+<td>Témoin normal favorable ; verdict final non mesuré</td>
+</tr>
+<tr>
+<td>Compositions1–4, écart d’équipement≤10 %</td>
+<td>À rejouer ; ancien rapport4 DPS à+15 %</td>
+</tr>
+<tr>
+<td>Courbe réelle du premier circuit</td>
+<td>Statistiques d’objets à brancher en5a</td>
+</tr>
+<tr>
+<td>Rendement de butin/h entre compositions</td>
+<td>À mesurer avec coûts et échecs</td>
+</tr>
+</tbody></table>
+<p>Le dossier n’annonce donc pas que ces critères sont tenus. Il fournit les données, contrats et sorties de référence nécessaires pour mesurer les échecs de la prochaine itération.</p>
+</div></details><footer>Source : Kairoli/Bramo · c120336 ·22 octobre2026. Aucun fichier du jeu modifié. Le ZIP contient les YAML, les scripts, les sorties brutes et le message pour Claude.</footer></main></div><script>for(const table of document.querySelectorAll('table')){const box=document.createElement('div');box.className='table-wrap';table.before(box);box.append(table)}for(const button of document.querySelectorAll('[data-filter]')){button.addEventListener('click',()=>{const key=button.dataset.filter;let count=0;for(const card of document.querySelectorAll('.zone')){card.hidden=key!=='all'&&card.dataset.family!==key;if(!card.hidden)count++}for(const b of document.querySelectorAll('[data-filter]')){const active=b===button;b.classList.toggle('active',active);b.setAttribute('aria-pressed',String(active))}document.getElementById('zone-count').textContent=count+' zones affichées'})}</script></body></html>

@@ -6,6 +6,7 @@ import { Character, RigDefs, colorVars, resolveParts, useLook } from '../rig/Cha
 import { parts } from '../rig/assets';
 import { duration, signedPct } from '../format';
 import { ItemIcon } from './ui';
+import { GearIcon } from './GearIcon';
 
 export type EquipSlotId =
   | 'headwear'
@@ -35,6 +36,8 @@ export interface EquipEntry {
   highlight: Slot[];
   /** Rareté de l'équipement réel porté (couleur de bordure). */
   rarity?: string;
+  /** Équipement réel porté : de quoi dessiner son icône. */
+  gear?: { slot: string; family: string; tier: number; rarity: string };
 }
 
 const COSMETIC: { id: EquipSlotId; label: string; slots: Slot[] }[] = [
@@ -186,6 +189,7 @@ function gearEntries(base: Record<EquipSlotId, EquipEntry>, gear: GearView | nul
       thumb: null,
       item: null,
       rarity: g?.rarity,
+      ...(g ? { gear: { slot: g.slot, family: g.family, tier: g.tier, rarity: g.rarity } } : {}),
     };
   }
   out.shoulders = { ...base.shoulders, kind: 'gear', name: null, detail: 'Pas d’équipement à cet emplacement', thumb: null, item: null };
@@ -216,8 +220,8 @@ export function EquipSlot({
         <PartThumb slot={entry.thumb.slot} partId={entry.thumb.partId} />
       ) : entry.item ? (
         <ItemIcon item={entry.item} small />
-      ) : entry.rarity && entry.name ? (
-        <span className="equip-gear-name">{entry.name}</span>
+      ) : entry.gear ? (
+        <GearIcon {...entry.gear} />
       ) : (
         <span className="equip-empty-label">{entry.label}</span>
       )}

@@ -18,6 +18,7 @@ import { Atelier } from './rooms/Atelier';
 import { OrnamentGallery } from './rooms/OrnamentGallery';
 import { Arena } from './rooms/Arena';
 import { SpellSheet } from './rooms/SpellSheet';
+import { GearIcons } from './rooms/GearIcons';
 import { BestiaryPage } from './rooms/Bestiary';
 import { ContentContext } from './game/ContentContext';
 import './styles/global.css';
@@ -90,6 +91,8 @@ function App() {
         <SpellSheet />
       ) : hash === '#bestiaire' && import.meta.env.DEV ? (
         <BestiaryPage />
+      ) : hash === '#icones' && import.meta.env.DEV ? (
+        <GearIcons />
       ) : !session ? (
         <LoginScreen onLoggedIn={loadState} />
       ) : (

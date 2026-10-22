@@ -2383,11 +2383,22 @@
   align-items: center;
   gap: 10px;
 }
+/* Les icônes d'équipement remplissent leur case, quelle que soit sa taille. */
+.gear-tile .gear-icon,
+.equip-slot .gear-icon {
+  width: 80%;
+  height: 80%;
+}
+.gear-detail-icon .gear-icon {
+  width: 90%;
+  height: 90%;
+}
 .gear-detail-icon {
   display: grid;
   place-items: center;
-  width: 40px;
-  height: 40px;
+  width: 52px;
+  height: 52px;
+  background: radial-gradient(circle at 50% 35%, color-mix(in srgb, var(--rc) 22%, var(--sunken)), var(--sunken) 75%);
   flex: none;
   border-radius: 10px;
   border: 2px solid var(--rc);
@@ -4407,4 +4418,76 @@
   justify-items: center;
   text-align: center;
   gap: 8px;
+}
+
+/* ---------- Icônes d'équipement (essai, page /#icones) ---------- */
+.gi-page {
+  display: grid;
+  align-content: start;
+  grid-auto-rows: max-content;
+  gap: 16px;
+  padding: 16px;
+  height: 100vh;
+  overflow: auto;
+}
+.gi-panel {
+  display: grid;
+  gap: 12px;
+  padding: 16px;
+}
+.gi-grid {
+  display: grid;
+  align-items: center;
+  gap: 12px 16px;
+}
+.gi-cell {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.gi-tiers {
+  display: grid;
+  grid-template-columns: 160px repeat(10, 56px);
+  align-items: center;
+  gap: 8px;
+}
+.gi-tile {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 12px;
+  border: 1.5px solid var(--rc);
+  background:
+    radial-gradient(circle at 50% 40%, color-mix(in srgb, var(--rc) 22%, transparent), transparent 70%),
+    var(--sunken);
+}
+.gi-tile.big {
+  width: 76px;
+  height: 76px;
+  border-radius: 16px;
+}
+.gi-tile small {
+  position: absolute;
+  right: 3px;
+  bottom: 1px;
+  font-size: 10px;
+  color: var(--text-muted);
+}
+.gear-icon {
+  overflow: visible;
+}
+.gi-legendary .gi-sparkles {
+  animation: gi-twinkle 2.4s ease-in-out infinite;
+}
+@keyframes gi-twinkle {
+  50% {
+    opacity: 0.35;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .gi-legendary .gi-sparkles {
+    animation: none;
+  }
 }

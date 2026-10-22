@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState, type CSSProperties, type ReactNode } from 'react';
 import type { GearItemView, GearModel, GearView } from '@bramo/shared';
 import { api } from '../api';
+import { GearIcon } from './GearIcon';
 import { useGame } from '../game/GameContext';
 
 export const STAT_NAMES: Record<string, string> = {
@@ -52,7 +53,7 @@ export function GearTile({ g, slot, selected, onClick, label }: { g?: GearItemVi
       onClick={onClick}
       title={g ? `${g.name} · ${RARITY_NAMES[g.rarity]} · palier ${g.tier}` : (label ?? '')}
     >
-      <SlotGlyph slot={slot} />
+      {g ? <GearIcon slot={g.slot} family={g.family} tier={g.tier} rarity={g.rarity} size={40} /> : <SlotGlyph slot={slot} />}
       {g && <span className="gear-tile-tier">{g.tier}</span>}
       {g?.masterpiece && <span className="gear-tile-star">★</span>}
       {g?.set && <span className="gear-tile-set" />}
@@ -67,7 +68,7 @@ function GearDetail({ g, children }: { g: GearItemView; children?: ReactNode }) 
     <div className="gear-detail" style={{ '--rc': rarityColor(g.rarity) } as CSSProperties}>
       <div className="gear-detail-head">
         <span className="gear-detail-icon">
-          <SlotGlyph slot={g.slot} size={30} />
+          <GearIcon slot={g.slot} family={g.family} tier={g.tier} rarity={g.rarity} size={44} />
         </span>
         <span className="gear-detail-title">
           <strong>{g.masterpiece ? `Chef-d’œuvre ${g.name}` : g.name}</strong>

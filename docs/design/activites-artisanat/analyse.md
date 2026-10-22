@@ -215,3 +215,30 @@ Proposition **[Proposé par Claude]**, à faire avant de chiffrer la route solo.
 - **Zones et ensembles de 4** : le dossier ne relie pas ses zones aux ensembles (réponses par rôle seulement), et son propre banc montre que ses paires d'ensembles ne changent le résultat que de ~6 %, et un ensemble générique revient presque partout (§3.5). À dire au dossier : « ni le kit ni les ensembles tels que chiffrés ne font alterner les murs ; il faut des ensembles de situation forts contre une mécanique, et des zones conçues autour d'eux ».
 - **Soutien en groupe** (seconde question de Louis) : le kit n'était pas en cause d'abord, ce sont les plans conseillés, faits pour la vitesse en solo. Avec un plan de groupe, le soutien couvre la moitié des dégâts de son équipe, et la composition complète franchit ce que les groupes de dégâts ne franchissent pas (§3.4).
 - **Métaux** : **la version du dossier**. Argent et or n'ont pas de sens comme armures ; ils font une vraie filière à la Joaillerie (bijoux, sceptres), ce que `metiers.md` prévoyait déjà. La Forge garde un métal par palier (bronze, fer, acier, acier trempé, mithril, mithril renforcé, orichalque, azurite, sombracier, astralite), le Minage garde un nouveau minerai tous les 10 niveaux, et la Joaillerie n'est pas obligée d'acheter le métal de la Forge. Seul coût : « acier trempé » et « mithril renforcé » sont des variantes, moins dépaysantes qu'un métal neuf.
+
+## 9. Principe de Louis : aucune composition imposée [Décidé par Louis, 22 octobre]
+
+> « Les groupes ne doivent jamais être fixes. On ne doit pas imposer aux gens de jouer une composition en particulier. La difficulté surmontée par un bon build procure tout le plaisir d'un jeu. Il faut trouver la bonne balance. »
+
+**Traduction mesurable [Proposé par Claude]**, à vérifier à chaque changement de contenu avec `sim combat-dungeon-party` et `sim combat-gear-gap` :
+1. **Au danger de référence d'un contenu**, toute composition de 1 à 4 (et chaque voie seule, avec une préparation ordinaire) réussit au moins 90 % des parcours.
+2. **Au mur suivant**, la complémentarité (dégâts, soutien, contrôle) fait passer plus tôt, mais **au plus un palier d'équipement d'avance** : une composition « mono-rôle » franchit le même mur avec environ +10 % de statistiques, ou un meilleur build.
+3. **Aucune composition ne vaut beaucoup plus à l'heure** : les plus sûres sont plus lentes, donc moins récompensées par heure ; les plus rapides sont plus fragiles.
+4. **Un groupe sans dégâts ne franchit pas plus haut qu'un groupe équilibré** (la difficulté monte PV et dégâts ensemble ; fureur par rencontre).
+
+**Mesure actuelle** (Fonderie prototype, danger ×1,25 en pente du dossier, fureur, repos 30 %, 3 potions + repas ; `sim/reports/combat/ecart-equipement.md`) :
+
+| Composition | Équipement de référence | +5 % | +10 % | +15 % |
+|---|---|---|---|---|
+| 4 dégâts | 0 % | 0 % | 0 % | 100 % |
+| 3 dégâts + contrôle · 2 dégâts + 2 contrôles | 0 % | 100 % | 100 % | 100 % |
+| 2 dégâts + soutien + contrôle · 2 dégâts + 2 soutiens · 2 soutiens + 2 contrôles | 100 % | 100 % | 100 % | 100 % |
+| 4 soutiens | 83 % | 100 % | 100 % | 100 % |
+
+Les quatre critères sont tenus sur ce prototype : la complémentarité vaut un demi-palier d'équipement (un palier et demi pour un groupe entièrement DPS), et toutes les compositions passent avec un peu d'équipement. À revérifier avec les vraies salles et les vraies statistiques d'équipement.
+
+**Ajouté au jeu** : les plans de groupe des soutiens (`data/combat/plans.yaml`, `<voie>_group`) et un plan conseillé selon le contexte (`advisedPlan(…, 'group')`, `CombatView.advisedGroupPlan`) : en solo le plus rapide, en groupe celui qui aide les alliés.
+
+## 10. Message pour GPT
+
+Le texte à lui transmettre pour qu'il revoie les zones et le PvE solo : [`message-gpt.md`](message-gpt.md).

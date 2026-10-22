@@ -110,6 +110,10 @@ describe('plan et voie', () => {
       expect(e.at).toBe(0);
     }
     expect(advisedPlan(content.combat!, 'forgefire', 'anvil', 80)).toEqual(content.combat!.plans.anvil_advised!.levels['80']);
+    // En groupe, un soutien part de son plan de groupe (soins et protections) ; une autre voie garde son plan.
+    expect(advisedPlan(content.combat!, 'runist', 'glyphkeeper', 80, 'group')).not.toEqual(advisedPlan(content.combat!, 'runist', 'glyphkeeper', 80));
+    expect(advisedPlan(content.combat!, 'runist', 'glyphkeeper', 80, 'group').map((e) => e.spell)).toContain('rn_refuge');
+    expect(advisedPlan(content.combat!, 'forgefire', 'anvil', 80, 'group')).toEqual(advisedPlan(content.combat!, 'forgefire', 'anvil', 80));
   });
 
   it('la voie s’ouvre au niveau 30, se change gratuitement, et ne garde que ses sorts', () => {

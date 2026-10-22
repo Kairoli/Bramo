@@ -108,11 +108,16 @@ const score = (s: Spell) => (s.damage * s.targets ** 0.5 + (s.heal ?? 0) + (s.sh
  * Plan conseillé : le plan `<voie>_advised` (trouvé par la recherche du simulateur) du répertoire le plus proche,
  * réduit aux sorts accessibles, complété par les meilleurs sorts accessibles ; sans horaire, dans l'ordre des cooldowns.
  * Avant la voie, on part du plan conseillé de la voie de dégâts de la classe.
+ * En groupe (`context: 'group'`), une voie qui a un plan de groupe (`<voie>_group`, les soins et protections des soutiens)
+ * part de celui-ci : en solo, le plan le plus rapide ; en groupe, celui qui aide ses alliés.
  */
-export function advisedPlan(combat: CombatContent, classId: string, pathId: string | null, level: number): PlanEntry[] {
+export type PlanContext = 'solo' | 'group';
+
+export function advisedPlan(combat: CombatContent, classId: string, pathId: string | null, level: number, context: PlanContext = 'solo'): PlanEntry[] {
   const kit = combat.kits[classId];
   if (!kit) return [];
-  const ref = combat.plans[`${pathId ?? kit.paths.find((p) => p.role === 'damage')!.id}_advised`];
+  const path = pathId ?? kit.paths.find((p) => p.role === 'damage')!.id;
+  const ref = (context === 'group' ? combat.plans[`${path}_group`] : undefined) ?? combat.plans[`${path}_advised`];
   const keys = Object.keys(ref?.levels ?? {}).map(Number).sort((a, b) => a - b);
   const key = [...keys].reverse().find((k) => k <= level) ?? keys[0];
   const pool = availableSpells(combat, classId, pathId, level);

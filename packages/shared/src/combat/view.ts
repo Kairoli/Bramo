@@ -40,6 +40,8 @@ export interface CombatView {
   /** Le plan affiché est le plan conseillé (rien d'enregistré pour cette classe et cette voie). */
   advised: boolean;
   advisedPlan: PlanEntry[];
+  /** Plan conseillé pour jouer en groupe (différent du solo pour les soutiens). */
+  advisedGroupPlan: PlanEntry[];
   spells: SpellView[];
   encounters: { id: string; name: string; enemies: number; text: string }[];
   training: { xpShare: number; maxLevel: number };
@@ -137,6 +139,7 @@ export function viewCombat(state: CharacterState, content: Content): CombatView 
     plan,
     advised,
     advisedPlan: advisedPlan(combat, classId, path, level),
+    advisedGroupPlan: advisedPlan(combat, classId, path, level, 'group'),
     spells: Object.values(combat.spells)
       .filter((s) => s.class === classId && (!s.path || s.path === path || !path))
       .sort((x, y) => x.level - y.level)

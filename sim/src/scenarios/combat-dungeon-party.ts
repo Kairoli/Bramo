@@ -149,3 +149,30 @@ export function partyDungeonReport(combat: CombatContent, seeds = 12, out = 'don
   writeFileSync(join(dir, `${out}.json`), `{"rooms":${JSON.stringify(foundryRooms)},"parties":${JSON.stringify(dungeonParties)},"runs":[\n${runs.map((r) => JSON.stringify(r)).join(',\n')}\n]}\n`);
   return `Écrit : ${join(dir, `${out}.md`)}, ${out}.json`;
 }
+
+/**
+ * Principe de Louis : aucune composition imposée ; un meilleur build ou un meilleur équipement doit pouvoir remplacer un rôle
+ * absent. On rejoue chaque composition au danger donné avec des statistiques de référence plus hautes (un palier ≈ +10 %).
+ */
+export function gearGapReport(combat: CombatContent, danger = 1.25, hpExponent = 1.5, seeds = 12): string {
+  const gains = [1, 1.05, 1.1, 1.15, 1.25];
+  const parties = dungeonParties.filter((p) => p.paths.length > 1);
+  const md: string[] = ['# Un meilleur équipement remplace-t-il un rôle absent ?', '', '> Généré par `pnpm --filter @bramo/sim sim combat-gear-gap`. Ne pas modifier à la main.', ''];
+  md.push(
+    `Fonderie prototype à 4, danger ×${String(danger).replace('.', ',')} (PV ennemis × danger^${String(hpExponent).replace('.', ',')}), repos 30 %, 3 potions + repas, ${seeds} graines. Chaque colonne monte la Puissance et les PV de référence de tous les membres (un palier d'équipement vaut environ +10 %). Cellule : parcours réussis.`,
+    '',
+  );
+  md.push(`| Composition | ${gains.map((g) => `+${Math.round((g - 1) * 100)} %`).join(' | ')} |`, `|---|${gains.map(() => '---').join('|')}|`);
+  for (const p of parties) {
+    const cells = gains.map((g) => {
+      const c: CombatContent = { ...combat, rules: { ...combat.rules, referenceStats: { ...combat.rules.referenceStats, power: combat.rules.referenceStats.power * g, maxHp: combat.rules.referenceStats.maxHp * g } } };
+      const rs = Array.from({ length: seeds }, (_, seed) => runPartyDungeon(c, p.id, p.paths, foundryRooms, 0.3, danger, seed, supplies[2]!, hpExponent));
+      return `${Math.round((rs.filter((r) => r.win).length / seeds) * 100)} %`;
+    });
+    md.push(`| ${p.name} | ${cells.join(' | ')} |`);
+  }
+  md.push('');
+  const file = join(ROOT, 'sim', 'reports', 'combat', 'ecart-equipement.md');
+  writeFileSync(file, `${md.join('\n')}\n`);
+  return `Écrit : ${file}`;
+}

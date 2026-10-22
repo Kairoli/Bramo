@@ -43,8 +43,9 @@ export function makeLab(proposal = 'coherence-v1', zones = 'zones-v2', toolsFrom
   const content = loadVariant(proposal);
   const combat = content.combat!;
   const zoneList = zones.split(',').flatMap((z) => Object.values(loadVariant(z).combat!.encounters));
-  const encounters = [...Object.values(combat.encounters), ...zoneList];
-  combat.encounters = Object.fromEntries(encounters.map((e) => [e.id, e]));
+  // Une proposition de zones peut redonner une rencontre déjà adoptée dans data/ : la proposition l'emporte.
+  combat.encounters = Object.fromEntries([...Object.values(combat.encounters), ...zoneList].map((e) => [e.id, e]));
+  const encounters = Object.values(combat.encounters);
   const read = (p: string, file: string) => parse(readFileSync(join(PROPOSALS_DIR, p, file), 'utf8'));
   const catalog = talentCatalogSchema.parse(read(proposal, 'talents.yaml'));
   const tools = toolsFileSchema.parse(read(existsSync(join(PROPOSALS_DIR, proposal, 'tools.yaml')) ? proposal : toolsFrom, 'tools.yaml'));

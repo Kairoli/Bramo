@@ -38,9 +38,13 @@ export function readProposalRaw(name: string): RawContent {
   raw.ornaments = [];
   const read = (file: string): unknown => parse(readFileSync(join(dir, file), 'utf8'));
   if (existsSync(join(dir, 'settings.yaml'))) raw.settings = deepMerge(raw.settings, read('settings.yaml'));
+  // Les vestiges (butin de combat) restent ceux de data/ : les rencontres y renvoient et aucune recette ne les produit.
+  const vestiges = (raw.items as { category?: string }[]).filter((i) => i.category === 'vestige');
   for (const key of ['professions', 'items', 'trials', 'gear'] as const) {
     if (existsSync(join(dir, `${key}.yaml`))) raw[key] = read(`${key}.yaml`);
   }
+  const items = raw.items as { id: string }[];
+  for (const v of vestiges as { id: string }[]) if (!items.some((i) => i.id === v.id)) items.push(v);
   if (existsSync(join(dir, 'gear_pools.yaml'))) raw.gearPools = read('gear_pools.yaml');
   if (existsSync(join(dir, 'gear_sets.yaml'))) raw.gearSets = read('gear_sets.yaml');
   if (existsSync(join(dir, 'combat.yaml'))) raw.combat = patchCombat(raw.combat, read('combat.yaml') as CombatPatch);

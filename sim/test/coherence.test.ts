@@ -10,15 +10,6 @@ import { PROPOSALS_DIR } from '../src/load.js';
 describe('cohérence : proposition coherence-v1', () => {
   const lab = makeLab('coherence-v1');
 
-  it('le témoin palier 20 Rare mixte retrouve les statistiques de référence (moyenne des classes)', () => {
-    const classes = Object.keys(lab.combat.kits);
-    const mean = (f: (s: ReturnType<typeof referenceStats>) => number) => classes.reduce((a, c) => a + f(referenceStats(lab, c)), 0) / classes.length;
-    const ref = lab.combat.rules.referenceStats;
-    expect(mean((s) => s.power) / ref.power).toBeCloseTo(1, 1);
-    expect(mean((s) => s.maxHp) / ref.maxHp).toBeCloseTo(1, 1);
-    expect(mean((s) => s.damageReduction)).toBeCloseTo(ref.damageReduction, 1);
-  });
-
   it('chaque gemme, nommé et ensemble du catalogue se résout dans le budget, et se joue', () => {
     const rules = { majors: 4, setPieces: 8, preps: 1 };
     const choices = [
@@ -37,6 +28,16 @@ describe('cohérence : proposition coherence-v1', () => {
 
 describe('cohérence : build v2 (coherence-v2)', () => {
   const lab = makeLab('coherence-v2', 'coherence-zones-v2,coherence-bosses-v1');
+
+  // Proposition adoptée dans data/ le 22 octobre : catalogue et conversion des statistiques vont ensemble.
+  it('le témoin palier 20 Rare mixte retrouve les statistiques de référence (moyenne des classes)', () => {
+    const classes = Object.keys(lab.combat.kits);
+    const mean = (f: (s: ReturnType<typeof referenceStats>) => number) => classes.reduce((a, c) => a + f(referenceStats(lab, c)), 0) / classes.length;
+    const ref = lab.combat.rules.referenceStats;
+    expect(mean((s) => s.power) / ref.power).toBeCloseTo(1, 1);
+    expect(mean((s) => s.maxHp) / ref.maxHp).toBeCloseTo(1, 1);
+    expect(mean((s) => s.damageReduction)).toBeCloseTo(ref.damageReduction, 1);
+  });
 
   it('le catalogue des dix paliers : chaque palier et chaque rareté existent pour chaque emplacement, ensembles de 40 à 90', () => {
     const models = Object.values(lab.content.gearModels).filter((m) => !m.starter);

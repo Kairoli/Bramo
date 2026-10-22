@@ -1,0 +1,550 @@
+# Catalogue du build, version 2 (docs/design/coherence/build.md) : réserves, gemmes, ensembles à deux étages, objets nommés.
+# Schéma : talentCatalogSchema (packages/shared/src/schemas/combat.ts). Lu par `sim combat-coherence --proposal coherence-v2`.
+# Proposition de Claude, chiffres à équilibrer ; rien n'est adopté.
+#
+# L'idée : huit RÉSERVES (des jauges de build, vides au début de chaque combat). Des objets les REMPLISSENT, d'autres les
+# DÉPENSENT, d'autres en relèvent le PLAFOND ou les CONVERTISSENT l'une dans l'autre. Une gemme qui dépense sans rien pour la
+# remplir ne fait rien : c'est là que le joueur réfléchit. Les classes remplissent aussi certaines réserves par leurs gestes.
+
+pools:
+  - {id: tisons, name: Tisons, max: 10, text: "Des braises qui couvent sous la peau de la cible. On les gagne en frappant ce qui brûle ; on les fait éclater d'un coup."}
+  - {id: entailles, name: Entailles, max: 10, text: "Chaque critique laisse une marque. On les garde pour la fin, quand la cible vacille."}
+  - {id: frimas, name: Frimas, max: 10, text: "Le froid qui s'accumule quand on retient l'ennemi. Il dégèle en dégâts ou en carapace."}
+  - {id: rancoeur, name: Rancœur, max: 10, text: "Chaque coup encaissé, on s'en souvient. On le rend au centuple, ou presque."}
+  - {id: ferveur, name: Ferveur, max: 10, text: "La chaleur des coups de main donnés. Elle se rend en soins ou en éclats lumineux."}
+  - {id: mesure, name: Mesure, max: 10, text: "Le tempo des attaques de base. Un musicien sait quand placer le grand accord."}
+  - {id: echos, name: Échos, max: 10, text: "Ce qui reste d'un sort quand on en enchaîne un autre. À force, ça résonne."}
+  - {id: trophees, name: Trophées, max: 6, text: "Une collection de petits souvenirs, un par ennemi vaincu. Ça motive."}
+
+gems:
+  # --- Tisons : brûler, accumuler, faire éclater -------------------------------------------------------------------
+  - id: allume_feu
+    name: L'Allume-Feu
+    archetype: tisons
+    role: producer
+    text: "Frapper une cible qui brûle donne 1 Tison. Toutes les 8 s, ta prochaine compétence met le feu (0,20 P sur 6 s)."
+    effects:
+      - {when: direct, target: [burning], do: {gain: {pool: tisons, n: 1}}}
+      - {when: skill, cooldown: 8, do: {dot: {type: burn, amount: 0.2, duration: 6}}}
+  - id: feu_aux_poudres
+    name: Le Feu aux poudres
+    archetype: tisons
+    role: payoff
+    text: "Une compétence de cooldown de 10 s ou plus fait éclater tes Tisons : 0,19 P chacun sur la cible, 0,08 P sur un voisin (délai 8 s, 3 Tisons au moins)."
+    effects:
+      - {when: skill, minCooldown: 10, poolAtLeast: {pool: tisons, n: 3}, cooldown: 8, do: {spendPool: {pool: tisons, perStack: 0.19, other: 0.08}}}
+  - id: petit_bois
+    name: Le Petit Bois
+    archetype: tisons
+    role: amplifier
+    text: "+5 Tisons au plafond. Tes brûlures et saignements durent 15 % plus longtemps."
+    pools: {tisons: 5}
+    mods: {dotDuration: 0.15}
+  - id: cendres_tiedes
+    name: Les Cendres tièdes
+    archetype: tisons
+    role: bridge
+    text: "Chaque Tison gagné donne aussi une demi-Ferveur. Tes afflictions font 5 % de dégâts en plus. (Le feu de camp qui réchauffe les copains.)"
+    convert: [{from: tisons, to: ferveur, share: 0.5}]
+    mods: {dotDamage: 0.05}
+
+  # --- Entailles : critiquer, achever ---------------------------------------------------------------------------
+  - id: fil_du_rasoir
+    name: Le Fil du rasoir
+    archetype: entailles
+    role: producer
+    text: "Un critique donne 2 Entailles ; frapper une cible qui saigne en donne 1 (toutes les 3 s au plus)."
+    effects:
+      - {when: crit, do: {gain: {pool: entailles, n: 2}}}
+      - {when: direct, target: [bleeding], cooldown: 3, do: {gain: {pool: entailles, n: 1}}}
+  - id: coup_de_grace
+    name: Le Coup de grâce
+    archetype: entailles
+    role: payoff
+    text: "Contre une cible sous 40 % de ses PV, ta compétence dépense tes Entailles : 0,19 P chacune (délai 5 s)."
+    effects:
+      - {when: skill, targetHpBelow: 0.4, poolAtLeast: {pool: entailles, n: 2}, cooldown: 5, do: {spendPool: {pool: entailles, perStack: 0.19}}}
+  - id: rouge_vif
+    name: Rouge vif
+    archetype: entailles
+    role: amplifier
+    text: "+0,7 point de critique par Entaille. Un critique fait saigner (0,20 P sur 6 s, délai 8 s)."
+    effects:
+      - {when: direct, do: {critBonus: 0.007, scaleBy: entailles}}
+      - {when: crit, cooldown: 8, do: {dot: {type: bleed, amount: 0.2, duration: 6}}}
+  - id: le_barbier
+    name: Le Barbier
+    archetype: entailles
+    role: bridge
+    text: "Un ennemi vaincu donne 3 Entailles et 1 Trophée : on garde la main pour le suivant."
+    effects:
+      - {when: kill, do: {gain: {pool: entailles, n: 3}}}
+      - {when: kill, do: {gain: {pool: trophees, n: 1}}}
+
+  # --- Frimas : retenir, puis dégeler -------------------------------------------------------------------------
+  - id: souffle_polaire
+    name: Le Souffle polaire
+    archetype: frimas
+    role: producer
+    text: "Une action directe ralentit de 10 % pendant 2 s (délai 6 s). Une action de classe qui contrôle donne 2 Frimas."
+    effects:
+      - {when: direct, cooldown: 6, do: {slow: {amount: 0.1, duration: 2}}}
+      - {when: control, do: {gain: {pool: frimas, n: 2}}}
+  - id: degel_brutal
+    name: Le Dégel brutal
+    archetype: frimas
+    role: payoff
+    text: "À 6 Frimas ou plus, ton prochain contrôle les fait éclater : 0,19 P chacun (délai 6 s)."
+    effects:
+      - {when: control, poolAtLeast: {pool: frimas, n: 6}, cooldown: 6, do: {spendPool: {pool: frimas, perStack: 0.19}}}
+  - id: coeur_de_glace
+    name: Cœur de glace
+    archetype: frimas
+    role: payoff
+    text: "Sous 50 % de PV, ton Frimas devient une carapace : 0,25 P de bouclier par Frimas (délai 15 s)."
+    effects:
+      - {when: hp_below, hpBelow: 0.5, poolAtLeast: {pool: frimas, n: 3}, cooldown: 15, do: {spendPool: {pool: frimas, perStack: 0.25, as: shield, duration: 8}}}
+  - id: engelures
+    name: Les Engelures
+    archetype: frimas
+    role: amplifier
+    text: "+8 % de dégâts directs contre une cible ralentie ou étourdie. Tes ralentissements durent 20 % plus longtemps."
+    effects:
+      - {when: direct, target: [controlled], do: {amplify: 0.08}}
+    mods: {slowDuration: 0.2}
+
+  # --- Rancœur : encaisser, rendre ----------------------------------------------------------------------------
+  - id: rancune_tenace
+    name: La Rancune tenace
+    archetype: rancoeur
+    role: producer
+    text: "Chaque coup qui te coûte des PV donne 1 Rancœur. Sous 50 % de PV, ça en donne 2."
+    effects:
+      - {when: hit_taken, do: {gain: {pool: rancoeur, n: 1}}}
+      - {when: hit_taken, hpBelow: 0.5, do: {gain: {pool: rancoeur, n: 1}}}
+  - id: retour_envoyeur
+    name: Retour à l'envoyeur
+    archetype: rancoeur
+    role: payoff
+    text: "À 8 Rancœur, le coup suivant que tu encaisses la renvoie à son auteur : 0,26 P chacune (délai 8 s). Si un bouclier vient de se briser, pas besoin d'attendre 8 : 3 suffisent."
+    effects:
+      - {when: hit_taken, poolAtLeast: {pool: rancoeur, n: 8}, cooldown: 8, do: {to: attacker, spendPool: {pool: rancoeur, perStack: 0.26}}}
+      - {when: shield_broken, poolAtLeast: {pool: rancoeur, n: 3}, cooldown: 8, do: {to: attacker, spendPool: {pool: rancoeur, perStack: 0.26}}}
+  - id: vieux_cuir
+    name: La Peau de vieux cuir
+    archetype: rancoeur
+    role: amplifier
+    text: "+5 Rancœur au plafond. Après une compétence de bouclier, protège-toi de 0,04 P par Rancœur (délai 10 s)."
+    pools: {rancoeur: 5}
+    effects:
+      - {when: protect_done, cooldown: 10, do: {shield: {coef: 0.04, duration: 6}, scaleBy: rancoeur}}
+  - id: mauvais_perdant
+    name: Le Mauvais Perdant
+    archetype: rancoeur
+    role: bridge
+    text: "Chaque Rancœur gagnée donne aussi une Mesure : on se venge à coups de poing. Attaques de base +5 %."
+    convert: [{from: rancoeur, to: mesure, share: 1}]
+    mods: {basicDamage: 0.05}
+
+  # --- Ferveur : aider, puis rayonner -------------------------------------------------------------------------
+  - id: main_tendue
+    name: La Main tendue
+    archetype: ferveur
+    role: producer
+    text: "Un soin ou un bouclier de compétence donne 2 Ferveur, et te protège de 0,14 P (délai 10 s). Une attaque de base en donne 1 toutes les 10 s : la ferveur vient aussi en tapant."
+    effects:
+      - {when: [heal_done, protect_done], do: {gain: {pool: ferveur, n: 2}}}
+      - {when: [heal_done, protect_done], cooldown: 10, do: {shield: {coef: 0.14, duration: 6}}}
+      - {when: basic, cooldown: 10, do: {gain: {pool: ferveur, n: 1}}}
+  - id: grace_oblique
+    name: La Grâce oblique
+    archetype: ferveur
+    role: payoff
+    text: "À 6 Ferveur ou plus, ta prochaine action directe la libère en lumière : 0,28 P par Ferveur (délai 8 s)."
+    effects:
+      - {when: direct, poolAtLeast: {pool: ferveur, n: 6}, cooldown: 8, do: {spendPool: {pool: ferveur, perStack: 0.28}}}
+  - id: aureole_de_travers
+    name: L'Auréole de travers
+    archetype: ferveur
+    role: payoff
+    text: "Toutes les 12 s, ta Ferveur soigne l'allié le plus mal en point : 0,05 P par Ferveur."
+    effects:
+      - {when: every, period: 12, poolAtLeast: {pool: ferveur, n: 3}, do: {spendPool: {pool: ferveur, perStack: 0.05, as: heal}}}
+  - id: bonne_conscience
+    name: La Bonne Conscience
+    archetype: ferveur
+    role: amplifier
+    text: "Soins et boucliers produits +8 %. +3 Ferveur au plafond."
+    mods: {shieldPower: 0.08, healPower: 0.08}
+    pools: {ferveur: 3}
+
+  # --- Mesure : le tempo des attaques de base -----------------------------------------------------------------
+  - id: metronome
+    name: Le Métronome
+    archetype: mesure
+    role: producer
+    text: "Chaque attaque de base donne 1 Mesure, 2 si tu n'as lancé aucune compétence depuis 2 s."
+    effects:
+      - {when: basic, do: {gain: {pool: mesure, n: 1}}}
+      - {when: basic, noSkillFor: 2, do: {gain: {pool: mesure, n: 1}}}
+  - id: grand_accord
+    name: Le Grand Accord
+    archetype: mesure
+    role: payoff
+    text: "Une compétence de cooldown de 16 s ou plus joue toute ta Mesure : 0,16 P chacune (5 Mesures au moins)."
+    effects:
+      - {when: skill, minCooldown: 16, poolAtLeast: {pool: mesure, n: 5}, do: {spendPool: {pool: mesure, perStack: 0.16}}}
+  - id: rythme_cardiaque
+    name: Le Rythme cardiaque
+    archetype: mesure
+    role: amplifier
+    text: "+1,8 % de dégâts d'attaque de base par Mesure."
+    effects:
+      - {when: basic, do: {amplify: 0.018, scaleBy: mesure}}
+  - id: pas_de_deux
+    name: Le Pas de deux
+    archetype: mesure
+    role: bridge
+    text: "Chaque Mesure gagnée donne aussi un demi-Écho. Compétences +3 %."
+    convert: [{from: mesure, to: echos, share: 0.5}]
+    mods: {skillDamage: 0.03}
+
+  # --- Échos : enchaîner, résonner ------------------------------------------------------------------------------
+  - id: ricochet
+    name: Le Ricochet
+    archetype: echos
+    role: producer
+    text: "Deux compétences différentes à moins de 3 s d'intervalle donnent 1 Écho."
+    effects:
+      - {when: skill, pattern: distinct_pair, within: 3, do: {gain: {pool: echos, n: 1}}}
+  - id: point_d_orgue
+    name: Le Point d'orgue
+    archetype: echos
+    role: payoff
+    text: "À 8 Échos, ta prochaine compétence les fait résonner : 0,14 P chacun sur la cible, 0,06 P sur un voisin (délai 8 s)."
+    effects:
+      - {when: skill, poolAtLeast: {pool: echos, n: 8}, cooldown: 8, do: {spendPool: {pool: echos, perStack: 0.14, other: 0.06}}}
+  - id: perroquet
+    name: Le Perroquet
+    archetype: echos
+    role: producer
+    text: "Une compétence qui lit la même rune que la précédente donne 2 Échos ; sinon, toute compétence en donne 1 toutes les 5 s."
+    effects:
+      - {when: rune_read, pattern: repeat_read, do: {gain: {pool: echos, n: 2}}}
+      - {when: skill, cooldown: 5, do: {gain: {pool: echos, n: 1}}}
+  - id: cacophonie
+    name: La Cacophonie
+    archetype: echos
+    role: amplifier
+    text: "+4 Échos au plafond ; tes dépenses de réserve font 8 % de plus."
+    pools: {echos: 4}
+    mods: {spendPower: 0.08}
+
+  # --- Trophées : collectionner -------------------------------------------------------------------------------
+  - id: collectionneur
+    name: Le Collectionneur
+    archetype: trophees
+    role: producer
+    text: "Un ennemi vaincu donne 3 Trophées ; une action sur un renfort, 1 toutes les 3 s. Un gros morceau compte aussi : la première fois que ta cible passe sous 75, 50 puis 25 % de ses PV, 1 Trophée (un bout de corne, une écaille…)."
+    effects:
+      - {when: kill, do: {gain: {pool: trophees, n: 3}}}
+      - {when: direct, target: [add], cooldown: 3, do: {gain: {pool: trophees, n: 1}}}
+      - {when: direct, targetHpBelow: 0.75, cooldown: 999, do: {gain: {pool: trophees, n: 1}}}
+      - {when: direct, targetHpBelow: 0.5, cooldown: 999, do: {gain: {pool: trophees, n: 1}}}
+      - {when: direct, targetHpBelow: 0.25, cooldown: 999, do: {gain: {pool: trophees, n: 1}}}
+  - id: la_vitrine
+    name: La Vitrine
+    archetype: trophees
+    role: payoff
+    text: "+7 % de dégâts directs par Trophée : tant qu'on les regarde, on se sent pousser des ailes."
+    effects:
+      - {when: direct, do: {amplify: 0.07, scaleBy: trophees}}
+  - id: taxidermiste
+    name: Le Taxidermiste
+    archetype: trophees
+    role: payoff
+    text: "Toutes les 12 s, empaille tes Trophées en bouclier : 0,35 P chacun ; il en garde la moitié."
+    effects:
+      - {when: every, period: 12, poolAtLeast: {pool: trophees, n: 1}, do: {spendPool: {pool: trophees, perStack: 0.35, as: shield, duration: 8, keep: 0.5}}}
+
+  # --- Utilitaires ----------------------------------------------------------------------------------------------
+  - id: bastion_operette
+    name: Le Bastion d'opérette
+    role: utility
+    text: "Au début du combat, un bouclier de 0,8 P pendant 10 s. Ça ne tient pas longtemps, mais ça fait de l'effet."
+    effects:
+      - {when: fight_start, do: {shield: {coef: 0.8, duration: 10}}}
+  - id: derniere_etincelle
+    name: La Dernière Étincelle
+    role: utility
+    text: "Sous 40 % de PV, ta prochaine compétence te protège de 0,55 P pendant 6 s (délai 20 s)."
+    effects:
+      - {when: hp_below, hpBelow: 0.4, cooldown: 20, do: {next: skill, shield: {coef: 0.55, duration: 6}}}
+  - id: oeil_du_chasseur
+    name: L'Œil du chasseur
+    role: utility
+    text: "Ta première action marque la cible 8 s (délai 10 s) ; contre une cible marquée, critique +5 points."
+    effects:
+      - {when: direct, cooldown: 10, do: {mark: 8}}
+      - {when: direct, target: [marked], do: {critBonus: 0.05}}
+
+named:
+  # --- Forgefeu -------------------------------------------------------------------------------------------------
+  - id: marteau_des_griefs
+    name: Le Marteau des griefs
+    nickname: « Tonton Rancune »
+    class: forgefire
+    weapon: hammer
+    slot: weapon
+    source: Le Veilleur de four (Forges éteintes)
+    text: "Tes Trempes rendent la Rancœur : 0,22 P chacune. +5 Rancœur au plafond. Les coups reçus en donnent comme d'habitude, pas la peine de les chercher."
+    pools: {rancoeur: 5}
+    effects:
+      - {when: hit_taken, do: {gain: {pool: rancoeur, n: 1}}}
+      - {when: temper, poolAtLeast: {pool: rancoeur, n: 2}, do: {spendPool: {pool: rancoeur, perStack: 0.22}}}
+  - id: forge_portative
+    name: La Forge portative
+    nickname: « La Bouilloire »
+    class: forgefire
+    weapon: hammer
+    slot: weapon
+    source: Le Contremaître rouge (Forges éteintes)
+    text: "+1 Braise au plafond (4 au lieu de 3). Une Trempe qui dépense 4 Braises allume 3 Tisons."
+    mods: {heatCap: 1}
+    effects:
+      - {when: temper, heatAtLeast: 4, do: {gain: {pool: tisons, n: 3}}}
+  # --- Traqueur -------------------------------------------------------------------------------------------------
+  - id: arc_des_ronceraies
+    name: L'Arc des Ronceraies
+    nickname: « Ronchon »
+    class: tracker
+    weapon: longbow
+    slot: weapon
+    source: Le Cerf de braise (Lisière des veilleurs)
+    text: "Exploiter un Angle donne 3 Entailles. L'Angle mort dure 2 s de plus."
+    mods: {angleDuration: 2}
+    effects:
+      - {when: angle, do: {gain: {pool: entailles, n: 3}}}
+  - id: la_ponctuelle
+    name: La Ponctuelle
+    nickname: « L'Horloge »
+    class: tracker
+    weapon: crossbow
+    slot: weapon
+    source: La Cloche de fer (Forges éteintes)
+    text: "Chaque Repérage donne 2 Mesures. Attaques de base +10 %. L'arbalète ne rate jamais un train."
+    mods: {basicDamage: 0.1}
+    effects:
+      - {when: skill, skill: [setup], do: {gain: {pool: mesure, n: 2}}}
+  # --- Runiste --------------------------------------------------------------------------------------------------
+  - id: dernier_avertissement
+    name: Le Dernier Avertissement
+    nickname: « Le Rabâcheur »
+    class: runist
+    weapon: staff
+    slot: weapon
+    source: Le Témoin sous l'eau (Archives englouties)
+    text: "La même compétence deux fois en 14 s : 3 Échos, et ton prochain sort rejoue la rune qu'il lit (délai 10 s)."
+    effects:
+      - {when: skill, pattern: same_skill, within: 14, do: {gain: {pool: echos, n: 3}}}
+      - {when: skill, pattern: same_skill, within: 14, cooldown: 10, do: {next: skill, replayRune: 1}}
+  - id: sceau_qui_tient
+    name: Le Sceau qui tient
+    nickname: « La Nounou »
+    class: runist
+    weapon: scepter
+    slot: weapon
+    source: L'Intendant de verre (Bastion des longues veilles)
+    text: "Un bouclier de compétence qui expire avec un reste donne 3 Ferveur et soigne de 0,20 P."
+    effects:
+      - {when: shield_expired, do: {gain: {pool: ferveur, n: 3}, heal: {coef: 0.2, to: beneficiary}}}
+  # --- Colliers universels : ils tordent les règles des réserves ------------------------------------------------
+  - id: benefice_du_doute
+    name: Le Bénéfice du doute
+    nickname: « Peut-être »
+    slot: necklace
+    source: Le Chantre muet (Archives englouties)
+    text: "Un contrôle donne 2 Frimas et te protège de 0,25 P (délai 8 s)."
+    effects:
+      - {when: control, do: {gain: {pool: frimas, n: 2}}}
+      - {when: control, cooldown: 8, do: {shield: {coef: 0.25, duration: 6}}}
+  - id: petit_arrangement
+    name: Le Petit Arrangement
+    nickname: « Entre nous »
+    slot: necklace
+    source: Le Collecteur du bourbier (Abords du bourg)
+    text: "Toute Rancœur gagnée devient aussi de la Ferveur. Ce qu'on te fait, tu le rends en bien."
+    convert: [{from: rancoeur, to: ferveur, share: 1}]
+  - id: mauvais_presage
+    name: Le Mauvais Présage
+    nickname: « Le Corbeau »
+    slot: necklace
+    source: La Sentinelle fendue (Cicatrice des trois vents)
+    text: "Une Rupture que tu provoques donne 4 Entailles et 4 Frimas."
+    effects:
+      - {when: break, do: {gain: {pool: entailles, n: 4}}}
+      - {when: break, do: {gain: {pool: frimas, n: 4}}}
+  - id: sac_sans_fond
+    name: Le Sac sans fond
+    nickname: « Le Grenier »
+    slot: necklace
+    source: Le Régent des courants (Cicatrice des trois vents)
+    text: "+4 au plafond de toutes tes réserves (+2 Trophées). On ne jette rien, ça peut servir."
+    pools: {tisons: 4, entailles: 4, frimas: 4, rancoeur: 4, ferveur: 4, mesure: 4, echos: 4, trophees: 2}
+  - id: heures_supplementaires
+    name: Les Heures supplémentaires
+    nickname: « L'Insomniaque »
+    slot: necklace
+    source: Le Héraut des trois vents (Cicatrice des trois vents)
+    text: "Tes dépenses ne vident que la moitié de la réserve. Le reste, c'est pour demain… enfin, pour le coup d'après."
+    mods: {spendKeep: 0.5}
+  - id: yoyo
+    name: Le Fil du retour
+    nickname: « Le Yo-yo »
+    slot: necklace
+    source: Le Porte-serment de la meute (Bastion des longues veilles)
+    text: "Un ennemi vaincu te soigne de 0,40 P et donne 3 Échos. Ça repart toujours."
+    effects:
+      - {when: kill, do: {heal: {coef: 0.4}, gain: {pool: echos, n: 3}}}
+
+sets:
+  # Deux étages : 2 et 3 pièces nourrissent un style (une réserve), 4 pièces répondent à une mécanique ennemie (un outil de
+  # situation, sans effet ailleurs). Deux ensembles par famille de situation, avec deux styles différents. Les trois ensembles
+  # de classe ont à la place un 4 pièces qui tord la mécanique de la classe : leur choix contre une réponse de situation est
+  # le vrai dilemme du mur.
+  - id: heures_creuses
+    name: Les Heures creuses
+    family: interstice
+    items: [Coiffe de la dernière seconde, Manteau des heures creuses, Gants du contretemps, Ceinturon du bon moment]
+    text: ["2 : attaques de base +1 Mesure.", "3 : +5 Mesures au plafond.", "4 : Interstice — stocke une part des dégâts perdus hors fenêtre et la rend à l'ouverture."]
+    pieces:
+      "2": {effects: [{when: basic, do: {gain: {pool: mesure, n: 1}}}]}
+      "3": {pools: {mesure: 5}}
+      "4": {tool: interstice_set4}
+  - id: sablier_fele
+    name: Le Sablier fêlé
+    family: interstice
+    items: [Chapeau du temps perdu, Tunique à retardement, Mitaines du « tout de suite », Bottes « encore cinq minutes »]
+    text: ["2 : deux compétences différentes à la suite donnent 1 Écho.", "3 : +4 Échos au plafond.", "4 : Interstice."]
+    pieces:
+      "2": {effects: [{when: skill, pattern: distinct_pair, within: 3, do: {gain: {pool: echos, n: 1}}}]}
+      "3": {pools: {echos: 4}}
+      "4": {tool: interstice_set4}
+  - id: habits_de_pluie
+    name: Les Habits de pluie
+    family: rain
+    items: [Capuche qui goutte, Ciré du Fossé gris, Gants de lavandière, Bottes en caoutchouc de la Guilde]
+    text: ["2 : un soin ou un bouclier de compétence donne 1 Ferveur.", "3 : soins et boucliers +6 %.", "4 : Pluie — retire des charges d'érosion."]
+    pieces:
+      "2": {effects: [{when: [heal_done, protect_done], do: {gain: {pool: ferveur, n: 1}}}]}
+      "3": {mods: {shieldPower: 0.06, healPower: 0.06}}
+      "4": {tool: rain_set4}
+  - id: cire_du_gue
+    name: Le Ciré du Gué
+    family: rain
+    items: [Bonnet de pêcheur mouillé, Vareuse du Gué des plaies, Gants de goudron, Waders de la passe]
+    text: ["2 : un contrôle donne 1 Frimas.", "3 : +3 Frimas au plafond ; ralentissements +20 % de durée.", "4 : Pluie."]
+    pieces:
+      "2": {effects: [{when: control, do: {gain: {pool: frimas, n: 1}}}]}
+      "3": {pools: {frimas: 3}, mods: {slowDuration: 0.2}}
+      "4": {tool: rain_set4}
+  - id: enclume_patiente
+    name: L'Enclume patiente
+    family: impact
+    items: [Heaume « Même pas mal », Plastron de l'enclume, Gantelets de l'apprenti battu, Jambières du tas de ferraille]
+    text: ["2 : chaque coup encaissé donne 1 Rancœur.", "3 : +4 Rancœur au plafond ; boucliers +6 %.", "4 : Impact — les coups lourds et les charges frappent beaucoup moins fort."]
+    pieces:
+      "2": {effects: [{when: hit_taken, do: {gain: {pool: rancoeur, n: 1}}}]}
+      "3": {pools: {rancoeur: 4}, mods: {shieldPower: 0.06}}
+      "4": {tool: impact_set4}
+  - id: fondeurs_sourds
+    name: Les Fondeurs sourds
+    family: impact
+    items: [Casque bouché à la cire, Tablier des Fondeurs, Gants « Hein ? », Bottes de coulée]
+    text: ["2 : une compétence de cooldown de 14 s ou plus allume 2 Tisons.", "3 : afflictions +6 %.", "4 : Impact."]
+    pieces:
+      "2": {effects: [{when: skill, minCooldown: 14, do: {gain: {pool: tisons, n: 2}}}]}
+      "3": {mods: {dotDamage: 0.06}}
+      "4": {tool: impact_set4}
+  - id: passeurs_de_braise
+    name: Les Passeurs de braise
+    family: beat
+    items: [Capuche des Passeurs, Pourpoint charbonneux, Gants de relais, Ceinture à mèches]
+    text: ["2 : à la mort d'une cible, tes afflictions passent sur un voisin.", "3 : +4 Tisons au plafond.", "4 : Battue — dégâts accrus contre les renforts."]
+    pieces:
+      "2": {effects: [{when: kill, do: {transferDots: true}}]}
+      "3": {pools: {tisons: 4}}
+      "4": {tool: beat_set4}
+  - id: meute_du_dimanche
+    name: La Meute du dimanche
+    family: beat
+    items: [Chapeau de battue à plume, Gilet à poches pleines, Gants de rabatteur, Guêtres du dimanche]
+    text: ["2 : un ennemi vaincu donne 2 Trophées.", "3 : +2 Trophées au plafond ; +6 % contre les renforts.", "4 : Battue."]
+    pieces:
+      "2": {effects: [{when: kill, do: {gain: {pool: trophees, n: 2}}}]}
+      "3": {pools: {trophees: 2}, effects: [{when: direct, target: [add], do: {amplify: 0.06}}]}
+      "4": {tool: beat_set4}
+  - id: mains_de_traverse
+    name: Les Mains de traverse
+    family: fracture
+    items: [Calotte du crocheteur, "Cotte « pas vu, pas pris »", Gants de traverse, Ceinture à pinces]
+    text: ["2 : Pression +10 % ; un contrôle donne 1 Frimas.", "3 : +6 % contre une cible ralentie ou étourdie.", "4 : Fracture — tes coups percent les gardes deux fois plus vite."]
+    pieces:
+      "2": {mods: {pressure: 0.1}, effects: [{when: control, do: {gain: {pool: frimas, n: 1}}}]}
+      "3": {effects: [{when: direct, target: [controlled], do: {amplify: 0.06}}]}
+      "4": {tool: fracture_set4}
+  - id: pied_de_biche
+    name: Le Pied-de-biche
+    family: fracture
+    items: [Casque cabossé du cambrioleur, Brigandine à leviers, Gants de serrurier, Bottes à semelles de crowbar]
+    text: ["2 : un critique donne 1 Entaille.", "3 : critique +3 points.", "4 : Fracture."]
+    pieces:
+      "2": {effects: [{when: crit, do: {gain: {pool: entailles, n: 1}}}]}
+      "3": {effects: [{when: direct, do: {critBonus: 0.03}}]}
+      "4": {tool: fracture_set4}
+  - id: veilleurs_du_sceau
+    name: Les Veilleurs du sceau
+    family: breath
+    items: [Capuchon du veilleur, Robe des nuits blanches, Mitaines de la ronde, Lanterne de ceinture]
+    text: ["2 : un soin ou un bouclier de compétence donne 1 Ferveur.", "3 : +4 Ferveur au plafond.", "4 : Reprise — une part de l'aura encaissée revient en soin."]
+    pieces:
+      "2": {effects: [{when: [heal_done, protect_done], do: {gain: {pool: ferveur, n: 1}}}]}
+      "3": {pools: {ferveur: 4}}
+      "4": {tool: breath_set4}
+  - id: tablier_de_suie
+    name: Le Tablier de suie
+    family: breath
+    items: [Bandeau noirci, Tablier de suie, Moufles de fournier, Sabots du four]
+    text: ["2 : chaque coup encaissé donne 1 Rancœur.", "3 : Défense +8 % de score.", "4 : Reprise."]
+    pieces:
+      "2": {effects: [{when: hit_taken, do: {gain: {pool: rancoeur, n: 1}}}]}
+      "3": {mods: {defenseScore: 0.08}}
+      "4": {tool: breath_set4}
+  # --- Ensembles de classe : un 4 pièces qui tord la mécanique ----------------------------------------------------
+  - id: second_feu
+    name: Le Fer du second feu
+    class: forgefire
+    items: [Heaume du second feu, Cuirasse à soufflet, Gantelets de recuit, Grèves de la reprise]
+    text: ["2 : les Chauffes allument 1 Tison.", "3 : +1 Braise au plafond.", "4 : une Trempe qui dépense 2 Braises ou plus en rend 1 (délai 8 s)."]
+    pieces:
+      "2": {effects: [{when: skill, skill: [heat], do: {gain: {pool: tisons, n: 1}}}]}
+      "3": {mods: {heatCap: 1}}
+      "4": {effects: [{when: temper, heatAtLeast: 2, cooldown: 8, do: {heat: 1}}]}
+  - id: battue_silencieuse
+    name: La Battue silencieuse
+    class: tracker
+    items: [Capuche de feuilles, Veste de l'affût, Gants de silence, Bottes de mousse]
+    text: ["2 : l'Angle mort dure 2 s de plus.", "3 : un Angle exploité donne 2 Entailles.", "4 : exploiter un Angle frappe aussi un voisin (0,35 P) ; seul, ta prochaine attaque de base gagne 0,25 P (délai 8 s)."]
+    pieces:
+      "2": {mods: {angleDuration: 2}}
+      "3": {effects: [{when: angle, do: {gain: {pool: entailles, n: 2}}}]}
+      "4": {effects: [{when: angle, cooldown: 8, do: {damage: 0.35, to: other, fallback: {next: basic, damage: 0.25}}}]}
+  - id: phrase_inachevee
+    name: La Phrase inachevée
+    class: runist
+    items: [Bonnet à points de suspension, Robe du « et ensuite ? », Gants de la virgule, Ceinture du tiret]
+    text: ["2 : changer de forme de rune donne 1 Écho.", "3 : valeur des runes +10 %.", "4 : une phrase A–B–A prépare 0,40 P et 0,25 P de bouclier pour le sort suivant (délai 10 s)."]
+    pieces:
+      "2": {effects: [{when: skill, pattern: form_change, do: {gain: {pool: echos, n: 1}}}]}
+      "3": {mods: {runeValue: 0.1}}
+      "4": {effects: [{when: skill, pattern: aba, cooldown: 10, do: {next: skill, damage: 0.4, shield: {coef: 0.25, duration: 6}}}]}

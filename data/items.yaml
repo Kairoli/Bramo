@@ -89,3 +89,11 @@
 - {id: frost_feast, name: Festin du givre, category: meal, value: 9, meal: {bonus: 0.10, durationMin: 105}}
 
 # --- Chefs-d'œuvre : fabriqués pendant une épreuve de maître, remis au maître ---
+
+# --- Vestiges : butin de combat, un par région ; ils serviront aux ensembles et aux gemmes de situation (butin-et-recettes.md). ---
+- {id: galets_du_puits, name: Galets du puits, category: vestige, value: 2}
+- {id: scorie_de_memoire, name: Scorie de mémoire, category: vestige, value: 2}
+- {id: ambre_de_veille, name: Ambre de veille, category: vestige, value: 3}
+- {id: encre_fossile, name: Encre fossile, category: vestige, value: 3}
+- {id: eclat_de_serment, name: Éclat de serment, category: vestige, value: 3}
+- {id: quartz_de_faille, name: Quartz de faille, category: vestige, value: 3}

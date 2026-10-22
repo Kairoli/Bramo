@@ -175,7 +175,7 @@ for (const n of catalog.named) {
       material: w ? LADDERS[WEAPON_LADDER[w.id]][ti] : LADDERS.precious[ti],
       stats: w ? statLine(basePoints(tier), weaponSlot.w, w.stats, {}, r.mult, r.stats) : statLine(basePoints(tier), jewelSlot.w, { power: 1, crit: 0.8 }, {}, r.mult, r.stats),
       ...(w ? { weaponSpeed: w.speed } : {}),
-      rolls: r.rolls, socket: 'majeur', source: ['dungeon', 'loot'], conditional: `${n.nickname ? `${n.nickname} — ` : ''}${n.text}`, named: true,
+      rolls: r.rolls, socket: 'majeur', source: ['dungeon', 'loot'], conditional: `${n.nickname ? `${n.nickname} — ` : ''}${n.text}`, named: true, talent: n.id,
     });
   });
 }

@@ -1,0 +1,27 @@
+# Outils de situation, version 2 : ramenés à « environ un palier d'avance » dans leur mécanique (×1,10 à ×1,15 de mur),
+# au lieu de ×1,25 à ×1,48 (docs/design/coherence/coherence.md §4). La gemme vaut ~70 % de l'ensemble 4, la préparation ~40 %.
+# Fracture et Battue gardent leurs coefficients : ce sont leurs zones qui ont changé (coherence-zones-v2).
+# L'ensemble 4 est apporté par le 4 pièces des ensembles de situation (`tool:` dans talents.yaml).
+- {id: interstice_set4, name: "Interstice (4 pièces)", family: interstice, rank: set4, store: 0.35, bankCap: 4}
+- {id: interstice_opal, name: "Opale d'interstice", family: interstice, rank: gem, store: 0.25, bankCap: 3}
+- {id: synchrony_tonic, name: "Tonique de synchronie", family: interstice, rank: prep, store: 0.12, bankCap: 1.5}
+
+- {id: rain_set4, name: "Pluie (4 pièces)", family: rain, rank: set4, remove: 2, atLeast: 2, cooldown: 10}
+- {id: wash_pearl, name: "Perle de lessive", family: rain, rank: gem, remove: 2, atLeast: 2, cooldown: 16}
+- {id: clear_rinse, name: "Rinçage clair", family: rain, rank: prep, remove: 2, atLeast: 2, cooldown: 24, charges: 3}
+
+- {id: impact_set4, name: "Impact (4 pièces)", family: impact, rank: set4, incoming: 0.28, maxHp: 0.1, cooldown: 6}
+- {id: stop_hematite, name: "Hématite d'arrêt", family: impact, rank: gem, incoming: 0.2, maxHp: 0.07, cooldown: 6}
+- {id: parry_balm, name: "Baume de parade", family: impact, rank: prep, incoming: 0.1, maxHp: 0.05, cooldown: 10}
+
+- {id: beat_set4, name: "Battue (4 pièces)", family: beat, rank: set4, multiplier: 1.4}
+- {id: drive_garnet, name: "Grenat de battue", family: beat, rank: gem, multiplier: 1.28}
+- {id: drive_oil, name: "Huile de battue", family: beat, rank: prep, multiplier: 1.15}
+
+- {id: fracture_set4, name: "Fracture (4 pièces)", family: fracture, rank: set4, multiplier: 2}
+- {id: fault_eye, name: "Œil de faille", family: fracture, rank: gem, multiplier: 1.65}
+- {id: wedge_powder, name: "Poudre de coin", family: fracture, rank: prep, multiplier: 1.4}
+
+- {id: breath_set4, name: "Reprise (4 pièces)", family: breath, rank: set4, recover: 0.35, pulse: 0.05, rolling: 0.15, window: 30, cooldown: 6}
+- {id: recovery_amber, name: "Ambre de reprise", family: breath, rank: gem, recover: 0.25, pulse: 0.04, rolling: 0.12, window: 30, cooldown: 8}
+- {id: recovery_infusion, name: "Infusion de reprise", family: breath, rank: prep, recover: 0.15, pulse: 0.03, rolling: 0.08, window: 30, cooldown: 8}

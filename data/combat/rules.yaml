@@ -28,6 +28,7 @@ caps:
   secondaryShield: 1.6    # dont boucliers hors compétence (plaques, équipement) (× P)
   afflictionsPerType: 3   # Brûlures (ou Saignements) actives par cible, de sources différentes
 enemy:
+  onceWeakenTarget: heavy # les affaiblissements « une attaque » sont gardés pour le prochain coup lourd ou chargé
   defense: 0.10           # réduction uniforme ; aucune résistance élémentaire (reportées, décision de Louis du 22 octobre)
   firstAttackAt: 2        # première attaque ordinaire ; +0,5 s par ennemi suivant
   attackStagger: 0.5
@@ -44,6 +45,56 @@ stability:
 cleanse:
   auraImmunity: 6             # une purification protège de l'aura pendant 6 s
 dotTick: 1
+
+# Statistiques tirées de l'équipement porté (docs/design/coherence/coherence.md §3.2, proposition coherence-v2 adoptée le
+# 22 octobre 2026). Les points du catalogue sont ramenés au palier 20 (`norm`), puis Puissance et PV suivent +12 % par palier
+# (`factor`) : témoin palier 20 Rare mixte ≈ P 100, PV 2 800. La Défense encaisse aussi (1,5 PV par point). Les lignes
+# aléatoires donnent une statistique, un modificateur de talent (`mod:`) ou un plafond de réserve (`pool:`).
+gearStats:
+  power: {base: 0, perPoint: 0.230}
+  maxHp: {base: 1602, perPoint: 4.8, perDefense: 1.5}
+  tiers: {"1": {norm: 4.69, factor: 0.797}, "10": {norm: 1.698, factor: 0.893}, "20": {norm: 1, factor: 1}, "30": {norm: 0.691, factor: 1.12}, "40": {norm: 0.534, factor: 1.254}, "50": {norm: 0.436, factor: 1.405}, "60": {norm: 0.368, factor: 1.574}, "70": {norm: 0.32, factor: 1.762}, "80": {norm: 0.282, factor: 1.974}, "90": {norm: 0.251, factor: 2.211}}
+  defense: {cap: 0.45, k: {"1": 212}}
+  haste: {cap: 0.23, base: 0.12, k: {"1": 200}}
+  crit: {cap: 0.3, base: 0.05, k: {"1": 172}}
+  critMultiplier: 1.6
+  startShieldDuration: 8
+  lines:
+    Puissance: power
+    Vitalité: maxHp
+    Défense: damageReduction
+    Cadence: haste
+    Critique: critChance
+    Dégâts critiques: critMultiplier
+    Dégâts des afflictions: mod:dotDamage
+    Durée des afflictions: mod:dotDuration
+    Durée des ralentissements: mod:slowDuration
+    Puissance des boucliers: mod:shieldPower
+    Puissance des soins: mod:healPower
+    Attaques de base: mod:basicDamage
+    Compétences: mod:skillDamage
+    Pression: mod:pressure
+    Dépenses de réserve: mod:spendPower
+    Tisons au plafond: pool:tisons
+    Entailles au plafond: pool:entailles
+    Frimas au plafond: pool:frimas
+    Rancœur au plafond: pool:rancoeur
+    Ferveur au plafond: pool:ferveur
+    Mesure au plafond: pool:mesure
+    Échos au plafond: pool:echos
+    Trophées au plafond: pool:trophees
+
+# Butin d'une victoire (docs/design/contenu/butin-et-recettes.md §2), compté en unités de 6 minutes de combat : un combat de
+# 36 s vaut 0,1 unité. Pas de matière première (c'est le travail des métiers) ni d'or neuf. À équilibrer.
+loot:
+  unitSeconds: 360
+  vestiges: 2             # vestiges de la région par unité
+  classic: 0.20           # chance d'un objet classique du palier par unité
+  rarity: {common: 0.55, rare: 0.30, epic: 0.13, legendary: 0.02}
+  setPiece: 0.04          # chance d'une pièce d'ensemble par unité (palier 40 et plus)
+  setLegendary: 0.10
+  named: 0.05             # chance par objet nommé de la rencontre, par unité
+  namedGuarantee: 20      # garanti après 20 unités sans l'avoir eu
 
 # Progression de classe et activité de combat (étape 4). [Décidé par Louis : XP de classe au combat seulement ;
 # Terrain d'entraînement validé.] Chiffres proposés par Claude, à équilibrer.

@@ -5,6 +5,7 @@
 # Équilibrage du 22 octobre (proposition combat-voies-v1, validée par Louis) : Rebattue 0,12 -> 0,22 et Morsure 0,42 -> 0,65 ;
 # voies de contrôle : weakenAll = l'Affaiblissement du passif vaut pour toutes les attaques de la cible pendant sa durée,
 # slowAmount / slowDuration = ralentissements renforcés (+10 points, +50 % de durée ; plafond des boss inchangé).
+# Traqueur réparé (docs/design/coherence/classes.md, 22 octobre) : l'affût, Morsure 0,65 -> 0,9, Contrepiège 0,35 -> 0,55.
 
 slots: {beforePath: 4, fromPath: 5}   # l'ultime (niveau 75) occupe une des cinq places
 pathLevel: 30
@@ -26,12 +27,12 @@ classes:
     mechanic: angle
     label: La poursuite
     state: "Une Proie, un Angle mort"
-    params: {duration: 6, bonus: 0.30, carryOnKill: 3}
+    params: {duration: 6, bonus: 0.30, carryOnKill: 3, windowPierce: 0.35}   # windowPierce : l'affût (fenêtres fermées 35 % moins réductrices)
     elements: [physical, lightning]
     weapons: [longbow, crossbow, daggers]
     paths:
-      - {id: beastslayer, name: Tue-Bête, role: damage, passive: La morsure après le trait, params: {bleed: 0.65, duration: 6}}
-      - {id: trapper, name: Piégeur, role: control, passive: Contrepiège, params: {damage: 0.35, weaken: 0.20, weakenAll: 1, duration: 6, pressure: 10, slowAmount: 0.10, slowDuration: 1.5}}
+      - {id: beastslayer, name: Tue-Bête, role: damage, passive: La morsure après le trait, params: {bleed: 0.9, duration: 6}}
+      - {id: trapper, name: Piégeur, role: control, passive: Contrepiège, params: {damage: 0.55, weaken: 0.20, weakenAll: 1, duration: 6, pressure: 10, slowAmount: 0.10, slowDuration: 1.5}}
       - {id: packleader, name: Meneur de meute, role: support, passive: À mon signal, params: {heal: 0.50, damage: 0.35, duration: 8}}
 
   - id: runist

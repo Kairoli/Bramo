@@ -32,6 +32,10 @@ import {
   viewGear,
   gearGrantBody,
   gearIdBody,
+  gearSocketBody,
+  devItemGrantBody,
+  addStack,
+  cloneState,
   lookBody,
   outfitBody,
   ornamentBody,
@@ -89,7 +93,7 @@ import { contribute, createClan, joinClan, kickMember, leaveClan, listClans, myC
 import { joinTestClan } from './devClan.js';
 import { playerProfile } from './profile.js';
 import { cancelRepair, openRepairs, requestRepair, takeRepair } from './repairs.js';
-import { dropMismatchedOwned, equipOwned, giveStarterGear, grantGear, loadGear, unequipOwned, wearGearSet } from './gear.js';
+import { dropMismatchedOwned, equipOwned, giveStarterGear, grantGear, loadGear, socketOwned, unequipOwned, wearGearSet } from './gear.js';
 import { buyFromStall, cancelOrder, fillOrder, marketBook, marketSummary, myOrders, placeOrder } from './market.js';
 
 export interface AppOptions {
@@ -504,6 +508,13 @@ export async function buildApp({ db, content, clock = Date.now, secureCookies = 
     return viewGear(await loadGear(db, me.id), me.classId, content);
   });
 
+  app.post('/api/gear/socket', async (req) => {
+    const { id, itemId } = body(gearSocketBody, req);
+    const res = await playAs(req, (state, _now, ctx) => socketOwned(ctx.tx, ctx.characterId, state, id, itemId, content));
+    const me = await myCharacter(req);
+    return { state: res, gear: viewGear(await loadGear(db, me.id), me.classId, content) };
+  });
+
   app.post('/api/gear/unequip', async (req) => {
     const { id } = body(gearIdBody, req);
     await playAs(req, async (_state, _now, ctx) => {
@@ -525,6 +536,16 @@ export async function buildApp({ db, content, clock = Date.now, secureCookies = 
       });
       const me = await myCharacter(req);
       return viewGear(await loadGear(db, me.id), me.classId, content);
+    });
+    /** Test : mettre des objets dans son sac (jamais en production). */
+    app.post('/api/dev/items/grant', (req) => {
+      const { itemId, qty } = body(devItemGrantBody, req);
+      if (!content.items[itemId]) throw new HttpError(404, 'unknown_item', 'Objet inconnu.');
+      return playAs(req, (state) => {
+        const next = cloneState(state);
+        addStack(next.inventory, itemId, qty);
+        return { state: next, log: `Objet de test obtenu : ${qty} × ${content.items[itemId]!.name}.` };
+      });
     });
     /** Test : rejoindre le clan d'essai (créé au premier appel, déjà vivant), pour voir l'intérieur d'un clan. */
     app.post('/api/dev/clan/test', (req) =>

@@ -24,7 +24,7 @@ export async function loadCharacterForUpdate(tx: Tx, accountId: number, content:
   const weapon = worn.find((g) => g.equipped === 'weapon');
   const weaponFamily = weapon ? (content.gearModels[weapon.modelId]?.family ?? null) : null;
   const life = content.settings.gear.lifeHours * 3_600_000;
-  const equipment = worn.filter((g) => g.wear < life && content.gearModels[g.modelId]).map((g) => ({ model: g.modelId, lines: g.lines.map((l) => ({ name: l.name, value: l.value })) }));
+  const equipment = worn.filter((g) => g.wear < life && content.gearModels[g.modelId]).map((g) => ({ model: g.modelId, lines: g.lines.map((l) => ({ name: l.name, value: l.value })), ...(g.gem ? { gem: g.gem } : {}) }));
   return {
     id: row.id,
     name: row.name,

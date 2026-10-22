@@ -90,6 +90,8 @@ export interface CombatView {
   stats: { power: number; maxHp: number; damageReduction: number; haste: number; critChance: number; critMultiplier: number };
   /** Le plancher l'emporte sur l'équipement porté (équipement trop faible ou trop bas). */
   floored: boolean;
+  /** Réponses de situation actives (gemmes serties, ensembles de situation) : leur nom. */
+  situation: string[];
   training: { xpShare: number; maxLevel: number };
   activity: {
     encounter: string | null;
@@ -353,6 +355,7 @@ export function viewCombat(state: CharacterState, content: Content): CombatView 
     classTier: tier,
     stats: pick(worn?.stats ?? combat.rules.referenceStats),
     floored: !!worn?.floored,
+    situation: (worn?.tools ?? []).map((t) => t.name),
     training: { xpShare: combat.rules.progression.training.xpShare, maxLevel: combat.rules.progression.training.maxLevel },
     activity: a
       ? {

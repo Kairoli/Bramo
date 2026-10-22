@@ -192,6 +192,7 @@ export function buildContent(raw: RawContent): Content {
       if (e.loot?.vestige && !items[e.loot.vestige]) errors.push(`combat/encounters.yaml : ${e.id} : vestige inconnu « ${e.loot.vestige} » (items.yaml)`);
     }
     for (const m of gearList) if (m.talent && !combat?.talents?.named.some((n) => n.id === m.talent)) errors.push(`gear.yaml : ${m.id} : talent nommé inconnu « ${m.talent} »`);
+    for (const it of itemList) if (it.gem && !combat?.tools.some((t) => t.id === it.gem && t.rank === 'gem')) errors.push(`items.yaml : ${it.id} : gemme inconnue « ${it.gem} » (combat/tools.yaml, rang gem)`);
   }
   if (errors.length) throw new ContentError(`Données incohérentes :\n- ${errors.join('\n- ')}`);
 

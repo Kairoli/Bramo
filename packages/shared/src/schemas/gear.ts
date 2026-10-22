@@ -105,4 +105,6 @@ export interface GearInstance {
   wear: number;
   /** Emplacement où il est porté, ou null (dans le sac). */
   equipped: string | null;
+  /** Gemme sertie : l'outil de situation qu'elle donne (data/combat/tools.yaml), ou null. */
+  gem: string | null;
 }

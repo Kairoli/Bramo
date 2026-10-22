@@ -140,6 +140,8 @@ export const itemSchema = z.object({
     })
     .optional(),
   meal: z.object({ bonus: ratio, durationMin: z.number().positive() }).optional(),
+  /** Gemme à sertir : l'outil de situation (rang `gem`, data/combat/tools.yaml) qu'elle donne une fois sertie. */
+  gem: id.optional(),
 });
 
 const stackSchema = z.object({ item: id, qty: z.number().int().min(1) });

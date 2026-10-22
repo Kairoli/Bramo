@@ -97,6 +97,8 @@ export const gearItems = pgTable(
     /** Usure en ms de combat effectif. */
     wear: doublePrecision('wear').notNull().default(0),
     equipped: text('equipped'),
+    /** Gemme sertie (outil de situation, data/combat/tools.yaml), ou null. */
+    gem: text('gem'),
     createdAt: ts('created_at').notNull().defaultNow(),
   },
   (t) => [index('gear_items_character').on(t.characterId)],

@@ -12,6 +12,13 @@ type Tone = [string, string, string];
 
 /** Couleur d'un objet d'après son identifiant : matière, essence de bois, plante, poisson. */
 const TINTS: [RegExp, Tone][] = [
+  // Gemmes de situation : une couleur par mécanique déjouée.
+  [/gem_interstice/, ['#9FE8E0', '#3E8A82', '#E6FFFA']],
+  [/gem_wash/, ['#E8F2F6', '#8AA2AE', '#FFFFFF']],
+  [/gem_stop/, ['#6E4A52', '#2E1E22', '#B08A92']],
+  [/gem_drive/, ['#C2302A', '#6A1410', '#F28A82']],
+  [/gem_fault/, ['#B78CFF', '#5A3A8A', '#E2D2FF']],
+  [/gem_recovery/, ['#E8A23A', '#8A5A1C', '#FFE0A0']],
   [/copper/, ['#C77B4A', '#7A4022', '#F0B08A']],
   [/tin/, ['#B9C2C6', '#6E777C', '#EEF3F5']],
   [/bronze/, ['#B47A45', '#6E4524', '#E8B98A']],
@@ -251,7 +258,15 @@ const DRAW: Record<string, (p: P, id: string) => ReactNode> = {
         {shine(p, 'M14 26 L32 18')}
       </>
     ),
-  gem: (p) => (
+  gem: (p, id) =>
+    id.startsWith('gem_') ? (
+      <>
+        <circle cx="32" cy="32" r="24" fill={p.l} fillOpacity=".18" stroke="none" />
+        {body(p, 'M20 14 H44 L56 28 L32 56 L8 28 Z')}
+        <path d="M8 28 H56 M20 14 L26 28 L32 56 L38 28 L44 14 M26 28 L32 14 L38 28" fill="none" stroke={p.d} strokeWidth="1.4" />
+        <path d="M20 14 L26 28 L8 28 Z" fill="#fff" fillOpacity=".35" stroke="none" />
+      </>
+    ) : (
     <>
       {body(p, 'M20 54 L14 30 L24 12 L30 30 Z')}
       {body(p, 'M30 56 L26 26 L38 6 L48 26 L42 56 Z')}

@@ -68,6 +68,7 @@ export function newInstance(model: GearModel, content: Content, rand: Rng, optio
     lines: rollLines(model, content, rand, options),
     masterpiece: !!options.masterpiece,
     signedBy: options.signedBy ?? null,
+    gem: null,
     wear: 0,
     equipped: null,
   };
@@ -179,6 +180,45 @@ export interface GearItemView {
   classes: string[];
   /** Liée au personnage (set de départ) : ne se vend ni ne s'échange. */
   bound: boolean;
+  /** Peut recevoir une gemme (arme, torse, tête, collier, avec un chaton), et celle qui est sertie (son objet). */
+  gemSlot: boolean;
+  gem: string | null;
+}
+
+/** Emplacements des places de talent majeur (docs/design/coherence/build.md §2) : là où une gemme se sertit. */
+export const GEM_SLOTS = ['weapon', 'torso', 'head', 'necklace'];
+
+/**
+ * Une pièce peut-elle recevoir une gemme de situation ? Toute pièce d'une des quatre places majeures, même de départ : la
+ * gemme sert au premier mur (la Mère Grise). Le champ `socket` du catalogue servira aux gemmes de build.
+ */
+export const canHoldGem = (m: { slot: string }) => GEM_SLOTS.includes(m.slot);
+
+/** L'objet du sac qui correspond à une gemme sertie (l'outil `gem` d'un objet). */
+export const gemItemOf = (tool: string, content: Content) => Object.values(content.items).find((i) => i.gem === tool)?.id ?? null;
+
+/**
+ * Sertir une gemme du sac dans une pièce (ou la remplacer : l'ancienne revient au sac). Pur : renvoie les exemplaires
+ * modifiés et les objets à retirer et à rendre au sac.
+ */
+export function socketGem(items: GearInstance[], id: number, itemId: string, content: Content): { items: GearInstance[]; take: string; give: string | null } {
+  const g = items.find((x) => x.id === id);
+  if (!g) throw new GameError('unknown_gear', 'Objet introuvable.');
+  const m = content.gearModels[g.model];
+  if (!m || !canHoldGem(m)) throw new GameError('no_socket', 'Cette pièce n’a pas de chaton : une gemme se sertit dans l’arme, le torse, la tête ou le collier.');
+  const tool = content.items[itemId]?.gem;
+  if (!tool) throw new GameError('not_gem', 'Cet objet ne se sertit pas.');
+  if (g.gem === tool) throw new GameError('same_gem', 'Cette gemme est déjà sertie ici.');
+  return { items: items.map((x) => (x.id === id ? { ...x, gem: tool } : x)), take: itemId, give: g.gem ? gemItemOf(g.gem, content) : null };
+}
+
+/** Retirer la gemme d'une pièce : elle revient au sac. */
+export function unsocketGem(items: GearInstance[], id: number, content: Content): { items: GearInstance[]; give: string } {
+  const g = items.find((x) => x.id === id);
+  if (!g?.gem) throw new GameError('no_gem', 'Aucune gemme sertie ici.');
+  const give = gemItemOf(g.gem, content);
+  if (!give) throw new GameError('unknown_gem', 'Gemme inconnue.');
+  return { items: items.map((x) => (x.id === id ? { ...x, gem: null } : x)), give };
 }
 
 export interface GearView {
@@ -214,6 +254,8 @@ export function viewGear(items: GearInstance[], classId: string | null, content:
       wearable: canWear(m, classId),
       classes: m.classes,
       bound: !!m.bound,
+      gemSlot: canHoldGem(m),
+      gem: g.gem ? gemItemOf(g.gem, content) : null,
     });
   }
   return { items: views, totals: gearTotals(items, content) };

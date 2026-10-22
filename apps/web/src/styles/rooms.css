@@ -5259,3 +5259,66 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+/* Gemmes de situation : le chaton dans la fiche d'une pièce, la marque sur la tuile. */
+.gear-tile-gem {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  width: 8px;
+  height: 8px;
+  transform: rotate(45deg);
+  background: #9fe8e0;
+  box-shadow: 0 0 6px #9fe8e0;
+}
+.gem-block {
+  border: 1px dashed var(--border);
+}
+.gem-block.filled {
+  border-style: solid;
+  border-color: color-mix(in srgb, #9fe8e0 45%, var(--border));
+}
+.gem-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.gem-text {
+  flex: 1;
+  min-width: 0;
+  display: grid;
+}
+.gem-choices {
+  display: grid;
+  gap: 4px;
+}
+.gem-choice {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 8px 4px 4px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--panel);
+  color: var(--text);
+  font: inherit;
+  font-size: 12.5px;
+  text-align: left;
+  cursor: pointer;
+}
+.gem-choice:hover {
+  border-color: #9fe8e0;
+}
+.situation-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+.situation-row .eyebrow {
+  width: 100%;
+}
+.situation-chip {
+  color: #9fe8e0;
+  border-color: color-mix(in srgb, #9fe8e0 50%, var(--border));
+}

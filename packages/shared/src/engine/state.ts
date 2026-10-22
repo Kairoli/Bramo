@@ -66,7 +66,7 @@ export interface CharacterState {
    * Pièces portées et non usées (renseignées au chargement depuis l'équipement, jamais enregistrées) : elles font les
    * statistiques, les ensembles et les objets nommés du combat. Absent : statistiques de référence du combat.
    */
-  equipment?: { model: string; lines: { name: string; value: number }[] }[];
+  equipment?: { model: string; lines: { name: string; value: number }[]; gem?: string }[];
 }
 
 export class GameError extends Error {

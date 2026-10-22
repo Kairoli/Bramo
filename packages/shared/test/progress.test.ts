@@ -9,6 +9,7 @@ import type { Content } from '../src/schemas/content.js';
 import { applyPreset, deletePreset, renamePreset, savePreset } from '../src/combat/presets.js';
 import { chooseClass } from '../src/engine/actions.js';
 import { HOUR, T0, makeState } from './fixture.js';
+import { canHoldGem, socketGem } from '../src/engine/equipment.js';
 
 // Le combat se teste sur data/ : on vérifie des règles (déterminisme, XP, pauses), pas des chiffres d'équilibrage.
 const content = loadContent(fileURLToPath(new URL('../../../data', import.meta.url)));
@@ -136,7 +137,7 @@ describe('données qui changent', () => {
 });
 
 describe('équipement, paliers et butin', () => {
-  const runist = (level: number, equipment?: { model: string; lines: { name: string; value: number }[] }[]) =>
+  const runist = (level: number, equipment?: { model: string; lines: { name: string; value: number }[]; gem?: string }[]) =>
     makeState({ classId: 'runist', combat: { ...emptyCombat(), xp: { runist: content.xpTable[level]! } }, ...(equipment ? { equipment } : {}) });
   const kit = (tier: number, rarity: string) =>
     Object.values(content.gearModels)
@@ -144,11 +145,35 @@ describe('équipement, paliers et butin', () => {
       .filter((m, i, all) => all.findIndex((x) => x.slot === m.slot) === i)
       .map((m) => ({ model: m.id, lines: [] }));
 
+  it('une gemme de situation sertie donne son outil au combat, une seule fois, dans les quatre places majeures', () => {
+    const weapon = Object.values(content.gearModels).find((m) => m.slot === 'weapon' && m.classes.includes('runist') && canHoldGem(m) && !m.talent)!;
+    const head = Object.values(content.gearModels).find((m) => m.slot === 'head' && m.classes.includes('runist') && canHoldGem(m))!;
+    const without = equipmentSetup(runist(1, [{ model: weapon.id, lines: [] }]), content);
+    expect(without.tools ?? []).toHaveLength(0);
+    const one = equipmentSetup(runist(1, [{ model: weapon.id, lines: [], gem: 'wash_pearl' }]), content);
+    expect(one.tools?.map((t) => t.id)).toEqual(['wash_pearl']);
+    // Deux fois la même gemme : un seul outil.
+    const twice = equipmentSetup(runist(1, [{ model: weapon.id, lines: [], gem: 'wash_pearl' }, { model: head.id, lines: [], gem: 'wash_pearl' }]), content);
+    expect(twice.tools?.map((t) => t.id)).toEqual(['wash_pearl']);
+    // Sertir : seulement dans une place majeure ; l'ancienne gemme revient au sac.
+    const items = [{ id: 1, model: weapon.id, lines: [], masterpiece: false, signedBy: null, wear: 0, equipped: 'weapon', gem: 'wash_pearl' }];
+    const r = socketGem(items, 1, 'gem_fault_eye', content);
+    expect(r.items[0]!.gem).toBe('fault_eye');
+    expect(r.give).toBe('gem_wash_pearl');
+    const legs = Object.values(content.gearModels).find((m) => m.slot === 'legs')!;
+    expect(() => socketGem([{ ...items[0]!, model: legs.id }], 1, 'gem_fault_eye', content)).toThrow(/chaton/);
+  });
+
   it('sans équipement connu, les statistiques de référence ; avec, celles de l’équipement, jamais sous le plancher du palier de la classe', () => {
     expect(equipmentSetup(runist(1), content)).toEqual({});
     const starter = Object.values(content.gearModels).filter((m) => m.starter && m.classes.includes('runist')).map((m) => ({ model: m.id, lines: [] }));
     const floor = equipmentSetup(runist(1, starter), content).stats!;
     expect(floor.power).toBeCloseTo(content.combat!.rules.referenceStats.power * 0.797, 1);
+    // Chaque niveau compte : le plancher monte entre deux paliers de la courbe (avant, le niveau 9 valait le niveau 1).
+    const at = (level: number) => equipmentSetup(runist(level, starter), content).stats!.power;
+    expect(at(5)).toBeGreaterThan(at(1));
+    expect(at(9)).toBeGreaterThan(at(5));
+    expect(at(10)).toBeGreaterThan(at(9));
     const legend = equipmentSetup(runist(90, kit(90, 'legendary')), content).stats!;
     expect(legend.power).toBeGreaterThan(floor.power! * 2);
   });

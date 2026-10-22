@@ -131,7 +131,7 @@
 - {id: thick_leather, name: Cuir épais, category: leather, value: 2}
 - {id: wolf_fur, name: Fourrure apprêtée, category: leather, value: 2}
 - {id: heavy_leather, name: Cuir d'ours, category: leather, value: 3}
-- {id: leather_satchel, name: Sacoche de cuir, category: garment, value: 10}
+- {id: leather_satchel, name: Sacoche de cuir, category: garment, value: 9}
 - {id: leather_jerkin, name: Pourpoint de cuir, category: garment, value: 111}
 
 # --- Couture ---
@@ -141,7 +141,7 @@
 - {id: cotton_thread, name: Fil de coton, category: thread, value: 1}
 - {id: cotton_cloth, name: Rouleau de toile de coton, category: cloth, value: 14}
 - {id: linen_hood, name: Capuche de lin, category: garment, value: 49}
-- {id: linen_gloves, name: Mitaines de lin, category: garment, value: 37}
+- {id: linen_gloves, name: Mitaines de lin, category: garment, value: 36}
 - {id: linen_robe, name: Robe de lin, category: garment, value: 122}
 - {id: linen_breeches, name: Chausses de lin, category: garment, value: 73}
 - {id: adept_robe, name: Robe d'adepte, category: garment, value: 225}
@@ -177,7 +177,7 @@
 - {id: bronze_gears, name: Rouages de bronze, category: mechanism, value: 1}
 - {id: iron_springs, name: Ressorts de fer, category: mechanism, value: 1}
 - {id: flash_powder, name: Poudre d'éclat, category: powder, value: 1}
-- {id: spring_snare, name: Collet à ressort, category: device, value: 4}
+- {id: spring_snare, name: Collet à ressort, category: device, value: 3}
 - {id: clockwork, name: Mécanisme d'horloge, category: mechanism, value: 16}
 - {id: artificer_lantern, name: Lanterne d'artificier, category: device, value: 8}
 - {id: flare_rocket, name: Fusée d'éclat, category: device, value: 16}
@@ -224,3 +224,13 @@
 - {id: iron_trowel, name: Truelle de fer, category: tool, value: 61, tool: {profession: construction, bonus: 0.15, durabilityHours: 60}, repair: {profession: smithing, level: 10, materials: [{item: iron_bar, qty: 3}]}}
 - {id: bronze_spyglass, name: Longue-vue de bronze, category: tool, value: 13, tool: {profession: exploration, bonus: 0.10, durabilityHours: 40}, stallPrice: 150, repair: {profession: smithing, level: 1, materials: [{item: bronze_bar, qty: 3}]}}
 - {id: iron_spyglass, name: Longue-vue de fer, category: tool, value: 61, tool: {profession: exploration, bonus: 0.15, durabilityHours: 60}, repair: {profession: smithing, level: 10, materials: [{item: iron_bar, qty: 3}]}}
+
+# --- Gemmes de situation (23 octobre) : serties dans l'arme, le torse, la tête ou le collier, elles donnent leur outil de
+#     situation (data/combat/tools.yaml, rang gem) et prennent une place de talent majeur. Taillées en Joaillerie avec les
+#     vestiges de la région dont elles déjouent la mécanique. ---
+- {id: gem_interstice_opal, name: Opale d'interstice, category: gem, value: 15, gem: interstice_opal}
+- {id: gem_wash_pearl, name: Perle de lessive, category: gem, value: 15, gem: wash_pearl}
+- {id: gem_stop_hematite, name: Hématite d'arrêt, category: gem, value: 15, gem: stop_hematite}
+- {id: gem_drive_garnet, name: Grenat de battue, category: gem, value: 15, gem: drive_garnet}
+- {id: gem_fault_eye, name: Œil de faille, category: gem, value: 15, gem: fault_eye}
+- {id: gem_recovery_amber, name: Ambre de reprise, category: gem, value: 15, gem: recovery_amber}

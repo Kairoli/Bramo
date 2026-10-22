@@ -7,7 +7,7 @@
 - {id: synchrony_tonic, name: "Tonique de synchronie", family: interstice, rank: prep, store: 0.12, bankCap: 1.5}
 
 - {id: rain_set4, name: "Pluie (4 pièces)", family: rain, rank: set4, remove: 2, atLeast: 2, cooldown: 10}
-- {id: wash_pearl, name: "Perle de lessive", family: rain, rank: gem, remove: 2, atLeast: 2, cooldown: 16}
+- {id: wash_pearl, name: "Perle de lessive", family: rain, rank: gem, remove: 1, atLeast: 2, cooldown: 20}
 - {id: clear_rinse, name: "Rinçage clair", family: rain, rank: prep, remove: 2, atLeast: 2, cooldown: 24, charges: 3}
 
 - {id: impact_set4, name: "Impact (4 pièces)", family: impact, rank: set4, incoming: 0.28, maxHp: 0.1, cooldown: 6}

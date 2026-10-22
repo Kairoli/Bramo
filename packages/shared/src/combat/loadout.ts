@@ -97,6 +97,8 @@ export interface WornPiece {
   lines: { name: string; value: number }[];
   set?: string;
   talent?: string;
+  /** Gemme sertie (outil de situation de rang `gem`) : une place de talent majeur, comme un objet nommé. */
+  gem?: string;
 }
 
 const EMPTY_CATALOG: TalentCatalog = { pools: [], gems: [], named: [], sets: [] } as unknown as TalentCatalog;
@@ -113,6 +115,7 @@ export function wornLoadout(rules: CombatRules, catalog: TalentCatalog | null, t
   const lines: Record<string, number> = {};
   const sets: Record<string, number> = {};
   const named: string[] = [];
+  const gems: string[] = [];
   let weights = 0;
   let factor = 0;
   for (const p of pieces) {
@@ -122,10 +125,14 @@ export function wornLoadout(rules: CombatRules, catalog: TalentCatalog | null, t
     for (const l of p.lines) lines[l.name] = (lines[l.name] ?? 0) + l.value;
     if (p.set) sets[p.set] = (sets[p.set] ?? 0) + 1;
     if (p.talent && !named.includes(p.talent)) named.push(p.talent);
+    // Une même gemme n'agit qu'une fois (deux Perles de lessive ne lavent pas deux fois).
+    if (p.gem && !gems.includes(p.gem)) gems.push(p.gem);
     weights += p.weight;
     factor += p.weight * curve.factor;
   }
-  const r = resolveLoadout(catalog ?? EMPTY_CATALOG, tools, { named: named.slice(0, 4), sets, lines: buildFromLines(rules, lines) }, { majors: 4, setPieces: 11, preps: 1 });
+  // Quatre places de talent majeur : les objets nommés d'abord, puis les gemmes serties.
+  const n = named.slice(0, 4);
+  const r = resolveLoadout(catalog ?? EMPTY_CATALOG, tools, { named: n, gems: gems.slice(0, 4 - n.length), sets, lines: buildFromLines(rules, lines) }, { majors: 4, setPieces: 11, preps: 1 });
   const base = statsFromGear(rules, { stats, lines }, 20, r.mods);
   const f = weights > 0 ? factor / weights : 1;
   let combatStats: CombatStats = conv ? { ...base, power: base.power * f, maxHp: base.maxHp * f } : base;

@@ -2,7 +2,7 @@ import type { CSSProperties, ReactNode } from 'react';
 import type { GearItemView } from '@bramo/shared';
 import { useGame } from '../game/GameContext';
 import { GearIcon } from './GearIcon';
-import { Modal } from './ui';
+import { ItemIcon, Modal } from './ui';
 
 /**
  * Fiche d'une pièce d'équipement, façon jeu de rôle (demande de Louis du 23 octobre) : la pièce en grand dans le cadre de
@@ -38,8 +38,19 @@ const SLOT: Record<string, string> = {
 const fmt = (n: number) => String(Math.round(n * 10) / 10).replace('.', ',');
 const signed = (n: number) => `${n > 0 ? '+' : n < 0 ? '−' : ''}${fmt(Math.abs(n))}`;
 
-export function GearCard({ g, compare, onClose, actions }: { g: GearItemView; compare?: GearItemView | null; onClose: () => void; actions?: ReactNode }) {
-  const { content } = useGame();
+/** Ce que fait chaque gemme de situation, en une phrase, et contre quoi (docs/design/coherence/build.md §2). */
+export const GEM_TEXT: Record<string, { against: string; text: string }> = {
+  gem_interstice_opal: { against: 'les fenêtres', text: 'Garde une part des dégâts perdus quand l’ennemi est protégé, et la rend quand il redevient vulnérable.' },
+  gem_wash_pearl: { against: 'l’érosion', text: 'Lave régulièrement les cumuls d’érosion qui s’accumulent sur vous.' },
+  gem_stop_hematite: { against: 'les coups lourds', text: 'Réduit les gros coups reçus et donne un peu plus de points de vie.' },
+  gem_drive_garnet: { against: 'les renforts', text: 'Frappe plus fort les renforts qui arrivent en cours de combat.' },
+  gem_fault_eye: { against: 'les gardes', text: 'Brise bien plus vite les gardes et les boucliers ennemis.' },
+  gem_recovery_amber: { against: 'les auras', text: 'Rend une part des points de vie perdus à l’usure des auras.' },
+};
+
+export function GearCard({ g, compare, onClose, actions, onSocket }: { g: GearItemView; compare?: GearItemView | null; onClose: () => void; actions?: ReactNode; onSocket?: (itemId: string | null) => void }) {
+  const { content, state } = useGame();
+  const gemsInBag = Object.entries(state.inventory).filter(([id, n]) => n > 0 && content.items[id]?.gem);
   const set = g.set ? content.gearSets[g.set] : undefined;
   const classes = g.classes.map((c) => content.classes[c]?.name ?? c);
   // Comparaison : les caractéristiques des deux pièces, et leurs bonus en %.
@@ -125,6 +136,44 @@ export function GearCard({ g, compare, onClose, actions }: { g: GearItemView; co
                 </div>
               );
             })}
+          </section>
+        )}
+
+        {g.gemSlot && (
+          <section className={`gear-card-block gem-block${g.gem ? ' filled' : ''}`}>
+            <span className="eyebrow">Chaton · une gemme de situation</span>
+            {g.gem ? (
+              <div className="gem-row">
+                <ItemIcon item={content.items[g.gem]} />
+                <span className="gem-text">
+                  <strong>{content.items[g.gem]?.name}</strong>
+                  <span className="muted small">
+                    Contre {GEM_TEXT[g.gem]?.against} : {GEM_TEXT[g.gem]?.text}
+                  </span>
+                </span>
+                {onSocket && (
+                  <button className="btn btn-sm" onClick={() => onSocket(null)} title="La gemme revient au sac">
+                    Retirer
+                  </button>
+                )}
+              </div>
+            ) : (
+              <p className="muted small">Vide. Une gemme taillée en Joaillerie avec des vestiges répond à une mécanique ennemie (fenêtres, érosion, coups lourds, renforts, gardes, auras). Elle prend une des quatre places de talent majeur.</p>
+            )}
+            {onSocket && gemsInBag.length > 0 && (
+              <div className="gem-choices">
+                {gemsInBag
+                  .filter(([id]) => id !== g.gem)
+                  .map(([id, n]) => (
+                    <button key={id} className="gem-choice" onClick={() => onSocket(id)} title={`${content.items[id]?.name} · contre ${GEM_TEXT[id]?.against}`}>
+                      <ItemIcon item={content.items[id]} small />
+                      <span>
+                        {g.gem ? 'Remplacer par' : 'Sertir'} {content.items[id]?.name} <span className="muted">×{n}</span>
+                      </span>
+                    </button>
+                  ))}
+              </div>
+            )}
           </section>
         )}
 

@@ -45,9 +45,10 @@ describe('data/', () => {
     for (const o of content.cosmetics.outfits) for (const cl of o.classes) expect(content.classes[cl], `${o.id} → ${cl}`).toBeDefined();
   });
 
-  it('chaque ingrédient et chaque objet d’épreuve peut être obtenu (recette)', () => {
+  it('chaque ingrédient et chaque objet d’épreuve peut être obtenu (recette, ou butin de combat pour les vestiges)', () => {
     const produced = new Set(Object.values(content.recipes).flatMap((r) => r.outputs.map((o) => o.item)));
-    const obtainable = (item: string) => produced.has(item);
+    const looted = new Set(Object.values(content.combat?.encounters ?? {}).flatMap((e) => (e.loot?.vestige ? [e.loot.vestige] : [])));
+    const obtainable = (item: string) => produced.has(item) || looted.has(item);
     for (const r of Object.values(content.recipes)) {
       for (const i of r.inputs) expect(obtainable(i.item), `${r.id} → ${i.item}`).toBe(true);
     }

@@ -17,7 +17,7 @@ import { levelForXp } from '../formulas/xp.js';
 import { type CharacterState, GameError, addStack, cloneState } from '../engine/state.js';
 import { planErrors, spellSlots } from './content.js';
 import { type CombatantSetup, type FightResult, fight } from './engine.js';
-import { curveTier, tierFactor, tierFactorAt, wornLoadout } from './loadout.js';
+import { curveTier, tierFactorAt, wornLoadout } from './loadout.js';
 import { hash32, stream } from './rng.js';
 import type { Preset } from './presets.js';
 
@@ -270,7 +270,8 @@ export function classTier(state: CharacterState, classId: string, content: Conte
 
 /**
  * Statistiques, talents et outils que l'équipement porté donne au combat (`state.equipment`, renseigné par le serveur).
- * Plancher : l'équipement de référence (Rare, palier 20 : `referenceStats`) ramené au palier de la classe. Sans conversion
+ * Plancher : l'équipement de référence (Rare, palier 20 : `referenceStats`) ramené au niveau de la classe, interpolé entre les paliers
+ * de la courbe (chaque niveau compte, comme les étapes de la route). Sans conversion
  * (`rules.gearStats`) ou sans équipement connu, les statistiques de référence du moteur.
  */
 export function equipmentSetup(state: CharacterState, content: Content): Pick<CombatantSetup, 'stats' | 'talents' | 'tools' | 'pools' | 'convert'> {
@@ -290,12 +291,12 @@ export function wornGear(state: CharacterState, content: Content) {
   const combat = need(content);
   const rules = combat.rules;
   if (!rules.gearStats || !state.equipment || !state.classId) return null;
-  const f = tierFactor(rules, classTier(state, state.classId, content));
+  const f = tierFactorAt(rules, classLevel(state, state.classId, content));
   const floor = { ...rules.referenceStats, power: rules.referenceStats.power * f, maxHp: rules.referenceStats.maxHp * f };
   const pieces = state.equipment.flatMap((p) => {
     const m = content.gearModels[p.model];
     if (!m) return [];
-    return [{ tier: m.tier, weight: content.gearSlots[m.slot]?.weight ?? 1, stats: m.stats, lines: p.lines, ...(m.set ? { set: m.set } : {}), ...(m.talent ? { talent: m.talent } : {}) }];
+    return [{ tier: m.tier, weight: content.gearSlots[m.slot]?.weight ?? 1, stats: m.stats, lines: p.lines, ...(m.set ? { set: m.set } : {}), ...(m.talent ? { talent: m.talent } : {}), ...(p.gem ? { gem: p.gem } : {}) }];
   });
   return wornLoadout(rules, combat.talents, combat.tools, pieces, floor);
 }

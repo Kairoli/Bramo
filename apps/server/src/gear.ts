@@ -4,6 +4,10 @@ import {
   type Content,
   type GearInstance,
   GameError,
+  addStack,
+  cloneState,
+  socketGem,
+  unsocketGem,
   type Rng,
   dropMismatched,
   equipGear,
@@ -26,6 +30,7 @@ export async function loadGear(tx: Tx | Db, characterId: number): Promise<GearIn
       signedBy: r.signedBy,
       wear: r.wear,
       equipped: r.equipped,
+      gem: r.gem,
     }))
     .sort((a, b) => a.id - b.id);
 }
@@ -52,7 +57,7 @@ export async function unequipOwned(tx: Tx, characterId: number, id: number): Pro
  * Préréglage : porter exactement ces exemplaires (ceux qui existent encore, du style de la classe et pas usés), le reste
  * retourne au sac. Renvoie l'équipement porté, sous la forme que le combat lit (`CharacterState.equipment`).
  */
-export async function wearGearSet(tx: Tx, characterId: number, classId: string | null, ids: number[], content: Content): Promise<{ model: string; lines: { name: string; value: number }[] }[]> {
+export async function wearGearSet(tx: Tx, characterId: number, classId: string | null, ids: number[], content: Content): Promise<{ model: string; lines: { name: string; value: number }[]; gem?: string }[]> {
   const before = await loadGear(tx, characterId);
   let after = before.map((g) => ({ ...g, equipped: null as string | null }));
   for (const id of ids) {
@@ -65,7 +70,30 @@ export async function wearGearSet(tx: Tx, characterId: number, classId: string |
     }
   }
   await saveEquipped(tx, before, after);
-  return after.filter((g) => g.equipped && !isWorn(g, content) && content.gearModels[g.model]).map((g) => ({ model: g.model, lines: g.lines.map((l) => ({ name: l.name, value: l.value })) }));
+  return after.filter((g) => g.equipped && !isWorn(g, content) && content.gearModels[g.model]).map((g) => ({ model: g.model, lines: g.lines.map((l) => ({ name: l.name, value: l.value })), ...(g.gem ? { gem: g.gem } : {}) }));
+}
+
+/**
+ * Sertir une gemme du sac dans une de ses pièces (l'ancienne revient au sac), ou la retirer (`itemId` null). Renvoie
+ * l'état avec le sac à jour.
+ */
+export async function socketOwned(tx: Tx, characterId: number, input: CharacterState, id: number, itemId: string | null, content: Content): Promise<{ state: CharacterState; log: string }> {
+  const before = await loadGear(tx, characterId);
+  const state = cloneState(input);
+  const piece = before.find((g) => g.id === id);
+  const pieceName = piece ? (content.gearModels[piece.model]?.name ?? 'la pièce') : 'la pièce';
+  if (itemId === null) {
+    const r = unsocketGem(before, id, content);
+    await tx.update(gearItems).set({ gem: null }).where(eq(gearItems.id, id));
+    addStack(state.inventory, r.give, 1);
+    return { state, log: `Vous dessertissez ${content.items[r.give]?.name} de ${pieceName}.` };
+  }
+  if ((state.inventory[itemId] ?? 0) < 1) throw new GameError('missing', 'Vous n’avez pas cette gemme.');
+  const r = socketGem(before, id, itemId, content);
+  await tx.update(gearItems).set({ gem: r.items.find((g) => g.id === id)!.gem }).where(eq(gearItems.id, id));
+  addStack(state.inventory, r.take, -1);
+  if (r.give) addStack(state.inventory, r.give, 1);
+  return { state, log: `Vous sertissez ${content.items[itemId]?.name} dans ${pieceName}.${r.give ? ` ${content.items[r.give]?.name} revient au sac.` : ''}` };
 }
 
 /** Changement de classe : les pièces qui ne sont pas du style de la nouvelle classe retournent au sac. */

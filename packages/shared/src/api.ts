@@ -46,6 +46,10 @@ export const combatPlanBody = z.object({ plan: z.array(z.object({ spell: z.strin
 export const outfitBody = z.object({ outfitId: z.string() });
 export const ornamentBody = z.object({ ornamentId: z.string().nullable() });
 export const gearIdBody = z.object({ id: z.number().int() });
+/** Sertir une gemme du sac dans une pièce ; `itemId` null la retire. */
+/** Développement : mettre des objets dans son sac. */
+export const devItemGrantBody = z.object({ itemId: z.string(), qty: z.number().int().min(1).max(10_000) });
+export const gearSocketBody = z.object({ id: z.number().int(), itemId: z.string().nullable() });
 export const gearGrantBody = z.object({ modelId: z.string(), masterpiece: z.boolean().optional(), count: z.number().int().min(1).max(20).optional() });
 export const lookBody = z.object({ slot: z.string(), partId: z.string().nullable() });
 export const trialBody = z.object({ trialId: z.string() });

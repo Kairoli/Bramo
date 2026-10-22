@@ -54,6 +54,7 @@ export function GearTile({ g, slot, selected, onClick, label }: { g?: GearItemVi
       {g && <span className="gear-tile-tier">{g.tier}</span>}
       {g?.masterpiece && <span className="gear-tile-star">★</span>}
       {g?.set && <span className="gear-tile-set" />}
+      {g?.gem && <span className="gear-tile-gem" title="Gemme sertie" />}
       {label && !g && <span className="gear-tile-label">{label}</span>}
     </button>
   );
@@ -64,7 +65,7 @@ export function GearTile({ g, slot, selected, onClick, label }: { g?: GearItemVi
  * dessous, et le détail de la pièce choisie en bas. Le build ne dépend jamais de l'apparence.
  */
 export function GearPanel({ gear, onChange }: { gear: GearView | null; onChange: (g: GearView) => void }) {
-  const { content, state, flash } = useGame();
+  const { content, state, flash, act } = useGame();
   const [pick, setPick] = useState<{ id?: number; slot?: string } | null>(null);
   const [busy, setBusy] = useState(false);
   const call = async (fn: () => Promise<GearView>) => {
@@ -138,6 +139,13 @@ export function GearPanel({ gear, onChange }: { gear: GearView | null; onChange:
           // Comparée à la pièce portée au même emplacement (la première, pour les anneaux).
           compare={selected.equipped ? null : (items.find((x) => x.equipped && x.slot === selected.slot) ?? null)}
           onClose={() => setPick(pick?.slot ? { slot: pick.slot } : null)}
+          onSocket={(itemId) =>
+            void act(async () => {
+              const r = await api.gearSocket(selected.id, itemId);
+              onChange(r.gear);
+              return r.state;
+            })
+          }
           actions={
             selected.equipped ? (
               <button className="btn" disabled={busy} onClick={() => void call(() => api.gearUnequip(selected.id)).then(() => setPick(null))}>

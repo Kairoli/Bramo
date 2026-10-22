@@ -407,6 +407,18 @@ function ClassSheet({ view }: { view: CombatView }) {
         <Stat label="Dégâts crit." value={`×${decimal(view.stats.critMultiplier)}`} />
       </div>
       {view.floored && <p className="muted small">Équipement sous votre palier : le combat compte le plancher du palier. Les rencontres font tomber de meilleur équipement.</p>}
+      <div className="situation-row">
+        <span className="eyebrow">Réponses de situation</span>
+        {view.situation.length ? (
+          view.situation.map((s) => (
+            <span key={s} className="chip situation-chip">
+              ◆ {s}
+            </span>
+          ))
+        ) : (
+          <span className="muted small">Aucune. Sertissez une gemme taillée avec des vestiges (Joaillerie) dans l’arme, le torse, la tête ou le collier pour passer un mur.</span>
+        )}
+      </div>
       <div className="combat-mechanic">
         <strong>{view.mechanic.label}</strong>
         <span className="muted small">{view.mechanic.state}</span>

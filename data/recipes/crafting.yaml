@@ -80,7 +80,7 @@
 
 # --- Tannerie ---
 - {id: tan_small_hide, name: Cuir souple, profession: tanning, category: tanning, level: 1, durationSec: 10, xp: 1.9, inputs: [{item: small_hide, qty: 1}, {item: bark, qty: 1}], outputs: [{item: small_leather, qty: 1}]}
-- {id: cut_straps, name: Lanières de cuir, profession: tanning, category: leather_goods, level: 1, durationSec: 6, xp: 1.2, inputs: [{item: small_leather, qty: 1}], outputs: [{item: leather_strap, qty: 3}]}
+- {id: cut_straps, name: Lanières de cuir, profession: tanning, category: leather_goods, level: 1, durationSec: 6, xp: 1.2, inputs: [{item: small_leather, qty: 1}], outputs: [{item: leather_strap, qty: 12}]}
 - {id: sew_satchel, name: Sacoche de cuir, profession: tanning, category: leather_goods, level: 10, durationSec: 120, xp: 26.1, inputs: [{item: small_leather, qty: 6}, {item: leather_strap, qty: 4}], outputs: [{item: leather_satchel, qty: 1}]}
 - {id: tan_boar_hide, name: Cuir de sanglier, profession: tanning, category: tanning, level: 15, durationSec: 20, xp: 4.6, inputs: [{item: boar_hide, qty: 1}, {item: bark, qty: 2}], outputs: [{item: tough_leather, qty: 1}]}
 - {id: tan_deer_hide, name: Cuir épais, profession: tanning, category: tanning, level: 20, durationSec: 30, xp: 7.4, inputs: [{item: deer_hide, qty: 1}, {item: bark, qty: 3}], outputs: [{item: thick_leather, qty: 1}]}
@@ -148,3 +148,19 @@
 # --- Cuisine : repas des nouveaux métiers ---
 - {id: bake_country_bread, name: Pain de campagne, profession: cooking, category: dishes, level: 10, durationSec: 20, xp: 4.4, inputs: [{item: flour, qty: 2}], outputs: [{item: country_bread, qty: 1}]}
 - {id: cook_hunter_stew, name: Ragoût du chasseur, profession: cooking, category: dishes, level: 20, durationSec: 30, xp: 7.4, inputs: [{item: game_meat, qty: 3}, {item: carrot, qty: 2}, {item: thyme, qty: 1}], outputs: [{item: hunter_stew, qty: 1}]}
+
+# --- Joaillerie : gemmes de situation (23 octobre ; prix relevé le même jour : 12 vestiges, environ 36 min de victoires). Douze vestiges de la région dont la gemme déjoue la mécanique :
+#     Abords (fenêtres, érosion), Forges (coups lourds, renforts), Lisière (gardes, aura). Les vestiges des régions hautes
+#     (Archives, Bastion, Cicatrice) donnent deux gemmes, avec une améthyste et un noyau runique. ---
+- {id: cut_interstice_opal, name: Opale d'interstice, profession: jewelcrafting, category: cutting, level: 15, durationSec: 60, xp: 13.9, inputs: [{item: glass_bead, qty: 4}, {item: rune_dust, qty: 2}, {item: galets_du_puits, qty: 12}], outputs: [{item: gem_interstice_opal, qty: 1}]}
+- {id: cut_wash_pearl, name: Perle de lessive, profession: jewelcrafting, category: cutting, level: 15, durationSec: 60, xp: 13.9, inputs: [{item: glass_bead, qty: 4}, {item: rune_dust, qty: 2}, {item: galets_du_puits, qty: 12}], outputs: [{item: gem_wash_pearl, qty: 1}]}
+- {id: cut_stop_hematite, name: Hématite d'arrêt, profession: jewelcrafting, category: cutting, level: 25, durationSec: 60, xp: 15.8, inputs: [{item: glass_bead, qty: 4}, {item: rune_dust, qty: 2}, {item: scorie_de_memoire, qty: 12}], outputs: [{item: gem_stop_hematite, qty: 1}]}
+- {id: cut_drive_garnet, name: Grenat de battue, profession: jewelcrafting, category: cutting, level: 25, durationSec: 60, xp: 15.8, inputs: [{item: glass_bead, qty: 4}, {item: rune_dust, qty: 2}, {item: scorie_de_memoire, qty: 12}], outputs: [{item: gem_drive_garnet, qty: 1}]}
+- {id: cut_fault_eye, name: Œil de faille, profession: jewelcrafting, category: cutting, level: 35, durationSec: 60, xp: 17.9, inputs: [{item: glass_bead, qty: 4}, {item: rune_dust, qty: 2}, {item: ambre_de_veille, qty: 12}], outputs: [{item: gem_fault_eye, qty: 1}]}
+- {id: cut_recovery_amber, name: Ambre de reprise, profession: jewelcrafting, category: cutting, level: 35, durationSec: 60, xp: 17.9, inputs: [{item: glass_bead, qty: 4}, {item: rune_dust, qty: 2}, {item: ambre_de_veille, qty: 12}], outputs: [{item: gem_recovery_amber, qty: 1}]}
+- {id: cut_interstice_opal_ink, name: Opales d'interstice (encre fossile), profession: jewelcrafting, category: cutting, level: 45, durationSec: 120, xp: 40.6, inputs: [{item: amethyst, qty: 1}, {item: runic_core, qty: 1}, {item: encre_fossile, qty: 12}], outputs: [{item: gem_interstice_opal, qty: 2}]}
+- {id: cut_wash_pearl_ink, name: Perles de lessive (encre fossile), profession: jewelcrafting, category: cutting, level: 45, durationSec: 120, xp: 40.6, inputs: [{item: amethyst, qty: 1}, {item: runic_core, qty: 1}, {item: encre_fossile, qty: 12}], outputs: [{item: gem_wash_pearl, qty: 2}]}
+- {id: cut_stop_hematite_oath, name: Hématites d'arrêt (éclat de serment), profession: jewelcrafting, category: cutting, level: 45, durationSec: 120, xp: 40.6, inputs: [{item: amethyst, qty: 1}, {item: runic_core, qty: 1}, {item: eclat_de_serment, qty: 12}], outputs: [{item: gem_stop_hematite, qty: 2}]}
+- {id: cut_fault_eye_oath, name: Yeux de faille (éclat de serment), profession: jewelcrafting, category: cutting, level: 45, durationSec: 120, xp: 40.6, inputs: [{item: amethyst, qty: 1}, {item: runic_core, qty: 1}, {item: eclat_de_serment, qty: 12}], outputs: [{item: gem_fault_eye, qty: 2}]}
+- {id: cut_drive_garnet_quartz, name: Grenats de battue (quartz de faille), profession: jewelcrafting, category: cutting, level: 45, durationSec: 120, xp: 40.6, inputs: [{item: amethyst, qty: 1}, {item: runic_core, qty: 1}, {item: quartz_de_faille, qty: 12}], outputs: [{item: gem_drive_garnet, qty: 2}]}
+- {id: cut_recovery_amber_quartz, name: Ambres de reprise (quartz de faille), profession: jewelcrafting, category: cutting, level: 45, durationSec: 120, xp: 40.6, inputs: [{item: amethyst, qty: 1}, {item: runic_core, qty: 1}, {item: quartz_de_faille, qty: 12}], outputs: [{item: gem_recovery_amber, qty: 2}]}

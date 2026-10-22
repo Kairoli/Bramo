@@ -1,0 +1,10 @@
+# Repli couvert du dossier PvE v2 §6 (design/traqueur.yaml), à comparer A/B avec zones-v2 : mêmes rencontres.
+# Réserve personnelle de 12 % des PV max pendant 8 s, cooldown 18 s ; remplace l'ancien bouclier de 0,8 P (6 s, cooldown 16 s).
+# Surcouche : `sim combat-tools --overlay zones-v2-repli` applique ces sorts sur la proposition jouée (zones-v2).
+note: "Repli couvert en part des PV maximum (proposition GPT). Non adopté."
+spells:
+  tr_retreat:
+    cooldown: 18
+    shield: 0
+    duration: 8
+    selfPool: {maxHpFraction: 0.12, duration: 8}

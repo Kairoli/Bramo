@@ -82,10 +82,13 @@ function evaluate(combat: CombatContent, pathId: string, spells: Spell[], level:
   return { path: pathId, spells: plan.map((p) => p.spell), results, meanTime, wins: won.length, meanWonTime };
 }
 
-/** Meilleures combinaisons de chaque voie : criblage rapide, puis confirmation sur plus de graines et les dangers demandés. */
-export function searchPlans(combat: CombatContent, o: SearchOptions = defaultSearchOptions): Record<string, SearchedPlan[]> {
-  const out: Record<string, SearchedPlan[]> = {};
-  for (const path of Object.values(combat.paths)) {
+/**
+ * Criblage d'une voie : toutes ses combinaisons au danger normal, puis les finalistes (les plus rapides en moyenne, les plus
+ * sûrs, et le plus rapide et le plus sûr de chaque rencontre).
+ */
+export function screenPool(combat: CombatContent, pathId: string, o: Pick<SearchOptions, 'level' | 'screenSeeds' | 'finalists' | 'opening'>): Spell[][] {
+  const path = combat.paths[pathId]!;
+  {
     const pool = pathSpells(combat, path.id, o.level);
     const size = Math.min(spellSlots(combat, o.level), pool.length);
     const combos = combinations(pool, size).filter((c) => planErrors(combat, path.class, path.id, o.level, planOf(c)).length === 0);
@@ -106,7 +109,15 @@ export function searchPlans(combat: CombatContent, o: SearchOptions = defaultSea
       const safest = screened.reduce<(typeof screened)[number] | null>((p, x) => (!p || x.r.results[enc]!['1']!.medianHp > p.r.results[enc]!['1']!.medianHp ? x : p), null);
       if (safest) chosen.add(safest.c);
     }
-    out[path.id] = [...chosen].map((c) => evaluate(combat, path.id, c, o.level, o.seeds, o.dangers, o.opening)).sort((a, b) => b.wins - a.wins || a.meanWonTime - b.meanWonTime);
+    return [...chosen];
+  }
+}
+
+/** Meilleures combinaisons de chaque voie : criblage rapide, puis confirmation sur plus de graines et les dangers demandés. */
+export function searchPlans(combat: CombatContent, o: SearchOptions = defaultSearchOptions): Record<string, SearchedPlan[]> {
+  const out: Record<string, SearchedPlan[]> = {};
+  for (const path of Object.values(combat.paths)) {
+    out[path.id] = screenPool(combat, path.id, o).map((c) => evaluate(combat, path.id, c, o.level, o.seeds, o.dangers, o.opening)).sort((a, b) => b.wins - a.wins || a.meanWonTime - b.meanWonTime);
   }
   return out;
 }

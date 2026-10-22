@@ -15,6 +15,8 @@ import { combatReport, defaultCombatOptions } from './scenarios/combat.js';
 import { groupReport } from './scenarios/combat-groups.js';
 import { dungeonReport } from './scenarios/combat-dungeon.js';
 import { gearGapReport, partyDungeonReport } from './scenarios/combat-dungeon-party.js';
+import { type CellResult, defaultToolsOptions, jobs, runJobs, toolsMarkdown } from './scenarios/combat-tools.js';
+import { type Tool, toolsFileSchema } from '@bramo/shared';
 
 const [command = 'help', ...args] = process.argv.slice(2);
 const opt = (name: string, fallback: string) => {
@@ -51,6 +53,42 @@ const commands: Record<string, () => string> = {
     return partyDungeonReport(loadVariant(proposal).combat!, Number(opt('seeds', '12')), name, hpExp);
   },
   'combat-gear-gap': () => gearGapReport(loadVariant(opt('proposal', 'fureur-v0')).combat!),
+  /**
+   * Outils de situation (dossier PvE v2) : murs par voie, zone et outil. --shard k/n joue une part des cases et écrit
+   * tools-part-k.json ; --merge assemble les parts et écrit le rapport. --overlay <proposition> applique ses sorts en plus.
+   */
+  'combat-tools': () => {
+    const proposal = opt('proposal', 'zones-v2');
+    const combat = loadVariant(proposal).combat!;
+    const overlay = opt('overlay', '');
+    if (overlay) {
+      const patch = parse(readFileSync(join(ROOT, 'sim', 'proposals', overlay, 'combat.yaml'), 'utf8')) as CombatPatch;
+      for (const [id, p] of Object.entries(patch.spells ?? {})) Object.assign(combat.spells[id]!, p);
+    }
+    const tools: Tool[] = toolsFileSchema.parse(parse(readFileSync(join(ROOT, 'sim', 'proposals', opt('tools', 'zones-v2'), 'tools.yaml'), 'utf8')));
+    const o = { ...defaultToolsOptions, furyScales: !args.includes('--no-fury-scale') };
+    const name = opt('out', overlay ? `${proposal}+${overlay}` : proposal);
+    const dir = join(ROOT, 'sim', 'reports', 'combat', name);
+    mkdirSync(dir, { recursive: true });
+    const only = opt('paths', '');
+    const encs = opt('encounters', '');
+    const all = jobs(combat, tools).filter((j) => (!only || only.split(',').includes(j.path)) && (!encs || encs.split(',').some((e) => j.encounter.startsWith(e))));
+    if (args.includes('--merge')) {
+      const parts = Number(opt('parts', '4'));
+      const results: CellResult[] = Array.from({ length: parts }, (_, k) => JSON.parse(readFileSync(join(dir, `tools-part-${k}.json`), 'utf8')) as CellResult[]).flat();
+      writeFileSync(join(dir, 'outils.md'), `${toolsMarkdown(combat, tools, results, o, `Outils de situation · ${name}`, opt('note', ''))}\n`);
+      writeFileSync(join(dir, 'outils.json'), `${JSON.stringify({ options: o, results })}\n`);
+      return `Écrit : ${join(dir, 'outils.md')} (${results.length} cases sur ${all.length})`;
+    }
+    const [k, n] = opt('shard', '0/1').split('/').map(Number) as [number, number];
+    // Par voie : chaque part ne crible que les plans de ses voies.
+    const ids = Object.keys(combat.paths);
+    const mine = all.filter((j) => ids.indexOf(j.path) % n === k);
+    const t0 = Date.now();
+    const results = runJobs(combat, tools, mine, o, (r, i) => console.error(`[${k}] ${i + 1}/${mine.length} ${r.path} ${r.encounter} ${r.tool} ×${r.wall.toFixed(3)} (${((Date.now() - t0) / 1000).toFixed(0)} s)`));
+    writeFileSync(join(dir, `tools-part-${k}.json`), JSON.stringify(results));
+    return `Écrit : tools-part-${k}.json (${results.length} cases)`;
+  },
   'combat-groups': () => groupReport(loadVariant(opt('proposal', '') || undefined).combat!, Number(opt('seeds', '8'))),
   'combat-search': () => {
     const proposal = opt('proposal', '') || undefined;

@@ -1,0 +1,160 @@
+# Essai de Claude : zones-v2 avec une limite de combat de 600 s au lieu de 240 s, pour séparer l'effet de la limite de celui des outils.
+# Compatible avec les champs de rencontre du commit c120336 ; ne valide pas les outils encore absents du moteur.
+note: "zones-v2 (GPT), fightLimit 600 s : essai de diagnostic, pas une proposition."
+rules:
+  enemy:
+    onceWeakenTarget: heavy
+  fightLimit: 600
+encounters:
+  - id: z01_lantern_road
+    name: La Chaussée des lanternes
+    enemies: 1
+    hp: 4300
+    attack:
+      damage: 64
+      period: 2.8
+    windows:
+      period: 14
+      open: 6
+      closedReduction: 0.8
+  - id: z02_gray_ditches
+    name: Les Fossés gris
+    enemies: 1
+    hp: 5300
+    attack:
+      damage: 60
+      period: 3
+    erosion:
+      period: 8
+      damage: 10
+      maxStacks: 3
+  - id: z03_three_blows
+    name: La Cour des trois coups
+    enemies: 1
+    hp: 5200
+    attack:
+      damage: 82
+      period: 2.8
+      heavyEvery: 3
+      heavyMultiplier: 6
+  - id: z04_glass_orchard
+    name: Les Vergers de verre
+    enemies: 1
+    hp: 5200
+    attack:
+      damage: 60
+      period: 3
+    adds:
+      - name: Éclat de verre
+        count: 2
+        hp: 500
+        attack:
+          damage: 65
+          period: 2.8
+        arrive: 10
+      - name: Éclat de verre
+        count: 2
+        hp: 500
+        attack:
+          damage: 65
+          period: 2.8
+        arrive: 30
+  - id: z05_balance_cloister
+    name: Le Cloître des balances
+    enemies: 1
+    hp: 4100
+    attack:
+      damage: 64
+      period: 3
+    guard:
+      period: 12
+      amount: 750
+      duration: 9
+  - id: z06_reheat_furnace
+    name: Les Fours de recuit
+    enemies: 1
+    hp: 5400
+    attack:
+      damage: 48
+      period: 3
+    aura:
+      damage: 23
+  - id: z07_echo_hall
+    name: La Salle des échos
+    enemies: 1
+    hp: 3900
+    attack:
+      damage: 62
+      period: 2.8
+    windows:
+      period: 18
+      open: 7
+      closedReduction: 0.85
+  - id: z08_wound_ford
+    name: Le Gué des plaies
+    enemies: 1
+    hp: 5200
+    attack:
+      damage: 55
+      period: 3
+    erosion:
+      period: 6
+      damage: 9
+      maxStacks: 3
+    charge:
+      period: 22
+      damage: 160
+  - id: z09_two_seals
+    name: La Chambre aux deux sceaux
+    enemies: 2
+    hp: 2300
+    attack:
+      damage: 38
+      period: 3
+    guard:
+      period: 10
+      amount: 600
+      duration: 8
+      on: alternate
+  - id: z10_watch_terraces
+    name: Les Terrasses de la vigie
+    enemies: 1
+    hp: 5400
+    attack:
+      damage: 48
+      period: 3
+    charge:
+      period: 16
+      damage: 760
+  - id: z11_bad_day_workshop
+    name: L’Atelier des mauvais jours
+    enemies: 1
+    hp: 5000
+    attack:
+      damage: 60
+      period: 3
+    adds:
+      - name: Auxiliaire mal luné
+        count: 1
+        hp: 850
+        attack:
+          damage: 38
+          period: 3
+        arrive: 0
+    regen:
+      period: 12
+      amount: 600
+      uses: 3
+      requiresAdds: true
+  - id: z12_threewind_belvedere
+    name: Le Belvédère des trois vents
+    enemies: 1
+    hp: 5400
+    attack:
+      damage: 46
+      period: 3
+    aura:
+      damage: 25
+    charge:
+      period: 20
+      damage: 160

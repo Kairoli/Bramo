@@ -1,0 +1,39 @@
+# Outils de situation du dossier PvE v2 (design/equipements-situation.yaml et consommables.yaml), au format du moteur
+# (toolSchema de packages/shared/src/schemas/combat.ts). Proposition GPT, valeurs de référence Rare : non adoptées.
+# Lus par `sim combat-tools` ; jamais par le jeu tant qu'ils ne sont pas arbitrés.
+# Interstice : bankCap en P ; Impact : incoming (part du coup) et maxHp (part des PV max) ; Reprise : pulse, rolling, window.
+- {id: interstice_2, name: "Heures creuses (2)", family: interstice, rank: set2, store: 0.2, bankCap: 2}
+- {id: interstice_3, name: "Heures creuses (3)", family: interstice, rank: set3, store: 0.35, bankCap: 4}
+- {id: interstice_4, name: "Heures creuses (4)", family: interstice, rank: set4, store: 1, bankCap: 12}
+- {id: interstice_opal, name: "Opale d’interstice", family: interstice, rank: gem, store: 0.7, bankCap: 8}
+- {id: synchrony_tonic, name: "Tonique de synchronie", family: interstice, rank: prep, store: 0.25, bankCap: 3}
+
+- {id: rain_2, name: "Habits de pluie (2)", family: rain, rank: set2, remove: 1, atLeast: 2, cooldown: 18}
+- {id: rain_3, name: "Habits de pluie (3)", family: rain, rank: set3, remove: 1, atLeast: 2, cooldown: 12}
+- {id: rain_4, name: "Habits de pluie (4)", family: rain, rank: set4, remove: 2, atLeast: 2, cooldown: 10}
+- {id: wash_pearl, name: "Perle de lessive", family: rain, rank: gem, remove: 2, atLeast: 2, cooldown: 16}
+- {id: clear_rinse, name: "Rinçage clair", family: rain, rank: prep, remove: 2, atLeast: 2, cooldown: 24, charges: 3}
+
+- {id: impact_2, name: "Enclume patiente (2)", family: impact, rank: set2, incoming: 0.15, maxHp: 0.06, cooldown: 6}
+- {id: impact_3, name: "Enclume patiente (3)", family: impact, rank: set3, incoming: 0.25, maxHp: 0.12, cooldown: 6}
+- {id: impact_4, name: "Enclume patiente (4)", family: impact, rank: set4, incoming: 0.65, maxHp: 0.25, cooldown: 6}
+- {id: stop_hematite, name: "Hématite d’arrêt", family: impact, rank: gem, incoming: 0.5, maxHp: 0.2, cooldown: 6}
+- {id: parry_balm, name: "Baume de parade", family: impact, rank: prep, incoming: 0.35, maxHp: 0.15, cooldown: 10}
+
+- {id: beat_2, name: "Passeurs de braise (2)", family: beat, rank: set2, multiplier: 1.2}
+- {id: beat_3, name: "Passeurs de braise (3)", family: beat, rank: set3, multiplier: 1.4}
+- {id: beat_4, name: "Passeurs de braise (4)", family: beat, rank: set4, multiplier: 1.8}
+- {id: drive_garnet, name: "Grenat de battue", family: beat, rank: gem, multiplier: 1.55}
+- {id: drive_oil, name: "Huile de battue", family: beat, rank: prep, multiplier: 1.35}
+
+- {id: fracture_2, name: "Mains de traverse (2)", family: fracture, rank: set2, multiplier: 1.25}
+- {id: fracture_3, name: "Mains de traverse (3)", family: fracture, rank: set3, multiplier: 1.5}
+- {id: fracture_4, name: "Mains de traverse (4)", family: fracture, rank: set4, multiplier: 2}
+- {id: fault_eye, name: "Œil de faille", family: fracture, rank: gem, multiplier: 1.65}
+- {id: wedge_powder, name: "Poudre de coin", family: fracture, rank: prep, multiplier: 1.4}
+
+- {id: breath_2, name: "Veilleurs du Sceau (2)", family: breath, rank: set2, recover: 0.25, pulse: 0.08, rolling: 0.3, window: 30, cooldown: 6}
+- {id: breath_3, name: "Veilleurs du Sceau (3)", family: breath, rank: set3, recover: 0.4, pulse: 0.08, rolling: 0.3, window: 30, cooldown: 6}
+- {id: breath_4, name: "Veilleurs du Sceau (4)", family: breath, rank: set4, recover: 0.75, pulse: 0.08, rolling: 0.3, window: 30, cooldown: 6}
+- {id: recovery_amber, name: "Ambre de reprise", family: breath, rank: gem, recover: 0.45, pulse: 0.05, rolling: 0.2, window: 30, cooldown: 8}
+- {id: recovery_infusion, name: "Infusion de reprise", family: breath, rank: prep, recover: 0.3, pulse: 0.04, rolling: 0.16, window: 30, cooldown: 8}

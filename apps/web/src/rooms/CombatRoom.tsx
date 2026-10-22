@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import type { CombatView, PlanEntry, SpellView } from '@bramo/shared';
+import type { CombatView, EncounterView, PlanEntry, SpellView } from '@bramo/shared';
 import { api } from '../api';
 import { useGame } from '../game/GameContext';
 import { useNow } from '../game/useLive';
@@ -43,7 +43,7 @@ function ClassColumn({ view }: { view: CombatView }) {
   const span = (view.nextLevelXp ?? view.xp) - view.levelXp;
   const locked = view.level < view.pathLevel;
   return (
-    <div className="combat-col">
+    <div className="combat-col scroll">
       <div className="eyebrow">Classe</div>
       <div className="combat-class">
         <h2>{content.classes[view.classId]?.name}</h2>
@@ -57,6 +57,19 @@ function ClassColumn({ view }: { view: CombatView }) {
         <strong>{view.mechanic.label}</strong>
         <span className="muted small">{view.mechanic.state}</span>
       </div>
+      <div className="combat-head">
+        <div className="eyebrow">Au combat</div>
+        <span className="chip" title="Le palier de la classe ouvre les cercles des régions hautes.">Palier {view.classTier}</span>
+      </div>
+      <div className="combat-stats">
+        <Stat label="Puissance" value={num(Math.round(view.stats.power))} />
+        <Stat label="PV" value={num(Math.round(view.stats.maxHp))} />
+        <Stat label="Défense" value={pct(view.stats.damageReduction)} />
+        <Stat label="Cadence" value={`+${pct(view.stats.haste)}`} />
+        <Stat label="Critique" value={pct(view.stats.critChance)} />
+        <Stat label="Dégâts crit." value={`×${decimal(view.stats.critMultiplier)}`} />
+      </div>
+      {view.floored && <p className="muted small" title="Les rencontres font tomber de meilleur équipement.">Équipement sous votre palier : le combat compte le plancher du palier.</p>}
       <div className="eyebrow">Voie</div>
       {locked && <p className="muted small">Les voies s’ouvrent au niveau {view.pathLevel} : dégâts, contrôle ou soutien. Le choix est gratuit et se change quand on veut.</p>}
       <div className="combat-paths">
@@ -83,6 +96,17 @@ function ClassColumn({ view }: { view: CombatView }) {
             </span>
           ))}
       </div>
+    </div>
+  );
+}
+
+const pct = (x: number) => `${Math.round(x * 100)} %`;
+
+function Stat({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="combat-stat">
+      <span className="muted">{label}</span>
+      <strong>{value}</strong>
     </div>
   );
 }
@@ -199,7 +223,10 @@ function FightColumn({ view }: { view: CombatView }) {
       {a ? (
         <div className="combat-activity">
           <div className="combat-head">
-            <strong>{a.name}</strong>
+            <strong>
+              {a.name}
+              {a.tier ? <span className="muted"> · palier {a.tier}</span> : null}
+            </strong>
             <button className="btn btn-sm" onClick={() => void act(api.combatStop)}>
               Arrêter
             </button>
@@ -222,31 +249,7 @@ function FightColumn({ view }: { view: CombatView }) {
               : 'Aucun combat. Une rencontre se rejoue en boucle, en ligne comme hors ligne, et remplace l’activité de métier.'}
         </p>
       )}
-      <div className="eyebrow">Rencontres d’essai</div>
-      <div className="combat-encounters scroll">
-        {view.encounters.map((e) => (
-          <div key={e.id} className="combat-encounter">
-            <div>
-              <strong>{e.name}</strong>
-              <div className="muted small">{e.text}</div>
-            </div>
-            <button className="btn btn-sm" disabled={a?.encounter === e.id} onClick={() => void act(() => api.combatStart(e.id))}>
-              {a?.encounter === e.id ? 'En cours' : 'Combattre'}
-            </button>
-          </div>
-        ))}
-        <div className="combat-encounter">
-          <div>
-            <strong>Terrain d’entraînement</strong>
-            <div className="muted small">
-              {Math.round(view.training.xpShare * 100)} % de l’XP, sans combat réel, jusqu’au niveau {view.training.maxLevel}
-            </div>
-          </div>
-          <button className="btn btn-sm" disabled={trainingOff || (!!a && a.encounter === null)} onClick={() => void act(() => api.combatStart(null))}>
-            {a && a.encounter === null ? 'En cours' : 'S’entraîner'}
-          </button>
-        </div>
-      </div>
+      <WorldPicker view={view} trainingOff={trainingOff} />
       <div className="eyebrow">Dernier combat</div>
       {view.lastFight ? (
         <div className="combat-log scroll">
@@ -262,6 +265,127 @@ function FightColumn({ view }: { view: CombatView }) {
       ) : (
         <p className="muted small">Le journal du dernier combat s’affichera ici : sorts lancés, Braises dépensées, runes lues, Ruptures.</p>
       )}
+    </div>
+  );
+}
+
+const ESSAIS = 'Essais';
+
+/**
+ * Où combattre : les régions de la route, de la plus proche à la plus lointaine, puis le Terrain et les rencontres d'essai.
+ * Une carte se déplie pour son histoire, son butin et, dans une région haute, le choix du cercle.
+ */
+function WorldPicker({ view, trainingOff }: { view: CombatView; trainingOff: boolean }) {
+  const { act } = useGame();
+  const a = view.activity;
+  const regions = useMemo(() => {
+    const byRegion = new Map<string, EncounterView[]>();
+    for (const e of view.encounters) {
+      const r = e.kind === 'profil' || !e.region ? ESSAIS : e.region;
+      byRegion.set(r, [...(byRegion.get(r) ?? []), e]);
+    }
+    const low = (list: EncounterView[]) => Math.min(...list.map((e) => e.tier ?? 999));
+    return [...byRegion.entries()]
+      .map(([name, list]) => ({ name, list: [...list].sort((x, y) => (x.tier ?? 0) - (y.tier ?? 0) || (x.kind === 'gardien' ? 1 : 0) - (y.kind === 'gardien' ? 1 : 0)), low: low(list) }))
+      .sort((x, y) => (x.name === ESSAIS ? 1 : y.name === ESSAIS ? -1 : x.low - y.low));
+  }, [view.encounters]);
+  // Région ouverte par défaut : celle du combat en cours, sinon la plus lointaine à la portée du palier de la classe.
+  const current = a?.encounter ? regions.find((r) => r.list.some((e) => e.id === a.encounter))?.name : undefined;
+  const reachable = [...regions].reverse().find((r) => r.name !== ESSAIS && r.low <= view.classTier)?.name;
+  const [region, setRegion] = useState<string | null>(null);
+  const shown = regions.find((r) => r.name === (region ?? current ?? reachable)) ?? regions[0];
+  const [open, setOpen] = useState<string | null>(null);
+  const [circle, setCircle] = useState<Record<string, number>>({});
+  return (
+    <>
+      <div className="eyebrow">Où combattre</div>
+      <div className="combat-regions" role="tablist">
+        {regions.map((r) => (
+          <button key={r.name} role="tab" aria-selected={shown?.name === r.name} className={`combat-region${shown?.name === r.name ? ' on' : ''}`} onClick={() => setRegion(r.name)}>
+            {r.name === ESSAIS ? 'Essais' : r.name.replace(/^(Les |La |Le |L’)/, '')}
+            {r.name !== ESSAIS && <span className="muted"> {r.low}</span>}
+          </button>
+        ))}
+      </div>
+      <div className="combat-encounters scroll">
+        {shown?.list.map((e) => {
+          const tiers = e.tiers;
+          const chosen = circle[e.id] ?? tiers[tiers.length - 1] ?? e.tier ?? null;
+          const running = a?.encounter === e.id && (!e.circles || a.tier === chosen);
+          const hard = chosen !== null && chosen > view.classTier;
+          const expanded = open === e.id;
+          return (
+            <div key={e.id} className={`combat-encounter${expanded ? ' open' : ''}${e.kind === 'gardien' ? ' guardian' : ''}`}>
+              <button className="combat-encounter-head" onClick={() => setOpen(expanded ? null : e.id)} aria-expanded={expanded}>
+                <span className="combat-encounter-name">
+                  {e.kind === 'gardien' && <span className="combat-badge">Gardien</span>}
+                  <strong>{e.name}</strong>
+                </span>
+                {e.tier !== null && <span className={`chip${hard ? ' chip-hard' : ''}`}>{e.circles ? `Cercles ${e.tier}+` : `Palier ${e.tier}`}</span>}
+              </button>
+              <div className="muted small">{e.text}</div>
+              {expanded && (
+                <div className="combat-encounter-more">
+                  {e.blurb && <p className="small combat-blurb">{e.blurb}</p>}
+                  {e.loot && <LootLine loot={e.loot} />}
+                  {hard && <p className="small" style={{ color: 'var(--alert)' }}>Au-dessus de votre palier ({view.classTier}) : les ennemis y frappent plus fort que votre équipement ne le prévoit.</p>}
+                </div>
+              )}
+              <div className="combat-encounter-actions">
+                {e.circles && tiers.length > 0 && (
+                  <label className="small muted combat-circle">
+                    Cercle
+                    <select value={chosen ?? ''} onChange={(ev) => setCircle({ ...circle, [e.id]: Number(ev.target.value) })}>
+                      {tiers.map((t) => (
+                        <option key={t} value={t}>
+                          {t}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                )}
+                <button className="btn btn-sm" disabled={running} onClick={() => void act(() => api.combatStart(e.id, e.circles ? (chosen ?? undefined) : undefined))}>
+                  {running ? 'En cours' : 'Combattre'}
+                </button>
+              </div>
+            </div>
+          );
+        })}
+        {shown?.name === ESSAIS && (
+          <div className="combat-encounter">
+            <div className="combat-encounter-head">
+              <strong>Terrain d’entraînement</strong>
+            </div>
+            <div className="muted small">
+              {Math.round(view.training.xpShare * 100)} % de l’XP, sans combat réel ni butin, jusqu’au niveau {view.training.maxLevel}
+            </div>
+            <div className="combat-encounter-actions">
+              <button className="btn btn-sm" disabled={trainingOff || (!!a && a.encounter === null)} onClick={() => void act(() => api.combatStart(null))}>
+                {a && a.encounter === null ? 'En cours' : 'S’entraîner'}
+              </button>
+            </div>
+          </div>
+        )}
+        {shown?.name === ESSAIS && <p className="muted small">Les rencontres d’essai se jouent à votre palier, sans butin : pour tester un plan.</p>}
+      </div>
+    </>
+  );
+}
+
+function LootLine({ loot }: { loot: NonNullable<EncounterView['loot']> }) {
+  const { content } = useGame();
+  return (
+    <div className="combat-loot small">
+      <span className="muted">Butin :</span> objets du palier
+      {loot.vestige && <>, {loot.vestige}</>}
+      {loot.named.map((n) => (
+        <span key={n.name}>
+          , <strong className="combat-named">{n.name}</strong>
+          {n.nickname ? ` ${n.nickname}` : ''}
+          {n.classId ? <span className="muted"> ({content.classes[n.classId]?.name})</span> : null}
+        </span>
+      ))}
+      {loot.sets.length > 0 && <>, pièces d’ensemble : {loot.sets.join(', ')}</>}
     </div>
   );
 }

@@ -2084,21 +2084,126 @@
   border-radius: 10px;
   background: var(--sunken);
 }
+.combat-stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 4px;
+}
+.combat-stat {
+  display: flex;
+  flex-direction: column;
+  padding: 4px 8px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--sunken);
+  font-size: 12px;
+  min-width: 0;
+}
+.combat-stat strong {
+  font-size: 14px;
+  font-variant-numeric: tabular-nums;
+}
+.combat-regions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+.combat-region {
+  padding: 3px 9px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--sunken);
+  color: var(--text);
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+.combat-region.on {
+  border-color: var(--alert);
+  color: var(--alert);
+}
 .combat-encounters {
   display: flex;
   flex-direction: column;
   gap: 6px;
   min-height: 0;
-  max-height: 40%;
+  flex: 1 1 0;
 }
 .combat-encounter {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 7px 9px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--sunken);
+}
+.combat-encounter.guardian {
+  border-color: color-mix(in srgb, var(--clan) 45%, var(--border));
+}
+.combat-encounter-head {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 8px;
-  padding: 6px 8px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--text);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.combat-encounter-name {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+.combat-badge {
+  padding: 1px 6px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--clan) 18%, transparent);
+  color: var(--clan);
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  flex: none;
+}
+.chip-hard {
+  border-color: var(--alert);
+  color: var(--alert);
+}
+.combat-encounter-more {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.combat-blurb {
+  font-style: italic;
+}
+.combat-named {
+  color: var(--magic);
+}
+.combat-encounter-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+}
+.combat-circle {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.combat-circle select {
+  background: var(--panel);
+  color: var(--text);
   border: 1px solid var(--border);
-  border-radius: 10px;
+  border-radius: 7px;
+  padding: 2px 4px;
+  font: inherit;
 }
 .combat-log {
   flex: 1 1 0;
@@ -2165,7 +2270,8 @@
   }
 }
 .ornament-modal {
-  width: min(1000px, calc(100vw - 48px));
+  /* Deux colonnes de métiers (470 px chacune, écart 28 px) plus les marges de la fenêtre. */
+  width: min(1050px, calc(100vw - 48px));
   max-height: min(760px, calc(100vh - 48px));
   grid-template-rows: auto auto auto minmax(0, 1fr) auto;
 }
@@ -2186,9 +2292,11 @@
 }
 .ornament-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(440px, 1fr));
+  /* Une ligne de métier = 110 px de nom + 6 badges de 52 px + 6 écarts de 8 px = 470 px : jamais plus étroit, sinon elle déborde. */
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 470px), 1fr));
   gap: 6px 28px;
   align-content: start;
+  overflow-x: hidden;
 }
 .ornament-row {
   display: grid;

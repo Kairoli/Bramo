@@ -185,7 +185,7 @@ export function GearTotalsBlock({ gear }: { gear: GearView | null }) {
     <div className="stat-block">
       <div className="stat-block-head">
         <span className="eyebrow">Équipement porté</span>
-        <span className="muted">combat à venir</span>
+        <span className="muted" title="Converties selon le palier de chaque pièce : les statistiques de combat sont dans la salle Combat.">points des pièces</span>
       </div>
       <dl className="kv">
         {Object.entries(STAT_NAMES).map(([k, label]) => (

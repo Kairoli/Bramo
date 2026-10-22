@@ -23,6 +23,7 @@ const KIND: Record<TownEvent['kind'], { label: string; color: string }> = {
   first: { label: 'Première', color: 'var(--event)' },
   join: { label: 'Arrivée', color: 'var(--action)' },
   clan: { label: 'Clan', color: 'var(--clan)' },
+  loot: { label: 'Trouvaille', color: 'var(--magic)' },
 };
 
 /** Hachage stable d'un identifiant, pour des mouvements différents d'un joueur à l'autre. */

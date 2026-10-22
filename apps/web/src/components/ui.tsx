@@ -1,4 +1,5 @@
 import { useEffect, type CSSProperties, type ReactNode } from 'react';
+import { createPortal } from 'react-dom';
 import type { Item, ProfessionFamily } from '@bramo/shared';
 
 export function Bar({ value, color, style }: { value: number; color?: string; style?: CSSProperties }) {
@@ -40,12 +41,14 @@ export function Modal({ onClose, children, className = '' }: { onClose: () => vo
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
   }, [onClose]);
-  return (
+  // Rendue dans <body> : une colonne qui isole son empilement (isolation, overflow) ne peut ni la couper ni passer devant.
+  return createPortal(
     <div className="overlay" onMouseDown={(e) => e.target === e.currentTarget && onClose()}>
       <div className={`panel modal ${className}`} role="dialog" aria-modal="true">
         {children}
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }
 

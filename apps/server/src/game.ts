@@ -5,9 +5,11 @@ import {
   type JournalEntry,
   type StateResponse,
   advance,
+  stream,
   viewState,
 } from '@bramo/shared';
 import type { Db, Tx } from './db/index.js';
+import { grantGear } from './gear.js';
 import { claimOrders } from './market.js';
 import { claimRepairs } from './repairs.js';
 import { type NewServerEvent, eventsFromSummary, recordEvents } from './town.js';
@@ -34,6 +36,30 @@ export type Action = (state: CharacterState, now: number, ctx: ActionContext) =>
 
 export class NoCharacterError extends Error {}
 
+const RARITY_NAME: Record<string, string> = { common: 'Commun', rare: 'Rare', epic: 'Épique', legendary: 'Légendaire' };
+
+/**
+ * Butin des combats calculé par `advance` : l'équipement tombé entre dans le sac (lignes tirées ici, graine du personnage et
+ * de l'instant), les vestiges sont déjà dans l'inventaire. Le journal le raconte ; un objet nommé est annoncé au fil du serveur.
+ */
+async function grantLoot(tx: Tx, characterId: number, name: string, summary: AdvanceSummary, content: Content, now: number) {
+  const entries: Omit<JournalEntry, 'id'>[] = [];
+  const events: NewServerEvent[] = [];
+  const c = summary.combat;
+  const vestiges = Object.entries(c.vestiges).map(([id, n]) => `${n} ${content.items[id]?.name ?? id}`);
+  if (vestiges.length) entries.push({ at: now, kind: 'combat', text: `Vestiges : ${vestiges.join(', ')}.` });
+  const rand = stream(characterId, `loot-lines:${now}`);
+  for (const l of c.loot) {
+    const m = content.gearModels[l.model];
+    if (!m) continue;
+    await grantGear(tx, characterId, m.id, content, rand);
+    const where = content.combat?.encounters[l.encounter]?.name ?? l.encounter;
+    entries.push({ at: now, kind: 'combat', text: `Butin : ${m.name} (${RARITY_NAME[m.rarity]}, palier ${m.tier}), ${where}.` });
+    if (m.named) events.push({ kind: 'loot', text: `${name} trouve ${m.name}${m.conditional?.startsWith('«') ? ` ${m.conditional.split(' — ')[0]}` : ''} (${where}).` });
+  }
+  return { entries, events };
+}
+
 /**
  * Point d'entrée unique de toute requête de jeu :
  * 1. verrouille le personnage ; 2. calcule la progression jusqu'à maintenant ;
@@ -46,11 +72,13 @@ export async function play(db: Db, content: Content, accountId: number, now: num
     if (!loaded) throw new NoCharacterError();
 
     const { state: advanced, summary } = advance(loaded.state, now, content);
+    const loot = await grantLoot(tx, loaded.id, loaded.name, summary, content, now);
     const awayMs = now - loaded.state.lastSeenAt;
     const isAbsence =
       awayMs >= content.settings.absence.minSummaryMin * 60_000 &&
       (summary.workedMs > 0 || summary.finished.length > 0);
     const entries = entriesFromSummary(summary, content, isAbsence, loaded.state.trials);
+    entries.push(...loot.entries);
 
     // Ventes et achats du marché conclus pendant l'absence : l'or et les objets arrivent maintenant.
     const claimed = await claimOrders(tx, loaded.id, advanced, content);
@@ -60,6 +88,7 @@ export async function play(db: Db, content: Content, accountId: number, now: num
     for (const text of repaired.lines) entries.push({ at: now, kind: 'info', text });
 
     const announce = await eventsFromSummary(tx, loaded.name, summary, content);
+    announce.push(...loot.events);
 
     let state = repaired.state;
     if (action) {

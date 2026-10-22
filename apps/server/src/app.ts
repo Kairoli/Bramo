@@ -379,10 +379,10 @@ export async function buildApp({ db, content, clock = Date.now, secureCookies = 
 
   const encounterName = (id: string | null) => (id === null ? 'Terrain d’entraînement' : (content.combat?.encounters[id]?.name ?? id));
   app.post('/api/combat/start', (req) => {
-    const { encounter } = body(combatStartBody, req);
+    const { encounter, tier } = body(combatStartBody, req);
     return playAs(req, (state, now) => ({
-      state: startCombat(state, encounter, now, content),
-      log: `Vous partez au combat : ${encounterName(encounter)}.`,
+      state: startCombat(state, encounter, now, content, tier),
+      log: `Vous partez au combat : ${encounterName(encounter)}${tier ? `, cercle ${tier}` : ''}.`,
     }));
   });
   app.post('/api/combat/stop', (req) =>

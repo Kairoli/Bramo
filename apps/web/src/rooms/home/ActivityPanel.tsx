@@ -36,7 +36,7 @@ export function ActivityPanel() {
           <p className="muted">
             {state.combat.activity.encounter === null
               ? `${state.combat.classId ? content.classes[state.combat.classId]?.name : ''} niveau ${state.combat.level}`
-              : `${num(state.combat.activity.wins)} victoire${state.combat.activity.wins > 1 ? 's' : ''} · niveau ${state.combat.level}`}
+              : `${state.combat.activity.tier ? `Palier ${state.combat.activity.tier} · ` : ''}${num(state.combat.activity.wins)} victoire${state.combat.activity.wins > 1 ? 's' : ''} · niveau ${state.combat.level}`}
           </p>
           <button className="btn btn-primary" onClick={() => go('combat')}>
             Voir le combat

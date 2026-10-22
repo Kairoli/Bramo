@@ -4,7 +4,7 @@ import { loadContent } from '../src/node/index.js';
 import { advance } from '../src/engine/advance.js';
 import { startActivity } from '../src/engine/actions.js';
 import { viewCombat } from '../src/combat/view.js';
-import { advisedPlan, choosePath, classLevel, currentPlan, emptyCombat, equipmentSetup, setPlan, startCombat, stopCombat } from '../src/combat/progress.js';
+import { advisedPlan, choosePath, classLevel, currentPlan, emptyCombat, equipmentSetup, routeStages, setPlan, startCombat, startRoute, stopCombat } from '../src/combat/progress.js';
 import type { Content } from '../src/schemas/content.js';
 import { HOUR, T0, makeState } from './fixture.js';
 
@@ -149,6 +149,43 @@ describe('équipement, paliers et butin', () => {
     const s = startCombat(runist(70), 'z05_balance_cloister', T0, content, 60);
     expect(s.combat.activity?.tier).toBe(60);
     expect(startCombat(runist(1), 'z05_balance_cloister', T0, content).combat.activity?.tier).toBeUndefined();
+  });
+});
+
+describe('la route (PvE solo)', () => {
+  const runist = (level: number) => makeState({ classId: 'runist', combat: { ...emptyCombat(), xp: { runist: content.xpTable[level]! } }, equipment: [] });
+
+  it('les étapes suivent le monde : régions basses, puis les régions hautes cercle par cercle, chaque chapitre finit sur son gardien', () => {
+    const stages = routeStages(content.combat!);
+    expect(stages[0]).toMatchObject({ label: '1-1', encounter: 'z01_lantern_road', tier: 1 });
+    expect(stages.length).toBeGreaterThan(50);
+    for (let j = 1; j < stages.length; j++) expect(stages[j]!.tier).toBeGreaterThanOrEqual(stages[j - 1]!.tier);
+    const chapters = new Set(stages.map((s) => s.chapter));
+    for (const c of chapters) expect(stages.filter((s) => s.chapter === c).at(-1)!.guardian).toBe(true);
+    expect(stages.at(-1)!.tier).toBe(90);
+  });
+
+  it('une victoire mène à l’étape suivante, une défaite fait rejouer la même, sans jamais s’arrêter', () => {
+    const s = startRoute(runist(80), T0, content);
+    const { state, summary } = advance(s, T0 + 6 * HOUR, content);
+    expect(summary.combat.wins).toBeGreaterThan(0);
+    expect(state.combat.route.best).toBeGreaterThan(0);
+    expect(state.combat.activity?.route).toBe(true);
+    // Trop faible : il perd en boucle à la même étape, l'activité continue.
+    const weak = startRoute({ ...runist(1), combat: { ...runist(1).combat, route: { stage: 40, best: 40 } } }, T0, content);
+    const lost = advance(weak, T0 + 3 * HOUR, content);
+    expect(lost.summary.combat.losses).toBeGreaterThan(3);
+    expect(lost.state.combat.activity).not.toBeNull();
+    expect(lost.state.combat.route.stage).toBe(40);
+    // Même résultat en une ou plusieurs fois.
+    const half = advance(s, T0 + 3 * HOUR, content);
+    expect(advance(half.state, T0 + 6 * HOUR, content).state.combat.route).toEqual(state.combat.route);
+  });
+
+  it('on peut rejouer une étape franchie, pas en sauter', () => {
+    const s = { ...runist(10), combat: { ...runist(10).combat, route: { stage: 4, best: 4 } } };
+    expect(startRoute(s, T0, content, 2).combat.route.stage).toBe(2);
+    expect(() => startRoute(s, T0, content, 6)).toThrow(/pas encore ouverte/);
   });
 });
 

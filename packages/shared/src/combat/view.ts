@@ -4,7 +4,8 @@ import type { Element, Encounter, PlanEntry, Role, Spell } from '../schemas/comb
 import type { CharacterState } from '../engine/state.js';
 import { spellSlots } from './content.js';
 import type { CombatStats, Contributions } from './engine.js';
-import { activePath, advisedPlan, availableSpells, classLevel, classTier, classXpPerHour, currentPlan, encounterTiers, replayFight, wornGear } from './progress.js';
+import type { CombatContent } from '../schemas/combat.js';
+import { activePath, advisedPlan, availableSpells, classLevel, classTier, classXpPerHour, currentPlan, encounterTiers, replayFight, routeStages, wornGear } from './progress.js';
 
 export interface SpellView {
   id: string;
@@ -94,6 +95,11 @@ export interface CombatView {
     name: string;
     /** Palier joué (cercle choisi dans une région haute), null pour un profil d'essai ou l'entraînement. */
     tier: number | null;
+    /** La route (PvE solo) : l'étape en cours (« 2-3 »). */
+    route: boolean;
+    stageLabel: string | null;
+    enemies: number;
+    guardian: boolean;
     wins: number;
     losses: number;
     streak: number;
@@ -111,6 +117,28 @@ export interface CombatView {
   lastFight: { encounter: string; name: string; win: boolean; time: number; lines: { t: number; text: string }[]; contributions: Contributions } | null;
   /** Niveau de chaque classe du personnage. */
   classLevels: Record<string, number>;
+  /** La route (PvE solo) : étape atteinte, étapes franchies, et toutes les étapes par chapitre. */
+  route: RouteView | null;
+}
+
+export interface RouteStageView {
+  index: number;
+  label: string;
+  /** Rencontre jouée (détails dans `CombatView.encounters`). */
+  encounter: string;
+  name: string;
+  tier: number;
+  guardian: boolean;
+  /** Pour l'écran : nombre d'ennemis de la rencontre. */
+  enemies: number;
+}
+
+export interface RouteView {
+  /** Étape jouée (ou à jouer), étapes franchies, et si la route tourne en ce moment. */
+  stage: number;
+  best: number;
+  running: boolean;
+  chapters: { number: number; name: string; stages: RouteStageView[] }[];
 }
 
 /**
@@ -300,6 +328,10 @@ export function viewCombat(state: CharacterState, content: Content): CombatView 
           encounter: a.encounter,
           name: encounterName(a.encounter),
           tier: a.tier ?? (a.encounter !== null ? (combat.encounters[a.encounter]?.tier ?? null) : null),
+          route: !!a.route,
+          stageLabel: a.route ? (routeStages(combat)[state.combat.route.stage]?.label ?? null) : null,
+          enemies: a.encounter !== null ? (combat.encounters[a.encounter]?.enemies ?? 1) : 1,
+          guardian: a.encounter !== null && combat.encounters[a.encounter]?.kind === 'gardien',
           wins: a.wins,
           losses: a.losses,
           streak: a.streak,
@@ -314,5 +346,20 @@ export function viewCombat(state: CharacterState, content: Content): CombatView 
     stopped: state.combat.stopped,
     lastFight,
     classLevels: Object.fromEntries(Object.keys(combat.kits).map((c) => [c, classLevel(state, c, content)])),
+    route: routeView(state, combat),
   };
+}
+
+function routeView(state: CharacterState, combat: CombatContent): RouteView | null {
+  const stages = routeStages(combat);
+  if (!stages.length) return null;
+  const chapters: RouteView['chapters'] = [];
+  for (const s of stages) {
+    const e = combat.encounters[s.encounter]!;
+    let ch = chapters[s.chapter - 1];
+    if (!ch) chapters.push((ch = { number: s.chapter, name: s.chapterName, stages: [] }));
+    ch.stages.push({ index: s.index, label: s.label, encounter: s.encounter, name: e.name, tier: s.tier, guardian: s.guardian, enemies: e.enemies });
+  }
+  const r = state.combat.route;
+  return { stage: Math.min(r.stage, stages.length - 1), best: r.best, running: !!state.combat.activity?.route, chapters };
 }

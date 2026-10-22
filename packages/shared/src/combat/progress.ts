@@ -43,6 +43,21 @@ export interface CombatActivity {
   losses: number;
   /** Défaites de suite. */
   streak: number;
+  /** La route (PvE solo) : la rencontre suit l'étape atteinte, elle avance à chaque victoire et ne s'arrête jamais. */
+  route?: boolean;
+}
+
+/** Une étape de la route : une zone ou un gardien, à un palier. */
+export interface RouteStage {
+  index: number;
+  /** « 3-2 » : chapitre et rang dans le chapitre. */
+  label: string;
+  chapter: number;
+  /** Région, et cercle pour une région haute. */
+  chapterName: string;
+  encounter: string;
+  tier: number;
+  guardian: boolean;
 }
 
 export interface CombatState {
@@ -63,9 +78,41 @@ export interface CombatState {
   pity: Record<string, number>;
   /** Fraction de vestige pas encore donnée (les vestiges tombent entiers). */
   vestigeCarry: number;
+  /** La route : étape jouée (rang dans `routeStages`) et nombre d'étapes franchies. */
+  route: { stage: number; best: number };
 }
 
-export const emptyCombat = (): CombatState => ({ xp: {}, paths: {}, plans: {}, activity: null, nextIndex: 0, last: null, stopped: null, pity: {}, vestigeCarry: 0 });
+export const emptyCombat = (): CombatState => ({ xp: {}, paths: {}, plans: {}, activity: null, nextIndex: 0, last: null, stopped: null, pity: {}, vestigeCarry: 0, route: { stage: 0, best: 0 } });
+
+const stagesCache = new WeakMap<CombatContent, RouteStage[]>();
+/**
+ * Les étapes de la route, tirées des zones et gardiens du monde : les régions basses dans l'ordre de leurs paliers (zones
+ * puis gardien), puis les régions hautes cercle par cercle (40, 50… 90), chacune à son tour. Un chapitre = une région à un
+ * palier ; ses étapes = ses zones, puis son gardien.
+ */
+export function routeStages(combat: CombatContent): RouteStage[] {
+  const cached = stagesCache.get(combat);
+  if (cached) return cached;
+  const regions = new Map<string, Encounter[]>();
+  for (const e of Object.values(combat.encounters)) {
+    if ((e.kind !== 'zone' && e.kind !== 'gardien') || !e.tier || !e.region) continue;
+    regions.set(e.region, [...(regions.get(e.region) ?? []), e]);
+  }
+  const order = (list: Encounter[]) => [...list].sort((a, b) => a.tier! - b.tier! || (a.kind === 'gardien' ? 1 : 0) - (b.kind === 'gardien' ? 1 : 0));
+  const low = [...regions].filter(([, l]) => !l.some((e) => e.circles)).sort((a, b) => Math.min(...a[1].map((e) => e.tier!)) - Math.min(...b[1].map((e) => e.tier!)));
+  const high = [...regions].filter(([, l]) => l.some((e) => e.circles));
+  const circles = Object.keys(combat.rules.gearStats?.tiers ?? {}).map(Number).filter((t) => t >= Math.min(90, ...high.flatMap(([, l]) => l.map((e) => e.tier!)))).sort((a, b) => a - b);
+  const chapters: { name: string; list: { e: Encounter; tier: number }[] }[] = [
+    ...low.map(([name, l]) => ({ name, list: order(l).map((e) => ({ e, tier: e.tier! })) })),
+    ...circles.flatMap((c) => high.map(([name, l]) => ({ name: `${name} · cercle ${c}`, list: order(l).map((e) => ({ e, tier: Math.max(c, e.tier!) })) }))),
+  ];
+  const out: RouteStage[] = [];
+  chapters.forEach((ch, ci) =>
+    ch.list.forEach(({ e, tier }, si) => out.push({ index: out.length, label: `${ci + 1}-${si + 1}`, chapter: ci + 1, chapterName: ch.name, encounter: e.id, tier, guardian: e.kind === 'gardien' })),
+  );
+  stagesCache.set(combat, out);
+  return out;
+}
 
 /** Complète un état de combat enregistré avant l'ajout d'un champ. */
 export const readCombat = (raw: Partial<CombatState> | null | undefined): CombatState => ({ ...emptyCombat(), ...(raw ?? {}) });
@@ -377,6 +424,19 @@ export function runCombat(state: CharacterState, t: number, end: number, rate: n
     state.combat.last = f;
     a.current = null;
     a.progress = 0;
+    // La route : une victoire ouvre l'étape suivante, une défaite fait rejouer la même, sans jamais s'arrêter.
+    if (a.route) {
+      const stages = routeStages(combat);
+      const r = state.combat.route;
+      if (f.win) {
+        r.best = Math.max(r.best, r.stage + 1);
+        r.stage = Math.min(r.stage + 1, stages.length - 1);
+      }
+      const next = stages[Math.min(r.stage, stages.length - 1)]!;
+      a.encounter = next.encounter;
+      a.tier = next.tier;
+      continue;
+    }
     if (a.streak >= p.maxConsecutiveLosses) {
       state.combat.activity = null;
       state.combat.stopped = summary.stopped = 'losses';
@@ -407,6 +467,27 @@ export function startCombat(input: CharacterState, encounter: string | null, now
   const state = cloneState(input);
   state.activity = null;
   state.combat.activity = { encounter, ...(tier !== undefined && tier !== e?.tier ? { tier } : {}), startedAt: now, progress: 0, current: null, wins: 0, losses: 0, streak: 0 };
+  state.combat.stopped = null;
+  return state;
+}
+
+/**
+ * Prendre la route (PvE solo) : à l'étape atteinte, ou à une étape déjà franchie (`stage`). Elle tourne en boucle : une
+ * victoire mène à l'étape suivante, une défaite fait rejouer la même. Arrête l'activité de métier en cours.
+ */
+export function startRoute(input: CharacterState, now: number, content: Content, stage?: number): CharacterState {
+  const combat = need(content);
+  if (!input.classId) throw new GameError('no_class', 'Choisissez d’abord une classe.');
+  const stages = routeStages(combat);
+  if (!stages.length) throw new GameError('no_route', 'La route n’est pas encore ouverte.');
+  const r = input.combat.route;
+  const at = stage ?? Math.min(r.stage, stages.length - 1);
+  if (at < 0 || at > Math.min(r.best, stages.length - 1)) throw new GameError('route_locked', 'Cette étape n’est pas encore ouverte : franchissez d’abord les précédentes.');
+  const s = stages[at]!;
+  const state = cloneState(input);
+  state.activity = null;
+  state.combat.route = { ...r, stage: at };
+  state.combat.activity = { encounter: s.encounter, tier: s.tier, route: true, startedAt: now, progress: 0, current: null, wins: 0, losses: 0, streak: 0 };
   state.combat.stopped = null;
   return state;
 }

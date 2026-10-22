@@ -25,6 +25,8 @@ export const classBody = z.object({ classId: z.string() });
 /** Combat : une rencontre en boucle, ou null pour le Terrain d'entraînement. */
 /** `tier` : le cercle choisi dans une région haute (palier 40 à 90). */
 export const combatStartBody = z.object({ encounter: z.string().nullable(), tier: z.number().int().min(1).optional() });
+/** La route (PvE solo) : à l'étape atteinte, ou à une étape déjà franchie. */
+export const combatRouteBody = z.object({ stage: z.number().int().min(0).optional() });
 export const combatPathBody = z.object({ pathId: z.string() });
 /** Plan de combat : sorts et première utilisation (s) ; null revient au plan conseillé. */
 export const combatPlanBody = z.object({ plan: z.array(z.object({ spell: z.string(), at: z.number().min(0) })).max(10).nullable() });

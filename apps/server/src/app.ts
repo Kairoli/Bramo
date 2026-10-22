@@ -58,6 +58,9 @@ import {
   tradeBody,
   trialBody,
   spellEffects,
+  combatRouteBody,
+  routeStages,
+  startRoute,
 } from '@bramo/shared';
 import type { Db } from './db/index.js';
 import { accounts, characters } from './db/schema.js';
@@ -385,6 +388,14 @@ export async function buildApp({ db, content, clock = Date.now, secureCookies = 
       state: startCombat(state, encounter, now, content, tier),
       log: `Vous partez au combat : ${encounterName(encounter)}${tier ? `, cercle ${tier}` : ''}.`,
     }));
+  });
+  app.post('/api/combat/route', (req) => {
+    const { stage } = body(combatRouteBody, req);
+    return playAs(req, (state, now) => {
+      const next = startRoute(state, now, content, stage);
+      const s = routeStages(content.combat!)[next.combat.route.stage]!;
+      return { state: next, log: `Vous prenez la route : étape ${s.label}, ${encounterName(s.encounter)}.` };
+    });
   });
   app.post('/api/combat/stop', (req) =>
     playAs(req, (state) => ({ state: stopCombat(state), log: 'Vous arrêtez le combat.' })),

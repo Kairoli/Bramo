@@ -64,7 +64,7 @@ Signés par l'artisan. [Décidé par Louis, 21 octobre] **Plus de qualité Norma
 ## 5. Boucle idle
 
 ### 5.1 Une activité à la fois [Décidé]
-- Une seule activité en cours (un métier, une recette, une quantité) et une **file d'actions** (longueur 3 en réglage). Lancer une recette alors qu'une autre tourne : « Lancer à la place de » ou « Ajouter à la file ».
+- Une seule activité de métier en cours (un métier, une recette, une quantité) et une **file d'actions** (longueur 3 en réglage) ; le combat (la route) tourne à côté, en continu (décision de Louis du 22 octobre 2026). Lancer une recette alors qu'une autre tourne : « Lancer à la place de » ou « Ajouter à la file ».
 - [Recommandé] Seule exception : les **parcelles d'Agriculture**, qui poussent en temps réel et sont bornées par leur nombre.
 
 ### 5.2 Rendement

@@ -72,6 +72,9 @@ export interface CombatPatch {
   plans?: Record<string, { levels?: Record<string, unknown[]> }>;
   /** Plans ajoutés (même format que plans.yaml), par exemple les plans conseillés trouvés par `sim combat-search`. */
   addPlans?: unknown[];
+  /** Rencontres : `encounters` remplace toute la liste, `addEncounters` en ajoute. */
+  encounters?: unknown[];
+  addEncounters?: unknown[];
 }
 
 type RawCombatFiles = NonNullable<RawContent['combat']>;
@@ -105,6 +108,8 @@ export function patchCombat(base: RawCombatFiles | undefined, patch: CombatPatch
     plan.levels = { ...plan.levels, ...p.levels };
   }
   if (patch.addPlans) out.plans = [...plans, ...structuredClone(patch.addPlans)];
+  if (patch.encounters) out.encounters = structuredClone(patch.encounters);
+  if (patch.addEncounters) out.encounters = [...((out.encounters ?? []) as unknown[]), ...structuredClone(patch.addEncounters)];
   return out;
 }
 

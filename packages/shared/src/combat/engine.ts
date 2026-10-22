@@ -36,6 +36,8 @@ export interface CombatantSetup {
   stats?: Partial<CombatStats>;
   /** Qui reçoit ses protections et soins : lui-même, ou l'allié le plus bas en PV (identique en solo). */
   beneficiary?: 'self' | 'lowest';
+  /** PV au début de la rencontre (par défaut le maximum) : les PV se gardent d'une salle de donjon à l'autre. */
+  startHp?: number;
 }
 
 export interface FightOptions {
@@ -44,6 +46,12 @@ export interface FightOptions {
   opening?: 'independent' | 'sequence';
   /** Multiplie les dégâts ennemis (essais de danger accru). */
   enemyDamageScale?: number;
+  /** Multiplie les PV des ennemis (essais de groupe : PV × N). */
+  enemyHpScale?: number;
+  /** Multiplie la cadence des attaques ordinaires ennemies (essais de groupe). */
+  enemyAttackRateScale?: number;
+  /** Qui reçoit les attaques ordinaires : le premier combattant (défaut), ou chacun à tour de rôle. */
+  targeting?: 'front' | 'rotate';
   /** Garde le journal détaillé du combat. */
   trace?: boolean;
 }
@@ -155,6 +163,13 @@ interface Enemy {
   breakRecover: number;
   nextHit: number;
   countertraps: Map<Combatant, { amount: number; until: number }>;
+  /** Renfort (jamais un boss) ; il n'entre en jeu qu'à `arriveAt`. */
+  add: boolean;
+  arriveAt: number;
+  attack: Encounter['attack'];
+  /** Attaques ordinaires déjà portées (série de coups lourds) et prochain allié visé (ciblage à tour de rôle). */
+  hits: number;
+  aim: number;
 }
 
 interface Combatant {
@@ -179,6 +194,8 @@ interface Combatant {
   counters: Map<string, number>;
   shields: Shield[];
   auraImmuneUntil: number;
+  /** Charges d'érosion subies. */
+  erosion: number;
   heat: number;
   angle: { until: number; target: number } | null;
   orderUntil: number;
@@ -235,8 +252,8 @@ export function fight(combat: CombatContent, setups: CombatantSetup[], encounter
       path,
       stats,
       P: stats.power,
-      hp: stats.maxHp,
-      minHp: stats.maxHp,
+      hp: Math.min(stats.maxHp, s.startHp ?? stats.maxHp),
+      minHp: Math.min(stats.maxHp, s.startHp ?? stats.maxHp),
       lastHitBy: null,
       rand: stream(options.seed, `crit:${s.id}`),
       plan,
@@ -251,6 +268,7 @@ export function fight(combat: CombatContent, setups: CombatantSetup[], encounter
       counters: new Map(),
       shields: [],
       auraImmuneUntil: -1,
+      erosion: 0,
       heat: 0,
       angle: null,
       orderUntil: -1,
@@ -263,11 +281,24 @@ export function fight(combat: CombatContent, setups: CombatantSetup[], encounter
       m: {},
     };
   });
-  const enemies: Enemy[] = Array.from({ length: encounter.enemies }, (_, i) => ({
+  const hpScale = options.enemyHpScale ?? 1;
+  const rateScale = options.enemyAttackRateScale ?? 1;
+  const targeting = options.targeting ?? 'front';
+  const groups = [
+    { count: encounter.enemies, hp: encounter.hp, attack: encounter.attack, add: false, arrive: 0 },
+    ...(encounter.adds ?? []).map((a) => ({ count: a.count, hp: a.hp, attack: a.attack, add: true, arrive: a.arrive })),
+  ];
+  const roster = groups.flatMap((g) => Array.from({ length: g.count }, () => g));
+  const enemies: Enemy[] = roster.map((g, i) => ({
     i,
-    hp: encounter.hp,
-    maxHp: encounter.hp,
-    boss: encounter.enemies === 1,
+    hp: g.hp * hpScale,
+    maxHp: g.hp * hpScale,
+    boss: !g.add && encounter.enemies === 1,
+    add: g.add,
+    arriveAt: ms(g.arrive),
+    attack: g.attack,
+    hits: 0,
+    aim: 0,
     guard: 0,
     guardUntil: 0,
     slow: 0,
@@ -279,14 +310,19 @@ export function fight(combat: CombatContent, setups: CombatantSetup[], encounter
     weaken: [],
     vuln: [],
     dots: new Map(),
-    stability: encounter.enemies === 1 ? R.stability.max : (R.stability.ordinaryMax ?? R.stability.max),
+    stability: !g.add && encounter.enemies === 1 ? R.stability.max : (R.stability.ordinaryMax ?? R.stability.max),
     breakUntil: -1,
     breakRecover: -1,
-    nextHit: ms(R.enemy.firstAttackAt + i * R.enemy.attackStagger),
+    nextHit: ms(g.arrive + R.enemy.firstAttackAt + i * R.enemy.attackStagger),
     countertraps: new Map(),
   }));
 
-  const aliveEnemies = () => enemies.filter((e) => e.hp > 0);
+  /** Ennemis présents et debout (un renfort n'est là qu'à son heure d'arrivée). */
+  const aliveEnemies = () => enemies.filter((e) => e.hp > 0 && e.arriveAt <= t);
+  /** La rencontre se gagne quand le groupe principal est vaincu : un renfort ne rend jamais le chef invulnérable. */
+  const chiefsAlive = () => enemies.some((e) => !e.add && e.hp > 0);
+  let regenUses = 0;
+  let guardTurn = 0;
   const aliveTeam = () => team.filter((c) => c.hp > 0);
   const param = (c: Combatant, key: string) => c.path?.params[key] ?? 0;
   const kp = (c: Combatant, key: string) => c.kit.params[key] ?? 0;
@@ -332,6 +368,11 @@ export function fight(combat: CombatContent, setups: CombatantSetup[], encounter
     for (const v of e.vuln) if (v.until > t) vuln = Math.max(vuln, v.amount);
     if (e.breakUntil > t) vuln = Math.max(vuln, R.stability.breakDamageTaken);
     let x = amount * mult * (1 + Math.min(R.caps.vulnerability, vuln));
+    // Fenêtres : hors des secondes ouvertes de chaque période, le groupe principal subit moins de dégâts.
+    if (encounter.windows && !e.add) {
+      const period = ms(encounter.windows.period);
+      if (t % period < period - ms(encounter.windows.open)) x *= 1 - encounter.windows.closedReduction;
+    }
     const g = Math.min(e.guard, x);
     e.guard -= g;
     x -= g;
@@ -588,6 +629,11 @@ export function fight(combat: CombatContent, setups: CombatantSetup[], encounter
         who.auraImmuneUntil = t + ms(R.cleanse.auraImmunity);
         c.contrib.cleanses++;
       }
+      if (spell.cleanse && who.erosion > 0) {
+        who.erosion = 0;
+        c.contrib.cleanses++;
+        notes.push('érosion purifiée');
+      }
       if (spell.empowerAuto) prepare(c, 'auto', spell.empowerAuto * c.P, 8, 'auto');
       if (c.kit.mechanic === 'heat' && spell.heat) c.heat = Math.min(kp(c, 'cap'), c.heat + spell.heat);
       if (c.kit.mechanic === 'angle' && tags.includes('setup')) c.angle = { until: t + ms(kp(c, 'duration')), target: e.i };
@@ -611,14 +657,23 @@ export function fight(combat: CombatContent, setups: CombatantSetup[], encounter
   };
 
   // --- Coups reçus ------------------------------------------------------------------------------------------------
-  const front = () => aliveTeam()[0];
-  const incoming = (e: Enemy, raw: number, source: 'attack' | 'charge') => {
-    const c = front();
+  /** Allié visé : le premier (défaut), ou chacun à tour de rôle (essais de groupe). */
+  const targetOf = (e: Enemy): Combatant | undefined => {
+    const alive = aliveTeam();
+    if (!alive.length) return undefined;
+    return targeting === 'rotate' ? alive[e.aim++ % alive.length] : alive[0];
+  };
+  const hasHeavy = !!encounter.charge || roster.some((g) => g.attack.heavyEvery);
+  const keepForHeavy = R.enemy.onceWeakenTarget === 'heavy' && hasHeavy;
+  const incoming = (e: Enemy, raw: number, source: 'attack' | 'charge', heavy = false) => {
+    const c = targetOf(e);
     if (!c) return;
     log(null, source, `${source === 'charge' ? 'attaque chargée' : 'attaque'} de l'ennemi ${e.i + 1} sur ${c.setup.id}`);
     const active = e.weaken.filter((w) => w.until > t);
-    const strongest = active.reduce<Weaken | null>((a, w) => (!a || w.amount > a.amount ? w : a), null);
-    e.weaken = active.filter((w) => !w.once);
+    // Un affaiblissement « une attaque » peut être gardé pour le coup qui compte (attaque lourde ou chargée).
+    const usable = keepForHeavy && !heavy ? active.filter((w) => !w.once) : active;
+    const strongest = usable.reduce<Weaken | null>((a, w) => (!a || w.amount > a.amount ? w : a), null);
+    e.weaken = keepForHeavy && !heavy ? active : active.filter((w) => !w.once);
     const before = raw * (1 - c.stats.damageReduction);
     let amount = before * (1 - (strongest?.amount ?? 0));
     if (strongest) strongest.by.contrib.mitigated += before - amount;
@@ -655,7 +710,7 @@ export function fight(combat: CombatContent, setups: CombatantSetup[], encounter
   const crossed = (period: number) => t > 0 && Math.floor(t / period) > Math.floor((t - tick) / period);
 
   // --- Boucle -----------------------------------------------------------------------------------------------------
-  while (t <= limit && aliveTeam().length && aliveEnemies().length) {
+  while (t <= limit && aliveTeam().length && chiefsAlive()) {
     for (const c of team) c.shields = c.shields.filter((s) => s.end > t);
     for (const e of aliveEnemies()) {
       if (e.guardUntil <= t) e.guard = 0;
@@ -671,7 +726,7 @@ export function fight(combat: CombatContent, setups: CombatantSetup[], encounter
         }
       }
     }
-    if (!aliveEnemies().length) break;
+    if (!chiefsAlive()) break;
 
     for (const c of team) {
       if (c.hp <= 0) continue;
@@ -697,24 +752,50 @@ export function fight(combat: CombatContent, setups: CombatantSetup[], encounter
         if (e.stunUntil > t) e.nextHit = e.stunUntil;
         else {
           const spread = 1 - R.enemy.damageSpread / 2 + R.enemy.damageSpread * enemyRand();
-          incoming(e, encounter.attack.damage * enemyScale * spread, 'attack');
+          e.hits++;
+          const heavy = e.attack.heavyEvery && e.hits % e.attack.heavyEvery === 0 ? (e.attack.heavyMultiplier ?? 1) : 1;
+          incoming(e, e.attack.damage * enemyScale * spread * heavy, 'attack', heavy > 1);
           const s = e.slowUntil > t ? e.slow : 0;
-          e.nextHit = t + ms(encounter.attack.period / (1 - s));
+          e.nextHit = t + ms(e.attack.period / rateScale / (1 - s));
         }
       }
-      // Phases à horaire fixe : jamais décalées par un ralentissement.
-      if (encounter.charge && crossed(ms(encounter.charge.period))) incoming(e, encounter.charge.damage * enemyScale, 'charge');
-      if (encounter.guard && crossed(ms(encounter.guard.period))) {
-        e.guard = encounter.guard.amount;
-        e.guardUntil = t + ms(encounter.guard.duration);
-        log(null, 'guard', 'garde levée');
+      // Phases à horaire fixe : jamais décalées par un ralentissement. Elles concernent le groupe principal.
+      if (!e.add && encounter.charge && crossed(ms(encounter.charge.period))) incoming(e, encounter.charge.damage * enemyScale, 'charge', true);
+    }
+    const chiefs = aliveEnemies().filter((e) => !e.add);
+    if (encounter.guard && crossed(ms(encounter.guard.period)) && chiefs.length) {
+      const g = encounter.guard;
+      const boost = g.boostedByAdds && aliveEnemies().some((e) => e.add) ? g.boostedByAdds : 1;
+      const on = g.on === 'alternate' ? [chiefs[guardTurn++ % chiefs.length]!] : chiefs;
+      for (const e of on) {
+        e.guard = g.amount * hpScale * boost;
+        e.guardUntil = t + ms(g.duration);
       }
-      if (encounter.regen && crossed(ms(encounter.regen.period))) {
+      log(null, 'guard', 'garde levée');
+    }
+    if (encounter.regen && crossed(ms(encounter.regen.period)) && chiefs.length && (!encounter.regen.uses || regenUses < encounter.regen.uses) && (!encounter.regen.requiresAdds || aliveEnemies().some((e) => e.add))) {
+      regenUses++;
+      for (const e of chiefs) {
         const anti = e.antihealUntil > t ? e.antiheal : 0;
-        e.hp = Math.min(e.maxHp, e.hp + encounter.regen.amount * (1 - anti));
+        e.hp = Math.min(e.maxHp, e.hp + encounter.regen.amount * hpScale * (1 - anti));
+      }
+      log(null, 'regen', 'soin ennemi');
+    }
+    // Érosion : une charge de plus à chaque période ; chaque charge inflige ses dégâts chaque seconde, sans défense.
+    if (encounter.erosion && chiefs.length) {
+      if (crossed(ms(encounter.erosion.period))) for (const c of aliveTeam()) c.erosion = Math.min(encounter.erosion.maxStacks, c.erosion + 1);
+      if (crossed(1000)) {
+        for (const c of aliveTeam()) {
+          if (!c.erosion) continue;
+          const d = c.erosion * encounter.erosion.damage * enemyScale;
+          c.hp -= d;
+          c.lastHitBy = 'aura';
+          inc(c, 'erosionDamage', d);
+          c.minHp = Math.min(c.minHp, c.hp);
+        }
       }
     }
-    if (encounter.aura && aliveEnemies().length && crossed(1000)) {
+    if (encounter.aura && chiefsAlive() && crossed(1000)) {
       for (const c of aliveTeam()) {
         if (c.auraImmuneUntil > t) continue;
         c.hp -= encounter.aura.damage;
@@ -726,7 +807,7 @@ export function fight(combat: CombatContent, setups: CombatantSetup[], encounter
     t += tick;
   }
 
-  const win = aliveTeam().length > 0 && !aliveEnemies().length;
+  const win = aliveTeam().length > 0 && !chiefsAlive();
   const fallen = team.find((c) => c.hp <= 0);
   const enemyTotal = enemies.reduce((a, e) => a + e.maxHp, 0);
   return {

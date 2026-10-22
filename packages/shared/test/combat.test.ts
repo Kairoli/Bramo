@@ -52,6 +52,9 @@ const spells = [
   spell('assomme', 'forgefire', 30, { stun: 1, pressure: 10 }),
   spell('cogne', 'forgefire', 1, { pressure: 40 }),
   spell('garde', 'forgefire', 6, { shield: 2 }),
+  spell('frappe', 'forgefire', 1, { damage: 1 }),
+  spell('purge', 'forgefire', 1, { cleanse: true }),
+  spell('zone', 'forgefire', 1, { damage: 1, targets: 5 }),
   spell('repere', 'tracker', 30, { tags: ['setup'] }),
   spell('poursuite', 'tracker', 1, { tags: ['exploit'], damage: 1 }),
   spell('trait', 'runist', 1, { form: 'trait', element: 'fire', damage: 1 }),
@@ -165,5 +168,81 @@ describe('protections et groupe', () => {
   it('en solo, la garde protège le porteur', () => {
     const r = fight(combat, [solo('forgefire', [['garde', 0]])], dummy({ attack: { damage: 50, period: 1 } }), { seed: 1 });
     expect(r.team[0]!.contributions.absorbed).toBeGreaterThan(0);
+  });
+});
+
+describe('mécaniques de rencontre (zones, donjons, groupes)', () => {
+  const casts = (r: ReturnType<typeof fight>, kind: string) => r.trace!.filter((x) => x.kind === kind).map((x) => x.t);
+
+  it('un renfort arrive à son heure, et vaincre le groupe principal termine la rencontre', () => {
+    const enc = dummy({ hp: 100_000, adds: [{ name: 'Renfort', count: 1, hp: 1e9, attack: { damage: 0, period: 100 }, arrive: 10 }] });
+    // Avant 10 s, seul le chef est là ; le renfort, immortel ici, n'empêche pas la victoire sur le chef.
+    const r = fight(combat, [solo('forgefire', [['zone', 0]])], { ...enc, hp: 300 }, { seed: 1 });
+    expect(r.win).toBe(true);
+    const long = fight(combat, [solo('forgefire', [['frappe', 0]])], enc, { seed: 1, trace: true });
+    expect(long.win).toBe(false);
+  });
+
+  it('un coup sur trois est lourd', () => {
+    const enc = dummy({ attack: { damage: 4, period: 1, heavyEvery: 3, heavyMultiplier: 5 } });
+    const r = fight(combat, [solo('forgefire', [])], enc, { seed: 1 });
+    // 60 s : 59 coups, dont un tiers à 20 au lieu de 4 : (2 × 4 + 20) / 3 ≈ 9,3 par coup en moyenne.
+    const lost = r.team[0]!.metrics.hpLost!;
+    expect(lost / 59).toBeGreaterThan(8.5);
+    expect(lost / 59).toBeLessThan(10);
+  });
+
+  it('un soin ennemi limité à trois utilisations, et seulement tant que son auxiliaire vit', () => {
+    const enc = dummy({ hp: 1e9, regen: { period: 5, amount: 1, uses: 3 } });
+    const r = fight(combat, [solo('forgefire', [])], enc, { seed: 1, trace: true });
+    expect(casts(r, 'regen')).toHaveLength(3);
+    const aux = dummy({ hp: 1e9, regen: { period: 5, amount: 1, requiresAdds: true }, adds: [{ name: 'Auxiliaire', count: 1, hp: 50, attack: { damage: 0, period: 100 }, arrive: 0 }] });
+    // Le premier coup (au premier lancement) vise le chef ; une frappe de zone tue l'auxiliaire tout de suite.
+    const killed = fight(combat, [solo('forgefire', [['zone', 0]])], aux, { seed: 1, trace: true });
+    expect(casts(killed, 'regen')).toHaveLength(0);
+  });
+
+  it('l’érosion s’accumule et une purification la retire', () => {
+    const enc = dummy({ erosion: { period: 5, damage: 2, maxStacks: 3 } });
+    const none = fight(combat, [solo('forgefire', [])], enc, { seed: 1 });
+    const purged = fight(combat, [solo('forgefire', [['purge', 0]])], enc, { seed: 1 });
+    expect(none.team[0]!.metrics.erosionDamage).toBeGreaterThan(300);
+    expect(purged.team[0]!.metrics.erosionDamage ?? 0).toBeLessThan(none.team[0]!.metrics.erosionDamage! / 3);
+    expect(purged.team[0]!.contributions.cleanses).toBeGreaterThan(0);
+  });
+
+  it('hors des fenêtres ouvertes, le groupe principal subit moins de dégâts', () => {
+    const open = fight(combat, [solo('forgefire', [['frappe', 0]])], dummy({ hp: 1e9 }), { seed: 1 });
+    const windows = fight(combat, [solo('forgefire', [['frappe', 0]])], dummy({ hp: 1e9, windows: { period: 10, open: 5, closedReduction: 0.5 } }), { seed: 1 });
+    expect(windows.team[0]!.contributions.damage / open.team[0]!.contributions.damage).toBeCloseTo(0.75, 1);
+  });
+
+  it('en groupe, les coups peuvent viser chacun à tour de rôle ; PV et cadence s’adaptent à l’effectif', () => {
+    const hitter = dummy({ attack: { damage: 4, period: 1 } });
+    const team = [solo('forgefire', [], { id: 'a' }), solo('forgefire', [], { id: 'b' })];
+    const front = fight(combat, team, hitter, { seed: 1 });
+    const rotate = fight(combat, team, hitter, { seed: 1, targeting: 'rotate' });
+    expect(front.team[1]!.hpRatio).toBe(1);
+    expect(rotate.team[0]!.metrics.hpLost).toBeCloseTo(rotate.team[1]!.metrics.hpLost!, -1);
+    const faster = fight(combat, [solo('forgefire', [])], hitter, { seed: 1, enemyAttackRateScale: 2 });
+    expect(faster.team[0]!.metrics.hpLost! / front.team[0]!.metrics.hpLost!).toBeCloseTo(2, 0);
+    const tougher = fight(combat, [solo('forgefire', [['frappe', 0]])], dummy({ hp: 1000 }), { seed: 1, enemyHpScale: 2 });
+    const normal = fight(combat, [solo('forgefire', [['frappe', 0]])], dummy({ hp: 1000 }), { seed: 1 });
+    expect(tougher.time / normal.time).toBeCloseTo(2, 0);
+  });
+
+  it('les PV de départ se gardent d’une salle à l’autre', () => {
+    const r = fight(combat, [solo('forgefire', [], { startHp: 400 })], dummy(), { seed: 1 });
+    expect(r.team[0]!.hp).toBe(400);
+  });
+
+  it('un affaiblissement « une attaque » peut être gardé pour le coup lourd', () => {
+    // Coups lourds à 6, 12, 18 s… ; la Rupture (vers 1 s, puis toutes les 9 s) laisse 6 s d'affaiblissement.
+    const enc = dummy({ attack: { damage: 100, period: 2, heavyEvery: 3, heavyMultiplier: 10 } });
+    const heavyRules = { ...combat, rules: { ...combat.rules, enemy: { ...combat.rules.enemy, onceWeakenTarget: 'heavy' as const } } };
+    // cogne : 40 de Pression par seconde, donc une Rupture (prochaine attaque −25 %) peu après le début.
+    const next = fight(combat, [solo('forgefire', [['cogne', 0]])], enc, { seed: 1 });
+    const kept = fight(heavyRules, [solo('forgefire', [['cogne', 0]])], enc, { seed: 1 });
+    expect(kept.team[0]!.contributions.mitigated).toBeGreaterThan(next.team[0]!.contributions.mitigated * 2);
   });
 });

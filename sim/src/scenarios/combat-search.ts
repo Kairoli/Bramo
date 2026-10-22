@@ -26,6 +26,9 @@ export interface SearchedPlan {
   results: Record<string, Record<string, { winRate: number; medianTime: number | null; medianHp: number }>>;
   /** Moyenne des temps médians sur les rencontres (danger 1), si toutes sont gagnées à 100 %. */
   meanTime: number | null;
+  /** Rencontres gagnées à 100 % au danger normal ; et temps médian moyen sur ces rencontres. */
+  wins: number;
+  meanWonTime: number;
 }
 
 const median = (xs: number[]): number | null => {
@@ -74,7 +77,9 @@ function evaluate(combat: CombatContent, pathId: string, spells: Spell[], level:
   }
   const base = Object.values(results).map((r) => r['1']!);
   const meanTime = base.every((r) => r.winRate === 1) ? base.reduce((a, r) => a + r.medianTime!, 0) / base.length : null;
-  return { path: pathId, spells: plan.map((p) => p.spell), results, meanTime };
+  const won = base.filter((r) => r.winRate === 1);
+  const meanWonTime = won.length ? won.reduce((a, r) => a + r.medianTime!, 0) / won.length : Infinity;
+  return { path: pathId, spells: plan.map((p) => p.spell), results, meanTime, wins: won.length, meanWonTime };
 }
 
 /** Meilleures combinaisons de chaque voie : criblage rapide, puis confirmation sur plus de graines et les dangers demandés. */
@@ -86,18 +91,22 @@ export function searchPlans(combat: CombatContent, o: SearchOptions = defaultSea
     const combos = combinations(pool, size).filter((c) => planErrors(combat, path.class, path.id, o.level, planOf(c)).length === 0);
     const screened = combos
       .map((c) => ({ c, r: evaluate(combat, path.id, c, o.level, o.screenSeeds, [1], o.opening) }))
-      .filter((x) => x.r.meanTime !== null)
-      .sort((a, b) => a.r.meanTime! - b.r.meanTime!);
+      // Un plan qui ne gagne pas tout reste classé (le plus de rencontres gagnées, puis le plus rapide) : une voie n'est jamais retirée du tableau.
+      .sort((a, b) => b.r.wins - a.r.wins || a.r.meanWonTime - b.r.meanWonTime);
     // Les finalistes : les plus rapides en moyenne, plus le plus rapide de chaque rencontre (un plan spécialisé peut gagner un profil).
     const chosen = new Set(screened.slice(0, o.finalists).map((x) => x.c));
     // Et les plus sûrs (PV médians au danger normal) : ceux qui franchiront les dangers plus élevés.
     const hp = (x: (typeof screened)[number]) => Object.values(x.r.results).reduce((s, r) => s + r['1']!.medianHp, 0);
     for (const x of [...screened].sort((p, q) => hp(q) - hp(p)).slice(0, o.finalists)) chosen.add(x.c);
     for (const enc of Object.keys(combat.encounters)) {
-      const best = screened.reduce<(typeof screened)[number] | null>((a, x) => (!a || x.r.results[enc]!['1']!.medianTime! < a.r.results[enc]!['1']!.medianTime! ? x : a), null);
+      const time = (x: (typeof screened)[number]) => (x.r.results[enc]!['1']!.winRate === 1 ? x.r.results[enc]!['1']!.medianTime! : Infinity);
+      const best = screened.reduce<(typeof screened)[number] | null>((a, x) => (!a || time(x) < time(a) ? x : a), null);
       if (best) chosen.add(best.c);
+      // Et le plus sûr de chaque rencontre : un plan défensif peut franchir un mur que les plans rapides ne passent pas.
+      const safest = screened.reduce<(typeof screened)[number] | null>((p, x) => (!p || x.r.results[enc]!['1']!.medianHp > p.r.results[enc]!['1']!.medianHp ? x : p), null);
+      if (safest) chosen.add(safest.c);
     }
-    out[path.id] = [...chosen].map((c) => evaluate(combat, path.id, c, o.level, o.seeds, o.dangers, o.opening)).sort((a, b) => (a.meanTime ?? Infinity) - (b.meanTime ?? Infinity));
+    out[path.id] = [...chosen].map((c) => evaluate(combat, path.id, c, o.level, o.seeds, o.dangers, o.opening)).sort((a, b) => b.wins - a.wins || a.meanWonTime - b.meanWonTime);
   }
   return out;
 }

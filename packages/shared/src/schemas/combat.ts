@@ -48,6 +48,11 @@ export const combatRulesSchema = z.object({
     firstAttackAt: seconds,
     attackStagger: seconds,
     damageSpread: z.number().min(0).max(1),
+    /**
+     * Affaiblissements « une attaque » (Rupture, Contrepiège, Interdit…) : consommés par la prochaine attaque (`next`, défaut),
+     * ou gardés pour la prochaine attaque lourde ou chargée quand la rencontre en a (`heavy`).
+     */
+    onceWeakenTarget: z.enum(['next', 'heavy']).optional(),
   }),
   stability: z.object({
     max: z.number().positive(),
@@ -149,17 +154,43 @@ export const examplePlanSchema = z.object({
 
 const phase = z.object({ period: z.number().positive() });
 
+/**
+ * Attaque ordinaire (ralentissable). `heavyEvery` : un coup sur N est lourd (× `heavyMultiplier`), comme une série
+ * « deux coups puis un coup renforcé ».
+ */
+const attackSchema = z.object({
+  damage: coef,
+  period: z.number().positive(),
+  heavyEvery: z.number().int().min(2).optional(),
+  heavyMultiplier: z.number().min(1).optional(),
+});
+
+/**
+ * Rencontre. Le groupe principal (`enemies` × `hp`, un boss s'il est seul) peut recevoir des renforts (`adds`) à heure fixe.
+ * Toutes les phases ont un horaire fixe : un ralentissement ne les décale jamais.
+ */
 export const encounterSchema = z.object({
   id,
   name: z.string(),
   inspiredBy: z.string().optional(),
   enemies: z.number().int().min(1),
   hp: z.number().positive(),
-  attack: z.object({ damage: coef, period: z.number().positive() }),
+  attack: attackSchema,
+  /** Renforts : jamais des boss ; `arrive` en secondes (0 = présents dès le début). */
+  adds: z.array(z.object({ name: z.string(), count: z.number().int().min(1), hp: z.number().positive(), attack: attackSchema, arrive: seconds })).optional(),
   charge: phase.extend({ damage: coef }).optional(),
-  guard: phase.extend({ amount: coef, duration: z.number().positive() }).optional(),
-  regen: phase.extend({ amount: coef }).optional(),
+  /**
+   * Garde (réserve qui absorbe les dégâts) : sur tous les ennemis du groupe principal, ou à tour de rôle (`alternate`).
+   * `boostedByAdds` : multipliée tant qu'un renfort est en vie.
+   */
+  guard: phase.extend({ amount: coef, duration: z.number().positive(), on: z.enum(['all', 'alternate']).optional(), boostedByAdds: z.number().min(1).optional() }).optional(),
+  /** Soin du groupe principal ; `uses` : nombre maximal d'utilisations (jamais de combat perpétuel) ; `requiresAdds` : seulement tant qu'un renfort est en vie (un auxiliaire soigneur). */
+  regen: phase.extend({ amount: coef, uses: z.number().int().min(1).optional(), requiresAdds: z.boolean().optional() }).optional(),
   aura: z.object({ damage: coef }).optional(),
+  /** Érosion : une charge de plus à chaque période (au plus `maxStacks`), `damage` par charge et par seconde ; une purification les retire. */
+  erosion: phase.extend({ damage: coef, maxStacks: z.number().int().min(1) }).optional(),
+  /** Fenêtres : hors des `open` secondes ouvertes à chaque période, les ennemis subissent `closedReduction` de dégâts en moins. */
+  windows: phase.extend({ open: z.number().positive(), closedReduction: z.number().min(0).max(0.95) }).optional(),
 });
 
 export const spellsFileSchema = z.array(spellSchema);

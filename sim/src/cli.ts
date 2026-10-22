@@ -12,6 +12,8 @@ import { chainsReport, consumablesReport } from './scenarios/chains.js';
 import { marketReport, marketText } from './scenarios/market.js';
 import { type GoldVariant, balanceMarkdown, runBalance, writeBalance } from './scenarios/balance.js';
 import { combatReport, defaultCombatOptions } from './scenarios/combat.js';
+import { groupReport } from './scenarios/combat-groups.js';
+import { dungeonReport } from './scenarios/combat-dungeon.js';
 
 const [command = 'help', ...args] = process.argv.slice(2);
 const opt = (name: string, fallback: string) => {
@@ -40,6 +42,8 @@ const commands: Record<string, () => string> = {
     const o = { ...defaultCombatOptions, seeds: Number(opt('seeds', String(defaultCombatOptions.seeds))) };
     return combatReport(loadVariant(proposal), o, proposal ? { proposal, baseline: loadVariant() } : {});
   },
+  'combat-dungeon': () => dungeonReport(loadVariant(opt('proposal', '') || undefined).combat!, Number(opt('seeds', '12'))),
+  'combat-groups': () => groupReport(loadVariant(opt('proposal', '') || undefined).combat!, Number(opt('seeds', '8'))),
   'combat-search': () => {
     const proposal = opt('proposal', '') || undefined;
     const combat = loadVariant(proposal).combat!;

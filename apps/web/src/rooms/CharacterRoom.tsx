@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import type { GearView } from '@bramo/shared';
+import type { GearView, Item } from '@bramo/shared';
 import { api } from '../api';
 import { ClassModal, OutfitModal, STYLE_NAMES } from '../components/ClassChoice';
 import { EnergyButton } from '../components/EnergyButton';
@@ -7,166 +7,56 @@ import { useGame } from '../game/GameContext';
 import { duration, num, pct, signedPct } from '../format';
 import { Bar, FAMILY_COLOR, ItemIcon } from '../components/ui';
 import { AppearancePicker } from '../components/AppearancePicker';
-import { GearPanel, GearTotalsBlock } from '../components/GearPanel';
-import { DOLL_LEFT, DOLL_RIGHT, PaperDoll, PartThumb, useEquipment } from '../components/equipment';
+import { GearPanel } from '../components/GearPanel';
+import { PaperDoll, PartThumb, useEquipment } from '../components/equipment';
 import { OrnamentPlate, ornamentTitle } from '../components/Ornament';
 import { OrnamentModal } from '../components/OrnamentPicker';
+import { PresetsCard } from '../components/Presets';
 
-/** Salle Personnage : le personnage au centre, tout ce qu'il porte, ses caractéristiques. */
+/**
+ * Salle Personnage, comme un écran de jeu : à gauche l'inventaire (équipement en tuiles, sac, apparence), au centre le
+ * personnage, à droite les préréglages de build et l'essentiel en cartes.
+ */
 export function CharacterRoom() {
-  const { name, content, state, look, act, openMarket } = useGame();
-  const equipment = useEquipment();
-  const { settings } = content;
+  const { name, content, state, look } = useGame();
   const [classOpen, setClassOpen] = useState(false);
   const [outfitOpen, setOutfitOpen] = useState(false);
   const [ornamentOpen, setOrnamentOpen] = useState(false);
   const ornament = state.ornament ? content.ornaments[state.ornament] : undefined;
   /** « Équipement » : ce qui compte pour le build ; « Apparence » : l'aspect de chaque pièce, sans effet sur le build. */
   const [mode, setMode] = useState<'gear' | 'look'>('gear');
+  const [tab, setTab] = useState<'gear' | 'bag'>('gear');
   const [gear, setGear] = useState<GearView | null>(null);
   useEffect(() => {
     api.gear().then(setGear).catch(() => {});
-  }, [state.classId]);
+  }, [state.classId, state.combat?.activePreset]);
   const outfit = content.cosmetics.outfits.find((o) => o.id === look?.outfit);
   const cls = look && content.classes[look.classId];
   const skills = content.professions.map((p) => ({ p, s: state.skills[p.id]! }));
   const best = skills.filter((x) => x.p.status === 'playable').sort((a, b) => b.s.xp - a.s.xp)[0]!;
   const totalLevel = skills.reduce((sum, x) => sum + x.s.level, 0);
-  const totalXp = skills.reduce((sum, x) => sum + x.s.xp, 0);
-  const rate = state.activity?.rate;
-  const activeProfession =
-    state.activity && content.professions.find((p) => p.id === content.recipes[state.activity!.recipeId]?.profession);
-  const items = Object.entries(state.inventory)
-    .map(([id, qty]) => ({ item: content.items[id]!, qty }))
-    .filter((x) => x.item)
-    .sort((a, b) => a.item.category.localeCompare(b.item.category) || a.item.name.localeCompare(b.item.name));
-
-  const { durability } = state;
-  const pantry = Object.entries(state.pantry)
-    .map(([id, qty]) => ({ item: content.items[id]!, qty }))
-    .filter((x) => x.item)
-    .sort((a, b) => a.item.name.localeCompare(b.item.name));
-
-  const bonuses = [
-    { label: 'Outil', value: rate?.tool ?? 0, cap: settings.bonusCaps.tool, soon: false },
-    { label: 'Repas', value: rate?.meal ?? 0, cap: settings.bonusCaps.meal, soon: false },
-    { label: 'Clan', value: 0, cap: settings.bonusCaps.clan, soon: true },
-    { label: 'Saison', value: 0, cap: settings.bonusCaps.season, soon: true },
-  ];
+  const bagCount = Object.keys(state.inventory).length;
 
   return (
     <main className="character-room">
       <section className="panel char-equipment">
-        <span className="eyebrow">{mode === 'look' ? 'Apparence' : 'Équipement'}</span>
-        {mode === 'look' && <AppearancePicker />}
-        {mode === 'gear' && <GearPanel gear={gear} onChange={setGear} />}
-        <div className="equip-list" hidden={mode === 'look'}>
-          {[...DOLL_LEFT, ...DOLL_RIGHT].filter((id) => id === 'tool' || id === 'meal').map((id) => {
-            const e = equipment[id];
-            return (
-              <div key={id} className={`equip-row${e.name ? '' : ' empty'}`}>
-                <span className={`equip-slot equip-${e.kind}${e.name ? '' : ' empty'}`}>
-                  {e.thumb ? (
-                    <PartThumb slot={e.thumb.slot} partId={e.thumb.partId} />
-                  ) : e.item ? (
-                    <ItemIcon item={e.item} small />
-                  ) : null}
-                </span>
-                <span className="equip-text">
-                  <span className="eyebrow">{e.label}</span>
-                  <strong>{e.name ?? 'Vide'}</strong>
-                  <span className="muted">{e.detail}</span>
-                </span>
-              </div>
-            );
-          })}
-        </div>
-
-        <header className="bag-head">
-          <span className="eyebrow">Sac</span>
-          <button className="btn btn-sm" onClick={() => openMarket()}>
-            Marché
-          </button>
-        </header>
-        <div className="bag scroll">
-          {items.length === 0 && <p className="muted">Votre sac est vide.</p>}
-          {items.map(({ item, qty }) => (
-            <div key={item.id} className="bag-item">
-              <ItemIcon item={item} small />
-              <span className="bag-name">{item.name}</span>
-              <span className="muted">
-                ×{num(qty)}
-                {durability[item.id] && (
-                  <>
-                    {' · '}
-                    {(() => {
-                      const left = durability[item.id]!.copies.find((r) => r > 0);
-                      return left === undefined ? 'usé' : `reste ${duration(left)}`;
-                    })()}
-                  </>
-                )}
-              </span>
-              <span className="bag-actions">
-                {item.meal && (
-                  <>
-                    <button className="btn btn-sm" onClick={() => act(() => api.eat(item.id))}>
-                      Manger
-                    </button>
-                    <button className="btn btn-sm" title="Le personnage en mange un dès que le précédent expire" onClick={() => act(() => api.stockPantry(item.id, qty))}>
-                      Garde-manger
-                    </button>
-                  </>
-                )}
-                {durability[item.id]?.repair && durability[item.id]!.repairCost > 0 && (
-                  <button
-                    className="btn btn-sm"
-                    disabled={durability[item.id]!.repair!.problem !== null}
-                    title={durability[item.id]!.repair!.problem ?? 'Gratuit en or ; un peu d’XP'}
-                    onClick={() => act(() => api.repairSelf(item.id))}
-                  >
-                    Réparer · {durability[item.id]!.repair!.materials.map((m) => `${m.qty} × ${content.items[m.item]?.name ?? m.item}`).join(', ')}
-                  </button>
-                )}
-                {durability[item.id] && durability[item.id]!.repairCost > 0 && (
-                  <button
-                    className="btn btn-sm"
-                    disabled={state.gold < durability[item.id]!.repairCost}
-                    title="Rend toute la durabilité ; le maximum ne baisse jamais"
-                    onClick={() => act(() => api.repair(item.id))}
-                  >
-                    PNJ · {durability[item.id]!.repairCost} or
-                  </button>
-                )}
-                <button className="btn btn-sm" title="Proposer aux autres joueurs" onClick={() => openMarket(item.id)}>
-                  Vendre
-                </button>
-                {state.recycle[item.id] && (
-                  <button
-                    className="btn btn-sm"
-                    title={`Rend ${state.recycle[item.id]!.map((y) => `${y.qty} × ${content.items[y.item]?.name ?? y.item}`).join(', ')} par exemplaire`}
-                    onClick={() => act(() => api.recycle(item.id, 1))}
-                  >
-                    Recycler
-                  </button>
-                )}
-              </span>
+        {mode === 'look' ? (
+          <>
+            <span className="eyebrow">Apparence</span>
+            <AppearancePicker />
+          </>
+        ) : (
+          <>
+            <div className="seg-toggle inv-tabs" role="tablist">
+              <button aria-pressed={tab === 'gear'} onClick={() => setTab('gear')}>
+                Équipement
+              </button>
+              <button aria-pressed={tab === 'bag'} onClick={() => setTab('bag')}>
+                Sac · {bagCount}
+              </button>
             </div>
-          ))}
-        </div>
-        {pantry.length > 0 && (
-          <div className="bag scroll">
-            <span className="eyebrow">Garde-manger</span>
-            {pantry.map(({ item, qty }) => (
-              <div key={item.id} className="bag-item">
-                <ItemIcon item={item} small />
-                <span className="bag-name">{item.name}</span>
-                <span className="muted">×{num(qty)}</span>
-                <button className="btn btn-sm" onClick={() => act(() => api.unstockPantry(item.id, qty))}>
-                  Reprendre
-                </button>
-              </div>
-            ))}
-          </div>
+            {tab === 'gear' ? <GearPanel gear={gear} onChange={setGear} /> : <BagPanel />}
+          </>
         )}
       </section>
 
@@ -175,14 +65,11 @@ export function CharacterRoom() {
           {cls && (
             <div className="eyebrow" style={{ color: cls.affinityColor }}>
               {cls.name} · {STYLE_NAMES[cls.style]}
+              {state.combat ? ` · niveau ${state.combat.level}` : ''}
             </div>
           )}
           <div className="char-name-row">
-            {ornament ? (
-              <OrnamentPlate ornament={ornament} name={name} title={ornamentTitle(ornament, content, state)} width={352} className="char-plate" />
-            ) : (
-              <h1>{name}</h1>
-            )}
+            {ornament ? <OrnamentPlate ornament={ornament} name={name} title={ornamentTitle(ornament, content, state)} width={352} className="char-plate" /> : <h1>{name}</h1>}
             <div className="seg-toggle" role="group" aria-label="Affichage du personnage">
               <button aria-pressed={mode === 'gear'} onClick={() => setMode('gear')}>
                 Équipement
@@ -210,7 +97,6 @@ export function CharacterRoom() {
             Ornement
           </button>
           {outfit && <span className="chip">Tenue {outfit.name}</span>}
-          <span className="chip">Niveau total {totalLevel}</span>
         </footer>
         {classOpen && <ClassModal onClose={() => setClassOpen(false)} />}
         {outfitOpen && <OutfitModal onClose={() => setOutfitOpen(false)} />}
@@ -218,79 +104,207 @@ export function CharacterRoom() {
       </section>
 
       <section className="panel char-stats scroll">
-        <span className="eyebrow">Caractéristiques</span>
-        <dl className="kv">
-          <dt>Niveau total</dt>
-          <dd>{totalLevel}</dd>
-          <dt>XP cumulée</dt>
-          <dd>{num(totalXp)}</dd>
-          <dt>Or</dt>
-          <dd style={{ color: 'var(--action)' }}>{num(state.gold)}</dd>
-          <dt>Métier principal</dt>
-          <dd>
-            {best.p.name} {best.s.level}
-          </dd>
-        </dl>
-
-        <div className="stat-block">
-          <div className="stat-block-head">
-            <span className="eyebrow">Rendement</span>
-            <span className="muted">{activeProfession ? activeProfession.name : 'aucune activité'}</span>
+        <PresetsCard />
+        <div className="card">
+          <div className="quick-tiles">
+            <QuickTile label="Niveau total" value={String(totalLevel)} />
+            <QuickTile label="Or" value={num(state.gold)} tone="var(--action)" />
+            <QuickTile label="Combat" value={state.combat ? `Niv. ${state.combat.level}` : '—'} tone="var(--alert)" sub={state.combat ? `palier ${state.combat.classTier}` : undefined} />
           </div>
-          <dl className="kv">
-            <dt>Présence</dt>
-            <dd style={{ color: rate?.energized ? 'var(--good)' : undefined }}>
-              {rate ? `${pct(rate.presence)}${rate.energized ? ' · coup de fouet' : ''}` : '—'}
-            </dd>
-            <dt>Hors ligne</dt>
-            <dd>
-              {pct(settings.rates.offline)}, {settings.rates.offlineCapHours} h d’autonomie
-            </dd>
-            <dt>Total appliqué</dt>
-            <dd style={{ color: 'var(--action)' }}>{rate ? pct(rate.total) : '—'}</dd>
-          </dl>
-          {bonuses.map((b) => (
-            <div key={b.label} className={`bonus-row${b.soon ? ' soon' : ''}`}>
-              <span>{b.label}</span>
-              <span className="muted">{b.soon ? 'bientôt' : `${signedPct(b.value)} / ${signedPct(b.cap)}`}</span>
-              <Bar value={b.cap ? b.value / b.cap : 0} color="var(--good)" />
-            </div>
-          ))}
         </div>
-
-        <div className="stat-block">
-          <div className="stat-block-head">
+        <YieldCard />
+        <div className="card">
+          <div className="card-head">
             <span className="eyebrow">Coups de fouet</span>
-            <span className="muted">
+            <span className="muted small">
               {state.energy.chargesLeft} / {state.energy.charges} aujourd’hui
             </span>
           </div>
           <EnergyButton />
-          <p className="muted small">
-            Gains à {pct(settings.energy.multiplier)} pendant {duration(state.energy.durationMs)}, quand vous le voulez, en ligne
-            comme hors ligne.
-          </p>
+          <span className="muted small">
+            ×{content.settings.energy.multiplier} pendant {duration(state.energy.durationMs)}, quand vous voulez.
+          </span>
         </div>
-
-        <div className="stat-block">
-          <span className="eyebrow">Métiers</span>
-          <div className="skills-compact">
+        <div className="card">
+          <div className="card-head">
+            <span className="eyebrow">Métiers</span>
+            <span className="muted small">niveau total {totalLevel}</span>
+          </div>
+          <div className="skill-tiles">
             {skills.map(({ p, s }) => {
               const span = s.nextLevelXp ? (s.xp - s.levelXp) / (s.nextLevelXp - s.levelXp) : 1;
+              const soon = p.status === 'soon';
               return (
-                <div key={p.id} className={`skill-row${p.status === 'soon' ? ' soon' : ''}`}>
+                <div key={p.id} className={`skill-tile${soon ? ' soon' : ''}`} style={{ ['--fc' as string]: FAMILY_COLOR[p.family] }} title={soon ? `${p.name} · bientôt` : `${p.name} ${s.level} · ${s.nickname}`}>
+                  <strong>{soon ? '—' : s.level}</strong>
                   <span>{p.name}</span>
-                  <span className="muted">{p.status === 'soon' ? 'Bientôt' : s.nickname}</span>
-                  <Bar value={p.status === 'soon' ? 0 : span} color={FAMILY_COLOR[p.family]} />
-                  <strong>{s.level}</strong>
+                  <Bar value={soon ? 0 : span} color={FAMILY_COLOR[p.family]} />
                 </div>
               );
             })}
           </div>
         </div>
-
-        <GearTotalsBlock gear={gear} />
       </section>
     </main>
+  );
+}
+
+function QuickTile({ label, value, sub, tone }: { label: string; value: string; sub?: string; tone?: string }) {
+  return (
+    <div className="quick-tile">
+      <span className="muted small">{label}</span>
+      <strong style={{ color: tone }}>{value}</strong>
+      {sub && <span className="muted small">{sub}</span>}
+    </div>
+  );
+}
+
+/** Rendement : présence, hors ligne, total, puis les bonus plafonnés en barres. */
+function YieldCard() {
+  const { content, state } = useGame();
+  const { settings } = content;
+  const rate = state.activity?.rate;
+  const bonuses = [
+    { label: 'Outil', value: rate?.tool ?? 0, cap: settings.bonusCaps.tool, soon: false },
+    { label: 'Repas', value: rate?.meal ?? 0, cap: settings.bonusCaps.meal, soon: false },
+    { label: 'Clan', value: 0, cap: settings.bonusCaps.clan, soon: true },
+    { label: 'Saison', value: 0, cap: settings.bonusCaps.season, soon: true },
+  ];
+  return (
+    <div className="card">
+      <div className="card-head">
+        <span className="eyebrow">Rendement</span>
+        <span className="muted small">{rate ? 'activité en cours' : 'aucune activité'}</span>
+      </div>
+      <div className="quick-tiles">
+        <QuickTile label="Présence" value={rate ? pct(rate.presence) : '—'} tone={rate?.energized ? 'var(--good)' : undefined} />
+        <QuickTile label="Hors ligne" value={pct(settings.rates.offline)} sub={`${settings.rates.offlineCapHours} h`} />
+        <QuickTile label="Total" value={rate ? pct(rate.total) : '—'} tone="var(--action)" />
+      </div>
+      {bonuses.map((b) => (
+        <div key={b.label} className={`bonus-row${b.soon ? ' soon' : ''}`}>
+          <span>{b.label}</span>
+          <span className="muted">{b.soon ? 'bientôt' : `${signedPct(b.value)} / ${signedPct(b.cap)}`}</span>
+          <Bar value={b.cap ? b.value / b.cap : 0} color="var(--good)" />
+        </div>
+      ))}
+    </div>
+  );
+}
+
+/** Le sac : outil et repas en cours, les objets en tuiles ; les actions de l'objet choisi en bas. */
+function BagPanel() {
+  const { content, state, act, openMarket } = useGame();
+  const equipment = useEquipment();
+  const [picked, setPicked] = useState<string | null>(null);
+  const { durability } = state;
+  const items = Object.entries(state.inventory)
+    .map(([id, qty]) => ({ item: content.items[id]!, qty }))
+    .filter((x) => x.item)
+    .sort((a, b) => a.item.category.localeCompare(b.item.category) || a.item.name.localeCompare(b.item.name));
+  const pantry = Object.entries(state.pantry)
+    .map(([id, qty]) => ({ item: content.items[id]!, qty }))
+    .filter((x) => x.item);
+  const sel = items.find((x) => x.item.id === picked);
+  const left = (item: Item) => {
+    const d = durability[item.id];
+    if (!d) return null;
+    const r = d.copies.find((x) => x > 0);
+    return r === undefined ? 0 : r / ((item.tool?.durabilityHours ?? 1) * 3_600_000);
+  };
+  return (
+    <div className="bag-panel">
+      <div className="bag-current">
+        {(['tool', 'meal'] as const).map((id) => {
+          const e = equipment[id];
+          return (
+            <div key={id} className={`bag-current-item${e.name ? '' : ' empty'}`}>
+              <span className={`equip-slot equip-${e.kind}${e.name ? '' : ' empty'}`}>{e.thumb ? <PartThumb slot={e.thumb.slot} partId={e.thumb.partId} /> : e.item ? <ItemIcon item={e.item} small /> : null}</span>
+              <span className="equip-text">
+                <span className="eyebrow">{e.label}</span>
+                <strong>{e.name ?? 'Aucun'}</strong>
+              </span>
+            </div>
+          );
+        })}
+      </div>
+      <div className="item-grid scroll">
+        {items.length === 0 && <p className="muted small">Votre sac est vide.</p>}
+        {items.map(({ item, qty }) => {
+          const l = left(item);
+          return (
+            <button key={item.id} className={`item-tile${picked === item.id ? ' selected' : ''}`} onClick={() => setPicked(picked === item.id ? null : item.id)} title={item.name}>
+              <ItemIcon item={item} />
+              <span className="item-qty">{num(qty)}</span>
+              {l !== null && (
+                <span className="item-wear">
+                  <span style={{ width: `${Math.max(0, Math.min(1, l)) * 100}%` }} />
+                </span>
+              )}
+            </button>
+          );
+        })}
+      </div>
+      {sel ? (
+        <div className="item-detail">
+          <div className="item-detail-head">
+            <ItemIcon item={sel.item} />
+            <span>
+              <strong>{sel.item.name}</strong>
+              <span className="muted small">
+                {' '}
+                ×{num(sel.qty)}
+                {durability[sel.item.id] && (() => {
+                  const r = durability[sel.item.id]!.copies.find((x) => x > 0);
+                  return r === undefined ? ' · usé' : ` · reste ${duration(r)}`;
+                })()}
+              </span>
+            </span>
+          </div>
+          <div className="item-actions">
+            {sel.item.meal && (
+              <>
+                <button className="btn btn-sm btn-primary" onClick={() => act(() => api.eat(sel.item.id))}>
+                  Manger
+                </button>
+                <button className="btn btn-sm" title="Le personnage en mange un dès que le précédent expire" onClick={() => act(() => api.stockPantry(sel.item.id, sel.qty))}>
+                  Garde-manger
+                </button>
+              </>
+            )}
+            {durability[sel.item.id]?.repair && durability[sel.item.id]!.repairCost > 0 && (
+              <button className="btn btn-sm" disabled={durability[sel.item.id]!.repair!.problem !== null} title={durability[sel.item.id]!.repair!.problem ?? durability[sel.item.id]!.repair!.materials.map((m) => `${m.qty} × ${content.items[m.item]?.name ?? m.item}`).join(', ')} onClick={() => act(() => api.repairSelf(sel.item.id))}>
+                Réparer
+              </button>
+            )}
+            {durability[sel.item.id] && durability[sel.item.id]!.repairCost > 0 && (
+              <button className="btn btn-sm" disabled={state.gold < durability[sel.item.id]!.repairCost} title="Rend toute la durabilité ; le maximum ne baisse jamais" onClick={() => act(() => api.repair(sel.item.id))}>
+                PNJ · {durability[sel.item.id]!.repairCost} or
+              </button>
+            )}
+            <button className="btn btn-sm" onClick={() => openMarket(sel.item.id)}>
+              Vendre
+            </button>
+            {state.recycle[sel.item.id] && (
+              <button className="btn btn-sm" title={`Rend ${state.recycle[sel.item.id]!.map((y) => `${y.qty} × ${content.items[y.item]?.name ?? y.item}`).join(', ')} par exemplaire`} onClick={() => act(() => api.recycle(sel.item.id, 1))}>
+                Recycler
+              </button>
+            )}
+          </div>
+        </div>
+      ) : (
+        <p className="muted small gear-hint">Touchez un objet pour ses actions.</p>
+      )}
+      {pantry.length > 0 && (
+        <div className="pantry-row">
+          <span className="eyebrow">Garde-manger</span>
+          {pantry.map(({ item, qty }) => (
+            <button key={item.id} className="chip" title="Reprendre dans le sac" onClick={() => act(() => api.unstockPantry(item.id, qty))}>
+              {item.name} ×{num(qty)}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
   );
 }

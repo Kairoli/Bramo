@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, type CSSProperties } from 'react';
+import { useEffect, useMemo, useState, type CSSProperties, type ReactNode } from 'react';
 import type { GearItemView, GearModel, GearView } from '@bramo/shared';
 import { api } from '../api';
 import { useGame } from '../game/GameContext';
@@ -15,38 +15,73 @@ const RARITY_NAMES: Record<string, string> = { common: 'Commun', rare: 'Rare', e
 const rarityColor = (r: string) => `var(--r-${r})`;
 
 /** Ordre d'affichage des emplacements ; les anneaux ont deux places. */
-const SLOT_ORDER = ['head', 'torso', 'hands', 'legs', 'feet', 'cape', 'belt', 'necklace', 'ring', 'weapon'];
+const SLOT_ORDER = ['head', 'torso', 'hands', 'legs', 'feet', 'weapon', 'cape', 'belt', 'necklace', 'ring'];
+
+/** Pictogramme d'un emplacement (24 × 24), à défaut d'illustration d'objet. */
+const SLOT_ICON: Record<string, string> = {
+  head: 'M5 14c0-5 3-9 7-9s7 4 7 9v2H5z M3 16h18',
+  torso: 'M8 4l-4 3 2 4 2-1v10h8V10l2 1 2-4-4-3-2 2h-4z',
+  hands: 'M7 21v-8l-2-3 1-2 3 3V5h2v6h1V4h2v7h1V5h2v9l-2 7z',
+  legs: 'M7 3h10l-1 18h-3l-1-11-1 11H8z',
+  feet: 'M6 4h5v9l7 3v3H5z',
+  weapon: 'M14 4h6v6L9 21l-3-3L17 7M5 15l4 4',
+  cape: 'M8 3h8l4 18H4z M10 3l2 4 2-4',
+  belt: 'M2 10h20v4H2z M10 9h4v6h-4z',
+  necklace: 'M5 4c0 6 3 9 7 9s7-3 7-9 M12 13v3 M10 18a2 2 0 1 0 4 0 2 2 0 0 0-4 0',
+  ring: 'M12 8a6 6 0 1 0 0 12 6 6 0 0 0 0-12z M9 5l3-3 3 3',
+};
+
+export function SlotGlyph({ slot, size = 26 }: { slot: string; size?: number }) {
+  return (
+    <svg viewBox="0 0 24 24" width={size} height={size} fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <path d={SLOT_ICON[slot] ?? SLOT_ICON.torso} />
+    </svg>
+  );
+}
 
 function lineText(l: GearItemView['lines'][number]) {
   return `${l.name} +${l.value} %${l.bonus ? ' (chef-d’œuvre)' : ''}`;
 }
 
-function ItemTooltip(g: GearItemView): string {
-  return [
-    `${g.name} · ${RARITY_NAMES[g.rarity]} · palier ${g.tier}${g.masterpiece ? ' · Chef-d’œuvre' : ''}`,
-    ...g.stats.map((s) => `${STAT_NAMES[s.stat] ?? s.stat} ${s.value}`),
-    ...g.lines.map((l) => `${lineText(l)} (${l.min}-${l.max})`),
-    g.conditional ?? '',
-    g.signedBy ? `Signé : ${g.signedBy}` : '',
-    g.worn ? 'Usé : ne compte plus' : `Usure ${Math.round(g.wearShare * 100)} %`,
-  ]
-    .filter(Boolean)
-    .join('\n');
+/** Une pièce en tuile : le pictogramme de son emplacement dans la couleur de sa rareté, son palier, ★ pour un chef-d'œuvre. */
+export function GearTile({ g, slot, selected, onClick, label }: { g?: GearItemView; slot: string; selected?: boolean; onClick?: () => void; label?: string }) {
+  return (
+    <button
+      className={`gear-tile${g ? '' : ' empty'}${selected ? ' selected' : ''}${g?.worn ? ' worn' : ''}${g && !g.wearable ? ' other' : ''}`}
+      style={g ? ({ '--rc': rarityColor(g.rarity) } as CSSProperties) : undefined}
+      onClick={onClick}
+      title={g ? `${g.name} · ${RARITY_NAMES[g.rarity]} · palier ${g.tier}` : (label ?? '')}
+    >
+      <SlotGlyph slot={slot} />
+      {g && <span className="gear-tile-tier">{g.tier}</span>}
+      {g?.masterpiece && <span className="gear-tile-star">★</span>}
+      {g?.set && <span className="gear-tile-set" />}
+      {label && !g && <span className="gear-tile-label">{label}</span>}
+    </button>
+  );
 }
 
-function ItemCard({ g, children }: { g: GearItemView; children?: React.ReactNode }) {
+/** Détail d'une pièce : nom, rareté, statistiques, lignes, effet, et ses actions. */
+function GearDetail({ g, children }: { g: GearItemView; children?: ReactNode }) {
   return (
-    <div className={`gear-card${g.worn ? ' worn' : ''}`} style={{ '--rc': rarityColor(g.rarity) } as CSSProperties} title={ItemTooltip(g)}>
-      <div className="gear-card-head">
-        <strong>{g.masterpiece ? `Chef-d’œuvre ${g.name}` : g.name}</strong>
-        <span className="muted">
-          {RARITY_NAMES[g.rarity]} · palier {g.tier}
-          {g.bound ? ' · lié' : ''}
+    <div className="gear-detail" style={{ '--rc': rarityColor(g.rarity) } as CSSProperties}>
+      <div className="gear-detail-head">
+        <span className="gear-detail-icon">
+          <SlotGlyph slot={g.slot} size={30} />
         </span>
+        <span className="gear-detail-title">
+          <strong>{g.masterpiece ? `Chef-d’œuvre ${g.name}` : g.name}</strong>
+          <span className="muted small">
+            {RARITY_NAMES[g.rarity]} · palier {g.tier}
+            {g.bound ? ' · lié' : ''}
+            {g.worn ? ' · usé' : g.wearShare > 0 ? ` · usure ${Math.round(g.wearShare * 100)} %` : ''}
+          </span>
+        </span>
+        <span className="gear-detail-actions">{children}</span>
       </div>
       <div className="gear-lines">
         {g.stats.map((s) => (
-          <span key={s.stat}>
+          <span key={s.stat} className="gear-stat">
             {STAT_NAMES[s.stat] ?? s.stat} <b>{s.value}</b>
           </span>
         ))}
@@ -55,19 +90,21 @@ function ItemCard({ g, children }: { g: GearItemView; children?: React.ReactNode
             {lineText(l)}
           </span>
         ))}
-        {g.conditional && <span className="cond">{g.conditional}</span>}
       </div>
-      {children}
+      {g.conditional && <p className="gear-cond small">{g.conditional}</p>}
+      {g.signedBy && <p className="muted small">Signé : {g.signedBy}</p>}
     </div>
   );
 }
 
-/** Équipement réel du personnage : emplacements portés, sac d'équipement, totaux. Le build ne dépend jamais de l'apparence. */
+/**
+ * Équipement réel du personnage, comme un inventaire de jeu : les emplacements portés en tuiles, le sac d'équipement
+ * dessous, et le détail de la pièce choisie en bas. Le build ne dépend jamais de l'apparence.
+ */
 export function GearPanel({ gear, onChange }: { gear: GearView | null; onChange: (g: GearView) => void }) {
   const { content, state, flash } = useGame();
-  const [open, setOpen] = useState<string | null>(null);
+  const [pick, setPick] = useState<{ id?: number; slot?: string } | null>(null);
   const [busy, setBusy] = useState(false);
-
   const call = async (fn: () => Promise<GearView>) => {
     setBusy(true);
     try {
@@ -78,58 +115,75 @@ export function GearPanel({ gear, onChange }: { gear: GearView | null; onChange:
       setBusy(false);
     }
   };
-
+  const items = gear?.items ?? [];
   const slots = SLOT_ORDER.filter((s) => content.gearSlots[s]);
-  const bag = (gear?.items ?? []).filter((g) => !g.equipped);
+  const bag = items.filter((g) => !g.equipped);
+  const filtered = pick?.slot ? bag.filter((g) => g.slot === pick.slot) : bag;
+  const selected = pick?.id !== undefined ? items.find((g) => g.id === pick.id) : undefined;
+  const sets = gear?.totals.sets ?? [];
 
   return (
     <div className="gear-panel">
-      <div className="gear-slots">
+      <div className="gear-worn">
         {slots.flatMap((slotId) => {
           const slot = content.gearSlots[slotId]!;
-          const worn = (gear?.items ?? []).filter((g) => g.equipped === slotId).sort((a, b) => a.id - b.id);
+          const worn = items.filter((g) => g.equipped === slotId).sort((a, b) => a.id - b.id);
           return Array.from({ length: slot.capacity }, (_, i) => {
             const g = worn[i];
             return (
-              <div key={`${slotId}${i}`} className={`gear-slot${g ? '' : ' empty'}`} style={g ? ({ '--rc': rarityColor(g.rarity) } as CSSProperties) : undefined}>
-                <span className="eyebrow">{slot.name}</span>
-                {g ? (
-                  <ItemCard g={g}>
-                    <button className="btn btn-sm" disabled={busy} onClick={() => call(() => api.gearUnequip(g.id))}>
-                      Ranger
-                    </button>
-                  </ItemCard>
-                ) : (
-                  <span className="muted small">
-                    Vide
-                    {bag.some((b) => b.slot === slotId && b.wearable) && (
-                      <button className="link" onClick={() => setOpen(open === slotId ? null : slotId)}>
-                        {open === slotId ? 'Masquer' : 'Choisir'}
-                      </button>
-                    )}
-                  </span>
-                )}
-              </div>
+              <GearTile
+                key={`${slotId}${i}`}
+                g={g}
+                slot={slotId}
+                label={slot.name}
+                selected={g ? pick?.id === g.id : pick?.slot === slotId && pick.id === undefined}
+                onClick={() => setPick(g ? { id: g.id, slot: slotId } : { slot: slotId })}
+              />
             );
           });
         })}
       </div>
-
-      <header className="bag-head">
-        <span className="eyebrow">Sac d’équipement ({bag.length})</span>
-      </header>
-      <div className="gear-bag scroll">
-        {bag.length === 0 && <p className="muted small">Aucun équipement dans le sac pour l’instant.</p>}
-        {bag
-          .filter((g) => !open || g.slot === open)
-          .map((g) => (
-            <ItemCard key={g.id} g={g}>
-              <button className="btn btn-sm btn-primary" disabled={busy || !g.wearable} title={g.wearable ? '' : 'Pas du style de votre classe'} onClick={() => call(() => api.gearEquip(g.id))}>
-                {g.wearable ? 'Équiper' : 'Autre classe'}
-              </button>
-            </ItemCard>
+      {sets.length > 0 && (
+        <div className="gear-sets">
+          {sets.map((s) => (
+            <span key={s.id} className={`chip${s.active.length ? ' chip-own' : ''}`} title={s.active.map((a) => `${a.pieces} p. ${a.text}`).join('\n') || `Bonus à partir de 2 pièces (${content.gearSets[s.id]?.theme ?? ''})`}>
+              {s.name} · {s.pieces}
+            </span>
           ))}
+        </div>
+      )}
+      <header className="bag-head">
+        <span className="eyebrow">
+          Sac d’équipement · {filtered.length}
+          {pick?.slot ? ` · ${content.gearSlots[pick.slot]?.name}` : ''}
+        </span>
+        {pick?.slot && (
+          <button className="link small" onClick={() => setPick(null)}>
+            Tout voir
+          </button>
+        )}
+      </header>
+      <div className="gear-grid scroll">
+        {filtered.length === 0 && <p className="muted small">Rien ici pour l’instant : les rencontres en font tomber.</p>}
+        {filtered.map((g) => (
+          <GearTile key={g.id} g={g} slot={g.slot} selected={pick?.id === g.id} onClick={() => setPick({ id: g.id, slot: pick?.slot })} />
+        ))}
       </div>
+      {selected ? (
+        <GearDetail g={selected}>
+          {selected.equipped ? (
+            <button className="btn btn-sm" disabled={busy} onClick={() => void call(() => api.gearUnequip(selected.id))}>
+              Ranger
+            </button>
+          ) : (
+            <button className="btn btn-sm btn-primary" disabled={busy || !selected.wearable} title={selected.wearable ? '' : 'Pas du style de votre classe'} onClick={() => void call(() => api.gearEquip(selected.id))}>
+              {selected.wearable ? 'Équiper' : 'Autre classe'}
+            </button>
+          )}
+        </GearDetail>
+      ) : (
+        <p className="muted small gear-hint">Touchez une pièce pour la voir et l’équiper.</p>
+      )}
       {state.classId && import.meta.env.DEV && <DevGrant onChange={onChange} />}
     </div>
   );
@@ -173,51 +227,5 @@ function DevGrant({ onChange }: { onChange: (g: GearView) => void }) {
         ))}
       </div>
     </details>
-  );
-}
-
-/** Totaux de l'équipement porté : lignes fixes, lignes aléatoires, bonus d'ensemble. */
-export function GearTotalsBlock({ gear }: { gear: GearView | null }) {
-  const { content } = useGame();
-  const t = gear?.totals;
-  const lines = Object.entries(t?.lines ?? {});
-  return (
-    <div className="stat-block">
-      <div className="stat-block-head">
-        <span className="eyebrow">Équipement porté</span>
-        <span className="muted" title="Converties selon le palier de chaque pièce : les statistiques de combat sont dans la salle Combat.">points des pièces</span>
-      </div>
-      <dl className="kv">
-        {Object.entries(STAT_NAMES).map(([k, label]) => (
-          <div key={k} style={{ display: 'contents' }}>
-            <dt>{label}</dt>
-            <dd>{t?.stats[k] ?? '—'}</dd>
-          </div>
-        ))}
-      </dl>
-      {lines.length > 0 && (
-        <dl className="kv">
-          {lines.map(([name, v]) => (
-            <div key={name} style={{ display: 'contents' }}>
-              <dt>{name}</dt>
-              <dd>+{v} %</dd>
-            </div>
-          ))}
-        </dl>
-      )}
-      {(t?.sets ?? []).map((s) => (
-        <div key={s.id} className="set-progress">
-          <strong>
-            {s.name} · {s.pieces} pièce{s.pieces > 1 ? 's' : ''}
-          </strong>
-          {s.active.length === 0 && <span className="muted small">Bonus à partir de 2 pièces ({content.gearSets[s.id]?.theme}).</span>}
-          {s.active.map((a) => (
-            <span key={a.pieces} className="small">
-              <b>{a.pieces} p.</b> {a.text}
-            </span>
-          ))}
-        </div>
-      ))}
-    </div>
   );
 }

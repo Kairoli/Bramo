@@ -6,7 +6,7 @@ import { hhmm, num, signedPct } from '../format';
 import { Bar, ItemIcon } from '../components/ui';
 import { Scene } from '../components/Scene';
 
-type Tab = 'buildings' | 'members' | 'log';
+type Tab = 'buildings' | 'members' | 'log' | 'roads';
 type Run = (call: () => ReturnType<typeof api.state>) => Promise<boolean>;
 
 const RANK_NAME: Record<ClanRank, string> = { leader: 'Chef', officer: 'Officier', member: 'Membre' };
@@ -141,6 +141,7 @@ function ClanHall({ clan, run }: { clan: ClanView; run: Run }) {
               ['buildings', 'Bâtiments'],
               ['members', `Membres · ${clan.members.length}`],
               ['log', 'Journal'],
+              ['roads', 'Routes franches'],
             ] as [Tab, string][]
           ).map(([id, label]) => (
             <button key={id} role="tab" aria-selected={tab === id} onClick={() => setTab(id)}>
@@ -156,6 +157,16 @@ function ClanHall({ clan, run }: { clan: ClanView; run: Run }) {
 
       {tab === 'buildings' && <Buildings clan={clan} run={run} />}
       {tab === 'members' && <Members clan={clan} run={run} />}
+      {tab === 'roads' && (
+        <div className="clan-soon">
+          <span className="mode-soon static">Bientôt</span>
+          <h3>Routes franches</h3>
+          <p className="muted">
+            La caravane du clan, chaque semaine : une équipe l’escorte d’étape en étape, chacun son poste (éclaireur, escorte, intendant, artisan), et le
+            clan grimpe au classement des caravanes. Elle arrivera avec les rangs de clan.
+          </p>
+        </div>
+      )}
       {tab === 'log' && (
         <div className="scroll market-mine">
           {clan.log.length === 0 && <p className="muted">Rien pour le moment.</p>}

@@ -2,6 +2,7 @@ import { useGame } from '../../game/GameContext';
 import { PaperDoll } from '../../components/equipment';
 import { STYLE_NAMES } from '../../components/ClassChoice';
 import { OrnamentPlate, ornamentTitle } from '../../components/Ornament';
+import { PresetSwitch } from '../../components/Presets';
 
 /** Le personnage en entier, avec ce qu'il porte ; le détail est dans la salle Personnage. */
 export function CharacterCard() {
@@ -27,11 +28,14 @@ export function CharacterCard() {
             </div>
           </>
         )}
-        {cls && (
-          <span className="chip" style={{ color: cls.affinityColor, borderColor: cls.affinityColor }}>
-            {cls.name} · {STYLE_NAMES[cls.style]}
-          </span>
-        )}
+        <div className="character-chips">
+          {cls && (
+            <span className="chip" style={{ color: cls.affinityColor, borderColor: cls.affinityColor }}>
+              {cls.name} · {STYLE_NAMES[cls.style]}
+            </span>
+          )}
+          <PresetSwitch />
+        </div>
       </div>
       <button className="link character-open" onClick={() => go('character')}>
         Ouvrir le personnage →

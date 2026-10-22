@@ -180,6 +180,8 @@ p {
   height: 100vh;
   display: grid;
   grid-template-rows: auto minmax(0, 1fr);
+  /* Une seule colonne, jamais plus large que l'écran (sinon un contenu trop large élargit toute la page). */
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--gap);
   padding: 12px 14px 14px;
 }

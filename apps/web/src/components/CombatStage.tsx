@@ -104,14 +104,16 @@ export function CombatStage({ look, enemy, timeline, clock, fightTime, win, spel
   const top = h - insetBottom - sh;
   const k = sh / VB[3]!;
   const charW = VB[2]! * k;
-  const charLeft = Math.max(8, w * 0.08);
-  const toPx = ([x, y]: Pt): Pt => [charLeft + (x - VB[0]!) * k, top + (y - VB[1]!) * k];
-  const groundY = top + (700 - VB[1]!) * k;
   const enemyH = sh * 0.74;
-  // Une scène large garde de l'air entre les deux ; une scène étroite les rapproche.
-  const enemyX = Math.min(w - enemyH * 0.45, Math.max(charLeft + charW + 240 * k, w * (w > 900 ? 0.66 : 0.6)));
   const total = enemy?.count ?? 0;
   const shown = Math.min(3, total);
+  // Le duel est centré : personnage, écart, ennemi (et ceux derrière lui). Une scène large garde plus d'air entre eux.
+  const enemyW = enemyH * 0.8 + Math.max(0, shown - 1) * enemyH * 0.42;
+  const gap = Math.min(Math.max(170 * k, w * 0.2), w * 0.36);
+  const charLeft = Math.max(8, (w - (charW * 0.8 + gap + enemyW)) / 2 - charW * 0.1);
+  const toPx = ([x, y]: Pt): Pt => [charLeft + (x - VB[0]!) * k, top + (y - VB[1]!) * k];
+  const groundY = top + (700 - VB[1]!) * k;
+  const enemyX = charLeft + charW * 0.9 + gap + enemyH * 0.4;
   const figX = (j: number) => enemyX + j * enemyH * 0.42;
   const hits: Pt[] = Array.from({ length: Math.max(1, shown) }, (_, j) => [figX(j) - enemyH * 0.12 * (j ? 0.82 : 1), groundY - enemyH * 0.5 * (j ? 0.82 : 1)]);
   const st: Stage = { w, h, k, toPx, groundY, chest: toPx([212, 270]), feet: toPx([205, 700]), enemyX, enemyH, hits, reduced, now };
@@ -209,15 +211,15 @@ export function CombatStage({ look, enemy, timeline, clock, fightTime, win, spel
           if (e.kind === 'cast' && spell && c >= start && c < e.t + 0.6) {
             const u = (c - start) / (e.t + 0.6 - start);
             texts.push(
-              <text key={`n${i}`} className="stage-text stage-spell" x={charLeft + charW * 0.92} y={top + sh * 0.22 - u * 8 * k} fill={col} opacity={Math.min(1, (1 - u) * 3, u * 8)} fontSize={Math.max(12, 28 * k)}>
+              <text key={`n${i}`} className="stage-text" x={toPx([212, 0])[0]} y={toPx([0, -14])[1] - u * 6 * k} fill={col} opacity={Math.min(1, (1 - u) * 3, u * 8)} fontSize={Math.max(12, 28 * k)}>
                 {spell.name}
               </text>,
             );
           }
         }
         if (e.dmg && after >= 0 && after < 0.9) {
-          // À droite de l'ennemi, sous sa barre de vie : les nombres ne cachent ni l'ennemi ni la barre.
-          const p: Pt = [hits[0]![0] + enemyH * 0.42 + ((numbers++ % 3) - 1) * 18 * k, hits[0]![1] - enemyH * 0.05];
+          // Ils montent du haut du corps de l'ennemi, sous sa barre de vie, un peu décalés les uns des autres.
+          const p: Pt = [hits[0]![0] + enemyH * 0.12 + ((numbers++ % 3) - 1) * 26 * k, hits[0]![1] - enemyH * 0.12];
           texts.push(<g key={`d${i}`}>{floatText(p, after / 0.9, e.crit ? `${e.dmg} !` : `${e.dmg}`, e.crit ? '#FFD45A' : '#FFFFFF', Math.max(12, (e.crit ? 40 : 28) * k), 50 * k)}</g>);
         }
         if (e.crit && after >= 0 && after < 0.9) texts.push(<g key={`c${i}`}>{floatText([hits[0]![0], hits[0]![1] - enemyH * 0.6], after / 0.9, 'Critique !', '#FFD45A', Math.max(12, 30 * k), 30 * k)}</g>);
@@ -310,9 +312,9 @@ export function CombatStage({ look, enemy, timeline, clock, fightTime, win, spel
               </g>
             )}
             {enemy?.kind === 'shadow' && c !== null && (
-              <g transform={`translate(${charLeft + charW * 0.5 - barW * 0.4} ${Math.max(4, toPx([0, 4])[1])})`}>
-                <rect width={barW * 0.8} height={barH} rx={barH / 2} fill="rgb(0 0 0 / .65)" stroke="rgb(255 255 255 / .18)" />
-                <rect width={barW * 0.8 * clamp01(self)} height={barH} rx={barH / 2} fill="#5FD39A" />
+              <g transform={`translate(${toPx([212, 0])[0] - barW * 0.35} ${Math.max(4, toPx([0, 4])[1])})`}>
+                <rect width={barW * 0.7} height={barH} rx={barH / 2} fill="rgb(0 0 0 / .65)" stroke="rgb(255 255 255 / .18)" />
+                <rect width={barW * 0.7 * clamp01(self)} height={barH} rx={barH / 2} fill="#5FD39A" />
               </g>
             )}
             {over && (

@@ -264,8 +264,6 @@ function ModeGrid({ view, open }: { view: CombatView; open: (s: Sheet) => void }
       <ModeTile tone="var(--text-muted)" icon={<LogIcon />} title="Dernier combat" sub={view.lastFight ? `${view.lastFight.win ? 'Victoire' : 'Défaite'} · ${decimal(view.lastFight.time)} s` : 'Rien encore'} onClick={() => open('log')} />
       <ModeTile tone="var(--event)" icon={<DungeonIcon />} title="Profondeurs" sub="Donjons à salles" soon />
       <ModeTile tone="var(--good)" icon={<ScoutIcon />} title="Éclaireurs" sub="Envoyer en expédition" soon />
-      <ModeTile tone="var(--event)" icon={<TideIcon />} title="Marée du soir" sub="Chaque soir à 20 h" soon />
-      <ModeTile tone="var(--clan)" icon={<CaravanIcon />} title="Routes franches" sub="Caravane de clan" soon />
     </section>
   );
 }
@@ -295,8 +293,6 @@ const PatrolIcon = () => ico('M3 20l5-14 4 8 3-5 6 11z M8 6l1-3');
 const LogIcon = () => ico('M6 3h9l3 3v15H6z M9 9h6 M9 13h6 M9 17h4');
 const DungeonIcon = () => ico('M4 21V10l8-6 8 6v11 M9 21v-6h6v6 M12 4v3');
 const ScoutIcon = () => ico('M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18z M15 9l-2 5-4 1 2-5z');
-const TideIcon = () => ico('M2 14c3-3 5-3 8 0s5 3 8 0 M2 19c3-3 5-3 8 0s5 3 8 0 M14 4l2 4h-4z');
-const CaravanIcon = () => ico('M3 16h13V9H3z M16 12h3l2 3v1h-5 M6 18a1.5 1.5 0 1 0 0 .1 M16 18a1.5 1.5 0 1 0 0 .1');
 
 // --- Fenêtres ----------------------------------------------------------------------------------------------------------
 

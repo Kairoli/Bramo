@@ -4,7 +4,7 @@ import { loadContent } from '../src/node/index.js';
 import { advance } from '../src/engine/advance.js';
 import { startActivity } from '../src/engine/actions.js';
 import { viewCombat } from '../src/combat/view.js';
-import { advisedPlan, choosePath, classLevel, currentPlan, setPlan, startCombat, stopCombat } from '../src/combat/progress.js';
+import { advisedPlan, choosePath, classLevel, currentPlan, emptyCombat, equipmentSetup, setPlan, startCombat, stopCombat } from '../src/combat/progress.js';
 import type { Content } from '../src/schemas/content.js';
 import { HOUR, T0, makeState } from './fixture.js';
 
@@ -98,8 +98,48 @@ describe('données qui changent', () => {
   });
 });
 
+describe('équipement, paliers et butin', () => {
+  const runist = (level: number, equipment?: { model: string; lines: { name: string; value: number }[] }[]) =>
+    makeState({ classId: 'runist', combat: { ...emptyCombat(), xp: { runist: content.xpTable[level]! } }, ...(equipment ? { equipment } : {}) });
+  const kit = (tier: number, rarity: string) =>
+    Object.values(content.gearModels)
+      .filter((m) => m.tier === tier && m.rarity === rarity && !m.set && !m.named && !m.starter && m.classes.includes('runist') && m.orientation === 'offensive')
+      .filter((m, i, all) => all.findIndex((x) => x.slot === m.slot) === i)
+      .map((m) => ({ model: m.id, lines: [] }));
+
+  it('sans équipement connu, les statistiques de référence ; avec, celles de l’équipement, jamais sous le plancher du palier de la classe', () => {
+    expect(equipmentSetup(runist(1), content)).toEqual({});
+    const starter = Object.values(content.gearModels).filter((m) => m.starter && m.classes.includes('runist')).map((m) => ({ model: m.id, lines: [] }));
+    const floor = equipmentSetup(runist(1, starter), content).stats!;
+    expect(floor.power).toBeCloseTo(content.combat!.rules.referenceStats.power * 0.797, 1);
+    const legend = equipmentSetup(runist(90, kit(90, 'legendary')), content).stats!;
+    expect(legend.power).toBeGreaterThan(floor.power! * 2);
+  });
+
+  it('une zone a son palier : ennemis plus faibles au palier 1, et une victoire donne vestiges et parfois de l’équipement', () => {
+    const s = startCombat(runist(1, kit(1, 'rare')), 'z01_lantern_road', T0, content);
+    const { state, summary } = advance(s, T0 + 6 * HOUR, content);
+    expect(summary.combat.wins).toBeGreaterThan(0);
+    expect(state.inventory.galets_du_puits).toBeGreaterThan(0);
+    expect(summary.combat.vestiges.galets_du_puits).toBe(state.inventory.galets_du_puits);
+    for (const l of summary.combat.loot) expect(content.gearModels[l.model]!.tier).toBe(1);
+    // Même butin en une ou plusieurs fois.
+    const half = advance(s, T0 + 3 * HOUR, content);
+    const rest = advance(half.state, T0 + 6 * HOUR, content);
+    expect([...half.summary.combat.loot, ...rest.summary.combat.loot]).toEqual(summary.combat.loot);
+    expect(rest.state.inventory.galets_du_puits).toBe(state.inventory.galets_du_puits);
+  });
+
+  it('les cercles d’une région haute s’ouvrent avec le palier de la classe', () => {
+    expect(() => startCombat(runist(10), 'z05_balance_cloister', T0, content, 60)).toThrow('cercle');
+    const s = startCombat(runist(70), 'z05_balance_cloister', T0, content, 60);
+    expect(s.combat.activity?.tier).toBe(60);
+    expect(startCombat(runist(1), 'z05_balance_cloister', T0, content).combat.activity?.tier).toBeUndefined();
+  });
+});
+
 describe('plan et voie', () => {
-  const at = (level: number) => makeState({ classId: 'forgefire', combat: { xp: { forgefire: content.xpTable[level]! }, paths: {}, plans: {}, activity: null, nextIndex: 0, last: null, stopped: null } });
+  const at = (level: number) => makeState({ classId: 'forgefire', combat: { ...emptyCombat(), xp: { forgefire: content.xpTable[level]! } } });
 
   it('sans plan enregistré, le plan conseillé : des sorts accessibles, sans horaire', () => {
     const { plan, advised } = currentPlan(at(1), content);

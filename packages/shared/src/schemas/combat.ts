@@ -4,6 +4,7 @@ import { z } from 'zod';
 const id = z.string().regex(/^[a-z][a-z0-9_]*$/, 'identifiant attendu en snake_case');
 const seconds = z.number().nonnegative();
 const coef = z.number().nonnegative();
+const ratio = z.number().min(0).max(1);
 
 export const elements = ['physical', 'fire', 'frost', 'lightning'] as const;
 export type Element = (typeof elements)[number];
@@ -109,6 +110,24 @@ export const combatRulesSchema = z.object({
   dotTick: z.number().positive(),
   /** Conversion des statistiques d'équipement en statistiques de combat (étape 5a) ; absente : `referenceStats` pour tous. */
   gearStats: gearStatsSchema.optional(),
+  /**
+   * Butin d'une victoire (docs/design/contenu/butin-et-recettes.md §2), compté en unités : une unité = `unitSeconds` de combat.
+   * Par unité : `vestiges` vestiges de la région, `classic` chance d'un objet classique du palier (rareté tirée dans `rarity`),
+   * `setPiece` chance d'une pièce d'ensemble (palier 40 et plus, Légendaire à `setLegendary`), `named` chance par objet nommé
+   * de la rencontre, garanti après `namedGuarantee` unités sans l'avoir eu. Absent : pas de butin.
+   */
+  loot: z
+    .object({
+      unitSeconds: z.number().positive(),
+      vestiges: z.number().min(0),
+      classic: ratio,
+      rarity: z.object({ common: ratio, rare: ratio, epic: ratio, legendary: ratio }),
+      setPiece: ratio,
+      setLegendary: ratio,
+      named: ratio,
+      namedGuarantee: z.number().positive(),
+    })
+    .optional(),
   progression: z.object({
     xpPerHour: z.number().positive(),
     xpDoubling: z.number().positive(),
@@ -502,6 +521,21 @@ export const encounterSchema = z.object({
   id,
   name: z.string(),
   inspiredBy: z.string().optional(),
+  /**
+   * Place dans le monde (docs/design/contenu/le-monde.md) : `profil` (rencontre d'essai du banc), `zone` (zone de la route)
+   * ou `gardien` (gardien de région). Absent : profil.
+   */
+  kind: z.enum(['profil', 'zone', 'gardien']).optional(),
+  /** Région du monde (nom affiché). */
+  region: z.string().optional(),
+  /** Palier de la rencontre : ses ennemis suivent la courbe d'équipement de ce palier (`rules.gearStats.tiers`). */
+  tier: z.number().int().min(1).optional(),
+  /** Régions hautes : on y entre au cercle de son choix, du palier `tier` à 90 (même lieu, ennemis et butin du cercle). */
+  circles: z.boolean().optional(),
+  /** Une phrase pour le joueur : ce qui s'y passe. */
+  blurb: z.string().optional(),
+  /** Ce qui y tombe en plus des objets classiques du palier : vestige de la région, objets nommés, pièces d'ensemble. */
+  loot: z.object({ vestige: id.optional(), named: z.array(id).optional(), sets: z.array(id).optional() }).optional(),
   enemies: z.number().int().min(1),
   hp: z.number().positive(),
   attack: attackSchema,
@@ -558,4 +592,8 @@ export interface CombatContent {
   spells: Record<string, Spell>;
   plans: Record<string, ExamplePlan>;
   encounters: Record<string, Encounter>;
+  /** Talents des gemmes, des ensembles et des objets nommés (data/combat/talents.yaml), s'il existe. */
+  talents: TalentCatalog | null;
+  /** Outils de situation (data/combat/tools.yaml) : le 4 pièces des ensembles, gemmes et préparations de situation. */
+  tools: Tool[];
 }

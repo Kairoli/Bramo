@@ -23,7 +23,8 @@ export const itemBody = z.object({ itemId: z.string() });
 export const tradeBody = z.object({ itemId: z.string(), qty: z.number().int().min(1) });
 export const classBody = z.object({ classId: z.string() });
 /** Combat : une rencontre en boucle, ou null pour le Terrain d'entraînement. */
-export const combatStartBody = z.object({ encounter: z.string().nullable() });
+/** `tier` : le cercle choisi dans une région haute (palier 40 à 90). */
+export const combatStartBody = z.object({ encounter: z.string().nullable(), tier: z.number().int().min(1).optional() });
 export const combatPathBody = z.object({ pathId: z.string() });
 /** Plan de combat : sorts et première utilisation (s) ; null revient au plan conseillé. */
 export const combatPlanBody = z.object({ plan: z.array(z.object({ spell: z.string(), at: z.number().min(0) })).max(10).nullable() });
@@ -165,7 +166,7 @@ export interface TownPlayer {
 export interface TownEvent {
   id: number;
   at: number;
-  kind: 'level' | 'trial' | 'first' | 'join' | 'clan';
+  kind: 'level' | 'trial' | 'first' | 'join' | 'clan' | 'loot';
   text: string;
 }
 

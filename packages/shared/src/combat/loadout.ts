@@ -57,6 +57,68 @@ export function statsFromGear(rules: CombatRules, totals: GearTotalsLike, level:
   };
 }
 
+/** Clé de palier de la courbe d'équipement : la plus haute au plus égale à `tier` (la plus basse sinon) ; null sans conversion. */
+export function curveTier(rules: CombatRules, tier: number): number | null {
+  const tiers = rules.gearStats?.tiers;
+  if (!tiers) return null;
+  const keys = Object.keys(tiers).map(Number).sort((a, b) => a - b);
+  return [...keys].reverse().find((k) => k <= tier) ?? keys[0]!;
+}
+
+/** Facteur de la courbe d'un palier (+12 % par palier, palier 20 = 1) ; 1 sans conversion. */
+export function tierFactor(rules: CombatRules, tier: number): number {
+  const key = curveTier(rules, tier);
+  return key === null ? 1 : rules.gearStats!.tiers![String(key)]!.factor;
+}
+
+/** Indice de mur d'un équipement : (dégâts × survie)^0,4, la loi mesurée au simulateur (`budget.md`). */
+export const wallIndex = (s: CombatStats) => (s.power * (1 + (s.critMultiplier - 1) * s.critChance) * (1 + s.haste) * (s.maxHp / (1 - s.damageReduction))) ** 0.4;
+
+/** Une pièce portée : son modèle (palier, poids d'emplacement, lignes fixes, ensemble, talent nommé) et ses lignes tirées. */
+export interface WornPiece {
+  tier: number;
+  weight: number;
+  stats: { stat: string; value: number }[];
+  lines: { name: string; value: number }[];
+  set?: string;
+  talent?: string;
+}
+
+const EMPTY_CATALOG: TalentCatalog = { pools: [], gems: [], named: [], sets: [] } as unknown as TalentCatalog;
+
+/**
+ * L'équipement porté ramené au moteur. Chaque pièce compte à son palier : ses points sont ramenés au palier 20 (`norm`),
+ * et la courbe +12 % par palier (`factor`) est la moyenne des pièces pondérée par leur poids d'emplacement. Ensembles et
+ * objets nommés deviennent des talents (au plus quatre nommés, les places de talent majeur), les lignes de build des
+ * modificateurs et des plafonds de réserve. `floor` : statistiques au-dessous desquelles on ne descend pas.
+ */
+export function wornLoadout(rules: CombatRules, catalog: TalentCatalog | null, tools: Tool[], pieces: WornPiece[], floor?: CombatStats) {
+  const conv = rules.gearStats;
+  const stats: Record<string, number> = {};
+  const lines: Record<string, number> = {};
+  const sets: Record<string, number> = {};
+  const named: string[] = [];
+  let weights = 0;
+  let factor = 0;
+  for (const p of pieces) {
+    const key = curveTier(rules, p.tier);
+    const curve = key === null ? { norm: 1, factor: 1 } : conv!.tiers![String(key)]!;
+    for (const s of p.stats) stats[s.stat] = (stats[s.stat] ?? 0) + s.value * curve.norm;
+    for (const l of p.lines) lines[l.name] = (lines[l.name] ?? 0) + l.value;
+    if (p.set) sets[p.set] = (sets[p.set] ?? 0) + 1;
+    if (p.talent && !named.includes(p.talent)) named.push(p.talent);
+    weights += p.weight;
+    factor += p.weight * curve.factor;
+  }
+  const r = resolveLoadout(catalog ?? EMPTY_CATALOG, tools, { named: named.slice(0, 4), sets, lines: buildFromLines(rules, lines) }, { majors: 4, setPieces: 11, preps: 1 });
+  const base = statsFromGear(rules, { stats, lines }, 20, r.mods);
+  const f = weights > 0 ? factor / weights : 1;
+  let combatStats: CombatStats = conv ? { ...base, power: base.power * f, maxHp: base.maxHp * f } : base;
+  const floored = !!floor && wallIndex(floor) > wallIndex(combatStats);
+  if (floored) combatStats = floor!;
+  return { stats: combatStats, floored, talents: r.talents, tools: r.tools, pools: r.pools, convert: r.convert };
+}
+
 /** Lignes de build de l'équipement porté : modificateurs de talent (`mod:`) et plafonds de réserve (`pool:`). */
 export function buildFromLines(rules: CombatRules, lines: Record<string, number>): { mods: TalentMods; pools: Record<string, number> } {
   const mods: TalentMods = {};

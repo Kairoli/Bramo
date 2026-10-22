@@ -50,6 +50,8 @@ export const gearModelSchema = z.object({
   weaponSpeed: z.string().optional(),
   conditional: z.string().optional(),
   named: z.boolean().optional(),
+  /** Objet nommé : identifiant de son talent dans data/combat/talents.yaml (section `named`). */
+  talent: id.optional(),
   /** Pièce du set de départ : donnée une fois par classe, au choix de la classe. */
   starter: z.boolean().optional(),
   /** Liée au personnage : ne se vend ni ne s'échange. */

@@ -1,10 +1,10 @@
 /** Ce que le client reçoit du combat : tous les nombres viennent du serveur. */
 import type { Content } from '../schemas/content.js';
-import type { Element, PlanEntry, Role, Spell } from '../schemas/combat.js';
+import type { Element, Encounter, PlanEntry, Role, Spell } from '../schemas/combat.js';
 import type { CharacterState } from '../engine/state.js';
 import { spellSlots } from './content.js';
-import type { Contributions } from './engine.js';
-import { activePath, advisedPlan, availableSpells, classLevel, classXpPerHour, currentPlan, replayFight } from './progress.js';
+import type { CombatStats, Contributions } from './engine.js';
+import { activePath, advisedPlan, availableSpells, classLevel, classTier, classXpPerHour, currentPlan, encounterTiers, replayFight, wornGear } from './progress.js';
 
 export interface SpellView {
   id: string;
@@ -43,11 +43,19 @@ export interface CombatView {
   /** Plan conseillé pour jouer en groupe (différent du solo pour les soutiens). */
   advisedGroupPlan: PlanEntry[];
   spells: SpellView[];
-  encounters: { id: string; name: string; enemies: number; text: string }[];
+  encounters: EncounterView[];
+  /** Palier de la classe (courbe d'équipement) : il ouvre les cercles et fixe le plancher des statistiques. */
+  classTier: number;
+  /** Statistiques au combat : celles de l'équipement porté, jamais sous le plancher du palier de la classe. */
+  stats: { power: number; maxHp: number; damageReduction: number; haste: number; critChance: number; critMultiplier: number };
+  /** Le plancher l'emporte sur l'équipement porté (équipement trop faible ou trop bas). */
+  floored: boolean;
   training: { xpShare: number; maxLevel: number };
   activity: {
     encounter: string | null;
     name: string;
+    /** Palier joué (cercle choisi dans une région haute), null pour un profil d'essai ou l'entraînement. */
+    tier: number | null;
     wins: number;
     losses: number;
     streak: number;
@@ -62,7 +70,40 @@ export interface CombatView {
   classLevels: Record<string, number>;
 }
 
+/** Une rencontre telle que le joueur la choisit : où, quel palier, ce qui s'y passe, ce qui y tombe. */
+export interface EncounterView {
+  id: string;
+  name: string;
+  kind: 'profil' | 'zone' | 'gardien';
+  region: string | null;
+  tier: number | null;
+  /** Paliers jouables maintenant (cercles ouverts d'une région haute, sinon le palier de la rencontre). */
+  tiers: number[];
+  /** Région haute : d'autres cercles s'ouvriront avec le palier de la classe. */
+  circles: boolean;
+  blurb: string | null;
+  enemies: number;
+  /** Mécaniques lisibles : ce qu'il faut savoir pour préparer son plan. */
+  text: string;
+  loot: { vestige: string | null; named: { name: string; nickname: string | null; classId: string | null }[]; sets: string[] } | null;
+}
+
 const ELEMENT: Record<Element, string> = { physical: 'Physique', fire: 'Feu', frost: 'Givre', lightning: 'Foudre' };
+
+/** Ce qu'il faut savoir d'une rencontre, en une ligne. */
+function mechanics(e: Encounter): string {
+  return [
+    e.enemies > 1 ? `${e.enemies} ennemis` : 'un adversaire',
+    e.adds?.length ? `renforts (${e.adds.map((a) => `${a.count > 1 ? `${a.count} ` : ''}${a.name}`).join(', ')})` : '',
+    e.charge ? `attaque chargée toutes les ${e.charge.period} s` : '',
+    e.guard ? `${e.guard.empower ? 'garde menaçante' : 'garde'} toutes les ${e.guard.period} s` : '',
+    e.regen ? `se soigne toutes les ${e.regen.period} s` : '',
+    e.aura ? 'aura qui use' : '',
+    e.erosion ? 'érosion qui s’accumule (une purification la retire)' : '',
+    e.windows ? `vulnérable ${e.windows.open} s toutes les ${e.windows.period} s` : '',
+    e.enrage ? `fureur après ${e.enrage.after} s` : '',
+  ].filter(Boolean).join(', ');
+}
 const fr = (n: number) => String(Math.round(n * 100) / 100).replace('.', ',');
 
 /** Phrase d'un sort, à partir de ses données (pas de texte recopié à la main). */
@@ -102,6 +143,9 @@ export function viewCombat(state: CharacterState, content: Content): CombatView 
   const { plan, advised } = currentPlan(state, content);
   const available = new Set(availableSpells(combat, classId, path, level).map((s) => s.id));
   const a = state.combat.activity;
+  const tier = classTier(state, classId, content);
+  const worn = wornGear(state, content);
+  const pick = (s: CombatStats) => ({ power: s.power, maxHp: s.maxHp, damageReduction: s.damageReduction, haste: s.haste, critChance: s.critChance, critMultiplier: s.critMultiplier });
   const encounterName = (id: string | null) => (id === null ? 'Terrain d’entraînement' : (combat.encounters[id]?.name ?? id));
   const last = state.combat.last;
   let lastFight: CombatView['lastFight'] = null;
@@ -147,20 +191,34 @@ export function viewCombat(state: CharacterState, content: Content): CombatView 
     encounters: Object.values(combat.encounters).map((e) => ({
       id: e.id,
       name: e.name,
+      kind: e.kind ?? 'profil',
+      region: e.region ?? null,
+      tier: e.tier ?? null,
+      tiers: encounterTiers(e, combat, tier),
+      circles: !!e.circles,
+      blurb: e.blurb ?? null,
       enemies: e.enemies,
-      text: [
-        e.enemies > 1 ? `${e.enemies} ennemis` : 'un adversaire',
-        e.charge ? `attaque chargée toutes les ${e.charge.period} s` : '',
-        e.guard ? `garde toutes les ${e.guard.period} s` : '',
-        e.regen ? `se soigne toutes les ${e.regen.period} s` : '',
-        e.aura ? 'aura qui use' : '',
-      ].filter(Boolean).join(', '),
+      text: mechanics(e),
+      loot: e.loot
+        ? {
+            vestige: e.loot.vestige ? (content.items[e.loot.vestige]?.name ?? e.loot.vestige) : null,
+            named: (e.loot.named ?? []).map((n) => {
+              const t = combat.talents?.named.find((x) => x.id === n);
+              return { name: t?.name ?? n, nickname: t?.nickname ?? null, classId: t?.class ?? null };
+            }),
+            sets: (e.loot.sets ?? []).map((s) => content.gearSets[s]?.name ?? s),
+          }
+        : null,
     })),
+    classTier: tier,
+    stats: pick(worn?.stats ?? combat.rules.referenceStats),
+    floored: !!worn?.floored,
     training: { xpShare: combat.rules.progression.training.xpShare, maxLevel: combat.rules.progression.training.maxLevel },
     activity: a
       ? {
           encounter: a.encounter,
           name: encounterName(a.encounter),
+          tier: a.tier ?? (a.encounter !== null ? (combat.encounters[a.encounter]?.tier ?? null) : null),
           wins: a.wins,
           losses: a.losses,
           streak: a.streak,

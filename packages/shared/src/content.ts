@@ -188,6 +188,10 @@ export function buildContent(raw: RawContent): Content {
     const built = buildCombatContent(raw.combat, Object.keys(classes));
     errors.push(...built.errors);
     combat = built.combat;
+    for (const e of Object.values(combat?.encounters ?? {})) {
+      if (e.loot?.vestige && !items[e.loot.vestige]) errors.push(`combat/encounters.yaml : ${e.id} : vestige inconnu « ${e.loot.vestige} » (items.yaml)`);
+    }
+    for (const m of gearList) if (m.talent && !combat?.talents?.named.some((n) => n.id === m.talent)) errors.push(`gear.yaml : ${m.id} : talent nommé inconnu « ${m.talent} »`);
   }
   if (errors.length) throw new ContentError(`Données incohérentes :\n- ${errors.join('\n- ')}`);
 

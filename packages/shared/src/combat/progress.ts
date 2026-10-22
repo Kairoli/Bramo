@@ -9,17 +9,21 @@
  * - Une défaite ne coûte rien ; après `maxConsecutiveLosses` défaites de suite, l'activité se met en pause.
  */
 import type { Content } from '../schemas/content.js';
-import type { CombatContent, PlanEntry, Spell } from '../schemas/combat.js';
+import type { CombatContent, Encounter, PlanEntry, Spell } from '../schemas/combat.js';
+import type { Rarity } from '../schemas/gear.js';
 import { levelForXp } from '../formulas/xp.js';
-import { type CharacterState, GameError, cloneState } from '../engine/state.js';
+import { type CharacterState, GameError, addStack, cloneState } from '../engine/state.js';
 import { planErrors, spellSlots } from './content.js';
 import { type CombatantSetup, type FightResult, fight } from './engine.js';
-import { hash32 } from './rng.js';
+import { curveTier, tierFactor, wornLoadout } from './loadout.js';
+import { hash32, stream } from './rng.js';
 
 /** Rencontre en cours ou dernière rencontre jouée : le build figé et son issue (déjà calculée). */
 export interface FightRecord {
   index: number;
   encounter: string;
+  /** Palier joué (cercle choisi, ou palier de la rencontre) ; absent pour un profil d'essai. */
+  tier?: number;
   setup: CombatantSetup;
   win: boolean;
   /** Durée de la rencontre (ms de combat). */
@@ -29,6 +33,8 @@ export interface FightRecord {
 export interface CombatActivity {
   /** Rencontre affrontée en boucle ; null = Terrain d'entraînement (sans rencontre ni butin). */
   encounter: string | null;
+  /** Cercle choisi dans une région haute (palier 40 à 90) ; absent : le palier de la rencontre. */
+  tier?: number;
   startedAt: number;
   /** Temps de combat effectif déjà passé dans la rencontre en cours, repos compris (ms). */
   progress: number;
@@ -53,9 +59,13 @@ export interface CombatState {
   last: FightRecord | null;
   /** Pourquoi la dernière activité s'est arrêtée toute seule. */
   stopped: 'losses' | 'training_cap' | 'unavailable' | null;
+  /** Garantie des objets nommés : unités de butin accumulées sans l'avoir eu, par objet nommé. */
+  pity: Record<string, number>;
+  /** Fraction de vestige pas encore donnée (les vestiges tombent entiers). */
+  vestigeCarry: number;
 }
 
-export const emptyCombat = (): CombatState => ({ xp: {}, paths: {}, plans: {}, activity: null, nextIndex: 0, last: null, stopped: null });
+export const emptyCombat = (): CombatState => ({ xp: {}, paths: {}, plans: {}, activity: null, nextIndex: 0, last: null, stopped: null, pity: {}, vestigeCarry: 0 });
 
 /** Complète un état de combat enregistré avant l'ajout d'un champ. */
 export const readCombat = (raw: Partial<CombatState> | null | undefined): CombatState => ({ ...emptyCombat(), ...(raw ?? {}) });
@@ -68,9 +78,13 @@ export interface CombatSummary {
   xp: Record<string, number>;
   levelUps: { classId: string; from: number; to: number }[];
   stopped: CombatState['stopped'];
+  /** Équipement tombé : modèles à créer dans le sac (le serveur tire leurs lignes). */
+  loot: { model: string; encounter: string }[];
+  /** Vestiges tombés (déjà dans l'inventaire), par objet. */
+  vestiges: Record<string, number>;
 }
 
-export const emptyCombatSummary = (): CombatSummary => ({ fights: 0, wins: 0, losses: 0, xp: {}, levelUps: [], stopped: null });
+export const emptyCombatSummary = (): CombatSummary => ({ fights: 0, wins: 0, losses: 0, xp: {}, levelUps: [], stopped: null, loot: [], vestiges: {} });
 
 const need = (content: Content): CombatContent => {
   if (!content.combat) throw new GameError('no_combat', 'Le combat n’est pas encore disponible.');
@@ -149,6 +163,46 @@ export function currentPlan(state: CharacterState, content: Content): { plan: Pl
   return { plan: advisedPlan(combat, classId, path, level), advised: true };
 }
 
+/**
+ * Palier de l'équipement de référence d'un niveau de classe : le plus haut palier de la courbe au plus égal au niveau.
+ * Sert de plancher provisoire aux statistiques tant que le butin et la fabrication ne fournissent pas l'équipement.
+ */
+export function classTier(state: CharacterState, classId: string, content: Content): number {
+  return curveTier(need(content).rules, classLevel(state, classId, content)) ?? 1;
+}
+
+/**
+ * Statistiques, talents et outils que l'équipement porté donne au combat (`state.equipment`, renseigné par le serveur).
+ * Plancher : l'équipement de référence (Rare, palier 20 : `referenceStats`) ramené au palier de la classe. Sans conversion
+ * (`rules.gearStats`) ou sans équipement connu, les statistiques de référence du moteur.
+ */
+export function equipmentSetup(state: CharacterState, content: Content): Pick<CombatantSetup, 'stats' | 'talents' | 'tools' | 'pools' | 'convert'> {
+  const w = wornGear(state, content);
+  if (!w) return {};
+  return {
+    stats: w.stats,
+    ...(w.talents.length ? { talents: w.talents } : {}),
+    ...(w.tools.length ? { tools: w.tools } : {}),
+    ...(w.talents.length ? { pools: w.pools } : {}),
+    ...(w.convert.length ? { convert: w.convert } : {}),
+  };
+}
+
+/** L'équipement porté converti pour le combat (`floored` : le plancher du palier de la classe l'emporte), ou null. */
+export function wornGear(state: CharacterState, content: Content) {
+  const combat = need(content);
+  const rules = combat.rules;
+  if (!rules.gearStats || !state.equipment || !state.classId) return null;
+  const f = tierFactor(rules, classTier(state, state.classId, content));
+  const floor = { ...rules.referenceStats, power: rules.referenceStats.power * f, maxHp: rules.referenceStats.maxHp * f };
+  const pieces = state.equipment.flatMap((p) => {
+    const m = content.gearModels[p.model];
+    if (!m) return [];
+    return [{ tier: m.tier, weight: content.gearSlots[m.slot]?.weight ?? 1, stats: m.stats, lines: p.lines, ...(m.set ? { set: m.set } : {}), ...(m.talent ? { talent: m.talent } : {}) }];
+  });
+  return wornLoadout(rules, combat.talents, combat.tools, pieces, floor);
+}
+
 /** Le combattant tel qu'il entre dans une rencontre (build figé). */
 export function combatantOf(state: CharacterState, content: Content): CombatantSetup {
   const combat = need(content);
@@ -156,23 +210,95 @@ export function combatantOf(state: CharacterState, content: Content): CombatantS
   if (!classId || !combat.kits[classId]) throw new GameError('no_class', 'Choisissez d’abord une classe.');
   const kit = combat.kits[classId]!;
   const weapon = state.weaponFamily && kit.weapons.includes(state.weaponFamily) ? state.weaponFamily : kit.weapons[0]!;
-  return { id: 'p1', classId, pathId: activePath(state, classId, content), plan: currentPlan(state, content).plan, weapon };
+  return { id: 'p1', classId, pathId: activePath(state, classId, content), plan: currentPlan(state, content).plan, weapon, ...equipmentSetup(state, content) };
 }
+
+/**
+ * Paliers jouables d'une rencontre : son palier ; dans une région haute (`circles`), chaque cercle de la courbe depuis son
+ * palier, jusqu'au palier de la classe (au moins le premier).
+ */
+export function encounterTiers(e: Encounter, combat: CombatContent, classTierValue: number): number[] {
+  if (!e.tier) return [];
+  if (!e.circles) return [e.tier];
+  const keys = Object.keys(combat.rules.gearStats?.tiers ?? {}).map(Number).sort((a, b) => a - b);
+  const open = keys.filter((k) => k >= e.tier! && k <= Math.max(e.tier!, classTierValue));
+  return open.length ? open : [e.tier];
+}
+
+/** Ennemis du palier joué : PV et dégâts suivent la courbe d'équipement (palier 20 = 1). */
+const fightOptions = (combat: CombatContent, tier: number | undefined) => {
+  const s = tier ? tierFactor(combat.rules, tier) : 1;
+  return { enemyDamageScale: s, enemyHpScale: s };
+};
 
 const fightSeed = (state: CharacterState, index: number) => hash32(`${state.seed}:fight:${index}`);
 
-/** Rejoue une rencontre enregistrée (même build, même graine), avec son journal. */
+/** Rejoue une rencontre enregistrée (même build, même graine, même palier), avec son journal. */
 export function replayFight(state: CharacterState, record: FightRecord, content: Content): FightResult {
   const combat = need(content);
-  return fight(combat, [record.setup], combat.encounters[record.encounter]!, { seed: fightSeed(state, record.index), trace: true });
+  return fight(combat, [record.setup], combat.encounters[record.encounter]!, { seed: fightSeed(state, record.index), trace: true, ...fightOptions(combat, record.tier) });
 }
 
 function startFight(state: CharacterState, a: CombatActivity, content: Content): FightRecord {
   const combat = need(content);
   const setup = combatantOf(state, content);
   const index = state.combat.nextIndex++;
-  const r = fight(combat, [setup], combat.encounters[a.encounter!]!, { seed: fightSeed(state, index) });
-  return { index, encounter: a.encounter!, setup, win: r.win, ms: Math.round(r.time * 1000) };
+  // Un profil d'essai (sans palier) se joue au palier de la classe : il ne donne pas de butin.
+  const tier = a.tier ?? combat.encounters[a.encounter!]!.tier ?? classTier(state, setup.classId, content);
+  const r = fight(combat, [setup], combat.encounters[a.encounter!]!, { seed: fightSeed(state, index), ...fightOptions(combat, tier) });
+  return { index, encounter: a.encounter!, ...(tier ? { tier } : {}), setup, win: r.win, ms: Math.round(r.time * 1000) };
+}
+
+/**
+ * Butin d'une victoire (rules.loot) : vestiges de la région, un objet classique du palier joué (de la classe qui a combattu),
+ * une pièce d'ensemble de la région au palier 40 et plus, les objets nommés de la rencontre avec leur garantie. Tirages
+ * déterministes (graine du personnage et numéro de la rencontre) : avancer en une ou plusieurs fois donne le même butin.
+ */
+function rollLoot(state: CharacterState, f: FightRecord, content: Content, summary: CombatSummary): void {
+  const combat = need(content);
+  const rules = combat.rules.loot;
+  const e = combat.encounters[f.encounter];
+  if (!rules || !e?.tier || !f.tier) return;
+  const rand = stream(state.seed, `loot:${f.index}`);
+  const units = f.ms / 1000 / rules.unitSeconds;
+  const cls = f.setup.classId;
+  const tier = f.tier;
+  // Vestiges : entiers, la fraction est gardée pour la victoire suivante.
+  if (e.loot?.vestige) {
+    const total = state.combat.vestigeCarry + rules.vestiges * units;
+    const n = Math.floor(total);
+    state.combat.vestigeCarry = total - n;
+    if (n > 0) {
+      addStack(state.inventory, e.loot.vestige, n);
+      summary.vestiges[e.loot.vestige] = (summary.vestiges[e.loot.vestige] ?? 0) + n;
+    }
+  }
+  const models = Object.values(content.gearModels);
+  const pick = <T>(xs: T[]) => xs[Math.floor(rand() * xs.length)];
+  const drop = (model: string | undefined) => model && summary.loot.push({ model, encounter: e.id });
+  // Objet classique : rareté tirée, puis un modèle de la classe à ce palier.
+  if (rand() < rules.classic * units) {
+    let x = rand();
+    const rarity = (['common', 'rare', 'epic', 'legendary'] as Rarity[]).find((r) => (x -= rules.rarity[r]) < 0) ?? 'common';
+    drop(pick(models.filter((m) => m.tier === tier && m.rarity === rarity && !m.set && !m.named && !m.starter && m.classes.includes(cls)))?.id);
+  }
+  // Pièce d'ensemble de la région (paliers 40 et plus).
+  const sets = e.loot?.sets ?? [];
+  if (sets.length && rand() < rules.setPiece * units) {
+    const rarity: Rarity = rand() < rules.setLegendary ? 'legendary' : 'epic';
+    const set = pick(sets);
+    drop(pick(models.filter((m) => m.set === set && m.tier === tier && m.rarity === rarity && m.classes.includes(cls)))?.id);
+  }
+  // Objets nommés : chance par unité, garantis après `namedGuarantee` unités ; la plus haute version au plus égale au palier.
+  for (const n of e.loot?.named ?? []) {
+    const versions = models.filter((m) => m.talent === n && m.tier <= tier).sort((a, b) => b.tier - a.tier);
+    if (!versions.length) continue;
+    const pity = (state.combat.pity[n] ?? 0) + units;
+    if (rand() < rules.named * units || pity >= rules.namedGuarantee) {
+      drop(versions[0]!.id);
+      state.combat.pity[n] = 0;
+    } else state.combat.pity[n] = pity;
+  }
 }
 
 function gainXp(state: CharacterState, classId: string, xp: number, content: Content, summary: CombatSummary) {
@@ -241,6 +367,7 @@ export function runCombat(state: CharacterState, t: number, end: number, rate: n
       a.streak = 0;
       summary.wins++;
       gainXp(state, fighter, perMs * f.ms, content, summary);
+      rollLoot(state, f, content, summary);
     } else {
       a.losses++;
       a.streak++;
@@ -261,18 +388,25 @@ export function runCombat(state: CharacterState, t: number, end: number, rate: n
 
 // --- Actions ---------------------------------------------------------------------------------------------------------
 
-/** Lancer le combat (une rencontre en boucle, ou le Terrain d'entraînement). Arrête l'activité de métier en cours. */
-export function startCombat(input: CharacterState, encounter: string | null, now: number, content: Content): CharacterState {
+/**
+ * Lancer le combat (une rencontre en boucle, ou le Terrain d'entraînement). Arrête l'activité de métier en cours.
+ * `tier` : le cercle choisi dans une région haute (parmi `encounterTiers`).
+ */
+export function startCombat(input: CharacterState, encounter: string | null, now: number, content: Content, tier?: number): CharacterState {
   const combat = need(content);
   if (!input.classId) throw new GameError('no_class', 'Choisissez d’abord une classe.');
-  if (encounter !== null && !combat.encounters[encounter]) throw new GameError('unknown_encounter', 'Rencontre inconnue.');
+  const e = encounter !== null ? combat.encounters[encounter] : undefined;
+  if (encounter !== null && !e) throw new GameError('unknown_encounter', 'Rencontre inconnue.');
   const p = combat.rules.progression;
   if (encounter === null && classLevel(input, input.classId, content) >= p.training.maxLevel) {
     throw new GameError('training_cap', `Le Terrain d’entraînement s’arrête au niveau ${p.training.maxLevel} : affrontez de vraies rencontres.`);
   }
+  if (tier !== undefined && (!e || !encounterTiers(e, combat, classTier(input, input.classId, content)).includes(tier))) {
+    throw new GameError('unknown_circle', 'Ce cercle n’est pas ouvert pour cette rencontre.');
+  }
   const state = cloneState(input);
   state.activity = null;
-  state.combat.activity = { encounter, startedAt: now, progress: 0, current: null, wins: 0, losses: 0, streak: 0 };
+  state.combat.activity = { encounter, ...(tier !== undefined && tier !== e?.tier ? { tier } : {}), startedAt: now, progress: 0, current: null, wins: 0, losses: 0, streak: 0 };
   state.combat.stopped = null;
   return state;
 }

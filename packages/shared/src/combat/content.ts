@@ -7,6 +7,8 @@ import {
   kitsFileSchema,
   plansFileSchema,
   spellsFileSchema,
+  talentCatalogSchema,
+  toolsFileSchema,
 } from '../schemas/combat.js';
 
 /** Fichiers bruts de `data/combat/`. */
@@ -16,6 +18,8 @@ export interface RawCombat {
   spells: unknown;
   plans?: unknown;
   encounters?: unknown;
+  talents?: unknown;
+  tools?: unknown;
 }
 
 function parse<T>(schema: z.ZodType<T>, data: unknown, file: string, errors: string[]): T | null {
@@ -66,7 +70,9 @@ export function buildCombatContent(raw: RawCombat, classIds: string[]): { combat
   const spellList = parse(spellsFileSchema, raw.spells, 'spells.yaml', errors);
   const planList = parse(plansFileSchema, raw.plans ?? [], 'plans.yaml', errors);
   const encounterList = parse(encountersFileSchema, raw.encounters ?? [], 'encounters.yaml', errors);
-  if (!rules || !kitsFile || !spellList || !planList || !encounterList) return { combat: null, errors };
+  const talents = raw.talents === undefined ? null : parse(talentCatalogSchema, raw.talents, 'talents.yaml', errors);
+  const tools = parse(toolsFileSchema, raw.tools ?? [], 'tools.yaml', errors);
+  if (!rules || !kitsFile || !spellList || !planList || !encounterList || !tools || (raw.talents !== undefined && !talents)) return { combat: null, errors };
 
   const index = <T extends { id: string }>(list: T[], file: string) => {
     const map: Record<string, T> = {};
@@ -105,7 +111,14 @@ export function buildCombatContent(raw: RawCombat, classIds: string[]): { combat
     spells,
     plans: index(planList, 'plans.yaml'),
     encounters: index(encounterList, 'encounters.yaml'),
+    talents,
+    tools,
   };
+  for (const e of encounterList) {
+    for (const n of e.loot?.named ?? []) if (!talents?.named.some((x) => x.id === n)) errors.push(`combat/encounters.yaml : ${e.id} : objet nommé inconnu « ${n} » (talents.yaml)`);
+    for (const s of e.loot?.sets ?? []) if (!talents?.sets.some((x) => x.id === s)) errors.push(`combat/encounters.yaml : ${e.id} : ensemble inconnu « ${s} » (talents.yaml)`);
+    if (e.circles && !e.tier) errors.push(`combat/encounters.yaml : ${e.id} : des cercles demandent un palier de départ (tier)`);
+  }
   for (const p of planList) {
     if (paths[p.path]?.class !== p.class) errors.push(`combat/plans.yaml : ${p.id} : voie « ${p.path} » absente de ${p.class}`);
     if (!kits[p.class]?.weapons.includes(p.weapon)) errors.push(`combat/plans.yaml : ${p.id} : arme « ${p.weapon} » hors de la classe ${p.class}`);

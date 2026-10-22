@@ -109,7 +109,11 @@ export function unequipGear(input: GearInstance[], id: number): GearInstance[] {
 
 /** Une pièce portée qui n'est plus du style de la classe (changement de classe) retourne au sac. */
 export function dropMismatched(input: GearInstance[], classId: string | null, content: Content): GearInstance[] {
-  return input.map((g) => (g.equipped && !canWear(content.gearModels[g.model]!, classId) ? { ...g, equipped: null } : g));
+  // Un modèle retiré des données retourne au sac lui aussi.
+  return input.map((g) => {
+    const m = content.gearModels[g.model];
+    return g.equipped && (!m || !canWear(m, classId)) ? { ...g, equipped: null } : g;
+  });
 }
 
 export interface SetProgress {

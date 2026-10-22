@@ -21,8 +21,8 @@ const model = (f: (m: (typeof models)[number]) => boolean) => models.find(f)!;
 const owned = (ids: string[], rand = seeded(7)): GearInstance[] => ids.map((m, i) => newInstance(content.gearModels[m]!, content, rand, { id: i + 1 }));
 
 describe('catalogue d’équipement', () => {
-  it('contient les 4 raretés à chaque palier et respecte les lignes par rareté', () => {
-    for (const tier of [1, 10, 20]) {
+  it('contient les 4 raretés à chacun des dix paliers et respecte les lignes par rareté', () => {
+    for (const tier of [1, 10, 20, 30, 40, 50, 60, 70, 80, 90]) {
       for (const rarity of ['common', 'rare', 'epic', 'legendary']) {
         expect(models.some((m) => m.tier === tier && m.rarity === rarity), `${tier} ${rarity}`).toBe(true);
       }
@@ -30,7 +30,8 @@ describe('catalogue d’équipement', () => {
     const expectRolls: Record<string, [number, number]> = { common: [0, 1], rare: [1, 2], epic: [2, 3], legendary: [3, 4] };
     for (const m of models.filter((x) => !x.starter)) {
       expect(m.rolls, m.id).toEqual(expectRolls[m.rarity]);
-      expect(m.stats.length, m.id).toBe(m.rarity === 'common' ? 1 : 2);
+      // Deux lignes fixes à toutes les raretés (une arme en garde parfois trois) ; la rareté vaut +5 % par rang.
+      expect(m.stats.length, m.id).toBeGreaterThanOrEqual(2);
     }
   });
 
@@ -144,8 +145,10 @@ describe('équipement', () => {
   });
 
   it('active les bonus d’ensemble à 2, 3 et 4 pièces portées', () => {
-    const set = content.gearSets.cendres!;
-    const pieces = models.filter((m) => m.set === 'cendres');
+    const set = content.gearSets.enclume_patiente!;
+    // Les quatre pièces de l'ensemble en cuirasse, palier 40 Épique (portables par le Forgefeu).
+    const pieces = models.filter((m) => m.set === 'enclume_patiente' && m.family === 'cuirass' && m.tier === 40 && m.rarity === 'epic');
+    expect(pieces).toHaveLength(4);
     const bag = owned(pieces.map((p) => p.id));
     let s = bag;
     for (let i = 0; i < 4; i++) s = equipGear(s, i + 1, 'forgefire', content);

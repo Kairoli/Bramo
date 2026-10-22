@@ -55,6 +55,14 @@ Bramo est un **idle-RPG multijoueur jouable dans le navigateur**, dans l'esprit 
 
 ## 5. État du projet (à jour au 22 octobre 2026)
 
+### Fait — préréglages de build, salle Personnage en inventaire, scène centrée (22 octobre, nuit)
+
+- **Demande de Louis** : centrer les visuels du combat ; Routes franches dans l'onglet Clan ; Marée du soir hors du combat (elle viendra sur l'accueil le moment venu) ; un système de préréglages dans la salle Personnage, changeable vite depuis l'accueil ; la salle Personnage moins « pâté de texte ».
+- **Préréglages** (`combat/presets.ts`) : classe, voie, plan de sorts et équipement porté, sous un nom (6 au plus) ; `savePreset` (nouveau ou écrasé), `renamePreset`, `deletePreset`, `applyPreset` (change de classe si besoin ; une voie pas encore ouverte ou un plan devenu invalide sont laissés tels quels). Rangés dans `CombatState.presets`/`activePreset` (pas de migration). Serveur : `POST /api/presets/save|apply|rename|delete`, `wearGearSet` (porte exactement les exemplaires du préréglage qui existent encore). `CombatView.presets`.
+- **Salle Personnage refaite** (`rooms/CharacterRoom.tsx`, `components/GearPanel.tsx`, `components/Presets.tsx`) : à gauche un inventaire en onglets — Équipement (emplacements en tuiles à la couleur de la rareté, sac d'équipement en grille, détail de la pièce choisie en bas avec Équiper/Ranger), Sac (outil et repas en cours, objets en tuiles avec quantité et usure, actions de l'objet choisi seulement) ; à droite des cartes — préréglages, niveau/or/combat, rendement, coups de fouet, métiers en tuiles. **Accueil** : sélecteur rapide de préréglage sous le personnage (`PresetSwitch`).
+- **Scène** : le duel est centré (personnage, écart, ennemi), nom du sort au-dessus du personnage, nombres de dégâts sur l'ennemi. Combat : tuiles Marée du soir et Routes franches retirées ; **onglet Routes franches dans la salle Clan** (« bientôt »).
+- `.app` en une colonne `minmax(0, 1fr)` (un contenu trop large n'élargit plus la page). Bourg : à visite égale, le personnage le plus récent d'abord (ordre stable ; un test d'API en dépendait).
+
 ### Fait — la route en boucle, l'accueil vivant, la salle Combat en écran de jeu, les icônes des sorts (22 octobre, nuit)
 
 - **Demande de Louis** : remplacer l'activité en cours de l'accueil par le PvE solo, ouvrable en grand ; l'activité en cours en bandeau dans le haut, avec de la place pour deux bandeaux d'événement ; « pense vrai jeu, jeu mobile, fais du visuel » ; un menu dans Combat (donjons, éclaireurs…) ; le PvE solo tourne en boucle « comme Legend of Mushroom » (on perd, on rejoue la même étape) ; des icônes de sorts.

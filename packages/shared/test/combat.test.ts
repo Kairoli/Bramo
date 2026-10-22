@@ -55,6 +55,8 @@ const spells = [
   spell('frappe', 'forgefire', 1, { damage: 1 }),
   spell('purge', 'forgefire', 1, { cleanse: true }),
   spell('zone', 'forgefire', 1, { damage: 1, targets: 5 }),
+  spell('piq', 'forgefire', 1, { damage: 0.7 }),
+  spell('repli', 'tracker', 18, { selfPool: { maxHpFraction: 0.12, duration: 8 } }),
   spell('repere', 'tracker', 30, { tags: ['setup'] }),
   spell('poursuite', 'tracker', 1, { tags: ['exploit'], damage: 1 }),
   spell('trait', 'runist', 1, { form: 'trait', element: 'fire', damage: 1 }),
@@ -271,5 +273,111 @@ describe('mécaniques de rencontre (zones, donjons, groupes)', () => {
     const next = fight(combat, [solo('forgefire', [['cogne', 0]])], enc, { seed: 1 });
     const kept = fight(heavyRules, [solo('forgefire', [['cogne', 0]])], enc, { seed: 1 });
     expect(kept.team[0]!.contributions.mitigated).toBeGreaterThan(next.team[0]!.contributions.mitigated * 2);
+  });
+
+  it('danger et fureur s’appliquent une fois à l’aura et à l’érosion', () => {
+    const aura = dummy({ aura: { damage: 10 } });
+    const base = fight(combat, [solo('forgefire', [])], aura, { seed: 1 }).team[0]!.metrics.auraDamage!;
+    expect(fight(combat, [solo('forgefire', [], { stats: { maxHp: 1e6 } })], aura, { seed: 1, enemyDamageScale: 2 }).team[0]!.metrics.auraDamage! / base).toBeCloseTo(2, 5);
+    const angry = fight(combat, [solo('forgefire', [], { stats: { maxHp: 1e6 } })], dummy({ aura: { damage: 10 }, enrage: { after: 30, perSecond: 0.1 } }), { seed: 1 });
+    // 30 s de fureur : Σ 10 × 0,1 k pour k de 1 à 30 = 465 de plus.
+    expect(angry.team[0]!.metrics.auraDamage! - base).toBeCloseTo(465, -1);
+    const erosion = dummy({ erosion: { period: 5, damage: 2, maxStacks: 3 } });
+    const e1 = fight(combat, [solo('forgefire', [])], erosion, { seed: 1 }).team[0]!.metrics.erosionDamage!;
+    expect(fight(combat, [solo('forgefire', [])], erosion, { seed: 1, enemyDamageScale: 1.5 }).team[0]!.metrics.erosionDamage! / e1).toBeCloseTo(1.5, 5);
+  });
+});
+
+describe('outils de situation (dossier PvE v2)', () => {
+  const tool = (family: string, extra: Record<string, unknown>, rank = 'set4') => ({ id: `${family}_${rank}`, name: family, rank, cooldown: 0, family, ...extra }) as unknown as NonNullable<CombatantSetup['tools']>[number];
+  const piq = solo('forgefire', [['piq', 0]]);
+
+  it('Fracture : le supplément ne frappe que la garde, jamais les PV', () => {
+    // Garde 100 à chaque période ; un coup de 70 sur la garde pleine la détruit (70 + 30 de supplément) sans un seul PV de débordement.
+    const enc = dummy({ guard: { period: 5, amount: 100, duration: 4 } });
+    const without = fight(combat, [piq], enc, { seed: 1 }).team[0]!;
+    const withTool = fight(combat, [{ ...piq, tools: [tool('fracture', { multiplier: 2 })] }], enc, { seed: 1 }).team[0]!;
+    const bonus = withTool.metrics.guardDamageBonus!;
+    expect(bonus).toBeGreaterThan(0);
+    expect(bonus % 30).toBeCloseTo(0, 5);
+    expect(withTool.contributions.damage - without.contributions.damage).toBeCloseTo(bonus, 5);
+    // Sans garde, l'outil ne change rien.
+    expect(fight(combat, [{ ...piq, tools: [tool('fracture', { multiplier: 2 })] }], dummy(), { seed: 1 })).toEqual(fight(combat, [piq], dummy(), { seed: 1 }));
+  });
+
+  it('Battue : plus de dégâts contre un renfort, aucun contre le chef ; la priorité « renforts d’abord » les vise', () => {
+    const enc = dummy({ adds: [{ name: 'Renfort', count: 1, hp: 300, attack: { damage: 0, period: 100 }, arrive: 10 }] });
+    const chief = fight(combat, [piq], enc, { seed: 1 }).team[0]!;
+    expect(chief.metrics.kills ?? 0).toBe(0);
+    const addsFirst = fight(combat, [{ ...piq, targetPriority: 'adds_first' }], enc, { seed: 1, trace: true });
+    expect(addsFirst.team[0]!.metrics.kills).toBe(1);
+    // 300 PV à 70 par coup : 5 coups (10 à 14 s) ; avec ×1,8 (126 par coup), 3 coups.
+    const kill = (r: ReturnType<typeof fight>) => r.trace!.find((x) => x.kind === 'kill')!.t;
+    expect(kill(addsFirst)).toBe(14);
+    expect(kill(fight(combat, [{ ...piq, targetPriority: 'adds_first', tools: [tool('beat', { multiplier: 1.8 })] }], enc, { seed: 1, trace: true }))).toBe(12);
+    // Contre le chef seul, rien ne change.
+    expect(fight(combat, [{ ...piq, tools: [tool('beat', { multiplier: 1.8 })] }], dummy(), { seed: 1 })).toEqual(fight(combat, [piq], dummy(), { seed: 1 }));
+  });
+
+  it('Impact : atténue lourds et charges selon la part du coup et la part des PV, avec un délai par porteur', () => {
+    // Coup lourd de 500 toutes les 3 attaques ; 65 % du coup, au plus 25 % de 1 200 PV = 300.
+    const enc = dummy({ attack: { damage: 10, period: 1, heavyEvery: 3, heavyMultiplier: 50 } });
+    const r = fight(combat, [solo('forgefire', [], { stats: { maxHp: 1200 }, tools: [tool('impact', { incoming: 0.65, maxHp: 0.25, cooldown: 6 })] })], enc, { seed: 1 }).team[0]!;
+    expect(r.metrics.impactAvoided! % 300).toBeCloseTo(0, 5);
+    expect(r.metrics.impactAvoided).toBeGreaterThan(0);
+    // PV très hauts : la part du coup limite (325).
+    const big = fight(combat, [solo('forgefire', [], { stats: { maxHp: 1e6 }, tools: [tool('impact', { incoming: 0.65, maxHp: 0.25, cooldown: 6 })] })], enc, { seed: 1 }).team[0]!;
+    // Un lourd toutes les 3 s, délai 6 s : un sur deux, de 3 s à 57 s (10 activations).
+    expect(big.metrics.impactAvoided).toBeCloseTo(10 * 325, 5);
+    // Les coups ordinaires ne le déclenchent pas.
+    expect(fight(combat, [solo('forgefire', [], { tools: [tool('impact', { incoming: 0.65, maxHp: 0.25, cooldown: 6 })] })], dummy({ attack: { damage: 10, period: 1 } }), { seed: 1 }).team[0]!.metrics.impactAvoided).toBeUndefined();
+  });
+
+  it('Pluie : retire des charges d’érosion avec un délai ; une préparation à usages limités', () => {
+    const enc = dummy({ erosion: { period: 5, damage: 2, maxStacks: 3 } });
+    const none = fight(combat, [solo('forgefire', [])], enc, { seed: 1 }).team[0]!;
+    const set = fight(combat, [solo('forgefire', [], { tools: [tool('rain', { remove: 2, atLeast: 2, cooldown: 10 })] })], enc, { seed: 1 }).team[0]!;
+    expect(set.metrics.erosionDamage!).toBeLessThan(none.metrics.erosionDamage! * 0.6);
+    const prep = fight(combat, [solo('forgefire', [], { tools: [tool('rain', { remove: 2, atLeast: 2, cooldown: 24, charges: 1 }, 'prep')] })], enc, { seed: 1 }).team[0]!;
+    expect(prep.metrics.erosionRemoved).toBe(2);
+  });
+
+  it('Reprise : rend une part de l’aura prise, plafonnée, jamais sur l’érosion', () => {
+    const breath = tool('breath', { recover: 0.75, pulse: 0.08, rolling: 0.3, window: 30, cooldown: 6 });
+    const r = fight(combat, [solo('forgefire', [], { tools: [breath] })], dummy({ aura: { damage: 10 } }), { seed: 1 }).team[0]!;
+    expect(r.metrics.breathHealed).toBeGreaterThan(0);
+    expect(r.metrics.breathHealed!).toBeLessThanOrEqual(0.75 * r.metrics.auraDamage! + 1e-6);
+    expect(r.hp).toBeCloseTo(1000 - r.metrics.auraDamage! + r.metrics.breathHealed!, 5);
+    expect(fight(combat, [solo('forgefire', [], { tools: [breath] })], dummy({ erosion: { period: 5, damage: 2, maxStacks: 3 } }), { seed: 1 }).team[0]!.metrics.breathHealed).toBeUndefined();
+  });
+
+  it('Interstice : stocke la perte due à la fenêtre fermée et la rend une fois à l’ouverture, sans dépasser la réserve', () => {
+    const enc = dummy({ windows: { period: 10, open: 5, closedReduction: 0.5 } });
+    const open = fight(combat, [solo('forgefire', [['frappe', 0]])], dummy(), { seed: 1 }).team[0]!;
+    const plain = fight(combat, [solo('forgefire', [['frappe', 0]])], enc, { seed: 1 }).team[0]!;
+    const full = fight(combat, [solo('forgefire', [['frappe', 0]], { tools: [tool('interstice', { store: 1, bankCap: 12 })] })], enc, { seed: 1 }).team[0]!;
+    expect(full.metrics.releasedDamage!).toBeLessThanOrEqual(full.metrics.bankedDamage! + 1e-6);
+    expect(full.contributions.damage).toBeGreaterThan(plain.contributions.damage);
+    expect(full.contributions.damage).toBeLessThanOrEqual(open.contributions.damage + 1e-6);
+    // Réserve plafonnée à 2 P par cycle.
+    const capped = fight(combat, [solo('forgefire', [['frappe', 0]], { tools: [tool('interstice', { store: 1, bankCap: 2 })] })], enc, { seed: 1 }).team[0]!;
+    expect(capped.metrics.bankedDamage!).toBeLessThanOrEqual(200 * 7);
+  });
+
+  it('une seule variante par famille : la mieux classée (set 4 avant la gemme, la gemme avant le set 3)', () => {
+    const enc = dummy({ guard: { period: 5, amount: 100, duration: 4 } });
+    const run = (...tools: ReturnType<typeof tool>[]) => fight(combat, [{ ...piq, tools }], enc, { seed: 1 }).team[0]!.metrics.guardDamageBonus;
+    expect(run(tool('fracture', { multiplier: 1.25 }, 'set2'), tool('fracture', { multiplier: 2 }, 'set4'))).toBe(run(tool('fracture', { multiplier: 2 })));
+    expect(run(tool('fracture', { multiplier: 1.5 }, 'set3'), tool('fracture', { multiplier: 1.65 }, 'gem'))).toBe(run(tool('fracture', { multiplier: 1.65 }, 'gem')));
+  });
+
+  it('Repli couvert : réserve personnelle en part des PV maximum, contre les coups, pas contre l’aura', () => {
+    const hitter = dummy({ attack: { damage: 10, period: 1 } });
+    const at = (maxHp: number) => fight(combat, [solo('tracker', [['repli', 0]], { stats: { maxHp } })], hitter, { seed: 1 }).team[0]!.metrics;
+    // 18 s de cooldown : lancers à 0, 18, 36, 54 s.
+    expect(at(2800).coverGranted).toBeCloseTo(4 * 336, 5);
+    expect(at(5600).coverGranted).toBeCloseTo(4 * 672, 5);
+    expect(at(2800).coverAbsorbed).toBeGreaterThan(0);
+    expect(fight(combat, [solo('tracker', [['repli', 0]])], dummy({ aura: { damage: 10 } }), { seed: 1 }).team[0]!.metrics.coverAbsorbed).toBeUndefined();
   });
 });

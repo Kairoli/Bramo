@@ -7,9 +7,12 @@
  * - Le ralentissement allonge l'intervalle des attaques ordinaires ; les phases (charge, garde, soin) gardent leur horaire.
  * - Les contributions (dégâts, soins utiles, absorptions, atténuation, Pression, Ruptures, dissipations) sont comptées par
  *   combattant, pour reconnaître plus tard le soutien et le contrôle en donjon ou contre un boss mondial.
- * Pas encore : statistiques issues de l'équipement, ensembles, gemmes, nommés, résistances élémentaires (reportées).
+ * - Outils de situation (dossier PvE v2 §3) : six familles d'effets d'équipement, une variante active par famille et par
+ *   porteur ; aucun ne redéclenche une mécanique de classe. Priorité de cible préparée (`targetPriority`).
+ * - Danger (`enemyDamageScale`) et fureur s'appliquent une seule fois à toutes les sources : coups, charges, érosion, aura.
+ * Pas encore : statistiques issues de l'équipement, effets des anciens ensembles, gemmes de build, nommés, résistances élémentaires (reportées).
  */
-import type { ClassKit, CombatContent, CombatPath, Element, Encounter, PlanEntry, Spell } from '../schemas/combat.js';
+import type { ClassKit, CombatContent, CombatPath, Element, Encounter, PlanEntry, Spell, TargetPriority, Tool, ToolFamily } from '../schemas/combat.js';
 import { stream } from './rng.js';
 
 const ms = (s: number) => Math.round(s * 1000);
@@ -43,6 +46,10 @@ export interface CombatantSetup {
    * rend `heal` des PV maximum, au plus une toutes les `cooldown` secondes, dans la limite de `count`.
    */
   potions?: { count: number; heal: number; below: number; cooldown: number };
+  /** Outils de situation portés (ensembles, gemmes, préparation) : par famille, seul le mieux classé agit. */
+  tools?: Tool[];
+  /** Cible de chaque action : chef (défaut), renforts d'abord, ou chef sans garde d'abord. */
+  targetPriority?: TargetPriority;
 }
 
 export interface FightOptions {
@@ -177,8 +184,31 @@ interface Enemy {
   aim: number;
 }
 
+/** État d'un outil de situation : un seul délai et une seule réserve par famille et par porteur. */
+interface ToolState<T extends Tool = Tool> {
+  tool: T;
+  readyAt: number;
+  charges: number;
+  /** Interstice : cycle de fenêtre de la réserve, réserve par chef, total stocké dans le cycle, cycle déjà restitué. */
+  cycle: number;
+  bank: Map<number, number>;
+  banked: number;
+  released: number;
+  /** Reprise : réserve et soins rendus récemment (glissant). */
+  pool: number;
+  healed: { t: number; amount: number }[];
+}
+type Tools = { [F in ToolFamily]?: ToolState<Extract<Tool, { family: F }>> };
+const TOOL_RANK = ['set4', 'gem', 'set3', 'prep', 'set2'] as const;
+const NATIVE = new Set(['basic', 'skill', 'class', 'dot']);
+
 interface Combatant {
   setup: CombatantSetup;
+  /** PV maximum au début du combat : référence des effets défensifs en part des PV. */
+  maxHp0: number;
+  tools: Tools;
+  /** Réserve personnelle (Repli couvert). */
+  cover: { amount: number; end: number } | null;
   kit: ClassKit;
   path: CombatPath | null;
   stats: CombatStats;
@@ -253,8 +283,18 @@ export function fight(combat: CombatContent, setups: CombatantSetup[], encounter
     const counts = new Map<Element, number>();
     for (const p of plan) if (p.spell.element !== 'inherit') counts.set(p.spell.element, (counts.get(p.spell.element) ?? 0) + 1);
     const dominant = [...counts.entries()].sort((a, b) => b[1] - a[1])[0]?.[0] ?? 'physical';
+    const tools: Record<string, ToolState> = {};
+    for (const tool of s.tools ?? []) {
+      const cur = tools[tool.family];
+      if (cur && TOOL_RANK.indexOf(cur.tool.rank) <= TOOL_RANK.indexOf(tool.rank)) continue;
+      const charges = tool.family === 'rain' ? (tool.charges ?? Infinity) : Infinity;
+      tools[tool.family] = { tool, readyAt: 0, charges, cycle: -1, bank: new Map(), banked: 0, released: -1, pool: 0, healed: [] };
+    }
     return {
       setup: s,
+      maxHp0: stats.maxHp,
+      tools: tools as Tools,
+      cover: null,
       kit,
       path,
       stats,
@@ -336,13 +376,28 @@ export function fight(combat: CombatContent, setups: CombatantSetup[], encounter
   const param = (c: Combatant, key: string) => c.path?.params[key] ?? 0;
   const kp = (c: Combatant, key: string) => c.kit.params[key] ?? 0;
 
-  /** Cible courante ; à la mort de la Proie, un Angle non consommé la suit pour `carryOnKill` s au plus. */
+  /** Ordre des cibles selon la priorité préparée (puis l'ordre d'apparition) ; un renfort à venir n'est jamais choisi. */
+  const ranked = (c: Combatant): Enemy[] => {
+    const alive = aliveEnemies();
+    const pr = c.setup.targetPriority ?? 'chief';
+    if (pr === 'adds_first') return [...alive].sort((a, b) => Number(b.add) - Number(a.add) || (a.add ? a.arriveAt - b.arriveAt : 0) || a.i - b.i);
+    if (pr === 'unguarded_first') return [...alive].sort((a, b) => Number(a.add) - Number(b.add) || a.guard - b.guard || a.i - b.i);
+    return alive;
+  };
+  /**
+   * Cible courante, réévaluée à chaque action ; avec la priorité `chief`, on garde sa cible jusqu'à sa mort.
+   * À la mort de la Proie, un Angle non consommé la suit pour `carryOnKill` s au plus ; changer volontairement de cible
+   * le laisse sur l'ancienne (aucun Angle transporté gratuitement).
+   */
   const current = (c: Combatant): Enemy => {
     const old = enemies[c.target]!;
-    if (old.hp > 0) return old;
-    const alive = aliveEnemies();
+    const prioritized = (c.setup.targetPriority ?? 'chief') !== 'chief';
+    if (old.hp > 0 && !prioritized) return old;
+    const alive = ranked(c);
     if (!alive.length) return old;
+    if (old.hp > 0 && alive[0]!.i === old.i) return old;
     c.target = alive[0]!.i;
+    if (old.hp > 0) return enemies[c.target]!;
     if (c.kit.mechanic === 'angle' && c.angle && c.angle.until > t && c.angle.target === old.i) {
       c.angle = { until: Math.min(c.angle.until, t + ms(kp(c, 'carryOnKill'))), target: c.target };
     }
@@ -369,21 +424,68 @@ export function fight(combat: CombatContent, setups: CombatantSetup[], encounter
   };
 
   // --- Effets élémentaires --------------------------------------------------------------------------------------
+  const windowPeriod = encounter.windows ? ms(encounter.windows.period) : 0;
+  const windowClosed = () => !!encounter.windows && t % windowPeriod < windowPeriod - ms(encounter.windows.open);
+  /** Réserve Interstice du porteur pour le cycle de fenêtre en cours (elle expire à la fin de l'ouverture). */
+  const intersticeOf = (c: Combatant) => {
+    const s = c.tools.interstice;
+    if (!s || !windowPeriod) return undefined;
+    const cycle = Math.floor(t / windowPeriod);
+    if (s.cycle !== cycle) {
+      s.cycle = cycle;
+      s.bank.clear();
+      s.banked = 0;
+    }
+    return s;
+  };
+  /**
+   * Dégâts sortants. Origines natives : `basic`, `skill`, `class`, `dot` ; `window_release` (restitution Interstice) est un
+   * montant déjà calculé : ni défense, ni critique, ni vulnérabilité, ni fenêtre, ni bonus d'outil.
+   */
   const damage = (c: Combatant, e: Enemy, amount: number, origin: string, element: Element, crit = false, penetration = 0): number => {
     if (e.hp <= 0 || amount <= 0) return 0;
-    let mult = 1 - R.enemy.defense * (1 - Math.min(1, penetration));
-    if (crit) mult *= c.stats.critMultiplier;
-    let vuln = 0;
-    for (const v of e.vuln) if (v.until > t) vuln = Math.max(vuln, v.amount);
-    if (e.breakUntil > t) vuln = Math.max(vuln, R.stability.breakDamageTaken);
-    let x = amount * mult * (1 + Math.min(R.caps.vulnerability, vuln));
-    // Fenêtres : hors des secondes ouvertes de chaque période, le groupe principal subit moins de dégâts.
-    if (encounter.windows && !e.add) {
-      const period = ms(encounter.windows.period);
-      if (t % period < period - ms(encounter.windows.open)) x *= 1 - encounter.windows.closedReduction;
+    const native = NATIVE.has(origin);
+    let x = amount;
+    if (native) {
+      let mult = 1 - R.enemy.defense * (1 - Math.min(1, penetration));
+      if (crit) mult *= c.stats.critMultiplier;
+      let vuln = 0;
+      for (const v of e.vuln) if (v.until > t) vuln = Math.max(vuln, v.amount);
+      if (e.breakUntil > t) vuln = Math.max(vuln, R.stability.breakDamageTaken);
+      x = amount * mult * (1 + Math.min(R.caps.vulnerability, vuln));
+      // Battue : dégâts natifs accrus contre un renfort présent, tant qu'un chef est debout ; jamais contre le chef.
+      const beat = c.tools.beat;
+      if (beat && e.add && chiefsAlive()) {
+        inc(c, 'beatBonus', Math.min(e.hp + e.guard, x * beat.tool.multiplier) - Math.min(e.hp + e.guard, x));
+        x *= beat.tool.multiplier;
+      }
+      // Fenêtres : hors des secondes ouvertes de chaque période, le groupe principal subit moins de dégâts.
+      if (!e.add && windowClosed()) {
+        const before = x;
+        x *= 1 - encounter.windows!.closedReduction;
+        // Interstice : une part de la perte réellement imputable à la fenêtre (sans sur-dégât) est mise en réserve.
+        const s = intersticeOf(c);
+        if (s) {
+          const capacity = e.hp + e.guard;
+          const loss = Math.max(0, Math.min(before, capacity) - Math.min(x, capacity));
+          const add = Math.min(loss * s.tool.store, Math.max(0, s.tool.bankCap * c.P - s.banked));
+          if (add > 0) {
+            s.banked += add;
+            s.bank.set(e.i, (s.bank.get(e.i) ?? 0) + add);
+            inc(c, 'bankedDamage', add);
+          }
+        }
+      }
     }
+    // Garde ; Fracture multiplie seulement ce qui frappe la garde, le supplément ne déborde jamais sur les PV.
     const g = Math.min(e.guard, x);
     e.guard -= g;
+    const fracture = native ? c.tools.fracture : undefined;
+    if (fracture && g > 0 && e.guard > 0) {
+      const extra = Math.min(e.guard, g * (fracture.tool.multiplier - 1));
+      e.guard -= extra;
+      inc(c, 'guardDamageBonus', extra);
+    }
     x -= g;
     const dealt = Math.min(e.hp, x);
     e.hp -= dealt;
@@ -505,6 +607,17 @@ export function fight(combat: CombatContent, setups: CombatantSetup[], encounter
     }
   };
   const elementOf = (c: Combatant, s: Spell): Element => (s.element === 'inherit' ? c.runeElement : s.element);
+  /** Interstice : la première attaque de base ou le premier sort qui touche un chef dans la fenêtre ouverte rend sa réserve. */
+  const release = (c: Combatant, e: Enemy, element: Element) => {
+    const s = intersticeOf(c);
+    if (!s || e.add || e.hp <= 0 || windowClosed() || s.released === s.cycle) return;
+    const amount = s.bank.get(e.i) ?? 0;
+    if (amount <= 0) return;
+    s.released = s.cycle;
+    s.bank.delete(e.i);
+    inc(c, 'releasedDamage', amount);
+    damage(c, e, amount, 'window_release', element);
+  };
 
   // --- Une action : attaque de base (spell = null) ou compétence -----------------------------------------------
   const cast = (c: Combatant, spell: Spell | null) => {
@@ -607,17 +720,23 @@ export function fight(combat: CombatContent, setups: CombatantSetup[], encounter
       }
     }
 
-    const targets = [e, ...aliveEnemies().filter((x) => x.i !== e.i)].slice(0, spell?.targets ?? 1);
+    const targets = [e, ...ranked(c).filter((x) => x.i !== e.i)].slice(0, spell?.targets ?? 1);
     targets.forEach((x, i) => {
       const impact = coefficient * (i === 0 ? 1 : R.secondaryShare) + (i === 0 ? bonus : 0);
       damage(c, x, impact * c.P, basic ? 'basic' : 'skill', element, crit, spell?.penetration ?? 0);
       if (spell?.dot) dot(c, x, `spell:${spell.id}`, spell.dot.amount * (i === 0 ? 1 : R.secondaryShare), spell.dot.type, spell.dot.duration);
     });
+    if (c.tools.interstice) for (const x of targets) release(c, x, element);
 
     if (spell) {
       const who = beneficiary(c);
       if (spell.heal) heal(c, who, spell.heal * c.P);
       if (spell.shield) shield(c, who, spell.shield * c.P, `spell:${spell.id}`, true, spell.duration ?? 6);
+      // Repli couvert : réserve personnelle en part des PV maximum de début de combat ; remplace la précédente.
+      if (spell.selfPool) {
+        c.cover = { amount: spell.selfPool.maxHpFraction * c.maxHp0, end: t + ms(spell.selfPool.duration) };
+        inc(c, 'coverGranted', c.cover.amount);
+      }
       for (const v of targets) {
         if (v.hp <= 0) continue;
         if (spell.slow) control = slow(c, v, spell.slow, spell.duration ?? 4) || control;
@@ -681,11 +800,15 @@ export function fight(combat: CombatContent, setups: CombatantSetup[], encounter
   };
   const hasHeavy = !!encounter.charge || roster.some((g) => g.attack.heavyEvery);
   const keepForHeavy = R.enemy.onceWeakenTarget === 'heavy' && hasHeavy;
+  /**
+   * Danger × fureur, appliqués une seule fois à chaque source entrante (coups, charges, érosion, aura). Fureur : au-delà du
+   * temps prévu, chaque seconde de plus ajoute `perSecond` (linéaire).
+   */
+  const threat = () => enemyScale * (encounter.enrage && t > ms(encounter.enrage.after) ? 1 + encounter.enrage.perSecond * ((t - ms(encounter.enrage.after)) / 1000) : 1);
   const incoming = (e: Enemy, raw: number, source: 'attack' | 'charge', heavy = false) => {
     const c = targetOf(e);
     if (!c) return;
-    // Fureur : au-delà du temps prévu, chaque seconde de plus rend les coups plus forts.
-    if (encounter.enrage && t > ms(encounter.enrage.after)) raw *= 1 + encounter.enrage.perSecond * ((t - ms(encounter.enrage.after)) / 1000);
+    raw *= threat();
     log(null, source, `${source === 'charge' ? 'attaque chargée' : 'attaque'} de l'ennemi ${e.i + 1} sur ${c.setup.id}`);
     const active = e.weaken.filter((w) => w.until > t);
     // Un affaiblissement « une attaque » peut être gardé pour le coup qui compte (attaque lourde ou chargée).
@@ -697,6 +820,14 @@ export function fight(combat: CombatContent, setups: CombatantSetup[], encounter
     if (strongest) {
       strongest.by.contrib.mitigated += before - amount;
       if (strongest.by !== c) inc(strongest.by, 'mitigatedAllies', before - amount);
+    }
+    // Impact : atténue un coup lourd ou une charge (part du coup, plafonnée en part des PV maximum), avant les boucliers.
+    const impact = c.tools.impact;
+    if (heavy && impact && amount > 0 && t >= impact.readyAt) {
+      const avoided = Math.min(amount * impact.tool.incoming, c.maxHp0 * impact.tool.maxHp);
+      amount -= avoided;
+      impact.readyAt = t + ms(impact.tool.cooldown);
+      inc(c, 'impactAvoided', avoided);
     }
     for (const sh of [...c.shields].sort((a, b) => a.end - b.end)) {
       if (amount <= 0) break;
@@ -714,6 +845,13 @@ export function fight(combat: CombatContent, setups: CombatantSetup[], encounter
         }
       }
       if (sh.amount <= 1e-8) c.shields = c.shields.filter((s) => s !== sh);
+    }
+    if (amount > 0 && c.cover && c.cover.end > t) {
+      const take = Math.min(c.cover.amount, amount);
+      c.cover.amount -= take;
+      amount -= take;
+      inc(c, 'coverAbsorbed', take);
+      if (c.cover.amount <= 1e-8) c.cover = null;
     }
     if (amount > 0) {
       c.hp -= amount;
@@ -776,13 +914,13 @@ export function fight(combat: CombatContent, setups: CombatantSetup[], encounter
           const spread = 1 - R.enemy.damageSpread / 2 + R.enemy.damageSpread * enemyRand();
           e.hits++;
           const heavy = e.attack.heavyEvery && e.hits % e.attack.heavyEvery === 0 ? (e.attack.heavyMultiplier ?? 1) : 1;
-          incoming(e, e.attack.damage * enemyScale * spread * heavy, 'attack', heavy > 1);
+          incoming(e, e.attack.damage * spread * heavy, 'attack', heavy > 1);
           const s = e.slowUntil > t ? e.slow : 0;
           e.nextHit = t + ms(e.attack.period / rateScale / (1 - s));
         }
       }
       // Phases à horaire fixe : jamais décalées par un ralentissement. Elles concernent le groupe principal.
-      if (!e.add && encounter.charge && crossed(ms(encounter.charge.period))) incoming(e, encounter.charge.damage * enemyScale, 'charge', true);
+      if (!e.add && encounter.charge && crossed(ms(encounter.charge.period))) incoming(e, encounter.charge.damage, 'charge', true);
     }
     const chiefs = aliveEnemies().filter((e) => !e.add);
     if (encounter.guard && crossed(ms(encounter.guard.period)) && chiefs.length) {
@@ -805,11 +943,24 @@ export function fight(combat: CombatContent, setups: CombatantSetup[], encounter
     }
     // Érosion : une charge de plus à chaque période ; chaque charge inflige ses dégâts chaque seconde, sans défense.
     if (encounter.erosion && chiefs.length) {
-      if (crossed(ms(encounter.erosion.period))) for (const c of aliveTeam()) c.erosion = Math.min(encounter.erosion.maxStacks, c.erosion + 1);
+      if (crossed(ms(encounter.erosion.period))) {
+        for (const c of aliveTeam()) {
+          c.erosion = Math.min(encounter.erosion.maxStacks, c.erosion + 1);
+          // Pluie : à partir de quelques charges, en retire avec un délai ; l'érosion recommence à monter ensuite.
+          const rain = c.tools.rain;
+          if (rain && c.erosion >= rain.tool.atLeast && t >= rain.readyAt && rain.charges > 0) {
+            const removed = Math.min(rain.tool.remove, c.erosion);
+            c.erosion -= removed;
+            rain.readyAt = t + ms(rain.tool.cooldown);
+            rain.charges--;
+            inc(c, 'erosionRemoved', removed);
+          }
+        }
+      }
       if (crossed(1000)) {
         for (const c of aliveTeam()) {
           if (!c.erosion) continue;
-          const d = c.erosion * encounter.erosion.damage * enemyScale;
+          const d = c.erosion * encounter.erosion.damage * threat();
           c.hp -= d;
           c.lastHitBy = 'aura';
           inc(c, 'erosionDamage', d);
@@ -820,11 +971,29 @@ export function fight(combat: CombatContent, setups: CombatantSetup[], encounter
     if (encounter.aura && chiefsAlive() && crossed(1000)) {
       for (const c of aliveTeam()) {
         if (c.auraImmuneUntil > t) continue;
-        c.hp -= encounter.aura.damage;
+        const d = encounter.aura.damage * threat();
+        c.hp -= d;
         c.lastHitBy = 'aura';
-        inc(c, 'auraDamage', encounter.aura.damage);
+        inc(c, 'auraDamage', d);
         c.minHp = Math.min(c.minHp, c.hp);
+        // Reprise : une part de la perte réelle d'aura alimente une réserve (une aura létale tue avant).
+        const breath = c.tools.breath;
+        if (breath && c.hp > 0) breath.pool = Math.min(breath.tool.pulse * c.maxHp0, breath.pool + d * breath.tool.recover);
       }
+    }
+    // Reprise : restitution en fin de pas, plafonnée par les PV manquants, la réserve et le plafond glissant.
+    for (const c of aliveTeam()) {
+      const breath = c.tools.breath;
+      if (!breath || breath.pool <= 0 || t < breath.readyAt) continue;
+      breath.healed = breath.healed.filter((h) => h.t > t - ms(breath.tool.window));
+      const room = breath.tool.rolling * c.maxHp0 - breath.healed.reduce((a, h) => a + h.amount, 0);
+      const amount = Math.min(c.stats.maxHp - c.hp, breath.pool, room);
+      if (amount <= 0) continue;
+      c.hp += amount;
+      breath.pool -= amount;
+      breath.readyAt = t + ms(breath.tool.cooldown);
+      breath.healed.push({ t, amount });
+      inc(c, 'breathHealed', amount);
     }
     // Potions : bues automatiquement sous le seuil, en fin de pas (après les coups reçus).
     for (const c of aliveTeam()) {

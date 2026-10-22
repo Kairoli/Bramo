@@ -135,9 +135,44 @@ export const spellSchema = z.object({
   dispel: z.boolean().optional(),
   cleanse: z.boolean().optional(),
   empowerAuto: coef.optional(),
+  /**
+   * Réserve de survie personnelle (Repli couvert, dossier PvE v2 §6) : `maxHpFraction` des PV maximum du lanceur au début
+   * du combat, pendant `duration` s. Toujours sur soi ; ni Puissance de soutien ni plafonds de bouclier ; contre coups et
+   * charges seulement (pas l'aura ni l'érosion). Un nouveau lancer remplace la réserve restante.
+   */
+  selfPool: z.object({ maxHpFraction: z.number().min(0).max(1), duration: z.number().positive() }).optional(),
 });
 
+/**
+ * Outils de situation (dossier PvE v2 §3, `equipements-situation.yaml`) : un effet fort contre une mécanique ennemie
+ * précise, nul ailleurs. Un porteur n'a qu'une variante active par famille, choisie au départ par `rank`
+ * (set4 > gemme > set3 > préparation > set2) ; les paliers d'un ensemble remplacent les précédents.
+ */
+export const toolFamilies = ['interstice', 'rain', 'impact', 'beat', 'fracture', 'breath'] as const;
+export type ToolFamily = (typeof toolFamilies)[number];
+export const toolRanks = ['set4', 'gem', 'set3', 'prep', 'set2'] as const;
+const toolBase = { id, name: z.string(), rank: z.enum(toolRanks), cooldown: seconds.default(0) };
+export const toolSchema = z.discriminatedUnion('family', [
+  /** Stocke `store` des dégâts natifs perdus contre une fenêtre fermée (plafond `bankCap` × P par cycle), rendus à l'ouverture. */
+  z.object({ ...toolBase, family: z.literal('interstice'), store: z.number().min(0).max(1), bankCap: coef }),
+  /** À partir de `atLeast` charges d'érosion, en retire `remove` (délai `cooldown`, `charges` usages au plus). */
+  z.object({ ...toolBase, family: z.literal('rain'), remove: z.number().int().min(1), atLeast: z.number().int().min(1).default(2), charges: z.number().int().min(1).optional() }),
+  /** Atténue un coup lourd ou une charge : min(`incoming` × coup, `maxHp` × PV max). */
+  z.object({ ...toolBase, family: z.literal('impact'), incoming: z.number().min(0).max(0.75), maxHp: z.number().min(0).max(1) }),
+  /** Multiplie les dégâts natifs contre un renfort (jamais contre le chef). */
+  z.object({ ...toolBase, family: z.literal('beat'), multiplier: z.number().min(1) }),
+  /** Multiplie les dégâts natifs contre la garde seulement : le supplément ne déborde jamais sur les PV. */
+  z.object({ ...toolBase, family: z.literal('fracture'), multiplier: z.number().min(1) }),
+  /** Récupère `recover` des PV perdus à l'aura (réserve `pulse` × PV max, soins au plus `rolling` × PV max sur `window` s). */
+  z.object({ ...toolBase, family: z.literal('breath'), recover: z.number().min(0).max(1), pulse: z.number().min(0).max(1), rolling: z.number().min(0).max(1), window: z.number().positive() }),
+]);
+export type Tool = z.infer<typeof toolSchema>;
+export const toolsFileSchema = z.array(toolSchema);
+
 export const planEntrySchema = z.object({ spell: id, at: seconds });
+/** Priorité de cible réglée avant le combat (dossier PvE v2) : chef d'abord (défaut), renforts d'abord, ou chef sans garde. */
+export const targetPriorities = ['chief', 'adds_first', 'unguarded_first'] as const;
+export type TargetPriority = (typeof targetPriorities)[number];
 
 /** Plan d'exemple : un répertoire de sorts par niveau de référence. */
 export const examplePlanSchema = z.object({

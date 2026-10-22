@@ -1,0 +1,18 @@
+{
+  "id": "ff_upper",
+  "description": "Forgefeu, frappe montante : le marteau part d'en bas derrière lui et remonte en grand arc devant, il se soulève sur la pointe des pieds (Éclat du four, Décrassage).",
+  "duration": 1.05,
+  "impact": 0.44,
+  "bones": {
+    "upperarm_far": { "rotate": [[0, 0], [0.28, 25], [0.44, -112], [0.6, -120], [1.05, 0]] },
+    "forearm_far": { "rotate": [[0, 0], [0.28, 132], [0.44, 131], [0.6, 125], [1.05, 0]] },
+    "hand_far": { "rotate": [[0, 0], [0.28, 135], [0.44, 70], [0.6, 66], [1.05, 0]] },
+    "torso": { "rotate": [[0, 0], [0.28, 6], [0.44, -6], [0.6, -5], [1.05, 0]] },
+    "head": { "rotate": [[0, 0], [0.28, 5], [0.44, -6], [1.05, 0]] },
+    "pelvis": { "translate": [[0, 0, 0], [0.28, 0, 5], [0.44, 2, -6], [0.6, 2, -4], [1.05, 0, 0]] },
+    "thigh_near": { "rotate": [[0, 0], [0.28, 5], [0.44, -3], [1.05, 0]] },
+    "shin_near": { "rotate": [[0, 0], [0.28, -6], [0.44, 2], [1.05, 0]] },
+    "cape": { "rotate": [[0, 0], [0.3, -4], [0.5, 8], [0.85, -2], [1.05, 0]] },
+    "cloth_back": { "rotate": [[0, 0], [0.5, 4], [0.85, -2], [1.05, 0]] }
+  }
+}

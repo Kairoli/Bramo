@@ -1,0 +1,19 @@
+{
+  "id": "attack_forgefire",
+  "description": "Attaque de base du Forgefeu, jouée une fois par-dessus le repos : il arme le marteau au-dessus de la tête (la masse pend dans le dos), puis l'abat devant lui en se penchant ; la masse frappe le sol à l'instant `impact`, il reste un temps penché puis revient le marteau sur l'épaule.",
+  "duration": 1.15,
+  "impact": 0.46,
+  "bones": {
+    "upperarm_far": { "rotate": [[0, 0], [0.32, -158], [0.46, -20], [0.66, -18], [1.15, 0]] },
+    "forearm_far": { "rotate": [[0, 0], [0.32, 62], [0.46, 131], [0.66, 128], [1.15, 0]] },
+    "hand_far": { "rotate": [[0, 0], [0.32, 8], [0.46, 85], [0.66, 84], [1.15, 0]] },
+    "torso": { "rotate": [[0, 0], [0.32, -7], [0.46, 16], [0.7, 13], [1.15, 0]] },
+    "pelvis": { "translate": [[0, 0, 0], [0.32, -2, -3], [0.46, 5, 5], [0.7, 4, 4], [1.15, 0, 0]] },
+    "head": { "rotate": [[0, 0], [0.32, -6], [0.46, 8], [0.7, 6], [1.15, 0]] },
+    "upperarm_near": { "rotate": [[0, 0], [0.32, -6], [0.46, 8], [1.15, 0]] },
+    "thigh_far": { "rotate": [[0, 0], [0.46, -7], [0.7, -6], [1.15, 0]] },
+    "shin_far": { "rotate": [[0, 0], [0.46, 9], [0.7, 8], [1.15, 0]] },
+    "cape": { "rotate": [[0, 0], [0.32, -5], [0.5, 9], [0.8, -3], [1.15, 0]] },
+    "cloth_back": { "rotate": [[0, 0], [0.5, 5], [0.8, -2], [1.15, 0]] }
+  }
+}

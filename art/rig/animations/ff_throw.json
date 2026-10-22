@@ -1,0 +1,17 @@
+{
+  "id": "ff_throw",
+  "description": "Forgefeu, lancer : il arme le marteau derrière la tête et fouette le bras vers l'avant ; le marteau spectral part à l'instant `impact`, le bras finit bas (Marteau de retour).",
+  "duration": 1.0,
+  "impact": 0.42,
+  "bones": {
+    "upperarm_far": { "rotate": [[0, 0], [0.28, -158], [0.42, -100], [0.56, -30], [1.0, 0]] },
+    "forearm_far": { "rotate": [[0, 0], [0.28, 62], [0.42, 131], [0.56, 128], [1.0, 0]] },
+    "hand_far": { "rotate": [[0, 0], [0.28, 8], [0.42, 85], [0.56, 84], [1.0, 0]] },
+    "torso": { "rotate": [[0, 0], [0.28, -8], [0.42, 8], [0.56, 12], [1.0, 0]] },
+    "head": { "rotate": [[0, 0], [0.28, -5], [0.42, 3], [1.0, 0]] },
+    "pelvis": { "translate": [[0, 0, 0], [0.28, -4, 0], [0.42, 4, 2], [0.56, 6, 3], [1.0, 0, 0]] },
+    "thigh_far": { "rotate": [[0, 0], [0.42, -8], [0.7, -6], [1.0, 0]] },
+    "shin_far": { "rotate": [[0, 0], [0.42, 9], [0.7, 7], [1.0, 0]] },
+    "cape": { "rotate": [[0, 0], [0.28, -6], [0.5, 9], [0.8, -2], [1.0, 0]] }
+  }
+}

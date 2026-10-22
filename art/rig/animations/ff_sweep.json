@@ -1,0 +1,18 @@
+{
+  "id": "ff_sweep",
+  "description": "Forgefeu, balayage : le marteau passe derrière la jambe, remonte en arc bas et frappe à hauteur de buste, bras tendu, le buste suit (Coup de travers, Frappe d'atelier, Reprise au rouge, Jet de scories, Grand soufflet).",
+  "duration": 1.0,
+  "impact": 0.42,
+  "bones": {
+    "upperarm_far": { "rotate": [[0, 0], [0.28, 25], [0.42, -74], [0.56, -92], [1.0, 0]] },
+    "forearm_far": { "rotate": [[0, 0], [0.28, 132], [0.42, 131], [0.56, 128], [1.0, 0]] },
+    "hand_far": { "rotate": [[0, 0], [0.28, 135], [0.42, 85], [0.56, 80], [1.0, 0]] },
+    "torso": { "rotate": [[0, 0], [0.28, -7], [0.42, 10], [0.6, 8], [1.0, 0]] },
+    "head": { "rotate": [[0, 0], [0.28, -3], [0.42, 4], [1.0, 0]] },
+    "pelvis": { "translate": [[0, 0, 0], [0.28, -3, 2], [0.42, 4, 3], [1.0, 0, 0]] },
+    "thigh_far": { "rotate": [[0, 0], [0.42, -6], [0.7, -5], [1.0, 0]] },
+    "shin_far": { "rotate": [[0, 0], [0.42, 7], [0.7, 6], [1.0, 0]] },
+    "cape": { "rotate": [[0, 0], [0.28, 4], [0.48, -8], [0.8, 3], [1.0, 0]] },
+    "cloth_back": { "rotate": [[0, 0], [0.48, -5], [0.8, 2], [1.0, 0]] }
+  }
+}

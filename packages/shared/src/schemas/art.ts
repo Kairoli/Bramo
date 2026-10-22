@@ -84,6 +84,8 @@ export const animationSchema = z.object({
   id,
   description: z.string().optional(),
   duration: z.number().positive(),
+  /** Animation d'action (attaque, sort) jouée une fois par-dessus le repos : instant du coup ou du lâcher, en secondes. */
+  impact: z.number().min(0).optional(),
   bones: z.record(
     id,
     z.object({

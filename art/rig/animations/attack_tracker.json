@@ -1,0 +1,16 @@
+{
+  "id": "attack_tracker",
+  "description": "Attaque de base du Traqueur, jouée une fois par-dessus le repos : il bande l'arc (la main de la corde recule le long de la flèche, le buste se tasse), lâche à l'instant `impact` (la main part en arrière, l'arc remonte un peu sous le recul), puis réencoche.",
+  "duration": 0.78,
+  "impact": 0.3,
+  "bones": {
+    "forearm_near": { "rotate": [[0, 0], [0.24, -11], [0.3, -12], [0.36, -24], [0.5, -20], [0.78, 0]] },
+    "upperarm_near": { "rotate": [[0, 0], [0.24, -2], [0.36, -7], [0.5, -5], [0.78, 0]] },
+    "hand_near": { "rotate": [[0, 0], [0.3, 0], [0.36, 14], [0.78, 0]] },
+    "upperarm_far": { "rotate": [[0, 0], [0.24, 1], [0.3, 1], [0.36, -5], [0.5, -2], [0.78, 0]] },
+    "forearm_far": { "rotate": [[0, 0], [0.36, -2], [0.78, 0]] },
+    "torso": { "rotate": [[0, 0], [0.24, -2], [0.36, -3.5], [0.78, 0]] },
+    "head": { "rotate": [[0, 0], [0.24, 2], [0.4, 1], [0.78, 0]] },
+    "cape": { "rotate": [[0, 0], [0.36, -4], [0.6, 2], [0.78, 0]] }
+  }
+}

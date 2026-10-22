@@ -1,0 +1,19 @@
+{
+  "id": "rn_staff",
+  "description": "Runiste, bâton frappé : il lève le bâton devant lui puis en frappe le sol à l'instant `impact` ; le cercle s'ouvre au sol (sorts de forme Cercle).",
+  "duration": 1.0,
+  "impact": 0.42,
+  "bones": {
+    "upperarm_near": { "rotate": [[0, 0], [0.26, -40], [0.42, -14], [0.6, -14], [1.0, 0]] },
+    "forearm_near": { "rotate": [[0, 0], [0.26, -20], [0.42, -6], [0.6, -6], [1.0, 0]] },
+    "hand_near": { "rotate": [[0, 0], [0.26, 60], [0.42, 20], [0.6, 20], [1.0, 0]] },
+    "upperarm_far": { "rotate": [[0, 0], [0.26, -20], [0.42, 15], [0.6, 12], [1.0, 0]] },
+    "forearm_far": { "rotate": [[0, 0], [0.26, -10], [0.42, 25], [1.0, 0]] },
+    "torso": { "rotate": [[0, 0], [0.26, -4], [0.42, 6], [0.6, 5], [1.0, 0]] },
+    "head": { "rotate": [[0, 0], [0.26, -4], [0.42, 5], [1.0, 0]] },
+    "pelvis": { "translate": [[0, 0, 0], [0.26, 0, -3], [0.42, 2, 5], [0.6, 2, 4], [1.0, 0, 0]] },
+    "cloth_near": { "rotate": [[0, 0], [0.42, 4], [0.7, -2], [1.0, 0]] },
+    "cloth_far": { "rotate": [[0, 0], [0.42, 5], [0.7, -2], [1.0, 0]] },
+    "cape": { "rotate": [[0, 0], [0.3, -3], [0.46, 6], [0.8, -2], [1.0, 0]] }
+  }
+}

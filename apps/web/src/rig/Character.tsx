@@ -60,6 +60,11 @@ export interface CharacterProps {
   explode?: boolean;
   /** Met une pièce en valeur (survol d'un emplacement) : les autres calques s'estompent. */
   highlight?: Slot[] | null;
+  /**
+   * Action jouée une fois par-dessus le repos : animation (`art/rig/animations`), instant `at` (performance.now, ms) où elle
+   * en est à `t0` secondes, et vitesse `rate` (1 par défaut ; 0 la fige, pour régler une image).
+   */
+  action?: { anim: string; at: number; t0?: number; rate?: number } | null;
   className?: string;
   title?: string;
 }
@@ -139,6 +144,7 @@ export function Character({
   showBones,
   explode,
   highlight,
+  action,
   className,
   title,
 }: CharacterProps) {
@@ -172,6 +178,9 @@ export function Character({
   const boneRefs = useRef(new Map<string, SVGGElement>());
   const explodeAmount = useRef(0);
   const pose = poseFor(content, look);
+  // L'action se lit à chaque image : en changer ne relance pas la boucle d'animation.
+  const actionRef = useRef(action);
+  actionRef.current = action;
 
   // Boucle d'animation : on écrit directement les attributs transform, sans re-rendu React.
   useEffect(() => {
@@ -188,7 +197,11 @@ export function Character({
     const draw = (now: number) => {
       const target = explode ? 1 : 0;
       explodeAmount.current += (target - explodeAmount.current) * (reduced ? 1 : 0.12);
-      const world: Record<string, Matrix> = worldMatrices(BONES, anim, now / 1000, offsets, gain);
+      const act = actionRef.current;
+      const actAnim = act ? animations[act.anim] : undefined;
+      const actT = act ? (act.t0 ?? 0) + ((now - act.at) / 1000) * (act.rate ?? 1) : 0;
+      const playing = actAnim && actT >= 0 && actT < actAnim.duration ? { anim: actAnim, t: actT } : null;
+      const world: Record<string, Matrix> = worldMatrices(BONES, anim, now / 1000, offsets, gain, playing);
       for (const l of layers) {
         const el = layerRefs.current.get(l.key);
         if (!el) continue;

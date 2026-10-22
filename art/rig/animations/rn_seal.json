@@ -1,0 +1,18 @@
+{
+  "id": "rn_seal",
+  "description": "Runiste, sceau : la main du sort monte au-dessus de la tête, paume ouverte, le regard la suit ; le sceau se forme à l'instant `impact` (sorts de forme Sceau).",
+  "duration": 1.1,
+  "impact": 0.45,
+  "bones": {
+    "upperarm_far": { "rotate": [[0, 0], [0.3, -60], [0.75, -58], [1.1, 0]] },
+    "forearm_far": { "rotate": [[0, 0], [0.3, -20], [0.75, -18], [1.1, 0]] },
+    "hand_far": { "rotate": [[0, 0], [0.3, -12], [0.45, -16], [0.75, -12], [1.1, 0]] },
+    "torso": { "rotate": [[0, 0], [0.3, -4], [0.75, -4], [1.1, 0]] },
+    "head": { "rotate": [[0, 0], [0.3, -7], [0.75, -6], [1.1, 0]] },
+    "pelvis": { "translate": [[0, 0, 0], [0.3, 0, -3], [0.75, 0, -3], [1.1, 0, 0]] },
+    "upperarm_near": { "rotate": [[0, 0], [0.3, -4], [1.1, 0]] },
+    "cloth_near": { "rotate": [[0, 0], [0.45, 3], [0.8, -2], [1.1, 0]] },
+    "cloth_far": { "rotate": [[0, 0], [0.45, 4], [0.8, -2], [1.1, 0]] },
+    "cape": { "rotate": [[0, 0], [0.45, 4], [0.85, -2], [1.1, 0]] }
+  }
+}

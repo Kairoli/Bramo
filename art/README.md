@@ -54,6 +54,20 @@ Les pièces restent dessinées sur la pose de repos et suivent leurs os ; une te
 
 Pour calculer les pivots d'une pose et la matrice inverse d'un os, reprendre la cinématique de `apps/web/src/rig/skeleton.ts` (`worldMatrices` avec les décalages de la pose).
 
+## Les actions (attaques, sorts)
+
+Une animation d'action (`rig/animations/attack_<classe>.json`) se joue **une fois, par-dessus le repos** : ses angles s'ajoutent à ceux de la pose et du repos, et elle commence et finit à 0. `impact` donne l'instant du coup ou du lâcher, en secondes. `Character` la reçoit par `action` (`{ anim, at, t0?, rate? }`). Pour régler les angles, partir des positions calculées par la cinématique (`worldMatrices` de `apps/web/src/rig/skeleton.ts`) : une rotation positive tourne dans le sens des aiguilles d'une montre à l'écran, donc un bras pendant part vers l'arrière ; une rotation négative le lève vers l'avant.
+
+| Animation | Classe | Coup | Effet (components/CombatStage.tsx) |
+|---|---|---|---|
+| `attack_forgefire` | Forgefeu | 0,46 s : le marteau armé au-dessus de la tête s'abat devant lui | traînée de braises, sol frappé, faille de feu jusqu'à l'ennemi, jaillissement en trois langues |
+| `attack_tracker` | Traqueur | 0,30 s : il bande l'arc et lâche | pointe qui s'illumine, flèche à sillage de jade et feuilles, éclats à l'impact |
+| `attack_runist` | Runiste | 0,32 s : la main trace la rune puis la projette | rune tracée dans la main, rune qui tournoie, sceau imprimé sur l'ennemi qui vole en éclats |
+
+**Gestes des sorts** (22 octobre, soir) : 20 gestes de plus — Forgefeu `ff_sweep`, `ff_upper`, `ff_brace`, `ff_punch`, `ff_throw`, `ff_ultimate` ; Traqueur `tr_aim`, `tr_volley`, `tr_throw`, `tr_whistle`, `tr_dodge` (déplace l'os `root`), `tr_ultimate` ; Runiste `rn_slash`, `rn_staff` (garder le bâton droit : `hand_near` compense le bras), `rn_seal`, `rn_channel`, `rn_ultimate`. Le sort qui joue chaque geste et le dessin de son effet : `apps/web/src/combat-fx/` et [`docs/design/combat-visuels.md`](../docs/design/combat-visuels.md).
+
+Les points d'où partent les effets (masse du marteau, pointe de flèche, main proche, paume, pied du bâton) sont donnés dans le repère de repos de leur os (`GESTURE_POINT` dans `combat-fx/index.ts`). Pages de réglage en développement : `/#arene` (déclencher chaque sort, vitesse, pause, `window.__arena.only(id)` puis `__arena.at(t)` pour figer un instant) et `/#planche` (tous les sorts d'une classe figés au même instant). Après l'ajout d'un fichier dans `art/rig/animations/`, redémarrer Vite (le dossier est hors du client, ses nouveaux fichiers ne sont pas vus).
+
 ## Les pièces
 
 Un SVG par pièce, dessiné **dans le repère du gabarit** (pose de repos). Chaque `<g id="…">` de premier niveau est un calque. Le manifeste JSON dit, pour chaque calque :

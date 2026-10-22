@@ -1,0 +1,19 @@
+{
+  "id": "attack_runist",
+  "description": "Attaque de base du Runiste, jouée une fois par-dessus le repos : la main du sort se replie pour tracer la rune, puis se tend vers l'ennemi et la projette à l'instant `impact` ; le bâton accompagne le buste, la robe suit.",
+  "duration": 0.8,
+  "impact": 0.32,
+  "bones": {
+    "upperarm_far": { "rotate": [[0, 0], [0.2, 12], [0.32, -32], [0.46, -28], [0.8, 0]] },
+    "forearm_far": { "rotate": [[0, 0], [0.2, -14], [0.32, 12], [0.46, 10], [0.8, 0]] },
+    "hand_far": { "rotate": [[0, 0], [0.2, -10], [0.32, 8], [0.8, 0]] },
+    "torso": { "rotate": [[0, 0], [0.2, -3], [0.32, 5], [0.46, 4], [0.8, 0]] },
+    "head": { "rotate": [[0, 0], [0.2, -3], [0.32, 3], [0.8, 0]] },
+    "upperarm_near": { "rotate": [[0, 0], [0.2, -2], [0.32, 4], [0.8, 0]] },
+    "pelvis": { "translate": [[0, 0, 0], [0.32, 3, 1], [0.8, 0, 0]] },
+    "cloth_near": { "rotate": [[0, 0], [0.32, -4], [0.55, 3], [0.8, 0]] },
+    "cloth_far": { "rotate": [[0, 0], [0.32, -6], [0.55, 3], [0.8, 0]] },
+    "cloth_back": { "rotate": [[0, 0], [0.32, -5], [0.55, 2], [0.8, 0]] },
+    "cape": { "rotate": [[0, 0], [0.32, -5], [0.6, 3], [0.8, 0]] }
+  }
+}

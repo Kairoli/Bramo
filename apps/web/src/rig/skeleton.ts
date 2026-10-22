@@ -75,14 +75,20 @@ export function worldMatrices(
   t: number,
   pose: Record<string, number> = {},
   gain = 1,
+  /** Action jouée une fois par-dessus (attaque, sort), à l'instant `t` de son déroulé : ses angles s'ajoutent. */
+  action?: { anim: Animation; t: number } | null,
 ): Record<string, Matrix> {
   const world: Record<string, Matrix> = {};
   const time = anim ? t % anim.duration : 0;
+  const at = action ? Math.max(0, Math.min(action.t, action.anim.duration)) : 0;
   for (const bone of bones) {
     const track = anim?.bones[bone.id];
     const [deg] = track?.rotate ? sample(track.rotate, time) : [0];
     const [dx, dy] = track?.translate ? sample(track.translate, time) : [0, 0];
-    const local = localMatrix(bone.pivot, bone.rotation + (pose[bone.id] ?? 0) + deg! * gain, dx! * gain, dy! * gain);
+    const extra = action?.anim.bones[bone.id];
+    const [adeg] = extra?.rotate ? sample(extra.rotate, at) : [0];
+    const [adx, ady] = extra?.translate ? sample(extra.translate, at) : [0, 0];
+    const local = localMatrix(bone.pivot, bone.rotation + (pose[bone.id] ?? 0) + deg! * gain + adeg!, dx! * gain + adx!, dy! * gain + ady!);
     world[bone.id] = bone.parent ? multiply(world[bone.parent]!, local) : local;
   }
   return world;

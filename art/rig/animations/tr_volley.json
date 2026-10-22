@@ -1,0 +1,18 @@
+{
+  "id": "tr_volley",
+  "description": "Traqueur, tir en cloche : il se cambre, lève l'arc vers le ciel, bande et lâche haut à l'instant `impact` ; les flèches retombent sur l'ennemi (Tir de travers, Flèches de gêne, Filet d'orage).",
+  "duration": 0.95,
+  "impact": 0.45,
+  "bones": {
+    "torso": { "rotate": [[0, 0], [0.3, -12], [0.45, -12], [0.55, -14], [0.95, 0]] },
+    "upperarm_far": { "rotate": [[0, 0], [0.3, -18], [0.45, -18], [0.55, -24], [0.95, 0]] },
+    "upperarm_near": { "rotate": [[0, 0], [0.3, -14], [0.45, -16], [0.52, -22], [0.95, 0]] },
+    "forearm_near": { "rotate": [[0, 0], [0.3, -12], [0.45, -13], [0.52, -26], [0.7, -20], [0.95, 0]] },
+    "hand_near": { "rotate": [[0, 0], [0.45, 0], [0.52, 14], [0.95, 0]] },
+    "head": { "rotate": [[0, 0], [0.3, -10], [0.55, -10], [0.95, 0]] },
+    "pelvis": { "translate": [[0, 0, 0], [0.3, -3, 3], [0.55, -3, 3], [0.95, 0, 0]] },
+    "thigh_near": { "rotate": [[0, 0], [0.3, 5], [0.55, 5], [0.95, 0]] },
+    "shin_near": { "rotate": [[0, 0], [0.3, -6], [0.55, -6], [0.95, 0]] },
+    "cape": { "rotate": [[0, 0], [0.3, 5], [0.55, -4], [0.95, 0]] }
+  }
+}

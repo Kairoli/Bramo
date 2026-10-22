@@ -38,6 +38,11 @@ export interface CombatantSetup {
   beneficiary?: 'self' | 'lowest';
   /** PV au début de la rencontre (par défaut le maximum) : les PV se gardent d'une salle de donjon à l'autre. */
   startHp?: number;
+  /**
+   * Potions de secours (dossier « Activités et artisanat » §21) : une est bue automatiquement sous `below` des PV maximum,
+   * rend `heal` des PV maximum, au plus une toutes les `cooldown` secondes, dans la limite de `count`.
+   */
+  potions?: { count: number; heal: number; below: number; cooldown: number };
 }
 
 export interface FightOptions {
@@ -196,6 +201,8 @@ interface Combatant {
   auraImmuneUntil: number;
   /** Charges d'érosion subies. */
   erosion: number;
+  potionsLeft: number;
+  potionReadyAt: number;
   heat: number;
   angle: { until: number; target: number } | null;
   orderUntil: number;
@@ -269,6 +276,8 @@ export function fight(combat: CombatContent, setups: CombatantSetup[], encounter
       shields: [],
       auraImmuneUntil: -1,
       erosion: 0,
+      potionsLeft: s.potions?.count ?? 0,
+      potionReadyAt: 0,
       heat: 0,
       angle: null,
       orderUntil: -1,
@@ -803,6 +812,16 @@ export function fight(combat: CombatContent, setups: CombatantSetup[], encounter
         inc(c, 'auraDamage', encounter.aura.damage);
         c.minHp = Math.min(c.minHp, c.hp);
       }
+    }
+    // Potions : bues automatiquement sous le seuil, en fin de pas (après les coups reçus).
+    for (const c of aliveTeam()) {
+      const p = c.setup.potions;
+      if (!p || c.potionsLeft <= 0 || t < c.potionReadyAt || c.hp >= p.below * c.stats.maxHp) continue;
+      c.hp = Math.min(c.stats.maxHp, c.hp + p.heal * c.stats.maxHp);
+      c.potionsLeft--;
+      c.potionReadyAt = t + ms(p.cooldown);
+      inc(c, 'potions');
+      log(c, 'potion', 'potion de secours');
     }
     t += tick;
   }

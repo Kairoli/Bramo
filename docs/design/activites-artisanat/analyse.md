@@ -6,10 +6,10 @@
 
 **Le dossier est solide sur l'économie et l'artisanat, et sa structure d'activités est la bonne.** Je recommande d'en adopter l'essentiel : craft de tout l'équipement (sauf les nommés), butin borné en « unités de référence », vestiges régionaux, recyclage en poudres, réparation par le métier de la pièce, donjons répétables sans quota, escouades engagées, route solo permanente + branche saisonnière, world boss en assauts asynchrones, Routes franches plus tard. Ses chiffres de recettes reposent sur les vraies durées du jeu (vérifié), ses calculs de garantie sont exacts (vérifié).
 
-**Mais les essais dans le moteur réel contredisent sa promesse centrale sur le PvE solo** : douze zones mécaniques ne suffisent pas à faire alterner la voie la mieux adaptée (§3.1). Dans le kit actuel, les voies d'une même classe se distinguent par leur vitesse, à peine par leur survie, et les outils de protection pèsent trop peu face aux PV. Tant que ce n'est pas corrigé, chiffrer 120 étapes serait chiffrer du vide. C'est **le chantier qui conditionne tout le PvE** (§5).
+**Mais sa promesse centrale sur le PvE solo n'est pas encore démontrée** : avec le kit seul (sorts et passifs), les douze zones ne font pas alterner les builds (§3.1). Les voies d'une même classe se distinguent par leur vitesse, à peine par leur survie, et les protections pèsent trop peu face aux PV. Le levier voulu, **les ensembles de 4**, n'est pas encore dans le moteur : le tester est **le chantier qui conditionne tout le PvE** (§5), avant de chiffrer 120 étapes.
 
 Trois autres résultats d'essai changent des règles du dossier :
-- **Donjons** : 20 % de PV rendus entre deux salles rendent le parcours infranchissable sans soutien au danger normal (seuls Meneur de meute et Glyphiste passent). Il faut 35 à 50 %, et c'est ce paramètre qui donne enfin au soutien une niche mesurable : l'endurance sur un parcours long (§3.3).
+- **Donjons** : 20 % de PV rendus entre deux salles est trop dur même avec potions et repas (4 voies sur 9 échouent). **30 % avec une préparation (repas, potions) fait passer les 9 voies**, et donne au soutien une niche mesurable : il finit sans boire ses potions (§3.3).
 - **Groupes de 1 à 4** : la bonne mise à l'échelle est **PV × N et cadence des attaques × N, coups répartis entre les membres**. Chacun gagne alors autant par heure qu'en solo (0,90 à 1,06 fois le temps solo), la composition mixte est la plus sûre ; garder la cadence inchangée rend un groupe beaucoup trop sûr (§3.2).
 - **Traqueur** : la classe la plus fragile dans toutes les zones et tous les donjons (Tue-Bête surtout) ; à corriger avec le chantier des voies.
 
@@ -75,7 +75,9 @@ Le moteur a été étendu pour exprimer ces activités, **avec des options inact
 2. **Les outils défensifs pèsent trop peu** : une protection vaut 0,2 à 1,5 P, soit 1 à 5 % des 2 800 PV de référence. Même ×2,5, l'écart entre voies dépasse rarement un cran.
 3. **Le contrôle ne vise pas le danger** : en combat automatique, la Rupture affaiblit « la prochaine attaque », presque toujours un coup ordinaire. Les garder pour le coup lourd aide réellement (Enclumier : de 2 à 8 victoires sur 8 sur les Terrasses de la vigie) mais un plan de contrôle ne provoque qu'une à deux Ruptures par combat de boss : pas assez pour déplacer un mur.
 
-**Conséquence.** On ne peut pas chiffrer les 120 étapes maintenant : il faut d'abord que les voies aient des **outils distinctifs et lourds** face aux mécaniques (§5). La bonne nouvelle : l'outil de mesure existe, et il dira objectivement quand c'est atteint.
+**Précision de Louis (22 octobre).** Le levier voulu pour faire alterner les builds n'est pas la voie mais **les ensembles de 4 pièces** : le dossier a jugé trop dur d'imposer la refonte complète d'une voie ou d'une classe. **Ces essais ne testent pas ce levier** : ils jouent le kit seul (sorts et passifs), car les effets d'ensemble et les gemmes ne sont pas encore dans le moteur. Ils montrent seulement que **le kit seul ne crée pas d'alternance** ; ils ne disent pas que les ensembles échoueraient.
+
+**Conséquence.** On ne peut pas chiffrer les 120 étapes maintenant : il faut d'abord prouver que **les ensembles de 4** (et les gemmes) créent l'alternance que le kit seul ne crée pas, avec des effets assez lourds face aux mécaniques (§5). La bonne nouvelle : l'outil de mesure existe, et il dira objectivement quand c'est atteint.
 
 ### 3.2 Groupes de 1 à 4 : quelle mise à l'échelle
 
@@ -91,31 +93,41 @@ Le moteur a été étendu pour exprimer ces activités, **avec des options inact
 
 ### 3.3 Donjon : la récupération entre les salles décide de tout
 
-**Méthode.** `sim combat-dungeon` : la Fonderie en prototype (groupe compact → cible durable → charge → groupe compact → gardes → soin ennemi), PV gardés d'une salle à l'autre, 15 s de repos qui rendent une part des PV maximum. Rapport : `sim/reports/combat/donjon.md`.
+**Méthode.** `sim combat-dungeon` : la Fonderie en prototype (groupe compact → cible durable → charge → groupe compact → gardes → soin ennemi), PV gardés d'une salle à l'autre, 15 s de repos qui rendent une part des PV maximum, et les **consommables du dossier** (§21) préparés avant le départ : potion de secours bue automatiquement sous 35 % des PV, qui rend 8 % des PV maximum, une toutes les 90 s, stock pour tout le parcours ; repas de combat +3 % de PV maximum. Rapport : `sim/reports/combat/donjon.md` (toutes les combinaisons, une ligne par parcours dans `donjon.json`).
 
-| Repos | Danger ×1 | Danger ×1,5 |
-|---|---|---|
-| 20 % (dossier) | **Seuls Meneur de meute et Glyphiste** terminent ; tous les autres tombent en salle 3 | Personne |
-| 35 % | Tout le monde sauf Tue-Bête | Personne |
-| 50 % | Tout le monde | Glyphiste 100 %, Sigillaire 83 %, Meneur 33 %, les autres 0 % |
-| 100 % (salles indépendantes) | Tout le monde | Tout le monde |
+Voies (sur 9) qui terminent au moins 90 % des parcours :
 
-**Lecture.** Garder les PV crée une vraie dimension **d'endurance**, la seule où le soutien (et le Sigillaire) prennent un avantage net : c'est la niche que les zones n'ont pas su lui donner. Mais à 20 %, elle devient une **obligation de composition**, contraire au dossier lui-même. Recommandation : **40 % au départ**, à recalibrer avec les vraies salles ; le danger d'un donjon se règle ensuite par la longueur et la profondeur, pas par une récupération punitive. Le prototype dure ~6 min pour six salles : les 12 à 20 min annoncés demanderont des salles 2 à 3 fois plus longues, à mesurer.
+| Repos · danger | Sans consommable | 3 potions + repas | 6 potions + repas |
+|---|---|---|---|
+| 20 % · ×1 | 2 (Meneur, Glyphiste) | 4 | 5 (Tue-Bête : 0 %) |
+| **30 % · ×1** | 5 | **9** | 9 |
+| 40 % · ×1 | 9 | 9 | 9 |
+| 40 % · ×1,25 | 3 | 8 (sauf Tue-Bête) | 8 |
+| 50 % · ×1,5 | 1 | 4 | 7 |
+
+**Lecture.**
+- **À 20 %, même avec 6 potions, 4 voies sur 9 échouent** : trop dur pour une difficulté normale. Ce serait une obligation de soutien, contraire au dossier.
+- **À 30 %, la préparation devient décisive** : sans rien, les DPS et le Piégeur échouent souvent (Trempe-Rouge 75 %, Piégeur 42 %, Tue-Bête 0 %) ; avec 3 potions et un repas, **toutes les voies passent**.
+- **Le soutien a enfin une niche mesurable : il économise ses consommables.** À 30 % avec 3 potions, Meneur de meute et Glyphiste n'en boivent aucune, le Sigillaire moins d'une, un DPS ses trois. Le soutien coûte moins cher à faire tourner ; un DPS va plus vite mais consomme. C'est aussi un **débouché régulier pour la Cuisine et l'Alchimie**.
+- Le prototype dure ~6 min pour six salles : les 12 à 20 min annoncés demanderont des salles 2 à 3 fois plus longues, à mesurer avant de figer les chiffres.
+
+**Recommandation [Proposé par Claude]** : **30 % de PV rendus entre deux salles, au danger normal**, en comptant sur la préparation (repas, potions) ; la profondeur peut ensuite réduire ce repos ou durcir les salles. Ces chiffres sont à recalibrer quand les salles réelles et les statistiques d'équipement existeront.
 
 ## 4. Corrigé dans le jeu à l'occasion
 
 - **Taxe du marché** (`engine/market.ts`) : arrondie au plus proche au lieu du supérieur. Elle vaut 5 % en moyenne même sur les petits lots, le vendeur ne reçoit jamais plus que le prix (aucun or créé). Test mis à jour.
 - **Noms de modèles** (`data/gear.yaml`, `docs/design/catalogue/data.mjs`, `ITEMS.md`, `catalogue.html/json`) : *La Rancune* → *Le Marteau des griefs*, *Le Dernier Mot* → *Rondache du Dernier Carré*, *Murmure-d'épine* → *Arc des Ronceraies*, *Les Sœurs silencieuses* → *Les Jumelles muettes*, *Le Livre des ratures* → *Le Recueil des brouillons*. Les identifiants ne changent pas (exemplaires existants intacts) ; les noms restent libres pour les futurs nommés.
 
-## 5. Le chantier qui conditionne le PvE : l'identité des voies
+## 5. Le chantier qui conditionne le PvE : des ensembles qui comptent
 
-Proposition **[Proposé par Claude]**, à faire avant de chiffrer la route solo :
+Proposition **[Proposé par Claude]**, à faire avant de chiffrer la route solo. Le levier est celui de Louis : **les zones font alterner les ensembles de 4 (et les gemmes), pas les voies**. Le joueur bloqué à un mur farme ou fait fabriquer un autre ensemble, puis repasse à l'ancien deux zones plus loin.
 
-1. **Des outils de voie lourds et ciblés** : chaque voie gagne deux ou trois réponses qui changent l'issue face à une mécanique, plutôt que des passifs de +0,15 P. Exemples à mesurer : contrôle → Pression bien plus forte et Rupture qui couvre le prochain coup lourd ; soutien → protections en part des PV (10 à 20 % des PV maximum plutôt que 1 P) et purification ; dégâts → exécution et dégâts de zone qui tuent les renforts avant leur effet.
-2. **Ne pas monter les protections partout** : les essais montrent qu'une protection plus forte rend aussi le **Glyphiste plus rapide** (son Encre convertit l'absorbé en dégâts). Les leviers doivent être propres à chaque voie.
-3. **Traqueur** : revoir sa survie de classe (Repli couvert, Garde de meute) ; c'est la classe la plus fragile partout.
-4. **Critère d'acceptation mesurable**, avec `sim combat-search` sur les douze zones : dans au moins la moitié des zones, la meilleure voie dépasse la moins bonne d'**au moins un cran**, et **chaque voie est en tête dans au moins deux zones** ; aucune voie sous ×1,5 dans une zone ; le DPS reste le plus rapide de sa classe dans la majorité des zones.
-5. **Ensuite seulement**, chiffrer la pente des 120 étapes avec la vraie courbe d'équipement.
+1. **Porter dans le moteur quatre à six ensembles et quelques gemmes majeures** du dossier « Le cœur du jeu » (leurs effets sont déjà écrits et étaient exécutés par le banc Python), avec des statistiques réelles d'équipement.
+2. **Rejouer les douze zones** avec `sim combat-search` étendu aux choix d'ensemble : pour chaque voie, chaque zone, quel ensemble franchit le plus haut ?
+3. **Critère d'acceptation mesurable** : dans au moins la moitié des zones, l'ensemble le mieux adapté dépasse le moins bon d'**au moins un cran** pour une même voie ; **chaque ensemble est le meilleur dans au moins deux zones** ; aucune voie ne reste sous ×1,5 dans une zone avec son meilleur ensemble ; le DPS reste le plus rapide de sa classe dans la majorité des zones.
+4. **Point de vigilance mesuré** : les effets d'ensemble du dossier valent environ 0,2 à 0,5 P, du même ordre que les passifs de voie, qui ne font pas alterner les murs. Il faudra probablement des effets plus lourds face aux mécaniques (protections en part des PV, Pression forte, dégâts de zone qui tuent les renforts). Et ne pas monter les protections partout : une protection plus forte rend aussi le **Glyphiste plus rapide** (son Encre convertit l'absorbé en dégâts).
+5. **Traqueur** : revoir sa survie de classe (Repli couvert, Garde de meute) ; c'est la classe la plus fragile partout, en zones comme en donjon.
+6. **Ensuite seulement**, chiffrer la pente des 120 étapes avec la vraie courbe d'équipement.
 
 ## 6. Verdicts par sujet
 
@@ -128,7 +140,7 @@ Proposition **[Proposé par Claude]**, à faire avant de chiffrer la route solo 
 | Recyclage en poudres, abrasif substituable | **Adopter** | Conforme à la décision de Louis |
 | Réparation par le métier de la pièce, ~30 % des matières | **Adopter** | Harmoniser la formule PNJ avec `settings.wear.repairGoldShare` (150 %) |
 | Taxe des petits lots | **Fait** | Arrondi au plus proche |
-| Donjons de 6 salles, 1 à 4, sans quota | **Adopter avec correction** | Repos à **40 %** (pas 20 %) ; mise à l'échelle de groupe du §3.2 |
+| Donjons de 6 salles, 1 à 4, sans quota | **Adopter avec correction** | Repos à **30 %** avec une préparation (pas 20 %) ; mise à l'échelle de groupe du §3.2 |
 | Escouades hors ligne engagées | **Adopter, plus tard** | Une seule escouade, activité engagée, instantané figé ; à construire sur le moteur actuel (déterministe, à la demande) |
 | Route solo 12 × 10 | **Adopter la structure, pas encore les chiffres** | Après le chantier des voies (§5). Crédit d'XP d'échec : unique par étape, comme proposé |
 | Bonus de route +1 % ×3, aucun bonus économique au début | **Adopter** | Conforme à Q3 |
@@ -142,17 +154,17 @@ Proposition **[Proposé par Claude]**, à faire avant de chiffrer la route solo 
 
 | Étape | Contenu | Condition pour continuer |
 |---|---|---|
-| **5a** | **Identité des voies** (§5) et survie du Traqueur, mesurées sur les douze zones | Critère du §5 atteint |
-| **5b** | **Statistiques réelles** : l'équipement porté nourrit P, PV, Défense, Cadence, Critique (rendements décroissants) | Courbe niveau + équipement → murs franchis, par voie |
+| **5a** | **Statistiques réelles** : l'équipement porté nourrit P, PV, Défense, Cadence, Critique (rendements décroissants) | Courbe niveau + équipement cohérente |
+| **5b** | **Ensembles et gemmes dans le moteur** (§5) et survie du Traqueur, mesurés sur les douze zones | Critère du §5 atteint |
 | **6a** | **Une boucle d'objets complète** : une douzaine de classiques (Forge et Menuiserie d'abord, déjà jouables), butin de combat vers les exemplaires, recyclage en poudres, vente à la vitrine | Un objet parcourt toute la boucle : butin ou craft → porté → usé → réparé → vendu ou recyclé |
 | **6b** | **Route solo, six premières zones** et leurs checkpoints | Plusieurs plans par voie ; aucun échec causé par un élément requis |
-| **6c** | **Fonderie complète** (6 salles, repos 40 %), deux ensembles, trois nommés avec garantie | Rendement ciblé vs parcours vs craft comparé |
+| **6c** | **Fonderie complète** (6 salles, repos 30 %, repas et potions), deux ensembles, trois nommés avec garantie | Rendement ciblé vs parcours vs craft comparé |
 | 7 | Tannerie, Couture, Joaillerie, Enchantement minimales (cuir, tissu, bijoux, gemmes) ; reste des zones et régions | Aucun métier « bientôt » requis par un objet annoncé |
 | 8 | Escouades de 2 puis 4 ; route saisonnière ; world boss ; Routes franches | Aucun double gain ni double engagement ; non-combattants réellement participants |
 
-## 8. Questions pour Louis
+## 8. Réponses aux questions de Louis
 
-- **Q1 — Nommés** : non fabricables en V1 (butin, garantie de 20 unités, marché), comme le recommande le dossier ? Ou fabricables comme les gemmes ?
-- **Q2 — Donjons** : récupération de **40 %** des PV entre deux salles (mes essais : 20 % impose un soutien, 50 % rend l'endurance peu sensible) ?
-- **Q3 — Chantier des voies (§5)** : d'accord pour le faire **avant** de chiffrer la route solo, avec le critère mesurable proposé ?
-- **Q4 — Métaux** : argent et or réservés à la Joaillerie (filière précieuse) et « acier trempé » (30) / « mithril renforcé » (50) pour la Forge, comme le propose le dossier ?
+- **Nommés fabricables ?** Je les laisserais **non fabricables en V1**. Les gemmes sont déjà le talent fabricable : le joaillier vend « le talent que vous voulez ». Le nommé est autre chose, un **trophée** : c'est ce qui donne au combat une raison d'exister face à un artisanat qui fait tout le reste. Ni l'artisan ni le combattant n'en sont privés : il s'échange au marché, se répare et se perfectionne chez un artisan, et la garantie de 20 unités (77 min en moyenne) évite la malchance. Si plus tard un nommé reste introuvable au marché faute de combattants, on pourra ajouter une recette coûteuse à partir d'un **trophée de boss** échangeable, sans changer le reste.
+- **20 % de repos en donjon, trop dur ?** Oui, même avec les consommables (§3.3) : avec 6 potions et un repas, 4 voies sur 9 échouent encore. **30 % avec une préparation** est le bon point : sans rien, les DPS échouent souvent ; avec 3 potions et un repas, toutes les voies passent, et le soutien finit sans boire ses potions. Ta remarque change donc la recommandation : de 40 % sans consommable à 30 % avec.
+- **Zones et ensembles de 4** : les essais ne réfutent pas l'idée, ils ne l'ont pas encore testée (le kit seul ne suffit pas, §3.1). Le chantier §5 la teste directement. À dire au dossier : « le kit seul ne crée pas d'alternance ; reste à prouver que les ensembles le font, avec des effets assez lourds ».
+- **Métaux** : **la version du dossier**. Argent et or n'ont pas de sens comme armures ; ils font une vraie filière à la Joaillerie (bijoux, sceptres), ce que `metiers.md` prévoyait déjà. La Forge garde un métal par palier (bronze, fer, acier, acier trempé, mithril, mithril renforcé, orichalque, azurite, sombracier, astralite), le Minage garde un nouveau minerai tous les 10 niveaux, et la Joaillerie n'est pas obligée d'acheter le métal de la Forge. Seul coût : « acier trempé » et « mithril renforcé » sont des variantes, moins dépaysantes qu'un métal neuf.

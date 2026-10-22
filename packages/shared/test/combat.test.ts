@@ -231,6 +231,15 @@ describe('mécaniques de rencontre (zones, donjons, groupes)', () => {
     expect(tougher.time / normal.time).toBeCloseTo(2, 0);
   });
 
+  it('une potion de secours se boit sous le seuil, une fois par délai, dans la limite du stock', () => {
+    const hitter = dummy({ attack: { damage: 20, period: 1 } });
+    const r = fight(combat, [solo('forgefire', [], { potions: { count: 2, heal: 0.1, below: 0.5, cooldown: 10 } })], hitter, { seed: 1, trace: true });
+    const drunk = r.trace!.filter((x) => x.kind === 'potion').map((x) => x.t);
+    expect(drunk).toHaveLength(2);
+    expect(drunk[1]! - drunk[0]!).toBeGreaterThanOrEqual(10);
+    expect(r.team[0]!.metrics.potions).toBe(2);
+  });
+
   it('les PV de départ se gardent d’une salle à l’autre', () => {
     const r = fight(combat, [solo('forgefire', [], { startHp: 400 })], dummy(), { seed: 1 });
     expect(r.team[0]!.hp).toBe(400);

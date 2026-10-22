@@ -148,7 +148,7 @@ Ce qui reste insatisfaisant, à arbitrer :
 - **Vérifié** : 9 tests de progression, un scénario d'API (une heure de combat côté serveur), et dans le navigateur à 1440×900 et 1280×720 sur une base de test séparée (premier combat gagné en 65 s, journal « 1 Braise dépensée », plan enregistré avec un horaire).
 - **Limites assumées** : les rencontres jouables sont les **six profils du banc** (« rencontres d'essai »), avec les statistiques normalisées : pas encore de zones ni de paliers, ni de statistiques venant de l'équipement, ni de butin, ni d'usure de l'équipement en combat. Le niveau de classe ne fait encore qu'ouvrir des sorts et la voie.
 
-Prochaine étape : revue par le dossier « Activités et artisanat » et son [analyse](../activites-artisanat/analyse.md) (§7) : **5a, identité des voies** (les douze zones mesurées ne font pas encore alterner les voies), puis **5b, statistiques réelles**, puis la boucle d'objets, six zones solo et la Fonderie.
+Prochaine étape : revue par le dossier « Activités et artisanat » et son [analyse](../activites-artisanat/analyse.md) (§7) : **5a, statistiques réelles**, puis **5b, ensembles et gemmes dans le moteur** (le kit seul ne fait pas alterner les builds sur les douze zones ; le levier voulu par Louis est l'ensemble de 4), puis la boucle d'objets, six zones solo et la Fonderie.
 
 ## 7. Questions pour Louis
 

@@ -409,15 +409,22 @@ export function fight(combat: CombatContent, setups: CombatantSetup[], encounter
     }
     e.dots.set(full, d);
   };
+  /** Puissance de soutien (paramètre de voie `supportPower`) : multiplie les soins et protections produits. */
+  const supportPower = (c: Combatant) => 1 + param(c, 'supportPower');
   const heal = (c: Combatant, target: Combatant, amount: number): number => {
     if (target.hp <= 0) return 0;
+    amount *= supportPower(c);
+    inc(c, 'healRequested', amount);
     const eff = Math.min(target.stats.maxHp - target.hp, amount);
     target.hp += eff;
     c.contrib.healing += eff;
+    // Aide apportée aux alliés (et non à soi) : ce qui distingue un soutien de groupe.
+    if (target !== c) inc(c, 'healingAllies', eff);
     return eff;
   };
   const shield = (c: Combatant, target: Combatant, amount: number, source: string, primary: boolean, duration: number, riposte = 0): number => {
     if (target.hp <= 0) return 0;
+    amount *= supportPower(c);
     const key = `${c.setup.id}:${source}`;
     target.shields = target.shields.filter((s) => s.source !== key);
     if (!primary) {
@@ -677,6 +684,8 @@ export function fight(combat: CombatContent, setups: CombatantSetup[], encounter
   const incoming = (e: Enemy, raw: number, source: 'attack' | 'charge', heavy = false) => {
     const c = targetOf(e);
     if (!c) return;
+    // Fureur : au-delà du temps prévu, chaque seconde de plus rend les coups plus forts.
+    if (encounter.enrage && t > ms(encounter.enrage.after)) raw *= 1 + encounter.enrage.perSecond * ((t - ms(encounter.enrage.after)) / 1000);
     log(null, source, `${source === 'charge' ? 'attaque chargée' : 'attaque'} de l'ennemi ${e.i + 1} sur ${c.setup.id}`);
     const active = e.weaken.filter((w) => w.until > t);
     // Un affaiblissement « une attaque » peut être gardé pour le coup qui compte (attaque lourde ou chargée).
@@ -685,7 +694,10 @@ export function fight(combat: CombatContent, setups: CombatantSetup[], encounter
     e.weaken = keepForHeavy && !heavy ? active : active.filter((w) => !w.once);
     const before = raw * (1 - c.stats.damageReduction);
     let amount = before * (1 - (strongest?.amount ?? 0));
-    if (strongest) strongest.by.contrib.mitigated += before - amount;
+    if (strongest) {
+      strongest.by.contrib.mitigated += before - amount;
+      if (strongest.by !== c) inc(strongest.by, 'mitigatedAllies', before - amount);
+    }
     for (const sh of [...c.shields].sort((a, b) => a.end - b.end)) {
       if (amount <= 0) break;
       const take = Math.min(sh.amount, amount);
@@ -693,6 +705,7 @@ export function fight(combat: CombatContent, setups: CombatantSetup[], encounter
       amount -= take;
       if (take > 0) {
         sh.owner.contrib.absorbed += take;
+        if (sh.owner !== c) inc(sh.owner, 'absorbedAllies', take);
         if (sh.primary && sh.owner.path?.id === 'glyphkeeper') sh.owner.ink = Math.min(param(sh.owner, 'cap') * sh.owner.P, sh.owner.ink + take);
         if (sh.riposte) {
           damage(sh.owner, e, sh.riposte, 'class', 'physical');

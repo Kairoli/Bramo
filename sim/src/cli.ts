@@ -14,6 +14,7 @@ import { type GoldVariant, balanceMarkdown, runBalance, writeBalance } from './s
 import { combatReport, defaultCombatOptions } from './scenarios/combat.js';
 import { groupReport } from './scenarios/combat-groups.js';
 import { dungeonReport } from './scenarios/combat-dungeon.js';
+import { partyDungeonReport } from './scenarios/combat-dungeon-party.js';
 
 const [command = 'help', ...args] = process.argv.slice(2);
 const opt = (name: string, fallback: string) => {
@@ -43,6 +44,12 @@ const commands: Record<string, () => string> = {
     return combatReport(loadVariant(proposal), o, proposal ? { proposal, baseline: loadVariant() } : {});
   },
   'combat-dungeon': () => dungeonReport(loadVariant(opt('proposal', '') || undefined).combat!, Number(opt('seeds', '12'))),
+  'combat-dungeon-party': () => {
+    const proposal = opt('proposal', '') || undefined;
+    const hpExp = Number(opt('hp-exponent', '0'));
+    const name = `donjon-groupe${proposal ? `-${proposal}` : ''}${hpExp ? '-pente' : ''}`;
+    return partyDungeonReport(loadVariant(proposal).combat!, Number(opt('seeds', '12')), name, hpExp);
+  },
   'combat-groups': () => groupReport(loadVariant(opt('proposal', '') || undefined).combat!, Number(opt('seeds', '8'))),
   'combat-search': () => {
     const proposal = opt('proposal', '') || undefined;

@@ -13,6 +13,11 @@ Trois autres résultats d'essai changent des règles du dossier :
 - **Groupes de 1 à 4** : la bonne mise à l'échelle est **PV × N et cadence des attaques × N, coups répartis entre les membres**. Chacun gagne alors autant par heure qu'en solo (0,90 à 1,06 fois le temps solo), la composition mixte est la plus sûre ; garder la cadence inchangée rend un groupe beaucoup trop sûr (§3.2).
 - **Traqueur** : la classe la plus fragile dans toutes les zones et tous les donjons (Tue-Bête surtout) ; à corriger avec le chantier des voies.
 
+Deux résultats de la seconde série d'essais (après les questions de Louis) :
+- **Le soutien soutenait mal ses alliés à cause des plans conseillés**, trouvés pour la vitesse en solo et sans aucun soin. Avec un plan de groupe (soins, protections), un Glyphiste couvre 4 fois plus de dégâts de ses alliés, et l'ordre attendu apparaît : 2 dégâts + soutien + contrôle ou 2 soutiens battent 3 dégâts + contrôle et 4 dégâts (§3.4).
+- **Faille trouvée et refermée** : un groupe sans aucun DPS devenait le plus sûr de tous. Une difficulté qui monte PV **et** dégâts (la pente du dossier) et une **fureur** calée sur chaque salle l'empêchent de franchir tous les murs en prenant son temps (§3.4).
+- **Ensembles de 4** : les zones du dossier n'y sont pas liées, et son propre banc montre qu'une paire d'ensembles ne change le temps que de ~6 % (13 % au plus), et un même ensemble (la Vigie) revient dans la plupart des meilleures paires (§3.5).
+
 Corrigé dès maintenant dans le jeu : **la taxe du marché** (elle prenait 100 % d'une vente de 1 or) et **cinq noms de modèles** qui doublonnaient des nommés ou un passif (l'audit du dossier n'en voyait que trois).
 
 ## 1. Ce que j'ai vérifié
@@ -113,6 +118,45 @@ Voies (sur 9) qui terminent au moins 90 % des parcours :
 
 **Recommandation [Proposé par Claude]** : **30 % de PV rendus entre deux salles, au danger normal**, en comptant sur la préparation (repas, potions) ; la profondeur peut ensuite réduire ce repos ou durcir les salles. Ces chiffres sont à recalibrer quand les salles réelles et les statistiques d'équipement existeront.
 
+### 3.4 Le soutien en groupe, et la faille des groupes sans dégâts
+
+**Méthode.** `sim combat-dungeon-party` : la même Fonderie jouée à 4 (et un DPS seul pour comparer), ennemis à l'échelle du groupe (§3.2), PV gardés par membre, un membre tombé revenant à 50 % après une salle gagnée. Le moteur compte désormais à part l'aide apportée **aux alliés** (soins utiles, absorbé, atténué). Rapports : `sim/reports/combat/donjon-groupe*.md`.
+
+**1. Le soutien n'aidait presque pas ses alliés, à cause de son plan.** Avec les plans conseillés actuels, toute l'aide aux alliés ne couvre que 15 à 17 % des dégâts reçus par l'équipe ; un Glyphiste aide ~1 500 PV sur un parcours où l'équipe en perd 17 000. Raison : **les plans conseillés du Glyphiste et du Rémouleur ne contiennent aucun soin** (ils ont été trouvés pour la vitesse en solo). Avec un **plan de groupe** (proposition `soutien-groupe` : soins, protections et purification de la voie), le Glyphiste aide ~6 700 PV et l'aide couvre **51 % des dégâts avec un soutien, 76 % avec deux**.
+
+| Repos 30 %, sans consommable | ×1 | ×1,5 (dégâts seuls) |
+|---|---|---|
+| 4 dégâts | 100 % | 0 % |
+| 3 dégâts + contrôle | 100 % | 0 % |
+| 2 dégâts + 2 contrôles | 100 % | 67 % |
+| **2 dégâts + soutien + contrôle** (plans de groupe) | 100 % | **100 %** |
+| **2 dégâts + 2 soutiens** (plans de groupe) | 100 % | **100 %** (0 % avec les plans conseillés) |
+
+Multiplier aussi les soins et protections (« Puissance de soutien » × 1,5 à × 2,5) rend les groupes avec soutien presque intouchables (aide de 91 à 159 % des dégâts) : **inutile**, le plan suffit. Et doubler les boucliers en gaspille la moitié : avec des coups répartis entre quatre membres, un bouclier de 6 s posé sur un seul allié expire souvent sans servir.
+
+**2. Faille : le groupe sans dégâts.** Avec les plans de groupe, « 2 soutiens + 2 contrôles » passait même le danger ×2, qu'aucun groupe avec des DPS ne passe ; « 4 soutiens » aussi, en prenant 50 % de temps en plus. En jeu idle, rien ne presse : un tel groupe franchirait tous les murs. Deux corrections, mesurées ensemble (proposition `soutien-groupe-fureur`, rapport `donjon-groupe-soutien-groupe-fureur-pente.md`) :
+- la difficulté fait monter **les PV et les dégâts** ensemble (PV × danger^1,5, la pente du dossier), au lieu des seuls dégâts ;
+- une **fureur** par salle : passé 1,1 fois le temps d'un groupe équilibré à cette profondeur, +10 % de dégâts ennemis par seconde.
+
+| Danger ×1,25 (pente du dossier, fureur), repos 30 % | Sans consommable | 3 potions + repas |
+|---|---|---|
+| 4 dégâts · 3 dégâts + contrôle · 2 dégâts + 2 contrôles | 0 % | 0 % |
+| 2 dégâts + soutien + contrôle · 2 dégâts + 2 soutiens | **100 %** | **100 %** |
+| 2 soutiens + 2 contrôles | 100 % (20 % plus lent) | 100 % |
+| 4 soutiens | 25 % | 83 % |
+| Toutes compositions à ×1,5 | 0 % : le mur demande niveau et équipement | 0 % |
+
+**Lecture.** C'est l'ordre que Louis attendait : un DPS seul est le plus fragile, la composition complète (dégâts, soutien, contrôle) franchit ce que les groupes de dégâts ne franchissent pas, et un groupe sans dégâts ne dépasse plus un groupe équilibré ; il reste viable mais plus lent, donc moins récompensé à l'heure.
+
+### 3.5 Les ensembles de 4 : ce que mesure le banc du dossier
+
+Louis se souvenait que les zones devaient jouer sur les **ensembles de 4**. Le dossier ne les relie pas : ses douze zones décrivent une réponse DPS, une réponse contrôle et une réponse soutien, et un « rôle favorisé », sans ensemble ni gemme. Le premier dossier avait en revanche essayé **toutes les paires d'ensembles 4+4** (2 457 assemblages, `recherche-assemblages.json`), avec les règles que notre moteur reproduit à 0,5 % près :
+- le meilleur couple change bien selon le profil de rencontre (23 plans sur 27) ;
+- **mais l'écart est faible** : la paire médiane n'est que **5,7 %** plus lente que la meilleure (13 % au pire), et les PV ne varient que de quelques points ;
+- **un même ensemble revient partout** : la Vigie figure dans la paire la mieux classée par le criblage du dossier pour 8 voies sur 9, quel que soit le rôle (4 sur 9 si l'on classe par temps moyen sur les six profils).
+
+Telles que chiffrées, les paires d'ensembles ne peuvent donc pas faire alterner les murs : elles pèsent autant que les passifs de voie, et un ensemble générique (la Vigie) convient presque partout. Pour que des ensembles le fassent, il faudrait des **ensembles de situation** à effet fort contre une mécanique précise (par exemple : la prochaine attaque chargée réduite de moitié ; les gardes subissent le double ; dégâts accrus contre les renforts ; plus de PV rendus au repos de donjon), comme `monde.md` le prévoyait pour les ensembles d'événement, et pas des bonus génériques.
+
 ## 4. Corrigé dans le jeu à l'occasion
 
 - **Taxe du marché** (`engine/market.ts`) : arrondie au plus proche au lieu du supérieur. Elle vaut 5 % en moyenne même sur les petits lots, le vendeur ne reçoit jamais plus que le prix (aucun or créé). Test mis à jour.
@@ -125,9 +169,11 @@ Proposition **[Proposé par Claude]**, à faire avant de chiffrer la route solo.
 1. **Porter dans le moteur quatre à six ensembles et quelques gemmes majeures** du dossier « Le cœur du jeu » (leurs effets sont déjà écrits et étaient exécutés par le banc Python), avec des statistiques réelles d'équipement.
 2. **Rejouer les douze zones** avec `sim combat-search` étendu aux choix d'ensemble : pour chaque voie, chaque zone, quel ensemble franchit le plus haut ?
 3. **Critère d'acceptation mesurable** : dans au moins la moitié des zones, l'ensemble le mieux adapté dépasse le moins bon d'**au moins un cran** pour une même voie ; **chaque ensemble est le meilleur dans au moins deux zones** ; aucune voie ne reste sous ×1,5 dans une zone avec son meilleur ensemble ; le DPS reste le plus rapide de sa classe dans la majorité des zones.
-4. **Point de vigilance mesuré** : les effets d'ensemble du dossier valent environ 0,2 à 0,5 P, du même ordre que les passifs de voie, qui ne font pas alterner les murs. Il faudra probablement des effets plus lourds face aux mécaniques (protections en part des PV, Pression forte, dégâts de zone qui tuent les renforts). Et ne pas monter les protections partout : une protection plus forte rend aussi le **Glyphiste plus rapide** (son Encre convertit l'absorbé en dégâts).
-5. **Traqueur** : revoir sa survie de classe (Repli couvert, Garde de meute) ; c'est la classe la plus fragile partout, en zones comme en donjon.
-6. **Ensuite seulement**, chiffrer la pente des 120 étapes avec la vraie courbe d'équipement.
+4. **Point de vigilance mesuré (§3.5)** : les effets d'ensemble du dossier valent environ 0,2 à 0,5 P ; son propre banc donne ~6 % d'écart entre paires, et un ensemble générique (la Vigie) revient presque partout. Il faut des **ensembles de situation**, forts contre une mécanique précise, pas des bonus génériques. Il faudra probablement des effets plus lourds face aux mécaniques (protections en part des PV, Pression forte, dégâts de zone qui tuent les renforts). Et ne pas monter les protections partout : une protection plus forte rend aussi le **Glyphiste plus rapide** (son Encre convertit l'absorbé en dégâts).
+5. **Plans conseillés selon le contexte** : le plan conseillé d'un soutien doit être un plan de groupe en groupe, un plan de vitesse en solo (§3.4). Même logique pour la route solo : le plan conseillé d'une zone dépend de sa mécanique.
+6. **Traqueur** : revoir sa survie de classe (Repli couvert, Garde de meute) ; c'est la classe la plus fragile partout, en zones comme en donjon.
+7. **Difficulté** : faire monter PV et dégâts ensemble, avec une fureur par rencontre, pour que la sûreté seule ne franchisse pas les murs (§3.4).
+8. **Ensuite seulement**, chiffrer la pente des 120 étapes avec la vraie courbe d'équipement.
 
 ## 6. Verdicts par sujet
 
@@ -140,7 +186,7 @@ Proposition **[Proposé par Claude]**, à faire avant de chiffrer la route solo.
 | Recyclage en poudres, abrasif substituable | **Adopter** | Conforme à la décision de Louis |
 | Réparation par le métier de la pièce, ~30 % des matières | **Adopter** | Harmoniser la formule PNJ avec `settings.wear.repairGoldShare` (150 %) |
 | Taxe des petits lots | **Fait** | Arrondi au plus proche |
-| Donjons de 6 salles, 1 à 4, sans quota | **Adopter avec correction** | Repos à **30 %** avec une préparation (pas 20 %) ; mise à l'échelle de groupe du §3.2 |
+| Donjons de 6 salles, 1 à 4, sans quota | **Adopter avec corrections** | Repos à **30 %** avec une préparation (pas 20 %) ; mise à l'échelle de groupe du §3.2 ; difficulté qui monte PV et dégâts, **fureur** par salle ; plans de groupe conseillés aux soutiens (§3.4) |
 | Escouades hors ligne engagées | **Adopter, plus tard** | Une seule escouade, activité engagée, instantané figé ; à construire sur le moteur actuel (déterministe, à la demande) |
 | Route solo 12 × 10 | **Adopter la structure, pas encore les chiffres** | Après le chantier des voies (§5). Crédit d'XP d'échec : unique par étape, comme proposé |
 | Bonus de route +1 % ×3, aucun bonus économique au début | **Adopter** | Conforme à Q3 |
@@ -166,5 +212,6 @@ Proposition **[Proposé par Claude]**, à faire avant de chiffrer la route solo.
 
 - **Nommés fabricables ?** Je les laisserais **non fabricables en V1**. Les gemmes sont déjà le talent fabricable : le joaillier vend « le talent que vous voulez ». Le nommé est autre chose, un **trophée** : c'est ce qui donne au combat une raison d'exister face à un artisanat qui fait tout le reste. Ni l'artisan ni le combattant n'en sont privés : il s'échange au marché, se répare et se perfectionne chez un artisan, et la garantie de 20 unités (77 min en moyenne) évite la malchance. Si plus tard un nommé reste introuvable au marché faute de combattants, on pourra ajouter une recette coûteuse à partir d'un **trophée de boss** échangeable, sans changer le reste.
 - **20 % de repos en donjon, trop dur ?** Oui, même avec les consommables (§3.3) : avec 6 potions et un repas, 4 voies sur 9 échouent encore. **30 % avec une préparation** est le bon point : sans rien, les DPS échouent souvent ; avec 3 potions et un repas, toutes les voies passent, et le soutien finit sans boire ses potions. Ta remarque change donc la recommandation : de 40 % sans consommable à 30 % avec.
-- **Zones et ensembles de 4** : les essais ne réfutent pas l'idée, ils ne l'ont pas encore testée (le kit seul ne suffit pas, §3.1). Le chantier §5 la teste directement. À dire au dossier : « le kit seul ne crée pas d'alternance ; reste à prouver que les ensembles le font, avec des effets assez lourds ».
+- **Zones et ensembles de 4** : le dossier ne relie pas ses zones aux ensembles (réponses par rôle seulement), et son propre banc montre que ses paires d'ensembles ne changent le résultat que de ~6 %, et un ensemble générique revient presque partout (§3.5). À dire au dossier : « ni le kit ni les ensembles tels que chiffrés ne font alterner les murs ; il faut des ensembles de situation forts contre une mécanique, et des zones conçues autour d'eux ».
+- **Soutien en groupe** (seconde question de Louis) : le kit n'était pas en cause d'abord, ce sont les plans conseillés, faits pour la vitesse en solo. Avec un plan de groupe, le soutien couvre la moitié des dégâts de son équipe, et la composition complète franchit ce que les groupes de dégâts ne franchissent pas (§3.4).
 - **Métaux** : **la version du dossier**. Argent et or n'ont pas de sens comme armures ; ils font une vraie filière à la Joaillerie (bijoux, sceptres), ce que `metiers.md` prévoyait déjà. La Forge garde un métal par palier (bronze, fer, acier, acier trempé, mithril, mithril renforcé, orichalque, azurite, sombracier, astralite), le Minage garde un nouveau minerai tous les 10 niveaux, et la Joaillerie n'est pas obligée d'acheter le métal de la Forge. Seul coût : « acier trempé » et « mithril renforcé » sont des variantes, moins dépaysantes qu'un métal neuf.

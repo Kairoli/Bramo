@@ -240,6 +240,24 @@ describe('mécaniques de rencontre (zones, donjons, groupes)', () => {
     expect(r.team[0]!.metrics.potions).toBe(2);
   });
 
+  it('fureur : passé le temps prévu, les coups montent chaque seconde', () => {
+    const calm = fight(combat, [solo('forgefire', [])], dummy({ attack: { damage: 2, period: 1 } }), { seed: 1 });
+    const angry = fight(combat, [solo('forgefire', [])], dummy({ attack: { damage: 2, period: 1 }, enrage: { after: 30, perSecond: 0.1 } }), { seed: 1 });
+    // Avant 30 s, rien ne change ; ensuite +10 % par seconde.
+    // 30 s de fureur : Σ 2 × (1 + 0,1 k) pour k de 1 à 30, soit environ 153 au lieu de 60.
+    expect(angry.team[0]!.metrics.hpLost! - calm.team[0]!.metrics.hpLost!).toBeCloseTo(93, -1);
+  });
+
+  it('la Puissance de soutien multiplie les soins et protections produits, et l’aide aux alliés est comptée à part', () => {
+    const sup = { ...combat, paths: { ...combat.paths, whetter: { ...combat.paths.whetter!, params: { ...combat.paths.whetter!.params, supportPower: 1 } } } };
+    const hitter = dummy({ attack: { damage: 20, period: 1 } });
+    const team = (c: typeof combat) => fight(c, [solo('tracker', [], { id: 'front' }), solo('forgefire', [['garde', 0]], { id: 'soutien', pathId: 'whetter', beneficiary: 'lowest' })], hitter, { seed: 1 });
+    const base = team(combat).team[1]!.metrics;
+    const doubled = team(sup).team[1]!.metrics;
+    expect(base.absorbedAllies).toBeGreaterThan(0);
+    expect(doubled.shieldProduced! / base.shieldProduced!).toBeCloseTo(2, 1);
+  });
+
   it('les PV de départ se gardent d’une salle à l’autre', () => {
     const r = fight(combat, [solo('forgefire', [], { startHp: 400 })], dummy(), { seed: 1 });
     expect(r.team[0]!.hp).toBe(400);

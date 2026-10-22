@@ -1,0 +1,6 @@
+# [Proposé par Claude, essai] Puissance de soutien des voies de soutien : soins et protections × 2.
+note: Puissance de soutien +1 pour Rémouleur, Meneur de meute et Glyphiste (les soins et protections qu'ils produisent, sur eux ou leurs alliés).
+paths:
+  whetter: {params: {supportPower: 1}}
+  packleader: {params: {supportPower: 1}}
+  glyphkeeper: {params: {supportPower: 1}}

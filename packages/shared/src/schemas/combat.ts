@@ -191,6 +191,8 @@ export const encounterSchema = z.object({
   erosion: phase.extend({ damage: coef, maxStacks: z.number().int().min(1) }).optional(),
   /** Fenêtres : hors des `open` secondes ouvertes à chaque période, les ennemis subissent `closedReduction` de dégâts en moins. */
   windows: phase.extend({ open: z.number().positive(), closedReduction: z.number().min(0).max(0.95) }).optional(),
+  /** Fureur : passé `after` secondes, les dégâts ennemis augmentent de `perSecond` par seconde (un combat ne peut pas durer indéfiniment). */
+  enrage: z.object({ after: z.number().positive(), perSecond: z.number().positive() }).optional(),
 });
 
 export const spellsFileSchema = z.array(spellSchema);

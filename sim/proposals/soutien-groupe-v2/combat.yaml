@@ -1,0 +1,64 @@
+# [Proposé par Claude, essai] Plans de groupe des soutiens : leurs sorts de soin et de protection, plutôt que le plan conseillé (fait pour la vitesse en solo).
+note: Plans de groupe des soutiens et Puissance de soutien +1,5 (soins et protections × 2,5).
+addPlans:
+  - id: whetter_group
+    name: Plan de groupe Rémouleur
+    class: forgefire
+    path: whetter
+    weapon: hammer
+    levels:
+      "80":
+        - spell: fg_lay_rivets
+          at: 0
+        - spell: fg_masterplate
+          at: 0
+        - spell: fg_shared_anneal
+          at: 0
+        - spell: fg_cooling
+          at: 0
+        - spell: fg_rivet
+          at: 0
+  - id: glyphkeeper_group
+    name: Plan de groupe Glyphiste
+    class: runist
+    path: glyphkeeper
+    weapon: staff
+    levels:
+      "80":
+        - spell: rn_resonant_guard
+          at: 0
+        - spell: rn_refuge
+          at: 0
+        - spell: rn_respite
+          at: 0
+        - spell: rn_hearth
+          at: 0
+        - spell: rn_relay
+          at: 0
+  - id: packleader_group
+    name: Plan de groupe Meneur de meute
+    class: tracker
+    path: packleader
+    weapon: longbow
+    levels:
+      "80":
+        - spell: tr_read
+          at: 0
+        - spell: tr_packguard
+          at: 0
+        - spell: tr_share
+          at: 0
+        - spell: tr_packbeat
+          at: 0
+        - spell: tr_packreturn
+          at: 0
+paths:
+  whetter:
+    params:
+      supportPower: 1.5
+  packleader:
+    params:
+      supportPower: 1.5
+  glyphkeeper:
+    params:
+      supportPower: 1.5

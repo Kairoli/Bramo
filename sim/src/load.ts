@@ -34,11 +34,15 @@ export function readProposalRaw(name: string): RawContent {
   // Les commandes PNJ de data/ parlent d'objets que la proposition peut ne pas avoir : le simulateur n'en a pas besoin.
   raw.npcOrders = [];
   raw.buildings = [];
+  // Les ornements de data/ renvoient aux commandes des maîtres de data/, que la proposition peut remplacer.
+  raw.ornaments = [];
   const read = (file: string): unknown => parse(readFileSync(join(dir, file), 'utf8'));
   if (existsSync(join(dir, 'settings.yaml'))) raw.settings = deepMerge(raw.settings, read('settings.yaml'));
-  for (const key of ['professions', 'items', 'trials'] as const) {
+  for (const key of ['professions', 'items', 'trials', 'gear'] as const) {
     if (existsSync(join(dir, `${key}.yaml`))) raw[key] = read(`${key}.yaml`);
   }
+  if (existsSync(join(dir, 'gear_pools.yaml'))) raw.gearPools = read('gear_pools.yaml');
+  if (existsSync(join(dir, 'gear_sets.yaml'))) raw.gearSets = read('gear_sets.yaml');
   if (existsSync(join(dir, 'combat.yaml'))) raw.combat = patchCombat(raw.combat, read('combat.yaml') as CombatPatch);
   if (existsSync(join(dir, 'recipes'))) {
     raw.recipes = readdirSync(join(dir, 'recipes'))

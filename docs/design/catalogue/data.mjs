@@ -417,6 +417,8 @@ const tools = [
 for (const t of tools) add({ kind: 'tool', slot: 'tool', family: 'tool', classes: [], named: true, material: '', orientation: 'protective', lines: [], source: ['craft', 'loot'], ...t });
 
 export const ITEMS = items;
+// Pour le générateur des dix paliers (export_gear_v2.mjs).
+export { JEWEL, SHARES, WEAPON_NAMES, WEAPONS, statLine };
 
 // --- Gemmes de talent (majeures) ---
 export const GEM_FAMILIES = [

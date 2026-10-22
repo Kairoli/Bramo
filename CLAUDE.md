@@ -55,6 +55,15 @@ Bramo est un **idle-RPG multijoueur jouable dans le navigateur**, dans l'esprit 
 
 ## 5. État du projet (à jour au 22 octobre 2026)
 
+### Fait — états en icônes, combat relancé au changement de build, clan d'essai (22 octobre, nuit)
+
+- **Retours de Louis** : après un changement de classe, les sorts ne partaient plus ; voir en petites icônes ce que subit l'ennemi, avec une explication très brève ; un clan de test pour voir l'intérieur d'un clan.
+- **Changement de build** : la rencontre en cours était figée avec l'ancien build (sorts de l'ancienne classe, inconnus de l'écran). `restartFight` (progress.ts) la relance dans `chooseClass`, `choosePath`, `setPlan` (donc aussi `applyPreset`).
+- **Icônes d'état** (`combat-fx/badges.tsx`, `StatusBadges`) : sous la barre de vie de l'ennemi, Brûlure, Saignement, Marqué, Étourdi, Ralenti, Affaibli, Soins coupés ; sous celle du personnage, Protection. Anneau du temps restant, nom et une ligne d'explication au survol. Tirées des effets des sorts (`activeStatuses`, status.tsx). Pas encore vérifiées à l'écran (panneau du navigateur caché pendant la séance).
+- **Clan d'essai** (`apps/server/src/devClan.ts`, `POST /api/dev/clan/test`, développement seulement ; bouton « Test : rejoindre le clan d'essai » dans la salle Clan) : créé au premier appel avec quatre membres de test (comptes sans mot de passe utilisable), Halle 2, Forge 1, une Scierie à moitié financée, un journal ; le premier qui le rejoint en est le chef.
+- **Mesure** : niveau 1 avec le set de départ, les trois classes gagnent les étapes 1-1 à 1-9 et perdent contre la Mère Grise (1-10) et tout le chapitre 2. Une défaite rapporte la moitié de l'XP de son temps de combat (`lossXpShare`), sans butin.
+- **Recul automatique de la route** [Décidé par Louis] : après 3 défaites de suite (`maxConsecutiveLosses`), la route recule d'une étape ; une victoire la fait repartir vers l'étape qui bloquait. L'étape atteinte (`route.best`) reste acquise. Une classe faible (niveau 1 après un changement de classe) redescend d'elle-même jusqu'où elle gagne (XP entière et butin) au lieu de perdre en boucle.
+
 ### Fait — la route tourne tout le temps, dix étapes par chapitre, préréglages composés à la main (22 octobre, nuit)
 
 - **Demande de Louis** : le PvE solo tourne tout le temps (pas de bouton Arrêter), même pendant un métier ; sur l'accueil, choisir un préréglage en un clic (pas un raccourci vers la salle Personnage) ; créer les préréglages à la main ; l'ornement au-dessus du personnage, sur le même axe ; un schéma de la route (« la Mère Grise, c'est un boss, pourquoi en 1-3 ? »).

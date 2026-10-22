@@ -54,6 +54,7 @@ export const api = {
   energize: () => request<StateResponse>('POST', '/energy/activate'),
   combatStart: (encounter: string | null, tier?: number) => request<StateResponse>('POST', '/combat/start', { encounter, ...(tier ? { tier } : {}) }),
   combatStop: () => request<StateResponse>('POST', '/combat/stop'),
+  combatRoute: (stage?: number) => request<StateResponse>('POST', '/combat/route', stage === undefined ? {} : { stage }),
   combatPath: (pathId: string) => request<StateResponse>('POST', '/combat/path', { pathId }),
   combatPlan: (plan: { spell: string; at: number }[] | null) => request<StateResponse>('POST', '/combat/plan', { plan }),
   eat: (itemId: string) => request<StateResponse>('POST', '/items/eat', { itemId }),

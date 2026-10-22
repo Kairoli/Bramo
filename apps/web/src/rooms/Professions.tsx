@@ -16,7 +16,7 @@ export function Professions() {
   const waiting = (id: string) => Object.values(content.trials).some((t) => t.profession === id && state.trials[t.id] === 'open');
 
   return (
-    <main className="room">
+    <main className="room professions-room">
       <section className="panel band professions-band">
         <Scene ids={ARTISAN_SCENES} />
         <Character appearance={look} className="band-figure" />

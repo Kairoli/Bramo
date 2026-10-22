@@ -42,6 +42,9 @@ export interface CombatStageProps {
   spells?: Record<string, StageSpell>;
   /** Vitesse de l'horloge (1 en jeu ; ralenti ou image figée dans l'Arène). */
   timeScale?: number;
+  /** Place laissée en haut et en bas pour ce qui est posé par-dessus la scène (bandeau d'étape, barre de sorts), en px. */
+  insetTop?: number;
+  insetBottom?: number;
 }
 
 const isPlayer = (e: TimelineEvent) => e.kind === 'basic' || e.kind === 'cast';
@@ -85,7 +88,7 @@ function useSize<T extends HTMLElement>() {
   return [ref, size] as const;
 }
 
-export function CombatStage({ look, enemy, timeline, clock, fightTime, win, spells, timeScale = 1 }: CombatStageProps) {
+export function CombatStage({ look, enemy, timeline, clock, fightTime, win, spells, timeScale = 1, insetTop = 0, insetBottom = 0 }: CombatStageProps) {
   const content = useContent();
   const now = useFrame();
   const uid = useId().replace(/[^a-zA-Z0-9]/g, '');
@@ -95,14 +98,18 @@ export function CombatStage({ look, enemy, timeline, clock, fightTime, win, spel
   const offsets = poseFor(content, look)?.bones ?? {};
   const glow = content.classes[classId]?.affinityColor ?? '#B39DF5';
 
-  // Repères de la scène, en pixels : le personnage occupe toute la hauteur, l'ennemi lui fait face.
-  const k = h / VB[3]!;
+  // Repères de la scène, en pixels : le personnage tient la hauteur (au plus 42 % de la largeur, pour une scène étroite
+  // comme le panneau de l'accueil), pieds en bas ; l'ennemi lui fait face.
+  const sh = Math.max(0, Math.min(h - insetTop - insetBottom, w * 0.42));
+  const top = h - insetBottom - sh;
+  const k = sh / VB[3]!;
   const charW = VB[2]! * k;
   const charLeft = Math.max(8, w * 0.08);
-  const toPx = ([x, y]: Pt): Pt => [charLeft + (x - VB[0]!) * k, (y - VB[1]!) * k];
-  const groundY = (700 - VB[1]!) * k;
-  const enemyH = h * 0.74;
-  const enemyX = Math.max(charLeft + charW + 240 * k, w * 0.6);
+  const toPx = ([x, y]: Pt): Pt => [charLeft + (x - VB[0]!) * k, top + (y - VB[1]!) * k];
+  const groundY = top + (700 - VB[1]!) * k;
+  const enemyH = sh * 0.74;
+  // Une scène large garde de l'air entre les deux ; une scène étroite les rapproche.
+  const enemyX = Math.min(w - enemyH * 0.45, Math.max(charLeft + charW + 240 * k, w * (w > 900 ? 0.66 : 0.6)));
   const total = enemy?.count ?? 0;
   const shown = Math.min(3, total);
   const figX = (j: number) => enemyX + j * enemyH * 0.42;
@@ -202,7 +209,7 @@ export function CombatStage({ look, enemy, timeline, clock, fightTime, win, spel
           if (e.kind === 'cast' && spell && c >= start && c < e.t + 0.6) {
             const u = (c - start) / (e.t + 0.6 - start);
             texts.push(
-              <text key={`n${i}`} className="stage-text stage-spell" x={charLeft + charW * 0.92} y={h * 0.22 - u * 8 * k} fill={col} opacity={Math.min(1, (1 - u) * 3, u * 8)} fontSize={Math.max(12, 28 * k)}>
+              <text key={`n${i}`} className="stage-text stage-spell" x={charLeft + charW * 0.92} y={top + sh * 0.22 - u * 8 * k} fill={col} opacity={Math.min(1, (1 - u) * 3, u * 8)} fontSize={Math.max(12, 28 * k)}>
                 {spell.name}
               </text>,
             );
@@ -262,7 +269,7 @@ export function CombatStage({ look, enemy, timeline, clock, fightTime, win, spel
           <svg className="combat-stage-fx combat-stage-back" width={w} height={h}>
             {status.back}
           </svg>
-          <div className="combat-stage-char" style={{ left: charLeft, width: charW, transform: hitX ? `translateX(${hitX}px)` : undefined }}>
+          <div className="combat-stage-char" style={{ left: charLeft, width: charW, height: sh, bottom: insetBottom, transform: hitX ? `translateX(${hitX}px)` : undefined }}>
             <MemoCharacter appearance={look} lod="scene" action={actionRef.current?.action ?? null} />
             {playerHit > 0 && <div className="combat-stage-hurt" style={{ opacity: playerHit * 0.5 }} />}
           </div>
@@ -309,7 +316,7 @@ export function CombatStage({ look, enemy, timeline, clock, fightTime, win, spel
               </g>
             )}
             {over && (
-              <text className="stage-text stage-result" x={(charLeft + charW + enemyX) / 2} y={h * 0.42} fill={win ? 'var(--good)' : 'var(--alert)'} opacity={clamp01((c! - fightTime!) / 0.3)} fontSize={Math.max(16, 52 * k)}>
+              <text className="stage-text stage-result" x={(charLeft + charW + enemyX) / 2} y={top + sh * 0.42} fill={win ? 'var(--good)' : 'var(--alert)'} opacity={clamp01((c! - fightTime!) / 0.3)} fontSize={Math.max(16, 52 * k)}>
                 {win ? 'Victoire' : 'Défaite'}
               </text>
             )}

@@ -1,6 +1,7 @@
 import { type Room, useGame } from '../game/GameContext';
 import { num } from '../format';
 import { EnergyButton } from './EnergyButton';
+import { Banners } from './Banners';
 
 const TABS: { room: Room; label: string }[] = [
   { room: 'home', label: 'Accueil' },
@@ -23,6 +24,7 @@ export function TopBar() {
           </button>
         ))}
       </nav>
+      <Banners />
       <div className="topbar-right">
         <div className="status-box">
           <span className="gold">{num(state.gold)} or</span>

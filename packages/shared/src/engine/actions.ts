@@ -4,7 +4,7 @@ import { type CharacterState, GameError, addStack, cloneState } from './state.js
 import { startNextFromQueue } from './advance.js';
 import { copiesWear, durabilityMs, isDurable, takeCopy } from './gear.js';
 import { recipeAvailable, skillLevel } from './trials.js';
-import { emptyCombat } from '../combat/progress.js';
+import { emptyCombat, restartFight } from '../combat/progress.js';
 
 /**
  * Actions du joueur. Toutes pures : elles reçoivent un état déjà avancé jusqu'à `now`
@@ -170,6 +170,7 @@ export function chooseClass(input: CharacterState, classId: string, content: Con
   if (input.classId === classId) throw new GameError('same_class', 'C’est déjà votre classe.');
   const state = cloneState(input);
   state.classId = classId;
+  restartFight(state);
   // La tenue ne suit que si elle appartient aussi à la nouvelle classe ; les retouches pièce par pièce repartent à zéro.
   const current = state.outfit && content.cosmetics.outfits.find((o) => o.id === state.outfit);
   if (!current || !current.classes.includes(classId) || current.locked) state.outfit = null;

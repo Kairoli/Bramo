@@ -28,6 +28,16 @@ describe('activité de combat', () => {
     expect(state.combat.xp.forgefire).toBeGreaterThan(0);
   });
 
+  it('changer de classe, de voie ou de plan relance la rencontre en cours avec le nouveau build', () => {
+    const mid = advance(startCombat(forge(), 'duel', T0, content), T0 + 10_000, content).state;
+    expect(mid.combat.activity?.current?.setup.classId).toBe('forgefire');
+    const switched = chooseClass(mid, 'runist', content);
+    expect(switched.combat.activity?.current).toBeNull();
+    const next = advance(switched, T0 + 11_000, content).state;
+    expect(next.combat.activity?.current?.setup.classId).toBe('runist');
+    expect(setPlan(mid, [{ spell: 'fg_quench', at: 0 }], content).combat.activity?.current).toBeNull();
+  });
+
   it('la route part d’elle-même dès qu’aucun autre combat ne tourne', () => {
     const { state } = advance(forge(), T0 + 10 * 60_000, content);
     expect(state.combat.activity?.route).toBe(true);
@@ -180,18 +190,25 @@ describe('la route (PvE solo)', () => {
     expect(stages.at(-1)).toMatchObject({ tier: 90, encounter: 'b6_regent' });
   });
 
-  it('une victoire mène à l’étape suivante, une défaite fait rejouer la même, sans jamais s’arrêter', () => {
+  it('une victoire mène à l’étape suivante ; trois défaites de suite font reculer d’une étape ; jamais d’arrêt', () => {
     const s = startRoute(runist(80), T0, content);
     const { state, summary } = advance(s, T0 + 6 * HOUR, content);
     expect(summary.combat.wins).toBeGreaterThan(0);
     expect(state.combat.route.best).toBeGreaterThan(0);
     expect(state.combat.activity?.route).toBe(true);
-    // Trop faible : il perd en boucle à la même étape, l'activité continue.
+    // Trop faible : la route recule jusqu'à une étape qu'il gagne, l'activité continue, l'étape atteinte reste acquise.
     const weak = startRoute({ ...runist(1), combat: { ...runist(1).combat, route: { stage: 40, best: 40 } } }, T0, content);
     const lost = advance(weak, T0 + 3 * HOUR, content);
     expect(lost.summary.combat.losses).toBeGreaterThan(3);
-    expect(lost.state.combat.activity).not.toBeNull();
-    expect(lost.state.combat.route.stage).toBe(40);
+    expect(lost.summary.combat.wins).toBeGreaterThan(0);
+    expect(lost.state.combat.activity?.route).toBe(true);
+    expect(lost.state.combat.route.stage).toBeLessThan(40);
+    expect(lost.state.combat.route.best).toBe(40);
+    // Une ou deux défaites ne font pas reculer.
+    const one = startRoute({ ...runist(1), combat: { ...runist(1).combat, route: { stage: 40, best: 40 } } }, T0, content);
+    let st = one;
+    for (let t = 1; t <= 200 && st.combat.activity!.losses < 2; t++) st = advance(st, T0 + t * 5_000, content).state;
+    expect(st.combat.route.stage).toBe(40);
     // Même résultat en une ou plusieurs fois.
     const half = advance(s, T0 + 3 * HOUR, content);
     expect(advance(half.state, T0 + 6 * HOUR, content).state.combat.route).toEqual(state.combat.route);

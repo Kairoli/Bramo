@@ -8,7 +8,7 @@
  * - Chaque rencontre est résolue par `fight()` quand elle commence, avec le build figé à cet instant et une graine
  *   tirée du personnage et du numéro de la rencontre : avancer en une ou plusieurs fois donne le même résultat.
  * - Une défaite ne coûte rien ; après `maxConsecutiveLosses` défaites de suite, une patrouille s'arrête et la route
- *   reprend. Sur la route, une défaite fait rejouer l'étape.
+ *   reprend. Sur la route, une défaite fait rejouer l'étape ; trois de suite la font reculer d'une étape.
  */
 import type { Content } from '../schemas/content.js';
 import type { CombatContent, Encounter, PlanEntry, Spell } from '../schemas/combat.js';
@@ -151,6 +151,17 @@ export function resumeRoute(state: CharacterState, t: number, content: Content):
   const s = stages[Math.min(state.combat.route.stage, stages.length - 1)]!;
   state.combat.activity = { encounter: s.encounter, tier: s.tier, route: true, startedAt: t, progress: 0, current: null, wins: 0, losses: 0, streak: 0 };
   return true;
+}
+
+/**
+ * Le build change (classe, voie, plan) : la rencontre en cours repart avec lui. Sinon elle finit avec l'ancien build,
+ * figé à son début, et l'écran montre le nouveau personnage sans ses sorts (retour de Louis du 22 octobre).
+ */
+export function restartFight(state: CharacterState): void {
+  const a = state.combat.activity;
+  if (!a?.current) return;
+  a.current = null;
+  a.progress = 0;
 }
 
 /** Complète un état de combat enregistré avant l'ajout d'un champ. */
@@ -464,13 +475,18 @@ export function runCombat(state: CharacterState, t: number, end: number, rate: n
     state.combat.last = f;
     a.current = null;
     a.progress = 0;
-    // La route : une victoire ouvre l'étape suivante, une défaite fait rejouer la même, sans jamais s'arrêter.
+    // La route : une victoire ouvre l'étape suivante, une défaite fait rejouer la même, sans jamais s'arrêter. Après
+    // `maxConsecutiveLosses` défaites de suite, elle recule d'une étape (décision de Louis du 22 octobre) : on y gagne
+    // (XP entière, butin), puis la victoire suivante retente l'étape qui bloquait.
     if (a.route) {
       const stages = routeStages(combat);
       const r = state.combat.route;
       if (f.win) {
         r.best = Math.max(r.best, r.stage + 1);
         r.stage = Math.min(r.stage + 1, stages.length - 1);
+      } else if (a.streak >= p.maxConsecutiveLosses && r.stage > 0) {
+        r.stage--;
+        a.streak = 0;
       }
       const next = stages[Math.min(r.stage, stages.length - 1)]!;
       a.encounter = next.encounter;
@@ -549,6 +565,7 @@ export function choosePath(input: CharacterState, pathId: string, content: Conte
   if (classLevel(input, classId, content) < combat.pathLevel) throw new GameError('path_level', `Les voies s’ouvrent au niveau ${combat.pathLevel}.`);
   const state = cloneState(input);
   state.combat.paths[classId] = pathId;
+  restartFight(state);
   return state;
 }
 
@@ -561,10 +578,12 @@ export function setPlan(input: CharacterState, entries: PlanEntry[] | null, cont
   const state = cloneState(input);
   if (entries === null) {
     delete state.combat.plans[planKey(classId, path)];
+    restartFight(state);
     return state;
   }
   const errors = planErrors(combat, classId, path, classLevel(input, classId, content), entries);
   if (errors.length) throw new GameError('invalid_plan', `Plan refusé : ${errors.join(' ; ')}.`);
   state.combat.plans[planKey(classId, path)] = entries.map((e) => ({ spell: e.spell, at: e.at }));
+  restartFight(state);
   return state;
 }

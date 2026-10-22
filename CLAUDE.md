@@ -55,6 +55,17 @@ Bramo est un **idle-RPG multijoueur jouable dans le navigateur**, dans l'esprit 
 
 ## 5. État du projet (à jour au 22 octobre 2026)
 
+### Fait — le contenu de combat entre dans le jeu (22 octobre, soir)
+
+- **Demande de Louis** : « pousse tout le contenu », corrige l'affichage (ornements…), polis le jeu. **Adopté dans `data/`** : la proposition `coherence-v2` (catalogue des dix paliers, 4 152 modèles dans `gear.yaml` ; 15 ensembles v2 ; lignes `gear_pools.yaml` ; `combat/talents.yaml` et `combat/tools.yaml` ; conversion `rules.gearStats` ; Traqueur réparé dans `kits.yaml`/`spells.yaml`) et le monde : `combat/encounters.yaml` = 6 profils d'essai + **12 zones et 6 gardiens** (`kind`, `region`, `tier`, `circles` à partir de 40, `blurb`, `loot` : vestige, nommés, ensembles), 6 vestiges dans `items.yaml` (catégorie `vestige`), règles `loot` (unité de 6 min, 2 vestiges, 20 % objet classique, 4 % pièce d'ensemble au 40+, nommé 5 % garanti à 20 unités).
+- **L'équipement fait le combat** : le serveur renseigne `state.equipment` (pièces portées, jamais enregistré) ; `equipmentSetup`/`wornGear` (`combat/progress.ts`) → `wornLoadout` (`combat/loadout.ts` : chaque pièce ramenée au palier 20, facteur de palier pondéré, nommés et ensembles résolus en talents). **Plancher provisoire** : jamais sous `referenceStats × facteur du palier de la classe` (tant que butin et fabrication ne suffisent pas). Ennemis d'une zone au facteur de son palier (`fightOptions`) ; un profil d'essai se joue au palier de la classe, sans butin.
+- **Cercles** : dans les régions hautes on choisit le palier de 40 à 90, ouvert jusqu'au palier de la classe (`encounterTiers`, `startCombat(…, tier)`, `combatStartBody.tier`).
+- **Butin** : `rollLoot` (déterministe, graine du personnage et numéro de rencontre ; `CombatState.pity`, `vestigeCarry`) ; le serveur crée l'équipement tombé (`grantLoot` dans `game.ts`), journal « Vestiges : … » / « Butin : … », annonce **Trouvaille** au fil du serveur pour un nommé.
+- **Salle Combat** : statistiques au combat et palier de la classe (colonne de gauche) ; **Où combattre** : régions en onglets, cartes de zone et de gardien (palier, mécaniques, histoire, butin, choix du cercle, palier trop haut signalé), Essais et Terrain. `CombatView` : `encounters` (`EncounterView`), `classTier`, `stats`, `floored`, `activity.tier`.
+- **Affichage** : `Modal` rendue dans `<body>` (`createPortal`) : la fenêtre des ornements n'est plus recouverte par les colonnes ; grille des ornements sans débordement. Vérifié sans scroll de page à 1440×900 et 1280×720 (toutes les salles ; la colonne de classe du Combat défile à 1280×720).
+- Tests : 155 dans packages/shared (3 de plus : équipement, palier, butin, cercles), 21 d'API, 21 du simulateur (le banc du dossier remet aussi le Traqueur d'avant ; les vestiges de `data/` restent dans une proposition qui remplace `items.yaml`).
+- **Pas encore fait** : fabrication de l'équipement (recettes), gemmes serties, usure en combat, Patrouilles et autres activités du monde, banc à rejouer sur le catalogue adopté (`pipeline`). Une rencontre du palier 1 dure environ 2 minutes au niveau 1 (à regarder à l'équilibrage).
+
 ### Fait — le monde et ses activités, les sorts, le Traqueur réparé (22 octobre)
 
 - **Décision de Louis : on ne passe plus par ChatGPT**, toute la conception se fait avec Claude (les `message-gpt.md` sont obsolètes).
@@ -276,9 +287,8 @@ Bramo est un **idle-RPG multijoueur jouable dans le navigateur**, dans l'esprit 
 - Pas de limite de tentatives de connexion, pas de changement de mot de passe, pas de suppression de compte.
 - Chiffres de `data/` encore provisoires (`# à équilibrer`), mais suivant des règles vérifiées par le simulateur. Le simulateur ne fait pas encore de prix de marché (bilan de flux seulement).
 - Animations de repos seulement (une par pose). Marée haute ne change que les couleurs. Une seule pose par classe (pas encore par voie).
-- Les niveaux de classe n'existent pas encore ; le moteur de combat ne tourne que dans les tests et le simulateur (aucune activité de combat jouable).
 - L'écran de choix de classe est un contrôle du client : le serveur accepte les actions de jeu d'un personnage sans classe.
-- Pas de vrai système d'équipement : les emplacements montrent la tenue, l'arme de classe en aperçu, la meilleure pioche et le repas actif.
+- L'équipement ne s'obtient qu'au combat (butin) ou par l'outil de test ; aucune recette n'en fabrique encore.
 - Les onglets Tout / Clan / Serveur du journal et la discussion sont désactivés.
 - Bandeaux des salles : les métiers ont leurs décors (voir « Décors des métiers » ci-dessus) ; Clan, Marché et Combat ont aussi leur décor (`clan`, `market`, `combat`).
 

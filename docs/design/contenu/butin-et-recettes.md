@@ -2,6 +2,8 @@
 
 > **Statut** : proposition de Claude du 22 octobre 2026, à la demande de Louis (« le loot et les recettes : qui drop quoi, où, combien, comment » ; « refais un check sur les métiers : que tous soient bien utilisés, à peu près équitablement, s'il en manque, si on peut en rajouter »). **Rien n'est adopté.** S'appuie sur le dossier de GPT ([`../activites-artisanat/Bramo-activites-artisanat.md`](../activites-artisanat/Bramo-activites-artisanat.md) §4 à §7 et §11 : patrons de recettes, matières par palier, unités de butin), sur [`../metiers.md`](../metiers.md), sur le build v2 ([`../coherence/build.md`](../coherence/build.md)) et sur le monde ([`le-monde.md`](le-monde.md)).
 
+> **Mise à jour du 22 octobre au soir** : à la demande de Louis (« pousse tout le contenu »), le catalogue des dix paliers (4 152 modèles avec les armes à valeur égale), les zones et gardiens du monde et le **butin de combat** (§2 : unité de 6 min, vestiges, objets classiques, pièces d'ensemble au 40+, nommés garantis) sont **dans le jeu** (`data/`, `combat/progress.ts`, `apps/server/src/game.ts`). Gemmes brutes, caches et toutes les recettes d'équipement restent à faire. Les lignes « Où on en est vraiment » ci-dessous décrivent l'état d'avant.
+
 ## En bref
 
 - **Où on en est vraiment** : le catalogue d'objets du jeu s'arrête au **palier 20** (paliers 1, 10 et 20, 769 modèles), pas 30. Et dans le jeu, **aucun objet ne tombe ni ne se fabrique encore** : seul le bouton de test en crée. GPT a fait un vrai barème de recettes (28 patrons, une matière par palier), jamais installé.

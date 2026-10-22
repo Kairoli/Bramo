@@ -6,6 +6,8 @@ import { startActivity } from '../src/engine/actions.js';
 import { viewCombat } from '../src/combat/view.js';
 import { advisedPlan, choosePath, classLevel, currentPlan, emptyCombat, equipmentSetup, routeStages, setPlan, startCombat, startRoute, stopCombat } from '../src/combat/progress.js';
 import type { Content } from '../src/schemas/content.js';
+import { applyPreset, deletePreset, renamePreset, savePreset } from '../src/combat/presets.js';
+import { chooseClass } from '../src/engine/actions.js';
 import { HOUR, T0, makeState } from './fixture.js';
 
 // Le combat se teste sur data/ : on vérifie des règles (déterminisme, XP, pauses), pas des chiffres d'équilibrage.
@@ -186,6 +188,35 @@ describe('la route (PvE solo)', () => {
     const s = { ...runist(10), combat: { ...runist(10).combat, route: { stage: 4, best: 4 } } };
     expect(startRoute(s, T0, content, 2).combat.route.stage).toBe(2);
     expect(() => startRoute(s, T0, content, 6)).toThrow(/pas encore ouverte/);
+  });
+});
+
+describe('préréglages de build', () => {
+  const at = (level: number) => makeState({ classId: 'forgefire', combat: { ...emptyCombat(), xp: { forgefire: content.xpTable[level]!, runist: content.xpTable[40]! } } });
+
+  it('enregistrer garde classe, voie, plan et équipement ; appliquer les remet, changer de classe compris', () => {
+    let s = choosePath(at(40), 'anvil', content);
+    s = setPlan(s, [{ spell: 'fg_quench', at: 0 }, { spell: 'fg_workshop', at: 2 }], content);
+    s = savePreset(s, { name: '  Mur  ' }, [3, 7], content);
+    const p = s.combat.presets[0]!;
+    expect(p).toMatchObject({ name: 'Mur', classId: 'forgefire', path: 'anvil', gear: [3, 7] });
+    expect(s.combat.activePreset).toBe(p.id);
+    // Autre build, puis retour au préréglage.
+    let other = chooseClass(s, 'runist', content);
+    other = savePreset(other, { name: 'Glyphes' }, [], content);
+    expect(other.combat.presets).toHaveLength(2);
+    const back = applyPreset(other, p.id, content);
+    expect(back.classId).toBe('forgefire');
+    expect(back.combat.paths.forgefire).toBe('anvil');
+    expect(currentPlan(back, content)).toEqual({ plan: [{ spell: 'fg_quench', at: 0 }, { spell: 'fg_workshop', at: 2 }], advised: false });
+    expect(back.combat.activePreset).toBe(p.id);
+    // Écraser, renommer, supprimer ; six au plus.
+    expect(savePreset(back, { id: p.id }, [9], content).combat.presets.find((x) => x.id === p.id)!.gear).toEqual([9]);
+    expect(renamePreset(back, p.id, 'Gardien').combat.presets[0]!.name).toBe('Gardien');
+    expect(deletePreset(back, p.id).combat.presets.map((x) => x.name)).toEqual(['Glyphes']);
+    let full = back;
+    for (let i = 0; i < 4; i++) full = savePreset(full, {}, [], content);
+    expect(() => savePreset(full, {}, [], content)).toThrow(/Au plus 6/);
   });
 });
 

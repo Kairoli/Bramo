@@ -7,6 +7,7 @@ import {
   type Rng,
   dropMismatched,
   equipGear,
+  isWorn,
   newInstance,
   unequipGear,
 } from '@bramo/shared';
@@ -45,6 +46,26 @@ export async function equipOwned(tx: Tx, characterId: number, state: CharacterSt
 export async function unequipOwned(tx: Tx, characterId: number, id: number): Promise<void> {
   const before = await loadGear(tx, characterId);
   await saveEquipped(tx, before, unequipGear(before, id));
+}
+
+/**
+ * Préréglage : porter exactement ces exemplaires (ceux qui existent encore, du style de la classe et pas usés), le reste
+ * retourne au sac. Renvoie l'équipement porté, sous la forme que le combat lit (`CharacterState.equipment`).
+ */
+export async function wearGearSet(tx: Tx, characterId: number, classId: string | null, ids: number[], content: Content): Promise<{ model: string; lines: { name: string; value: number }[] }[]> {
+  const before = await loadGear(tx, characterId);
+  let after = before.map((g) => ({ ...g, equipped: null as string | null }));
+  for (const id of ids) {
+    const g = after.find((x) => x.id === id);
+    if (!g || isWorn(g, content)) continue;
+    try {
+      after = equipGear(after, id, classId, content);
+    } catch {
+      // Pièce d'une autre classe ou modèle retiré : elle reste au sac.
+    }
+  }
+  await saveEquipped(tx, before, after);
+  return after.filter((g) => g.equipped && !isWorn(g, content) && content.gearModels[g.model]).map((g) => ({ model: g.model, lines: g.lines.map((l) => ({ name: l.name, value: l.value })) }));
 }
 
 /** Changement de classe : les pièces qui ne sont pas du style de la nouvelle classe retournent au sac. */

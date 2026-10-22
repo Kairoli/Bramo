@@ -5,6 +5,7 @@ import type { CharacterState } from '../engine/state.js';
 import { spellSlots } from './content.js';
 import type { CombatStats, Contributions } from './engine.js';
 import type { CombatContent } from '../schemas/combat.js';
+import { MAX_PRESETS } from './presets.js';
 import { activePath, advisedPlan, availableSpells, classLevel, classTier, classXpPerHour, currentPlan, encounterTiers, replayFight, routeStages, wornGear } from './progress.js';
 
 export interface SpellView {
@@ -119,6 +120,21 @@ export interface CombatView {
   classLevels: Record<string, number>;
   /** La route (PvE solo) : étape atteinte, étapes franchies, et toutes les étapes par chapitre. */
   route: RouteView | null;
+  /** Préréglages de build, et le dernier appliqué ou enregistré. */
+  presets: PresetView[];
+  activePreset: number | null;
+  maxPresets: number;
+}
+
+export interface PresetView {
+  id: number;
+  name: string;
+  classId: string;
+  path: string | null;
+  pathName: string | null;
+  /** Sorts du plan (le plan conseillé si aucun). */
+  spells: { id: string; element: string; ultimate: boolean }[];
+  gear: number;
 }
 
 export interface RouteStageView {
@@ -347,6 +363,23 @@ export function viewCombat(state: CharacterState, content: Content): CombatView 
     lastFight,
     classLevels: Object.fromEntries(Object.keys(combat.kits).map((c) => [c, classLevel(state, c, content)])),
     route: routeView(state, combat),
+    presets: state.combat.presets.map((p) => {
+      const plan = p.plan ?? advisedPlan(combat, p.classId, p.path, classLevel(state, p.classId, content));
+      return {
+        id: p.id,
+        name: p.name,
+        classId: p.classId,
+        path: p.path,
+        pathName: p.path ? (combat.paths[p.path]?.name ?? null) : null,
+        spells: plan.flatMap((e) => {
+          const s = combat.spells[e.spell];
+          return s ? [{ id: s.id, element: s.element, ultimate: s.tags.includes('ultimate') }] : [];
+        }),
+        gear: p.gear.length,
+      };
+    }),
+    activePreset: state.combat.activePreset,
+    maxPresets: MAX_PRESETS,
   };
 }
 

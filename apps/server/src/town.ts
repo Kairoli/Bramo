@@ -63,7 +63,8 @@ export async function townView(db: Db, content: Content, now: number, selfId: nu
     .select()
     .from(characters)
     .where(gte(characters.lastSeenAt, since))
-    .orderBy(desc(characters.lastSeenAt))
+    // À visite égale, le personnage le plus récent d'abord : l'ordre ne dépend pas de la base.
+    .orderBy(desc(characters.lastSeenAt), desc(characters.id))
     .limit(town.maxWalkers + 1);
   const skills = rows.length
     ? await db.select().from(characterSkills).where(inArray(characterSkills.characterId, rows.map((r) => r.id)))

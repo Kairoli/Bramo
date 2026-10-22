@@ -17,6 +17,7 @@ import { planErrors, spellSlots } from './content.js';
 import { type CombatantSetup, type FightResult, fight } from './engine.js';
 import { curveTier, tierFactor, wornLoadout } from './loadout.js';
 import { hash32, stream } from './rng.js';
+import type { Preset } from './presets.js';
 
 /** Rencontre en cours ou dernière rencontre jouée : le build figé et son issue (déjà calculée). */
 export interface FightRecord {
@@ -80,9 +81,25 @@ export interface CombatState {
   vestigeCarry: number;
   /** La route : étape jouée (rang dans `routeStages`) et nombre d'étapes franchies. */
   route: { stage: number; best: number };
+  /** Préréglages de build (classe, voie, plan, équipement), et le dernier appliqué ou enregistré. */
+  presets: Preset[];
+  activePreset: number | null;
 }
 
-export const emptyCombat = (): CombatState => ({ xp: {}, paths: {}, plans: {}, activity: null, nextIndex: 0, last: null, stopped: null, pity: {}, vestigeCarry: 0, route: { stage: 0, best: 0 } });
+export const emptyCombat = (): CombatState => ({
+  xp: {},
+  paths: {},
+  plans: {},
+  activity: null,
+  nextIndex: 0,
+  last: null,
+  stopped: null,
+  pity: {},
+  vestigeCarry: 0,
+  route: { stage: 0, best: 0 },
+  presets: [],
+  activePreset: null,
+});
 
 const stagesCache = new WeakMap<CombatContent, RouteStage[]>();
 /**

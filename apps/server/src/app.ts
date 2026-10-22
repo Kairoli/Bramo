@@ -61,6 +61,13 @@ import {
   combatRouteBody,
   routeStages,
   startRoute,
+  presetIdBody,
+  presetRenameBody,
+  presetSaveBody,
+  applyPreset,
+  deletePreset,
+  renamePreset,
+  savePreset,
 } from '@bramo/shared';
 import type { Db } from './db/index.js';
 import { accounts, characters } from './db/schema.js';
@@ -78,7 +85,7 @@ import { recentEntries } from './journal.js';
 import { joinEvent, recordEvents, townView } from './town.js';
 import { contribute, createClan, joinClan, kickMember, leaveClan, listClans, myClanView, setRank } from './clans.js';
 import { cancelRepair, openRepairs, requestRepair, takeRepair } from './repairs.js';
-import { dropMismatchedOwned, equipOwned, giveStarterGear, grantGear, loadGear, unequipOwned } from './gear.js';
+import { dropMismatchedOwned, equipOwned, giveStarterGear, grantGear, loadGear, unequipOwned, wearGearSet } from './gear.js';
 import { buyFromStall, cancelOrder, fillOrder, marketBook, marketSummary, myOrders, placeOrder } from './market.js';
 
 export interface AppOptions {
@@ -396,6 +403,37 @@ export async function buildApp({ db, content, clock = Date.now, secureCookies = 
       const s = routeStages(content.combat!)[next.combat.route.stage]!;
       return { state: next, log: `Vous prenez la route : étape ${s.label}, ${encounterName(s.encounter)}.` };
     });
+  });
+  // --- Préréglages de build (classe, voie, plan, équipement porté) ---
+  app.post('/api/presets/save', (req) => {
+    const { id, name } = body(presetSaveBody, req);
+    return playAs(req, async (state, _now, ctx) => {
+      const worn = (await loadGear(ctx.tx, ctx.characterId)).filter((g) => g.equipped).map((g) => g.id);
+      const next = savePreset(state, { ...(id !== undefined ? { id } : {}), ...(name !== undefined ? { name } : {}) }, worn, content);
+      const p = next.combat.presets.find((x) => x.id === next.combat.activePreset)!;
+      return { state: next, log: `Préréglage enregistré : ${p.name}.` };
+    });
+  });
+  app.post('/api/presets/apply', (req) => {
+    const { id } = body(presetIdBody, req);
+    return playAs(req, async (state, _now, ctx) => {
+      const next = applyPreset(state, id, content);
+      const p = next.combat.presets.find((x) => x.id === id)!;
+      if (next.classId !== state.classId) {
+        await dropMismatchedOwned(ctx.tx, ctx.characterId, next.classId, content);
+        await giveStarterGear(ctx.tx, ctx.characterId, next.classId, content);
+      }
+      next.equipment = await wearGearSet(ctx.tx, ctx.characterId, next.classId, p.gear, content);
+      return { state: next, log: `Vous passez au préréglage ${p.name}.` };
+    });
+  });
+  app.post('/api/presets/rename', (req) => {
+    const { id, name } = body(presetRenameBody, req);
+    return playAs(req, (state) => ({ state: renamePreset(state, id, name) }));
+  });
+  app.post('/api/presets/delete', (req) => {
+    const { id } = body(presetIdBody, req);
+    return playAs(req, (state) => ({ state: deletePreset(state, id) }));
   });
   app.post('/api/combat/stop', (req) =>
     playAs(req, (state) => ({ state: stopCombat(state), log: 'Vous arrêtez le combat.' })),

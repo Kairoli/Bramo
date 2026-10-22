@@ -5,8 +5,8 @@ import { Scene } from '../../components/Scene';
 import { LiveFight } from '../../components/LiveFight';
 
 /**
- * Accueil, à droite : la route (PvE solo) qui tourne en boucle. On la voit se battre ; un clic l'ouvre en grand dans la
- * salle Combat. Si le personnage fait autre chose, la route l'attend.
+ * Accueil, à droite : la route (PvE solo) qui tourne tout le temps, même pendant un métier. On la voit se battre ; un
+ * clic l'ouvre en grand dans la salle Combat. Pendant une patrouille, la route attend et on peut y revenir.
  */
 export function RoutePanel() {
   const { state, go, act } = useGame();
@@ -39,15 +39,12 @@ export function RoutePanel() {
         <span className="route-open" aria-hidden>
           ⤢
         </span>
-        {!a && (
-          <span className="route-idle">
-            <span>La route vous attend</span>
-          </span>
-        )}
       </button>
       <div className="route-foot">
         <div className="route-chapter">
-          <span className="eyebrow">Route · chapitre {chapter.number}</span>
+          <span className="eyebrow">
+            Chapitre {chapter.number} · {chapter.region}
+          </span>
           <span className="route-chapter-name">{chapter.name}</span>
           <div className="route-nodes">
             {chapter.stages.map((s) => (
@@ -57,15 +54,15 @@ export function RoutePanel() {
             ))}
           </div>
         </div>
-        {a?.route ? (
-          <div className="route-stats">
-            <strong>{num(a.wins)}</strong>
-            <span className="muted small">victoire{a.wins > 1 ? 's' : ''}</span>
-          </div>
-        ) : (
-          <button className="btn btn-primary btn-sm" onClick={() => void act(() => api.combatRoute())}>
-            {other ? 'Reprendre la route' : 'Prendre la route'}
+        {other ? (
+          <button className="btn btn-primary btn-sm" onClick={() => void act(api.combatStop)}>
+            Retour à la route
           </button>
+        ) : (
+          <div className="route-stats">
+            <strong>{num(route.best)}</strong>
+            <span className="muted small">étape{route.best > 1 ? 's' : ''} franchie{route.best > 1 ? 's' : ''}</span>
+          </div>
         )}
       </div>
     </section>

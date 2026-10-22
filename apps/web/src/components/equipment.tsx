@@ -241,7 +241,8 @@ export function PaperDoll({ size, mode = 'look', gear = null }: { size: 'card' |
         ))}
       </div>
       <div className="doll-figure">
-        <Character appearance={look} lod="scene" highlight={highlight} />
+        {/* Centré sur le corps : l'ornement et le nom au-dessus tombent sur le même axe. */}
+        <Character appearance={look} lod="scene" highlight={highlight} centered />
       </div>
       <div className="doll-col">
         {DOLL_RIGHT.map((id) => (

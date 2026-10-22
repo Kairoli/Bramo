@@ -75,12 +75,12 @@ export function CombatRoom() {
 
 // --- Le combat en direct -------------------------------------------------------------------------------------------
 
-/** Ce qui se passe, par-dessus la scène : classe et niveau, étape, victoires, arrêter ou reprendre. */
+/** Ce qui se passe, par-dessus la scène : classe et niveau, étape, victoires ; d'une patrouille, le retour à la route. */
 function ArenaHud({ view }: { view: CombatView }) {
   const { act, content } = useGame();
   const a = view.activity;
   const span = (view.nextLevelXp ?? view.xp) - view.levelXp;
-  const label = !a ? 'En attente' : a.encounter === null ? 'Entraînement' : a.route ? `Étape ${a.stageLabel}` : 'Patrouille';
+  const label = !a ? 'En route' : a.encounter === null ? 'Entraînement' : a.route ? `Étape ${a.stageLabel}` : 'Patrouille';
   return (
     <>
       <div className="hud-class">
@@ -92,7 +92,7 @@ function ArenaHud({ view }: { view: CombatView }) {
       </div>
       <div className="hud-stage">
         <span className={`hud-chip${a?.guardian ? ' guardian' : ''}`}>{label}</span>
-        <strong>{a ? a.name : 'Aucun combat'}</strong>
+        <strong>{a ? a.name : 'La route reprend'}</strong>
         {a?.tier ? <span className="muted">palier {a.tier}</span> : null}
       </div>
       <div className="hud-right">
@@ -101,25 +101,12 @@ function ArenaHud({ view }: { view: CombatView }) {
             <span style={{ color: 'var(--good)' }}>{num(a.wins)}</span> / <span style={{ color: 'var(--alert)' }}>{num(a.losses)}</span>
           </span>
         )}
-        {a ? (
-          <button className="hud-btn" onClick={() => void act(api.combatStop)}>
-            Arrêter
-          </button>
-        ) : (
-          <button className="hud-btn primary" onClick={() => void act(() => api.combatRoute())}>
-            Prendre la route
+        {a && !a.route && (
+          <button className="hud-btn primary" onClick={() => void act(api.combatStop)}>
+            Retour à la route
           </button>
         )}
       </div>
-      {!a && view.stopped && (
-        <div className="hud-note">
-          {view.stopped === 'losses'
-            ? 'Trois défaites de suite en patrouille : pause. Rien n’est perdu.'
-            : view.stopped === 'training_cap'
-              ? 'Le Terrain d’entraînement s’arrête ici : la suite se gagne en vraies rencontres.'
-              : 'Cette rencontre n’existe plus : le combat s’est arrêté.'}
-        </div>
-      )}
     </>
   );
 }
@@ -195,7 +182,9 @@ function RouteMap({ view }: { view: CombatView }) {
           ‹
         </button>
         <div className="route-map-title">
-          <span className="eyebrow">Route des Lointains · chapitre {chapter.number} / {route.chapters.length}</span>
+          <span className="eyebrow">
+            Chapitre {chapter.number} / {route.chapters.length} · {chapter.region}
+          </span>
           <strong>{chapter.name}</strong>
         </div>
         <button className="round-btn" disabled={chapter.number >= Math.max(unlockedChapters, currentChapter)} onClick={() => { setChapterNo(chapter.number + 1); setPicked(null); }} aria-label="Chapitre suivant">
@@ -211,9 +200,9 @@ function RouteMap({ view }: { view: CombatView }) {
           const cur = s.index === route.stage;
           const locked = s.index > route.best;
           return (
-            <button key={s.index} className={`path-node${done ? ' done' : ''}${cur ? ' current' : ''}${locked ? ' locked' : ''}${s.guardian ? ' guardian' : ''}${sel.index === s.index ? ' selected' : ''}`} onClick={() => setPicked(s.index)}>
-              <span className="path-node-dot">{s.guardian ? '♛' : locked ? '🔒' : s.label}</span>
-              <span className="path-node-name">{s.name}</span>
+            <button key={s.index} className={`path-node${done ? ' done' : ''}${cur ? ' current' : ''}${locked ? ' locked' : ''}${s.guardian ? ' guardian' : ''}${sel.index === s.index ? ' selected' : ''}`} onClick={() => setPicked(s.index)} title={`${s.label} · ${s.name} · palier ${s.tier}`}>
+              <span className="path-node-dot">{s.guardian ? '♛' : s.label.split('-')[1]}</span>
+              <span className="path-node-name">{s.guardian ? 'Gardien' : `P. ${s.tier}`}</span>
             </button>
           );
         })}
@@ -224,7 +213,6 @@ function RouteMap({ view }: { view: CombatView }) {
             <span className={`hud-chip${sel.guardian ? ' guardian' : ''}`}>{sel.label}</span>
             <strong>{sel.name}</strong>
             <span className="chip">Palier {sel.tier}</span>
-            {sel.tier > view.classTier && <span className="chip chip-hard">Au-dessus de votre palier</span>}
           </div>
           {e?.blurb && <p className="small muted route-blurb">{e.blurb}</p>}
           {e && <p className="small route-mech">{e.text}</p>}
@@ -234,7 +222,7 @@ function RouteMap({ view }: { view: CombatView }) {
             <span className="chip chip-own">En cours, en boucle</span>
           ) : (
             <button className="btn btn-primary" disabled={!open} onClick={() => void act(() => api.combatRoute(sel.index))}>
-              {open ? (sel.index === route.stage ? 'Combattre' : 'Rejouer ici') : 'Étape fermée'}
+              {open ? (sel.index === route.stage ? 'Reprendre ici' : 'Rejouer ici') : 'Étape fermée'}
             </button>
           )}
           <span className="muted small">{num(route.best)} étape{route.best > 1 ? 's' : ''} franchie{route.best > 1 ? 's' : ''}</span>

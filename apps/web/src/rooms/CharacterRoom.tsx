@@ -104,7 +104,7 @@ export function CharacterRoom() {
       </section>
 
       <section className="panel char-stats scroll">
-        <PresetsCard />
+        <PresetsCard gear={gear} />
         <div className="card">
           <div className="quick-tiles">
             <QuickTile label="Niveau total" value={String(totalLevel)} />

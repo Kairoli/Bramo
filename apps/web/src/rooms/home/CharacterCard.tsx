@@ -16,7 +16,7 @@ export function CharacterCard() {
 
   return (
     <section className="panel character-card">
-      <PaperDoll size="card" />
+      {/* L'ornement (ou le nom) au-dessus du personnage, sur le même axe que lui. */}
       <div className="character-id">
         {ornament ? (
           <OrnamentPlate ornament={ornament} name={name} title={ornamentTitle(ornament, content, state)} width={320} className="card-plate" />
@@ -28,6 +28,9 @@ export function CharacterCard() {
             </div>
           </>
         )}
+      </div>
+      <PaperDoll size="card" />
+      <div className="character-id">
         <div className="character-chips">
           {cls && (
             <span className="chip" style={{ color: cls.affinityColor, borderColor: cls.affinityColor }}>

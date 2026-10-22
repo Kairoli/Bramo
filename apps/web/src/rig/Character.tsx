@@ -65,6 +65,11 @@ export interface CharacterProps {
    * en est à `t0` secondes, et vitesse `rate` (1 par défaut ; 0 la fige, pour régler une image).
    */
   action?: { anim: string; at: number; t0?: number; rate?: number } | null;
+  /**
+   * Cadre centré sur l'axe du corps (pied de l'os racine) plutôt que sur la scène, qui laisse de la place à droite pour
+   * l'arme et les effets : pour un portrait en pied aligné sur autre chose (ornement, nom).
+   */
+  centered?: boolean;
   className?: string;
   title?: string;
 }
@@ -145,6 +150,7 @@ export function Character({
   explode,
   highlight,
   action,
+  centered,
   className,
   title,
 }: CharacterProps) {
@@ -217,7 +223,9 @@ export function Character({
     return () => cancelAnimationFrame(frame);
   }, [layers, animate, explode, pose]);
 
-  const [x, y, w, h] = level.viewBox;
+  const [x0, y, w, h] = level.viewBox;
+  const axis = rig.bones.find((b) => b.id === 'root')?.pivot[0];
+  const x = centered && axis !== undefined ? axis - w / 2 : x0;
   return (
     <svg
       className={`rig rig-${lod}${animate ? '' : ' rig-still'}${className ? ` ${className}` : ''}`}

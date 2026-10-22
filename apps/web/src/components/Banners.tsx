@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import { api } from '../api';
 import { useGame } from '../game/GameContext';
-import { useLiveActivity, useNow } from '../game/useLive';
+import { useLiveActivity } from '../game/useLive';
 import { clock, num } from '../format';
 
 /**
@@ -37,33 +37,12 @@ function Banner({ icon, tone, title, sub, progress, onOpen, action }: { icon: Re
   );
 }
 
+/** Le métier en cours (le combat tourne à côté, en continu : on le voit sur l'accueil et dans la salle Combat). */
 function ActivityBanner() {
-  const { content, state, go, act, receivedAt } = useGame();
+  const { content, state, go, act } = useGame();
   const live = useLiveActivity();
-  const now = useNow(500);
   const a = state.activity;
-  const combat = state.combat?.activity;
   const queued = state.queue?.length ?? 0;
-
-  if (combat) {
-    const progress = combat.fightMs ? Math.min(1, (combat.progressMs + (now - receivedAt)) / combat.fightMs) : undefined;
-    const title = combat.encounter === null ? 'Terrain d’entraînement' : combat.route ? `Route ${combat.stageLabel ?? ''} · ${combat.name}` : combat.name;
-    return (
-      <Banner
-        icon={<SwordIcon />}
-        tone="var(--alert)"
-        title={title}
-        sub={combat.encounter === null ? `Niveau ${state.combat!.level}` : `${combat.tier ? `Palier ${combat.tier} · ` : ''}${num(combat.wins)} victoire${combat.wins > 1 ? 's' : ''}${combat.route ? ' · en boucle' : ''}`}
-        progress={progress}
-        onOpen={() => go('combat')}
-        action={
-          <button className="banner-stop" title="Arrêter le combat" onClick={() => void act(api.combatStop)}>
-            ×
-          </button>
-        }
-      />
-    );
-  }
   const profession = live && content.professions.find((p) => p.id === live.recipe.profession);
   if (live && a && profession) {
     return (
@@ -93,10 +72,3 @@ function HammerIcon() {
   );
 }
 
-function SwordIcon() {
-  return (
-    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M14 4h6v6L9 21l-3-3L17 7M5 15l4 4M3 21l3-3" />
-    </svg>
-  );
-}

@@ -1,18 +1,20 @@
 import { useState } from 'react';
-import type { PresetView } from '@bramo/shared';
+import type { GearView, PresetView } from '@bramo/shared';
 import { api } from '../api';
 import { useGame } from '../game/GameContext';
 import { SpellIcon } from './SpellIcon';
+import { PresetEditor } from './PresetEditor';
 
 /**
  * Préréglages de build (classe, voie, sorts, équipement porté) : la liste complète dans la salle Personnage, et un sélecteur
  * rapide sur l'accueil.
  */
-export function PresetsCard() {
+export function PresetsCard({ gear }: { gear: GearView | null }) {
   const { state, act, content } = useGame();
   const view = state.combat;
   const [naming, setNaming] = useState<number | 'new' | null>(null);
   const [name, setName] = useState('');
+  const [editing, setEditing] = useState<PresetView | 'new' | null>(null);
   if (!view) return null;
   const presets = view.presets;
   const submit = () => {
@@ -60,6 +62,9 @@ export function PresetsCard() {
                 <button className={`btn btn-sm${active ? '' : ' btn-primary'}`} disabled={active} onClick={() => void act(() => api.presetApply(p.id))}>
                   {active ? 'Actif' : 'Appliquer'}
                 </button>
+                <button className="mini wide" title="Modifier (classe, voie, sorts, équipement)" onClick={() => setEditing(p)}>
+                  ✎
+                </button>
                 <button className="mini wide" title="Enregistrer le build actuel dans ce préréglage" onClick={() => void act(() => api.presetSave(p.id))}>
                   ⤓
                 </button>
@@ -75,60 +80,37 @@ export function PresetsCard() {
         (naming === 'new' ? (
           <input autoFocus className="preset-input" placeholder="Nom du préréglage (Farm, Mur, Gardien…)" value={name} maxLength={24} onChange={(e) => setName(e.target.value)} onKeyDown={(e) => (e.key === 'Enter' ? submit() : e.key === 'Escape' && setNaming(null))} onBlur={submit} />
         ) : (
-          <button className="btn btn-sm preset-add" onClick={() => { setNaming('new'); setName(''); }}>
-            + Enregistrer le build actuel
-          </button>
+          <div className="preset-add-row">
+            <button className="btn btn-sm btn-primary" onClick={() => setEditing('new')}>
+              + Nouveau préréglage
+            </button>
+            <button className="btn btn-sm" onClick={() => { setNaming('new'); setName(''); }}>
+              Enregistrer le build actuel
+            </button>
+          </div>
         ))}
+      {editing && <PresetEditor preset={editing === 'new' ? null : editing} gear={gear} onClose={() => setEditing(null)} />}
     </div>
   );
 }
 
-/** Sélecteur rapide (accueil) : le préréglage actif ; un clic ouvre la liste. */
+/** Sélecteur rapide (accueil) : chaque préréglage créé, appliqué en un clic. */
 export function PresetSwitch() {
-  const { state, act, content, go } = useGame();
-  const [open, setOpen] = useState(false);
+  const { state, act, content } = useGame();
   const view = state.combat;
   if (!view) return null;
-  const active: PresetView | undefined = view.presets.find((p) => p.id === view.activePreset);
-  if (!view.presets.length) {
-    return (
-      <button className="preset-switch empty" onClick={() => go('character')} title="Créer des préréglages dans la salle Personnage">
-        Préréglages ›
-      </button>
-    );
-  }
+  if (!view.presets.length) return <span className="muted small preset-none">Aucun préréglage</span>;
   return (
-    <div className="preset-switch-wrap">
-      <button className="preset-switch" onClick={() => setOpen(!open)} aria-expanded={open}>
-        <span className="preset-dot" style={{ background: active ? content.classes[active.classId]?.affinityColor : 'var(--border)' }} />
-        {active ? active.name : 'Choisir un build'}
-        <span className="muted">▾</span>
-      </button>
-      {open && (
-        <div className="preset-menu" onMouseLeave={() => setOpen(false)}>
-          {view.presets.map((p) => (
-            <button
-              key={p.id}
-              className={`preset-menu-item${p.id === view.activePreset ? ' on' : ''}`}
-              onClick={() => {
-                setOpen(false);
-                if (p.id !== view.activePreset) void act(() => api.presetApply(p.id));
-              }}
-            >
-              <span className="preset-dot" style={{ background: content.classes[p.classId]?.affinityColor }} />
-              <span className="preset-menu-name">{p.name}</span>
-              <span className="preset-menu-spells">
-                {p.spells.slice(0, 4).map((s) => (
-                  <SpellIcon key={s.id} id={s.id} classId={p.classId} element={s.element === 'inherit' || s.element === 'physical' ? undefined : s.element} ultimate={s.ultimate} size={18} />
-                ))}
-              </span>
-            </button>
-          ))}
-          <button className="preset-menu-item manage" onClick={() => { setOpen(false); go('character'); }}>
-            Gérer les préréglages ›
+    <div className="preset-chips" role="group" aria-label="Préréglages">
+      {view.presets.map((p: PresetView) => {
+        const on = p.id === view.activePreset;
+        return (
+          <button key={p.id} className={`preset-chip${on ? ' on' : ''}`} style={{ ['--cc' as string]: content.classes[p.classId]?.affinityColor }} aria-pressed={on} disabled={on} onClick={() => void act(() => api.presetApply(p.id))} title={`${content.classes[p.classId]?.name}${p.pathName ? ` · ${p.pathName}` : ''} · ${p.gear} pièce${p.gear > 1 ? 's' : ''}`}>
+            <span className="preset-dot" />
+            {p.name}
           </button>
-        </div>
-      )}
+        );
+      })}
     </div>
   );
 }

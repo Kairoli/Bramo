@@ -15,7 +15,7 @@ const RARITY_NAMES: Record<string, string> = { common: 'Commun', rare: 'Rare', e
 const rarityColor = (r: string) => `var(--r-${r})`;
 
 /** Ordre d'affichage des emplacements ; les anneaux ont deux places. */
-const SLOT_ORDER = ['head', 'torso', 'hands', 'legs', 'feet', 'weapon', 'cape', 'belt', 'necklace', 'ring'];
+export const SLOT_ORDER = ['head', 'torso', 'hands', 'legs', 'feet', 'weapon', 'cape', 'belt', 'necklace', 'ring'];
 
 /** Pictogramme d'un emplacement (24 × 24), à défaut d'illustration d'objet. */
 const SLOT_ICON: Record<string, string> = {

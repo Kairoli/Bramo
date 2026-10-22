@@ -71,6 +71,21 @@ export function tierFactor(rules: CombatRules, tier: number): number {
   return key === null ? 1 : rules.gearStats!.tiers![String(key)]!.factor;
 }
 
+/**
+ * Facteur à un palier quelconque (la route monte palier par palier) : entre deux paliers de la courbe, la progression
+ * géométrique qui les relie ; aux paliers de la courbe, `tierFactor`.
+ */
+export function tierFactorAt(rules: CombatRules, tier: number): number {
+  const tiers = rules.gearStats?.tiers;
+  if (!tiers) return 1;
+  const keys = Object.keys(tiers).map(Number).sort((a, b) => a - b);
+  const lo = [...keys].reverse().find((k) => k <= tier) ?? keys[0]!;
+  const hi = keys.find((k) => k > lo);
+  const f = (k: number) => tiers[String(k)]!.factor;
+  if (hi === undefined || tier <= lo) return f(lo);
+  return f(lo) * (f(hi) / f(lo)) ** ((tier - lo) / (hi - lo));
+}
+
 /** Indice de mur d'un équipement : (dégâts × survie)^0,4, la loi mesurée au simulateur (`budget.md`). */
 export const wallIndex = (s: CombatStats) => (s.power * (1 + (s.critMultiplier - 1) * s.critChance) * (1 + s.haste) * (s.maxHp / (1 - s.damageReduction))) ** 0.4;
 

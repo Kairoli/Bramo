@@ -38,9 +38,8 @@ export function startActivity(
   const state = cloneState(input);
   const action = { recipeId, quantity };
   if (mode === 'replace' || !state.activity) {
+    // Le combat continue à côté (la route tourne tout le temps).
     state.activity = { ...action, done: 0, progress: 0, startedAt: now };
-    // Une seule activité à la fois : un métier arrête le combat.
-    state.combat.activity = null;
   } else {
     if (state.queue.length >= queueLength) throw new GameError('queue_full', 'La file est pleine.');
     state.queue.push(action);

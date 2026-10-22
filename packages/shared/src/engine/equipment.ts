@@ -175,6 +175,8 @@ export interface GearItemView {
   equipped: string | null;
   /** Peut être porté par la classe actuelle. */
   wearable: boolean;
+  /** Classes qui peuvent le porter (pour composer un préréglage d'une autre classe). */
+  classes: string[];
   /** Liée au personnage (set de départ) : ne se vend ni ne s'échange. */
   bound: boolean;
 }
@@ -210,6 +212,7 @@ export function viewGear(items: GearInstance[], classId: string | null, content:
       wearShare: Math.min(1, g.wear / life),
       equipped: g.equipped,
       wearable: canWear(m, classId),
+      classes: m.classes,
       bound: !!m.bound,
     });
   }

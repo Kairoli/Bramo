@@ -61,8 +61,10 @@ export function runBot(content: Content, presence: PresenceProfile, policy: Poli
   let effMs = 0;
   let xp = 0;
 
+  // Le bot mesure les métiers : sans contenu de combat, la route (qui tourne à côté) ne ralentit pas le calcul.
+  const crafting: Content = { ...content, combat: null };
   const step = (to: number) => {
-    const { state: next, summary } = advance(state, to, content);
+    const { state: next, summary } = advance(state, to, crafting);
     state = next;
     for (const [skill, gained] of Object.entries(summary.xp)) xp += gained;
     for (const [itemId, qty] of Object.entries(summary.produced)) {

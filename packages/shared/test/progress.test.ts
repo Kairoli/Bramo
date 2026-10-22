@@ -16,13 +16,22 @@ const forge = () => makeState({ classId: 'forgefire', inventory: { copper_ore: 1
 const recipe = Object.values(content.recipes).find((r) => r.inputs.length === 0 && r.level === 1)!;
 
 describe('activité de combat', () => {
-  it('une seule activité à la fois : le combat arrête le métier, et inversement', () => {
+  it('le combat tourne à côté du métier : l’un ne coupe pas l’autre, et les deux progressent', () => {
     const s = startActivity(forge(), recipe.id, 10, 'replace', T0, content);
     const c = startCombat(s, 'duel', T0, content);
-    expect(c.activity).toBeNull();
+    expect(c.activity?.recipeId).toBe(recipe.id);
     expect(c.combat.activity?.encounter).toBe('duel');
     const back = startActivity(c, recipe.id, 10, 'replace', T0, content);
-    expect(back.combat.activity).toBeNull();
+    expect(back.combat.activity?.encounter).toBe('duel');
+    const { state, summary } = advance(back, T0 + HOUR, content);
+    expect(summary.xp[recipe.profession]).toBeGreaterThan(0);
+    expect(state.combat.xp.forgefire).toBeGreaterThan(0);
+  });
+
+  it('la route part d’elle-même dès qu’aucun autre combat ne tourne', () => {
+    const { state } = advance(forge(), T0 + 10 * 60_000, content);
+    expect(state.combat.activity?.route).toBe(true);
+    expect(state.combat.route.best).toBeGreaterThan(0);
   });
 
   it('les rencontres donnent de l’XP de classe, jamais de métier', () => {
@@ -47,15 +56,15 @@ describe('activité de combat', () => {
     expect(odd.combat).toEqual(once.combat);
   });
 
-  it('trois défaites de suite mettent l’activité en pause, sans rien faire perdre', () => {
+  it('trois défaites de suite arrêtent la patrouille, sans rien faire perdre : la route reprend', () => {
     const deadly: Content = structuredClone(content);
     deadly.combat!.encounters.deadly = { ...deadly.combat!.encounters.duel!, id: 'deadly', attack: { damage: 5000, period: 1 } };
     const s = startCombat(forge(), 'deadly', T0, deadly);
     const { state, summary } = advance(s, T0 + HOUR, deadly);
-    expect(summary.combat.losses).toBe(3);
     expect(summary.combat.stopped).toBe('losses');
-    expect(state.combat.activity).toBeNull();
-    expect(state.inventory).toEqual(s.inventory);
+    expect(state.combat.stopped).toBe('losses');
+    expect(state.combat.activity?.route).toBe(true);
+    for (const [item, qty] of Object.entries(s.inventory)) expect(state.inventory[item]).toBeGreaterThanOrEqual(qty);
     expect(state.combat.xp.forgefire).toBeGreaterThan(0);
   });
 
@@ -70,7 +79,8 @@ describe('activité de combat', () => {
     const nearly = { ...s, combat: { ...s.combat, xp: { forgefire: content.xpTable[40]! - 5 } } };
     const end = advance(nearly, T0 + HOUR, content);
     expect(end.summary.combat.stopped).toBe('training_cap');
-    expect(classLevel(end.state, 'forgefire', content)).toBe(40);
+    expect(classLevel(end.state, 'forgefire', content)).toBeGreaterThanOrEqual(40);
+    expect(end.state.combat.activity?.route).toBe(true);
   });
 
   it('le déroulé de la rencontre en cours est rejoué pour l’écran : attaques de base, sorts, PV ennemis qui baissent', () => {
@@ -87,21 +97,22 @@ describe('activité de combat', () => {
     expect(viewCombat(done, content)!.lastFight!.lines.some((l) => l.text.startsWith('attaque de base'))).toBe(false);
   });
 
-  it('arrêter le combat garde l’XP acquise', () => {
+  it('quitter une patrouille garde l’XP acquise et rend la main à la route, qui ne s’arrête pas', () => {
     const s = advance(startCombat(forge(), 'duel', T0, content), T0 + HOUR, content).state;
-    const stopped = stopCombat(s);
-    expect(stopped.combat.activity).toBeNull();
+    const stopped = stopCombat(s, T0 + HOUR, content);
+    expect(stopped.combat.activity?.route).toBe(true);
     expect(stopped.combat.xp).toEqual(s.combat.xp);
+    expect(() => stopCombat(stopped, T0 + HOUR, content)).toThrow(/tourne toujours/);
   });
 });
 
 describe('données qui changent', () => {
-  it('une rencontre retirée des données arrête le combat au lieu de bloquer le personnage', () => {
+  it('une rencontre retirée des données arrête la patrouille au lieu de bloquer le personnage', () => {
     const s = startCombat(forge(), 'duel', T0, content);
     const changed: Content = structuredClone(content);
     delete changed.combat!.encounters.duel;
     const { state, summary } = advance(s, T0 + HOUR, changed);
-    expect(state.combat.activity).toBeNull();
+    expect(state.combat.activity?.route).toBe(true);
     expect(summary.combat.stopped).toBe('unavailable');
   });
 
@@ -157,14 +168,16 @@ describe('équipement, paliers et butin', () => {
 describe('la route (PvE solo)', () => {
   const runist = (level: number) => makeState({ classId: 'runist', combat: { ...emptyCombat(), xp: { runist: content.xpTable[level]! } }, equipment: [] });
 
-  it('les étapes suivent le monde : régions basses, puis les régions hautes cercle par cercle, chaque chapitre finit sur son gardien', () => {
+  it('douze zones de dix étapes : neuf dans la zone, la dixième contre le gardien de la région ; le palier monte de 1 à 90', () => {
     const stages = routeStages(content.combat!);
-    expect(stages[0]).toMatchObject({ label: '1-1', encounter: 'z01_lantern_road', tier: 1 });
-    expect(stages.length).toBeGreaterThan(50);
+    expect(stages).toHaveLength(120);
+    expect(stages[0]).toMatchObject({ label: '1-1', encounter: 'z01_lantern_road', tier: 1, guardian: false });
+    expect(stages[8]).toMatchObject({ label: '1-9', encounter: 'z01_lantern_road', guardian: false });
+    expect(stages[9]).toMatchObject({ label: '1-10', encounter: 'b1_lavandiere', guardian: true });
+    expect(stages[10]).toMatchObject({ label: '2-1', encounter: 'z02_gray_ditches' });
+    for (const s of stages) expect(s.guardian).toBe(s.index % 10 === 9);
     for (let j = 1; j < stages.length; j++) expect(stages[j]!.tier).toBeGreaterThanOrEqual(stages[j - 1]!.tier);
-    const chapters = new Set(stages.map((s) => s.chapter));
-    for (const c of chapters) expect(stages.filter((s) => s.chapter === c).at(-1)!.guardian).toBe(true);
-    expect(stages.at(-1)!.tier).toBe(90);
+    expect(stages.at(-1)).toMatchObject({ tier: 90, encounter: 'b6_regent' });
   });
 
   it('une victoire mène à l’étape suivante, une défaite fait rejouer la même, sans jamais s’arrêter', () => {

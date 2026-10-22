@@ -296,9 +296,11 @@ export function runWorld(content: Content, input: WorldOptions): WorldResult {
   const buyEstimate = (item: string, self: number) => cheapestAsk(item, self) ?? Math.round(ref(item) * 1.3);
   const sellEstimate = (b: Bot, item: string) => exchange.bids(item, b.id)[0]?.price ?? sellPrice(b, item);
 
+  // Le marché se joue sur les métiers : sans contenu de combat, la route (qui tourne à côté) ne ralentit pas le calcul.
+  const crafting: Content = { ...content, combat: null };
   const step = (b: Bot, to: number) => {
     const before = b.state.activity && content.recipes[b.state.activity.recipeId]?.profession;
-    const { state, summary } = advance(b.state, to, content);
+    const { state, summary } = advance(b.state, to, crafting);
     b.state = state;
     traders.get(b.id)!.state = state;
     if (before && summary.workedMs > 0) workMin[before] = (workMin[before] ?? 0) + summary.workedMs / 60_000;

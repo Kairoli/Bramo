@@ -428,6 +428,8 @@ describe('API', () => {
     const chosen = (await f('POST', '/api/character/class', { classId: 'forgefire' })).json as StateResponse;
     const view = chosen.state.combat!;
     expect(view.level).toBe(1);
+    // La route part dès le choix de la classe.
+    expect(view.activity?.route).toBe(true);
     expect(view.advised).toBe(true);
     expect(view.plan.length).toBeGreaterThan(0);
     // Le set de départ donne un marteau : sa cadence est celle de l'attaque de base.
@@ -447,9 +449,13 @@ describe('API', () => {
     expect(after.state.skills.mining?.xp ?? 0).toBe(0);
     expect(after.absence?.combat.fights).toBeGreaterThan(20);
     expect(after.journal.some((e) => e.kind === 'combat')).toBe(true);
-    // Une seule activité à la fois : lancer une recette arrête le combat.
+    // Le combat tourne à côté du métier ; quitter la patrouille rend la main à la route, qui ne s'arrête pas.
     const mining = (await f('POST', '/api/activity/start', { recipeId: 'mine_copper', quantity: 10, mode: 'replace' })).json as StateResponse;
-    expect(mining.state.combat!.activity).toBeNull();
+    expect(mining.state.activity?.recipeId).toBe('mine_copper');
+    expect(mining.state.combat!.activity?.name).toBe('Cible durable');
+    const route = (await f('POST', '/api/combat/stop')).json as StateResponse;
+    expect(route.state.combat!.activity?.route).toBe(true);
+    expect(route.state.activity?.recipeId).toBe('mine_copper');
     expect((await f('POST', '/api/combat/stop')).status).toBe(400);
   });
 });

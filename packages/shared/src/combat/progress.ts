@@ -2,11 +2,13 @@
  * Niveau de classe et activité de combat (étape 4 de docs/design/coeur-du-jeu/integration.md).
  *
  * - L'XP de classe ne vient que du combat [Décidé par Louis] ; chaque classe a son niveau, ses voies le partagent.
- * - Le combat est une activité comme une recette : une seule à la fois, 100 % en ligne comme hors ligne pendant
- *   l'autonomie, accélérée par les coups de fouet (le multiplicateur de présence s'applique au temps de combat).
+ * - Le combat tourne à côté du métier (décision de Louis du 22 octobre : la route « tourne tout le temps », même quand
+ *   on monte un métier) : 100 % en ligne comme hors ligne pendant l'autonomie, accélérée par les coups de fouet (le
+ *   multiplicateur de présence s'applique au temps de combat). Sans patrouille ni entraînement, c'est la route.
  * - Chaque rencontre est résolue par `fight()` quand elle commence, avec le build figé à cet instant et une graine
  *   tirée du personnage et du numéro de la rencontre : avancer en une ou plusieurs fois donne le même résultat.
- * - Une défaite ne coûte rien ; après `maxConsecutiveLosses` défaites de suite, l'activité se met en pause.
+ * - Une défaite ne coûte rien ; après `maxConsecutiveLosses` défaites de suite, une patrouille s'arrête et la route
+ *   reprend. Sur la route, une défaite fait rejouer l'étape.
  */
 import type { Content } from '../schemas/content.js';
 import type { CombatContent, Encounter, PlanEntry, Spell } from '../schemas/combat.js';
@@ -15,7 +17,7 @@ import { levelForXp } from '../formulas/xp.js';
 import { type CharacterState, GameError, addStack, cloneState } from '../engine/state.js';
 import { planErrors, spellSlots } from './content.js';
 import { type CombatantSetup, type FightResult, fight } from './engine.js';
-import { curveTier, tierFactor, wornLoadout } from './loadout.js';
+import { curveTier, tierFactor, tierFactorAt, wornLoadout } from './loadout.js';
 import { hash32, stream } from './rng.js';
 import type { Preset } from './presets.js';
 
@@ -54,8 +56,9 @@ export interface RouteStage {
   /** « 3-2 » : chapitre et rang dans le chapitre. */
   label: string;
   chapter: number;
-  /** Région, et cercle pour une région haute. */
+  /** Le chapitre porte le nom de sa zone ; sa région donne le gardien de l'étape 10. */
   chapterName: string;
+  region: string;
   encounter: string;
   tier: number;
   guardian: boolean;
@@ -101,34 +104,53 @@ export const emptyCombat = (): CombatState => ({
   activePreset: null,
 });
 
+/** Étapes d'un chapitre de la route : neuf dans la zone, la dixième contre le gardien de sa région (le-monde.md §3.1). */
+export const ROUTE_CHAPTER = 10;
+
 const stagesCache = new WeakMap<CombatContent, RouteStage[]>();
 /**
- * Les étapes de la route, tirées des zones et gardiens du monde : les régions basses dans l'ordre de leurs paliers (zones
- * puis gardien), puis les régions hautes cercle par cercle (40, 50… 90), chacune à son tour. Un chapitre = une région à un
- * palier ; ses étapes = ses zones, puis son gardien.
+ * Les étapes de la route (le-monde.md §3.1 : « douze zones de dix étapes », un gardien à l'étape 10). Un chapitre = une
+ * zone, dans l'ordre de leurs paliers ; ses neuf premières étapes s'y jouent, la dixième contre le gardien de la région.
+ * Le palier monte d'une étape à l'autre, du premier palier de la courbe au dernier (1 à 90) : la difficulté croît en
+ * douceur au lieu de sauter d'un palier de la courbe au suivant.
  */
 export function routeStages(combat: CombatContent): RouteStage[] {
   const cached = stagesCache.get(combat);
   if (cached) return cached;
-  const regions = new Map<string, Encounter[]>();
-  for (const e of Object.values(combat.encounters)) {
-    if ((e.kind !== 'zone' && e.kind !== 'gardien') || !e.tier || !e.region) continue;
-    regions.set(e.region, [...(regions.get(e.region) ?? []), e]);
-  }
-  const order = (list: Encounter[]) => [...list].sort((a, b) => a.tier! - b.tier! || (a.kind === 'gardien' ? 1 : 0) - (b.kind === 'gardien' ? 1 : 0));
-  const low = [...regions].filter(([, l]) => !l.some((e) => e.circles)).sort((a, b) => Math.min(...a[1].map((e) => e.tier!)) - Math.min(...b[1].map((e) => e.tier!)));
-  const high = [...regions].filter(([, l]) => l.some((e) => e.circles));
-  const circles = Object.keys(combat.rules.gearStats?.tiers ?? {}).map(Number).filter((t) => t >= Math.min(90, ...high.flatMap(([, l]) => l.map((e) => e.tier!)))).sort((a, b) => a - b);
-  const chapters: { name: string; list: { e: Encounter; tier: number }[] }[] = [
-    ...low.map(([name, l]) => ({ name, list: order(l).map((e) => ({ e, tier: e.tier! })) })),
-    ...circles.flatMap((c) => high.map(([name, l]) => ({ name: `${name} · cercle ${c}`, list: order(l).map((e) => ({ e, tier: Math.max(c, e.tier!) })) }))),
-  ];
+  const all = Object.values(combat.encounters).filter((e) => e.tier && e.region);
+  const zones = all.filter((e) => e.kind === 'zone').sort((a, b) => a.tier! - b.tier!);
+  const guardianOf = (region: string) => all.find((e) => e.kind === 'gardien' && e.region === region);
+  const keys = Object.keys(combat.rules.gearStats?.tiers ?? {}).map(Number);
+  const first = keys.length ? Math.min(...keys) : 1;
+  const last = keys.length ? Math.max(...keys) : Math.max(1, ...zones.map((z) => z.tier!));
+  const total = zones.length * ROUTE_CHAPTER;
+  const tierAt = (i: number) => (total > 1 ? Math.round(first + (i * (last - first)) / (total - 1)) : first);
   const out: RouteStage[] = [];
-  chapters.forEach((ch, ci) =>
-    ch.list.forEach(({ e, tier }, si) => out.push({ index: out.length, label: `${ci + 1}-${si + 1}`, chapter: ci + 1, chapterName: ch.name, encounter: e.id, tier, guardian: e.kind === 'gardien' })),
-  );
+  zones.forEach((z, ci) => {
+    const boss = guardianOf(z.region!);
+    for (let si = 0; si < ROUTE_CHAPTER; si++) {
+      const e = si === ROUTE_CHAPTER - 1 && boss ? boss : z;
+      const index = out.length;
+      out.push({ index, label: `${ci + 1}-${si + 1}`, chapter: ci + 1, chapterName: z.name, region: z.region!, encounter: e.id, tier: tierAt(index), guardian: e.kind === 'gardien' });
+    }
+  });
   stagesCache.set(combat, out);
   return out;
+}
+
+/**
+ * La route reprend d'elle-même dès qu'aucun combat ne tourne (elle « tourne tout le temps », décision de Louis du
+ * 22 octobre) : après l'arrêt d'une patrouille, sa pause, la fin de l'entraînement, ou pour un personnage qui vient de
+ * choisir sa classe. Renvoie true si elle a repris.
+ */
+export function resumeRoute(state: CharacterState, t: number, content: Content): boolean {
+  const combat = content.combat;
+  if (state.combat.activity || !state.classId || !combat?.kits[state.classId]) return false;
+  const stages = routeStages(combat);
+  if (!stages.length) return false;
+  const s = stages[Math.min(state.combat.route.stage, stages.length - 1)]!;
+  state.combat.activity = { encounter: s.encounter, tier: s.tier, route: true, startedAt: t, progress: 0, current: null, wins: 0, losses: 0, streak: 0 };
+  return true;
 }
 
 /** Complète un état de combat enregistré avant l'ajout d'un champ. */
@@ -289,9 +311,9 @@ export function encounterTiers(e: Encounter, combat: CombatContent, classTierVal
   return open.length ? open : [e.tier];
 }
 
-/** Ennemis du palier joué : PV et dégâts suivent la courbe d'équipement (palier 20 = 1). */
+/** Ennemis du palier joué : PV et dégâts suivent la courbe d'équipement (palier 20 = 1), entre ses paliers aussi. */
 const fightOptions = (combat: CombatContent, tier: number | undefined) => {
-  const s = tier ? tierFactor(combat.rules, tier) : 1;
+  const s = tier ? tierFactorAt(combat.rules, tier) : 1;
   return { enemyDamageScale: s, enemyHpScale: s };
 };
 
@@ -326,7 +348,8 @@ function rollLoot(state: CharacterState, f: FightRecord, content: Content, summa
   const rand = stream(state.seed, `loot:${f.index}`);
   const units = f.ms / 1000 / rules.unitSeconds;
   const cls = f.setup.classId;
-  const tier = f.tier;
+  // L'équipement n'existe qu'aux paliers de la courbe : une étape de la route au palier 37 donne celui du palier 30.
+  const tier = curveTier(combat.rules, f.tier) ?? f.tier;
   // Vestiges : entiers, la fraction est gardée pour la victoire suivante.
   if (e.loot?.vestige) {
     const total = state.combat.vestigeCarry + rules.vestiges * units;
@@ -466,8 +489,8 @@ export function runCombat(state: CharacterState, t: number, end: number, rate: n
 // --- Actions ---------------------------------------------------------------------------------------------------------
 
 /**
- * Lancer le combat (une rencontre en boucle, ou le Terrain d'entraînement). Arrête l'activité de métier en cours.
- * `tier` : le cercle choisi dans une région haute (parmi `encounterTiers`).
+ * Lancer une patrouille (une rencontre en boucle) ou le Terrain d'entraînement, à la place de la route ; le métier en
+ * cours continue. `tier` : le cercle choisi dans une région haute (parmi `encounterTiers`).
  */
 export function startCombat(input: CharacterState, encounter: string | null, now: number, content: Content, tier?: number): CharacterState {
   const combat = need(content);
@@ -482,7 +505,6 @@ export function startCombat(input: CharacterState, encounter: string | null, now
     throw new GameError('unknown_circle', 'Ce cercle n’est pas ouvert pour cette rencontre.');
   }
   const state = cloneState(input);
-  state.activity = null;
   state.combat.activity = { encounter, ...(tier !== undefined && tier !== e?.tier ? { tier } : {}), startedAt: now, progress: 0, current: null, wins: 0, losses: 0, streak: 0 };
   state.combat.stopped = null;
   return state;
@@ -490,7 +512,7 @@ export function startCombat(input: CharacterState, encounter: string | null, now
 
 /**
  * Prendre la route (PvE solo) : à l'étape atteinte, ou à une étape déjà franchie (`stage`). Elle tourne en boucle : une
- * victoire mène à l'étape suivante, une défaite fait rejouer la même. Arrête l'activité de métier en cours.
+ * victoire mène à l'étape suivante, une défaite fait rejouer la même. Le métier en cours continue.
  */
 export function startRoute(input: CharacterState, now: number, content: Content, stage?: number): CharacterState {
   const combat = need(content);
@@ -502,17 +524,19 @@ export function startRoute(input: CharacterState, now: number, content: Content,
   if (at < 0 || at > Math.min(r.best, stages.length - 1)) throw new GameError('route_locked', 'Cette étape n’est pas encore ouverte : franchissez d’abord les précédentes.');
   const s = stages[at]!;
   const state = cloneState(input);
-  state.activity = null;
   state.combat.route = { ...r, stage: at };
   state.combat.activity = { encounter: s.encounter, tier: s.tier, route: true, startedAt: now, progress: 0, current: null, wins: 0, losses: 0, streak: 0 };
   state.combat.stopped = null;
   return state;
 }
 
-export function stopCombat(input: CharacterState): CharacterState {
-  if (!input.combat.activity) throw new GameError('no_combat_activity', 'Aucun combat en cours.');
+/** Quitter une patrouille ou l'entraînement : la route reprend. La route elle-même ne s'arrête pas. */
+export function stopCombat(input: CharacterState, now: number, content: Content): CharacterState {
+  const a = input.combat.activity;
+  if (!a || a.route) throw new GameError('no_combat_activity', 'Aucune patrouille en cours : la route, elle, tourne toujours.');
   const state = cloneState(input);
   state.combat.activity = null;
+  resumeRoute(state, now, content);
   return state;
 }
 

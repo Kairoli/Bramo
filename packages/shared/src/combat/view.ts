@@ -124,6 +124,8 @@ export interface CombatView {
   presets: PresetView[];
   activePreset: number | null;
   maxPresets: number;
+  /** Toutes les classes, pour composer un préréglage à la main. */
+  kits: KitView[];
 }
 
 export interface PresetView {
@@ -135,6 +137,18 @@ export interface PresetView {
   /** Sorts du plan (le plan conseillé si aucun). */
   spells: { id: string; element: string; ultimate: boolean }[];
   gear: number;
+  /** Pour l'éditeur : le plan enregistré (null = conseillé) et les exemplaires d'équipement. */
+  plan: PlanEntry[] | null;
+  gearIds: number[];
+}
+
+/** Ce qu'il faut pour composer un préréglage de n'importe quelle classe : son niveau, ses places, ses voies, ses sorts. */
+export interface KitView {
+  classId: string;
+  level: number;
+  slots: number;
+  paths: { id: string; name: string; role: Role }[];
+  spells: { id: string; name: string; level: number; path: string | null; element: string; ultimate: boolean; cooldown: number; text: string }[];
 }
 
 export interface RouteStageView {
@@ -154,7 +168,8 @@ export interface RouteView {
   stage: number;
   best: number;
   running: boolean;
-  chapters: { number: number; name: string; stages: RouteStageView[] }[];
+  /** Un chapitre = une zone (son nom), dans une région ; dix étapes, la dernière contre le gardien. */
+  chapters: { number: number; name: string; region: string; stages: RouteStageView[] }[];
 }
 
 /**
@@ -376,10 +391,25 @@ export function viewCombat(state: CharacterState, content: Content): CombatView 
           return s ? [{ id: s.id, element: s.element, ultimate: s.tags.includes('ultimate') }] : [];
         }),
         gear: p.gear.length,
+        plan: p.plan,
+        gearIds: p.gear,
       };
     }),
     activePreset: state.combat.activePreset,
     maxPresets: MAX_PRESETS,
+    kits: Object.values(combat.kits).map((k) => {
+      const lv = classLevel(state, k.id, content);
+      return {
+        classId: k.id,
+        level: lv,
+        slots: spellSlots(combat, lv),
+        paths: k.paths.map((p) => ({ id: p.id, name: p.name, role: p.role })),
+        spells: Object.values(combat.spells)
+          .filter((s) => s.class === k.id)
+          .sort((x, y) => x.level - y.level)
+          .map((s) => ({ id: s.id, name: s.name, level: s.level, path: s.path ?? null, element: s.element, ultimate: s.tags.includes('ultimate'), cooldown: s.cooldown, text: describeSpell(s) })),
+      };
+    }),
   };
 }
 
@@ -390,7 +420,7 @@ function routeView(state: CharacterState, combat: CombatContent): RouteView | nu
   for (const s of stages) {
     const e = combat.encounters[s.encounter]!;
     let ch = chapters[s.chapter - 1];
-    if (!ch) chapters.push((ch = { number: s.chapter, name: s.chapterName, stages: [] }));
+    if (!ch) chapters.push((ch = { number: s.chapter, name: s.chapterName, region: s.region, stages: [] }));
     ch.stages.push({ index: s.index, label: s.label, encounter: s.encounter, name: e.name, tier: s.tier, guardian: s.guardian, enemies: e.enemies });
   }
   const r = state.combat.route;

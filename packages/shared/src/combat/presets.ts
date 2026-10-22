@@ -7,7 +7,8 @@ import type { Content } from '../schemas/content.js';
 import type { PlanEntry } from '../schemas/combat.js';
 import { type CharacterState, GameError, cloneState } from '../engine/state.js';
 import { chooseClass } from '../engine/actions.js';
-import { activePath, choosePath, currentPlan, setPlan } from './progress.js';
+import { activePath, choosePath, classLevel, currentPlan, setPlan } from './progress.js';
+import { planErrors } from './content.js';
 
 export interface Preset {
   id: number;
@@ -44,6 +45,49 @@ export function savePreset(input: CharacterState, opts: { id?: number; name?: st
   };
   state.combat.presets = old ? list.map((p) => (p.id === old.id ? preset : p)) : [...list, preset];
   state.combat.activePreset = preset.id;
+  return state;
+}
+
+/** Un préréglage composé à la main, sans toucher au build porté (Louis, 22 octobre : « je dois pouvoir les créer manuellement »). */
+export interface PresetDraft {
+  id?: number;
+  name: string;
+  classId: string;
+  path: string | null;
+  /** null = le plan conseillé. */
+  plan: PlanEntry[] | null;
+  gear: number[];
+}
+
+/**
+ * Crée ou modifie un préréglage à partir d'un brouillon : classe, voie et plan sont vérifiés au niveau qu'a la classe
+ * (une voie pas encore ouverte est gardée pour plus tard, le plan se joue alors sans elle). L'équipement est filtré par
+ * le serveur (exemplaires du personnage). Le build porté et le préréglage actif ne changent pas.
+ */
+export function writePreset(input: CharacterState, draft: PresetDraft, content: Content): CharacterState {
+  const combat = content.combat;
+  if (!combat?.kits[draft.classId]) throw new GameError('unknown_class', 'Classe inconnue.');
+  if (draft.path && combat.paths[draft.path]?.class !== draft.classId) throw new GameError('unknown_path', 'Cette voie n’est pas celle de cette classe.');
+  const state = cloneState(input);
+  const list = state.combat.presets;
+  const old = draft.id !== undefined ? list.find((p) => p.id === draft.id) : undefined;
+  if (draft.id !== undefined && !old) throw new GameError('unknown_preset', 'Préréglage introuvable.');
+  if (!old && list.length >= MAX_PRESETS) throw new GameError('presets_full', `Au plus ${MAX_PRESETS} préréglages : remplacez-en un.`);
+  if (draft.plan) {
+    const level = classLevel(input, draft.classId, content);
+    const path = draft.path && level >= combat.pathLevel ? draft.path : null;
+    const errors = planErrors(combat, draft.classId, path, level, draft.plan);
+    if (errors.length) throw new GameError('invalid_plan', `Plan refusé : ${errors.join(' ; ')}.`);
+  }
+  const preset: Preset = {
+    id: old?.id ?? Math.max(0, ...list.map((p) => p.id)) + 1,
+    name: clean(draft.name, old?.name ?? `Build ${list.length + 1}`),
+    classId: draft.classId,
+    path: draft.path,
+    plan: draft.plan ? draft.plan.map((e) => ({ spell: e.spell, at: e.at })) : null,
+    gear: [...new Set(draft.gear)],
+  };
+  state.combat.presets = old ? list.map((p) => (p.id === old.id ? preset : p)) : [...list, preset];
   return state;
 }
 

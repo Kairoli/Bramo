@@ -5,6 +5,7 @@ import {
   type JournalEntry,
   type StateResponse,
   advance,
+  resumeRoute,
   stream,
   viewState,
 } from '@bramo/shared';
@@ -97,6 +98,8 @@ export async function play(db: Db, content: Content, accountId: number, now: num
       announce.push(...(result.serverEvents ?? []));
       if (result.log) entries.push({ at: now, kind: result.logKind ?? 'info', text: result.log });
     }
+    // La route tourne tout le temps : elle part dès que le personnage a une classe et aucun autre combat.
+    resumeRoute(state, now, content);
     state.lastSeenAt = now;
     await recordEvents(tx, now, announce);
 

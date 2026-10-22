@@ -64,10 +64,12 @@ import {
   presetIdBody,
   presetRenameBody,
   presetSaveBody,
+  presetWriteBody,
   applyPreset,
   deletePreset,
   renamePreset,
   savePreset,
+  writePreset,
 } from '@bramo/shared';
 import type { Db } from './db/index.js';
 import { accounts, characters } from './db/schema.js';
@@ -427,6 +429,16 @@ export async function buildApp({ db, content, clock = Date.now, secureCookies = 
       return { state: next, log: `Vous passez au préréglage ${p.name}.` };
     });
   });
+  app.post('/api/presets/write', (req) => {
+    const draft = body(presetWriteBody, req);
+    return playAs(req, async (state, _now, ctx) => {
+      // Seuls les exemplaires du personnage comptent ; une pièce d'une autre classe restera au sac à l'application.
+      const owned = new Set((await loadGear(ctx.tx, ctx.characterId)).map((g) => g.id));
+      const { id, ...rest } = draft;
+      const next = writePreset(state, { ...rest, ...(id !== undefined ? { id } : {}), gear: draft.gear.filter((g) => owned.has(g)) }, content);
+      return { state: next, log: `Préréglage ${id !== undefined ? 'modifié' : 'créé'} : ${next.combat.presets.find((p) => p.id === (id ?? Math.max(...next.combat.presets.map((x) => x.id))))!.name}.` };
+    });
+  });
   app.post('/api/presets/rename', (req) => {
     const { id, name } = body(presetRenameBody, req);
     return playAs(req, (state) => ({ state: renamePreset(state, id, name) }));
@@ -436,7 +448,7 @@ export async function buildApp({ db, content, clock = Date.now, secureCookies = 
     return playAs(req, (state) => ({ state: deletePreset(state, id) }));
   });
   app.post('/api/combat/stop', (req) =>
-    playAs(req, (state) => ({ state: stopCombat(state), log: 'Vous arrêtez le combat.' })),
+    playAs(req, (state, now) => ({ state: stopCombat(state, now, content), log: 'Vous quittez la patrouille : la route reprend.' })),
   );
   app.post('/api/combat/path', (req) => {
     const { pathId } = body(combatPathBody, req);

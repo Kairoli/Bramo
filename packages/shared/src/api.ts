@@ -31,6 +31,15 @@ export const combatRouteBody = z.object({ stage: z.number().int().min(0).optiona
 export const presetSaveBody = z.object({ id: z.number().int().optional(), name: z.string().max(40).optional() });
 export const presetIdBody = z.object({ id: z.number().int() });
 export const presetRenameBody = z.object({ id: z.number().int(), name: z.string().max(40) });
+/** Préréglage composé à la main (classe, voie, plan, exemplaires d'équipement), sans changer le build porté. */
+export const presetWriteBody = z.object({
+  id: z.number().int().optional(),
+  name: z.string().max(40),
+  classId: z.string(),
+  path: z.string().nullable(),
+  plan: z.array(z.object({ spell: z.string(), at: z.number().min(0) })).max(10).nullable(),
+  gear: z.array(z.number().int()).max(20),
+});
 export const combatPathBody = z.object({ pathId: z.string() });
 /** Plan de combat : sorts et première utilisation (s) ; null revient au plan conseillé. */
 export const combatPlanBody = z.object({ plan: z.array(z.object({ spell: z.string(), at: z.number().min(0) })).max(10).nullable() });

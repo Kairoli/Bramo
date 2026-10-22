@@ -8,7 +8,7 @@ import {
 import { type CharacterState, addStack, addTo, cloneState } from './state.js';
 import { activeCopy, isDurable, wearCopy } from './gear.js';
 import { skillLevel } from './trials.js';
-import { type CombatSummary, emptyCombatSummary, runCombat } from '../combat/progress.js';
+import { type CombatSummary, emptyCombatSummary, resumeRoute, runCombat } from '../combat/progress.js';
 
 export interface FinishedActivity {
   recipeId: string;
@@ -215,12 +215,18 @@ export function advance(
       }
     }
 
-    // Combat : une activité comme une autre (jamais en même temps qu'une recette).
-    if (!state.activity && state.combat.activity && win.multiplier > 0) {
-      t = runCombat(state, t, end, win.multiplier, content, summary.combat);
+    // Combat : à côté du métier, sur le même intervalle. Une patrouille qui s'arrête rend la main à la route.
+    let ct = workStart;
+    while (ct < end && win.multiplier > 0) {
+      resumeRoute(state, ct, content);
+      if (!state.combat.activity) break;
+      const stop = runCombat(state, ct, end, win.multiplier, content, summary.combat);
+      // Arrêt immédiat (rencontre retirée des données) : la route reprend tout de suite, ou rien ne tourne plus.
+      if (stop <= ct && !resumeRoute(state, stop, content)) break;
+      ct = stop;
     }
 
-    const worked = t - workStart;
+    const worked = Math.max(t, ct) - workStart;
     if (worked > 0) {
       summary.workedMs += worked;
       if (win.energized) summary.energyUsedMs += worked;

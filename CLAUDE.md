@@ -55,6 +55,14 @@ Bramo est un **idle-RPG multijoueur jouable dans le navigateur**, dans l'esprit 
 
 ## 5. État du projet (à jour au 22 octobre 2026)
 
+### Fait — carte du personnage, journal et salle Clan plus visuels ; brief d'icônes pour ChatGPT (22 octobre, nuit)
+
+- **Demande de Louis** : carte du personnage de l'accueil plus soignée (équipement plus gros, niveau de classe visible) ; journal et clan moins « pâté de texte », le clan avec une vraie ambiance ; un prompt pour faire faire les icônes par ChatGPT.
+- **Carte du personnage** (`rooms/home/CharacterCard.tsx`) : quatre grandes cases de chaque côté (`PaperDoll size="card"`, cadres en relief, couleur de rareté en halo) ; dessous un bandeau de classe (niveau en médaillon, voie, barre d'XP ; un clic ouvre la salle Combat), l'outil et le repas ; puis les préréglages.
+- **Journal** (`rooms/home/JournalPanel.tsx`) : onglets Tout, Combat, Métiers, Clan (journal du clan) et Serveur (fil du bourg) ; une icône de couleur par sorte, le début de ligne en titre (« Vestiges »), les lignes voisines identiques fusionnées (×N, vestiges additionnés), les objets tombés colorés par rareté, l'heure une fois par minute, un séparateur après 20 min de silence, l'absence en carte cliquable.
+- **Salle Clan refaite** (`rooms/ClanRoom.tsx`) : en haut la place du clan (décor `clan`), ses membres debout dans la scène (chef au centre avec une couronne, absents estompés, fiche au survol), un blason tiré du nom (`Crest`, couleur et motif stables) et les chiffres (membres, actifs, niveaux bâtis, bonus) ; en bas le village en tuiles (pictogramme par bâtiment, niveaux en pastilles, anneau de ce qui est réuni, « à bâtir » en pointillés) qui s'ouvrent en fenêtre d'apports, et à côté Journal (lignes à icône), Membres (portraits, rang, actif, actions) et Routes franches. `ClanMemberView` gagne `classId`, `outfit`, `classLevel` ; les membres de test ont une classe.
+- **Brief d'illustrations** : [`docs/design/brief-art/brief-icones-chatgpt.md`](docs/design/brief-art/brief-icones-chatgpt.md) (références à joindre, où sont les infos, où déposer les fichiers, et le prompt : 66 sorts et 3 attaques de base en 256 px, 8 états en 128 px, 8 bâtiments en 512 px sur trois niveaux). Les pictogrammes de bâtiments et le blason sont provisoires en attendant.
+
 ### Fait — états en icônes, combat relancé au changement de build, clan d'essai (22 octobre, nuit)
 
 - **Retours de Louis** : après un changement de classe, les sorts ne partaient plus ; voir en petites icônes ce que subit l'ennemi, avec une explication très brève ; un clan de test pour voir l'intérieur d'un clan.

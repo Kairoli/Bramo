@@ -59,7 +59,9 @@ export const gearModelSchema = z.object({
 export const gearSetSchema = z.object({
   id,
   name: z.string(),
-  class: id,
+  /** Classe qui le porte ; absente pour un ensemble de toutes les classes (ensembles de situation). */
+  class: id.optional(),
+  /** Famille de vêtement, ou famille de situation (interstice, rain…) pour un ensemble de toutes les classes. */
   family: id,
   theme: z.string(),
   event: z.boolean(),

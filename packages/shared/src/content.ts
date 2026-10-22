@@ -170,7 +170,7 @@ export function buildContent(raw: RawContent): Content {
     if (!(String(m.tier) in gearPools.tierScale)) errors.push(`gear.yaml : ${m.id} : palier ${m.tier} absent de gear_pools.yaml (tierScale)`);
   }
   for (const s of gearSetList) {
-    if (!classes[s.class]) errors.push(`gear_sets.yaml : ${s.id} : classe inconnue « ${s.class} »`);
+    if (s.class && !classes[s.class]) errors.push(`gear_sets.yaml : ${s.id} : classe inconnue « ${s.class} »`);
     if (gearList.filter((m) => m.set === s.id).length < 4) errors.push(`gear_sets.yaml : l'ensemble ${s.id} a moins de 4 pièces`);
   }
   if (gearList.length) {

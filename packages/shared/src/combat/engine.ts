@@ -10,12 +10,33 @@
  * - Outils de situation (dossier PvE v2 §3) : six familles d'effets d'équipement, une variante active par famille et par
  *   porteur ; aucun ne redéclenche une mécanique de classe. Priorité de cible préparée (`targetPriority`).
  * - Danger (`enemyDamageScale`) et fureur s'appliquent une seule fois à toutes les sources : coups, charges, érosion, aura.
- * Pas encore : statistiques issues de l'équipement, effets des anciens ensembles, gemmes de build, nommés, résistances élémentaires (reportées).
+ * - Talents (gemmes majeures, nommés, ensembles de build ; `CombatantSetup.talents`) : « quand, si, alors », profondeur 1.
+ *   Statistiques d'équipement : `statsFromGear` (combat/loadout.ts) remplit `stats` ; sans elles, `rules.referenceStats`.
+ * Pas encore : résistances élémentaires (reportées).
  */
-import type { ClassKit, CombatContent, CombatPath, Element, Encounter, PlanEntry, Spell, TargetPriority, Tool, ToolFamily } from '../schemas/combat.js';
+import type {
+  ClassKit,
+  CombatContent,
+  CombatPath,
+  Element,
+  Encounter,
+  PlanEntry,
+  RuneForm,
+  Spell,
+  Talent,
+  TalentAction,
+  TalentEffect,
+  TalentMods,
+  TalentTrigger,
+  TargetPriority,
+  Tool,
+  ToolFamily,
+} from '../schemas/combat.js';
+import { type skillKinds, talentModKeys } from '../schemas/combat.js';
 import { stream } from './rng.js';
 
 const ms = (s: number) => Math.round(s * 1000);
+const zeroMods = () => Object.fromEntries(talentModKeys.map((k) => [k, 0])) as Required<TalentMods>;
 
 export interface CombatStats {
   power: number;
@@ -24,6 +45,10 @@ export interface CombatStats {
   critChance: number;
   critMultiplier: number;
   haste: number;
+  /** Lignes d'équipement (facultatives, 0 par défaut) : pénétration de la Défense ennemie, dégâts par élément, bouclier de départ. */
+  penetration?: number;
+  elementDamage?: Partial<Record<Element, number>>;
+  startShield?: { share: number; duration: number };
 }
 
 export interface CombatantSetup {
@@ -50,6 +75,11 @@ export interface CombatantSetup {
   tools?: Tool[];
   /** Cible de chaque action : chef (défaut), renforts d'abord, ou chef sans garde d'abord. */
   targetPriority?: TargetPriority;
+  /** Talents portés (gemmes majeures, capacités nommées, bonus d'ensemble) ; le budget est vérifié par `resolveLoadout`. */
+  talents?: Talent[];
+  /** Réserves de build ouvertes et leur plafond (une réserve absente ne se remplit pas) ; conversions entre réserves. */
+  pools?: Record<string, number>;
+  convert?: { from: string; to: string; share: number }[];
 }
 
 export interface FightOptions {
@@ -145,6 +175,61 @@ interface Dot {
   rate: number;
   end: number;
   next: number;
+  /** Affliction posée par un talent (ou transférée) : effet secondaire, sans outil de situation. */
+  gear?: boolean;
+}
+
+/** Un effet de talent porté, avec son délai, son compteur et sa réserve (propres au porteur). */
+interface TalentState {
+  key: string;
+  e: TalentEffect;
+  when: Set<TalentTrigger>;
+  /** Évalué au début de l'action (`amplify`, `critBonus`). */
+  pre: boolean;
+  readyAt: number;
+  count: number;
+  lastTarget: number;
+  window: { t: number; a: number }[];
+  bank: number;
+}
+
+/** Préparation d'un talent : la prochaine action éligible reçoit son action. */
+interface GearPrep {
+  fx: TalentState;
+  act: TalentAction;
+  amount: number;
+  stacks: number;
+  lastStack: number;
+  uses: number;
+  until: number;
+  born: number;
+  /** Rune lue au moment de la préparation (Palimpseste). */
+  rune: RuneForm | null;
+}
+
+/** État d'une cible au début d'une action (dossier §17 : les conditions lisent l'état au début de l'action). */
+interface TargetState {
+  add: boolean;
+  marked: boolean;
+  burning: boolean;
+  bleeding: boolean;
+  slowed: boolean;
+  stunned: boolean;
+  broken: boolean;
+}
+
+interface TalentEvent {
+  kind: TalentTrigger;
+  /** Ennemi concerné : cible de l'action, ennemi tué, attaquant. */
+  target?: Enemy;
+  state?: TargetState;
+  spell?: Spell | null;
+  element?: Element;
+  amount?: number;
+  heat?: number;
+  rune?: RuneForm | null;
+  /** Forme écrite avant cette compétence (motif `form_change`). */
+  prevForm?: RuneForm | null;
 }
 
 interface Weaken {
@@ -244,6 +329,17 @@ interface Combatant {
   rebattue: { amount: number; hits: number; until: number };
   contrib: Contributions;
   m: Record<string, number>;
+  /** Talents : effets, modificateurs passifs, préparations, bonus temporaires, mémoire des compétences et des runes lues. */
+  fx: TalentState[];
+  mods: Required<TalentMods>;
+  gearPreps: GearPrep[];
+  buffs: Map<string, { amount: number; until: number }>;
+  lastSkillAt: number;
+  prevSkill: { id: string; t: number; cooldown: number } | null;
+  skillTimes: Map<string, number>;
+  prevRead: RuneForm | null;
+  /** Réserves de build : charges et plafond. */
+  pools: Map<string, { n: number; max: number }>;
 }
 
 const emptyContrib = (): Contributions => ({ damage: 0, healing: 0, absorbed: 0, mitigated: 0, pressure: 0, breaks: 0, dispels: 0, cleanses: 0 });
@@ -290,6 +386,14 @@ export function fight(combat: CombatContent, setups: CombatantSetup[], encounter
       const charges = tool.family === 'rain' ? (tool.charges ?? Infinity) : Infinity;
       tools[tool.family] = { tool, readyAt: 0, charges, cycle: -1, bank: new Map(), banked: 0, released: -1, pool: 0, healed: [] };
     }
+    const fx: TalentState[] = [];
+    const mods = zeroMods();
+    for (const tal of s.talents ?? []) {
+      for (const [k, v] of Object.entries(tal.mods ?? {})) mods[k as keyof TalentMods] += v ?? 0;
+      tal.effects.forEach((e, i) =>
+        fx.push({ key: `${tal.id}:${i}`, e, when: new Set(Array.isArray(e.when) ? e.when : [e.when]), pre: e.do.amplify !== undefined || e.do.critBonus !== undefined, readyAt: 0, count: 0, lastTarget: -1, window: [], bank: 0 }),
+      );
+    }
     return {
       setup: s,
       maxHp0: stats.maxHp,
@@ -328,6 +432,15 @@ export function fight(combat: CombatContent, setups: CombatantSetup[], encounter
       rebattue: { amount: 0, hits: 0, until: -1 },
       contrib: emptyContrib(),
       m: {},
+      fx,
+      mods,
+      gearPreps: [],
+      buffs: new Map(),
+      lastSkillAt: -Infinity,
+      prevSkill: null,
+      skillTimes: new Map(),
+      prevRead: null,
+      pools: new Map(Object.entries(s.pools ?? {}).map(([k, max]) => [k, { n: 0, max }])),
     };
   });
   const hpScale = options.enemyHpScale ?? 1;
@@ -372,6 +485,8 @@ export function fight(combat: CombatContent, setups: CombatantSetup[], encounter
   const chiefsAlive = () => enemies.some((e) => !e.add && e.hp > 0);
   let regenUses = 0;
   let guardTurn = 0;
+  /** Au moins un talent dans l'équipe : sinon aucun événement n'est préparé (combats sans talents inchangés). */
+  const anyFx = team.some((c) => c.fx.length > 0);
   const aliveTeam = () => team.filter((c) => c.hp > 0);
   const param = (c: Combatant, key: string) => c.path?.params[key] ?? 0;
   const kp = (c: Combatant, key: string) => c.kit.params[key] ?? 0;
@@ -445,26 +560,29 @@ export function fight(combat: CombatContent, setups: CombatantSetup[], encounter
   const damage = (c: Combatant, e: Enemy, amount: number, origin: string, element: Element, crit = false, penetration = 0): number => {
     if (e.hp <= 0 || amount <= 0) return 0;
     const native = NATIVE.has(origin);
+    // Effets de talent : Défense, vulnérabilité et fenêtres comme une attaque, mais ni critique ni outil de situation.
+    const gear = origin === 'gear' || origin === 'gear_dot';
     let x = amount;
-    if (native) {
-      let mult = 1 - R.enemy.defense * (1 - Math.min(1, penetration));
+    if (native || gear) {
+      let mult = 1 - R.enemy.defense * (1 - Math.min(1, penetration + (c.stats.penetration ?? 0)));
       if (crit) mult *= c.stats.critMultiplier;
       let vuln = 0;
       for (const v of e.vuln) if (v.until > t) vuln = Math.max(vuln, v.amount);
       if (e.breakUntil > t) vuln = Math.max(vuln, R.stability.breakDamageTaken);
-      x = amount * mult * (1 + Math.min(R.caps.vulnerability, vuln));
+      x = amount * mult * (1 + Math.min(R.caps.vulnerability, vuln)) * (1 + (c.stats.elementDamage?.[element] ?? 0));
       // Battue : dégâts natifs accrus contre un renfort présent, tant qu'un chef est debout ; jamais contre le chef.
       const beat = c.tools.beat;
-      if (beat && e.add && chiefsAlive()) {
+      if (native && beat && e.add && chiefsAlive()) {
         inc(c, 'beatBonus', Math.min(e.hp + e.guard, x * beat.tool.multiplier) - Math.min(e.hp + e.guard, x));
         x *= beat.tool.multiplier;
       }
-      // Fenêtres : hors des secondes ouvertes de chaque période, le groupe principal subit moins de dégâts.
+      // Fenêtres : hors des secondes ouvertes de chaque période, le groupe principal subit moins de dégâts. L'affût d'une
+      // classe (`windowPierce` de sa mécanique, 0 par défaut) en retire une part : elle vise les interstices.
       if (!e.add && windowClosed()) {
         const before = x;
-        x *= 1 - encounter.windows!.closedReduction;
+        x *= 1 - encounter.windows!.closedReduction * (1 - Math.min(1, kp(c, 'windowPierce')));
         // Interstice : une part de la perte réellement imputable à la fenêtre (sans sur-dégât) est mise en réserve.
-        const s = intersticeOf(c);
+        const s = native ? intersticeOf(c) : undefined;
         if (s) {
           const capacity = e.hp + e.guard;
           const loss = Math.max(0, Math.min(before, capacity) - Math.min(x, capacity));
@@ -493,16 +611,20 @@ export function fight(combat: CombatContent, setups: CombatantSetup[], encounter
     inc(c, `damage:${origin}`, dealt);
     inc(c, `element:${element}`, dealt);
     if (g) inc(c, 'guardDamage', g);
+    if (gear) inc(c, 'talentDamage', dealt);
     if (e.hp <= 0) {
       inc(c, 'kills');
       log(c, 'kill', `ennemi ${e.i + 1} vaincu`);
+      if (native) emit(c, { kind: 'kill', target: e, state: stateOf(c, e) });
     }
     return dealt + g;
   };
-  const dot = (c: Combatant, e: Enemy, key: string, amount: number, type: Dot['type'], duration: number) => {
+  const dot = (c: Combatant, e: Enemy, key: string, amount: number, type: Dot['type'], duration: number, gearDot = false) => {
     if (e.hp <= 0 || amount <= 0) return;
     const full = `${c.setup.id}:${key}`;
-    const d: Dot = { owner: c, type, rate: (amount * c.P) / duration, end: t + ms(duration), next: t + ms(R.dotTick) };
+    // Modificateurs d'ensemble : durée (au même débit) et dégâts des afflictions personnelles.
+    const span = duration * (1 + c.mods.dotDuration);
+    const d: Dot = { owner: c, type, rate: ((amount * c.P) / duration) * (1 + c.mods.dotDamage), end: t + ms(span), next: t + ms(R.dotTick), ...(gearDot ? { gear: true } : {}) };
     const same = [...e.dots.entries()].filter(([k, x]) => x.owner === c && x.type === type && k !== full);
     if (same.length >= R.caps.afflictionsPerType) {
       const weakest = same.reduce((a, b) => (b[1].rate < a[1].rate ? b : a));
@@ -513,9 +635,10 @@ export function fight(combat: CombatContent, setups: CombatantSetup[], encounter
   };
   /** Puissance de soutien (paramètre de voie `supportPower`) : multiplie les soins et protections produits. */
   const supportPower = (c: Combatant) => 1 + param(c, 'supportPower');
-  const heal = (c: Combatant, target: Combatant, amount: number): number => {
+  /** `gear` : soin secondaire d'un talent (ni Puissance de soutien ni modificateur de soin). */
+  const heal = (c: Combatant, target: Combatant, amount: number, gear = false): number => {
     if (target.hp <= 0) return 0;
-    amount *= supportPower(c);
+    if (!gear) amount *= supportPower(c) * (1 + c.mods.healPower);
     inc(c, 'healRequested', amount);
     const eff = Math.min(target.stats.maxHp - target.hp, amount);
     target.hp += eff;
@@ -524,9 +647,11 @@ export function fight(combat: CombatContent, setups: CombatantSetup[], encounter
     if (target !== c) inc(c, 'healingAllies', eff);
     return eff;
   };
-  const shield = (c: Combatant, target: Combatant, amount: number, source: string, primary: boolean, duration: number, riposte = 0): number => {
+  /** `gear` : bouclier d'un talent (toujours secondaire, ni Puissance de soutien ni modificateur de bouclier). */
+  const shield = (c: Combatant, target: Combatant, amount: number, source: string, primary: boolean, duration: number, riposte = 0, gear = false): number => {
     if (target.hp <= 0) return 0;
-    amount *= supportPower(c);
+    if (!gear) amount *= supportPower(c) * (1 + c.mods.shieldPower);
+    if (primary) duration += c.mods.shieldDuration;
     const key = `${c.setup.id}:${source}`;
     target.shields = target.shields.filter((s) => s.source !== key);
     if (!primary) {
@@ -546,6 +671,7 @@ export function fight(combat: CombatContent, setups: CombatantSetup[], encounter
   /** Retire de la Stabilité ; à zéro, Rupture. Pendant la récupération, la Pression ne prend pas. */
   const pressure = (c: Combatant, e: Enemy, amount: number): boolean => {
     if (amount <= 0 || e.hp <= 0 || e.breakRecover > t) return false;
+    amount *= 1 + c.mods.pressure;
     const loss = Math.min(e.stability, amount);
     e.stability -= loss;
     c.contrib.pressure += loss;
@@ -558,6 +684,7 @@ export function fight(combat: CombatContent, setups: CombatantSetup[], encounter
       weaken(c, e, R.stability.breakNextHitReduction, R.stability.breakDuration, true);
       c.contrib.breaks++;
       log(c, 'break', `Rupture de l'ennemi ${e.i + 1}`);
+      if (anyFx) emit(c, { kind: 'break', target: e });
     }
     return loss > 0;
   };
@@ -567,9 +694,13 @@ export function fight(combat: CombatContent, setups: CombatantSetup[], encounter
    * Paramètre de voie `weakenAll` : l'Affaiblissement de son passif vaut pour toutes les attaques de la cible pendant sa durée,
    * au lieu de la prochaine seulement.
    */
-  const slow = (c: Combatant, e: Enemy, amount: number, duration: number): boolean => {
-    amount += param(c, 'slowAmount');
-    duration *= c.path?.params.slowDuration ?? 1;
+  const slow = (c: Combatant, e: Enemy, amount: number, duration: number, gear = false): boolean => {
+    // Un ralentissement de talent ne profite pas des leviers de la voie (et ne compte pas comme contrôle de classe).
+    if (!gear) {
+      amount += param(c, 'slowAmount');
+      duration *= c.path?.params.slowDuration ?? 1;
+    }
+    duration *= 1 + c.mods.slowDuration;
     if (e.boss) amount = Math.min(R.caps.bossSlow, amount);
     if (e.slowUntil <= t || amount >= e.slow) {
       e.slow = amount;
@@ -580,14 +711,18 @@ export function fight(combat: CombatContent, setups: CombatantSetup[], encounter
   };
 
   /** Effet de la rune lue par un sort du Runiste. Vrai si le Cercle a ralenti. */
-  const runeEffect = (c: Combatant, rune: Spell['form'] | null, e: Enemy): boolean => {
+  /** `copy` : rune rejouée par un talent (× `copy`), secondaire : ni lecture comptée, ni Encre, ni contrôle de classe. */
+  const runeEffect = (c: Combatant, rune: Spell['form'] | null, e: Enemy, copy = 0): boolean => {
     if (!rune) return false;
-    inc(c, 'runesRead');
-    if (rune === 'trait') damage(c, e, kp(c, 'trait') * c.P, 'class', c.runeElement);
+    const k = (copy || 1) * (1 + c.mods.runeValue);
+    const origin = copy ? 'gear' : 'class';
+    inc(c, copy ? 'runesReplayed' : 'runesRead');
+    if (rune === 'trait') damage(c, e, kp(c, 'trait') * k * c.P, origin, c.runeElement);
     else if (rune === 'circle') {
-      for (const x of aliveEnemies().slice(0, kp(c, 'circleTargets'))) damage(c, x, kp(c, 'circle') * c.P, 'class', c.runeElement);
-      if (e.hp > 0) return slow(c, e, kp(c, 'circleSlow'), kp(c, 'circleSlowDuration'));
-    } else shield(c, beneficiary(c), kp(c, 'seal') * c.P, 'native_rune', true, kp(c, 'sealDuration'));
+      for (const x of aliveEnemies().slice(0, kp(c, 'circleTargets'))) damage(c, x, kp(c, 'circle') * k * c.P, origin, c.runeElement);
+      if (e.hp > 0) return slow(c, e, kp(c, 'circleSlow'), kp(c, 'circleSlowDuration'), !!copy) && !copy;
+    } else if (copy) shield(c, beneficiary(c), kp(c, 'seal') * k * c.P, 'rune_copy', false, kp(c, 'sealDuration'), 0, true);
+    else shield(c, beneficiary(c), kp(c, 'seal') * k * c.P, 'native_rune', true, kp(c, 'sealDuration'));
     return false;
   };
 
@@ -619,6 +754,260 @@ export function fight(combat: CombatContent, setups: CombatantSetup[], encounter
     damage(c, e, amount, 'window_release', element);
   };
 
+  // --- Talents ----------------------------------------------------------------------------------------------------
+  /** Profondeur des effets de talent : un effet de talent n'en déclenche jamais un autre. */
+  let depth = 0;
+  const hasDot = (c: Combatant, e: Enemy, type: Dot['type']) => [...e.dots.values()].some((d) => d.owner === c && d.type === type && d.end > t);
+  const stateOf = (c: Combatant, e: Enemy): TargetState => ({
+    add: e.add,
+    marked: e.markUntil > t,
+    burning: hasDot(c, e, 'burn'),
+    bleeding: hasDot(c, e, 'bleed'),
+    slowed: e.slowUntil > t && e.slow > 0,
+    stunned: e.stunUntil > t,
+    broken: e.breakUntil > t,
+  });
+  const other = (c: Combatant, e: Enemy | undefined) => ranked(c).find((x) => x.i !== e?.i);
+  const skillIs = (s: Spell, kind: (typeof skillKinds)[number]) => {
+    if (kind === 'companion') return s.tags.includes('companion');
+    if (kind === 'noncompanion') return !s.tags.includes('companion');
+    if (kind === 'heals') return !!s.heal;
+    if (kind === 'shields') return !!s.shield;
+    if (kind === 'support') return !!s.heal || !!s.shield;
+    return s.tags.includes(kind);
+  };
+  /** Conditions d'un effet (sauf délai et compteurs). */
+  const holds = (c: Combatant, fx: TalentState, ev: TalentEvent): boolean => {
+    const e = fx.e;
+    const st = ev.state ?? (ev.target ? stateOf(c, ev.target) : undefined);
+    if (e.target) {
+      if (!st) return false;
+      for (const s of e.target) {
+        const ok = s === 'afflicted' ? st.burning || st.bleeding : s === 'controlled' ? st.slowed || st.stunned || st.broken : st[s];
+        if (!ok) return false;
+      }
+    }
+    const sp = ev.spell ?? null;
+    if ((e.minCooldown !== undefined || e.maxCooldown !== undefined || e.skill || e.form || e.pattern === 'distinct_pair' || e.pattern === 'same_skill') && !sp) return false;
+    if (sp && e.minCooldown !== undefined && sp.cooldown < e.minCooldown) return false;
+    if (sp && e.maxCooldown !== undefined && sp.cooldown > e.maxCooldown) return false;
+    if (sp && e.skill && !e.skill.some((k) => skillIs(sp, k))) return false;
+    if (e.heatAtLeast !== undefined && (ev.heat ?? 0) < e.heatAtLeast) return false;
+    if (e.noSkillFor !== undefined && t - c.lastSkillAt < ms(e.noSkillFor)) return false;
+    if (e.hpBelow !== undefined && c.hp >= e.hpBelow * c.stats.maxHp) return false;
+    if (e.selfShielded && !c.shields.some((s) => s.amount > 0)) return false;
+    if (e.rune && ev.rune !== e.rune) return false;
+    if (e.form && sp?.form !== e.form) return false;
+    if (e.pattern === 'distinct_pair') {
+      const p = c.prevSkill;
+      if (!p || p.id === sp!.id || (e.within !== undefined && t - p.t > ms(e.within)) || (e.maxCooldown !== undefined && p.cooldown > e.maxCooldown)) return false;
+    }
+    if (e.pattern === 'same_skill') {
+      const last = c.skillTimes.get(sp!.id);
+      if (last === undefined || (e.within !== undefined && t - last > ms(e.within))) return false;
+    }
+    if (e.pattern === 'form_change' && (!sp?.form || !ev.prevForm || sp.form === ev.prevForm)) return false;
+    if (e.pattern === 'aba') {
+      const f = c.forms.slice(-3);
+      if (f.length < 3 || f[0] !== f[2] || f[0] === f[1]) return false;
+    }
+    if (e.pattern === 'repeat_read' && (!ev.rune || ev.rune !== c.prevRead)) return false;
+    if (e.poolAtLeast && (c.pools.get(e.poolAtLeast.pool)?.n ?? 0) < e.poolAtLeast.n) return false;
+    if (e.targetHpBelow !== undefined || e.targetHpAbove !== undefined) {
+      const x = ev.target;
+      if (!x) return false;
+      const r = x.hp / x.maxHp;
+      if (e.targetHpBelow !== undefined && r >= e.targetHpBelow) return false;
+      if (e.targetHpAbove !== undefined && r <= e.targetHpAbove) return false;
+    }
+    return true;
+  };
+  /** Ajoute des charges à une réserve (plafonnée) et à celles qui en reçoivent une part (conversion, sans événement). */
+  const gain = (c: Combatant, pool: string, n: number) => {
+    const p = c.pools.get(pool);
+    if (!p) return;
+    const add = Math.min(n, p.max - p.n);
+    if (add <= 0) return;
+    p.n += add;
+    inc(c, `pool:${pool}`, add);
+    for (const cv of c.setup.convert ?? []) {
+      if (cv.from !== pool) continue;
+      const q = c.pools.get(cv.to);
+      if (!q) continue;
+      const more = Math.min(add * cv.share, q.max - q.n);
+      if (more > 0) {
+        q.n += more;
+        inc(c, `pool:${cv.to}`, more);
+      }
+    }
+  };
+  /** Charges présentes d'une réserve (multiplicateur `scaleBy`). */
+  const stacks = (c: Combatant, pool: string | undefined) => (pool ? (c.pools.get(pool)?.n ?? 0) : 1);
+  /** Un événement pour les talents du porteur : conditions, délai, compteur, seuil, puis action. */
+  const emit = (c: Combatant, ev: TalentEvent) => {
+    if (depth > 0 || !c.fx.length || c.hp <= 0) return;
+    for (const fx of c.fx) {
+      if (fx.pre || !fx.when.has(ev.kind) || t < fx.readyAt) continue;
+      if (!holds(c, fx, ev)) continue;
+      if (fx.e.every !== undefined) {
+        if (fx.e.sameTarget && ev.target && fx.lastTarget !== ev.target.i) fx.count = 0;
+        if (ev.target) fx.lastTarget = ev.target.i;
+        if (++fx.count < fx.e.every) continue;
+        fx.count = 0;
+      }
+      if (fx.e.amountAtLeast !== undefined) {
+        const span = ms(fx.e.within ?? 4);
+        fx.window = fx.window.filter((w) => w.t > t - span);
+        fx.window.push({ t, a: ev.amount ?? 0 });
+        if (fx.window.reduce((a, w) => a + w.a, 0) < fx.e.amountAtLeast * c.P) continue;
+        fx.window = [];
+      }
+      depth++;
+      run(c, fx, fx.e.do, ev);
+      depth--;
+    }
+  };
+  /** Bonus évalués au début d'une action (`amplify`, `critBonus`) : effets « direct », « basic » ou « skill ». */
+  const preBonus = (c: Combatant, ev: TalentEvent) => {
+    let amplify = 0;
+    let critBonus = 0;
+    for (const fx of c.fx) {
+      if (!fx.pre || t < fx.readyAt || !(fx.when.has('direct') || fx.when.has(ev.spell ? 'skill' : 'basic'))) continue;
+      if (!holds(c, fx, ev)) continue;
+      const k = stacks(c, fx.e.do.scaleBy);
+      amplify += (fx.e.do.amplify ?? 0) * k;
+      critBonus += (fx.e.do.critBonus ?? 0) * k;
+      if (fx.e.cooldown) fx.readyAt = t + ms(fx.e.cooldown);
+    }
+    for (const [k, b] of c.buffs) {
+      if (b.until <= t) c.buffs.delete(k);
+      else amplify += b.amount;
+    }
+    return { amplify, critBonus };
+  };
+  const recipient = (c: Combatant, to: 'self' | 'beneficiary') => (to === 'beneficiary' ? beneficiary(c) : c);
+  /** Action d'un effet de talent (ou d'une préparation consommée, `prep`). */
+  const run = (c: Combatant, fx: TalentState, act: TalentAction, ev: TalentEvent, prep?: GearPrep) => {
+    if (act.next && !prep) {
+      const born = c.action;
+      const cur = c.gearPreps.find((p) => p.fx === fx);
+      if (act.stack) {
+        if (cur) {
+          if (cur.stacks < act.stack.max && t - cur.lastStack >= ms(act.stack.gap)) {
+            cur.stacks++;
+            cur.amount += act.damage ?? 0;
+            cur.lastStack = t;
+          }
+          cur.until = t + ms(act.within ?? 8);
+          return;
+        }
+      }
+      const uses = act.usesPerHeat ? Math.min(3, ev.heat ?? 0) : (act.uses ?? 1);
+      if (uses <= 0) return;
+      c.gearPreps = c.gearPreps.filter((p) => p.fx !== fx);
+      c.gearPreps.push({ fx, act, amount: act.damage ?? 0, stacks: 1, lastStack: t, uses, until: t + ms(act.within ?? 8), born, rune: ev.rune ?? null });
+      inc(c, `prepared:${fx.key}`);
+      return;
+    }
+    // Cible : celle de l'événement si elle vit encore (l'attaquant pour `attacker`), sinon la cible courante, sans la changer.
+    const cur = enemies[c.target];
+    const e = (act.to === 'attacker' ? ev.target : ev.target && ev.target.hp > 0 ? ev.target : undefined) ?? (cur && cur.hp > 0 && cur.arriveAt <= t ? cur : ranked(c)[0]);
+    const element = ev.element ?? c.basicElement;
+    const amount = (prep ? prep.amount : (act.damage ?? 0)) * c.P * stacks(c, act.scaleBy);
+    if (amount > 0 && e) {
+      let dest: Enemy | undefined = e;
+      if (act.to === 'other' || act.to === 'other_or_target') dest = other(c, e) ?? (act.to === 'other_or_target' ? e : undefined);
+      if (!dest && act.fallback) run(c, fx, act.fallback, ev);
+      else if (dest) {
+        let dealt = amount;
+        if (act.lowHpHeal && c.hp < act.lowHpHeal.below * c.stats.maxHp) {
+          dealt -= act.lowHpHeal.coef * c.P;
+          heal(c, c, act.lowHpHeal.coef * c.P, true);
+        }
+        damage(c, dest, dealt, 'gear', element);
+      }
+    }
+    if (prep && act.other && e) {
+      const o = other(c, e);
+      if (o) damage(c, o, act.other * c.P, 'gear', element);
+    }
+    if (e && e.hp > 0) {
+      if (act.dot) dot(c, e, `talent:${fx.key}`, act.dot.amount, act.dot.type, act.dot.duration, true);
+      if (act.mark) e.markUntil = Math.max(e.markUntil, t + ms(act.mark * (1 + c.mods.markDuration)));
+      if (act.slow) slow(c, e, act.slow.amount, act.slow.duration, true);
+      if (act.vuln) e.vuln.push({ amount: act.vuln.amount, until: t + ms(act.vuln.duration) });
+      const rune = act.replayFrom === 'prepared' ? prep?.rune : ev.rune;
+      if (act.replayRune && rune) runeEffect(c, rune, e, act.replayRune);
+    }
+    const sc = act.scaleBy ? stacks(c, act.scaleBy) : 1;
+    if (act.shield) shield(c, recipient(c, act.shield.to), act.shield.coef * c.P * sc, `talent:${fx.key}`, false, act.shield.duration, 0, true);
+    if (act.heal) heal(c, recipient(c, act.heal.to), act.heal.coef * c.P * sc, true);
+    if (act.healShare && ev.amount) heal(c, beneficiary(c), act.healShare * ev.amount, true);
+    if (act.buff) c.buffs.set(fx.key, { amount: act.buff.amount, until: t + ms(act.buff.duration) });
+    if (act.heat && c.kit.mechanic === 'heat') c.heat = Math.min(kp(c, 'cap') + c.mods.heatCap, c.heat + act.heat);
+    if (act.transferDots && ev.target) {
+      const dead = ev.target;
+      const to = other(c, dead);
+      const mine = [...dead.dots.entries()].filter(([, d]) => d.owner === c && d.end > t);
+      if (to && mine.length) {
+        for (const [k, d] of mine) {
+          const left = (d.rate * (d.end - t)) / 1000;
+          if (left > 0) to.dots.set(`${k}:transfer`, { owner: c, type: d.type, rate: d.rate, end: t + (d.end - t), next: t + ms(R.dotTick), gear: true });
+          inc(c, 'dotsTransferred');
+        }
+      } else if (act.fallback) run(c, fx, act.fallback, ev);
+    }
+    if (act.gain) gain(c, act.gain.pool, act.gain.n);
+    if (act.spendPool) {
+      const p = c.pools.get(act.spendPool.pool);
+      const n = p ? p.n * (1 - Math.max(act.spendPool.keep, Math.min(1, c.mods.spendKeep))) : 0;
+      if (p && n > 0) {
+        p.n -= n;
+        const v = n * act.spendPool.perStack * c.P * (1 + c.mods.spendPower);
+        inc(c, `spent:${act.spendPool.pool}`, n);
+        if (act.spendPool.as === 'shield') shield(c, beneficiary(c), v, `talent:${fx.key}`, false, act.spendPool.duration, 0, true);
+        else if (act.spendPool.as === 'heal') heal(c, beneficiary(c), v, true);
+        else if (e) {
+          damage(c, e, v, 'gear', element);
+          const o = act.spendPool.other ? other(c, e) : undefined;
+          if (o) damage(c, o, n * act.spendPool.other! * c.P * (1 + c.mods.spendPower), 'gear', element);
+        }
+      }
+    }
+    if (act.bank) {
+      const add = Math.min((ev.amount ?? 0) * act.bank.share, act.bank.max !== undefined ? act.bank.max * c.P : Infinity);
+      fx.bank = Math.min(act.bank.cap * c.P, fx.bank + add);
+    }
+    if (act.spend && fx.bank > 0) {
+      if (act.spend.as === 'shield') shield(c, beneficiary(c), fx.bank, `talent:${fx.key}`, false, act.spend.duration, 0, true);
+      else if (e) damage(c, e, fx.bank, 'gear', element);
+      inc(c, 'bankSpent', fx.bank);
+      fx.bank = 0;
+    }
+    if (fx.e.cooldown && !act.bank) fx.readyAt = t + ms(fx.e.cooldown);
+    inc(c, `talent:${fx.key}`);
+  };
+  /** Préparations de talent consommées par l'action qui commence. */
+  const consumeGearPreps = (c: Combatant, spell: Spell | null, ev: TalentEvent) => {
+    if (!c.gearPreps.length) return;
+    for (const p of [...c.gearPreps]) {
+      if (p.until <= t) {
+        c.gearPreps = c.gearPreps.filter((x) => x !== p);
+        continue;
+      }
+      if (p.born >= c.action) continue;
+      const k = p.act.next!;
+      const ok =
+        k === 'direct' || (k === 'basic' && !spell) || (!!spell && (k === 'skill' || (k === 'companion' && spell.tags.includes('companion')) || (k === 'support_skill' && (!!spell.heal || !!spell.shield))));
+      if (!ok || (spell && p.act.nextMaxCooldown !== undefined && spell.cooldown > p.act.nextMaxCooldown)) continue;
+      depth++;
+      run(c, p.fx, { ...p.act, next: undefined, stack: undefined }, ev, p);
+      depth--;
+      if (--p.uses <= 0) c.gearPreps = c.gearPreps.filter((x) => x !== p);
+      if (p.fx.e.cooldown) p.fx.readyAt = t + ms(p.fx.e.cooldown);
+    }
+  };
+
   // --- Une action : attaque de base (spell = null) ou compétence -----------------------------------------------
   const cast = (c: Combatant, spell: Spell | null) => {
     if (!aliveEnemies().length) return;
@@ -630,12 +1019,21 @@ export function fight(combat: CombatContent, setups: CombatantSetup[], encounter
     const oldRune = c.rune;
     const oldOrder = c.orderUntil > t;
     const oldAngle = !!c.angle && c.angle.until > t && c.angle.target === e.i;
-    const crit = c.rand() < Math.min(R.caps.critChance, c.stats.critChance);
+    // Talents : état de la cible au début de l'action, bonus évalués avant elle, préparations consommées.
+    const talents = c.fx.length > 0;
+    const ev0: TalentEvent = { kind: spell ? 'skill' : 'basic', target: e, ...(talents ? { state: stateOf(c, e) } : {}), spell, element, rune: spell ? oldRune : null, prevForm: oldRune };
+    const pre = talents ? preBonus(c, ev0) : { amplify: 0, critBonus: 0 };
+    const crit = c.rand() < Math.min(R.caps.critChance, c.stats.critChance + pre.critBonus);
     consumePreps(c, spell, e);
+    consumeGearPreps(c, spell, ev0);
     let coefficient = spell?.damage ?? c.basicCoef;
     let bonus = 0;
     let control = false;
     let consumedAngle = false;
+    let heatSpent = 0;
+    let dispelled = false;
+    let healed = 0;
+    let shielded = 0;
     const notes: string[] = [];
 
     if (spell) {
@@ -643,6 +1041,7 @@ export function fight(combat: CombatContent, setups: CombatantSetup[], encounter
       // Forgefeu : une Trempe dépense toutes les Braises.
       if (tags.includes('temper')) {
         const heat = c.heat;
+        heatSpent = heat;
         c.heat = 0;
         bonus += kp(c, 'temperPerHeat') * heat;
         inc(c, 'heatSpent', heat);
@@ -708,7 +1107,7 @@ export function fight(combat: CombatContent, setups: CombatantSetup[], encounter
       if (tags.includes('companion') && c.path?.id === 'packleader' && oldOrder) {
         c.orderUntil = consumedAngle ? t + ms(param(c, 'duration')) : -1;
         bonus += param(c, 'damage');
-        heal(c, beneficiary(c), param(c, 'heal') * c.P);
+        healed += heal(c, beneficiary(c), param(c, 'heal') * c.P);
         inc(c, 'packOrders');
       }
     } else {
@@ -723,15 +1122,15 @@ export function fight(combat: CombatContent, setups: CombatantSetup[], encounter
     const targets = [e, ...ranked(c).filter((x) => x.i !== e.i)].slice(0, spell?.targets ?? 1);
     targets.forEach((x, i) => {
       const impact = coefficient * (i === 0 ? 1 : R.secondaryShare) + (i === 0 ? bonus : 0);
-      damage(c, x, impact * c.P, basic ? 'basic' : 'skill', element, crit, spell?.penetration ?? 0);
+      damage(c, x, impact * c.P * (1 + pre.amplify + (basic ? c.mods.basicDamage : c.mods.skillDamage)), basic ? 'basic' : 'skill', element, crit, spell?.penetration ?? 0);
       if (spell?.dot) dot(c, x, `spell:${spell.id}`, spell.dot.amount * (i === 0 ? 1 : R.secondaryShare), spell.dot.type, spell.dot.duration);
     });
     if (c.tools.interstice) for (const x of targets) release(c, x, element);
 
     if (spell) {
       const who = beneficiary(c);
-      if (spell.heal) heal(c, who, spell.heal * c.P);
-      if (spell.shield) shield(c, who, spell.shield * c.P, `spell:${spell.id}`, true, spell.duration ?? 6);
+      if (spell.heal) healed += heal(c, who, spell.heal * c.P);
+      if (spell.shield) shielded += shield(c, who, spell.shield * c.P, `spell:${spell.id}`, true, spell.duration ?? 6);
       // Repli couvert : réserve personnelle en part des PV maximum de début de combat ; remplace la précédente.
       if (spell.selfPool) {
         c.cover = { amount: spell.selfPool.maxHpFraction * c.maxHp0, end: t + ms(spell.selfPool.duration) };
@@ -748,7 +1147,7 @@ export function fight(combat: CombatContent, setups: CombatantSetup[], encounter
           }
         }
         if (spell.pressure) control = pressure(c, v, spell.pressure) || control;
-        if (spell.mark) v.markUntil = Math.max(v.markUntil, t + ms(spell.mark));
+        if (spell.mark) v.markUntil = Math.max(v.markUntil, t + ms(spell.mark * (1 + c.mods.markDuration)));
         if (spell.weaken) weaken(c, v, spell.weaken, spell.duration ?? 6, false);
         if (spell.antiheal) {
           v.antiheal = spell.antiheal;
@@ -757,21 +1156,24 @@ export function fight(combat: CombatContent, setups: CombatantSetup[], encounter
         if (spell.dispel && v.guard > 0) {
           v.guard = 0;
           c.contrib.dispels++;
+          dispelled = true;
           notes.push('garde dissipée');
         }
       }
       if (spell.cleanse && encounter.aura && t > 0 && who.auraImmuneUntil <= t) {
         who.auraImmuneUntil = t + ms(R.cleanse.auraImmunity);
         c.contrib.cleanses++;
+        dispelled = true;
       }
       if (spell.cleanse && who.erosion > 0) {
         who.erosion = 0;
         c.contrib.cleanses++;
+        dispelled = true;
         notes.push('érosion purifiée');
       }
       if (spell.empowerAuto) prepare(c, 'auto', spell.empowerAuto * c.P, 8, 'auto');
-      if (c.kit.mechanic === 'heat' && spell.heat) c.heat = Math.min(kp(c, 'cap'), c.heat + spell.heat);
-      if (c.kit.mechanic === 'angle' && tags.includes('setup')) c.angle = { until: t + ms(kp(c, 'duration')), target: e.i };
+      if (c.kit.mechanic === 'heat' && spell.heat) c.heat = Math.min(kp(c, 'cap') + c.mods.heatCap, c.heat + spell.heat);
+      if (c.kit.mechanic === 'angle' && tags.includes('setup')) c.angle = { until: t + ms(kp(c, 'duration') + c.mods.angleDuration), target: e.i };
       if (c.kit.mechanic === 'rune') {
         c.rune = spell.form ?? null;
         if (spell.form) c.forms = [...c.forms.slice(-2), spell.form];
@@ -787,6 +1189,29 @@ export function fight(combat: CombatContent, setups: CombatantSetup[], encounter
       }
       if (control) inc(c, 'controlActions');
       log(c, 'cast', `${spell.name} (${ELEMENT_LABEL[element]})${notes.length ? ` : ${notes.join(', ')}` : ''}`);
+    }
+    // Talents : événements de l'action, dans l'ordre (la mécanique de classe d'abord, l'action directe ensuite).
+    if (talents) {
+      const ev = { ...ev0, heat: heatSpent };
+      if (spell) {
+        if (oldRune) emit(c, { ...ev, kind: 'rune_read' });
+        if (tags.includes('temper')) emit(c, { ...ev, kind: 'temper' });
+        if (consumedAngle) emit(c, { ...ev, kind: 'angle' });
+        if (tags.includes('companion')) emit(c, { ...ev, kind: 'companion' });
+        if (control) emit(c, { ...ev, kind: 'control' });
+        if (dispelled) emit(c, { ...ev, kind: 'dispel' });
+        if (healed > 0) emit(c, { ...ev, kind: 'heal_done', amount: healed });
+        if (shielded > 0) emit(c, { ...ev, kind: 'protect_done', amount: shielded });
+      }
+      emit(c, { ...ev, kind: spell ? 'skill' : 'basic' });
+      emit(c, { ...ev, kind: 'direct' });
+      if (crit) emit(c, { ...ev, kind: 'crit' });
+      if (spell) {
+        c.prevSkill = { id: spell.id, t, cooldown: spell.cooldown };
+        c.skillTimes.set(spell.id, t);
+        c.lastSkillAt = t;
+        if (oldRune) c.prevRead = oldRune;
+      }
     }
     c.minHp = Math.min(c.minHp, c.hp);
   };
@@ -809,6 +1234,11 @@ export function fight(combat: CombatContent, setups: CombatantSetup[], encounter
     const c = targetOf(e);
     if (!c) return;
     raw *= threat();
+    // Garde menaçante : tant qu'elle tient, son porteur frappe plus fort.
+    if (encounter.guard?.empower && e.guard > 0) {
+      raw *= 1 + encounter.guard.empower;
+      inc(c, 'guardedHits');
+    }
     log(null, source, `${source === 'charge' ? 'attaque chargée' : 'attaque'} de l'ennemi ${e.i + 1} sur ${c.setup.id}`);
     const active = e.weaken.filter((w) => w.until > t);
     // Un affaiblissement « une attaque » peut être gardé pour le coup qui compte (attaque lourde ou chargée).
@@ -821,6 +1251,10 @@ export function fight(combat: CombatContent, setups: CombatantSetup[], encounter
       strongest.by.contrib.mitigated += before - amount;
       if (strongest.by !== c) inc(strongest.by, 'mitigatedAllies', before - amount);
     }
+    // Ronces (3 pièces) : un ennemi ralenti frappe moins fort le porteur (attaques ordinaires).
+    if (source === 'attack' && c.mods.slowedTakenReduction && e.slowUntil > t && e.slow > 0) amount *= 1 - c.mods.slowedTakenReduction;
+    const absorbedBy = new Map<Combatant, number>();
+    let broke = false;
     // Impact : atténue un coup lourd ou une charge (part du coup, plafonnée en part des PV maximum), avant les boucliers.
     const impact = c.tools.impact;
     if (heavy && impact && amount > 0 && t >= impact.readyAt) {
@@ -838,13 +1272,17 @@ export function fight(combat: CombatContent, setups: CombatantSetup[], encounter
         sh.owner.contrib.absorbed += take;
         if (sh.owner !== c) inc(sh.owner, 'absorbedAllies', take);
         if (sh.primary && sh.owner.path?.id === 'glyphkeeper') sh.owner.ink = Math.min(param(sh.owner, 'cap') * sh.owner.P, sh.owner.ink + take);
+        if (sh.primary) absorbedBy.set(sh.owner, (absorbedBy.get(sh.owner) ?? 0) + take);
         if (sh.riposte) {
           damage(sh.owner, e, sh.riposte, 'class', 'physical');
           sh.riposte = 0;
           inc(sh.owner, 'ripostes');
         }
       }
-      if (sh.amount <= 1e-8) c.shields = c.shields.filter((s) => s !== sh);
+      if (sh.amount <= 1e-8) {
+        c.shields = c.shields.filter((s) => s !== sh);
+        if (take > 0) broke = true;
+      }
     }
     if (amount > 0 && c.cover && c.cover.end > t) {
       const take = Math.min(c.cover.amount, amount);
@@ -858,6 +1296,14 @@ export function fight(combat: CombatContent, setups: CombatantSetup[], encounter
       c.lastHitBy = source;
       inc(c, 'hpLost', amount);
     }
+    if (anyFx) {
+      for (const [owner, a] of absorbedBy) emit(owner, { kind: 'absorbed', target: e, amount: a });
+      if (broke) emit(c, { kind: 'shield_broken', target: e });
+      if (amount > 0) {
+        emit(c, { kind: 'hit_taken', target: e, amount });
+        emit(c, { kind: 'hp_below', target: e });
+      }
+    }
     for (const [owner, trap] of e.countertraps) {
       if (trap.until > t) {
         damage(owner, e, trap.amount, 'class', 'physical');
@@ -870,19 +1316,30 @@ export function fight(combat: CombatContent, setups: CombatantSetup[], encounter
   const crossed = (period: number) => t > 0 && Math.floor(t / period) > Math.floor((t - tick) / period);
 
   // --- Boucle -----------------------------------------------------------------------------------------------------
+  // Début de rencontre : bouclier de départ des lignes d'équipement, talents « début de combat ».
+  for (const c of team) {
+    if (c.stats.startShield?.share) shield(c, c, c.stats.startShield.share * c.stats.maxHp, 'gear_start', false, c.stats.startShield.duration, 0, true);
+    if (anyFx) emit(c, { kind: 'fight_start' });
+  }
   while (t <= limit && aliveTeam().length && chiefsAlive()) {
-    for (const c of team) c.shields = c.shields.filter((s) => s.end > t);
+    for (const c of team) {
+      // Un bouclier de compétence qui arrive à son terme avec un reste : expiration naturelle (pas un remplacement).
+      if (anyFx) for (const s of c.shields) if (s.end <= t && s.primary && s.amount > 1e-8) emit(s.owner, { kind: 'shield_expired', amount: s.amount });
+      c.shields = c.shields.filter((s) => s.end > t);
+    }
     for (const e of aliveEnemies()) {
       if (e.guardUntil <= t) e.guard = 0;
       for (const [key, d] of [...e.dots]) {
+        const origin = d.gear ? 'gear_dot' : 'dot';
         while (d.next <= t && d.next <= d.end && e.hp > 0) {
           d.next += ms(R.dotTick);
-          damage(d.owner, e, d.rate, 'dot', d.type === 'burn' ? 'fire' : 'physical');
+          damage(d.owner, e, d.rate, origin, d.type === 'burn' ? 'fire' : 'physical');
         }
         if (d.end <= t) {
           const fraction = Math.max(0, Math.min(1, (d.end - (d.next - ms(R.dotTick))) / ms(R.dotTick)));
-          if (fraction && e.hp > 0) damage(d.owner, e, d.rate * fraction, 'dot', d.type === 'burn' ? 'fire' : 'physical');
+          if (fraction && e.hp > 0) damage(d.owner, e, d.rate * fraction, origin, d.type === 'burn' ? 'fire' : 'physical');
           e.dots.delete(key);
+          if (anyFx && !d.gear && e.hp > 0) emit(d.owner, { kind: 'dot_expired', target: e });
         }
       }
     }
@@ -903,6 +1360,18 @@ export function fight(combat: CombatContent, setups: CombatantSetup[], encounter
           slot.opened = true;
           slot.ready = t + ms(slot.spell.cooldown / (1 + c.stats.haste));
           c.gcdAt = t + ms(R.gcd);
+        }
+      }
+    }
+    // Talents périodiques (« toutes les N secondes »).
+    if (anyFx) {
+      for (const c of aliveTeam()) {
+        for (const fx of c.fx) {
+          if (!fx.when.has('every') || !fx.e.period || !crossed(ms(fx.e.period)) || t < fx.readyAt) continue;
+          if (!holds(c, fx, { kind: 'every' })) continue;
+          depth++;
+          run(c, fx, fx.e.do, { kind: 'every' });
+          depth--;
         }
       }
     }
@@ -928,7 +1397,7 @@ export function fight(combat: CombatContent, setups: CombatantSetup[], encounter
       const boost = g.boostedByAdds && aliveEnemies().some((e) => e.add) ? g.boostedByAdds : 1;
       const on = g.on === 'alternate' ? [chiefs[guardTurn++ % chiefs.length]!] : chiefs;
       for (const e of on) {
-        e.guard = g.amount * hpScale * boost;
+        e.guard = g.amount * (g.scale === 'damage' ? enemyScale : hpScale) * boost;
         e.guardUntil = t + ms(g.duration);
       }
       log(null, 'guard', 'garde levée');
@@ -965,6 +1434,7 @@ export function fight(combat: CombatContent, setups: CombatantSetup[], encounter
           c.lastHitBy = 'aura';
           inc(c, 'erosionDamage', d);
           c.minHp = Math.min(c.minHp, c.hp);
+          if (anyFx) emit(c, { kind: 'hp_below' });
         }
       }
     }
@@ -976,6 +1446,7 @@ export function fight(combat: CombatContent, setups: CombatantSetup[], encounter
         c.lastHitBy = 'aura';
         inc(c, 'auraDamage', d);
         c.minHp = Math.min(c.minHp, c.hp);
+        if (anyFx) emit(c, { kind: 'hp_below' });
         // Reprise : une part de la perte réelle d'aura alimente une réserve (une aura létale tue avant).
         const breath = c.tools.breath;
         if (breath && c.hp > 0) breath.pool = Math.min(breath.tool.pulse * c.maxHp0, breath.pool + d * breath.tool.recover);

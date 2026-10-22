@@ -21,3 +21,4 @@ export * from './engine/gear.js';
 export * from './engine/market.js';
 export * from './engine/commission.js';
 export * from './engine/npc.js';
+export * from './combat/loadout.js';

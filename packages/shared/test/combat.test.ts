@@ -1,7 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import { buildCombatContent, planErrors } from '../src/combat/content.js';
 import { type CombatantSetup, fight } from '../src/combat/engine.js';
-import type { Encounter } from '../src/schemas/combat.js';
+import { deadLines, resolveLoadout, statsFromGear } from '../src/combat/loadout.js';
+import { type Encounter, type Talent, type Tool, gearStatsSchema, talentCatalogSchema, talentSchema } from '../src/schemas/combat.js';
 
 /** Contenu de combat figé : les tests ne dépendent pas de l'équilibrage de data/combat/. */
 const rules = {
@@ -120,6 +121,19 @@ describe('mécaniques de classe', () => {
     const withAngle = fight(combat, [solo('tracker', [['repere', 0], ['poursuite', 1]])], dummy({ hp: 1000 }), { seed: 1 });
     // L'Angle (6 s) est exploité une fois, puis il faut un nouveau Repérage (cooldown 30 s).
     expect(withAngle.team[0]!.metrics.anglesConsumed).toBe(1);
+  });
+
+  it('l’affût (windowPierce) : sans valeur rien ne change ; à 1, les fenêtres fermées ne réduisent plus les dégâts de la classe', () => {
+    const windows = { period: 10, open: 3, closedReduction: 0.5 };
+    const dealt = (c: typeof combat, over: Partial<Encounter>) => fight(c, [solo('tracker', [['poursuite', 0]])], dummy(over), { seed: 1 }).team[0]!.contributions.damage;
+    const pierced = structuredClone(combat);
+    pierced.kits.tracker!.params.windowPierce = 1;
+    expect(dealt(combat, { windows })).toBeLessThan(dealt(combat, {}) * 0.8);
+    expect(dealt(pierced, { windows })).toBeCloseTo(dealt(combat, {}), 6);
+    const half = structuredClone(combat);
+    half.kits.tracker!.params.windowPierce = 0.5;
+    expect(dealt(half, { windows })).toBeGreaterThan(dealt(combat, { windows }));
+    expect(dealt(half, { windows })).toBeLessThan(dealt(pierced, { windows }));
   });
 
   it('Runiste : chaque sort lit la rune du précédent, le premier n’en lit aucune', () => {
@@ -364,6 +378,14 @@ describe('outils de situation (dossier PvE v2)', () => {
     expect(capped.metrics.bankedDamage!).toBeLessThanOrEqual(200 * 7);
   });
 
+  it('garde menaçante : tant qu’elle tient, le porteur frappe plus fort ; la briser coupe la menace', () => {
+    const enc = (empower?: number) => dummy({ attack: { damage: 10, period: 1 }, guard: { period: 10, amount: 1e6, duration: 5, ...(empower ? { empower } : {}) } });
+    const lost = (e: Encounter, plan: [string, number][] = []) => fight(combat, [solo('forgefire', plan)], e, { seed: 1 }).team[0]!.metrics.hpLost!;
+    expect(fight(combat, [solo('forgefire', [])], enc(), { seed: 1 })).toEqual(fight(combat, [solo('forgefire', [])], dummy({ attack: { damage: 10, period: 1 }, guard: { period: 10, amount: 1e6, duration: 5 } }), { seed: 1 }));
+    // Garde levée de 10 à 15 s, 20 à 25 s… (après les coups du pas où elle se lève) : 4 coups doublés sur 10, 20 sur 59.
+    expect(lost(enc(1)) / lost(enc())).toBeCloseTo(1 + 20 / 59, 5);
+  });
+
   it('une seule variante par famille : la mieux classée (set 4 avant la gemme, la gemme avant le set 3)', () => {
     const enc = dummy({ guard: { period: 5, amount: 100, duration: 4 } });
     const run = (...tools: ReturnType<typeof tool>[]) => fight(combat, [{ ...piq, tools }], enc, { seed: 1 }).team[0]!.metrics.guardDamageBonus;
@@ -379,5 +401,113 @@ describe('outils de situation (dossier PvE v2)', () => {
     expect(at(5600).coverGranted).toBeCloseTo(4 * 672, 5);
     expect(at(2800).coverAbsorbed).toBeGreaterThan(0);
     expect(fight(combat, [solo('tracker', [['repli', 0]])], dummy({ aura: { damage: 10 } }), { seed: 1 }).team[0]!.metrics.coverAbsorbed).toBeUndefined();
+  });
+});
+
+describe('talents : gemmes, nommés, ensembles (schéma commun)', () => {
+  const talent = (effects: Record<string, unknown>[], mods: Record<string, number> = {}): Talent => talentSchema.parse({ id: 'x', name: 'x', effects, mods });
+  const frappe = solo('forgefire', [['frappe', 0]]);
+  const encounters = [dummy({ hp: 5000 }), dummy({ attack: { damage: 30, period: 1, heavyEvery: 3, heavyMultiplier: 4 }, guard: { period: 7, amount: 200, duration: 4 } }), dummy({ aura: { damage: 5 }, adds: [{ name: 'R', count: 2, hp: 400, attack: { damage: 20, period: 2 }, arrive: 5 }] })];
+
+  it('conservation : sans talent, avec une liste vide ou des modificateurs nuls, le combat est identique', () => {
+    for (const enc of encounters) {
+      const base = fight(combat, [frappe], enc, { seed: 3 });
+      expect(fight(combat, [{ ...frappe, talents: [] }], enc, { seed: 3 })).toEqual(base);
+      expect(fight(combat, [{ ...frappe, talents: [talent([], { dotDuration: 0, shieldPower: 0, pressure: 0 })] }], enc, { seed: 3 })).toEqual(base);
+      // Un talent qui ne se déclenche jamais (aucune affliction ici) ne change rien non plus.
+      expect(fight(combat, [{ ...frappe, talents: [talent([{ when: 'direct', target: ['burning'], do: { damage: 5 } }])] }], enc, { seed: 3 })).toEqual(base);
+    }
+  });
+
+  it('profondeur 1 : les dégâts d’un talent ne déclenchent aucun talent, ne critiquent pas, et passent la Défense', () => {
+    // Chaque action directe ajoute 0,5 P ; un second talent « à chaque action directe » ne voit que les vraies actions.
+    const r = fight(combat, [{ ...frappe, stats: { critChance: 1 }, talents: [talent([{ when: 'direct', do: { damage: 0.5 } }, { when: 'direct', do: { damage: 0.1 } }])] }], dummy(), { seed: 1 }).team[0]!;
+    const actions = r.metrics.skillCasts! + r.metrics.basicAttacks!;
+    expect(r.metrics['talent:x:0']).toBe(actions);
+    expect(r.metrics['talent:x:1']).toBe(actions);
+    // 0,6 P par action, jamais × 1,5 (critique à 100 %), Défense ennemie nulle dans ce contenu figé.
+    expect(r.metrics.talentDamage!).toBeCloseTo(actions * 60, 5);
+  });
+
+  it('préparation : elle attend l’action suivante et son délai démarre à sa consommation', () => {
+    // Chaque compétence prépare 1 P pour la prochaine compétence, délai 5 s : une consommation toutes les 5 s au plus.
+    const r = fight(combat, [{ ...frappe, talents: [talent([{ when: 'skill', cooldown: 5, do: { next: 'skill', damage: 1 } }])] }], dummy(), { seed: 1 }).team[0]!;
+    // Combat de 60 s, une frappe par seconde : préparée à 0 s, servie à 1 s ; de nouveau préparée à 6 s (fin du délai),
+    // servie à 7 s ; … soit à 1, 7, 13… 55 s : 10 fois.
+    expect(r.metrics.talentDamage!).toBeCloseTo(10 * 100, 5);
+  });
+
+  it('bonus d’action : +50 % sur les compétences de cooldown de base au plus 1 s, rien sur les autres', () => {
+    const plain = fight(combat, [frappe], dummy(), { seed: 1 }).team[0]!.contributions.damage;
+    const amp = fight(combat, [{ ...frappe, talents: [talent([{ when: 'skill', maxCooldown: 1, do: { amplify: 0.5 } }])] }], dummy(), { seed: 1 }).team[0]!.contributions.damage;
+    expect(amp / plain).toBeCloseTo(1.5, 5);
+    const trempe = solo('forgefire', [['trempe', 0]]);
+    expect(fight(combat, [{ ...trempe, talents: [talent([{ when: 'skill', maxCooldown: 1, do: { amplify: 0.5 } }])] }], dummy(), { seed: 1 })).toEqual(fight(combat, [trempe], dummy(), { seed: 1 }));
+  });
+
+  it('les boucliers d’un talent sont secondaires : ni Encre, ni Puissance de soutien ; le modificateur de bouclier ne vise que les compétences', () => {
+    const hitter = dummy({ attack: { damage: 50, period: 1 } });
+    const garde = solo('forgefire', [['garde', 0]]);
+    const produced = (over: Partial<CombatantSetup>) => fight(combat, [{ ...garde, ...over }], hitter, { seed: 1 }).team[0]!.metrics.shieldProduced!;
+    const base = produced({});
+    expect(produced({ talents: [talent([], { shieldPower: 0.5 })] }) / base).toBeCloseTo(1.5, 5);
+    // Bastion : 0,65 P au début ; il n'est pas multiplié par le modificateur.
+    const bastion = talent([{ when: 'fight_start', do: { shield: { coef: 0.65, duration: 8 } } }], { shieldPower: 0.5 });
+    expect(produced({ talents: [bastion] }) - base * 1.5).toBeCloseTo(65, 5);
+  });
+
+  it('réserves : un talent remplit, un autre dépense, plafond, conversion et part gardée', () => {
+    // Chaque frappe (100 par seconde) donne 1 Tison ; toutes les 5 actions, on dépense les Tisons à 0,1 P chacun.
+    const fill = talent([{ when: 'skill', do: { gain: { pool: 'tisons', n: 1 } } }]);
+    const burst = talent([{ when: 'skill', every: 5, do: { spendPool: { pool: 'tisons', perStack: 0.1 } } }]);
+    const r = (over: Partial<CombatantSetup>) => fight(combat, [{ ...frappe, talents: [fill, burst], pools: { tisons: 10, ferveur: 10 }, ...over }], dummy(), { seed: 1 }).team[0]!.metrics;
+    // 60 frappes : 12 dépenses ; la 5ᵉ frappe gagne avant de dépenser (ordre des talents) : 5 Tisons par dépense.
+    expect(r({}).talentDamage!).toBeCloseTo(12 * 5 * 10, 5);
+    // Plafond à 3 : 3 Tisons par dépense.
+    expect(r({ pools: { tisons: 3 } }).talentDamage!).toBeCloseTo(12 * 3 * 10, 5);
+    // Conversion : chaque Tison donne aussi 0,5 Ferveur, jamais dépensée ici : 30 Ferveur offertes, 10 gardées (plafond).
+    expect(r({ convert: [{ from: 'tisons', to: 'ferveur', share: 0.5 }] })['pool:ferveur']).toBeCloseTo(10, 5);
+    // Part gardée : une dépense ne vide que la moitié de la réserve, la suivante en profite.
+    expect(r({ talents: [fill, burst, talent([], { spendKeep: 0.5 })] }).talentDamage!).toBeGreaterThan(12 * 5 * 10 * 0.5);
+    // Sans réserve ouverte, rien ne se remplit ni ne se dépense.
+    expect(fight(combat, [{ ...frappe, talents: [fill, burst] }], dummy(), { seed: 1 }).team[0]!.metrics.talentDamage).toBeUndefined();
+    // Échelle : +1 % de dégâts directs par Tison, avant l'action.
+    const amp = talent([{ when: 'skill', do: { amplify: 0.01, scaleBy: 'tisons' } }]);
+    const withAmp = fight(combat, [{ ...frappe, talents: [fill, amp], pools: { tisons: 10 } }], dummy(), { seed: 1 }).team[0]!;
+    const plain = fight(combat, [frappe], dummy(), { seed: 1 }).team[0]!;
+    // 61 frappes (0 à 60 s) : 0, 1, 2… 10 Tisons (plafond) au début de chaque action.
+    const expected = Array.from({ length: 61 }, (_, i) => 100 * (1 + 0.01 * Math.min(10, i))).reduce((a, x) => a + x, 0);
+    expect(withAmp.contributions.damage).toBeCloseTo(expected, 5);
+    expect(plain.contributions.damage).toBeCloseTo(6100, 5);
+  });
+
+  it('la conversion des statistiques : sans règle, les statistiques de référence ; sinon rendement décroissant plafonné', () => {
+    expect(statsFromGear(combat.rules, { stats: { power: 999 }, lines: {} }, 20)).toEqual(combat.rules.referenceStats);
+    const rules = { ...combat.rules, gearStats: gearStatsSchema.parse({ power: { base: 10, perPoint: 0.2 }, maxHp: { base: 2000, perPoint: 4 }, defense: { cap: 0.45, k: { '1': 100, '20': 400 } }, haste: { cap: 0.35, base: 0, k: { '1': 100 } }, crit: { cap: 0.3, base: 0.05, k: { '1': 100 } }, critMultiplier: 1.5, startShieldDuration: 8, lines: { Critique: 'critChance', Ténacité: 'none' } }) };
+    const s = statsFromGear(rules, { stats: { power: 450, vitality: 200, defense: 400, crit: 100 }, lines: { Critique: 3, Ténacité: 5 } }, 25);
+    expect(s.power).toBeCloseTo(100, 5);
+    expect(s.maxHp).toBeCloseTo(2800, 5);
+    expect(s.damageReduction).toBeCloseTo(0.225, 5);
+    expect(s.critChance).toBeCloseTo(0.05 + 0.15 + 0.03, 5);
+    expect(deadLines(rules.gearStats, { Critique: 3, Ténacité: 5 })).toEqual(['Ténacité']);
+    // Au palier 1, le K est plus petit : la même Défense protège davantage, mais jamais au-delà du plafond.
+    expect(statsFromGear(rules, { stats: { defense: 1e9 }, lines: {} }, 1).damageReduction).toBeCloseTo(0.45, 5);
+  });
+
+  it('budget unique : quatre majeures (nommés compris), une gemme n’agit qu’une fois, paliers d’ensemble cumulés, ensemble de situation = outil de son rang', () => {
+    const cat = talentCatalogSchema.parse({
+      gems: ['a', 'b', 'c', 'd', 'e'].map((id) => ({ id, name: id, effects: [] })),
+      named: [{ id: 'n', name: 'n', effects: [] }],
+      sets: [{ id: 's', name: 'S', pieces: { '2': { mods: { pressure: 0.08 } }, '4': { effects: [{ when: 'direct', do: { damage: 0.1 } }] } } }],
+    });
+    const tools = [{ id: 'imp4', name: 'i', family: 'impact', rank: 'set4', incoming: 0.65, maxHp: 0.25, cooldown: 6 }, { id: 'imp3', name: 'i', family: 'impact', rank: 'set3', incoming: 0.25, maxHp: 0.12, cooldown: 6 }] as Tool[];
+    const rules = { majors: 4, setPieces: 8, preps: 1 };
+    expect(resolveLoadout(cat, tools, { gems: ['a', 'b', 'c', 'd'], named: ['n'] }, rules).errors).toEqual(['5 talents majeurs pour 4 places']);
+    expect(resolveLoadout(cat, tools, { gems: ['a', 'a'] }, rules).talents.map((x) => x.id)).toEqual(['a']);
+    const r = resolveLoadout(cat, tools, { sets: { s: 4, impact: 3 } }, rules);
+    expect(r.talents.map((x) => x.id)).toEqual(['s_2', 's_4']);
+    expect(r.mods.pressure).toBeCloseTo(0.08, 9);
+    expect(r.tools.map((x) => x.id)).toEqual(['imp3']);
+    expect(resolveLoadout(cat, tools, { sets: { s: 4, impact: 4, x: 2 } }, rules).errors).toEqual(['10 pièces d’ensemble pour 8 emplacements'.replace('’', "'"), 'ensemble inconnu « x »']);
   });
 });

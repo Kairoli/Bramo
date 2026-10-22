@@ -10,6 +10,10 @@
 - **Lisibilité** : nombres de dégâts (blancs, jaunes en critique, rouges pour les coups reçus), barres de vie du personnage et de l'ennemi, nom du sort à côté du personnage, décor assombri sous la scène.
 - **Ennemi provisoire** : une Ombre de la Marée (corps ombré, lueur de contour, yeux, volutes qui ondulent, recule sous les coups). Les ennemis propres à chaque région restent à dessiner.
 
+## Les icônes
+
+Chaque sort a son icône (`apps/web/src/components/SpellIcon.tsx`) : un médaillon à la couleur de son élément (feu, givre, foudre ; la couleur de la classe pour le physique), un symbole repris de son effet à l'écran (l'enclume qui tombe, le piège à loup, le nœud sans fin…), un cadre doré pour les ultimes. Elles servent dans la barre de sorts de l'arène (avec la recharge en direct) et dans la Préparation. Elles sont dessinées en SVG pour être nettes à toutes les tailles ; des icônes peintes (comme les décors) pourront les remplacer une à une.
+
 ## Les gestes
 
 | Classe | Gestes |

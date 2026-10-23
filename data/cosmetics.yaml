@@ -80,7 +80,7 @@ outfits:
     name: Marée haute
     subtitle: Saison des marées
     classes: [runist]
-    locked: Saison des marées
+    locked: Éclats de marée
     palette:
       coat: "#1F4652"
       coatDark: "#15313A"
@@ -99,6 +99,53 @@ outfits:
       boots: travel_boots
       cape: mantlet
       shoulder_far: rune_pauldron
+
+  # Marée haute du Forgefeu et du Traqueur (23 octobre) : leurs pièces de départ aux couleurs de la Marée, achetées avec
+  # des éclats de marée (combat/tide.yaml).
+  - id: high_tide_forge
+    name: Marée haute
+    subtitle: Éclats de marée
+    classes: [forgefire]
+    locked: Éclats de marée
+    palette:
+      coat: "#1F4652"
+      coatDark: "#15313A"
+      mantle: "#2C5E66"
+      under: "#E3C770"
+      trim: "#4CC9D6"
+      metal: "#B8C4C6"
+      beard: "#6B321F"
+    parts:
+      headwear: forge_band
+      face: forge_beard
+      top: forge_tunic
+      belt: forge_belt
+      robe: forge_apron
+      gloves: forge_gauntlets
+      boots: forge_boots
+      shoulder_far: forge_pauldron
+
+  - id: high_tide_ranger
+    name: Marée haute
+    subtitle: Éclats de marée
+    classes: [tracker]
+    locked: Éclats de marée
+    palette:
+      coat: "#1F4652"
+      coatDark: "#15313A"
+      mantle: "#2C5E66"
+      under: "#E3C770"
+      trim: "#4CC9D6"
+      metal: "#B8C4C6"
+      beard: "#4A3426"
+    parts:
+      headwear: ranger_hood
+      face: ranger_stubble
+      top: ranger_jerkin
+      belt: ranger_belt
+      gloves: ranger_bracers
+      boots: ranger_boots
+      cape: ranger_cloak
 
   # Change de silhouette : capuche à pointe et diadème, grande cape, seconde épaulière.
   - id: grandmaster

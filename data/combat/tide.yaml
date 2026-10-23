@@ -1,0 +1,59 @@
+# La Marée du soir (docs/design/contenu/le-monde.md §5). [Décidé par Louis le 22 octobre : tous les soirs à 20 h pendant une
+# heure ; le type tourne chaque soir.] Le reste est proposé par Claude (23 octobre, nuit), chiffres à équilibrer.
+#
+# - Chaque participant marque des points : en combat, sa contribution face à la Marée ramenée à celle d'un build moyen de
+#   son niveau (un build moyen fait 1 point par minute, soit 60 points le soir) ; ou en travail, ce que la digue demande.
+# - Les absents participent tout seuls (case « Rejoindre la Marée chaque soir », cochée par défaut) : jamais punis.
+# - Le joueur connecté pendant la Marée marque un peu plus (+15 %), jamais de quoi faire plus de 2 à 2,5 fois un casu.
+# - Les éclats de marée ne donnent que des apparences ; le coffre de la semaine, des matières et une chance de cache.
+startHourUtc: 19          # 20 h à Paris (heure d'hiver)
+durationMin: 60
+rotation: [debacle, lanterns, giants]
+tides:
+  - id: debacle
+    name: La Débâcle
+    blurb: "La digue du Fossé gris a cédé : tout ce que la Marée avait pris descend la rivière."
+    scoring: damage
+    encounter: tide_debacle
+    shines: "les dégâts, surtout de zone"
+    work: { text: "Consolider la digue : pierre et planches.", items: [{ item: stone_block, qty: 150 }, { item: pine_plank, qty: 60 }] }
+  - id: lanterns
+    name: La Nuit des Lanternes
+    blurb: "Les lanternes de la Chaussée marchent vers le bourg ; derrière chacune, une âme qui rentre."
+    scoring: support
+    encounter: tide_lanterns
+    shines: "les soutiens et le contrôle : soigner, protéger, affaiblir"
+    work: { text: "Fabriquer des lanternes : fioles et bois.", items: [{ item: vial, qty: 120 }, { item: pine_log, qty: 100 }] }
+  - id: giants
+    name: La Veille des Géants
+    blurb: "Un géant sort de la brume."
+    scoring: damage
+    encounter: tide_giants
+    shines: "les gros dégâts, et ceux qui tiennent"
+    work: { text: "Poser des balises : relevés et rivets.", items: [{ item: survey_notes, qty: 150 }, { item: rivets, qty: 100 }] }
+points:
+  perMinute: 1
+  minRatio: 0.4           # un débutant marque au moins 40 % d'un build moyen : personne ne repart les mains vides
+  maxRatio: 2
+  liveBonus: 0.15
+  fights: 3
+shards:
+  item: tide_shard
+  perPoint: 1
+  objectivePerParticipant: 55
+  thresholds: [{ share: 0.25, bonus: 4 }, { share: 0.5, bonus: 6 }, { share: 0.75, bonus: 8 }, { share: 1, bonus: 12 }]
+weekly:
+  bestNights: 4
+  materialsMinutes: 40
+  cacheChance: 0.25
+  bonusAbove: 200
+  bonusShards: 40
+# ~600 éclats : une dizaine de soirs, ou une semaine pleine avec le coffre. Une tenue par classe.
+shop:
+  - { id: high_tide_runist, name: "Marée haute (Runiste)", outfit: high_tide, cost: 600 }
+  - { id: high_tide_forge, name: "Marée haute (Forgefeu)", outfit: high_tide_forge, cost: 600 }
+  - { id: high_tide_ranger, name: "Marée haute (Traqueur)", outfit: high_tide_ranger, cost: 600 }
+titles:
+  - { tide: debacle, nights: 10, title: "A tenu la digue" }
+  - { tide: lanterns, nights: 10, title: "Porte-lanterne" }
+  - { tide: giants, nights: 10, title: "A vu un géant" }

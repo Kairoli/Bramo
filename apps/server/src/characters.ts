@@ -14,6 +14,16 @@ export interface LoadedCharacter {
 export async function loadCharacterForUpdate(tx: Tx, accountId: number, content: Content): Promise<LoadedCharacter | null> {
   const [row] = await tx.select().from(characters).where(eq(characters.accountId, accountId)).for('update');
   if (!row) return null;
+  return fromRow(tx, row, content);
+}
+
+/** Charge un personnage par son identifiant, sans verrou (lecture : règlement de la Marée du soir). */
+export async function loadCharacterById(tx: Tx, id: number, content: Content): Promise<LoadedCharacter | null> {
+  const [row] = await tx.select().from(characters).where(eq(characters.id, id));
+  return row ? fromRow(tx, row, content) : null;
+}
+
+async function fromRow(tx: Tx, row: typeof characters.$inferSelect, content: Content): Promise<LoadedCharacter> {
   const skills = await tx.select().from(characterSkills).where(eq(characterSkills.characterId, row.id));
   const items = await tx.select().from(characterItems).where(eq(characterItems.characterId, row.id));
   // Bonus de clan : ceux des bâtiments du clan, sinon ceux de la Guilde du bourg.

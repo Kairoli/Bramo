@@ -8,6 +8,7 @@ import {
   plansFileSchema,
   spellsFileSchema,
   talentCatalogSchema,
+  tideSchema,
   toolsFileSchema,
 } from '../schemas/combat.js';
 
@@ -20,6 +21,7 @@ export interface RawCombat {
   encounters?: unknown;
   talents?: unknown;
   tools?: unknown;
+  tide?: unknown;
 }
 
 function parse<T>(schema: z.ZodType<T>, data: unknown, file: string, errors: string[]): T | null {
@@ -72,7 +74,8 @@ export function buildCombatContent(raw: RawCombat, classIds: string[]): { combat
   const encounterList = parse(encountersFileSchema, raw.encounters ?? [], 'encounters.yaml', errors);
   const talents = raw.talents === undefined ? null : parse(talentCatalogSchema, raw.talents, 'talents.yaml', errors);
   const tools = parse(toolsFileSchema, raw.tools ?? [], 'tools.yaml', errors);
-  if (!rules || !kitsFile || !spellList || !planList || !encounterList || !tools || (raw.talents !== undefined && !talents)) return { combat: null, errors };
+  const tide = raw.tide === undefined ? null : parse(tideSchema, raw.tide, 'tide.yaml', errors);
+  if ((raw.tide !== undefined && !tide) || !rules || !kitsFile || !spellList || !planList || !encounterList || !tools || (raw.talents !== undefined && !talents)) return { combat: null, errors };
 
   const index = <T extends { id: string }>(list: T[], file: string) => {
     const map: Record<string, T> = {};
@@ -113,7 +116,18 @@ export function buildCombatContent(raw: RawCombat, classIds: string[]): { combat
     encounters: index(encounterList, 'encounters.yaml'),
     talents,
     tools,
+    tide,
   };
+  if (tide) {
+    const ids = new Set(tide.tides.map((t) => t.id));
+    for (const r of tide.rotation) if (!ids.has(r)) errors.push(`combat/tide.yaml : Marée inconnue dans la rotation « ${r} »`);
+    for (const t of tide.tides) {
+      const e = combat.encounters[t.encounter];
+      if (!e) errors.push(`combat/tide.yaml : ${t.id} : rencontre inconnue « ${t.encounter} »`);
+      else if (e.kind !== 'maree') errors.push(`combat/tide.yaml : ${t.id} : la rencontre ${e.id} doit être de type maree`);
+    }
+    for (const x of tide.titles) if (!ids.has(x.tide)) errors.push(`combat/tide.yaml : titre d'une Marée inconnue « ${x.tide} »`);
+  }
   for (const e of encounterList) {
     for (const n of e.loot?.named ?? []) if (!talents?.named.some((x) => x.id === n)) errors.push(`combat/encounters.yaml : ${e.id} : objet nommé inconnu « ${n} » (talents.yaml)`);
     for (const s of e.loot?.sets ?? []) if (!talents?.sets.some((x) => x.id === s)) errors.push(`combat/encounters.yaml : ${e.id} : ensemble inconnu « ${s} » (talents.yaml)`);

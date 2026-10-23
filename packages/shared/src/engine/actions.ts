@@ -183,7 +183,9 @@ export function chooseClass(input: CharacterState, classId: string, content: Con
  * sauf celles qui se débloquent plus tard (saisons, réalisations).
  */
 export function unlockedOutfits(state: CharacterState, content: Content): string[] {
-  return content.cosmetics.outfits.filter((o) => !!state.classId && o.classes.includes(state.classId) && !o.locked).map((o) => o.id);
+  // Une tenue verrouillée se débloque aussi avec des éclats de marée (combat/tide.ts).
+  const bought = state.combat?.tide?.unlocked ?? [];
+  return content.cosmetics.outfits.filter((o) => !!state.classId && o.classes.includes(state.classId) && (!o.locked || bought.includes(o.id))).map((o) => o.id);
 }
 
 /** Pièces qu'on peut poser sur chaque emplacement : celles des tenues débloquées de la classe. */
@@ -203,7 +205,7 @@ export function chooseOutfit(input: CharacterState, outfitId: string, content: C
   if (!input.classId || !outfit.classes.includes(input.classId)) {
     throw new GameError('wrong_class_outfit', 'Cette tenue n’appartient pas au style de votre classe.');
   }
-  if (outfit.locked) throw new GameError('locked_outfit', `Cette tenue n’est pas encore débloquée (${outfit.locked}).`);
+  if (outfit.locked && !(input.combat?.tide?.unlocked ?? []).includes(outfit.id)) throw new GameError('locked_outfit', `Cette tenue n’est pas encore débloquée (${outfit.locked}).`);
   const state = cloneState(input);
   state.outfit = outfitId;
   state.look = {};

@@ -330,10 +330,11 @@ export function viewCombat(state: CharacterState, content: Content): CombatView 
       .filter((s) => s.class === classId && (!s.path || s.path === path || !path))
       .sort((x, y) => x.level - y.level)
       .map((s) => ({ id: s.id, name: s.name, level: s.level, path: s.path ?? null, cooldown: s.cooldown, element: s.element, tags: s.tags, form: s.form ?? null, text: describeSpell(s), available: available.has(s.id), effects: spellEffects(s) })),
-    encounters: Object.values(combat.encounters).map((e) => ({
+    // Les rencontres de la Marée du soir ne se jouent qu’à 20 h : elles ne sont pas des patrouilles.
+    encounters: Object.values(combat.encounters).filter((e) => e.kind !== 'maree').map((e) => ({
       id: e.id,
       name: e.name,
-      kind: e.kind ?? 'profil',
+      kind: (e.kind ?? 'profil') as EncounterView['kind'],
       region: e.region ?? null,
       tier: e.tier ?? null,
       tiers: encounterTiers(e, combat, tier),

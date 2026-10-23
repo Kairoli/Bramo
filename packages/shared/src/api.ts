@@ -2,6 +2,7 @@ import { z } from 'zod';
 import type { Content } from './schemas/content.js';
 import type { AdvanceSummary } from './engine/advance.js';
 import type { StateView } from './engine/view.js';
+import type { TideNight } from './combat/tide.js';
 
 /** Corps de requêtes, validés par le serveur. */
 export const credentialsBody = z.object({
@@ -50,6 +51,8 @@ export const gearIdBody = z.object({ id: z.number().int() });
 /** Développement : mettre des objets dans son sac. */
 export const devItemGrantBody = z.object({ itemId: z.string(), qty: z.number().int().min(1).max(10_000) });
 export const gearSocketBody = z.object({ id: z.number().int(), itemId: z.string().nullable() });
+export const tidePrefsBody = z.object({ auto: z.boolean().optional(), channel: z.enum(['combat', 'work']).optional() });
+export const tideBuyBody = z.object({ offer: z.string() });
 export const gearGrantBody = z.object({ modelId: z.string(), masterpiece: z.boolean().optional(), count: z.number().int().min(1).max(20).optional() });
 export const lookBody = z.object({ slot: z.string(), partId: z.string().nullable() });
 export const trialBody = z.object({ trialId: z.string() });
@@ -250,3 +253,29 @@ export interface ApiError {
   code: string;
   message: string;
 }
+
+/** La Marée du soir vue par un joueur (GET /api/tide). */
+export interface TideView {
+  tonight: {
+    day: number;
+    id: string;
+    name: string;
+    blurb: string;
+    shines: string;
+    start: number;
+    end: number;
+    open: boolean;
+    work: { text: string; items: { item: string; name: string; qty: number; have: number; delivered: number }[] };
+  };
+  prefs: { auto: boolean; channel: 'combat' | 'work' };
+  joinedLive: boolean;
+  shards: number;
+  nights: TideNight[];
+  /** Points de la semaine en cours (meilleurs soirs) et ce qu'il faut pour le coffre plein. */
+  week: { points: number; nights: number; bestNights: number; bonusAbove: number };
+  shop: { id: string; name: string; outfit: string; cost: number; owned: boolean; forClass: boolean }[];
+  titles: string[];
+  counts: Record<string, number>;
+  last: { day: number; name: string; participants: number; points: number; objective: number; thresholds: number; of: number } | null;
+}
+

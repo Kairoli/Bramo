@@ -234,3 +234,6 @@
 - {id: gem_drive_garnet, name: Grenat de battue, category: gem, value: 15, gem: drive_garnet}
 - {id: gem_fault_eye, name: Œil de faille, category: gem, value: 15, gem: fault_eye}
 - {id: gem_recovery_amber, name: Ambre de reprise, category: gem, value: 15, gem: recovery_amber}
+
+# --- La Marée du soir (combat/tide.yaml) : les éclats de marée s'échangent contre des apparences, jamais de la puissance. ---
+- {id: tide_shard, name: Éclat de marée, category: currency, value: 5}

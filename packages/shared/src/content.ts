@@ -188,6 +188,12 @@ export function buildContent(raw: RawContent): Content {
     const built = buildCombatContent(raw.combat, Object.keys(classes));
     errors.push(...built.errors);
     combat = built.combat;
+    const tide = combat?.tide;
+    if (tide) {
+      if (!items[tide.shards.item]) errors.push(`combat/tide.yaml : objet des éclats inconnu « ${tide.shards.item} » (items.yaml)`);
+      for (const t of tide.tides) for (const w of t.work.items) if (!items[w.item]) errors.push(`combat/tide.yaml : ${t.id} : objet demandé inconnu « ${w.item} »`);
+      for (const x of tide.shop) if (!cosmetics.outfits.some((o) => o.id === x.outfit)) errors.push(`combat/tide.yaml : ${x.id} : tenue inconnue « ${x.outfit} »`);
+    }
     for (const e of Object.values(combat?.encounters ?? {})) {
       if (e.loot?.vestige && !items[e.loot.vestige]) errors.push(`combat/encounters.yaml : ${e.id} : vestige inconnu « ${e.loot.vestige} » (items.yaml)`);
     }

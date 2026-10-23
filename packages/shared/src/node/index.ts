@@ -45,6 +45,7 @@ export function readRawContent(dataDir: string): RawContent {
           encounters: existsSync(join(dataDir, 'combat', 'encounters.yaml')) ? read('combat/encounters.yaml') : [],
           ...(existsSync(join(dataDir, 'combat', 'talents.yaml')) ? { talents: read('combat/talents.yaml') } : {}),
           tools: existsSync(join(dataDir, 'combat', 'tools.yaml')) ? read('combat/tools.yaml') : [],
+          ...(existsSync(join(dataDir, 'combat', 'tide.yaml')) ? { tide: read('combat/tide.yaml') } : {}),
         }
       : undefined,
     recipes: recipeFiles.map((f) => [`recipes/${f}`, read(join('recipes', f))]),

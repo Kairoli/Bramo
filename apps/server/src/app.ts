@@ -74,8 +74,16 @@ import {
   renamePreset,
   savePreset,
   writePreset,
+  buyTideItem,
+  deliverTideWork,
+  joinTideLive,
+  setTidePrefs,
+  tideBuyBody,
+  tidePrefsBody,
 } from '@bramo/shared';
 import type { Db } from './db/index.js';
+import { settleTide, tideView } from './tide.js';
+import { loadCharacterById } from './characters.js';
 import { accounts, characters } from './db/schema.js';
 import {
   SESSION_COOKIE,
@@ -147,6 +155,8 @@ export async function buildApp({ db, content, clock = Date.now, secureCookies = 
 
   async function playAs(req: FastifyRequest, action?: Action) {
     const accountId = await requireAccount(req);
+    // La Marée du soir se règle une fois pour tout le serveur, à la première requête après sa fin.
+    await settleTide(db, content, clock());
     try {
       return await play(db, content, accountId, clock(), action);
     } catch (err) {
@@ -633,6 +643,34 @@ export async function buildApp({ db, content, clock = Date.now, secureCookies = 
     const profile = Number.isInteger(id) ? await playerProfile(db, content, id) : null;
     if (!profile) throw new HttpError(404, 'unknown_player', 'Joueur introuvable.');
     return profile;
+  });
+
+  // --- La Marée du soir ---
+
+  app.get('/api/tide', async (req) => {
+    const me = await myCharacter(req);
+    await settleTide(db, content, clock());
+    return db.transaction(async (tx) => {
+      const loaded = await loadCharacterById(tx, me.id, content);
+      return tideView(tx, loaded!.state, content, clock());
+    });
+  });
+  app.post('/api/tide/prefs', (req) => {
+    const prefs = body(tidePrefsBody, req);
+    return playAs(req, (state) => ({ state: setTidePrefs(state, prefs, content) }));
+  });
+  app.post('/api/tide/join', (req) =>
+    playAs(req, (state, now) => ({ state: joinTideLive(state, now, content), log: 'Vous rejoignez la digue : la Marée du soir compte vos points en direct.', logKind: 'combat' })),
+  );
+  app.post('/api/tide/deliver', (req) =>
+    playAs(req, (state, now) => {
+      const r = deliverTideWork(state, now, content);
+      return { state: r.state, log: `Livré à la digue : ${Object.entries(r.delivered).map(([k, n]) => `${n} × ${itemName(k)}`).join(', ')}.`, logKind: 'combat' };
+    }),
+  );
+  app.post('/api/tide/buy', (req) => {
+    const { offer } = body(tideBuyBody, req);
+    return playAs(req, (state) => ({ state: buyTideItem(state, offer, content), log: `Éclats de marée échangés : ${content.combat?.tide?.shop.find((o) => o.id === offer)?.name ?? offer}.`, logKind: 'info' }));
   });
 
   app.get('/api/journal', async (req) => {

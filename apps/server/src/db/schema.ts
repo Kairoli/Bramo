@@ -249,3 +249,32 @@ export const journal = pgTable(
   },
   (t) => [index('journal_character_at').on(t.characterId, t.at)],
 );
+
+/** La Marée du soir : un soir réglé (une fois pour tout le serveur), son total et ses seuils franchis. */
+export const tideDays = pgTable('tide_days', {
+  day: integer('day').primaryKey(),
+  tide: text('tide').notNull(),
+  participants: integer('participants').notNull().default(0),
+  points: integer('points').notNull().default(0),
+  thresholds: integer('thresholds').notNull().default(0),
+  settledAt: ts('settled_at').notNull(),
+});
+
+/** Ce que chaque participant a marqué un soir ; les éclats arrivent à sa prochaine visite (`claimed`). */
+export const tideEntries = pgTable(
+  'tide_entries',
+  {
+    day: integer('day').notNull(),
+    characterId: integer('character_id')
+      .notNull()
+      .references(() => characters.id, { onDelete: 'cascade' }),
+    tide: text('tide').notNull(),
+    points: integer('points').notNull(),
+    ratio: doublePrecision('ratio').notNull(),
+    channel: text('channel').notNull(),
+    live: boolean('live').notNull().default(false),
+    shards: integer('shards').notNull().default(0),
+    claimed: boolean('claimed').notNull().default(false),
+  },
+  (t) => [primaryKey({ columns: [t.day, t.characterId] }), index('tide_entries_character').on(t.characterId, t.claimed)],
+);

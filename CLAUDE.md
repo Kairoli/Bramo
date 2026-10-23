@@ -53,7 +53,16 @@ Bramo est un **idle-RPG multijoueur jouable dans le navigateur**, dans l'esprit 
 
 ---
 
-## 5. État du projet (à jour au 22 octobre 2026)
+## 5. État du projet (à jour au 23 octobre 2026)
+
+### Fait — simulation d'un vrai serveur, failles corrigées, systèmes manquants ajoutés (23 octobre, nuit, carte blanche de Louis)
+
+- **Demande de Louis** : simuler un vrai serveur (population, clans, world boss, tout le contenu), des joueurs très différents ou tous méta, trouver les failles (trop simple, trop dur, trop long, marché, bradeurs, butin, ensembles ignorés, classes et voies), ajouter ce qui manque, resimuler. **Rapport complet : [`docs/design/simulation-serveur.md`](docs/design/simulation-serveur.md).** Tout ce qui suit est **proposé par Claude**, à valider par Louis.
+- **Simulateur de serveur** (`sim/src/server/` : `world.ts`, `personas.ts`, `report.ts`, `tideHook.ts`, `fightCache.ts` ; `pnpm --filter @bramo/sim exec tsx src/server/run.ts <joueurs> <jours> <composition> <graine> [nom]`, essais `PATCH='{"chemin":valeur}'`, `TIDE=0`) : 11 façons de jouer (tryhard méta, casu guidé, casu tranquille, artisan du marché, récolteur, bradeur, spéculateur, thésauriseur, combattant, collectionneur, onglet oublié) et 4 compositions (`real`, `meta`, `dump`, `hoard`) ; le vrai moteur (`advance`, route et butin compris), un marché aux règles du serveur, commandes PNJ et du maître, clans, gemmes, fournitures, atelier, vitrine, Marée. Rapports dans `sim/reports/serveur/` (Markdown et JSON). `sim/src/wall.ts [étape] [gemme]` : victoires par classe et niveau à une étape.
+- **Moteur plus rapide** (vrai gain pour le serveur : une absence de 16 h joue ~1 000 rencontres) : butin indexé (`lootIndex`), plan conseillé et équipement porté gardés en mémoire ; `setFightResolver` (cache du simulateur seulement).
+- **Failles corrigées** : butin divisé par 10 (nommés par 50 ; 46 pièces par jour, route finie en 2 semaines) ; plancher à 75 % d'un Rare de son niveau, de 100 % au niveau 1 à 75 % au 40 (`floorShare`, `floorRampLevel` ; à 100 %, l'équipement ne servait à rien et un tryhard allait aussi vite qu'un casu) ; trophée garanti à la première victoire contre un gardien (les ensembles de classe ne tombaient jamais) ; Notaire et Gardien des trois portes −10 % ; gemmes à 20 vestiges ; 4 commandes du Comptoir pour les derniers objets sans débouché.
+- **Ajouté** : **la Marée du soir** (20 h Paris, Débâcle / Nuit des Lanternes / Veille des Géants ; `combat/tide.ts`, `data/combat/tide.yaml`, `apps/server/src/tide.ts`, tables `tide_days` et `tide_entries` (migration 0016), bandeau et fenêtre `components/Tide.tsx`, éclats → tenue Marée haute par classe, coffre de la semaine, titres, fil du serveur) ; **fournitures de combat** (potions bues sous 40 % des PV, préparations d'une heure ; `combat/supplies.ts`, tuile Fournitures de la salle Combat) ; **atelier d'équipement** (`engine/gearCraft.ts`, `data/gear_crafting.yaml`, bouton dans les six métiers d'équipement) et **vitrine du marché** (`apps/server/src/vitrine.ts`, `gear_items.price`, `gear_sales`, migration 0017, onglet Vitrine) ; **Au-delà des Lointains** (12 chapitres après la route, `rules.route`) ; **Renom des clans** (bâtiments, Marée, premiers gardiens ; `clans.renown`, migration 0018, rang dans la salle Clan).
+- Tests : 178 dans packages/shared, 22 d'API, 21 du simulateur.
 
 ### Fait — gemmes de situation : les vestiges servent, et agissent en combat (23 octobre)
 
@@ -77,7 +86,7 @@ Bramo est un **idle-RPG multijoueur jouable dans le navigateur**, dans l'esprit 
 - **Fiche d'un joueur** (`components/PlayerCard.tsx`, `GET /api/players/:id`, `apps/server/src/profile.ts`, `PlayerProfile`) : son personnage et son ornement, sa classe et son niveau (et ses autres classes), son équipement en icônes, ses six meilleurs métiers, son clan, ce qu'il fait. Un clic sur un joueur du bourg, un membre debout dans la salle Clan ou un portrait de la liste des membres l'ouvre.
 - **Les dix métiers restants jouables** (Chasse, Agriculture, Tannerie, Couture, Alchimie, Joaillerie, Enchantement, Artificerie, Construction, Exploration) : recettes de la proposition `sim/proposals/boucle-v0` complétées (Artificerie et Exploration écrites par Claude), 100 objets, un maître et un surnom de départ chacun, deux commandes de maître (20 et 40), un outil de bronze et de fer chacun (forgés comme les autres), deux repas de plus (pain, ragoût). XP, durées des repas et valeurs recalculées par `sim calibrate --data --write`. L'Agriculture se joue pour l'instant comme une récolte (les parcelles qui poussent seules ne sont pas dans le moteur). Salle Métiers : les 17 maîtres en grille compacte.
 - **Audit du contenu** (`sim/src/audit.ts`, `pnpm --filter @bramo/sim exec tsx src/audit.ts`) : objets sans source ou sans débouché, ingrédients, commandes de maître et du Comptoir, outils, réparations, bâtiments, butin. Premier passage (23 octobre) : aucune référence cassée ; les dix nouveaux métiers n'avaient pas de commandes du Comptoir, ajoutées (trois chacun, même calcul que les autres).
-- **Reste** : les commandes de maître 60, 80 et 99 des nouveaux métiers ; des recettes au-delà du niveau 60 pour onze métiers (Forge et Menuiserie s'arrêtent au niveau 20) ; la fabrication de l’équipement de combat par la Tannerie, la Couture et la Joaillerie ; un usage aux potions et aux cartes d'exploration ; l'équilibrage de tout ça.
+- **Reste** : les commandes de maître 60, 80 et 99 des nouveaux métiers ; des recettes au-delà du niveau 60 pour onze métiers (Forge et Menuiserie s'arrêtent au niveau 20) et les matières des paliers 30 à 90 pour l'atelier d'équipement (il reprend pour l'instant la plus haute qui existe) ; l'équilibrage de tout ça.
 
 ### Fait — icônes d'équipement dessinées (22 octobre, nuit)
 
@@ -231,7 +240,7 @@ Bramo est un **idle-RPG multijoueur jouable dans le navigateur**, dans l'esprit 
 - **Serveur** : table `gear_items` (migration `0011`) ; `GET /api/gear`, `GET /api/gear/catalogue` (public), `POST /api/gear/equip|unequip`, `POST /api/dev/gear/grant` (obtenir un objet de test : **désactivé en production**, option `devTools`). Changer de classe range les pièces du mauvais style.
 - **Client** : salle Personnage, mode Équipement : emplacements portés, sac d'équipement, totaux et bonus d'ensemble (`components/GearPanel.tsx`), panneau de test en développement.
 - **Set de départ [Décidé par Louis, 21 octobre : « le plus low possible, genre à chier »]** : 5 pièces par classe (coiffe, torse, jambes, bottes, arme ; ex. *Calot de recrue*, *Maillet ébréché*), Communes de palier 1, sans ligne aléatoire, **liées au personnage** (`bound` : ni vente ni échange quand la vitrine existera). Données `starter: true` dans `gear.yaml` ; `giveStarterGear` (serveur) les donne et les équipe **une fois par classe** (colonne `starter_classes`, migration `0012`), au choix de la classe, et au premier `GET /api/gear` pour les personnages créés avant. Changer de classe range les pièces de l'ancienne. En mode Équipement, les cases autour du personnage montrent l'équipement réel porté ; en mode Apparence, la tenue.
-- **Pas encore fait** : fabrication de l’équipement de combat (aucune recette n’en produit ; le butin des combats en donne), usure en combat, perfectionnement par un artisan, vitrine du marché (les exemplaires ne se vendent pas encore), lien équipement → apparence par défaut.
+- **Pas encore fait** : usure de l'équipement en combat, perfectionnement par un artisan, fabrication des pièces d'ensemble, lien équipement → apparence par défaut. (La fabrication et la vitrine existent depuis le 23 octobre.)
 
 ### Fait — apparence limitée à la classe, mode Apparence (21 octobre)
 
@@ -380,7 +389,7 @@ Bramo est un **idle-RPG multijoueur jouable dans le navigateur**, dans l'esprit 
 - Chiffres de `data/` encore provisoires (`# à équilibrer`), mais suivant des règles vérifiées par le simulateur. Le simulateur ne fait pas encore de prix de marché (bilan de flux seulement).
 - Animations de repos seulement (une par pose). Marée haute ne change que les couleurs. Une seule pose par classe (pas encore par voie).
 - L'écran de choix de classe est un contrôle du client : le serveur accepte les actions de jeu d'un personnage sans classe.
-- L'équipement ne s'obtient qu'au combat (butin) ou par l'outil de test ; aucune recette n'en fabrique encore.
+- L'équipement s'obtient au combat (butin, trophées des gardiens, coffre de la Marée), à l'atelier (fabrication, 23 octobre) et à la vitrine du marché.
 - Les onglets Tout / Clan / Serveur du journal et la discussion sont désactivés.
 - Bandeaux des salles : les métiers ont leurs décors (voir « Décors des métiers » ci-dessus) ; Clan, Marché et Combat ont aussi leur décor (`clan`, `market`, `combat`).
 

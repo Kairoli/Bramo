@@ -1,0 +1,3195 @@
+{
+ "options": {
+  "initialShare": 0.6,
+  "joinDays": 30,
+  "hooks": [
+   "Marée du soir"
+  ],
+  "players": 120,
+  "days": 90,
+  "mix": "real",
+  "seed": 11
+ },
+ "runtimeSec": 795,
+ "fightCache": {
+  "calls": 11607939,
+  "hits": 11517288,
+  "ms": 118023.12059998981
+ },
+ "progression": [
+  {
+   "persona": "casual",
+   "label": "Casu tranquille",
+   "n": 36,
+   "j7": {
+    "classe": 45,
+    "route": 59,
+    "metier": 45,
+    "niveaux": 61,
+    "or": 398,
+    "equipement": 184.8
+   },
+   "j30": {
+    "classe": 61,
+    "route": 99,
+    "metier": 59,
+    "niveaux": 75,
+    "or": 606,
+    "equipement": 251.4
+   },
+   "j60": {
+    "classe": 69,
+    "route": 139,
+    "metier": 66,
+    "niveaux": 82,
+    "or": 511,
+    "equipement": 338.4
+   },
+   "j89": {
+    "classe": 74,
+    "route": 149,
+    "metier": 70,
+    "niveaux": 86,
+    "or": 1238,
+    "equipement": 364.1
+   }
+  },
+  {
+   "persona": "crafter",
+   "label": "Artisan du marché",
+   "n": 23,
+   "j7": {
+    "classe": 45,
+    "route": 59,
+    "metier": 33,
+    "niveaux": 68,
+    "or": 81,
+    "equipement": 184.8
+   },
+   "j30": {
+    "classe": 61,
+    "route": 109,
+    "metier": 48,
+    "niveaux": 108,
+    "or": 104,
+    "equipement": 267.2
+   },
+   "j60": {
+    "classe": 68,
+    "route": 149,
+    "metier": 55,
+    "niveaux": 123,
+    "or": 116,
+    "equipement": 351.6
+   },
+   "j89": {
+    "classe": 71,
+    "route": 150.5,
+    "metier": 57,
+    "niveaux": 141,
+    "or": 74,
+    "equipement": 375.4
+   }
+  },
+  {
+   "persona": "hoarder",
+   "label": "Thésauriseur (ne vend rien)",
+   "n": 4,
+   "j7": {
+    "classe": 41,
+    "route": 59,
+    "metier": 34,
+    "niveaux": 113.5,
+    "or": 25,
+    "equipement": 178.2
+   },
+   "j30": {
+    "classe": 58,
+    "route": 100,
+    "metier": 43,
+    "niveaux": 140.5,
+    "or": 69,
+    "equipement": 242.1
+   },
+   "j60": {
+    "classe": 66,
+    "route": 139,
+    "metier": 48,
+    "niveaux": 162,
+    "or": 109,
+    "equipement": 333.1
+   },
+   "j89": {
+    "classe": 70.5,
+    "route": 152,
+    "metier": 52,
+    "niveaux": 184,
+    "or": 91,
+    "equipement": 371.3
+   }
+  },
+  {
+   "persona": "meta_casual",
+   "label": "Casu qui suit les guides",
+   "n": 17,
+   "j7": {
+    "classe": 45,
+    "route": 69,
+    "metier": 35,
+    "niveaux": 105,
+    "or": 101,
+    "equipement": 184.8
+   },
+   "j30": {
+    "classe": 61,
+    "route": 149,
+    "metier": 48,
+    "niveaux": 150,
+    "or": 250,
+    "equipement": 319.6
+   },
+   "j60": {
+    "classe": 69,
+    "route": 167,
+    "metier": 56,
+    "niveaux": 165,
+    "or": 140,
+    "equipement": 383.4
+   },
+   "j89": {
+    "classe": 74,
+    "route": 170,
+    "metier": 53,
+    "niveaux": 187,
+    "or": 70,
+    "equipement": 384.9
+   }
+  },
+  {
+   "persona": "gatherer",
+   "label": "Récolteur pur",
+   "n": 12,
+   "j7": {
+    "classe": 45,
+    "route": 59,
+    "metier": 45,
+    "niveaux": 61,
+    "or": 393,
+    "equipement": 184.8
+   },
+   "j30": {
+    "classe": 61,
+    "route": 109,
+    "metier": 55.5,
+    "niveaux": 91.5,
+    "or": 668,
+    "equipement": 263.6
+   },
+   "j60": {
+    "classe": 69,
+    "route": 149,
+    "metier": 64,
+    "niveaux": 131,
+    "or": 647,
+    "equipement": 348.7
+   },
+   "j89": {
+    "classe": 74,
+    "route": 149,
+    "metier": 69,
+    "niveaux": 137,
+    "or": 192,
+    "equipement": 374.4
+   }
+  },
+  {
+   "persona": "dumper",
+   "label": "Bradeur pressé",
+   "n": 6,
+   "j7": {
+    "classe": 40.5,
+    "route": 49,
+    "metier": 44,
+    "niveaux": 60,
+    "or": 277,
+    "equipement": 177.4
+   },
+   "j30": {
+    "classe": 57,
+    "route": 84,
+    "metier": 57.5,
+    "niveaux": 73.5,
+    "or": 270,
+    "equipement": 212.6
+   },
+   "j60": {
+    "classe": 65,
+    "route": 119,
+    "metier": 64,
+    "niveaux": 80,
+    "or": 252,
+    "equipement": 299.1
+   },
+   "j89": {
+    "classe": 70,
+    "route": 139,
+    "metier": 67,
+    "niveaux": 83,
+    "or": 817,
+    "equipement": 332.7
+   }
+  },
+  {
+   "persona": "tryhard",
+   "label": "Tryhard méta",
+   "n": 8,
+   "j7": {
+    "classe": 45,
+    "route": 59,
+    "metier": 34.5,
+    "niveaux": 106,
+    "or": 55,
+    "equipement": 184.8
+   },
+   "j30": {
+    "classe": 61,
+    "route": 129,
+    "metier": 49.5,
+    "niveaux": 154,
+    "or": 144,
+    "equipement": 306.4
+   },
+   "j60": {
+    "classe": 69,
+    "route": 152,
+    "metier": 61,
+    "niveaux": 179,
+    "or": 254,
+    "equipement": 359.7
+   },
+   "j89": {
+    "classe": 72,
+    "route": 153,
+    "metier": 64,
+    "niveaux": 187.5,
+    "or": 80,
+    "equipement": 370.8
+   }
+  },
+  {
+   "persona": "afk",
+   "label": "Onglet oublié (ne touche à rien)",
+   "n": 5,
+   "j7": {
+    "classe": 46,
+    "route": 59,
+    "metier": 46,
+    "niveaux": 62,
+    "or": 295,
+    "equipement": 186.5
+   },
+   "j30": {
+    "classe": 61,
+    "route": 89,
+    "metier": 60,
+    "niveaux": 76,
+    "or": 1860,
+    "equipement": 213.7
+   },
+   "j60": {
+    "classe": 70,
+    "route": 96,
+    "metier": 68,
+    "niveaux": 84,
+    "or": 4175,
+    "equipement": 258.1
+   },
+   "j89": {
+    "classe": 74,
+    "route": 92.5,
+    "metier": 71.5,
+    "niveaux": 87.5,
+    "or": 3138,
+    "equipement": 258.7
+   }
+  },
+  {
+   "persona": "fighter",
+   "label": "Combattant avant tout",
+   "n": 6,
+   "j7": {
+    "classe": 45,
+    "route": 69,
+    "metier": 33,
+    "niveaux": 87.5,
+    "or": 384,
+    "equipement": 185.7
+   },
+   "j30": {
+    "classe": 61,
+    "route": 139,
+    "metier": 51.5,
+    "niveaux": 131.5,
+    "or": 334,
+    "equipement": 321.4
+   },
+   "j60": {
+    "classe": 69,
+    "route": 169,
+    "metier": 58,
+    "niveaux": 144,
+    "or": 64,
+    "equipement": 380.8
+   },
+   "j89": {
+    "classe": 74,
+    "route": 169.5,
+    "metier": 52,
+    "niveaux": 135.5,
+    "or": 273,
+    "equipement": 396.2
+   }
+  },
+  {
+   "persona": "speculator",
+   "label": "Spéculateur",
+   "n": 2,
+   "j7": {
+    "classe": 45,
+    "route": 59,
+    "metier": 41,
+    "niveaux": 74.5,
+    "or": 50,
+    "equipement": 184.8
+   },
+   "j30": {
+    "classe": 61,
+    "route": 149,
+    "metier": 51.5,
+    "niveaux": 111.5,
+    "or": 28,
+    "equipement": 350.9
+   },
+   "j60": {
+    "classe": 69,
+    "route": 162.5,
+    "metier": 63.5,
+    "niveaux": 123.5,
+    "or": 157,
+    "equipement": 390.8
+   },
+   "j89": {
+    "classe": 74,
+    "route": 169,
+    "metier": 70,
+    "niveaux": 139,
+    "or": 64,
+    "equipement": 390.7
+   }
+  },
+  {
+   "persona": "collector",
+   "label": "Collectionneur (tous les métiers)",
+   "n": 1,
+   "j7": {
+    "classe": 45,
+    "route": 59,
+    "metier": 29,
+    "niveaux": 107,
+    "or": 80,
+    "equipement": 184.8
+   },
+   "j30": {
+    "classe": 61,
+    "route": 149,
+    "metier": 46,
+    "niveaux": 188,
+    "or": 46,
+    "equipement": 347.7
+   },
+   "j60": {
+    "classe": 69,
+    "route": 169,
+    "metier": 49,
+    "niveaux": 200,
+    "or": 14,
+    "equipement": 387.5
+   },
+   "j89": {
+    "classe": 0,
+    "route": 0,
+    "metier": 0,
+    "niveaux": 0,
+    "or": 0,
+    "equipement": 0
+   }
+  }
+ ],
+ "milestones": [
+  {
+   "persona": "casual",
+   "route": {
+    "étape 10": {
+     "share": 1,
+     "day": 0
+    },
+    "étape 30": {
+     "share": 1,
+     "day": 2
+    },
+    "étape 60": {
+     "share": 1,
+     "day": 12
+    },
+    "étape 90": {
+     "share": 1,
+     "day": 23.5
+    },
+    "étape 120": {
+     "share": 0.9444444444444444,
+     "day": 45.5
+    },
+    "étape 150": {
+     "share": 0.3888888888888889,
+     "day": 70
+    }
+   },
+   "classe": {
+    "niv 30": {
+     "share": 1,
+     "day": 2
+    },
+    "niv 50": {
+     "share": 1,
+     "day": 11
+    },
+    "niv 75": {
+     "share": 0,
+     "day": null
+    },
+    "niv 90": {
+     "share": 0,
+     "day": null
+    }
+   },
+   "metier": {
+    "niv 40": {
+     "share": 1,
+     "day": 5
+    },
+    "niv 60": {
+     "share": 1,
+     "day": 31
+    },
+    "niv 80": {
+     "share": 0,
+     "day": null
+    },
+    "niv 99": {
+     "share": 0,
+     "day": null
+    }
+   }
+  },
+  {
+   "persona": "crafter",
+   "route": {
+    "étape 10": {
+     "share": 1,
+     "day": 0
+    },
+    "étape 30": {
+     "share": 1,
+     "day": 2
+    },
+    "étape 60": {
+     "share": 1,
+     "day": 12
+    },
+    "étape 90": {
+     "share": 0.9565217391304348,
+     "day": 24
+    },
+    "étape 120": {
+     "share": 0.9130434782608695,
+     "day": 39
+    },
+    "étape 150": {
+     "share": 0.5652173913043478,
+     "day": 48
+    }
+   },
+   "classe": {
+    "niv 30": {
+     "share": 1,
+     "day": 2
+    },
+    "niv 50": {
+     "share": 1,
+     "day": 11
+    },
+    "niv 75": {
+     "share": 0,
+     "day": null
+    },
+    "niv 90": {
+     "share": 0,
+     "day": null
+    }
+   },
+   "metier": {
+    "niv 40": {
+     "share": 0.9130434782608695,
+     "day": 9
+    },
+    "niv 60": {
+     "share": 0.43478260869565216,
+     "day": 52
+    },
+    "niv 80": {
+     "share": 0,
+     "day": null
+    },
+    "niv 99": {
+     "share": 0,
+     "day": null
+    }
+   }
+  },
+  {
+   "persona": "hoarder",
+   "route": {
+    "étape 10": {
+     "share": 1,
+     "day": 0
+    },
+    "étape 30": {
+     "share": 1,
+     "day": 3
+    },
+    "étape 60": {
+     "share": 1,
+     "day": 10
+    },
+    "étape 90": {
+     "share": 1,
+     "day": 24
+    },
+    "étape 120": {
+     "share": 1,
+     "day": 44
+    },
+    "étape 150": {
+     "share": 0.5,
+     "day": 59
+    }
+   },
+   "classe": {
+    "niv 30": {
+     "share": 1,
+     "day": 3
+    },
+    "niv 50": {
+     "share": 1,
+     "day": 15
+    },
+    "niv 75": {
+     "share": 0,
+     "day": null
+    },
+    "niv 90": {
+     "share": 0,
+     "day": null
+    }
+   },
+   "metier": {
+    "niv 40": {
+     "share": 1,
+     "day": 16
+    },
+    "niv 60": {
+     "share": 0.25,
+     "day": 68
+    },
+    "niv 80": {
+     "share": 0,
+     "day": null
+    },
+    "niv 99": {
+     "share": 0,
+     "day": null
+    }
+   }
+  },
+  {
+   "persona": "meta_casual",
+   "route": {
+    "étape 10": {
+     "share": 1,
+     "day": 0
+    },
+    "étape 30": {
+     "share": 1,
+     "day": 2
+    },
+    "étape 60": {
+     "share": 1,
+     "day": 6
+    },
+    "étape 90": {
+     "share": 1,
+     "day": 12
+    },
+    "étape 120": {
+     "share": 1,
+     "day": 24
+    },
+    "étape 150": {
+     "share": 1,
+     "day": 40
+    }
+   },
+   "classe": {
+    "niv 30": {
+     "share": 1,
+     "day": 2
+    },
+    "niv 50": {
+     "share": 1,
+     "day": 11
+    },
+    "niv 75": {
+     "share": 0,
+     "day": null
+    },
+    "niv 90": {
+     "share": 0,
+     "day": null
+    }
+   },
+   "metier": {
+    "niv 40": {
+     "share": 0.9411764705882353,
+     "day": 15.5
+    },
+    "niv 60": {
+     "share": 0.5294117647058824,
+     "day": 72
+    },
+    "niv 80": {
+     "share": 0,
+     "day": null
+    },
+    "niv 99": {
+     "share": 0,
+     "day": null
+    }
+   }
+  },
+  {
+   "persona": "gatherer",
+   "route": {
+    "étape 10": {
+     "share": 1,
+     "day": 0
+    },
+    "étape 30": {
+     "share": 1,
+     "day": 2
+    },
+    "étape 60": {
+     "share": 1,
+     "day": 12
+    },
+    "étape 90": {
+     "share": 1,
+     "day": 25.5
+    },
+    "étape 120": {
+     "share": 1,
+     "day": 42
+    },
+    "étape 150": {
+     "share": 0.3333333333333333,
+     "day": 57
+    }
+   },
+   "classe": {
+    "niv 30": {
+     "share": 1,
+     "day": 2
+    },
+    "niv 50": {
+     "share": 1,
+     "day": 11
+    },
+    "niv 75": {
+     "share": 0,
+     "day": null
+    },
+    "niv 90": {
+     "share": 0,
+     "day": null
+    }
+   },
+   "metier": {
+    "niv 40": {
+     "share": 1,
+     "day": 5
+    },
+    "niv 60": {
+     "share": 1,
+     "day": 39
+    },
+    "niv 80": {
+     "share": 0,
+     "day": null
+    },
+    "niv 99": {
+     "share": 0,
+     "day": null
+    }
+   }
+  },
+  {
+   "persona": "dumper",
+   "route": {
+    "étape 10": {
+     "share": 1,
+     "day": 0
+    },
+    "étape 30": {
+     "share": 1,
+     "day": 3
+    },
+    "étape 60": {
+     "share": 1,
+     "day": 14.5
+    },
+    "étape 90": {
+     "share": 1,
+     "day": 40.5
+    },
+    "étape 120": {
+     "share": 0.8333333333333334,
+     "day": 63
+    },
+    "étape 150": {
+     "share": 0.16666666666666666,
+     "day": 77
+    }
+   },
+   "classe": {
+    "niv 30": {
+     "share": 1,
+     "day": 3
+    },
+    "niv 50": {
+     "share": 1,
+     "day": 16
+    },
+    "niv 75": {
+     "share": 0,
+     "day": null
+    },
+    "niv 90": {
+     "share": 0,
+     "day": null
+    }
+   },
+   "metier": {
+    "niv 40": {
+     "share": 1,
+     "day": 5
+    },
+    "niv 60": {
+     "share": 1,
+     "day": 39
+    },
+    "niv 80": {
+     "share": 0,
+     "day": null
+    },
+    "niv 99": {
+     "share": 0,
+     "day": null
+    }
+   }
+  },
+  {
+   "persona": "tryhard",
+   "route": {
+    "étape 10": {
+     "share": 1,
+     "day": 0
+    },
+    "étape 30": {
+     "share": 1,
+     "day": 2
+    },
+    "étape 60": {
+     "share": 1,
+     "day": 9.5
+    },
+    "étape 90": {
+     "share": 1,
+     "day": 17.5
+    },
+    "étape 120": {
+     "share": 1,
+     "day": 31.5
+    },
+    "étape 150": {
+     "share": 1,
+     "day": 37.5
+    }
+   },
+   "classe": {
+    "niv 30": {
+     "share": 1,
+     "day": 2
+    },
+    "niv 50": {
+     "share": 1,
+     "day": 11
+    },
+    "niv 75": {
+     "share": 0,
+     "day": null
+    },
+    "niv 90": {
+     "share": 0,
+     "day": null
+    }
+   },
+   "metier": {
+    "niv 40": {
+     "share": 1,
+     "day": 13
+    },
+    "niv 60": {
+     "share": 0.75,
+     "day": 52.5
+    },
+    "niv 80": {
+     "share": 0,
+     "day": null
+    },
+    "niv 99": {
+     "share": 0,
+     "day": null
+    }
+   }
+  },
+  {
+   "persona": "afk",
+   "route": {
+    "étape 10": {
+     "share": 1,
+     "day": 0
+    },
+    "étape 30": {
+     "share": 1,
+     "day": 2
+    },
+    "étape 60": {
+     "share": 1,
+     "day": 12
+    },
+    "étape 90": {
+     "share": 0.6,
+     "day": 46
+    },
+    "étape 120": {
+     "share": 0,
+     "day": null
+    },
+    "étape 150": {
+     "share": 0,
+     "day": null
+    }
+   },
+   "classe": {
+    "niv 30": {
+     "share": 1,
+     "day": 1
+    },
+    "niv 50": {
+     "share": 1,
+     "day": 11
+    },
+    "niv 75": {
+     "share": 0,
+     "day": null
+    },
+    "niv 90": {
+     "share": 0,
+     "day": null
+    }
+   },
+   "metier": {
+    "niv 40": {
+     "share": 1,
+     "day": 4
+    },
+    "niv 60": {
+     "share": 1,
+     "day": 29
+    },
+    "niv 80": {
+     "share": 0,
+     "day": null
+    },
+    "niv 99": {
+     "share": 0,
+     "day": null
+    }
+   }
+  },
+  {
+   "persona": "fighter",
+   "route": {
+    "étape 10": {
+     "share": 1,
+     "day": 0
+    },
+    "étape 30": {
+     "share": 1,
+     "day": 2
+    },
+    "étape 60": {
+     "share": 1,
+     "day": 6
+    },
+    "étape 90": {
+     "share": 1,
+     "day": 9
+    },
+    "étape 120": {
+     "share": 1,
+     "day": 19.5
+    },
+    "étape 150": {
+     "share": 1,
+     "day": 43
+    }
+   },
+   "classe": {
+    "niv 30": {
+     "share": 1,
+     "day": 2
+    },
+    "niv 50": {
+     "share": 1,
+     "day": 11
+    },
+    "niv 75": {
+     "share": 0.16666666666666666,
+     "day": 85
+    },
+    "niv 90": {
+     "share": 0,
+     "day": null
+    }
+   },
+   "metier": {
+    "niv 40": {
+     "share": 1,
+     "day": 11.5
+    },
+    "niv 60": {
+     "share": 0.6666666666666666,
+     "day": 63
+    },
+    "niv 80": {
+     "share": 0,
+     "day": null
+    },
+    "niv 99": {
+     "share": 0,
+     "day": null
+    }
+   }
+  },
+  {
+   "persona": "speculator",
+   "route": {
+    "étape 10": {
+     "share": 1,
+     "day": 0
+    },
+    "étape 30": {
+     "share": 1,
+     "day": 2
+    },
+    "étape 60": {
+     "share": 1,
+     "day": 9.5
+    },
+    "étape 90": {
+     "share": 1,
+     "day": 13.5
+    },
+    "étape 120": {
+     "share": 1,
+     "day": 24
+    },
+    "étape 150": {
+     "share": 1,
+     "day": 36
+    }
+   },
+   "classe": {
+    "niv 30": {
+     "share": 1,
+     "day": 2
+    },
+    "niv 50": {
+     "share": 1,
+     "day": 11
+    },
+    "niv 75": {
+     "share": 0,
+     "day": null
+    },
+    "niv 90": {
+     "share": 0,
+     "day": null
+    }
+   },
+   "metier": {
+    "niv 40": {
+     "share": 1,
+     "day": 6.5
+    },
+    "niv 60": {
+     "share": 1,
+     "day": 46
+    },
+    "niv 80": {
+     "share": 0,
+     "day": null
+    },
+    "niv 99": {
+     "share": 0,
+     "day": null
+    }
+   }
+  },
+  {
+   "persona": "collector",
+   "route": {
+    "étape 10": {
+     "share": 1,
+     "day": 0
+    },
+    "étape 30": {
+     "share": 1,
+     "day": 2
+    },
+    "étape 60": {
+     "share": 1,
+     "day": 8
+    },
+    "étape 90": {
+     "share": 1,
+     "day": 10
+    },
+    "étape 120": {
+     "share": 1,
+     "day": 18
+    },
+    "étape 150": {
+     "share": 1,
+     "day": 34
+    }
+   },
+   "classe": {
+    "niv 30": {
+     "share": 1,
+     "day": 2
+    },
+    "niv 50": {
+     "share": 1,
+     "day": 11
+    },
+    "niv 75": {
+     "share": 0,
+     "day": null
+    },
+    "niv 90": {
+     "share": 0,
+     "day": null
+    }
+   },
+   "metier": {
+    "niv 40": {
+     "share": 1,
+     "day": 19
+    },
+    "niv 60": {
+     "share": 0,
+     "day": null
+    },
+    "niv 80": {
+     "share": 0,
+     "day": null
+    },
+    "niv 99": {
+     "share": 0,
+     "day": null
+    }
+   }
+  }
+ ],
+ "goalSummary": [
+  {
+   "persona": "casual",
+   "routeDone": 0,
+   "noProgress14d": 0,
+   "routeStuck14d": 0.6111111111111112
+  },
+  {
+   "persona": "crafter",
+   "routeDone": 0,
+   "noProgress14d": 0,
+   "routeStuck14d": 0.6086956521739131
+  },
+  {
+   "persona": "hoarder",
+   "routeDone": 0,
+   "noProgress14d": 0,
+   "routeStuck14d": 1
+  },
+  {
+   "persona": "meta_casual",
+   "routeDone": 0,
+   "noProgress14d": 0.058823529411764705,
+   "routeStuck14d": 0.6470588235294118
+  },
+  {
+   "persona": "gatherer",
+   "routeDone": 0,
+   "noProgress14d": 0,
+   "routeStuck14d": 0.75
+  },
+  {
+   "persona": "dumper",
+   "routeDone": 0,
+   "noProgress14d": 0,
+   "routeStuck14d": 0.3333333333333333
+  },
+  {
+   "persona": "tryhard",
+   "routeDone": 0,
+   "noProgress14d": 0,
+   "routeStuck14d": 0.375
+  },
+  {
+   "persona": "afk",
+   "routeDone": 0,
+   "noProgress14d": 0,
+   "routeStuck14d": 1
+  },
+  {
+   "persona": "fighter",
+   "routeDone": 0,
+   "noProgress14d": 0,
+   "routeStuck14d": 0.8333333333333334
+  },
+  {
+   "persona": "speculator",
+   "routeDone": 0,
+   "noProgress14d": 0,
+   "routeStuck14d": 1
+  },
+  {
+   "persona": "collector",
+   "routeDone": 0,
+   "noProgress14d": 0,
+   "routeStuck14d": 1
+  }
+ ],
+ "economy": {
+  "faucet": {
+   "commandes PNJ": 915270,
+   "commandes du maître": 205700
+  },
+  "sink": {
+   "étal de la guilde": 30000,
+   "taxe du marché": 107034,
+   "bâtiments de clan": 356752,
+   "réparations PNJ": 43679,
+   "taxe de la vitrine": 4145
+  },
+  "faucetTotal": 1120970,
+  "sinkTotal": 541610,
+  "startGold": 12000,
+  "gini": 0.9,
+  "gold": [
+   {
+    "day": 0,
+    "perPlayer": 100,
+    "total": 7200
+   },
+   {
+    "day": 7,
+    "perPlayer": 487,
+    "total": 42890
+   },
+   {
+    "day": 14,
+    "perPlayer": 952,
+    "total": 98065
+   },
+   {
+    "day": 21,
+    "perPlayer": 1308,
+    "total": 142592
+   },
+   {
+    "day": 28,
+    "perPlayer": 1694,
+    "total": 196534
+   },
+   {
+    "day": 35,
+    "perPlayer": 2092,
+    "total": 251005
+   },
+   {
+    "day": 42,
+    "perPlayer": 2626,
+    "total": 315117
+   },
+   {
+    "day": 49,
+    "perPlayer": 3015,
+    "total": 361761
+   },
+   {
+    "day": 56,
+    "perPlayer": 3468,
+    "total": 416121
+   },
+   {
+    "day": 63,
+    "perPlayer": 3970,
+    "total": 476412
+   },
+   {
+    "day": 70,
+    "perPlayer": 4349,
+    "total": 521831
+   },
+   {
+    "day": 77,
+    "perPlayer": 4620,
+    "total": 554411
+   },
+   {
+    "day": 84,
+    "perPlayer": 4781,
+    "total": 573740
+   },
+   {
+    "day": 89,
+    "perPlayer": 4928,
+    "total": 591360
+   }
+  ],
+  "richest": [
+   {
+    "persona": "gatherer",
+    "gold": 103369,
+    "metiers": [
+     "mining"
+    ]
+   },
+   {
+    "persona": "gatherer",
+    "gold": 68785,
+    "metiers": [
+     "mining"
+    ]
+   },
+   {
+    "persona": "gatherer",
+    "gold": 59550,
+    "metiers": [
+     "mining"
+    ]
+   },
+   {
+    "persona": "casual",
+    "gold": 45513,
+    "metiers": [
+     "woodcutting"
+    ]
+   },
+   {
+    "persona": "crafter",
+    "gold": 39377,
+    "metiers": [
+     "enchanting",
+     "mining"
+    ]
+   }
+  ]
+ },
+ "market": {
+  "index": [
+   74.1,
+   63,
+   52.8,
+   57,
+   64.2,
+   63.8,
+   52.1,
+   52.1,
+   50.8,
+   52.2,
+   56.1,
+   52.4,
+   53.4
+  ],
+  "top": [
+   {
+    "id": "stone_block",
+    "name": "Bloc de pierre",
+    "ref": 2,
+    "qty": 182600,
+    "last": 2.8,
+    "first": 2
+   },
+   {
+    "id": "flour",
+    "name": "Farine",
+    "ref": 7,
+    "qty": 35841,
+    "last": 1,
+    "first": 4.3
+   },
+   {
+    "id": "thyme",
+    "name": "Thym",
+    "ref": 3,
+    "qty": 72647,
+    "last": 1,
+    "first": 2.6
+   },
+   {
+    "id": "oak_log",
+    "name": "Bûche de chêne",
+    "ref": 3,
+    "qty": 71312,
+    "last": 1,
+    "first": 1.1
+   },
+   {
+    "id": "cotton_fiber",
+    "name": "Fibre de coton",
+    "ref": 7,
+    "qty": 30535,
+    "last": 1,
+    "first": 1.3
+   },
+   {
+    "id": "frost_flower",
+    "name": "Fleur de givre",
+    "ref": 8,
+    "qty": 25607,
+    "last": 1,
+    "first": 4.9
+   },
+   {
+    "id": "country_bread",
+    "name": "Pain de campagne",
+    "ref": 19,
+    "qty": 10261,
+    "last": 13,
+    "first": 18.5
+   },
+   {
+    "id": "pine_log",
+    "name": "Bûche de pin",
+    "ref": 2,
+    "qty": 84933,
+    "last": 1,
+    "first": 1
+   },
+   {
+    "id": "sage",
+    "name": "Sauge pourpre",
+    "ref": 4,
+    "qty": 38835,
+    "last": 1,
+    "first": 1
+   },
+   {
+    "id": "parry_balm",
+    "name": "Baume de parade",
+    "ref": 12,
+    "qty": 10623,
+    "last": 8,
+    "first": 10.2
+   },
+   {
+    "id": "mint",
+    "name": "Menthe sauvage",
+    "ref": 2,
+    "qty": 58459,
+    "last": 1,
+    "first": 1
+   },
+   {
+    "id": "coal",
+    "name": "Charbon",
+    "ref": 3,
+    "qty": 34916,
+    "last": 3,
+    "first": 3
+   },
+   {
+    "id": "nettle_root",
+    "name": "Racine d'ortie",
+    "ref": 3,
+    "qty": 34213,
+    "last": 1,
+    "first": 1.1
+   },
+   {
+    "id": "small_hide",
+    "name": "Peau de lapin",
+    "ref": 2,
+    "qty": 49877,
+    "last": 1,
+    "first": 1
+   },
+   {
+    "id": "bear_hide",
+    "name": "Peau d'ours",
+    "ref": 7,
+    "qty": 12069,
+    "last": 1,
+    "first": 5.7
+   },
+   {
+    "id": "raw_fish",
+    "name": "Poisson frais",
+    "ref": 2,
+    "qty": 36675,
+    "last": 2,
+    "first": 2
+   },
+   {
+    "id": "mint_tea",
+    "name": "Tisane de menthe",
+    "ref": 9,
+    "qty": 5651,
+    "last": 5,
+    "first": 10
+   },
+   {
+    "id": "ambre_de_veille",
+    "name": "Ambre de veille",
+    "ref": 30,
+    "qty": 1567,
+    "last": 1.3,
+    "first": 1
+   },
+   {
+    "id": "nettle_broth",
+    "name": "Bouillon d'ortie",
+    "ref": 25,
+    "qty": 1681,
+    "last": 21.8,
+    "first": 29
+   },
+   {
+    "id": "rune_dust",
+    "name": "Poussière de rune",
+    "ref": 2,
+    "qty": 20971,
+    "last": 2,
+    "first": 2
+   },
+   {
+    "id": "hunter_stew",
+    "name": "Ragoût du chasseur",
+    "ref": 16,
+    "qty": 2620,
+    "last": 8,
+    "first": 18.4
+   },
+   {
+    "id": "miner_elixir",
+    "name": "Élixir du mineur",
+    "ref": 28,
+    "qty": 1481,
+    "last": 17,
+    "first": 32.6
+   },
+   {
+    "id": "blue_linen",
+    "name": "Toile teinte en bleu",
+    "ref": 86,
+    "qty": 463,
+    "last": 123.1,
+    "first": 91.5
+   },
+   {
+    "id": "thick_leather",
+    "name": "Cuir épais",
+    "ref": 17,
+    "qty": 2225,
+    "last": 20,
+    "first": 20
+   },
+   {
+    "id": "bronze_gears",
+    "name": "Rouages de bronze",
+    "ref": 3,
+    "qty": 12300,
+    "last": 2,
+    "first": 3
+   }
+  ],
+  "crashed": [
+   {
+    "id": "flour",
+    "name": "Farine",
+    "ref": 7,
+    "qty": 35841,
+    "last": 1,
+    "first": 4.3
+   },
+   {
+    "id": "thyme",
+    "name": "Thym",
+    "ref": 3,
+    "qty": 72647,
+    "last": 1,
+    "first": 2.6
+   },
+   {
+    "id": "oak_log",
+    "name": "Bûche de chêne",
+    "ref": 3,
+    "qty": 71312,
+    "last": 1,
+    "first": 1.1
+   },
+   {
+    "id": "cotton_fiber",
+    "name": "Fibre de coton",
+    "ref": 7,
+    "qty": 30535,
+    "last": 1,
+    "first": 1.3
+   },
+   {
+    "id": "frost_flower",
+    "name": "Fleur de givre",
+    "ref": 8,
+    "qty": 25607,
+    "last": 1,
+    "first": 4.9
+   },
+   {
+    "id": "sage",
+    "name": "Sauge pourpre",
+    "ref": 4,
+    "qty": 38835,
+    "last": 1,
+    "first": 1
+   },
+   {
+    "id": "nettle_root",
+    "name": "Racine d'ortie",
+    "ref": 3,
+    "qty": 34213,
+    "last": 1,
+    "first": 1.1
+   },
+   {
+    "id": "bear_hide",
+    "name": "Peau d'ours",
+    "ref": 7,
+    "qty": 12069,
+    "last": 1,
+    "first": 5.7
+   },
+   {
+    "id": "ambre_de_veille",
+    "name": "Ambre de veille",
+    "ref": 30,
+    "qty": 1567,
+    "last": 1.3,
+    "first": 1
+   },
+   {
+    "id": "scorie_de_memoire",
+    "name": "Scorie de mémoire",
+    "ref": 30,
+    "qty": 868,
+    "last": 8,
+    "first": 1
+   },
+   {
+    "id": "flax_fiber",
+    "name": "Filasse de lin",
+    "ref": 4,
+    "qty": 6285,
+    "last": 1,
+    "first": 2
+   },
+   {
+    "id": "galets_du_puits",
+    "name": "Galets du puits",
+    "ref": 30,
+    "qty": 689,
+    "last": 8,
+    "first": 1.7
+   },
+   {
+    "id": "ash_log",
+    "name": "Bûche de frêne",
+    "ref": 3,
+    "qty": 4408,
+    "last": 1,
+    "first": 3
+   },
+   {
+    "id": "deer_hide",
+    "name": "Peau de cerf",
+    "ref": 3,
+    "qty": 4070,
+    "last": 1,
+    "first": 3
+   },
+   {
+    "id": "quartz_de_faille",
+    "name": "Quartz de faille",
+    "ref": 30,
+    "qty": 400,
+    "last": 1,
+    "first": 1
+   },
+   {
+    "id": "lantern_lily",
+    "name": "Lys-lanterne",
+    "ref": 5,
+    "qty": 1972,
+    "last": 1,
+    "first": 1
+   },
+   {
+    "id": "venison",
+    "name": "Venaison",
+    "ref": 3,
+    "qty": 2729,
+    "last": 1,
+    "first": 3
+   },
+   {
+    "id": "moonwood_log",
+    "name": "Bois de lune",
+    "ref": 5,
+    "qty": 1395,
+    "last": 1,
+    "first": 1
+   },
+   {
+    "id": "eclat_de_serment",
+    "name": "Éclat de serment",
+    "ref": 30,
+    "qty": 217,
+    "last": 1,
+    "first": 1
+   },
+   {
+    "id": "yew_log",
+    "name": "Bûche d'if",
+    "ref": 4,
+    "qty": 1152,
+    "last": 1,
+    "first": 1
+   }
+  ],
+  "soared": [],
+  "lastDay": {
+   "day": 89,
+   "players": 120,
+   "gold": 591360,
+   "volume": 16238,
+   "trades": 201,
+   "asks": 1394,
+   "bids": 0,
+   "unsold": 23354256,
+   "tax": 813
+  },
+  "traders": [
+   {
+    "persona": "casual",
+    "sales": 3183,
+    "purchases": 2483,
+    "npc": 2113,
+    "gold": 851
+   },
+   {
+    "persona": "crafter",
+    "sales": 8297,
+    "purchases": 16131,
+    "npc": 8870,
+    "gold": 79
+   },
+   {
+    "persona": "hoarder",
+    "sales": 0,
+    "purchases": 10368,
+    "npc": 9843,
+    "gold": 91
+   },
+   {
+    "persona": "meta_casual",
+    "sales": 29869,
+    "purchases": 39687,
+    "npc": 11135,
+    "gold": 129
+   },
+   {
+    "persona": "gatherer",
+    "sales": 20568,
+    "purchases": 19012,
+    "npc": 12755,
+    "gold": 235
+   },
+   {
+    "persona": "dumper",
+    "sales": 25407,
+    "purchases": 23044,
+    "npc": 11028,
+    "gold": 445
+   },
+   {
+    "persona": "tryhard",
+    "sales": 15185,
+    "purchases": 21821,
+    "npc": 10125,
+    "gold": 97
+   },
+   {
+    "persona": "afk",
+    "sales": 0,
+    "purchases": 0,
+    "npc": 2345,
+    "gold": 4535
+   },
+   {
+    "persona": "fighter",
+    "sales": 15751,
+    "purchases": 19475,
+    "npc": 10025,
+    "gold": 126
+   },
+   {
+    "persona": "speculator",
+    "sales": 185,
+    "purchases": 11601,
+    "npc": 10850,
+    "gold": 60
+   },
+   {
+    "persona": "collector",
+    "sales": 8692,
+    "purchases": 16730,
+    "npc": 8330,
+    "gold": 42
+   }
+  ]
+ },
+ "flows": {
+  "deadEnds": [
+   {
+    "id": "feather",
+    "name": "Plumes de faisan",
+    "category": "feather",
+    "produced": 27255220,
+    "used": 0,
+    "sold": 0,
+    "stock": 26975220
+   },
+   {
+    "id": "arrow_shaft",
+    "name": "Hampes de flèche",
+    "category": "archery",
+    "produced": 23566740,
+    "used": 0,
+    "sold": 0,
+    "stock": 23516740
+   },
+   {
+    "id": "iron_arrowhead",
+    "name": "Pointes de flèche en fer",
+    "category": "hardware",
+    "produced": 16848000,
+    "used": 0,
+    "sold": 0,
+    "stock": 16818000
+   },
+   {
+    "id": "game_meat",
+    "name": "Viande de gibier",
+    "category": "meat",
+    "produced": 7451231,
+    "used": 81633,
+    "sold": 0,
+    "stock": 7036142
+   },
+   {
+    "id": "leather_strap",
+    "name": "Lanières de cuir",
+    "category": "leather",
+    "produced": 2886720,
+    "used": 708,
+    "sold": 0,
+    "stock": 2826012
+   },
+   {
+    "id": "bear_hide",
+    "name": "Peau d'ours",
+    "category": "hide",
+    "produced": 1104368,
+    "used": 12069,
+    "sold": 12069,
+    "stock": 893879
+   },
+   {
+    "id": "orichalcum_ore",
+    "name": "Minerai d'orichalque",
+    "category": "ore",
+    "produced": 821377,
+    "used": 5400,
+    "sold": 925,
+    "stock": 589102
+   },
+   {
+    "id": "carrot",
+    "name": "Carottes",
+    "category": "crop",
+    "produced": 817932,
+    "used": 12990,
+    "sold": 1458,
+    "stock": 725342
+   },
+   {
+    "id": "pike",
+    "name": "Brochet",
+    "category": "fish",
+    "produced": 761600,
+    "used": 6000,
+    "sold": 0,
+    "stock": 657861
+   },
+   {
+    "id": "tide_shard",
+    "name": "Éclat de marée",
+    "category": "currency",
+    "produced": 554231,
+    "used": 0,
+    "sold": 0,
+    "stock": 403278
+   },
+   {
+    "id": "lantern_fish",
+    "name": "Poisson-lanterne",
+    "category": "fish",
+    "produced": 543636,
+    "used": 3555,
+    "sold": 0,
+    "stock": 449937
+   },
+   {
+    "id": "wolf_pelt",
+    "name": "Fourrure de loup",
+    "category": "hide",
+    "produced": 423825,
+    "used": 11877,
+    "sold": 243,
+    "stock": 252511
+   },
+   {
+    "id": "mithril_ore",
+    "name": "Minerai de mithril",
+    "category": "ore",
+    "produced": 411840,
+    "used": 8955,
+    "sold": 1095,
+    "stock": 211325
+   },
+   {
+    "id": "deer_hide",
+    "name": "Peau de cerf",
+    "category": "hide",
+    "produced": 400759,
+    "used": 18929,
+    "sold": 4070,
+    "stock": 198102
+   },
+   {
+    "id": "moonwood_log",
+    "name": "Bois de lune",
+    "category": "log",
+    "produced": 296640,
+    "used": 8775,
+    "sold": 1395,
+    "stock": 186605
+   },
+   {
+    "id": "yew_log",
+    "name": "Bûche d'if",
+    "category": "log",
+    "produced": 256000,
+    "used": 11650,
+    "sold": 1152,
+    "stock": 131882
+   },
+   {
+    "id": "wedge_powder",
+    "name": "Poudre de coin",
+    "category": "preparation",
+    "produced": 207338,
+    "used": 1967,
+    "sold": 1967,
+    "stock": 170520
+   },
+   {
+    "id": "azurite_ore",
+    "name": "Minerai d'azurite",
+    "category": "ore",
+    "produced": 188979,
+    "used": 0,
+    "sold": 0,
+    "stock": 136573
+   },
+   {
+    "id": "rough_amethyst",
+    "name": "Améthyste brute",
+    "category": "gem",
+    "produced": 158590,
+    "used": 7724,
+    "sold": 0,
+    "stock": 19578
+   },
+   {
+    "id": "woad_dye",
+    "name": "Pâte de guède",
+    "category": "dye",
+    "produced": 141389,
+    "used": 3936,
+    "sold": 499,
+    "stock": 71535
+   },
+   {
+    "id": "abyss_ray",
+    "name": "Raie des abysses",
+    "category": "fish",
+    "produced": 53160,
+    "used": 105,
+    "sold": 0,
+    "stock": 19085
+   },
+   {
+    "id": "encre_fossile",
+    "name": "Encre fossile",
+    "category": "vestige",
+    "produced": 53050,
+    "used": 220,
+    "sold": 0,
+    "stock": 7407
+   },
+   {
+    "id": "rivets",
+    "name": "Clous et rivets",
+    "category": "hardware",
+    "produced": 43200,
+    "used": 0,
+    "sold": 0,
+    "stock": 7200
+   },
+   {
+    "id": "eclat_de_serment",
+    "name": "Éclat de serment",
+    "category": "vestige",
+    "produced": 42298,
+    "used": 700,
+    "sold": 217,
+    "stock": 7145
+   },
+   {
+    "id": "glyph_scroll",
+    "name": "Parchemin de glyphe",
+    "category": "scroll",
+    "produced": 39631,
+    "used": 40,
+    "sold": 80,
+    "stock": 21995
+   },
+   {
+    "id": "elk_hide",
+    "name": "Peau d'élan des neiges",
+    "category": "hide",
+    "produced": 34008,
+    "used": 0,
+    "sold": 0,
+    "stock": 5213
+   },
+   {
+    "id": "quartz_de_faille",
+    "name": "Quartz de faille",
+    "category": "vestige",
+    "produced": 24384,
+    "used": 760,
+    "sold": 400,
+    "stock": 3391
+   },
+   {
+    "id": "cotton_cloth",
+    "name": "Rouleau de toile de coton",
+    "category": "cloth",
+    "produced": 23714,
+    "used": 31,
+    "sold": 0,
+    "stock": 350
+   },
+   {
+    "id": "country_bread",
+    "name": "Pain de campagne",
+    "category": "meal",
+    "produced": 18508,
+    "used": 0,
+    "sold": 10261,
+    "stock": 3830
+   },
+   {
+    "id": "recovery_infusion",
+    "name": "Infusion de reprise",
+    "category": "preparation",
+    "produced": 14854,
+    "used": 579,
+    "sold": 586,
+    "stock": 7432
+   }
+  ],
+  "neverMade": [
+   "Minerai de sombracier",
+   "Astralite",
+   "Lingot d'acier",
+   "Fer d'outil en bronze",
+   "Fer d'outil en fer",
+   "Fer d'outil en acier",
+   "Épée de fer",
+   "Pioche de bronze",
+   "Pioche de fer",
+   "Pioche d'acier",
+   "Hache de bronze",
+   "Hache de fer",
+   "Serpe de bronze",
+   "Serpe de fer",
+   "Canne de bronze",
+   "Canne de fer",
+   "Marteau de bronze",
+   "Marteau de fer",
+   "Scie de bronze",
+   "Scie de fer",
+   "Couteau de bronze",
+   "Couteau de fer",
+   "Planche de chêne",
+   "Manche de chêne",
+   "Festin du givre",
+   "Pourpoint de cuir",
+   "Mitaines de lin",
+   "Robe de lin",
+   "Robe d'adepte runée",
+   "Collet à ressort",
+   "Mécanisme d'horloge",
+   "Charpente de chêne",
+   "Escalier de bois",
+   "Ferme de toit",
+   "Relevés de terrain",
+   "Pièces anciennes",
+   "Carte du Bois des Murmures",
+   "Carte de gisement",
+   "Curiosité de la Lisière",
+   "Relique engloutie",
+   "Épieu de bronze",
+   "Épieu de fer",
+   "Houe de bronze",
+   "Houe de fer",
+   "Racloir de bronze",
+   "Racloir de fer",
+   "Ciseaux de bronze",
+   "Ciseaux de fer",
+   "Pilon de bronze",
+   "Pilon de fer",
+   "Burin de bronze",
+   "Burin de fer",
+   "Stylet de bronze",
+   "Stylet de fer",
+   "Clé de bronze",
+   "Clé de fer",
+   "Truelle de bronze",
+   "Truelle de fer",
+   "Longue-vue de bronze",
+   "Longue-vue de fer",
+   "Volée de flèches empennées"
+  ]
+ },
+ "loot": {
+  "perBotDay": 1.7,
+  "total": 17147,
+  "rarity": {
+   "epic": 1873,
+   "common": 6880,
+   "rare": 3619,
+   "legendary": 223
+  },
+  "sets": [
+   {
+    "set": "heures_creuses",
+    "name": "Les Heures creuses",
+    "dropped": 282,
+    "worn2plus": 8
+   },
+   {
+    "set": "sablier_fele",
+    "name": "Le Sablier fêlé",
+    "dropped": 256,
+    "worn2plus": 6
+   },
+   {
+    "set": "habits_de_pluie",
+    "name": "Les Habits de pluie",
+    "dropped": 288,
+    "worn2plus": 4
+   },
+   {
+    "set": "cire_du_gue",
+    "name": "Le Ciré du Gué",
+    "dropped": 276,
+    "worn2plus": 10
+   },
+   {
+    "set": "enclume_patiente",
+    "name": "L'Enclume patiente",
+    "dropped": 220,
+    "worn2plus": 3
+   },
+   {
+    "set": "fondeurs_sourds",
+    "name": "Les Fondeurs sourds",
+    "dropped": 195,
+    "worn2plus": 2
+   },
+   {
+    "set": "passeurs_de_braise",
+    "name": "Les Passeurs de braise",
+    "dropped": 139,
+    "worn2plus": 1
+   },
+   {
+    "set": "meute_du_dimanche",
+    "name": "La Meute du dimanche",
+    "dropped": 151,
+    "worn2plus": 2
+   },
+   {
+    "set": "mains_de_traverse",
+    "name": "Les Mains de traverse",
+    "dropped": 389,
+    "worn2plus": 9
+   },
+   {
+    "set": "pied_de_biche",
+    "name": "Le Pied-de-biche",
+    "dropped": 348,
+    "worn2plus": 8
+   },
+   {
+    "set": "veilleurs_du_sceau",
+    "name": "Les Veilleurs du sceau",
+    "dropped": 314,
+    "worn2plus": 14
+   },
+   {
+    "set": "tablier_de_suie",
+    "name": "Le Tablier de suie",
+    "dropped": 280,
+    "worn2plus": 5
+   },
+   {
+    "set": "second_feu",
+    "name": "Le Fer du second feu",
+    "dropped": 77,
+    "worn2plus": 1
+   },
+   {
+    "set": "battue_silencieuse",
+    "name": "La Battue silencieuse",
+    "dropped": 151,
+    "worn2plus": 2
+   },
+   {
+    "set": "phrase_inachevee",
+    "name": "La Phrase inachevée",
+    "dropped": 45,
+    "worn2plus": 0
+   }
+  ],
+  "named": [
+   {
+    "named": "marteau_des_griefs",
+    "dropped": 4,
+    "worn": 0
+   },
+   {
+    "named": "forge_portative",
+    "dropped": 240,
+    "worn": 0
+   },
+   {
+    "named": "arc_des_ronceraies",
+    "dropped": 116,
+    "worn": 14
+   },
+   {
+    "named": "la_ponctuelle",
+    "dropped": 0,
+    "worn": 0
+   },
+   {
+    "named": "dernier_avertissement",
+    "dropped": 225,
+    "worn": 23
+   },
+   {
+    "named": "sceau_qui_tient",
+    "dropped": 209,
+    "worn": 6
+   },
+   {
+    "named": "benefice_du_doute",
+    "dropped": 91,
+    "worn": 33
+   },
+   {
+    "named": "petit_arrangement",
+    "dropped": 122,
+    "worn": 0
+   },
+   {
+    "named": "mauvais_presage",
+    "dropped": 68,
+    "worn": 8
+   },
+   {
+    "named": "sac_sans_fond",
+    "dropped": 0,
+    "worn": 0
+   },
+   {
+    "named": "heures_supplementaires",
+    "dropped": 34,
+    "worn": 2
+   },
+   {
+    "named": "yoyo",
+    "dropped": 32,
+    "worn": 0
+   }
+  ],
+  "gearOwnedMedian": 154,
+  "gems": {
+   "interstice_opal": 22,
+   "wash_pearl": 13,
+   "fault_eye": 8,
+   "stop_hematite": 28,
+   "drive_garnet": 7,
+   "recovery_amber": 1
+  },
+  "bySource": {
+   "z01_lantern_road": 28,
+   "b1_lavandiere": 194,
+   "z02_gray_ditches": 64,
+   "z03_three_blows": 101,
+   "b2_contremaitre": 240,
+   "z04_glass_orchard": 18,
+   "z05_balance_cloister": 806,
+   "z06_reheat_furnace": 1965,
+   "b3_matriarche": 329,
+   "z07_echo_hall": 3736,
+   "b4_notaire": 977,
+   "fabrication": 621,
+   "b5_gardien_portes": 498,
+   "z08_wound_ford": 1179,
+   "z09_two_seals": 3567,
+   "coffre de la Marée": 325,
+   "z10_watch_terraces": 450,
+   "z11_bad_day_workshop": 1611,
+   "vitrine (achat)": 147,
+   "b6_regent": 224,
+   "z12_threewind_belvedere": 835
+  }
+ },
+ "vitrine": {
+  "listed": 419,
+  "sold": 147,
+  "medianPrice": 302,
+  "crafted": 621
+ },
+ "supplies": [
+  {
+   "id": "minor_healing_potion",
+   "name": "Potion de soin mineure",
+   "produced": 2501,
+   "bought": 923,
+   "price": 12.2
+  },
+  {
+   "id": "miner_elixir",
+   "name": "Élixir du mineur",
+   "produced": 4623,
+   "bought": 1518,
+   "price": 17
+  },
+  {
+   "id": "frost_tonic",
+   "name": "Tonique de givre",
+   "produced": 12683,
+   "bought": 745,
+   "price": 34.5
+  },
+  {
+   "id": "lantern_draught",
+   "name": "Philtre des lanternes",
+   "produced": 225,
+   "bought": 20,
+   "price": 37
+  },
+  {
+   "id": "drive_oil",
+   "name": "Huile de battue",
+   "produced": 30024,
+   "bought": 4130,
+   "price": 4
+  },
+  {
+   "id": "fletched_volley",
+   "name": "Volée de flèches empennées",
+   "produced": 0,
+   "bought": 0,
+   "price": 0
+  },
+  {
+   "id": "clear_rinse",
+   "name": "Rinçage clair",
+   "produced": 1818,
+   "bought": 320,
+   "price": 11.8
+  },
+  {
+   "id": "parry_balm",
+   "name": "Baume de parade",
+   "produced": 161294,
+   "bought": 10623,
+   "price": 8
+  },
+  {
+   "id": "wedge_powder",
+   "name": "Poudre de coin",
+   "produced": 207338,
+   "bought": 1967,
+   "price": 10
+  },
+  {
+   "id": "synchrony_tonic",
+   "name": "Tonique de synchronie",
+   "produced": 4480,
+   "bought": 2259,
+   "price": 12.5
+  },
+  {
+   "id": "recovery_infusion",
+   "name": "Infusion de reprise",
+   "produced": 14854,
+   "bought": 579,
+   "price": 8
+  }
+ ],
+ "classes": {
+  "byClass": [
+   {
+    "classId": "forgefire",
+    "n": 42,
+    "share": 0.35,
+    "routeMedian": 149,
+    "metaRouteMedian": 168,
+    "levelMedian": 73
+   },
+   {
+    "classId": "tracker",
+    "n": 42,
+    "share": 0.35,
+    "routeMedian": 150,
+    "metaRouteMedian": 161.5,
+    "levelMedian": 73
+   },
+   {
+    "classId": "runist",
+    "n": 36,
+    "share": 0.3,
+    "routeMedian": 159,
+    "metaRouteMedian": 170,
+    "levelMedian": 72
+   }
+  ],
+  "byPath": [
+   {
+    "path": "red_temper",
+    "name": "Trempe-Rouge",
+    "classId": "forgefire",
+    "role": "damage",
+    "n": 24,
+    "routeMedian": 150.5
+   },
+   {
+    "path": "anvil",
+    "name": "Enclumier",
+    "classId": "forgefire",
+    "role": "control",
+    "n": 8,
+    "routeMedian": 144
+   },
+   {
+    "path": "whetter",
+    "name": "Rémouleur",
+    "classId": "forgefire",
+    "role": "support",
+    "n": 10,
+    "routeMedian": 149
+   },
+   {
+    "path": "beastslayer",
+    "name": "Tue-Bête",
+    "classId": "tracker",
+    "role": "damage",
+    "n": 19,
+    "routeMedian": 150
+   },
+   {
+    "path": "trapper",
+    "name": "Piégeur",
+    "classId": "tracker",
+    "role": "control",
+    "n": 11,
+    "routeMedian": 149
+   },
+   {
+    "path": "packleader",
+    "name": "Meneur de meute",
+    "classId": "tracker",
+    "role": "support",
+    "n": 12,
+    "routeMedian": 150
+   },
+   {
+    "path": "fulgurant",
+    "name": "Fulgurant",
+    "classId": "runist",
+    "role": "damage",
+    "n": 17,
+    "routeMedian": 169
+   },
+   {
+    "path": "sigilbinder",
+    "name": "Sigillaire",
+    "classId": "runist",
+    "role": "control",
+    "n": 4,
+    "routeMedian": 149
+   },
+   {
+    "path": "glyphkeeper",
+    "name": "Glyphiste",
+    "classId": "runist",
+    "role": "support",
+    "n": 15,
+    "routeMedian": 159
+   }
+  ],
+  "classFair": [
+   {
+    "classId": "forgefire",
+    "n": 23,
+    "route30": 109,
+    "route7": 59
+   },
+   {
+    "classId": "tracker",
+    "n": 14,
+    "route30": 93.5,
+    "route7": 59
+   },
+   {
+    "classId": "runist",
+    "n": 16,
+    "route30": 119,
+    "route7": 59
+   }
+  ]
+ },
+ "walls": [
+  {
+   "stage": "15-10",
+   "encounter": "Le Notaire des marées",
+   "botDays": 1191,
+   "done": false
+  },
+  {
+   "stage": "14-10",
+   "encounter": "La Matriarche de résine",
+   "botDays": 909,
+   "done": false
+  },
+  {
+   "stage": "11-10",
+   "encounter": "Le Régent des courants",
+   "botDays": 670,
+   "done": false
+  },
+  {
+   "stage": "9-10",
+   "encounter": "Le Gardien des trois portes",
+   "botDays": 635,
+   "done": false
+  },
+  {
+   "stage": "17-10",
+   "encounter": "Le Gardien des trois portes",
+   "botDays": 623,
+   "done": false
+  },
+  {
+   "stage": "12-10",
+   "encounter": "Le Régent des courants",
+   "botDays": 510,
+   "done": false
+  },
+  {
+   "stage": "6-10",
+   "encounter": "La Matriarche de résine",
+   "botDays": 442,
+   "done": false
+  },
+  {
+   "stage": "16-1",
+   "encounter": "Le Gué des plaies",
+   "botDays": 408,
+   "done": false
+  },
+  {
+   "stage": "5-10",
+   "encounter": "La Matriarche de résine",
+   "botDays": 288,
+   "done": false
+  },
+  {
+   "stage": "7-10",
+   "encounter": "Le Notaire des marées",
+   "botDays": 259,
+   "done": false
+  },
+  {
+   "stage": "16-10",
+   "encounter": "Le Notaire des marées",
+   "botDays": 258,
+   "done": false
+  },
+  {
+   "stage": "18-1",
+   "encounter": "Les Terrasses de la vigie",
+   "botDays": 204,
+   "done": false
+  }
+ ],
+ "guardians": [
+  {
+   "stage": "1-10",
+   "name": "Mère Grise, la Lavandière du Puits",
+   "reached": 120,
+   "passed": 120,
+   "medianDays": 0,
+   "p90Days": 0
+  },
+  {
+   "stage": "2-10",
+   "name": "Mère Grise, la Lavandière du Puits",
+   "reached": 120,
+   "passed": 120,
+   "medianDays": 0,
+   "p90Days": 0
+  },
+  {
+   "stage": "3-10",
+   "name": "Le Contremaître rouge",
+   "reached": 120,
+   "passed": 120,
+   "medianDays": 0,
+   "p90Days": 0
+  },
+  {
+   "stage": "4-10",
+   "name": "Le Contremaître rouge",
+   "reached": 120,
+   "passed": 120,
+   "medianDays": 0,
+   "p90Days": 0
+  },
+  {
+   "stage": "5-10",
+   "name": "La Matriarche de résine",
+   "reached": 120,
+   "passed": 120,
+   "medianDays": 2,
+   "p90Days": 4
+  },
+  {
+   "stage": "6-10",
+   "name": "La Matriarche de résine",
+   "reached": 120,
+   "passed": 120,
+   "medianDays": 4,
+   "p90Days": 6
+  },
+  {
+   "stage": "7-10",
+   "name": "Le Notaire des marées",
+   "reached": 120,
+   "passed": 120,
+   "medianDays": 1,
+   "p90Days": 7
+  },
+  {
+   "stage": "8-10",
+   "name": "Le Notaire des marées",
+   "reached": 120,
+   "passed": 120,
+   "medianDays": 0,
+   "p90Days": 6
+  },
+  {
+   "stage": "9-10",
+   "name": "Le Gardien des trois portes",
+   "reached": 120,
+   "passed": 117,
+   "medianDays": 1,
+   "p90Days": 13
+  },
+  {
+   "stage": "10-10",
+   "name": "Le Gardien des trois portes",
+   "reached": 116,
+   "passed": 116,
+   "medianDays": 0,
+   "p90Days": 0
+  },
+  {
+   "stage": "11-10",
+   "name": "Le Régent des courants",
+   "reached": 116,
+   "passed": 114,
+   "medianDays": 5.5,
+   "p90Days": 13
+  },
+  {
+   "stage": "12-10",
+   "name": "Le Régent des courants",
+   "reached": 114,
+   "passed": 110,
+   "medianDays": 2,
+   "p90Days": 12
+  },
+  {
+   "stage": "13-10",
+   "name": "La Matriarche de résine",
+   "reached": 110,
+   "passed": 109,
+   "medianDays": 0,
+   "p90Days": 6
+  },
+  {
+   "stage": "14-10",
+   "name": "La Matriarche de résine",
+   "reached": 108,
+   "passed": 95,
+   "medianDays": 6,
+   "p90Days": 20
+  },
+  {
+   "stage": "15-10",
+   "name": "Le Notaire des marées",
+   "reached": 95,
+   "passed": 68,
+   "medianDays": 8,
+   "p90Days": 33
+  },
+  {
+   "stage": "16-10",
+   "name": "Le Notaire des marées",
+   "reached": 37,
+   "passed": 30,
+   "medianDays": 0,
+   "p90Days": 33
+  },
+  {
+   "stage": "17-10",
+   "name": "Le Gardien des trois portes",
+   "reached": 29,
+   "passed": 14,
+   "medianDays": 21,
+   "p90Days": 43
+  },
+  {
+   "stage": "18-10",
+   "name": "Le Gardien des trois portes",
+   "reached": 1,
+   "passed": 1,
+   "medianDays": 0,
+   "p90Days": 0
+  }
+ ],
+ "clans": {
+  "list": [
+   {
+    "id": 1,
+    "members": 15,
+    "levels": 6,
+    "detail": {
+     "lodge": 1,
+     "fields": 2,
+     "forge": 2,
+     "sawmill": 1
+    },
+    "renown": 2556,
+    "rank": "Bourg franc"
+   },
+   {
+    "id": 2,
+    "members": 7,
+    "levels": 3,
+    "detail": {
+     "forge": 2,
+     "fields": 1
+    },
+    "renown": 1124,
+    "rank": "Village"
+   },
+   {
+    "id": 3,
+    "members": 7,
+    "levels": 2,
+    "detail": {
+     "forge": 2
+    },
+    "renown": 1165,
+    "rank": "Village"
+   },
+   {
+    "id": 4,
+    "members": 14,
+    "levels": 3,
+    "detail": {
+     "tavern": 1,
+     "forge": 1,
+     "lodge": 1
+    },
+    "renown": 2207,
+    "rank": "Bourg franc"
+   },
+   {
+    "id": 5,
+    "members": 12,
+    "levels": 6,
+    "detail": {
+     "fields": 1,
+     "forge": 2,
+     "sawmill": 1,
+     "lodge": 1,
+     "harbor": 1
+    },
+    "renown": 1970,
+    "rank": "Village"
+   },
+   {
+    "id": 6,
+    "members": 12,
+    "levels": 2,
+    "detail": {
+     "forge": 1,
+     "lodge": 1
+    },
+    "renown": 1802,
+    "rank": "Village"
+   },
+   {
+    "id": 7,
+    "members": 13,
+    "levels": 7,
+    "detail": {
+     "fields": 2,
+     "lodge": 2,
+     "forge": 2,
+     "hall": 1
+    },
+    "renown": 2151,
+    "rank": "Bourg franc"
+   }
+  ],
+  "maxLevels": 24
+ },
+ "trials": {
+  "20": 149,
+  "40": 115,
+  "60": 46
+ },
+ "tide": {
+  "nights": 90,
+  "participation": 113.1,
+  "liveShare": 0.6,
+  "workShare": 0,
+  "thresholds": 3.7,
+  "byPersona": {
+   "casual": 72,
+   "crafter": 75.7,
+   "hoarder": 81.9,
+   "meta_casual": 106.8,
+   "gatherer": 80.2,
+   "dumper": 62.6,
+   "tryhard": 97.6,
+   "afk": 39.2,
+   "fighter": 104.8,
+   "speculator": 113.3,
+   "collector": 113.8
+  },
+  "byClass": {
+   "forgefire": 83.9,
+   "tracker": 70.3,
+   "runist": 91.8
+  },
+  "byPath": {
+   "forgefire/avant voie": 44.7,
+   "tracker/avant voie": 47.5,
+   "runist/avant voie": 49.7,
+   "forgefire/anvil": 67.3,
+   "forgefire/red_temper": 93.9,
+   "runist/fulgurant": 93.7,
+   "forgefire/whetter": 77.3,
+   "tracker/trapper": 70.1,
+   "runist/glyphkeeper": 96.9,
+   "tracker/beastslayer": 66.6,
+   "tracker/packleader": 78.7,
+   "runist/sigilbinder": 74.6
+  },
+  "byTidePath": {
+   "lanterns:forgefire": 43.2,
+   "lanterns:tracker": 51.2,
+   "lanterns:runist": 51.6,
+   "giants:forgefire": 45.1,
+   "giants:tracker": 45.8,
+   "giants:runist": 48.7,
+   "debacle:anvil": 68.7,
+   "debacle:forgefire": 47.2,
+   "debacle:red_temper": 93.8,
+   "debacle:tracker": 43.7,
+   "debacle:fulgurant": 93,
+   "debacle:whetter": 74.4,
+   "debacle:trapper": 61.5,
+   "debacle:glyphkeeper": 87.1,
+   "debacle:runist": 48,
+   "debacle:beastslayer": 69,
+   "debacle:packleader": 69.1,
+   "lanterns:anvil": 61.2,
+   "lanterns:red_temper": 93.5,
+   "lanterns:beastslayer": 62.4,
+   "lanterns:fulgurant": 92.5,
+   "lanterns:whetter": 78.7,
+   "lanterns:trapper": 59.9,
+   "lanterns:glyphkeeper": 103.5,
+   "lanterns:packleader": 84.6,
+   "lanterns:sigilbinder": 76.5,
+   "giants:anvil": 72,
+   "giants:red_temper": 94.5,
+   "giants:beastslayer": 68.4,
+   "giants:fulgurant": 95.8,
+   "giants:whetter": 79,
+   "giants:trapper": 89,
+   "giants:glyphkeeper": 100.3,
+   "giants:packleader": 82.5,
+   "giants:sigilbinder": 74.8,
+   "debacle:sigilbinder": 72.6
+  },
+  "live": {
+   "absent": 71.6,
+   "en direct": 87.4
+  },
+  "shardsPerPlayerWeek": 359,
+  "outfits": 112,
+  "chests": {
+   "caches": 325,
+   "total": 1371
+  }
+ },
+ "notes": [
+  {
+   "day": 0,
+   "text": "Cora Pierre change de récolte : mining → woodcutting"
+  },
+  {
+   "day": 0,
+   "text": "Nils Ronce change de récolte : agriculture → woodcutting"
+  },
+  {
+   "day": 0,
+   "text": "Jorun Ronce change de récolte : hunting → woodcutting"
+  },
+  {
+   "day": 0,
+   "text": "Thessa Ronce change de récolte : fishing → woodcutting"
+  },
+  {
+   "day": 0,
+   "text": "Kaelo Pierre change de récolte : herbalism → woodcutting"
+  },
+  {
+   "day": 0,
+   "text": "Brinn Ronce change de récolte : herbalism → woodcutting"
+  },
+  {
+   "day": 0,
+   "text": "Jorun Ronce change de récolte : agriculture → woodcutting"
+  },
+  {
+   "day": 0,
+   "text": "Brinn Ronce change de récolte : agriculture → woodcutting"
+  },
+  {
+   "day": 0,
+   "text": "Xenia Ronce change de récolte : mining → woodcutting"
+  },
+  {
+   "day": 0,
+   "text": "Rowan Ronce change de récolte : mining → woodcutting"
+  },
+  {
+   "day": 0,
+   "text": "Thessa Ronce change de récolte : mining → woodcutting"
+  },
+  {
+   "day": 7,
+   "text": "Thessa Ronce change de récolte : woodcutting → hunting"
+  },
+  {
+   "day": 7,
+   "text": "Vera Ronce change de récolte : fishing → hunting"
+  },
+  {
+   "day": 7,
+   "text": "Rowan Ronce change de récolte : fishing → hunting"
+  },
+  {
+   "day": 7,
+   "text": "Isaure Pierre change de récolte : herbalism → hunting"
+  },
+  {
+   "day": 7,
+   "text": "Brinn Ronce change de récolte : woodcutting → hunting"
+  },
+  {
+   "day": 7,
+   "text": "Lise Ronce change de récolte : woodcutting → hunting"
+  },
+  {
+   "day": 7,
+   "text": "Xenia Ronce change de récolte : woodcutting → hunting"
+  },
+  {
+   "day": 7,
+   "text": "Zelie Ronce change de récolte : herbalism → hunting"
+  },
+  {
+   "day": 7,
+   "text": "Eloi Pierre change de récolte : woodcutting → hunting"
+  },
+  {
+   "day": 7,
+   "text": "Garance Pierre change de récolte : herbalism → hunting"
+  },
+  {
+   "day": 9,
+   "text": "Aldric Pierre sertit Opale d'interstice devant Le Notaire des marées"
+  },
+  {
+   "day": 14,
+   "text": "Aldric Pierre change de récolte : herbalism → mining"
+  },
+  {
+   "day": 14,
+   "text": "Hugo Ronce change de récolte : herbalism → mining"
+  },
+  {
+   "day": 14,
+   "text": "Jorun Ronce change de récolte : woodcutting → mining"
+  },
+  {
+   "day": 14,
+   "text": "Aldric Pierre change de récolte : herbalism → hunting"
+  },
+  {
+   "day": 14,
+   "text": "Rowan Ronce change de récolte : hunting → mining"
+  },
+  {
+   "day": 14,
+   "text": "Garance Pierre change de récolte : fishing → hunting"
+  },
+  {
+   "day": 14,
+   "text": "Kaelo Pierre change de récolte : herbalism → mining"
+  },
+  {
+   "day": 16,
+   "text": "Aldric Pierre sertit Perle de lessive devant Le Gué des plaies"
+  },
+  {
+   "day": 17,
+   "text": "Clan 3 : Forge niveau 1"
+  },
+  {
+   "day": 18,
+   "text": "Clan 7 : Champs et jardins niveau 1"
+  },
+  {
+   "day": 21,
+   "text": "Hugo Ronce change de récolte : fishing → mining"
+  },
+  {
+   "day": 21,
+   "text": "Nils Ronce change de récolte : woodcutting → mining"
+  },
+  {
+   "day": 21,
+   "text": "Zelie Ronce change de récolte : woodcutting → hunting"
+  },
+  {
+   "day": 21,
+   "text": "Hugo Ronce change de récolte : herbalism → mining"
+  },
+  {
+   "day": 21,
+   "text": "Lise Ronce change de récolte : agriculture → mining"
+  },
+  {
+   "day": 21,
+   "text": "Isaure Pierre change de récolte : fishing → mining"
+  },
+  {
+   "day": 21,
+   "text": "Quentin Pierre change de récolte : woodcutting → mining"
+  },
+  {
+   "day": 21,
+   "text": "Brinn Ronce change de récolte : woodcutting → mining"
+  },
+  {
+   "day": 21,
+   "text": "Lise Ronce change de récolte : hunting → mining"
+  },
+  {
+   "day": 21,
+   "text": "Yann Pierre change de récolte : herbalism → hunting"
+  },
+  {
+   "day": 21,
+   "text": "Thessa Ronce change de récolte : woodcutting → mining"
+  },
+  {
+   "day": 22,
+   "text": "Fenn Ronce sertit Œil de faille devant Le Gardien des trois portes"
+  },
+  {
+   "day": 23,
+   "text": "Clan 2 : Forge niveau 1"
+  },
+  {
+   "day": 25,
+   "text": "Jorun Ronce sertit Hématite d'arrêt devant Le Gué des plaies"
+  },
+  {
+   "day": 26,
+   "text": "Isaure Pierre sertit Opale d'interstice devant Le Notaire des marées"
+  },
+  {
+   "day": 26,
+   "text": "Wyatt Pierre sertit Hématite d'arrêt devant Le Gardien des trois portes"
+  },
+  {
+   "day": 26,
+   "text": "Yann Pierre sertit Hématite d'arrêt devant Le Gardien des trois portes"
+  },
+  {
+   "day": 27,
+   "text": "Clan 5 : Champs et jardins niveau 1"
+  },
+  {
+   "day": 28,
+   "text": "Cora Pierre change de récolte : woodcutting → mining"
+  },
+  {
+   "day": 28,
+   "text": "Lise Ronce change de récolte : agriculture → mining"
+  },
+  {
+   "day": 28,
+   "text": "Isaure Pierre change de récolte : agriculture → mining"
+  },
+  {
+   "day": 28,
+   "text": "Hugo Ronce change de récolte : herbalism → mining"
+  },
+  {
+   "day": 28,
+   "text": "Jorun Ronce change de récolte : woodcutting → mining"
+  },
+  {
+   "day": 28,
+   "text": "Rowan Ronce change de récolte : woodcutting → mining"
+  },
+  {
+   "day": 29,
+   "text": "Clan 1 : Pavillon de chasse niveau 1"
+  },
+  {
+   "day": 30,
+   "text": "Orla Pierre sertit Opale d'interstice devant Le Notaire des marées"
+  },
+  {
+   "day": 31,
+   "text": "Clan 5 : Forge niveau 1"
+  },
+  {
+   "day": 31,
+   "text": "Orla Pierre sertit Opale d'interstice devant Le Notaire des marées"
+  }
+ ]
+}

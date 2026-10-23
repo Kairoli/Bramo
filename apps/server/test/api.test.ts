@@ -671,6 +671,36 @@ describe('API', () => {
     expect(missed.nights.some((n) => n.day === day)).toBe(false);
   });
 
+  it('photo de profil : envoi, affichage, refus d’un SVG, délai, signalements, discussion', async () => {
+    const png = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==';
+    const moi = player({ value: '' });
+    await moi('POST', '/api/auth/register', { username: 'Portrait', password: 'motdepasse' });
+    await moi('POST', '/api/character/class', { classId: 'runist' });
+    expect((await moi('POST', '/api/profile/avatar', { image: 'data:image/svg+xml;base64,PHN2Zy8+' })).status).toBe(400);
+    expect((await moi('POST', '/api/profile/avatar', { image: 'data:image/png;base64,QUJD' })).status).toBe(400); // pas une vraie image
+    const set = await moi('POST', '/api/profile/avatar', { image: png });
+    expect(set.json).toMatchObject({ avatar: 1, hidden: false });
+    const st = (await moi('GET', '/api/state')).json as StateResponse;
+    expect(st.avatar).toBe(1);
+    const img = await app.inject({ method: 'GET', url: '/api/avatars/' + st.characterId + '?v=1' });
+    expect(img.statusCode).toBe(200);
+    expect(img.headers['content-type']).toContain('image/png');
+    expect((await moi('POST', '/api/profile/avatar', { image: png })).status).toBe(400); // trop tôt pour en changer
+    // Sa photo accompagne ses messages.
+    await moi('POST', '/api/chat', { channel: 'server', text: 'Bonjour la digue' });
+    const chat = (await moi('GET', '/api/chat?channel=server')).json as import('@bramo/shared').ChatView;
+    expect(chat.messages.find((m) => m.text === 'Bonjour la digue')).toMatchObject({ avatar: 1, mine: true });
+    // Trois joueurs la signalent : elle est masquée.
+    for (const n of ['Temoin1', 'Temoin2', 'Temoin3']) {
+      const t = player({ value: '' });
+      await t('POST', '/api/auth/register', { username: n, password: 'motdepasse' });
+      await t('POST', '/api/profile/avatar/report', { characterId: st.characterId });
+    }
+    expect(((await moi('GET', '/api/state')).json as StateResponse).avatar).toBeNull();
+    expect((await app.inject({ method: 'GET', url: '/api/avatars/' + st.characterId + '?v=1' })).statusCode).toBe(404);
+    expect(((await moi('GET', '/api/profile/avatar')).json as { hidden: boolean }).hidden).toBe(true);
+  });
+
   it('tour guidé : proposé une fois, puis retenu', async () => {
     const p = player({ value: '' });
     await p('POST', '/api/auth/register', { username: 'Novice', password: 'motdepasse' });

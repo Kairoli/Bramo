@@ -36,6 +36,14 @@ export const settingsSchema = z.object({
       history: z.number().int().min(1),
     })
     .default({ maxLength: 300, perMinute: 10, minIntervalSec: 2, reportsToHide: 3, blockLinks: true, history: 60 }),
+  /** Photo de profil (apps/server/src/avatar.ts) : taille maximale, délai entre deux changements, signalements avant masquage. */
+  avatar: z
+    .object({
+      maxBytes: z.number().int().min(10_000),
+      cooldownSec: z.number().min(0),
+      hideAfterReports: z.number().int().min(1),
+    })
+    .default({ maxBytes: 300_000, cooldownSec: 60, hideAfterReports: 3 }),
   /** Garde-fous des comptes (apps/server/src/guard.ts). */
   security: z
     .object({

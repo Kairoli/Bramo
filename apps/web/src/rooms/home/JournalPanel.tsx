@@ -1,5 +1,6 @@
 import { type CSSProperties, type ReactNode, useEffect, useMemo, useRef, useState } from 'react';
 import type { ChatMessageView, ChatView, JournalEntry, TownEvent } from '@bramo/shared';
+import { Avatar } from '../../components/Avatar';
 import { api } from '../../api';
 import { useGame } from '../../game/GameContext';
 import { hhmm } from '../../format';
@@ -254,6 +255,7 @@ export function JournalPanel() {
             const m = it.msg;
             return (
               <div key={`m${m.id}`} className={`j-chat${m.mine ? ' mine' : ''}`}>
+                <Avatar id={m.characterId} version={m.avatar} name={m.name} classId={m.classId} size={34} className="j-chat-avatar" />
                 <span className="j-chat-head">
                   <strong>{m.name}</strong>
                   <span className="j-time">{hhmm(m.at)}</span>

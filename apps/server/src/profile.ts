@@ -31,6 +31,7 @@ export async function playerProfile(db: Db, content: Content, id: number): Promi
   return {
     id: r.id,
     name: r.name,
+    avatar: r.avatar,
     classId: r.classId,
     outfit: r.outfit,
     look: r.look,

@@ -9,7 +9,7 @@ import { enableNotifications, notificationsOn, notificationsSupported } from './
  * Fenêtre « Compte » (sortie publique, 23 octobre) : changer son mot de passe, télécharger ses données, supprimer son compte
  * (droits d'accès et d'effacement du RGPD), et les pages légales.
  */
-export function AccountModal({ onClose }: { onClose: () => void }) {
+export function AccountModal({ onClose, embedded = false }: { onClose: () => void; embedded?: boolean }) {
   const { name, logout, flash } = useGame();
   const [current, setCurrent] = useState('');
   const [next, setNext] = useState('');
@@ -48,12 +48,15 @@ export function AccountModal({ onClose }: { onClose: () => void }) {
     }
   };
 
-  return (
-    <Modal onClose={onClose} className="account-modal">
-      <header>
-        <span className="eyebrow">Compte</span>
-        <h2>{name}</h2>
-      </header>
+  // Les réglages du compte : seuls dans leur fenêtre, ou en onglet de la fenêtre Profil (embedded).
+  const sections = (
+    <>
+      <section className="account-session">
+        <h3>Session</h3>
+        <button className="btn btn-sm" onClick={logout}>
+          Se déconnecter
+        </button>
+      </section>
 
       <section>
         <h3>Changer de mot de passe</h3>
@@ -113,6 +116,16 @@ export function AccountModal({ onClose }: { onClose: () => void }) {
       </section>
 
       <LegalLinks />
+    </>
+  );
+  if (embedded) return sections;
+  return (
+    <Modal onClose={onClose} className="account-modal">
+      <header>
+        <span className="eyebrow">Compte</span>
+        <h2>{name}</h2>
+      </header>
+      {sections}
     </Modal>
   );
 }

@@ -9,6 +9,7 @@ export const settings = {
   activity: { queueLength: 3, maxQuantity: 10000 },
   presence: { activeTimeoutSec: 120, heartbeatSec: 30 },
   chat: { maxLength: 300, perMinute: 10, minIntervalSec: 2, reportsToHide: 3, blockLinks: true, history: 60 },
+  avatar: { maxBytes: 300_000, cooldownSec: 60, hideAfterReports: 3 },
   security: { loginFailures: { max: 5, windowMin: 15 }, registrationsPerIpPerDay: 5 },
   rates: { active: 1, offline: 0.25, offlineCapHours: 12 },
   energy: { multiplier: 1.5, charges: 2, durationMin: 30, resetHourUtc: 4 },

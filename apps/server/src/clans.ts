@@ -293,7 +293,7 @@ export async function myClanView(db: Db, content: Content, characterId: number, 
   if (!clan) return null;
   const since = now - content.settings.clan.activeDays * DAY;
   const members = await db
-    .select({ id: characters.id, name: characters.name, rank: clanMembers.rank, lastSeenAt: characters.lastSeenAt, classId: characters.classId, outfit: characters.outfit, combat: characters.combat })
+    .select({ id: characters.id, name: characters.name, rank: clanMembers.rank, lastSeenAt: characters.lastSeenAt, classId: characters.classId, outfit: characters.outfit, combat: characters.combat, avatar: characters.avatar })
     .from(clanMembers)
     .innerJoin(characters, eq(characters.id, clanMembers.characterId))
     .where(eq(clanMembers.clanId, clan.id));
@@ -302,6 +302,7 @@ export async function myClanView(db: Db, content: Content, characterId: number, 
     .map((m) => ({
       id: m.id,
       name: m.name,
+      avatar: m.avatar,
       rank: m.rank,
       active: m.lastSeenAt.getTime() >= since,
       lastSeenAt: m.lastSeenAt.getTime(),

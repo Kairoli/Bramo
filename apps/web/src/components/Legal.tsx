@@ -88,6 +88,7 @@ function Terms() {
         <li>Exploiter volontairement un bug : signalez-le plutôt.</li>
         <li>Vendre ou acheter de l’or, des objets ou des comptes contre de l’argent réel.</li>
         <li>Les pseudos et messages insultants, haineux ou qui harcèlent d’autres joueurs.</li>
+        <li>Les photos de profil choquantes, haineuses, sexuelles, ou montrant une autre personne sans son accord. Une photo signalée par plusieurs joueurs est masquée ; un modérateur peut la retirer. Vous êtes responsable des images que vous mettez en ligne.</li>
       </ul>
       <h2>Sanctions</h2>
       <p>Un compte qui enfreint ces règles peut être averti, privé de certaines fonctions, suspendu ou supprimé, selon la gravité.</p>

@@ -99,10 +99,13 @@ import {
   tideBuyBody,
   tidePrefsBody,
   tideDay,
+  avatarBody,
+  avatarTargetBody,
 } from '@bramo/shared';
 import type { Db } from './db/index.js';
 import { offerPatron, settleTide, tideView, recordSignup, tideLive, tideLiveDemo, tideRankingDemo, tideRankingView } from './tide.js';
 import { AccountGuard, GuardError } from './guard.js';
+import { moderateAvatar, myAvatar, readAvatar, removeAvatar, reportAvatar, setAvatar } from './avatar.js';
 import { deleteAccount, exportAccount } from './account.js';
 import { moderateChat, postChat, readChat, reportChat } from './chat.js';
 import { buyGear, craftOwned, gearListings, listGear, unlistGear } from './vitrine.js';
@@ -693,6 +696,41 @@ export async function buildApp({ db, content, clock = Date.now, secureCookies = 
     const me = await myCharacter(req);
     const message = await db.transaction((tx) => moderateChat(tx, me.id, messageId, action, hours, clock()));
     return { ok: true, message };
+  });
+
+  // --- Photo de profil (apps/server/src/avatar.ts) ---
+
+  /** L'image d'une photo de profil : publique, mise en cache longtemps (sa version est dans l'adresse). */
+  app.get('/api/avatars/:id', async (req, reply) => {
+    const a = await readAvatar(db, Number((req.params as { id: string }).id));
+    if (!a) return reply.status(404).send({ code: 'no_avatar', message: 'Pas de photo.' });
+    return reply.header('cache-control', 'public, max-age=31536000, immutable').header('x-content-type-options', 'nosniff').type(a.mime).send(a.bytes);
+  });
+  app.get('/api/profile/avatar', async (req) => {
+    const me = await myCharacter(req);
+    return myAvatar(db, me.id, clock(), content);
+  });
+  app.post('/api/profile/avatar', async (req) => {
+    const { image } = body(avatarBody, req);
+    const me = await myCharacter(req);
+    await db.transaction((tx) => setAvatar(tx, me.id, image, clock(), content));
+    return myAvatar(db, me.id, clock(), content);
+  });
+  app.post('/api/profile/avatar/remove', async (req) => {
+    const me = await myCharacter(req);
+    await db.transaction((tx) => removeAvatar(tx, me.id));
+    return myAvatar(db, me.id, clock(), content);
+  });
+  app.post('/api/profile/avatar/report', async (req) => {
+    const { characterId } = body(avatarTargetBody, req);
+    const me = await myCharacter(req);
+    return db.transaction((tx) => reportAvatar(tx, me.id, characterId, content, clock()));
+  });
+  app.post('/api/profile/avatar/moderate', async (req) => {
+    const { characterId } = body(avatarTargetBody, req);
+    const me = await myCharacter(req);
+    await db.transaction((tx) => moderateAvatar(tx, me.id, characterId));
+    return { ok: true };
   });
 
   // --- Clans ---

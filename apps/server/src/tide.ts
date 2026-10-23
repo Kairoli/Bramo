@@ -328,11 +328,11 @@ export async function tideRankingView(tx: Tx, content: Content, now: number, meI
   if (!night) return null;
   const rows = await tx.select().from(tideEntries).where(eq(tideEntries.day, day));
   const ids = rows.map((r) => r.characterId);
-  const chars = ids.length ? await tx.select({ id: characters.id, name: characters.name, classId: characters.classId, outfit: characters.outfit, look: characters.look }).from(characters).where(inArray(characters.id, ids)) : [];
+  const chars = ids.length ? await tx.select({ id: characters.id, name: characters.name, classId: characters.classId, outfit: characters.outfit, look: characters.look, avatar: characters.avatar }).from(characters).where(inArray(characters.id, ids)) : [];
   const byId = new Map(chars.map((c) => [c.id, c]));
   const entries = rows.map((r) => {
     const c = byId.get(r.characterId);
-    return { characterId: r.characterId, name: c?.name ?? '?', points: r.points, channel: r.channel, stats: r.stats ?? null, live: r.live, appearance: c ? viewAppearance({ classId: c.classId, outfit: c.outfit, look: c.look } as unknown as State, content) : null };
+    return { characterId: r.characterId, name: c?.name ?? '?', avatar: c?.avatar ?? null, points: r.points, channel: r.channel, stats: r.stats ?? null, live: r.live, appearance: c ? viewAppearance({ classId: c.classId, outfit: c.outfit, look: c.look } as unknown as State, content) : null };
   });
   const objective = rules.shards.objectivePerParticipant * Math.max(1, night.participants);
   return {
@@ -344,7 +344,7 @@ export async function tideRankingView(tx: Tx, content: Content, now: number, meI
     objective,
     lit: night.thresholds,
     of: rules.shards.thresholds.length,
-    categories: rankNight(entries, meId).map((c) => ({ ...c, top: c.top.map((t) => ({ rank: t.rank, characterId: t.entry.characterId, name: t.entry.name, appearance: t.entry.appearance, value: t.value, live: t.entry.live, me: t.entry.characterId === meId })) })),
+    categories: rankNight(entries, meId).map((c) => ({ ...c, top: c.top.map((t) => ({ rank: t.rank, characterId: t.entry.characterId, name: t.entry.name, avatar: t.entry.avatar, appearance: t.entry.appearance, value: t.value, live: t.entry.live, me: t.entry.characterId === meId })) })),
     demo: false,
   };
 }
@@ -367,7 +367,7 @@ export function tideRankingDemo(content: Content, now: number, tideId?: string):
     objective,
     lit: rules.shards.thresholds.filter((t) => points >= t.share * objective).length,
     of: rules.shards.thresholds.length,
-    categories: rankNight(entries, null).map((c) => ({ ...c, top: c.top.map((t) => ({ rank: t.rank, characterId: t.entry.characterId, name: t.entry.name, appearance: t.entry.appearance, value: t.value, live: t.entry.live, me: false })) })),
+    categories: rankNight(entries, null).map((c) => ({ ...c, top: c.top.map((t) => ({ rank: t.rank, characterId: t.entry.characterId, name: t.entry.name, avatar: null, appearance: t.entry.appearance, value: t.value, live: t.entry.live, me: false })) })),
     demo: true,
   };
 }

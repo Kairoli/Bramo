@@ -7070,3 +7070,250 @@ div.tide-role {
     height: 110px;
   }
 }
+
+/* --- Photo de profil (components/Avatar.tsx) : carré aux coins arrondis, partout où un joueur apparaît. --- */
+.avatar {
+  position: relative;
+  flex: none;
+  display: inline-grid;
+  place-items: center;
+  width: var(--av, 40px);
+  height: var(--av, 40px);
+  border-radius: 24%;
+  overflow: hidden;
+  background: var(--sunken);
+  border: 2px solid color-mix(in srgb, var(--av-color, var(--border)) 55%, var(--border));
+  box-shadow: 0 2px 6px rgb(0 0 0 / 0.35);
+}
+.avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.avatar .rig {
+  width: 100%;
+  height: 100%;
+}
+.avatar-letter {
+  font-weight: 900;
+  font-size: calc(var(--av, 40px) * 0.48);
+  color: var(--av-color);
+}
+.topbar-profile {
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  border-radius: 24%;
+}
+.topbar-profile:hover .avatar {
+  border-color: var(--action);
+}
+
+/* Fenêtre Profil. */
+.profile-modal {
+  width: min(620px, 94vw);
+  max-height: 90vh;
+  overflow-y: auto;
+  display: grid;
+  gap: 14px;
+}
+.profile-tabs {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr;
+}
+.profile-card {
+  display: flex;
+  gap: 18px;
+  align-items: flex-start;
+}
+.profile-photo {
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+}
+.profile-photo-actions {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.profile-id {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+}
+.profile-id h2 {
+  margin: 0;
+}
+.profile-line {
+  font-weight: 700;
+}
+.profile-warn {
+  color: var(--alert);
+}
+.profile-msg {
+  color: var(--good);
+}
+.profile-rules h3 {
+  margin: 0 0 4px;
+  font-size: 14px;
+}
+.profile-dev {
+  justify-self: start;
+}
+.account-session {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Recadrage de la photo. */
+.avatar-picker {
+  display: grid;
+  gap: 10px;
+  padding: 12px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--sunken);
+}
+.avatar-drop {
+  display: grid;
+  place-items: center;
+  gap: 4px;
+  padding: 36px 12px;
+  border: 2px dashed var(--border);
+  border-radius: 12px;
+  cursor: pointer;
+}
+.avatar-drop:hover {
+  border-color: var(--action);
+}
+.avatar-crop-row {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.avatar-crop {
+  position: relative;
+  overflow: hidden;
+  border-radius: 24%;
+  border: 2px solid var(--action);
+  cursor: grab;
+  touch-action: none;
+  background: #000;
+}
+.avatar-crop:active {
+  cursor: grabbing;
+}
+.avatar-crop img {
+  position: absolute;
+  left: 0;
+  top: 0;
+  max-width: none;
+  user-select: none;
+  pointer-events: none;
+}
+.avatar-crop-side {
+  display: grid;
+  gap: 8px;
+  align-content: start;
+  flex: 1;
+  min-width: 180px;
+}
+.avatar-zoom {
+  display: grid;
+  gap: 2px;
+}
+.avatar-previews {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+}
+.avatar-preview-clip {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+.avatar-preview-clip img {
+  position: absolute;
+  left: 0;
+  top: 0;
+  max-width: none;
+}
+.avatar-picker-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 6px;
+}
+
+/* Discussion en escalier [Louis : « quand je parle, mon image est à droite et mon texte à sa gauche »]. */
+.j-chat {
+  grid-template-columns: auto minmax(0, 1fr);
+  column-gap: 8px;
+  align-items: start;
+  border-left: 0;
+  background: none;
+  padding: 4px 2px;
+}
+.j-chat .j-chat-avatar {
+  grid-row: 1 / span 3;
+}
+.j-chat-head {
+  justify-content: flex-start;
+}
+.j-chat-text {
+  justify-self: start;
+  max-width: 100%;
+  padding: 6px 10px;
+  border-radius: 4px 12px 12px 12px;
+  background: color-mix(in srgb, var(--event) 14%, var(--sunken));
+  border: 1px solid color-mix(in srgb, var(--event) 30%, var(--border));
+}
+.j-chat.mine {
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+.j-chat.mine .j-chat-avatar {
+  grid-column: 2;
+}
+.j-chat.mine .j-chat-head,
+.j-chat.mine .j-chat-text,
+.j-chat.mine .j-chat-actions {
+  grid-column: 1;
+}
+.j-chat.mine .j-chat-head {
+  justify-content: flex-end;
+}
+.j-chat.mine .j-chat-text {
+  justify-self: end;
+  border-radius: 12px 4px 12px 12px;
+  background: color-mix(in srgb, var(--action) 16%, var(--sunken));
+  border-color: color-mix(in srgb, var(--action) 35%, var(--border));
+}
+.j-chat-actions {
+  grid-column: 2;
+}
+
+/* Fiche d'un joueur, classement, bourg. */
+.player-photo {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+.player-photo > span {
+  display: grid;
+  gap: 2px;
+}
+.rank-step-who {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  max-width: 100%;
+  min-width: 0;
+}
+.walker-card-who {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}

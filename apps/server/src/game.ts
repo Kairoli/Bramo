@@ -128,6 +128,6 @@ export async function play(db: Db, content: Content, accountId: number, now: num
     await saveCharacter(tx, loaded.id, loaded.state, state);
     const journal = await insertEntries(tx, loaded.id, entries);
     const absence: AdvanceSummary | null = isAbsence ? summary : null;
-    return { name: loaded.name, state: viewState(state, now, content), absence, journal };
+    return { name: loaded.name, avatar: loaded.avatar, characterId: loaded.id, state: viewState(state, now, content), absence, journal };
   });
 }

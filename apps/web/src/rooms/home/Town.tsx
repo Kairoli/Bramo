@@ -6,6 +6,7 @@ import { Character } from '../../rig/Character';
 import { hhmm } from '../../format';
 import { Scene } from '../../components/Scene';
 import { PlayerCard } from '../../components/PlayerCard';
+import { Avatar } from '../../components/Avatar';
 
 /** Où se tient quelqu'un qui pratique ce métier (en % de la largeur ; centre de l'image, jamais recadré). */
 const WORKPLACES: Record<string, number> = {
@@ -46,7 +47,10 @@ function Walker({ p, slot, onOpen }: { p: TownPlayer; slot: number; onOpen: () =
   return (
     <div className={`walker clickable ${working ? 'walker-working' : 'walker-strolling'}`} style={style} onClick={onOpen} role="button" tabIndex={0} title={`Voir la fiche de ${p.name}`}>
       <div className="walker-card">
-        <strong>{p.name}</strong>
+        <span className="walker-card-who">
+          <Avatar id={p.id} version={p.avatar} name={p.name} classId={p.classId} size={28} />
+          <strong>{p.name}</strong>
+        </span>
         <span>
           {p.nickname}
           {p.profession ? ` · niveau ${p.level}` : ''}

@@ -88,6 +88,9 @@ export interface ChatMessageView {
   characterId: number | null;
   text: string;
   mine: boolean;
+  /** Photo de profil de l'auteur (version) et sa classe (portrait par défaut). */
+  avatar: number | null;
+  classId: string | null;
 }
 export interface ChatView {
   channel: 'server' | 'clan';
@@ -192,6 +195,7 @@ export interface ClanMemberView {
   classId: string | null;
   outfit: string | null;
   classLevel: number;
+  avatar: number | null;
 }
 
 /** Un bâtiment du clan : niveau, effet, et ce qu'il manque pour le niveau suivant. */
@@ -238,6 +242,7 @@ export interface ClanView {
 export interface TownPlayer {
   id: number;
   name: string;
+  avatar: number | null;
   classId: string;
   outfit: string;
   /** Recette en cours, ou null s'il ne fait rien. */
@@ -256,6 +261,7 @@ export interface TownPlayer {
 export interface PlayerProfile {
   id: number;
   name: string;
+  avatar: number | null;
   classId: string | null;
   outfit: string | null;
   look: Record<string, string>;
@@ -300,8 +306,23 @@ export interface JournalEntry {
   data?: AdvanceSummary;
 }
 
+/** Photo de profil : envoi (image recadrée, data URL), signalement, retrait par un modérateur. */
+export const avatarBody = z.object({ image: z.string().max(600_000) });
+export const avatarTargetBody = z.object({ characterId: z.number().int() });
+/** Sa photo de profil, pour la fenêtre Profil. */
+export interface MyAvatarView {
+  avatar: number | null;
+  /** Masquée après des signalements. */
+  hidden: boolean;
+  nextChangeAt: number;
+}
+
 export interface StateResponse {
   name: string;
+  /** Version de sa photo de profil (adresse /api/avatars/:id?v=), null sans photo. */
+  avatar: number | null;
+  /** Identifiant du personnage (sa photo de profil). */
+  characterId: number;
   state: StateView;
   /** Présent une seule fois, à la première requête après une absence. */
   absence: AdvanceSummary | null;
@@ -411,6 +432,7 @@ export interface TideRankingRow {
   rank: number;
   characterId: number;
   name: string;
+  avatar: number | null;
   appearance: Appearance | null;
   value: number;
   live: boolean;

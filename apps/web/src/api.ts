@@ -22,6 +22,7 @@ import type {
   TideView,
   TideLiveView,
   TideRankingView,
+  MyAvatarView,
   TownView,
 } from '@bramo/shared';
 
@@ -137,6 +138,11 @@ export const api = {
   stockSupplies: (itemId: string, qty: number) => request<StateResponse>('POST', '/combat/supplies/stock', { itemId, qty }),
   unstockSupplies: (itemId: string, qty: number) => request<StateResponse>('POST', '/combat/supplies/unstock', { itemId, qty }),
   tide: () => request<TideView | null>('GET', '/tide'),
+  myAvatar: () => request<MyAvatarView>('GET', '/profile/avatar'),
+  setAvatar: (image: string) => request<MyAvatarView>('POST', '/profile/avatar', { image }),
+  removeAvatar: () => request<MyAvatarView>('POST', '/profile/avatar/remove'),
+  reportAvatar: (characterId: number) => request<{ hidden: boolean }>('POST', '/profile/avatar/report', { characterId }),
+  moderateAvatar: (characterId: number) => request<{ ok: boolean }>('POST', '/profile/avatar/moderate', { characterId }),
   tideRanking: (demo = false, tide?: string) => request<TideRankingView | null>('GET', `/tide/ranking${demo ? `?demo=1${tide ? `&tide=${tide}` : ''}` : ''}`),
   tideLive: (demo = false, tide?: string) => request<TideLiveView | null>('GET', `/tide/live${demo ? `?demo=1${tide ? `&tide=${tide}` : ''}` : ''}`),
   tidePrefs: (prefs: { channel?: 'combat' | 'work' }) => request<StateResponse>('POST', '/tide/prefs', prefs),

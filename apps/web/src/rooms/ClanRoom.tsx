@@ -7,6 +7,7 @@ import { Bar, ItemIcon, Modal } from '../components/ui';
 import { Scene } from '../components/Scene';
 import { Character } from '../rig/Character';
 import { PlayerCard } from '../components/PlayerCard';
+import { Avatar } from '../components/Avatar';
 
 type Tab = 'log' | 'members' | 'roads';
 type Run = (call: () => ReturnType<typeof api.state>) => Promise<boolean>;
@@ -600,7 +601,7 @@ function Members({ clan, run, onOpen }: { clan: ClanView; run: Run; onOpen: (id:
         return (
           <div key={m.id} className={`clan-member${m.active ? '' : ' away'}`}>
             <button className="clan-portrait" onClick={() => onOpen(m.id)} title={`Voir la fiche de ${m.name}`}>
-              <Character appearance={lookOf(m, content.classes)} lod="portrait" animate={false} />
+              <Avatar id={m.id} version={m.avatar} name={m.name} classId={m.classId} appearance={lookOf(m, content.classes)} size={44} />
               <span className={`clan-dot${m.active ? ' on' : ''}`} />
             </button>
             <span className="clan-member-text">

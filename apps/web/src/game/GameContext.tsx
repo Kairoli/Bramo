@@ -8,6 +8,9 @@ export type Room = 'home' | 'professions' | 'character' | 'clan' | 'market' | 'c
 interface Game {
   content: ContentResponse;
   name: string;
+  /** Sa photo de profil (version) et l'identifiant de son personnage. */
+  avatar: number | null;
+  characterId: number;
   state: StateView;
   /** Apparence du personnage (classe et tenue) ; undefined tant que la classe n'est pas choisie. */
   look: Appearance | undefined;
@@ -130,6 +133,8 @@ export function GameProvider({
   const value: Game = {
     content,
     name: snapshot.res.name,
+    avatar: snapshot.res.avatar ?? null,
+    characterId: snapshot.res.characterId,
     state: snapshot.res.state,
     look: snapshot.res.state.appearance ?? undefined,
     receivedAt: snapshot.receivedAt,

@@ -84,6 +84,7 @@ export async function townView(db: Db, content: Content, now: number, selfId: nu
       const cls = content.classes[r.classId!];
       return {
         id: r.id,
+        avatar: r.avatar,
         name: r.name,
         classId: r.classId!,
         outfit: r.outfit ?? cls?.startingOutfit ?? content.cosmetics.default.outfit,

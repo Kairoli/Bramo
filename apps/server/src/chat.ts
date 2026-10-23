@@ -10,6 +10,7 @@ import { and, desc, eq, sql } from 'drizzle-orm';
 import { type ChatMessageView, type ChatView, type Content, GameError } from '@bramo/shared';
 import type { Db, Tx } from './db/index.js';
 import { accounts, characters, chatMessages, chatReports, clanMembers } from './db/schema.js';
+import { avatarsOf } from './avatar.js';
 
 const LINK = /(https?:\/\/|www\.|\b[a-z0-9-]+\.(com|fr|net|org|io|gg|ru|xyz|ly|me)\b)/i;
 
@@ -42,7 +43,9 @@ export async function readChat(db: Db, characterId: number, channel: 'server' | 
     .where(and(eq(chatMessages.channel, key), eq(chatMessages.hidden, false)))
     .orderBy(desc(chatMessages.id))
     .limit(content.settings.chat.history);
-  const messages: ChatMessageView[] = rows.reverse().map((r) => ({ id: r.id, at: r.at.getTime(), name: r.name, characterId: r.characterId, text: r.text, mine: r.characterId === characterId }));
+  // La photo de profil de chaque auteur (et sa classe, pour son portrait par défaut).
+  const authors = await avatarsOf(db, rows.map((r) => r.characterId ?? 0));
+  const messages: ChatMessageView[] = rows.reverse().map((r) => ({ id: r.id, at: r.at.getTime(), name: r.name, characterId: r.characterId, text: r.text, mine: r.characterId === characterId, avatar: authors.get(r.characterId ?? 0)?.avatar ?? null, classId: authors.get(r.characterId ?? 0)?.classId ?? null }));
   const muted = me?.mutedUntil && me.mutedUntil.getTime() > now;
   return { channel, messages, canWrite: !muted, reason: muted ? `Vous êtes muet dans la discussion jusqu’au ${me!.mutedUntil!.toLocaleString('fr-FR')}.` : null, moderator };
 }

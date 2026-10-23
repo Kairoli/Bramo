@@ -7,6 +7,8 @@ import { characterItems, characterSkills, characters, gearItems } from './db/sch
 export interface LoadedCharacter {
   id: number;
   name: string;
+  /** Version de sa photo de profil visible, ou null. */
+  avatar: number | null;
   state: CharacterState;
 }
 
@@ -39,6 +41,7 @@ async function fromRow(tx: Tx, row: typeof characters.$inferSelect, content: Con
   return {
     id: row.id,
     name: row.name,
+    avatar: row.avatar,
     state: {
       seed: row.id,
       clanBonuses,

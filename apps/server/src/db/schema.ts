@@ -67,6 +67,8 @@ export const characters = pgTable('characters', {
   shown: jsonb('shown').$type<Record<string, number>>().notNull().default({}),
   /** Ornement de métier porté (null = aucun). */
   ornament: text('ornament'),
+  /** Photo de profil visible : son numéro de version (adresse de l'image), null sans photo ou photo masquée. */
+  avatar: integer('avatar'),
   /** Le tour guidé de la première session a été vu (ou passé). */
   tourDone: boolean('tour_done').notNull().default(false),
   /** Combat : XP par classe, voies, plans, activité de combat (CombatState de @bramo/shared). */
@@ -396,4 +398,33 @@ export const gearSales = pgTable(
     at: ts('at').notNull(),
   },
   (t) => [index('gear_sales_seller').on(t.sellerId)],
+);
+
+/** Photo de profil d'un personnage (apps/server/src/avatar.ts) : l'image recadrée, en base64, et sa version. */
+export const characterAvatars = pgTable('character_avatars', {
+  characterId: integer('character_id')
+    .primaryKey()
+    .references(() => characters.id, { onDelete: 'cascade' }),
+  mime: text('mime').notNull(),
+  data: text('data').notNull(),
+  version: integer('version').notNull(),
+  /** Masquée après assez de signalements. */
+  hidden: boolean('hidden').notNull().default(false),
+  updatedAt: ts('updated_at').notNull(),
+});
+
+/** Signalements d'une photo de profil (un par joueur et par version de la photo). */
+export const avatarReports = pgTable(
+  'avatar_reports',
+  {
+    characterId: integer('character_id')
+      .notNull()
+      .references(() => characters.id, { onDelete: 'cascade' }),
+    reporterId: integer('reporter_id')
+      .notNull()
+      .references(() => characters.id, { onDelete: 'cascade' }),
+    version: integer('version').notNull(),
+    at: ts('at').notNull(),
+  },
+  (t) => [primaryKey({ columns: [t.characterId, t.reporterId, t.version] })],
 );

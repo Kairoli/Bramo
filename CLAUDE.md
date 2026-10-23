@@ -55,6 +55,14 @@ Bramo est un **idle-RPG multijoueur jouable dans le navigateur**, dans l'esprit 
 
 ## 5. État du projet (à jour au 23 octobre 2026)
 
+### Fait — photo de profil (23 octobre, nuit)
+
+- **Demande de Louis** (inspirée de Legend of Mushroom) : « pouvoir être qui on veut » ; une photo de profil libre (une image d'anime ou autre), en haut à droite à la place d'Atelier et Compte, visible partout où le personnage apparaît ; dans la discussion, ses propres messages à droite avec la photo à droite du texte (effet escalier).
+- **Forme** [choix de Claude, à valider] : carré aux coins arrondis (garde plus d'une image qu'un rond, s'accorde aux tuiles ; des cadres cosmétiques pourront l'entourer). Sans photo : le portrait du personnage, sinon l'initiale dans la couleur de la classe (`components/Avatar.tsx`).
+- **Fenêtre Profil** (`components/Profile.tsx`, bouton photo en haut à droite) : photo, nom, classe, titre, identifiant ; onglet Compte (l'ancienne fenêtre, avec « Se déconnecter » ; « Quitter » et « Atelier » ne sont plus dans la barre). **Recadrage** dans le jeu (`AvatarPicker.tsx` : choisir ou glisser une image, la déplacer, zoomer en gardant le centre, aperçu en trois tailles ; enregistrée en 256 × 256 WebP).
+- **Serveur** (`apps/server/src/avatar.ts`, migration 0027) : WebP, PNG ou JPEG seulement (jamais SVG), 300 ko au plus, signature vérifiée ; un changement par minute ; masquée après 3 signalements de joueurs différents ; retrait par un modérateur (`POST /api/profile/avatar/moderate`) ; servie par `GET /api/avatars/:id?v=` (cache long, `nosniff`) ; comprise dans l'export des données du compte ; règle ajoutée aux conditions d'utilisation (brouillon). Réglages `avatar` dans `data/settings.yaml`.
+- **Où elle apparaît** : barre du haut, discussion (escalier), membres du clan, fiche d'un joueur (avec « Signaler la photo »), classement de la Marée (podium et liste), carte d'un joueur au bourg.
+
 ### Fait — la Marée en direct (23 octobre, soir)
 
 - **Demande de Louis** : voir le combat de la Marée en direct, « à gauche tous les gens qui ont rejoint, avec leurs skins, qui attaquent ; à droite ce qu'ils affrontent ».

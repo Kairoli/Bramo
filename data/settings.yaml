@@ -29,6 +29,13 @@ chat:
   blockLinks: true
   history: 60             # messages renvoyés par canal
 
+# Photo de profil (23 octobre, demande de Louis : « pouvoir être qui on veut » ; apps/server/src/avatar.ts). Le jeu recadre
+# l'image en carré de 256 px ; WebP, PNG ou JPEG seulement ; masquée après 3 signalements de joueurs différents.
+avatar:
+  maxBytes: 300000
+  cooldownSec: 60
+  hideAfterReports: 3
+
 # Garde-fous des comptes (23 octobre, sortie publique ; apps/server/src/guard.ts).
 security:
   # Pas de règle « un compte connecté par adresse » : retirée par Louis (un foyer partage la même adresse).

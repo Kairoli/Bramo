@@ -40,8 +40,39 @@ export interface ExchangeStats {
  * sans base de données. Les contreparties sont créditées tout de suite (le serveur attend leur prochain passage).
  */
 export class Exchange {
-  orders: BookEntry[] = [];
+  /** Ordres ouverts par objet (index : un serveur simulé en compte des milliers). */
+  private book = new Map<string, BookEntry[]>();
+  /** Nombre d'ordres ouverts par joueur. */
+  private open = new Map<number, number>();
   private seq = 1;
+  /** Tous les ordres ouverts. */
+  get orders(): BookEntry[] {
+    return [...this.book.values()].flat();
+  }
+  private list(item: string): BookEntry[] {
+    let l = this.book.get(item);
+    if (!l) this.book.set(item, (l = []));
+    return l;
+  }
+  private push(o: BookEntry) {
+    this.list(o.itemId).push(o);
+    this.open.set(o.ownerId, (this.open.get(o.ownerId) ?? 0) + 1);
+  }
+  /** Retire les ordres vides d'un objet. */
+  private prune(item: string) {
+    const l = this.book.get(item);
+    if (!l) return;
+    const keep = l.filter((o) => {
+      if (o.qty > 0) return true;
+      this.open.set(o.ownerId, (this.open.get(o.ownerId) ?? 1) - 1);
+      return false;
+    });
+    this.book.set(item, keep);
+  }
+  /** Nombre d'ordres ouverts d'un joueur. */
+  openCount(ownerId: number): number {
+    return this.open.get(ownerId) ?? 0;
+  }
   stats: ExchangeStats = { tax: 0, volume: 0, trades: 0, primeXp: 0 };
   /** Ventes réalisées depuis la dernière remise à zéro, par vendeur puis objet (qty, or brut). */
   sold = new Map<number, Map<string, { qty: number; gross: number }>>();
@@ -81,18 +112,19 @@ export class Exchange {
 
   /** Offres de vente d'un objet, de la moins chère à la plus chère. */
   asks(item: string, excludeOwner?: number): BookEntry[] {
-    return this.orders
-      .filter((o) => o.itemId === item && o.side === 'sell' && o.qty > 0 && o.ownerId !== excludeOwner)
+    return (this.book.get(item) ?? [])
+      .filter((o) => o.side === 'sell' && o.qty > 0 && o.ownerId !== excludeOwner)
       .sort((a, b) => a.price - b.price || a.wear - b.wear || a.id - b.id);
   }
 
   bids(item: string, excludeOwner?: number): BookEntry[] {
-    return this.orders
-      .filter((o) => o.itemId === item && o.side === 'buy' && o.qty > 0 && o.ownerId !== excludeOwner)
+    return (this.book.get(item) ?? [])
+      .filter((o) => o.side === 'buy' && o.qty > 0 && o.ownerId !== excludeOwner)
       .sort((a, b) => b.price - a.price || a.id - b.id);
   }
 
   mine(ownerId: number): BookEntry[] {
+    if (!this.openCount(ownerId)) return [];
     return this.orders.filter((o) => o.ownerId === ownerId && o.qty > 0);
   }
 
@@ -104,14 +136,15 @@ export class Exchange {
         if (o.wear > 0) giveCopy(bot.state, o.itemId, o.wear);
       } else bot.state.gold += o.qty * o.price;
     }
-    this.orders = this.orders.filter((o) => o.ownerId !== bot.id);
+    for (const [item, l] of this.book) if (l.some((o) => o.ownerId === bot.id)) this.book.set(item, l.filter((o) => o.ownerId !== bot.id));
+    this.open.delete(bot.id);
   }
 
   /** Vend : exécute contre les demandes qui conviennent, le reste attend. Renvoie l'or net gagné et la quantité vendue. */
   sell(bot: Trader, item: string, qty: number, price: number, copy = 0): { qty: number; gold: number } {
     qty = Math.min(qty, this.content.settings.market.maxQuantity);
     // Comme le serveur : au plus `maxOpenOrders` ordres ouverts par joueur.
-    if (this.mine(bot.id).length >= this.content.settings.market.maxOpenOrders) return { qty: 0, gold: 0 };
+    if (this.openCount(bot.id) >= this.content.settings.market.maxOpenOrders) return { qty: 0, gold: 0 };
     validateOrder(this.content, 'sell', item, qty, price);
     const state = bot.state;
     let wear = 0;
@@ -123,14 +156,14 @@ export class Exchange {
       if ((state.inventory[item] ?? 0) < qty) return { qty: 0, gold: 0 };
       addStack(state.inventory, item, -qty);
     }
-    const fills = match(this.orders, 'sell', item, qty, price, bot.id);
+    const fills = match(this.list(item), 'sell', item, qty, price, bot.id);
     let filled = 0;
     let gold = 0;
     let primed = 0;
     for (const f of fills) {
       const gross = f.qty * f.order.price;
       const net = netProceeds(gross, this.content);
-      const entry = this.orders.find((o) => o.id === f.order.id)!;
+      const entry = f.order as BookEntry;
       entry.qty -= f.qty;
       const buyer = this.traders.get(entry.ownerId);
       if (buyer) addStack(buyer.state.inventory, item, f.qty);
@@ -151,25 +184,25 @@ export class Exchange {
       }
     }
     const rest = qty - filled;
-    if (rest > 0) this.orders.push({ id: this.seq++, ownerId: bot.id, side: 'sell', itemId: item, qty: rest, price, wear, day: this.day });
-    this.orders = this.orders.filter((o) => o.qty > 0);
+    if (rest > 0) this.push({ id: this.seq++, ownerId: bot.id, side: 'sell', itemId: item, qty: rest, price, wear, day: this.day });
+    this.prune(item);
     return { qty: filled, gold };
   }
 
   /** Achète jusqu'à `qty` au prix limite : exécute contre les offres, met le reste en demande (l'or est mis de côté). */
   buy(bot: Trader, item: string, qty: number, limit: number, rest = true): { qty: number; gold: number } {
     qty = Math.min(qty, this.content.settings.market.maxQuantity);
-    if (rest && this.mine(bot.id).length >= this.content.settings.market.maxOpenOrders) rest = false;
+    if (rest && this.openCount(bot.id) >= this.content.settings.market.maxOpenOrders) rest = false;
     validateOrder(this.content, 'buy', item, qty, limit);
     const state = bot.state;
-    const fills = match(this.orders, 'buy', item, qty, limit, bot.id);
+    const fills = match(this.list(item), 'buy', item, qty, limit, bot.id);
     let filled = 0;
     let paid = 0;
     for (const f of fills) {
       const gross = f.qty * f.order.price;
       if (state.gold < gross) break;
       const net = netProceeds(gross, this.content);
-      const entry = this.orders.find((o) => o.id === f.order.id)!;
+      const entry = f.order as BookEntry;
       entry.qty -= f.qty;
       const seller = this.traders.get(entry.ownerId);
       if (seller) seller.state.gold += net;
@@ -185,16 +218,16 @@ export class Exchange {
     const left = qty - filled;
     if (rest && left > 0 && state.gold >= left * limit) {
       state.gold -= left * limit;
-      this.orders.push({ id: this.seq++, ownerId: bot.id, side: 'buy', itemId: item, qty: left, price: limit, wear: 0, day: this.day });
+      this.push({ id: this.seq++, ownerId: bot.id, side: 'buy', itemId: item, qty: left, price: limit, wear: 0, day: this.day });
     }
-    this.orders = this.orders.filter((o) => o.qty > 0);
+    this.prune(item);
     return { qty: filled, gold: paid };
   }
 
   /** Achète à une offre précise (objets durables : l'état de l'exemplaire compte). */
   fill(bot: Trader, order: BookEntry, qty = 1): boolean {
     const state = bot.state;
-    const entry = this.orders.find((o) => o.id === order.id);
+    const entry = (this.book.get(order.itemId) ?? []).find((o) => o.id === order.id);
     if (!entry || entry.qty < qty || entry.ownerId === bot.id) return false;
     const gross = qty * entry.price;
     if (state.gold < gross) return false;
@@ -209,7 +242,7 @@ export class Exchange {
     this.trade(entry.itemId, qty, gross);
     this.note(this.bought, bot.id, entry.itemId, qty, gross);
     if (seller) this.note(this.sold, seller.id, entry.itemId, qty, gross);
-    this.orders = this.orders.filter((o) => o.qty > 0);
+    this.prune(entry.itemId);
     return true;
   }
 }

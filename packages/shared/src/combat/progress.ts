@@ -20,6 +20,7 @@ import { type CombatantSetup, type FightResult, fight } from './engine.js';
 import { curveTier, tierFactorAt, wornLoadout } from './loadout.js';
 import { hash32, stream } from './rng.js';
 import type { Preset } from './presets.js';
+import type { TideState } from './tide.js';
 
 /** Rencontre en cours ou dernière rencontre jouée : le build figé et son issue (déjà calculée). */
 export interface FightRecord {
@@ -87,6 +88,8 @@ export interface CombatState {
   /** Préréglages de build (classe, voie, plan, équipement), et le dernier appliqué ou enregistré. */
   presets: Preset[];
   activePreset: number | null;
+  /** La Marée du soir : préférences, soirs réglés, tenues achetées (absent avant la Marée : valeurs par défaut). */
+  tide?: TideState;
 }
 
 export const emptyCombat = (): CombatState => ({
@@ -224,7 +227,21 @@ const score = (s: Spell) => (s.damage * s.targets ** 0.5 + (s.heal ?? 0) + (s.sh
  */
 export type PlanContext = 'solo' | 'group';
 
+const advisedCache = new WeakMap<CombatContent, Map<string, PlanEntry[]>>();
+
 export function advisedPlan(combat: CombatContent, classId: string, pathId: string | null, level: number, context: PlanContext = 'solo'): PlanEntry[] {
+  // Pur et appelé à chaque rencontre : gardé par classe, voie, niveau et contexte (copie rendue, l'appelant peut la modifier).
+  let memo = advisedCache.get(combat);
+  if (!memo) advisedCache.set(combat, (memo = new Map()));
+  const key = `${classId}|${pathId}|${level}|${context}`;
+  const hit = memo.get(key);
+  if (hit) return hit.map((e) => ({ ...e }));
+  const plan = computeAdvisedPlan(combat, classId, pathId, level, context);
+  memo.set(key, plan);
+  return plan.map((e) => ({ ...e }));
+}
+
+function computeAdvisedPlan(combat: CombatContent, classId: string, pathId: string | null, level: number, context: PlanContext): PlanEntry[] {
   const kit = combat.kits[classId];
   if (!kit) return [];
   const path = pathId ?? kit.paths.find((p) => p.role === 'damage')!.id;
@@ -287,13 +304,32 @@ export function equipmentSetup(state: CharacterState, content: Content): Pick<Co
 }
 
 /** L'équipement porté converti pour le combat (`floored` : le plancher du palier de la classe l'emporte), ou null. */
+const wornCache = new WeakMap<object, { content: Content; memo: Map<string, ReturnType<typeof computeWornGear>> }>();
+
 export function wornGear(state: CharacterState, content: Content) {
   const combat = need(content);
+  if (!combat.rules.gearStats || !state.equipment || !state.classId) return null;
+  // Une absence joue des centaines de rencontres avec le même équipement : le calcul est gardé par liste d'équipement
+  // (jamais modifiée en place), classe et niveau.
+  let entry = wornCache.get(state.equipment);
+  if (!entry || entry.content !== content) wornCache.set(state.equipment, (entry = { content, memo: new Map() }));
+  const memo = entry.memo;
+  const key = `${state.classId}|${classLevel(state, state.classId, content)}`;
+  let hit = memo.get(key);
+  if (!hit) memo.set(key, (hit = computeWornGear(state, content)));
+  return hit;
+}
+
+function computeWornGear(state: CharacterState, content: Content) {
+  const combat = need(content);
   const rules = combat.rules;
-  if (!rules.gearStats || !state.equipment || !state.classId) return null;
-  const f = tierFactorAt(rules, classLevel(state, state.classId, content));
-  const floor = { ...rules.referenceStats, power: rules.referenceStats.power * f, maxHp: rules.referenceStats.maxHp * f };
-  const pieces = state.equipment.flatMap((p) => {
+  const f = tierFactorAt(rules, classLevel(state, state.classId!, content));
+  const conv = rules.gearStats!;
+  const level = classLevel(state, state.classId!, content);
+  const ramp = conv.floorRampLevel ? Math.min(1, (level - 1) / (conv.floorRampLevel - 1)) : 1;
+  const share = 1 - (1 - (conv.floorShare ?? 1)) * ramp;
+  const floor = { ...rules.referenceStats, power: rules.referenceStats.power * f * share, maxHp: rules.referenceStats.maxHp * f * share };
+  const pieces = state.equipment!.flatMap((p) => {
     const m = content.gearModels[p.model];
     if (!m) return [];
     return [{ tier: m.tier, weight: content.gearSlots[m.slot]?.weight ?? 1, stats: m.stats, lines: p.lines, ...(m.set ? { set: m.set } : {}), ...(m.talent ? { talent: m.talent } : {}), ...(p.gem ? { gem: p.gem } : {}) }];
@@ -337,13 +373,22 @@ export function replayFight(state: CharacterState, record: FightRecord, content:
   return fight(combat, [record.setup], combat.encounters[record.encounter]!, { seed: fightSeed(state, record.index), trace: true, ...fightOptions(combat, record.tier) });
 }
 
+/**
+ * Résolution des rencontres de `runCombat` : le moteur, sauf dans le simulateur de serveur, qui la remplace par un cache
+ * (des milliers de joueurs simulés rejouent les mêmes combats). Le jeu ne l’appelle jamais.
+ */
+let resolver: typeof fight = fight;
+export function setFightResolver(fn: typeof fight | null): void {
+  resolver = fn ?? fight;
+}
+
 function startFight(state: CharacterState, a: CombatActivity, content: Content): FightRecord {
   const combat = need(content);
   const setup = combatantOf(state, content);
   const index = state.combat.nextIndex++;
   // Un profil d'essai (sans palier) se joue au palier de la classe : il ne donne pas de butin.
   const tier = a.tier ?? combat.encounters[a.encounter!]!.tier ?? classTier(state, setup.classId, content);
-  const r = fight(combat, [setup], combat.encounters[a.encounter!]!, { seed: fightSeed(state, index), ...fightOptions(combat, tier) });
+  const r = resolver(combat, [setup], combat.encounters[a.encounter!]!, { seed: fightSeed(state, index), ...fightOptions(combat, tier) });
   return { index, encounter: a.encounter!, ...(tier ? { tier } : {}), setup, win: r.win, ms: Math.round(r.time * 1000) };
 }
 
@@ -352,6 +397,34 @@ function startFight(state: CharacterState, a: CombatActivity, content: Content):
  * une pièce d'ensemble de la région au palier 40 et plus, les objets nommés de la rencontre avec leur garantie. Tirages
  * déterministes (graine du personnage et numéro de la rencontre) : avancer en une ou plusieurs fois donne le même butin.
  */
+/** Modèles d'équipement indexés pour le butin (le catalogue en compte des milliers ; une absence, des centaines de victoires). */
+interface LootIndex {
+  classic: Map<string, string[]>;
+  sets: Map<string, string[]>;
+  named: Map<string, { id: string; tier: number }[]>;
+}
+const lootIndexes = new WeakMap<object, LootIndex>();
+function lootIndex(content: Content): LootIndex {
+  const hit = lootIndexes.get(content.gearModels);
+  if (hit) return hit;
+  const idx: LootIndex = { classic: new Map(), sets: new Map(), named: new Map() };
+  const push = <T>(m: Map<string, T[]>, k: string, v: T) => {
+    const l = m.get(k);
+    if (l) l.push(v);
+    else m.set(k, [v]);
+  };
+  for (const m of Object.values(content.gearModels)) {
+    if (m.talent) push(idx.named, m.talent, { id: m.id, tier: m.tier });
+    for (const c of m.classes) {
+      if (!m.set && !m.named && !m.starter) push(idx.classic, `${m.tier}|${m.rarity}|${c}`, m.id);
+      if (m.set) push(idx.sets, `${m.set}|${m.tier}|${m.rarity}|${c}`, m.id);
+    }
+  }
+  for (const l of idx.named.values()) l.sort((a, b) => b.tier - a.tier);
+  lootIndexes.set(content.gearModels, idx);
+  return idx;
+}
+
 function rollLoot(state: CharacterState, f: FightRecord, content: Content, summary: CombatSummary): void {
   const combat = need(content);
   const rules = combat.rules.loot;
@@ -372,25 +445,25 @@ function rollLoot(state: CharacterState, f: FightRecord, content: Content, summa
       summary.vestiges[e.loot.vestige] = (summary.vestiges[e.loot.vestige] ?? 0) + n;
     }
   }
-  const models = Object.values(content.gearModels);
+  const idx = lootIndex(content);
   const pick = <T>(xs: T[]) => xs[Math.floor(rand() * xs.length)];
   const drop = (model: string | undefined) => model && summary.loot.push({ model, encounter: e.id });
   // Objet classique : rareté tirée, puis un modèle de la classe à ce palier.
   if (rand() < rules.classic * units) {
     let x = rand();
     const rarity = (['common', 'rare', 'epic', 'legendary'] as Rarity[]).find((r) => (x -= rules.rarity[r]) < 0) ?? 'common';
-    drop(pick(models.filter((m) => m.tier === tier && m.rarity === rarity && !m.set && !m.named && !m.starter && m.classes.includes(cls)))?.id);
+    drop(pick(idx.classic.get(`${tier}|${rarity}|${cls}`) ?? []));
   }
   // Pièce d'ensemble de la région (paliers 40 et plus).
   const sets = e.loot?.sets ?? [];
   if (sets.length && rand() < rules.setPiece * units) {
     const rarity: Rarity = rand() < rules.setLegendary ? 'legendary' : 'epic';
     const set = pick(sets);
-    drop(pick(models.filter((m) => m.set === set && m.tier === tier && m.rarity === rarity && m.classes.includes(cls)))?.id);
+    drop(pick(idx.sets.get(`${set}|${tier}|${rarity}|${cls}`) ?? []));
   }
   // Objets nommés : chance par unité, garantis après `namedGuarantee` unités ; la plus haute version au plus égale au palier.
   for (const n of e.loot?.named ?? []) {
-    const versions = models.filter((m) => m.talent === n && m.tier <= tier).sort((a, b) => b.tier - a.tier);
+    const versions = (idx.named.get(n) ?? []).filter((m) => m.tier <= tier);
     if (!versions.length) continue;
     const pity = (state.combat.pity[n] ?? 0) + units;
     if (rand() < rules.named * units || pity >= rules.namedGuarantee) {

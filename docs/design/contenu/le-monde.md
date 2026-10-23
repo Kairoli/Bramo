@@ -14,6 +14,8 @@
 
 ## 1. Le monde
 
+> La version de référence du lore, à jour, est [`../lore/bible-de-bramo.md`](../lore/bible-de-bramo.md).
+
 ### 1.1 L'histoire, en dix lignes
 
 Il y a longtemps, la **Marée** est montée. Pas une marée d'eau : une brume lourde, salée, qui éteint les feux et fait oublier. Les forges se sont tues, les archives ont coulé, les veilleurs ont fermé leurs portes. Quand elle s'est retirée, elle a laissé les **Lointains** : des terres pleines de choses à moitié vivantes, d'outils qui travaillent seuls, de lanternes qui marchent.

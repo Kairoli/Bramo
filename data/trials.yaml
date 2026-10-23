@@ -489,8 +489,8 @@
   profession: smithing
   rank: 80
   name: "Le marteau du capitaine"
-  nickname: "Créancier du Bastion"
-  intro: "« Le capitaine du Bastion passe demain et il veut un marteau. Il n’a pas dit lequel. »"
+  nickname: "Créancier du capitaine"
+  intro: "« Le capitaine de la garde passe demain et il veut un marteau. Il n’a pas dit lequel. »"
   outro: "Le capitaine a emporté le marteau, laissé son manteau et oublié de payer. Brunhild affirme que c’est un honneur."
   tasks:
     - { item: steel_tool_head, qty: 5 }
@@ -624,10 +624,10 @@
 - id: tanning_60
   profession: tanning
   rank: 60
-  name: "Les selles du Bastion"
+  name: "Les selles de la garde"
   nickname: "Enfin du sérieux"
-  intro: "« Les cavaliers du Bastion usent leurs selles plus vite que leurs chevaux. Du cuir lourd, et des fourrures pour l’hiver. »"
-  outro: "Le Bastion a renvoyé une selle neuve, avec un mot : « Enfin du sérieux. » Hugon l’a encadré."
+  intro: "« Les cavaliers de la garde usent leurs selles plus vite que leurs chevaux. Du cuir lourd, et des fourrures pour l’hiver. »"
+  outro: "La garde a renvoyé une selle neuve, avec un mot : « Enfin du sérieux. » Hugon l’a encadré."
   tasks:
     - { item: heavy_leather, qty: 120 }
     - { item: wolf_fur, qty: 120 }
@@ -698,9 +698,9 @@
 - id: tailoring_60
   profession: tailoring
   rank: 60
-  name: "Les robes du chapitre"
+  name: "Les robes du Cercle"
   nickname: "Aiguille d’argent"
-  intro: "« Le chapitre des runistes veut des robes neuves, et du coton pour les doublures. Des coutures qui ne bâillent pas. »"
+  intro: "« Le Cercle des runes veut des robes neuves, et du coton pour les doublures. Des coutures qui ne bâillent pas. »"
   outro: "Les runistes ont défilé dans leurs robes neuves. Lise a compté les coutures depuis sa fenêtre ; aucune ne bâillait."
   tasks:
     - { item: cotton_cloth, qty: 80 }

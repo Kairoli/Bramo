@@ -8771,3 +8771,18 @@ div.tide-role {
   color: var(--dc);
   border: 1px solid color-mix(in srgb, var(--dc) 55%, var(--border));
 }
+
+/* Onglet des titres : tout centré dans la fenêtre [Louis, 24 octobre]. */
+.title-grid {
+  justify-items: center;
+  text-align: center;
+}
+.title-group {
+  justify-items: center;
+}
+.title-row {
+  justify-content: center;
+}
+.title-chip.default {
+  justify-self: center;
+}

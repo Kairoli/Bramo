@@ -4,6 +4,7 @@ Bramo est un **idle-RPG multijoueur jouable dans le navigateur**, dans l'esprit 
 
 - Game design complet : [`docs/game-design.md`](docs/game-design.md) — chaque point y est marqué **[Décidé]** (choix de Louis), **[Recommandé]** (proposition en attente), **[Ouvert]** ou **[Prototype]** (ce que fait le code). Ne jamais présenter une recommandation comme une décision.
 - Conception détaillée : [`docs/design/`](docs/design/) (métiers, progression, présence, économie, classes/événements/clans, rangs) et les **arbitrages en attente** : [`docs/design/arbitrages.md`](docs/design/arbitrages.md)
+- **Lore** (le monde, la Marée, les régions, le bourg, les maîtres, ce qui est canon et ce qui est proposé) : [`docs/design/lore/bible-de-bramo.md`](docs/design/lore/bible-de-bramo.md)
 - Simulateur : [`sim/README.md`](sim/README.md), rapport généré [`sim/reports/rapport.md`](sim/reports/rapport.md)
 - Maquettes validées : [`docs/maquettes/`](docs/maquettes/) (1-2 accueil, 3-4 salle Métiers, 5 style du personnage)
 - Système des personnages : [`art/README.md`](art/README.md)
@@ -54,6 +55,12 @@ Bramo est un **idle-RPG multijoueur jouable dans le navigateur**, dans l'esprit 
 ---
 
 ## 5. État du projet (à jour au 23 octobre 2026)
+
+### Fait — la bible du lore (24 octobre)
+
+- **Demande de Louis** : vérifier que le lore est développé, suivable et intéressant (« on pourra s'en servir plus tard »). **[`docs/design/lore/bible-de-bramo.md`](docs/design/lore/bible-de-bramo.md)** : le verdict, le ton, la Marée (ce qu'on sait, ce qu'on ignore), les six régions, le bourg et ses institutions, les dix-sept maîtres, les motifs ; chaque point marqué Canon, Proposé ou Secret. Proposé par Claude : la **Grande Marée** il y a deux générations, l'**Arrière-pays**, les trois classes comme trois réponses à la Marée (rallumer, écrire, retrouver), un fil rouge (**le Registre du Notaire** : une page par gardien, un Carnet), et une vérité derrière la Marée (§10, à valider).
+- **Incohérences corrigées dans les commandes** : pas de capitaine ni de cavaliers au Bastion (forteresse abandonnée) : c'est la garde du bourg (Forge 80 « Créancier du capitaine », Tannerie 60) ; le Cercle des runes partout (Couture 60). Reste : la Veille des Géants montre le Gardien des trois portes au lieu des trois géants du lore.
+- Fenêtre « Ornements et titres » : l'onglet des titres est centré.
 
 ### Fait — passe éditoriale des titres et commandes de maître, palier 90 (24 octobre)
 

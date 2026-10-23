@@ -55,7 +55,7 @@ Les références aux titres dans les autres documents (Maître 85 pour les poste
 | Herboristerie (Ysolde) | Cueilleur de pissenlits | Cueilleur d’aube | Ami des orties | Cueille-à-reculons | Terreur des plates-bandes | Rosée des Lointains | La Brume en personne |
 | Chasse (Brenna) | Pisteur du dimanche | Liseur de traces | Sommeil des bergers | Patte-d’Ours | Pisteur des neiges | Lit-dans-la-brume | L’Arc de Brenna |
 | Agriculture (Anselme) | Arrache-chiendent | Semeur des terrasses | Récolteur de nuages | Le Bleu du Val | Grenier plein | Blé-sur-sel | Voix des champs |
-| Forge (Brunhild) | Souffleur de braises | Tapeur d’enclume | Pluie d’étincelles | Le Feu sacré | Créancier du Bastion | Rallume-forges | Enclume vivante |
+| Forge (Brunhild) | Souffleur de braises | Tapeur d’enclume | Pluie d’étincelles | Le Feu sacré | Créancier du capitaine | Rallume-forges | Enclume vivante |
 | Menuiserie (Joris) | Aligneur de planches | Équarrisseur de planches | Ponceur de patience | Maître chanteur des poutres | Mille-Ans | Niveau à bulle | Sciure d’or |
 | Tannerie (Hugon) | Racleur de peaux | Nez bouché | Cuir-bouilli | Enfin du sérieux | Increvable | Un an et un jour | Main de cuir |
 | Couture (Lise) | Enfileur d’aiguilles | Ourlet-de-travers | Doigts de fée | Aiguille d’argent | Voile-Bleue | Reprise invisible | Fil d’or |

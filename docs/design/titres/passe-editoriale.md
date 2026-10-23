@@ -28,7 +28,7 @@ Autres faiblesses corrigées : « Traqueur de cerfs » (Traqueur est une classe)
 
 ## 3. Les règles suivies
 
-- **Le surnom vient de l'histoire.** Quand une commande raconte quelque chose, le surnom le reprend : trois heures à reculons donnent « Cueille-à-reculons », le capitaine qui oublie de payer donne « Créancier du Bastion », le jury muet donne « Coupe-sifflet », le maître qui veut « des murs sans histoire » donne, au 90, « Mur sans histoire ».
+- **Le surnom vient de l'histoire.** Quand une commande raconte quelque chose, le surnom le reprend : trois heures à reculons donnent « Cueille-à-reculons », le capitaine qui oublie de payer donne « Créancier du capitaine », le jury muet donne « Coupe-sifflet », le maître qui veut « des murs sans histoire » donne, au 90, « Mur sans histoire ».
 - **Des formes variées.** Moins de « Nom de Y » ; plus de mots composés (Casse-cailloux, Agace-géants, Nomme-les-pierres), de choses et de phénomènes (Pluie d'étincelles, Corne d'abondance, Rose des vents), d'expressions anciennes (Taiseux, Souvenance, Un an et un jour, Doigts de fée, avoir le Feu sacré), de citations (« Enfin du sérieux »).
 - **Des titres pour tous.** Les mots composés et les noms de choses ne changent pas au féminin : ils vont à tous les joueurs. Les noms de métier au masculin restent surtout aux premiers paliers (Liseur de traces, Arpenteur du bois).
 - **Chaque métier a son vocabulaire.** Tannerie : l'odeur, la fosse, le cuir bouilli, l'année de tannage. Chasse : les traces, les bergers, l'ours, la brume de la Lisière. Couture : l'ourlet, l'aiguille, la voile, la reprise. Elles ne se marchent plus dessus.
@@ -77,7 +77,7 @@ Autres faiblesses corrigées : « Traqueur de cerfs » (Traqueur est une classe)
 | Agriculture | 90 | *nouveau* | **Blé-sur-sel** | « Les champs salés » |
 | Forge | 40 | Semeur d’étincelles | **Pluie d’étincelles** | « La pluie d’étincelles » → « L’épée artistique » |
 | Forge | 60 | Gardien du feu sacré | **Le Feu sacré** | « Le feu sacré » → « Le feu qui reconnaît » |
-| Forge | 80 | Forgeron des rois | **Créancier du Bastion** | « Le marteau du roi » → « Le marteau du capitaine » |
+| Forge | 80 | Forgeron des rois | **Créancier du capitaine** | « Le marteau du roi » → « Le marteau du capitaine » |
 | Forge | 90 | *nouveau* | **Rallume-forges** | « La forge qui s’était tue » |
 | Menuiserie | 60 | Chuchoteur de poutres | **Maître chanteur des poutres** | « Les poutres qui grincent » |
 | Menuiserie | 80 | Charpentier de légende | **Mille-Ans** | « Le toit de la guilde » |

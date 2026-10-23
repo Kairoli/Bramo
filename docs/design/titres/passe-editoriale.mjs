@@ -50,8 +50,9 @@ const EDITS = {
   smithing_60: { name: 'Le feu qui reconnaît', nickname: 'Le Feu sacré' },
   smithing_80: {
     name: 'Le marteau du capitaine',
-    nickname: 'Créancier du Bastion',
-    intro: '« Le capitaine du Bastion passe demain et il veut un marteau. Il n’a pas dit lequel. »',
+    // Le Bastion des longues veilles est une forteresse abandonnée des Lointains : pas de capitaine, c'est la garde du bourg.
+    nickname: 'Créancier du capitaine',
+    intro: '« Le capitaine de la garde passe demain et il veut un marteau. Il n’a pas dit lequel. »',
     outro: 'Le capitaine a emporté le marteau, laissé son manteau et oublié de payer. Brunhild affirme que c’est un honneur.',
   },
   smithing_99: { intro: '« Fais-moi un ouvrage qui survivra à la forge. Et à moi. »' },
@@ -92,13 +93,24 @@ const EDITS = {
   // Tannerie : un vocabulaire à elle (l'odeur, le cuir bouilli, la fosse) ; « Cuirassier » prêtait à confusion.
   tanning_20: { nickname: 'Nez bouché' },
   tanning_40: { nickname: 'Cuir-bouilli' },
-  tanning_60: { nickname: 'Enfin du sérieux' },
   tanning_80: { nickname: 'Increvable' },
+  // Pas de cavaliers au Bastion (forteresse abandonnée) : ce sont ceux de la garde du bourg.
+  tanning_60: {
+    nickname: 'Enfin du sérieux',
+    name: 'Les selles de la garde',
+    intro: '« Les cavaliers de la garde usent leurs selles plus vite que leurs chevaux. Du cuir lourd, et des fourrures pour l’hiver. »',
+    outro: 'La garde a renvoyé une selle neuve, avec un mot : « Enfin du sérieux. » Hugon l’a encadré.',
+  },
 
   // Couture : trois surnoms au féminin seulement (Couseuse, Brodeuse, Tisseuse) ; des surnoms qui vont à tous.
   tailoring_20: { nickname: 'Ourlet-de-travers' },
   tailoring_40: { nickname: 'Doigts de fée' },
-  tailoring_60: { nickname: 'Aiguille d’argent' },
+  // Le Cercle des runes (et pas un « chapitre ») : le même nom partout.
+  tailoring_60: {
+    nickname: 'Aiguille d’argent',
+    name: 'Les robes du Cercle',
+    intro: '« Le Cercle des runes veut des robes neuves, et du coton pour les doublures. Des coutures qui ne bâillent pas. »',
+  },
   tailoring_80: { nickname: 'Voile-Bleue' },
 
   // Alchimie : deux « Distillateur » ; « du bourg » cinq fois dans le jeu ; « Alchimiste du bourg », banal pour un 99.

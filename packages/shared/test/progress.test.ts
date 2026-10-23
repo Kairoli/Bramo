@@ -4,7 +4,7 @@ import { loadContent } from '../src/node/index.js';
 import { advance } from '../src/engine/advance.js';
 import { startActivity } from '../src/engine/actions.js';
 import { viewCombat } from '../src/combat/view.js';
-import { advisedPlan, choosePath, classLevel, currentPlan, emptyCombat, equipmentSetup, routeStage, routeStages, setPlan, startCombat, startRoute, stopCombat } from '../src/combat/progress.js';
+import { advisedPlan, choosePath, classLevel, currentPlan, emptyCombat, encounterSets, equipmentSetup, routeStage, routeStages, setPlan, startCombat, startRoute, stopCombat } from '../src/combat/progress.js';
 import type { Content } from '../src/schemas/content.js';
 import { applyPreset, deletePreset, renamePreset, savePreset } from '../src/combat/presets.js';
 import { chooseClass } from '../src/engine/actions.js';
@@ -237,6 +237,18 @@ describe('la route (PvE solo)', () => {
     s0.combat.route = { stage: 119, best: 119 };
     expect(startRoute(s0, T0, content, 119).combat.route.stage).toBe(119);
     expect(() => startRoute(s0, T0, content, 121)).toThrow(/pas encore ouverte/);
+  });
+
+  it('après le premier cycle, les premières régions donnent aussi des ensembles (toutes les régions se mêlent)', () => {
+    const combat = content.combat!;
+    // Premier cycle : la Route des lanternes n'a pas d'ensemble (ils commencent au palier 40).
+    expect(encounterSets(content, 'z01_lantern_road', routeStage(combat, 0).tier, 'runist')).toEqual([]);
+    const later = encounterSets(content, 'z01_lantern_road', routeStage(combat, 120).tier, 'runist');
+    expect(later.length).toBeGreaterThan(3);
+    for (const s of later) expect(content.gearSets[s]).toBeDefined();
+    // Une région qui a ses ensembles garde les siens au premier cycle.
+    const own = combat.encounters.z09_two_seals!.loot?.sets ?? [];
+    expect(encounterSets(content, 'z09_two_seals', 80, 'runist')).toEqual(own);
   });
 
   it('la première victoire contre un gardien donne son trophée (son objet nommé, ou une pièce de ses ensembles), une seule fois', () => {

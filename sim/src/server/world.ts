@@ -159,7 +159,8 @@ export interface ServerResult {
   clans: SimClan[];
   ledger: Ledger;
   /** Par jour : or en circulation, joueurs actifs, volume du marché, ordres ouverts. */
-  days: { day: number; players: number; gold: number; volume: number; trades: number; asks: number; bids: number; unsold: number; tax: number }[];
+  /** faucet / sink : or créé et détruit ce jour-là. */
+  days: { day: number; players: number; gold: number; volume: number; trades: number; asks: number; bids: number; unsold: number; tax: number; faucet: number; sink: number }[];
   /** Prix moyen par objet et par semaine. */
   prices: Record<string, { ref: number; weekly: number[]; qty: number[] }>;
   refs: Record<string, number>;
@@ -551,13 +552,19 @@ export function runServer(content: Content, input: ServerOptions): ServerResult 
       if (!pool.length) continue;
       for (let k = 0; k < 2; k++) {
         const mine = pool.filter((m) => m.classes.includes(b.state.classId ?? ''));
-        const list = mine.length && b.rand() < 0.5 ? mine : pool;
+        // Quatre pièces en vitrine qui ne partent pas : il n'en ajoute plus, il ne fabrique que ce qu'il portera.
+        const wornAt = (slot: string) => Math.max(-1, ...b.gear.filter((x) => x.equipped && content.gearModels[x.model]!.slot === slot).map((x) => heuristic(content.gearModels[x.model]!)));
+        const full = vitrine.filter((o) => o.seller === b).length >= 4;
+        const forMe = mine.filter((m) => heuristic(m) > wornAt(m.slot));
+        if (full && !forMe.length) break;
+        const list = full ? forMe : mine.length && b.rand() < 0.5 ? mine : pool;
         const m = list[Math.floor(b.rand() * list.length)]!;
         const r = gearRecipe(m.id, content)!;
         // Acheter ce qui manque, si c'est raisonnable.
         for (const i of r.inputs) {
           const need = i.qty - (b.state.inventory[i.item] ?? 0);
-          if (need > 0) b.totals.purchases += buy(b, i.item, need, Math.max(2, Math.round(ref(i.item) * 1.5)), false).gold;
+          // Sans entamer sa réserve : au plus 40 % de son or dans une pièce.
+          if (need > 0 && need * ref(i.item) < b.state.gold * 0.4) b.totals.purchases += buy(b, i.item, need, Math.max(2, Math.round(ref(i.item) * 1.5)), false).gold;
         }
         if (r.inputs.some((i) => (b.state.inventory[i.item] ?? 0) < i.qty)) break;
         const out = craftGear(b.state, m.id, content, b.rand, b.name);
@@ -976,8 +983,10 @@ export function runServer(content: Content, input: ServerOptions): ServerResult 
       const base = b.persona.goal === 'xp' ? x * 0.8 + g * 0.2 : b.persona.goal === 'gold' ? g * 0.8 + x * 0.2 : (x + g) / 2;
       c.score = base * (1 + (1 - b.persona.skill) * (b.rand() - 0.5) * 1.5);
     }
-    candidates.sort((a, c) => c.score - a.score);
-    return candidates[0]!.plan;
+    // Celui qui cherche l'or ne fabrique pas à perte (matières achetées plus cher que ce que vaut le produit).
+    const pool = b.persona.goal === 'gold' && candidates.some((c) => c.gps > 0) ? candidates.filter((c) => c.gps > 0) : candidates;
+    pool.sort((a, c) => c.score - a.score);
+    return pool[0]!.plan;
   };
 
   const applyPlan = (b: Bot, t: number, plan: Plan) => {
@@ -1176,6 +1185,9 @@ export function runServer(content: Content, input: ServerOptions): ServerResult 
 
   // --- Boucle des jours ---
   const dayRows: ServerResult['days'] = [];
+  const sumOf = (o: Record<string, number>) => Object.values(o).reduce((x, v) => x + v, 0);
+  let lastFaucet = 0;
+  let lastSink = 0;
   const priceWeeks = new Map<string, { gross: number; qty: number }[]>();
   let lastTax = 0;
   let lastVolume = 0;
@@ -1259,7 +1271,9 @@ export function runServer(content: Content, input: ServerOptions): ServerResult 
     }
     exchange.prices.clear();
     add(ledger.sink, 'taxe du marché', exchange.stats.tax - lastTax);
-    dayRows.push({ day, players: active.length, gold: Math.round(gold), volume: exchange.stats.volume - lastVolume, trades: exchange.stats.trades - lastTrades, asks, bids, unsold: Math.round(unsold), tax: Math.round(exchange.stats.tax - lastTax) });
+    dayRows.push({ day, players: active.length, gold: Math.round(gold), volume: exchange.stats.volume - lastVolume, trades: exchange.stats.trades - lastTrades, asks, bids, unsold: Math.round(unsold), tax: Math.round(exchange.stats.tax - lastTax), faucet: Math.round(sumOf(ledger.faucet) - lastFaucet), sink: Math.round(sumOf(ledger.sink) - lastSink) });
+    lastFaucet = sumOf(ledger.faucet);
+    lastSink = sumOf(ledger.sink);
     lastTax = exchange.stats.tax;
     lastVolume = exchange.stats.volume;
     lastTrades = exchange.stats.trades;

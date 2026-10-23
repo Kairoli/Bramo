@@ -17,26 +17,29 @@ tides:
     scoring: damage
     encounter: tide_debacle
     shines: "les dégâts, surtout de zone"
-    work: { text: "Consolider la digue : pierre et planches.", items: [{ item: stone_block, qty: 150 }, { item: pine_plank, qty: 60 }] }
+    work: { text: "Consolider la digue : pierre et planches.", items: [{ item: stone_block, qty: 300 }, { item: pine_plank, qty: 120 }] }
   - id: lanterns
     name: La Nuit des Lanternes
     blurb: "Les lanternes de la Chaussée marchent vers le bourg ; derrière chacune, une âme qui rentre."
     scoring: support
     encounter: tide_lanterns
     shines: "les soutiens et le contrôle : soigner, protéger, affaiblir"
-    work: { text: "Fabriquer des lanternes : fioles et bois.", items: [{ item: vial, qty: 120 }, { item: pine_log, qty: 100 }] }
+    work: { text: "Fabriquer des lanternes : fioles et bois.", items: [{ item: vial, qty: 240 }, { item: pine_log, qty: 200 }] }
   - id: giants
     name: La Veille des Géants
     blurb: "Un géant sort de la brume."
     scoring: damage
     encounter: tide_giants
     shines: "les gros dégâts, et ceux qui tiennent"
-    work: { text: "Poser des balises : relevés et rivets.", items: [{ item: survey_notes, qty: 150 }, { item: rivets, qty: 100 }] }
+    work: { text: "Poser des balises : relevés et rivets.", items: [{ item: survey_notes, qty: 300 }, { item: rivets, qty: 200 }] }
 points:
   perMinute: 1
   minRatio: 0.4           # un débutant marque au moins 40 % d'un build moyen : personne ne repart les mains vides
   maxRatio: 2
   liveBonus: 0.15
+  # Canal travail (23 octobre) : à 1, livrer valait moins que combattre et personne ne le choisissait au simulateur. À 1,4,
+  # tout livrer vaut un bon combattant : récolteurs et artisans y portent leurs matières chaque soir (un débouché de plus).
+  workMultiplier: 1.4
   referenceShare: 1       # le build moyen : un équipement Rare complet de son niveau (à 75 %, la moyenne marquait 90 points au lieu de 60)
   supportWeight: 2        # Nuit des Lanternes : soigner, protéger, affaiblir comptent double
   fights: 3

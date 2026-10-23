@@ -456,6 +456,21 @@ function lootIndex(content: Content): LootIndex {
   return idx;
 }
 
+/**
+ * Ensembles qu'une rencontre peut donner. Au-delà du premier cycle, la route repasse par les premières régions, qui n'ont
+ * pas d'ensembles (ils commencent au palier 40) : toutes les régions s'y mêlent, n'importe quel ensemble de la classe à ce
+ * palier peut tomber (simulation de serveur du 23 octobre : sinon les joueurs avancés n'en trouvaient presque plus).
+ */
+export function encounterSets(content: Content, encounterId: string, fightTier: number, classId: string): string[] {
+  const combat = need(content);
+  const own = combat.encounters[encounterId]?.loot?.sets ?? [];
+  const firstCycleEnd = routeStages(combat).at(-1)?.tier ?? Infinity;
+  if (fightTier <= firstCycleEnd) return own;
+  const tier = curveTier(combat.rules, fightTier) ?? fightTier;
+  const idx = lootIndex(content);
+  return Object.keys(content.gearSets).filter((x) => (idx.sets.get(`${x}|${tier}|epic|${classId}`) ?? []).length);
+}
+
 function rollLoot(state: CharacterState, f: FightRecord, content: Content, summary: CombatSummary): void {
   const combat = need(content);
   const rules = combat.rules.loot;
@@ -485,8 +500,8 @@ function rollLoot(state: CharacterState, f: FightRecord, content: Content, summa
     const rarity = (['common', 'rare', 'epic', 'legendary'] as Rarity[]).find((r) => (x -= rules.rarity[r]) < 0) ?? 'common';
     drop(pick(idx.classic.get(`${tier}|${rarity}|${cls}`) ?? []));
   }
-  // Pièce d'ensemble de la région (paliers 40 et plus).
-  const sets = e.loot?.sets ?? [];
+  // Pièce d'ensemble de la région (paliers 40 et plus ; toutes les régions après le premier cycle).
+  const sets = encounterSets(content, e.id, f.tier, cls);
   if (sets.length && rand() < rules.setPiece * units) {
     const rarity: Rarity = rand() < rules.setLegendary ? 'legendary' : 'epic';
     const set = pick(sets);
@@ -517,7 +532,7 @@ function guardianTrophy(state: CharacterState, f: FightRecord, content: Content,
   const idx = lootIndex(content);
   const tier = curveTier(combat.rules, f.tier) ?? f.tier;
   const cls = f.setup.classId;
-  const sets = (e.loot.sets ?? []).filter((s) => (idx.sets.get(`${s}|${tier}|epic|${cls}`) ?? []).length);
+  const sets = encounterSets(content, e.id, f.tier, cls).filter((s) => (idx.sets.get(`${s}|${tier}|epic|${cls}`) ?? []).length);
   if (sets.length) {
     const set = sets[Math.floor(rand() * sets.length)]!;
     const models = idx.sets.get(`${set}|${tier}|epic|${cls}`)!;

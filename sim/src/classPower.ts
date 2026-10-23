@@ -19,6 +19,13 @@ for (const [path, value] of Object.entries(JSON.parse(process.env.PATCH ?? '{}')
 // WEAPON='{"staff":{"vitality":0.35},"longbow":{"power":1.1}}' : multiplie des statistiques des armes d'une famille (essais).
 for (const [fam, mul] of Object.entries(JSON.parse(process.env.WEAPON ?? '{}') as Record<string, Record<string, number>>))
   for (const m of Object.values(content.gearModels)) if (m.slot === 'weapon' && m.family === fam) m.stats = m.stats.map((x) => ({ ...x, value: x.value * (mul[x.stat] ?? 1) }));
+// WEAPON_ADD='{"longbow":{"vitality":0.16}}' : ajoute une statistique aux armes d'une famille, en part de leur Puissance.
+for (const [fam, add] of Object.entries(JSON.parse(process.env.WEAPON_ADD ?? '{}') as Record<string, Record<string, number>>))
+  for (const m of Object.values(content.gearModels)) {
+    if (m.slot !== 'weapon' || m.family !== fam) continue;
+    const power = m.stats.find((x) => x.stat === 'power')?.value ?? 0;
+    for (const [stat, k] of Object.entries(add)) m.stats = [...m.stats.filter((x) => x.stat !== stat), { stat, value: Math.round(power * k) } as (typeof m.stats)[number]];
+  }
 const combat = content.combat!;
 const stages = routeStages(combat).filter((_, i) => i % 5 === 4 && i < 120);
 const rows: { who: string; wins: number; dps: number }[] = [];
@@ -60,7 +67,8 @@ for (const [classId, kit] of Object.entries(combat.kits)) {
         for (let seed = 0; seed < 4; seed++) if (fight(combat, [{ id: 'p1', classId, pathId: path, plan: advisedPlan(combat, classId, path, level), weapon: wfam(), stats: x }], combat.encounters[st.encounter]!, { seed, enemyDamageScale: scale0, enemyHpScale: scale0 }).win) w++;
         return w;
       };
-      stats = mixes.map((x) => ({ x, w: score(x) })).sort((a, b) => b.w - a.w)[0]!.x;
+      // MIX=0|1|2 : impose un mélange (ce que porte un joueur qui ne calcule pas).
+      stats = process.env.MIX ? mixes[Number(process.env.MIX)]! : mixes.map((x) => ({ x, w: score(x) })).sort((a, b) => b.w - a.w)[0]!.x;
       const setup: CombatantSetup = { id: 'p1', classId, pathId: path, plan: advisedPlan(combat, classId, path, level), weapon: wfam(), stats };
       const scale = tierFactorAt(combat.rules, st.tier);
       for (let seed = 0; seed < 4; seed++) {

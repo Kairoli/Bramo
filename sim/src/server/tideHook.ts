@@ -47,19 +47,44 @@ export function tideHook(stats: TideStats): ServerHook {
         if (!b.started || !b.state.classId) continue;
         const online = b.presence.sessions.some((s) => s.at < endH && s.at + s.minutes / 60 > startH);
         const live = online && b.persona.skill >= 0.3;
-        // Artisans et récolteurs livrent la digue s'ils ont de quoi ; sinon ils combattent.
-        let state = b.state;
-        if (b.persona.goal === 'gold' && b.persona.id !== 'speculator') {
+        // Le canal : celui qui rapporte le plus. Un joueur qui calcule compare son combat à une livraison complète, et livre
+        // la digue si c'est mieux, en achetant au marché ce qui lui manque (raisonnablement) ; les autres combattent.
+        b.state = setTidePrefs(b.state, { channel: 'combat' }, ctx.content);
+        const combat = tideScore(b.state, day, ctx.content, live);
+        const workFull = 60 * tide.points.workMultiplier * (live ? 1 + tide.points.liveBonus : 1);
+        if (b.persona.skill >= 0.3 && b.persona.id !== 'speculator' && combat.points < workFull * 0.95) {
+          let cost = 0;
+          for (const it of def.work.items) {
+            const need = it.qty - (b.state.inventory[it.item] ?? 0);
+            if (need <= 0) continue;
+            const asks = ctx.exchange.asks(it.item, b.id);
+            const avail = asks.reduce((n, x) => n + x.qty, 0);
+            if (avail < need) continue;
+            const top = asks.reduce((p, x) => (p.n < need ? { n: p.n + x.qty, price: x.price } : p), { n: 0, price: 0 }).price;
+            if (top * need + cost > b.state.gold * 0.3) continue;
+            const r = ctx.exchange.buy(b, it.item, need, top, false);
+            cost += r.gold;
+          }
+          // Il ne livre que s'il a tout : une livraison partielle vaut moins que son combat.
+          if (def.work.items.some((it) => (b.state.inventory[it.item] ?? 0) < it.qty)) {
+            scored.push({ b, points: combat.points, ratio: combat.ratio, live, channel: combat.channel });
+            continue;
+          }
           try {
-            state = deliverTideWork(state, w.start + 60_000, ctx.content).state;
+            b.state = deliverTideWork(b.state, w.start + 60_000, ctx.content).state;
+            for (const it of def.work.items) ctx.ledger.delivered[it.item] = (ctx.ledger.delivered[it.item] ?? 0) + (readTide(b.state.combat.tide).work?.items[it.item] ?? 0);
           } catch (e) {
             if (!(e instanceof GameError)) throw e;
-            state = setTidePrefs(state, { channel: 'combat' }, ctx.content);
           }
         }
-        b.state = state;
-        const r = tideScore(b.state, day, ctx.content, live);
-        scored.push({ b, points: r.points, ratio: r.ratio, live, channel: r.channel });
+        const r = readTide(b.state.combat.tide).work?.day === day ? tideScore(b.state, day, ctx.content, live) : combat;
+        // Une livraison partielle qui vaut moins que le combat : il combat quand même.
+        if (r.channel === 'work' && r.points < combat.points) {
+          b.state = setTidePrefs(b.state, { channel: 'combat' }, ctx.content);
+          b.state.combat.tide = { ...readTide(b.state.combat.tide), work: null };
+        }
+        const best = r.points >= combat.points ? r : combat;
+        scored.push({ b, points: best.points, ratio: best.ratio, live, channel: best.channel });
       }
       const total = scored.reduce((s, x) => s + x.points, 0);
       let thresholds = 0;

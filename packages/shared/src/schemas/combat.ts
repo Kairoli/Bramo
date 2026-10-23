@@ -620,6 +620,8 @@ export const tideSchema = z.object({
     maxRatio: z.number().positive(),
     /** Joueur connecté pendant la Marée : ce bonus de points (petit, ~15 %). */
     liveBonus: z.number().min(0),
+    /** Canal travail : tout livrer vaut ce multiple des points d'un build moyen (un artisan doit y trouver son compte). */
+    workMultiplier: z.number().positive().default(1),
     /** Le build moyen d'un niveau : cette part d'un équipement Rare complet de ce niveau (un joueur réel n'a pas tout en Rare). */
     referenceShare: z.number().positive().max(1),
     /** Soins, protections et atténuations comptent autant de fois plus que les dégâts quand la Marée compte l'escorte. */

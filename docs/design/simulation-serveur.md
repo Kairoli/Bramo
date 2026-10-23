@@ -30,7 +30,7 @@ rapports dans `sim/reports/serveur/`).
 | Faille | Mesure | Correction |
 |---|---|---|
 | **Le butin noyait tout** | 46 pièces par joueur et par jour, 2 400 pièces en 60 jours, un objet « nommé » toutes les deux heures (38 000 Sacs sans fond) | taux divisés par 10, nommés par 50 (garantie à ~6 jours de la même rencontre) : ~2 pièces par jour |
-| **La route se finissait en deux semaines** | toute la route (120 étapes) finie au jour 14 par les casus, plus rien à faire en combat ensuite | butin et plancher corrigés ; **Au-delà des Lointains** (douze chapitres de plus, sans fin pratique) |
+| **La route se finissait en deux semaines** | toute la route (120 étapes) finie au jour 14 par les casus, plus rien à faire en combat ensuite | butin et plancher corrigés ; **la route boucle sans fin**, chaque cycle plus dur |
 | **L'équipement ne servait à rien** | le plancher (un équipement Rare complet de son niveau) battait tout le butin : tout le monde avait exactement la même force | plancher à 75 %, qui descend de 100 % au niveau 1 à 75 % au niveau 40 sans jamais rendre plus faible |
 | **Un tryhard allait aussi vite qu'un casu** | même force pour tous, et la route tourne 16 à 24 h par jour pour chacun | l'équipement compte ; la Marée du soir récompense la présence (+15 %) |
 | **Le premier gardien était un mur binaire** | 0/10 jusqu'au niveau 9, 10/10 au niveau 10 (le plancher montait par paliers de 10 niveaux) | plancher interpolé niveau par niveau (déjà fait plus tôt dans la nuit) |
@@ -65,7 +65,7 @@ rapports dans `sim/reports/serveur/`).
   lignes tirées à la fabrication, chef-d'œuvre signé qui devient plus probable quand on dépasse la recette.
 - **La vitrine du marché** (`apps/server/src/vitrine.ts`, onglet « Vitrine ») : vendre une pièce depuis sa fiche, l'acheter
   au marché ; l'or du vendeur arrive à sa visite, taxe déduite ; le set de départ ne se vend pas.
-- **Au-delà des Lointains** : douze chapitres après la route, qui reprennent les régions hautes au-delà du palier 90.
+- **La route boucle sans fin** [Décidé par Louis : « personne ne termine jamais le PvE solo »] : une fois les douze chapitres faits, ils recommencent (chapitre 13 = la zone du chapitre 1, cycle 2…), le palier continue de monter. Cela remplace l’« Au-delà des Lointains » de la nuit.
 - **Le trophée des gardiens**, **le Renom des clans**, **les matières des hauts paliers** (sept lingots, cinq bois nobles,
   huit planches, le cuir d'élan), **les commandes de maître 60/80/99** des dix derniers métiers.
 - **Moteur plus rapide** : une absence de 16 h jouait ~1 000 rencontres en refaisant tout à chaque fois (butin parmi 4 152
@@ -101,18 +101,45 @@ sont les voies les plus lentes. À la Marée : Runiste 92 points, Forgefeu 84, T
 monde finit en voie de dégâts (la méta suit ce qui marche et n'essaie rien d'autre), alors que contrôle et soutien font
 presque aussi bien ailleurs.
 
+## 4 bis. Deuxième passe : corriger ce qui était fragile (23 octobre, journée)
+
+Demande de Louis : « que ce qui est fragile soit fixé, sans abîmer un autre truc ». Un **garde-fou** relit chaque
+simulation (`sim/src/server/check.ts <nom>`) : huit mesures « à garder » (rythme de la route, écart tryhard/casu, joueurs
+bloqués, gardiens, butin, Marée, éclats, ensembles portés) et sept mesures « fragiles ». Une correction n'est gardée que si
+les huit restent dans leurs bornes.
+
+| Point fragile | Cause trouvée | Correction | Résultat |
+|---|---|---|---|
+| **Le Traqueur derrière** | Un joueur qui s'équipe « à l'œil » porte souvent tout offensif ; le Traqueur y gagnait 65 à 71 % des étapes, contre 78 à 81 % (Forgefeu) et 90 à 94 % (Runiste, que la Vitalité de son bâton protège). Bien équipées, les trois classes se valaient déjà. | Arc, arbalète et dagues : une Vitalité de 5 % de leur Puissance (`data/gear.yaml`). Avant : bâton et grimoire moins de Vitalité, épée-bouclier moins de Défense, arc et dagues un peu plus forts. | Casus au jour 30 : Forgefeu 108, Traqueur 98, Runiste 109 (écart 1,11 à 1,13 sur trois graines, avant 1,29). Marée : 89 / 78 / 85. |
+| **La mesure des classes** | Les casus « méta » prennent la classe en tête et vont plus loin : mélangés aux autres, ils gonflaient la classe qu'ils choisissent. | L'écart se mesure sur les casus qui tirent leur classe au hasard. | — |
+| **La vitrine vendait peu** | Les artisans du simulateur fabriquaient à perte et empilaient des pièces que personne n'achetait. | Le simulateur : pas de fabrication à perte pour qui cherche l'or, au plus 4 pièces en vitrine par artisan (au-delà, il ne fabrique que pour lui). | 68 à 82 % des pièces mises en vente partent selon la graine (avant 35 %). |
+| **Trop d'or créé** | Le Comptoir créait 82 % de l'or et payait les matières premières quatre fois leur prix au marché. | Commandes du Comptoir : or ×0,7. | Or gardé par joueur et par jour : 55 → 28 à 36 (trois graines). |
+| **Ensembles introuvables au 2ᵉ cycle** (apparu avec la route sans fin) | Le 2ᵉ cycle repasse par les premières régions, qui n'ont pas d'ensembles (ils commencent au palier 40). | Après le premier cycle, toutes les régions se mêlent : n'importe quel ensemble de la classe peut tomber (`encounterSets`). | 14 ensembles sur 15 portés (avant 8). |
+| **Le canal travail de la Marée** | Livrer valait moins que combattre. | Tout livrer vaut ×1,4 un build moyen, quantités doublées (`tide.yaml`). | Le simulateur ne s'en sert pas encore (il faudrait préparer les objets dans la journée) ; à voir avec de vrais joueurs. |
+
+Série finale : `sim/reports/serveur/v11-real-120x90` (graines 11, 12, 13), `v11-meta-100x90`, `v11-dump-100x90`,
+`v11-hoard-100x90`. Sur les trois graines du serveur réaliste, les huit mesures « à garder » tiennent (route finie par un
+casu au jour 42 à 49, tryhard 1,5 à 1,8 fois plus rapide, 4 à 9 % de joueurs sans progrès, 14 ensembles sur 15 portés).
+Les serveurs extrêmes ne cassent ni la route, ni les gardiens, ni le butin ; leurs autres écarts tiennent à leur
+composition (pas de casus sur un serveur tout méta, des thésauriseurs qui n'achètent rien).
+
+**Essayé puis retiré**, parce que ça abîmait sans corriger : diviser par deux l'or des commandes du maître et monter la taxe
+du marché de 5 à 7 %. L'or créé baisse, mais les joueurs, plus pauvres, donnent aussi moins aux bâtiments de clan : le
+rapport ne bouge presque pas (1,83 → 1,71) et les prix du marché baissent encore.
+
 ## 5. Ce qui reste fragile
 
-- **L'or s'accumule.** Les robinets (commandes PNJ 82 %, maîtres 18 %) font environ deux fois les puits (bâtiments de clan,
-  taxe du marché, réparations, étal) : ~4 900 or par joueur au jour 90, et ça monte en ligne droite. La richesse est très
-  concentrée (Gini 0,9) : les plus riches sont des mineurs (la pierre des bâtiments de clan se vend, les commandes PNJ
-  paient) ; les joueurs actifs, eux, dépensent tout.
-- **Les matières premières valent 1 or.** Chaque joueur récolte des milliers d'unités par jour, bien plus que ce que les
-  recettes, les clans et la Marée consomment ; sur un serveur de bradeurs, les prix restent à 45 % de la référence. Les
-  objets fabriqués (repas, potions, préparations) gardent leur valeur.
-- **La vitrine vend peu** : les acheteurs ont peu d'or et les artisans fixent des prix autour de 300 or. À regarder avec de
-  vrais joueurs.
-- **Le Traqueur est un peu derrière** (route et Marée), le Runiste un peu devant.
+- **L'or créé fait environ deux fois l'or détruit** (1,7 à 2,0 sur le serveur réaliste selon la graine ; 1,1 à 1,9 sur les autres), et la
+  richesse reste concentrée (Gini 0,9) : les plus riches sont des mineurs, qui vendent la pierre des bâtiments de clan.
+  Les prix, eux, **ne montent pas** (ils baissent) : l'or en trop dort chez quelques-uns au lieu de faire monter les prix.
+  Les joueurs du simulateur dépensent une part à peu près fixe de ce qu'ils ont, si bien que couper l'or ne change presque
+  pas ce rapport. Ce qui le changerait : des choses que les riches **veulent** acheter (apparences, projets de clan). C'est
+  une question de design, pas un réglage.
+- **Les matières premières valent peu** (indice des prix ~54, 100 = prix de référence ; 1 or pour les plus communes). Mesure
+  du simulateur : les joueurs récoltent **six fois** ce que le jeu consomme (73 millions d'or de référence produits, 12 utilisés
+  en 90 jours), parce que la récolte tourne 16 h par jour pour chacun. Aucun débouché raisonnable n'absorbe un tel écart ;
+  il faudrait toucher au rendement de la récolte (moins d'unités par action, même XP) ou accepter des matières bon marché.
+  Les objets fabriqués (repas, potions, préparations, équipement) gardent leur valeur.
 - **Les éclats de marée se vendent au marché** : le simulateur montre que bradeurs et spéculateurs les revendent.
 - **Les limites du simulateur** : ses joueurs ne fabriquent pas leurs outils (ils les achètent à l'étal), ne font pas de
   patrouilles, ne fabriquent pas la Volée de flèches (plumes, hampes et pointes restent donc en stock dans la simulation,
@@ -127,10 +154,11 @@ presque aussi bien ailleurs.
 1. Valider les taux de butin (environ 2 pièces par jour, un nommé par semaine de la même rencontre) et le plancher à 75 %.
 2. La Marée : les récompenses (une tenue en trois semaines) et le fait que les éclats s'échangent au marché : les garder
    échangeables, ou les lier au personnage ?
-3. L'or : baisser les commandes PNJ, ajouter des puits (usure et réparation de l'équipement, perfectionnement), ou un prix
-   minimum au marché pour les matières premières ?
-4. Faut-il relever un peu le Traqueur (route, Marée) ?
-5. Relire les 30 commandes de maître écrites cette nuit (noms, surnoms, histoires).
+3. L'or : le Comptoir paie déjà 30 % de moins. Pour le reste, ajouter des dépenses voulues (apparences contre de l'or,
+   projets de clan sans fin qui ne donnent que du Renom) ?
+4. Les matières premières : accepter qu'elles soient bon marché, ou réduire le nombre d'unités par récolte (même XP) ?
+5. Le Traqueur a reçu un peu de Vitalité sur ses armes : à valider.
+6. Relire les 30 commandes de maître écrites cette nuit (noms, surnoms, histoires).
 
 ## 7. Sources consultées (systèmes d'autres jeux)
 

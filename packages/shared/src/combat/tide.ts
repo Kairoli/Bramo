@@ -151,7 +151,7 @@ export function tideScore(state: CharacterState, day: number, content: Content, 
     const asked = def.work.items.reduce((s, w) => s + w.qty, 0);
     const done = def.work.items.reduce((s, w) => s + Math.min(w.qty, got[w.item] ?? 0), 0);
     const ratio = asked ? done / asked : 0;
-    return { points: Math.round(full * ratio * bonus), ratio, channel: 'work' };
+    return { points: Math.round(full * tide.points.workMultiplier * ratio * bonus), ratio, channel: 'work' };
   }
   if (!state.classId || !combat.kits[state.classId]) return { points: 0, ratio: 0, channel: 'combat' };
   const level = classLevel(state, state.classId, content);

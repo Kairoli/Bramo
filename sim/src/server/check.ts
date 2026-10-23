@@ -48,6 +48,7 @@ export function checks(a: Analysis): Check[] {
   const faucet = a.economy.faucetTotal;
   const sink = a.economy.sinkTotal;
   add('fragile', 'or créé / or détruit (au plus 1,5)', (faucet / Math.max(1, sink)).toFixed(2), faucet / Math.max(1, sink) <= 1.5);
+  if (a.economy.lateRatio !== undefined) add('fragile', 'or créé / or détruit, 30 derniers jours (au plus 1,5)', a.economy.lateRatio, a.economy.lateRatio <= 1.5);
   const last = a.economy.gold.at(-1)!;
   const perDay = last.perPlayer / Math.max(1, last.day);
   add('fragile', 'or gagné et gardé par joueur et par jour (au plus 35)', perDay.toFixed(0), perDay <= 35);

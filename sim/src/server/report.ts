@@ -121,6 +121,9 @@ export function analyze(r: ServerResult, content: Content, tide?: TideStats) {
   // --- Or ---
   const gold = r.days.map((d) => ({ day: d.day, perPlayer: Math.round(d.gold / Math.max(1, d.players)), total: d.gold }));
   const faucet = Object.values(r.ledger.faucet).reduce((s, x) => s + x, 0);
+  // Le serveur installé : les 30 derniers jours (les récompenses uniques et les premiers bâtiments de clan sont passés).
+  const late = r.days.slice(-30);
+  const lateRatio = late.reduce((s, d) => s + d.faucet, 0) / Math.max(1, late.reduce((s, d) => s + d.sink, 0));
   const sink = Object.values(r.ledger.sink).reduce((s, x) => s + x, 0);
   const startGold = content.settings.character.startingGold * bots.length;
   const golds = bots.map((b) => b.state.gold).sort((a, b) => a - b);
@@ -159,6 +162,15 @@ export function analyze(r: ServerResult, content: Content, tide?: TideStats) {
     .filter((f) => f.produced > 0 || f.used > 0);
   const deadEnds = flows.filter((f) => f.produced > 100 && f.used < f.produced * 0.05).sort((a, b) => b.produced - a.produced);
   const neverMade = Object.values(content.items).filter((i) => !(r.ledger.produced[i.id] ?? 0) && i.category !== 'vestige').map((i) => i.name);
+  // Matières premières (sorties de récolte) qui passent par le marché : produites, utilisées (fabrication, commandes,
+  // bâtiments, digue), en valeur de référence. Les objets sans débouché (onglets oubliés) sont à part, dans deadEnds.
+  const rawIds = new Set(Object.values(content.recipes).filter((x) => !x.inputs.length).flatMap((x) => x.outputs.map((o) => o.item)));
+  const rawFlows = flows.filter((x) => rawIds.has(x.id) && x.sold > 0);
+  const rawBalance = {
+    produced: Math.round(rawFlows.reduce((t, x) => t + x.produced * (r.refs[x.id] ?? 1), 0)),
+    used: Math.round(rawFlows.reduce((t, x) => t + x.used * (r.refs[x.id] ?? 1), 0)),
+    sold: Math.round(rawFlows.reduce((t, x) => t + x.sold * (r.refs[x.id] ?? 1), 0)),
+  };
 
   // --- Butin d'équipement ---
   const perBotDay = r.ledger.drops.total / Math.max(1, bots.reduce((s, b) => s + (days - b.joinDay), 0));
@@ -195,9 +207,11 @@ export function analyze(r: ServerResult, content: Content, tide?: TideStats) {
     const g = bots.filter((b) => b.state.classId === p.class && b.state.combat.paths[p.class] === p.id);
     return { path: p.id, name: p.name, classId: p.class, role: p.role, n: g.length, routeMedian: median(g.map((b) => b.state.combat.route.best)) };
   });
-  // Même présence, même façon de jouer : la classe change-t-elle quelque chose ? (route à 30 jours, tryhards et casus guidés)
+  // Même présence, même façon de jouer : la classe change-t-elle quelque chose ? (route à 30 jours depuis l'arrivée, casus
+  // seuls : ils tirent leur classe au hasard. Les casus méta prennent la classe en tête et vont plus loin : mélangés, ils
+  // gonflaient la médiane de la classe qu'ils choisissent.)
   const classFair = Object.keys(combat.kits).map((c) => {
-    const g = bots.filter((b) => b.state.classId === c && b.classSwitches === 0 && (b.persona.id === 'casual' || b.persona.id === 'meta_casual'));
+    const g = bots.filter((b) => b.state.classId === c && b.classSwitches === 0 && b.persona.id === 'casual');
     return { classId: c, n: g.length, route30: median(g.map((b) => at(b, 'best', 30)).filter((x): x is number => x !== null)), route7: median(g.map((b) => at(b, 'best', 7)).filter((x): x is number => x !== null)) };
   });
 
@@ -245,9 +259,9 @@ export function analyze(r: ServerResult, content: Content, tide?: TideStats) {
     progression,
     milestones,
     goalSummary,
-    economy: { faucet: r.ledger.faucet, sink: r.ledger.sink, faucetTotal: faucet, sinkTotal: sink, startGold, gini: r1(gini), gold: gold.filter((_, i) => i % 7 === 0 || i === gold.length - 1), richest },
+    economy: { faucet: r.ledger.faucet, sink: r.ledger.sink, faucetTotal: faucet, sinkTotal: sink, lateRatio: r1(lateRatio), startGold, gini: r1(gini), gold: gold.filter((_, i) => i % 7 === 0 || i === gold.length - 1), richest },
     market: { index, top: traded.slice(0, 25), crashed: crashed.slice(0, 20), soared: soared.slice(0, 20), lastDay: r.days.at(-1), traders },
-    flows: { deadEnds: deadEnds.slice(0, 30), neverMade },
+    flows: { rawBalance, deadEnds: deadEnds.slice(0, 30), neverMade },
     loot: { perBotDay: r1(perBotDay), total: r.ledger.drops.total, rarity, sets, named, gearOwnedMedian: gearOwned, gems: r.ledger.gemsSocketed, bySource: r.ledger.drops.bySource },
     vitrine: { listed: r.vitrine.listed, sold: r.vitrine.sales.length, medianPrice: median(r.vitrine.sales.map((x) => x.price)), crafted: r.ledger.drops.bySource['fabrication'] ?? 0 },
     supplies: Object.values(content.items)
@@ -287,7 +301,7 @@ export function toMarkdown(a: Analysis): string {
   for (const g of a.goalSummary) L.push(`| ${g.persona} | ${pct(g.routeDone)} | ${pct(g.routeStuck14d)} | ${pct(g.noProgress14d)} |`);
   L.push('', '## Or', '');
   L.push(`Robinets : ${Object.entries(a.economy.faucet).map(([k, v]) => `${k} ${v}`).join(', ')} (total ${a.economy.faucetTotal}, plus ${a.economy.startGold} d’or de départ).`);
-  L.push(`Puits : ${Object.entries(a.economy.sink).map(([k, v]) => `${k} ${v}`).join(', ')} (total ${a.economy.sinkTotal}).`);
+  L.push(`Puits : ${Object.entries(a.economy.sink).map(([k, v]) => `${k} ${v}`).join(', ')} (total ${a.economy.sinkTotal}). Sur les 30 derniers jours, or créé / détruit : ${a.economy.lateRatio}.`);
   L.push(`Or par joueur : ${a.economy.gold.map((g) => `j${g.day} ${g.perPlayer}`).join(' · ')}. Gini ${a.economy.gini}.`);
   L.push(`Plus riches : ${a.economy.richest.map((r) => `${r.persona} ${r.gold} (${r.metiers.join('/')})`).join(' ; ')}.`);
   L.push('', '## Marché', '');
@@ -300,6 +314,7 @@ export function toMarkdown(a: Analysis): string {
   for (const t of a.market.traders) L.push(`| ${t.persona} | ${t.sales} | ${t.purchases} | ${t.npc} | ${t.gold} |`);
   L.push('', '## Objets sans débouché (produits, presque jamais utilisés)', '');
   L.push(a.flows.deadEnds.map((f) => `${f.name} (${f.produced} produits, ${f.used} utilisés, ${f.sold} vendus, ${f.stock} en stock)`).join(' ; ') || 'aucun');
+  L.push('', `Matières premières passées par le marché (en valeur de référence) : ${a.flows.rawBalance.produced} produites, ${a.flows.rawBalance.used} utilisées, ${a.flows.rawBalance.sold} vendues.`);
   L.push('', `Jamais produits : ${a.flows.neverMade.length} objets (${a.flows.neverMade.slice(0, 40).join(', ')}).`);
   L.push('', '## Butin d’équipement', '');
   L.push(`${a.loot.total} pièces tombées, ${a.loot.perBotDay} par joueur et par jour ; un joueur en possède ${a.loot.gearOwnedMedian} (médiane). Raretés : ${Object.entries(a.loot.rarity).map(([k, v]) => `${k} ${v}`).join(', ')}.`);
@@ -312,7 +327,7 @@ export function toMarkdown(a: Analysis): string {
   L.push('', '## Classes et voies', '');
   L.push('| Classe | joueurs | part | route médiane | route (méta) | niveau |', '|---|---|---|---|---|---|');
   for (const c of a.classes.byClass) L.push(`| ${c.classId} | ${c.n} | ${pct(c.share)} | ${c.routeMedian} | ${c.metaRouteMedian} | ${c.levelMedian} |`);
-  L.push('', `À façon de jouer égale (casus, sans changement de classe) — route à 7 j / 30 j : ${a.classes.classFair.map((c) => `${c.classId} ${c.route7} / ${c.route30} (n ${c.n})`).join(' ; ')}.`);
+  L.push('', `À façon de jouer égale (casus seuls, sans changement de classe) — route à 7 j / 30 j : ${a.classes.classFair.map((c) => `${c.classId} ${c.route7} / ${c.route30} (n ${c.n})`).join(' ; ')}.`);
   L.push('', '| Voie | classe | rôle | joueurs | route médiane |', '|---|---|---|---|---|');
   for (const p of a.classes.byPath) L.push(`| ${p.name} | ${p.classId} | ${p.role} | ${p.n} | ${p.routeMedian} |`);
   L.push('', '## Où les joueurs restent bloqués (jours-joueurs à la même étape)', '');

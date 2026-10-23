@@ -79,8 +79,9 @@ describe('la Marée du soir', () => {
     expect(readTide(state.combat.tide).channel).toBe('work');
     const r = tideScore(state, day, content, false);
     expect(r.channel).toBe('work');
-    expect(r.points).toBeGreaterThan(25);
-    expect(r.points).toBeLessThanOrEqual(31);
+    const half = 60 * tide.points.workMultiplier * 0.5;
+    expect(r.points).toBeGreaterThan(half - 6);
+    expect(r.points).toBeLessThanOrEqual(half + 1);
     // Le lendemain, la livraison ne compte plus : il repart au combat.
     expect(tideScore(state, day + 1, content, false).channel).toBe('combat');
   });

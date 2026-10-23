@@ -33,6 +33,11 @@ import {
   gearGrantBody,
   gearIdBody,
   gearRefineBody,
+  passwordChangeBody,
+  chatPostBody,
+  chatReportBody,
+  chatModerateBody,
+  accountDeleteBody,
   clanWorksBody,
   gearSocketBody,
   devItemGrantBody,
@@ -88,15 +93,19 @@ import {
   suppliesBody,
   unstockSupplies,
   joinTideLive,
+  registerTide,
   setTidePrefs,
   tideBuyBody,
   tidePrefsBody,
 } from '@bramo/shared';
 import type { Db } from './db/index.js';
 import { offerPatron, settleTide, tideView } from './tide.js';
+import { AccountGuard, GuardError } from './guard.js';
+import { deleteAccount, exportAccount } from './account.js';
+import { moderateChat, postChat, readChat, reportChat } from './chat.js';
 import { buyGear, craftOwned, gearListings, listGear, unlistGear } from './vitrine.js';
 import { loadCharacterById } from './characters.js';
-import { accounts, characters } from './db/schema.js';
+import { accounts, characters, sessions } from './db/schema.js';
 import {
   SESSION_COOKIE,
   SESSION_DAYS,
@@ -114,7 +123,7 @@ import { joinTestClan } from './devClan.js';
 import { playerProfile } from './profile.js';
 import { cancelRepair, openRepairs, requestRepair, takeRepair } from './repairs.js';
 import { dropMismatchedOwned, equipOwned, giveStarterGear, grantGear, loadGear, refineOwned, socketOwned, unequipOwned, wearGearSet } from './gear.js';
-import { buyFromStall, cancelOrder, fillOrder, marketBook, marketSummary, myOrders, placeOrder } from './market.js';
+import { buyFromStall, cancelOrder, fillOrder, marketBook, marketSummary, myOrders, placeOrder, myTrades, priceHistory } from './market.js';
 
 export interface AppOptions {
   db: Db;
@@ -124,6 +133,8 @@ export interface AppOptions {
   secureCookies?: boolean;
   /** Outils de test : obtenir n'importe quel objet (désactivé en production). */
   devTools?: boolean;
+  /** Derrière un reverse proxy : lire l'adresse du joueur dans X-Forwarded-For (variable TRUST_PROXY). */
+  trustProxy?: boolean;
 }
 
 class HttpError extends Error {
@@ -136,13 +147,14 @@ class HttpError extends Error {
   }
 }
 
-export async function buildApp({ db, content, clock = Date.now, secureCookies = false, devTools = false }: AppOptions) {
-  const app = Fastify({ logger: { level: process.env.LOG_LEVEL ?? 'warn' } });
+export async function buildApp({ db, content, clock = Date.now, secureCookies = false, devTools = false, trustProxy = false }: AppOptions) {
+  const app = Fastify({ logger: { level: process.env.LOG_LEVEL ?? 'warn' }, trustProxy });
+  const guard = new AccountGuard(content);
   await app.register(cookie);
 
   app.setErrorHandler((err, _req, reply) => {
     if (err instanceof GameError) return reply.status(400).send({ code: err.code, message: err.message });
-    if (err instanceof HttpError) return reply.status(err.status).send({ code: err.code, message: err.message });
+    if (err instanceof HttpError || err instanceof GuardError) return reply.status(err.status).send({ code: err.code, message: err.message });
     if (err instanceof ZodError) {
       return reply.status(400).send({ code: 'invalid', message: err.issues[0]?.message ?? 'Requête invalide.' });
     }
@@ -215,6 +227,7 @@ export async function buildApp({ db, content, clock = Date.now, secureCookies = 
   app.post('/api/auth/register', async (req, reply) => {
     const { username, password } = body(credentialsBody, req);
     const now = clock();
+    guard.checkRegister(req.ip, now);
     const passwordHash = await hashPassword(password);
     const accountId = await db.transaction(async (tx) => {
       const existing = await tx.select().from(accounts).where(eq(accounts.username, username.toLowerCase()));
@@ -241,23 +254,61 @@ export async function buildApp({ db, content, clock = Date.now, secureCookies = 
       await recordEvents(tx, now, [joinEvent(username)]);
       return account!.id;
     });
+    guard.registered(req.ip, now);
     setSessionCookie(reply, await createSession(db, accountId, new Date(now)));
     return { ok: true };
   });
 
   app.post('/api/auth/login', async (req, reply) => {
     const { username, password } = body(credentialsBody, req);
+    const now = clock();
+    guard.checkLogin(req.ip, username, now);
     const [account] = await db.select().from(accounts).where(eq(accounts.username, username.toLowerCase()));
     if (!account || !(await verifyPassword(password, account.passwordHash))) {
+      guard.loginFailed(req.ip, username, now);
       throw new HttpError(401, 'credentials', 'Pseudo ou mot de passe incorrect.');
     }
-    setSessionCookie(reply, await createSession(db, account.id, new Date(clock())));
+    guard.loginSucceeded(req.ip, username);
+    setSessionCookie(reply, await createSession(db, account.id, new Date(now)));
     return { ok: true };
   });
 
   app.post('/api/auth/logout', async (req, reply) => {
     const token = req.cookies[SESSION_COOKIE];
     if (token) await deleteSession(db, token);
+    reply.clearCookie(SESSION_COOKIE, { path: '/' });
+    return { ok: true };
+  });
+
+  // --- Le compte : mot de passe, données, suppression (RGPD) ---
+
+  app.post('/api/account/password', async (req, reply) => {
+    const { current, next } = body(passwordChangeBody, req);
+    const accountId = await requireAccount(req);
+    const [account] = await db.select().from(accounts).where(eq(accounts.id, accountId));
+    if (!account || !(await verifyPassword(current, account.passwordHash))) throw new HttpError(400, 'credentials', 'Mot de passe actuel incorrect.');
+    await db.update(accounts).set({ passwordHash: await hashPassword(next) }).where(eq(accounts.id, accountId));
+    // Les autres appareils sont déconnectés ; celui-ci reçoit une nouvelle session.
+    await db.delete(sessions).where(eq(sessions.accountId, accountId));
+    setSessionCookie(reply, await createSession(db, accountId, new Date(clock())));
+    return { ok: true };
+  });
+
+  /** Toutes les données du compte, en un fichier (droit d'accès et de portabilité). */
+  app.get('/api/account/export', async (req, reply) => {
+    const accountId = await requireAccount(req);
+    reply.header('content-disposition', 'attachment; filename="bramo-mes-donnees.json"');
+    return exportAccount(db, accountId);
+  });
+
+  /** Supprimer son compte (droit à l'effacement) : mot de passe et le mot SUPPRIMER. Tout est effacé, sans retour. */
+  app.post('/api/account/delete', async (req, reply) => {
+    const { password, confirm } = body(accountDeleteBody, req);
+    const accountId = await requireAccount(req);
+    const [account] = await db.select().from(accounts).where(eq(accounts.id, accountId));
+    if (!account || !(await verifyPassword(password, account.passwordHash))) throw new HttpError(400, 'credentials', 'Mot de passe incorrect.');
+    if (confirm !== 'SUPPRIMER') throw new HttpError(400, 'confirm', 'Écrivez SUPPRIMER pour confirmer.');
+    await db.transaction((tx) => deleteAccount(tx, accountId, clock()));
     reply.clearCookie(SESSION_COOKIE, { path: '/' });
     return { ok: true };
   });
@@ -334,7 +385,19 @@ export async function buildApp({ db, content, clock = Date.now, secureCookies = 
 
   app.post('/api/market/fill', (req) => {
     const { orderId, qty } = body(fillOrderBody, req);
-    return playAs(req, async (state, _now, { tx, characterId }) => fillOrder(tx, content, characterId, state, orderId, qty));
+    return playAs(req, async (state, now, { tx, characterId }) => fillOrder(tx, content, characterId, state, orderId, qty, now));
+  });
+
+  /** Courbe de prix d'un objet sur 30 jours, et les transactions du joueur. */
+  app.get('/api/market/history/:itemId', async (req) => {
+    await requireAccount(req);
+    const { itemId } = req.params as { itemId: string };
+    if (!content.items[itemId]) throw new HttpError(404, 'unknown_item', 'Objet inconnu.');
+    return priceHistory(db, itemId, clock());
+  });
+  app.get('/api/market/trades', async (req) => {
+    const me = await myCharacter(req);
+    return myTrades(db, me.id);
   });
 
   app.post('/api/market/cancel', (req) => {
@@ -599,6 +662,35 @@ export async function buildApp({ db, content, clock = Date.now, secureCookies = 
     return playAs(req, (state) => ({ state: setNickname(state, profession, rank, content) }));
   });
 
+  /** Tour guidé de la première session : vu, ou passé. */
+  app.post('/api/character/tour', (req) => playAs(req, (state) => ({ state: { ...state, tourDone: true } })));
+
+  // --- Discussion du serveur et des clans ---
+
+  app.get('/api/chat', async (req) => {
+    const me = await myCharacter(req);
+    const channel = (req.query as { channel?: string }).channel === 'clan' ? 'clan' : 'server';
+    return readChat(db, me.id, channel, clock(), content);
+  });
+  app.post('/api/chat', async (req) => {
+    const { channel, text } = body(chatPostBody, req);
+    const me = await myCharacter(req);
+    await db.transaction((tx) => postChat(tx, me.id, me.name, channel, text, clock(), content));
+    return readChat(db, me.id, channel, clock(), content);
+  });
+  app.post('/api/chat/report', async (req) => {
+    const { messageId } = body(chatReportBody, req);
+    const me = await myCharacter(req);
+    await db.transaction((tx) => reportChat(tx, me.id, messageId, clock(), content));
+    return { ok: true };
+  });
+  app.post('/api/chat/moderate', async (req) => {
+    const { messageId, action, hours } = body(chatModerateBody, req);
+    const me = await myCharacter(req);
+    const message = await db.transaction((tx) => moderateChat(tx, me.id, messageId, action, hours, clock()));
+    return { ok: true, message };
+  });
+
   // --- Clans ---
 
   app.get('/api/clans', async (req) => {
@@ -752,6 +844,9 @@ export async function buildApp({ db, content, clock = Date.now, secureCookies = 
     const prefs = body(tidePrefsBody, req);
     return playAs(req, (state) => ({ state: setTidePrefs(state, prefs, content) }));
   });
+  app.post('/api/tide/register', (req) =>
+    playAs(req, (state, now) => ({ state: registerTide(state, now, content), log: 'Inscrit à la Marée du soir : votre personnage combattra à 20 h, même si vous êtes déconnecté.', logKind: 'combat' })),
+  );
   app.post('/api/tide/join', (req) =>
     playAs(req, (state, now) => ({ state: joinTideLive(state, now, content), log: 'Vous rejoignez la digue : la Marée du soir compte vos points en direct.', logKind: 'combat' })),
   );

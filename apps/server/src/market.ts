@@ -1,4 +1,4 @@
-import { and, asc, eq, gt, ne, or } from 'drizzle-orm';
+import { and, asc, desc, eq, gt, gte, ne, or, sql } from 'drizzle-orm';
 import {
   type CharacterState,
   type Content,
@@ -20,7 +20,8 @@ import {
   validateOrder,
 } from '@bramo/shared';
 import type { Db, Tx } from './db/index.js';
-import { characters, marketOrders } from './db/schema.js';
+import type { MyTradeView, PriceHistoryView } from '@bramo/shared';
+import { characters, marketOrders, marketTrades } from './db/schema.js';
 
 type Row = typeof marketOrders.$inferSelect;
 
@@ -145,6 +146,14 @@ export async function placeOrder(
     const gross = f.qty * f.order.price;
     const row = resting.find((r) => r.id === f.order.id)!;
     filled += f.qty;
+    await tx.insert(marketTrades).values({
+      itemId: p.itemId,
+      qty: f.qty,
+      price: f.order.price,
+      buyerId: p.side === 'buy' ? characterId : row.characterId,
+      sellerId: p.side === 'sell' ? characterId : row.characterId,
+      at: new Date(now),
+    });
     if (p.side === 'sell') {
       // Prime de commande : livrer un ordre d'achat d'un objet qu'on sait fabriquer, payé au moins sa valeur de référence.
       if (f.order.price >= content.items[p.itemId]!.value) primed += f.qty;
@@ -195,6 +204,7 @@ export async function fillOrder(
   input: CharacterState,
   orderId: number,
   qty: number,
+  now: number,
 ): Promise<MarketResult> {
   const [row] = await tx.select().from(marketOrders).where(eq(marketOrders.id, orderId)).for('update');
   if (!row || row.side !== 'sell' || row.qty <= 0) throw new GameError('gone', 'Cette offre n’existe plus.');
@@ -207,6 +217,7 @@ export async function fillOrder(
   state.gold -= gross;
   addStack(state.inventory, row.itemId, qty);
   if (isDurable(item)) giveCopy(state, row.itemId, row.wear);
+  await tx.insert(marketTrades).values({ itemId: row.itemId, qty, price: row.price, buyerId: characterId, sellerId: row.characterId, at: new Date(now) });
   await tx
     .update(marketOrders)
     .set({ qty: row.qty - qty, collectGold: row.collectGold + netProceeds(gross, content) })
@@ -320,4 +331,41 @@ export async function myOrders(db: Db, characterId: number, name: string): Promi
     waitingGold: o.collectGold,
     waitingQty: o.collectQty,
   }));
+}
+
+const DAY_MS = 86_400_000;
+
+/**
+ * Courbe de prix d'un objet (bouton « courbe » du marché, comme à Dofus) : par jour sur `days` jours, le prix moyen pondéré
+ * par les quantités, le plus bas, le plus haut et le volume échangé. Les jours sans échange sont absents.
+ */
+export async function priceHistory(db: Db, itemId: string, now: number, days = 30): Promise<PriceHistoryView> {
+  const since = new Date(now - days * DAY_MS);
+  const rows = await db
+    .select({
+      day: sql<number>`floor(extract(epoch from ${marketTrades.at}) / 86400)::int`,
+      volume: sql<number>`sum(${marketTrades.qty})::int`,
+      gold: sql<number>`sum(${marketTrades.qty} * ${marketTrades.price})::bigint`,
+      min: sql<number>`min(${marketTrades.price})::int`,
+      max: sql<number>`max(${marketTrades.price})::int`,
+    })
+    .from(marketTrades)
+    .where(and(eq(marketTrades.itemId, itemId), gte(marketTrades.at, since)))
+    .groupBy(sql`1`)
+    .orderBy(sql`1`);
+  const points = rows.map((r) => ({ day: Number(r.day), avg: Math.round(Number(r.gold) / Math.max(1, Number(r.volume))), min: Number(r.min), max: Number(r.max), volume: Number(r.volume) }));
+  const volume = points.reduce((s, p) => s + p.volume, 0);
+  const gold = points.reduce((s, p) => s + p.avg * p.volume, 0);
+  return { itemId, days, points, average: volume ? Math.round(gold / volume) : null, volume };
+}
+
+/** Les dernières transactions d'un joueur (achats et ventes au marché), les plus récentes d'abord. */
+export async function myTrades(db: Db, characterId: number, limit = 100): Promise<MyTradeView[]> {
+  const rows = await db
+    .select()
+    .from(marketTrades)
+    .where(or(eq(marketTrades.buyerId, characterId), eq(marketTrades.sellerId, characterId)))
+    .orderBy(desc(marketTrades.at), desc(marketTrades.id))
+    .limit(limit);
+  return rows.map((r) => ({ id: r.id, at: r.at.getTime(), itemId: r.itemId, qty: r.qty, price: r.price, side: r.buyerId === characterId ? 'buy' : 'sell' }));
 }

@@ -3,12 +3,14 @@
 #
 # - Chaque participant marque des points : en combat, sa contribution face à la Marée ramenée à celle d'un build moyen de
 #   son niveau (un build moyen fait 1 point par minute, soit 60 points le soir) ; ou en travail, ce que la digue demande.
-# - Les absents participent tout seuls (case « Rejoindre la Marée chaque soir », cochée par défaut) : jamais punis.
+# - Inscription de 19 h à 20 h [Décidé par Louis, 23 octobre : plus d'inscription automatique, « ça évite que quelqu'un
+#   choppe des récompenses sans jamais voir à quoi ressemble le combat »] ; un personnage inscrit combat même déconnecté.
 # - Le joueur connecté pendant la Marée marque un peu plus (+15 %), jamais de quoi faire plus de 2 à 2,5 fois un casu.
 # - Les éclats de marée ne donnent que des apparences ; le coffre de la semaine, des matières et une chance de cache.
 startHour: 20             # 20 h à Paris, heure d'été comme d'hiver
 timeZone: Europe/Paris
 durationMin: 60
+registrationMin: 60       # les inscriptions ouvrent une heure avant (19 h)
 rotation: [debacle, lanterns, giants]
 tides:
   - id: debacle

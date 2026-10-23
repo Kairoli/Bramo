@@ -596,6 +596,11 @@ export const tideSchema = z.object({
   startHour: z.number().int().min(0).max(23),
   timeZone: z.string(),
   durationMin: z.number().int().min(1),
+  /**
+   * Inscriptions : pendant les `registrationMin` minutes avant la Marée [Décidé par Louis, 23 octobre : de 19 h à 20 h, plus
+   * d'inscription automatique]. Un personnage inscrit combat même déconnecté.
+   */
+  registrationMin: z.number().int().min(1).default(60),
   /** Ordre des Marées, un soir chacune, puis on recommence. */
   rotation: z.array(id).min(1),
   tides: z.array(

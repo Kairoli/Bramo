@@ -1,0 +1,1 @@
+ALTER TABLE "characters" ADD COLUMN "tour_done" boolean DEFAULT false NOT NULL;

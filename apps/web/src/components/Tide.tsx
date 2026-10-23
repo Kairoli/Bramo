@@ -37,13 +37,20 @@ export function TideBanner({ onOpen, view }: { onOpen: () => void; view: TideVie
   if (!view) return null;
   const t = view.tonight;
   const now = Date.now();
+  const reg = view.registration;
   const sub = t.open
-    ? view.joinedLive
-      ? `Vous tenez la digue, jusqu’à ${clock(t.end)}`
-      : `En cours jusqu’à ${clock(t.end)} : rejoindre (+15 %)`
-    : now < t.start
-      ? `Ce soir à ${clock(t.start)} · dans ${until(t.start - now)}`
-      : 'Terminée pour ce soir';
+    ? reg.registered
+      ? view.joinedLive
+        ? `Vous tenez la digue, jusqu’à ${clock(t.end)}`
+        : `En cours jusqu’à ${clock(t.end)} : rejoindre en direct (+15 %)`
+      : `En cours jusqu’à ${clock(t.end)} · vous n’êtes pas inscrit`
+    : reg.registered
+      ? `Inscrit · à ${clock(t.start)}, même déconnecté`
+      : reg.open
+        ? `Inscriptions ouvertes jusqu’à ${clock(reg.end)} : s’inscrire`
+        : now < reg.start
+          ? `Inscriptions à ${clock(reg.start)} · dans ${until(reg.start - now)}`
+          : 'Terminée pour ce soir';
   const patrons = view.patron?.tonight && view.patron.names.length ? ` · offerte par ${view.patron.names.join(', ')}` : '';
   return (
     <div className={`banner tide-banner${t.open ? ' is-open' : ''}`} style={{ ['--tone' as string]: 'var(--event)' }}>
@@ -71,6 +78,7 @@ export function TideModal({ view, refresh, onClose }: { view: TideView; refresh:
     await act(call);
     refresh();
   };
+  const reg = view.registration;
   const workReady = t.work.items.some((w) => w.have > 0 && w.delivered < w.qty);
   const last = view.last;
   const lit = last ? last.thresholds : 0;
@@ -87,21 +95,27 @@ export function TideModal({ view, refresh, onClose }: { view: TideView; refresh:
       </div>
 
       <section className="tide-now">
-        {t.open ? (
-          view.joinedLive ? (
-            <p className="tide-ok">Vous tenez la digue : vos points de ce soir comptent 15 % de plus.</p>
-          ) : (
-            <button className="btn btn-primary" onClick={() => void run(api.tideJoin)}>
-              Rejoindre la digue (+15 % ce soir)
-            </button>
-          )
+        {/* Inscription de 19 h à 20 h [Décidé par Louis] : inscrit, le personnage combat même si le joueur se déconnecte. */}
+        {reg.registered ? (
+          <p className="tide-ok">Inscrit pour ce soir : votre personnage tiendra la digue à {clock(t.start)}, même si vous êtes déconnecté.</p>
+        ) : reg.open ? (
+          <button className="btn btn-primary" onClick={() => void run(api.tideRegister)}>
+            S’inscrire pour ce soir (jusqu’à {clock(reg.end)})
+          </button>
         ) : (
-          <p className="muted">{now < t.start ? `La Marée monte dans ${until(t.start - now)}, jusqu’à ${clock(t.end)}.` : 'Elle est passée pour ce soir : les éclats arrivent à votre prochaine visite.'}</p>
+          <p className="muted">
+            {now < reg.start
+              ? `Les inscriptions ouvrent à ${clock(reg.start)}, dans ${until(reg.start - now)} : une heure pour s’inscrire, puis la Marée monte à ${clock(t.start)}.`
+              : 'Les inscriptions de ce soir sont closes. Elles rouvrent demain à 19 h.'}
+          </p>
         )}
-        <label className="tide-toggle">
-          <input type="checkbox" checked={view.prefs.auto} onChange={(e) => void run(() => api.tidePrefs({ auto: e.target.checked }))} />
-          Y aller chaque soir, même absent (votre personnage s’y rend seul, avec votre build)
-        </label>
+        {t.open && reg.registered && !view.joinedLive && (
+          <button className="btn btn-primary" onClick={() => void run(api.tideJoin)}>
+            Rejoindre la digue en direct (+15 % ce soir)
+          </button>
+        )}
+        {t.open && view.joinedLive && <p className="tide-ok">Vous tenez la digue en direct : vos points de ce soir comptent 15 % de plus.</p>}
+        {!t.open && now >= t.end && reg.registered && <p className="muted">Elle est passée pour ce soir : les éclats arrivent à votre prochaine visite.</p>}
         <div className="tide-channels" role="radiogroup">
           <button className={`chip${view.prefs.channel === 'combat' ? ' on' : ''}`} onClick={() => void run(() => api.tidePrefs({ channel: 'combat' }))}>
             Combattre

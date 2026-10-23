@@ -34,12 +34,18 @@ const call = async (method: 'GET' | 'POST', url: string, payload?: object) => {
   return { status: res.statusCode, json: res.json() };
 };
 
-/** Un joueur à part, avec son propre cookie. */
-const player = (cookieOf: { value: string }) => async (method: 'GET' | 'POST', url: string, payload?: object) => {
-  const res = await app.inject({ method, url, payload, headers: { cookie: cookieOf.value } });
-  const set = res.headers['set-cookie'];
-  if (set) cookieOf.value = String(Array.isArray(set) ? set[0] : set).split(';')[0]!;
-  return { status: res.statusCode, json: res.json() };
+/**
+ * Un joueur à part, avec son propre cookie et sa propre adresse ; `ip` pour faire jouer plusieurs comptes depuis la même
+ * connexion.
+ */
+let nextIp = 1;
+const player = (cookieOf: { value: string }, ip = `10.0.${nextIp >> 8}.${nextIp++ & 255}`) => {
+  return async (method: 'GET' | 'POST', url: string, payload?: object) => {
+    const res = await app.inject({ method, url, payload, headers: { cookie: cookieOf.value }, remoteAddress: ip });
+    const set = res.headers['set-cookie'];
+    if (set) cookieOf.value = String(Array.isArray(set) ? set[0] : set).split(';')[0]!;
+    return { status: res.statusCode, json: res.json() };
+  };
 };
 
 describe('API', () => {
@@ -264,6 +270,17 @@ describe('API', () => {
     // Plus d'offre à ce prix : refusé, pas d'ordre posé.
     expect((await buyer('POST', '/api/market/order', { side: 'buy', itemId: 'tin_ore', qty: 50, price: 6, immediate: true })).status).toBe(400);
     expect((await buyer('GET', '/api/market/mine')).json).toEqual([]);
+    // L'historique : la courbe de prix de l'objet (moyenne pondérée du jour) et les transactions de chacun.
+    const history = (await buyer('GET', '/api/market/history/tin_ore')).json as import('@bramo/shared').PriceHistoryView;
+    const today = history.points.at(-1)!;
+    expect(today.volume).toBeGreaterThanOrEqual(50);
+    expect(today.min).toBe(5);
+    expect(today.max).toBe(7);
+    const mine = (await buyer('GET', '/api/market/trades')).json as import('@bramo/shared').MyTradeView[];
+    expect(mine.map((t) => [t.side, t.qty, t.price]).sort()).toEqual([['buy', 20, 7], ['buy', 30, 5]]);
+    const sold = (await s1('GET', '/api/market/trades')).json as import('@bramo/shared').MyTradeView[];
+    expect(sold).toMatchObject([{ side: 'sell', qty: 30, price: 5, itemId: 'tin_ore' }]);
+    expect((await buyer('GET', '/api/market/history/nothing')).status).toBe(404);
   });
 
   it('commandes PNJ : trois par jour, une fois chacune', async () => {
@@ -515,6 +532,134 @@ describe('API', () => {
     expect(mine.items.some((g) => g.id === piece.id)).toBe(true);
     const paid = (await smith('GET', '/api/state')).json as StateResponse;
     expect(paid.journal.some((e) => e.text.includes('Vitrine'))).toBe(true);
+  });
+
+  it('comptes : essais limités, comptes limités par adresse ; un foyer joue à plusieurs depuis la même adresse', async () => {
+    // Cinq mauvais mots de passe, puis le sixième essai est refusé même juste.
+    const a = player({ value: '' }, '10.9.0.1');
+    await a('POST', '/api/auth/register', { username: 'Gardienne', password: 'motdepasse' });
+    await a('POST', '/api/auth/logout');
+    for (let i = 0; i < 5; i++) expect((await a('POST', '/api/auth/login', { username: 'Gardienne', password: 'mauvais-mdp' })).status).toBe(401);
+    expect((await a('POST', '/api/auth/login', { username: 'Gardienne', password: 'motdepasse' })).status).toBe(429);
+    // Depuis une autre adresse, le compte reste accessible.
+    const a2 = player({ value: '' }, '10.9.0.2');
+    expect((await a2('POST', '/api/auth/login', { username: 'Gardienne', password: 'motdepasse' })).status).toBe(200);
+    // Deux comptes d'un même foyer, la même adresse, en même temps : aucun souci.
+    const b = player({ value: '' }, '10.9.0.2');
+    expect((await b('POST', '/api/auth/register', { username: 'Jumelle', password: 'motdepasse' })).status).toBe(200);
+    expect((await a2('GET', '/api/state')).status).toBe(200);
+    expect((await b('GET', '/api/state')).status).toBe(200);
+    // Cinq comptes par adresse et par jour.
+    const ip = '10.9.0.3';
+    for (let i = 0; i < 5; i++) {
+      const p = player({ value: '' }, ip);
+      expect((await p('POST', '/api/auth/register', { username: `Serie${i}`, password: 'motdepasse' })).status).toBe(200);
+      await p('POST', '/api/auth/logout');
+    }
+    expect((await player({ value: '' }, ip)('POST', '/api/auth/register', { username: 'Serie5', password: 'motdepasse' })).status).toBe(429);
+  });
+
+  it('compte : changer son mot de passe, télécharger ses données, tout supprimer (le clan garde un chef)', async () => {
+    const me = player({ value: '' });
+    const other = { value: '' };
+    await me('POST', '/api/auth/register', { username: 'Partante', password: 'motdepasse' });
+    other.value = ''; // un autre appareil
+    const phone = player(other);
+    await phone('POST', '/api/auth/login', { username: 'Partante', password: 'motdepasse' });
+    expect((await me('POST', '/api/account/password', { current: 'faux-mdp-1', next: 'nouveau-mdp' })).status).toBe(400);
+    expect((await me('POST', '/api/account/password', { current: 'motdepasse', next: 'nouveau-mdp' })).status).toBe(200);
+    expect((await me('GET', '/api/state')).status).toBe(200);
+    expect((await phone('GET', '/api/state')).status).toBe(401); // l'autre appareil est déconnecté
+    // Ses données, en un fichier.
+    const data = (await me('GET', '/api/account/export')).json as { character: { name: string }; skills: unknown[] };
+    expect(data.character.name).toBe('Partante');
+    // Chef d'un clan à deux : en partant, la direction passe à l'autre membre.
+    await grant('Partante', 10_000, {});
+    await me('POST', '/api/clan/create', { name: 'Les Partants' });
+    const heir = player({ value: '' });
+    await heir('POST', '/api/auth/register', { username: 'Heritiere', password: 'motdepasse' });
+    const list = (await heir('GET', '/api/clans')).json as import('@bramo/shared').ClanListItem[];
+    await heir('POST', '/api/clan/join', { clanId: list.find((c) => c.name === 'Les Partants')!.id });
+    expect((await me('POST', '/api/account/delete', { password: 'nouveau-mdp', confirm: 'oui' })).status).toBe(400);
+    expect((await me('POST', '/api/account/delete', { password: 'nouveau-mdp', confirm: 'SUPPRIMER' })).status).toBe(200);
+    expect((await me('GET', '/api/state')).status).toBe(401);
+    expect((await player({ value: '' })('POST', '/api/auth/login', { username: 'Partante', password: 'nouveau-mdp' })).status).toBe(401);
+    expect(((await heir('GET', '/api/clan')).json as import('@bramo/shared').ClanView).myRank).toBe('leader');
+  });
+
+  it('discussion : serveur et clan, limites, liens refusés, signalements, modération', async () => {
+    const [p1, p2, p3, p4] = [player({ value: '' }), player({ value: '' }), player({ value: '' }), player({ value: '' })];
+    const names = ['Bavarde', 'Ecoute', 'Rapporte', 'Moderee'];
+    for (const [i, p] of [p1, p2, p3, p4].entries()) await p!('POST', '/api/auth/register', { username: names[i]!, password: 'motdepasse' });
+    type Chat = import('@bramo/shared').ChatView;
+    const sent = (await p1!('POST', '/api/chat', { channel: 'server', text: '  Bonjour   le bourg !  ' })).json as Chat;
+    expect(sent.messages.at(-1)).toMatchObject({ name: 'Bavarde', text: 'Bonjour le bourg !', mine: true });
+    expect(((await p2!('GET', '/api/chat?channel=server')).json as Chat).messages.some((m) => m.text === 'Bonjour le bourg !' && !m.mine)).toBe(true);
+    // Trop vite, trop long, un lien : refusés.
+    expect((await p1!('POST', '/api/chat', { channel: 'server', text: 'encore' })).status).toBe(400);
+    now += 5_000;
+    expect((await p1!('POST', '/api/chat', { channel: 'server', text: 'x'.repeat(301) })).status).toBe(400);
+    expect((await p1!('POST', '/api/chat', { channel: 'server', text: 'venez sur www.arnaque.com' })).status).toBe(400);
+    // Le canal du clan : réservé aux membres.
+    const clanView = (await p2!('GET', '/api/chat?channel=clan')).json as Chat;
+    expect(clanView.canWrite).toBe(false);
+    expect((await p2!('POST', '/api/chat', { channel: 'clan', text: 'coucou' })).status).toBe(400);
+    // Trois signalements masquent le message.
+    const id = sent.messages.at(-1)!.id;
+    await p2!('POST', '/api/chat/report', { messageId: id });
+    await p3!('POST', '/api/chat/report', { messageId: id });
+    expect(((await p2!('GET', '/api/chat?channel=server')).json as Chat).messages.some((m) => m.id === id)).toBe(true);
+    await p4!('POST', '/api/chat/report', { messageId: id });
+    expect(((await p2!('GET', '/api/chat?channel=server')).json as Chat).messages.some((m) => m.id === id)).toBe(false);
+    // Un modérateur rend un joueur muet.
+    const { accounts } = await import('../src/db/schema.js');
+    await db.update(accounts).set({ role: 'moderator' }).where(eq(accounts.username, 'moderee'));
+    now += 5_000;
+    const second = ((await p1!('POST', '/api/chat', { channel: 'server', text: 'Me revoilà' })).json as Chat).messages.at(-1)!;
+    expect((await p2!('POST', '/api/chat/moderate', { messageId: second.id, action: 'mute', hours: 2 })).status).toBe(400); // pas modérateur
+    expect((await p4!('POST', '/api/chat/moderate', { messageId: second.id, action: 'mute', hours: 2 })).status).toBe(200);
+    now += 5_000;
+    expect((await p1!('POST', '/api/chat', { channel: 'server', text: 'je peux parler ?' })).status).toBe(400);
+    expect(((await p1!('GET', '/api/chat?channel=server')).json as Chat).canWrite).toBe(false);
+  });
+
+  it('Marée du soir : inscription de 19 h à 20 h ; un inscrit combat même déconnecté, un non-inscrit ne marque rien', async () => {
+    const { tideDay, tideWindow, registrationWindow } = await import('@bramo/shared');
+    const rules = content.combat!.tide!;
+    const inscrit = player({ value: '' });
+    const absent = player({ value: '' });
+    await inscrit('POST', '/api/auth/register', { username: 'Inscrite', password: 'motdepasse' });
+    await absent('POST', '/api/auth/register', { username: 'Distrait', password: 'motdepasse' });
+    await inscrit('POST', '/api/character/class', { classId: 'runist' });
+    await absent('POST', '/api/character/class', { classId: 'forgefire' });
+    // Le prochain soir : avant 19 h, refusé ; pendant l'heure, accepté.
+    let day = tideDay(now);
+    if (now >= registrationWindow(day, rules).start) day += 1;
+    const reg = registrationWindow(day, rules);
+    now = reg.start - 60_000;
+    expect((await inscrit('POST', '/api/tide/register')).status).toBe(400);
+    now = reg.start + 10 * 60_000;
+    const view = (await inscrit('GET', '/api/tide')).json as import('@bramo/shared').TideView;
+    expect(view.registration).toMatchObject({ open: true, registered: false });
+    expect((await inscrit('POST', '/api/tide/register')).status).toBe(200);
+    expect(((await inscrit('GET', '/api/tide')).json as import('@bramo/shared').TideView).registration.registered).toBe(true);
+    // Le joueur se déconnecte ; la Marée passe ; il revient le lendemain : ses points et ses éclats sont là.
+    now = tideWindow(day, rules).end + 60_000;
+    await absent('GET', '/api/state'); // règle le soir
+    await inscrit('GET', '/api/state'); // la visite qui verse la soirée
+    const back = (await inscrit('GET', '/api/tide')).json as import('@bramo/shared').TideView;
+    expect(back.nights.some((n) => n.day === day && n.points > 0)).toBe(true);
+    await absent('GET', '/api/state');
+    const missed = (await absent('GET', '/api/tide')).json as import('@bramo/shared').TideView;
+    expect(missed.nights.some((n) => n.day === day)).toBe(false);
+  });
+
+  it('tour guidé : proposé une fois, puis retenu', async () => {
+    const p = player({ value: '' });
+    await p('POST', '/api/auth/register', { username: 'Novice', password: 'motdepasse' });
+    expect(((await p('GET', '/api/state')).json as StateResponse).state.tourDone).toBe(false);
+    expect(((await p('POST', '/api/character/tour')).json as StateResponse).state.tourDone).toBe(true);
+    expect(((await p('GET', '/api/state')).json as StateResponse).state.tourDone).toBe(true);
   });
 
   it('Mécène de la Marée : on offre la prochaine Marée, l’or part, le nom s’affiche, trois places au plus', async () => {

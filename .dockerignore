@@ -1,0 +1,12 @@
+# Image de production (deploy/Dockerfile) : ni modules installés sur la machine, ni bases locales, ni sorties.
+**/node_modules
+**/.pglite
+**/dist
+**/coverage
+.git
+deploy/.env
+deploy/backups
+sim/reports
+docs
+ornement
+*.log

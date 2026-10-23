@@ -6,6 +6,9 @@ import { GameProvider, useGame } from './game/GameContext';
 import { LoginScreen } from './LoginScreen';
 import { TopBar } from './components/TopBar';
 import { AbsenceModal } from './components/AbsenceModal';
+import { GuidedTour } from './components/GuidedTour';
+import { Notifier } from './components/Notifier';
+import { LEGAL_PAGES, type LegalHash, LegalPage } from './components/Legal';
 import { ClanRoom } from './rooms/ClanRoom';
 import { MarketRoom } from './rooms/MarketRoom';
 import { ClassScreen } from './components/ClassChoice';
@@ -45,6 +48,8 @@ function Shell() {
       {room === 'market' && <MarketRoom />}
       {room === 'combat' && <CombatRoom />}
       {absence && <AbsenceModal summary={absence} />}
+      {!state.tourDone && !absence && <GuidedTour />}
+      <Notifier />
       {error && <div className="toast">{error}</div>}
     </div>
   );
@@ -81,7 +86,9 @@ function App() {
   if (!content || session === undefined) return <div className="center-message muted">Chargement…</div>;
   return (
     <ContentContext.Provider value={content}>
-      {hash === '#atelier' ? (
+      {hash in LEGAL_PAGES ? (
+        <LegalPage page={hash as LegalHash} />
+      ) : hash === '#atelier' ? (
         <Atelier />
       ) : hash === '#ornements' ? (
         <OrnamentGallery />

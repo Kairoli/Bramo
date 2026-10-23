@@ -58,6 +58,8 @@ export interface CharacterState {
   shown: Record<string, number>;
   /** Ornement de métier porté (identifiant de data/ornaments.yaml) ; null = aucun. */
   ornament: string | null;
+  /** Tour guidé de la première session vu (ou passé) ; absent = pas encore. */
+  tourDone?: boolean;
   /** Combat : XP par classe, voies, plans, activité de combat (voir combat/progress.ts). */
   combat: CombatState;
   /** Famille de l'arme portée (renseignée au chargement depuis l'équipement, jamais enregistrée). */

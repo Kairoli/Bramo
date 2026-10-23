@@ -25,6 +25,24 @@ export const settingsSchema = z.object({
     activeTimeoutSec: z.number().positive(),
     heartbeatSec: z.number().positive(),
   }),
+  /** Discussion du serveur et des clans (apps/server/src/chat.ts). */
+  chat: z
+    .object({
+      maxLength: z.number().int().min(1),
+      perMinute: z.number().int().min(1),
+      minIntervalSec: z.number().min(0),
+      reportsToHide: z.number().int().min(1),
+      blockLinks: z.boolean(),
+      history: z.number().int().min(1),
+    })
+    .default({ maxLength: 300, perMinute: 10, minIntervalSec: 2, reportsToHide: 3, blockLinks: true, history: 60 }),
+  /** Garde-fous des comptes (apps/server/src/guard.ts). */
+  security: z
+    .object({
+      loginFailures: z.object({ max: z.number().int().min(1), windowMin: z.number().positive() }),
+      registrationsPerIpPerDay: z.number().int().min(1),
+    })
+    .default({ loginFailures: { max: 5, windowMin: 15 }, registrationsPerIpPerDay: 5 }),
   rates: z.object({
     active: ratio,
     offline: ratio,

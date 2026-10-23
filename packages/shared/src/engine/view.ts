@@ -73,6 +73,8 @@ export interface StateView {
   npcOrders: { id: string; profession: string; level: number; client: string; text: string; items: { item: string; qty: number }[]; gold: number; done: boolean }[];
   /** null tant que le joueur n'a pas choisi sa classe (écran de choix). */
   classId: string | null;
+  /** Le tour guidé de la première session a été vu (ou passé). */
+  tourDone: boolean;
   /** Tenues que le personnage peut porter. */
   unlockedOutfits: string[];
   /** Pièces qu'on peut poser sur chaque emplacement (apparence pièce par pièce). */
@@ -198,6 +200,7 @@ export function viewState(state: CharacterState, now: number, content: Content):
     lookOptions: lookOptions(state, content),
     appearance: viewAppearance(state, content),
     ornament: wornOrnament(state, content),
+    tourDone: !!state.tourDone,
     unlockedOrnaments: unlockedOrnaments(state, content),
     trials,
     combat: viewCombat(state, content),

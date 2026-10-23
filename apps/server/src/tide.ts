@@ -19,6 +19,8 @@ import {
   patronDay,
   patronPrice,
   readTide,
+  registrationOpen,
+  registrationWindow,
   recordTideNight,
   stream,
   tideDay,
@@ -63,7 +65,8 @@ export async function settleTide(db: Db, content: Content, now: number): Promise
       if (!loaded) continue;
       const t = readTide(loaded.state.combat.tide);
       const live = t.liveDay === day;
-      if (!t.auto && !live && t.work?.day !== day) continue;
+      // Seuls les inscrits participent (inscription de 19 h à 20 h) ; inscrits, ils combattent même déconnectés.
+      if (t.registered !== day) continue;
       const r = tideScore(loaded.state, day, content, live);
       entries.push({ day, characterId: id, tide: tideOf(day, rules).id, points: r.points, ratio: r.ratio, channel: r.channel, live, shards: 0 });
     }
@@ -152,7 +155,8 @@ export async function tideView(tx: Tx, state: CharacterState, content: Content, 
       open: tideOpen(now, rules),
       work: { text: def.work.text, items: def.work.items.map((x) => ({ item: x.item, name: content.items[x.item]?.name ?? x.item, qty: x.qty, have: state.inventory[x.item] ?? 0, delivered: delivered[x.item] ?? 0 })) },
     },
-    prefs: { auto: t.auto, channel: t.channel },
+    prefs: { channel: t.channel },
+    registration: { ...registrationWindow(day, rules), open: registrationOpen(now, rules), registered: t.registered === day },
     joinedLive: t.liveDay === day,
     shards: state.inventory[rules.shards.item] ?? 0,
     nights: t.nights,

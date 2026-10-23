@@ -7,6 +7,9 @@ import {
   claimWeeklyChests,
   deliverTideWork,
   joinTideLive,
+  isRegistered,
+  registerTide,
+  registrationWindow,
   readTide,
   recordTideNight,
   tideDay,
@@ -94,11 +97,22 @@ describe('la Marée du soir', () => {
     expect(all.shards - none.shards).toBe(tide.shards.thresholds.reduce((s, t) => s + t.bonus, 0));
   });
 
-  it('on ne rejoint en direct que pendant la Marée', () => {
+  it('on s’inscrit pendant l’heure qui précède la Marée, et on ne la rejoint en direct qu’inscrit et pendant la Marée', () => {
     const day = 20_000;
     const w = tideWindow(day, tide);
-    expect(() => joinTideLive(fighter('runist', 5), w.start - 60_000, content)).toThrow(/20 h/);
-    expect(readTide(joinTideLive(fighter('runist', 5), w.start + 60_000, content).combat.tide).liveDay).toBe(day);
+    const reg = registrationWindow(day, tide);
+    expect(reg.end).toBe(w.start);
+    expect(reg.end - reg.start).toBe(tide.registrationMin * 60_000);
+    // Trop tôt, trop tard : refusé.
+    expect(() => registerTide(fighter('runist', 5), reg.start - 60_000, content)).toThrow(/19 h/);
+    expect(() => registerTide(fighter('runist', 5), w.start + 60_000, content)).toThrow(/19 h/);
+    const registered = registerTide(fighter('runist', 5), reg.start + 60_000, content);
+    expect(isRegistered(registered, day)).toBe(true);
+    expect(isRegistered(registered, day + 1)).toBe(false);
+    // En direct : seulement inscrit, et seulement pendant la Marée.
+    expect(() => joinTideLive(fighter('runist', 5), w.start + 60_000, content)).toThrow(/inscrire/);
+    expect(() => joinTideLive(registered, w.start - 60_000, content)).toThrow(/20 h/);
+    expect(readTide(joinTideLive(registered, w.start + 60_000, content).combat.tide).liveDay).toBe(day);
   });
 
   it('le coffre de la semaine compte les meilleurs soirs, une seule fois ; les éclats débloquent une tenue de sa classe', () => {

@@ -33,8 +33,8 @@ export interface TideNight {
 }
 
 export interface TideState {
-  /** Rejoindre la Marée chaque soir, même absent. */
-  auto: boolean;
+  /** Soir pour lequel le personnage est inscrit (inscriptions pendant l'heure qui précède la Marée), ou null. */
+  registered: number | null;
   /** Ce que fait le personnage pendant la Marée. */
   channel: TideChannel;
   /** Soir rejoint en direct (le joueur était là). */
@@ -53,7 +53,7 @@ export interface TideState {
   patron: number;
 }
 
-export const emptyTide = (): TideState => ({ auto: true, channel: 'combat', liveDay: null, work: null, nights: [], counts: {}, unlocked: [], weekly: 0, patron: 0 });
+export const emptyTide = (): TideState => ({ registered: null, channel: 'combat', liveDay: null, work: null, nights: [], counts: {}, unlocked: [], weekly: 0, patron: 0 });
 export const readTide = (raw: Partial<TideState> | null | undefined): TideState => ({ ...emptyTide(), ...(raw ?? {}) });
 
 const need = (content: Content): { combat: CombatContent; tide: TideRules } => {
@@ -90,6 +90,18 @@ export function tideWindow(day: number, rules: TideRules): { start: number; end:
   const start = naive - zoneOffset(naive, rules.timeZone);
   return { start, end: start + rules.durationMin * 60_000 };
 }
+
+/** Les inscriptions du soir `day` : pendant les `registrationMin` minutes qui précèdent la Marée. */
+export function registrationWindow(day: number, rules: TideRules): { start: number; end: number } {
+  const w = tideWindow(day, rules);
+  return { start: w.start - rules.registrationMin * 60_000, end: w.start };
+}
+
+/** Les inscriptions sont-elles ouvertes ? */
+export const registrationOpen = (t: number, rules: TideRules) => {
+  const r = registrationWindow(tideDay(t), rules);
+  return t >= r.start && t < r.end;
+};
 
 /** Le soir réglable le plus récent avant `t` (la Marée est finie). */
 export function lastFinishedTide(t: number, rules: TideRules): number {
@@ -210,21 +222,38 @@ export function offerTide(input: CharacterState, price: number, content: Content
   return state;
 }
 
+/**
+ * S'inscrire à la Marée de ce soir, pendant l'heure qui précède [Décidé par Louis] : inscrit, le personnage combat même si
+ * le joueur se déconnecte.
+ */
+export function registerTide(input: CharacterState, now: number, content: Content): CharacterState {
+  const { tide } = need(content);
+  if (!registrationOpen(now, tide)) throw new GameError('registration_closed', 'Les inscriptions à la Marée ouvrent chaque soir à 19 h, jusqu’à 20 h.');
+  if (!input.classId) throw new GameError('no_class', 'Choisissez d’abord une classe.');
+  const state = cloneState(input);
+  state.combat.tide = { ...readTide(state.combat.tide), registered: tideDay(now) };
+  return state;
+}
+
+/** Inscrit pour le soir `day` ? */
+export const isRegistered = (state: CharacterState, day: number) => readTide(state.combat.tide).registered === day;
+
 /** Prend part à la Marée en direct (le joueur est là pendant l'heure) : son bonus de points est acquis pour ce soir. */
 export function joinTideLive(input: CharacterState, now: number, content: Content): CharacterState {
   const { tide } = need(content);
   if (!tideOpen(now, tide)) throw new GameError('tide_closed', 'La Marée n’est pas là : elle monte chaque soir à 20 h.');
+  if (!isRegistered(input, tideDay(now))) throw new GameError('not_registered', 'Il fallait s’inscrire entre 19 h et 20 h : à demain soir !');
   const state = cloneState(input);
   state.combat.tide = { ...readTide(state.combat.tide), liveDay: tideDay(now) };
   return state;
 }
 
-/** Préférences : rejoindre chaque soir, et par quel canal. */
-export function setTidePrefs(input: CharacterState, prefs: { auto?: boolean; channel?: TideChannel }, content: Content): CharacterState {
+/** Préférence : par quel canal (combattre ou travailler pour la digue). */
+export function setTidePrefs(input: CharacterState, prefs: { channel?: TideChannel }, content: Content): CharacterState {
   need(content);
   const state = cloneState(input);
   const t = readTide(state.combat.tide);
-  state.combat.tide = { ...t, ...(prefs.auto !== undefined ? { auto: prefs.auto } : {}), ...(prefs.channel ? { channel: prefs.channel } : {}) };
+  state.combat.tide = { ...t, ...(prefs.channel ? { channel: prefs.channel } : {}) };
   return state;
 }
 

@@ -51,6 +51,9 @@ function tideSummary(t: TideStats | undefined, r: ServerResult) {
     byTidePath: group((x) => `${x.tide}:${x.path ?? x.classId}`),
     live: group((x) => (x.live ? 'en direct' : 'absent')),
     shardsPerPlayerWeek: Math.round((shards / Math.max(1, r.bots.filter((b) => b.started).length) / days) * 7),
+    // Inscription de 19 h à 20 h : ce que gagne un soir joué, et la part des joueurs qui viennent.
+    shardsPerNight: Math.round(shards / Math.max(1, t.rows.length)),
+    participationShare: r1(mean(t.nights.map((n) => n.participants)) / Math.max(1, r.bots.filter((b) => b.started).length)),
     outfits: t.outfits,
     chests: t.chests,
   };
@@ -366,7 +369,7 @@ export function toMarkdown(a: Analysis): string {
     L.push(`Points moyens — en direct / absent : ${Object.entries(t.live).map(([k, v]) => `${k} ${v}`).join(', ')} ; par façon de jouer : ${Object.entries(t.byPersona).map(([k, v]) => `${k} ${v}`).join(', ')}.`);
     L.push(`Par classe : ${Object.entries(t.byClass).map(([k, v]) => `${k} ${v}`).join(', ')} ; par voie : ${Object.entries(t.byPath).map(([k, v]) => `${k} ${v}`).join(', ')}.`);
     L.push(`Par Marée et voie : ${Object.entries(t.byTidePath).sort().map(([k, v]) => `${k} ${v}`).join(', ')}.`);
-    L.push(`Éclats : ${t.shardsPerPlayerWeek} par joueur et par semaine ; ${t.outfits} tenues Marée haute achetées ; ${t.chests.total} coffres de la semaine, ${t.chests.caches} caches d’équipement.`);
+    L.push(`Éclats : ${t.shardsPerNight} par soir joué, ${t.shardsPerPlayerWeek} par joueur et par semaine (tous les joueurs, inscrits ou non) ; part des joueurs inscrits chaque soir : ${Math.round(t.participationShare * 100)} % ; ${t.outfits} tenues Marée haute achetées ; ${t.chests.total} coffres de la semaine, ${t.chests.caches} caches d’équipement.`);
   }
   L.push('', `## Commandes du maître réussies par rang : ${Object.entries(a.trials).map(([k, v]) => `${k} : ${v}`).join(', ') || 'aucune'}.`);
   return L.join('\n');

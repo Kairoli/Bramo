@@ -1,6 +1,6 @@
 /**
  * La Marée du soir dans le simulateur de serveur : mêmes règles que le serveur (packages/shared/src/combat/tide.ts).
- * Chaque soir, tous les joueurs inscrits (tout le monde, par défaut) marquent ; ceux qui sont connectés pendant l'heure
+ * Chaque soir, les joueurs inscrits (connectés entre 19 h et 20 h) marquent ; ceux qui sont connectés pendant l'heure
  * la rejoignent en direct ; les artisans et récolteurs livrent la digue s'ils ont de quoi.
  */
 import {
@@ -61,6 +61,9 @@ export function tideHook(stats: TideStats): ServerHook {
       const scored: { b: Bot; points: number; ratio: number; live: boolean; channel: string }[] = [];
       for (const b of ctx.bots) {
         if (!b.started || !b.state.classId) continue;
+        // Inscription de 19 h à 20 h [Décidé par Louis] : seul un joueur connecté pendant cette heure participe.
+        const regH = startH - tide.registrationMin / 60;
+        if (!b.presence.sessions.some((s) => s.at < startH && s.at + s.minutes / 60 > regH)) continue;
         const online = b.presence.sessions.some((s) => s.at < endH && s.at + s.minutes / 60 > startH);
         const live = online && b.persona.skill >= 0.3;
         // Le canal : celui qui rapporte le plus. Un joueur qui calcule compare son combat à une livraison complète, et livre

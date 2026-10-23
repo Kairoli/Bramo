@@ -371,9 +371,47 @@
 }
 .journal-input input {
   flex: 1;
+  min-width: 0;
   background: none;
   border: none;
   outline: none;
+}
+/* Messages de la discussion, mêlés au journal du clan ou au fil du serveur. */
+.j-chat {
+  display: grid;
+  gap: 2px;
+  padding: 6px 8px;
+  margin: 2px 0;
+  border-radius: 10px;
+  background: rgb(255 255 255 / 0.03);
+  border-left: 2px solid var(--event);
+  font-size: 13px;
+}
+.j-chat.mine {
+  border-left-color: var(--action);
+}
+.j-chat-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+}
+.j-chat-text {
+  overflow-wrap: anywhere;
+  line-height: 1.4;
+}
+.j-chat-actions {
+  display: none;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.j-chat:hover .j-chat-actions,
+.j-chat:focus-within .j-chat-actions {
+  display: flex;
+}
+@media (hover: none) {
+  .j-chat-actions {
+    display: flex;
+  }
 }
 
 /* Accueil, à droite : la route en boucle (rooms/home/RoutePanel.tsx). */
@@ -4935,6 +4973,142 @@
   grid-auto-rows: max-content;
   gap: 8px;
 }
+/* La carte et son petit bouton « courbe de prix » (comme à Dofus), posé dans le coin de l'icône. */
+.market-card-wrap {
+  position: relative;
+  display: grid;
+}
+.market-card-chart {
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  width: 26px;
+  height: 26px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--panel);
+  color: var(--text-muted);
+  cursor: pointer;
+}
+.market-card-chart svg {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.market-card-chart:hover,
+.market-card-chart:focus-visible {
+  color: var(--market);
+  border-color: var(--market);
+}
+
+/* Courbe de prix d'un objet (components/PriceChart.tsx). */
+.price-modal {
+  width: min(640px, calc(100vw - 32px));
+  display: grid;
+  gap: 12px;
+}
+.price-modal-head {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+.price-modal-head h2 {
+  margin: 2px 0 0;
+}
+.price-chart {
+  display: grid;
+  gap: 8px;
+}
+.price-chart svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+.price-chart.compact svg {
+  max-height: 150px;
+}
+.pc-grid {
+  stroke: var(--border);
+  stroke-width: 1;
+}
+.pc-axis {
+  fill: var(--text-muted);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+}
+.pc-band {
+  fill: color-mix(in srgb, var(--market) 14%, transparent);
+}
+.pc-area {
+  fill: color-mix(in srgb, var(--market) 18%, transparent);
+}
+.pc-line {
+  fill: none;
+  stroke: var(--market);
+  stroke-width: 2;
+  stroke-linejoin: round;
+}
+.pc-dot {
+  fill: var(--market);
+}
+.pc-last {
+  fill: var(--action);
+  stroke: var(--panel);
+  stroke-width: 2;
+}
+.pc-volume {
+  fill: color-mix(in srgb, var(--text-muted) 45%, transparent);
+}
+.pc-facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+.pc-facts strong {
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Mes dernières transactions (onglet Mes ordres). */
+.table-scroll {
+  overflow-x: auto;
+}
+.trades-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+.trades-table th,
+.trades-table td {
+  text-align: left;
+  padding: 6px 10px;
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+.trades-table th {
+  color: var(--text-muted);
+  font-weight: 600;
+}
+.trades-table .num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.trade-buy {
+  color: var(--action);
+}
+.trade-sell {
+  color: var(--good);
+}
+
 .market-card {
   position: relative;
   display: grid;
@@ -5442,12 +5616,6 @@
   color: var(--event);
   margin: 0;
 }
-.tide-toggle {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-  font-size: 14px;
-}
 .tide-channels {
   display: flex;
   gap: 8px;
@@ -5737,4 +5905,136 @@
   font-size: 13px;
   color: var(--clan);
   letter-spacing: 0.02em;
+}
+
+/* --- Tour guidé de la première session (components/GuidedTour.tsx) --- */
+.tour-card {
+  position: fixed;
+  left: 50%;
+  bottom: calc(20px + env(safe-area-inset-bottom, 0px));
+  transform: translateX(-50%);
+  z-index: 60;
+  width: min(440px, calc(100vw - 32px));
+  display: grid;
+  gap: 8px;
+  padding: 16px 18px;
+  border-radius: 16px;
+  background: var(--panel);
+  border: 1px solid color-mix(in srgb, var(--action) 55%, var(--border));
+  box-shadow: 0 18px 48px rgb(0 0 0 / 0.45);
+}
+.tour-card p {
+  margin: 0;
+  color: var(--text-muted);
+  line-height: 1.45;
+}
+.tour-step {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--action);
+}
+.tour-title {
+  font-size: 18px;
+}
+.tour-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.tour-glow {
+  position: relative;
+  z-index: 1;
+  outline: 2px solid var(--action);
+  outline-offset: 3px;
+  border-radius: 10px;
+  animation: tour-pulse 1.6s ease-in-out infinite;
+}
+@keyframes tour-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--action) 45%, transparent); }
+  50% { box-shadow: 0 0 0 8px color-mix(in srgb, var(--action) 0%, transparent); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .tour-glow { animation: none; }
+}
+
+/* --- Compte et pages légales (components/Account.tsx, components/Legal.tsx) --- */
+.account-modal {
+  width: min(520px, calc(100vw - 32px));
+  display: grid;
+  gap: 18px;
+}
+.account-modal header h2 {
+  margin: 2px 0 0;
+}
+.account-modal section {
+  display: grid;
+  gap: 8px;
+  border-top: 1px solid var(--border);
+  padding-top: 14px;
+}
+.account-modal h3 {
+  margin: 0;
+  font-size: 15px;
+}
+.account-modal .btn {
+  justify-self: start;
+}
+.account-form {
+  display: grid;
+  gap: 8px;
+}
+.account-danger h3 {
+  color: var(--alert);
+}
+.btn-danger {
+  background: color-mix(in srgb, var(--alert) 18%, var(--panel));
+  border-color: var(--alert);
+  color: var(--text);
+}
+.btn-danger:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--alert) 30%, var(--panel));
+}
+.legal-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 14px;
+  font-size: 12px;
+}
+.legal-links a {
+  color: var(--text-muted);
+}
+.legal {
+  max-width: 720px;
+  margin: 0 auto;
+  padding-block: 32px 64px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  display: grid;
+  gap: 12px;
+  line-height: 1.6;
+}
+.legal h1 {
+  margin: 8px 0 0;
+}
+.legal h2 {
+  margin: 16px 0 0;
+  font-size: 18px;
+}
+.legal p,
+.legal ul {
+  margin: 0;
+}
+.legal-draft {
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--action);
+  color: var(--action);
+}
+.legal-blank {
+  background: color-mix(in srgb, var(--action) 22%, transparent);
+  color: var(--text);
+  padding: 0 4px;
+  border-radius: 4px;
 }

@@ -1,5 +1,5 @@
 import { type CSSProperties, type ReactNode, useEffect, useMemo, useRef, useState } from 'react';
-import type { JournalEntry, TownEvent } from '@bramo/shared';
+import type { ChatMessageView, ChatView, JournalEntry, TownEvent } from '@bramo/shared';
 import { api } from '../../api';
 import { useGame } from '../../game/GameContext';
 import { hhmm } from '../../format';
@@ -7,8 +7,20 @@ import { hhmm } from '../../format';
 /**
  * Journal de l'accueil, lisible d'un coup d'œil (retour de Louis : « gros pâté de texte ») : une icône de couleur par
  * sorte, le début de la ligne en titre, les lignes répétées fusionnées (« Vestiges » ×3), l'heure une fois par groupe.
- * Onglets : tout, combat, métiers, puis le journal du clan et le fil du serveur.
+ * Onglets : tout, combat, métiers, puis le journal du clan et le fil du serveur, avec leur discussion (23 octobre) : les
+ * messages des joueurs s'y mêlent aux événements ; on peut signaler un message, masquer un joueur, et un modérateur peut
+ * supprimer ou rendre muet.
  */
+
+/** Joueurs masqués par ce joueur (dans ce navigateur). */
+const IGNORED = 'bramo.ignored';
+function readIgnored(): number[] {
+  try {
+    return JSON.parse(localStorage.getItem(IGNORED) ?? '[]') as number[];
+  } catch {
+    return [];
+  }
+}
 
 type Tab = 'all' | 'combat' | 'crafts' | 'clan' | 'server';
 type Tone = 'event' | 'good' | 'action' | 'clan' | 'alert' | 'magic' | 'muted';
@@ -117,8 +129,11 @@ function rich(text: string): ReactNode {
 }
 
 export function JournalPanel() {
-  const { journal, showAbsence, content } = useGame();
+  const { journal, showAbsence, content, flash } = useGame();
   const [tab, setTab] = useState<Tab>('all');
+  const [chat, setChat] = useState<ChatView | null>(null);
+  const [draft, setDraft] = useState('');
+  const [ignored, setIgnored] = useState<number[]>(readIgnored);
   const [clanLog, setClanLog] = useState<Line[] | null>(null);
   const [feed, setFeed] = useState<Line[] | null>(null);
   const listRef = useRef<HTMLDivElement>(null);
@@ -140,11 +155,20 @@ export function JournalPanel() {
           .then((t) => live && setFeed(t.feed.map((e) => ({ key: `s${e.id}`, at: e.at, ...TOWN[e.kind], ...split(e.text), count: 1 })).sort((a, b) => a.at - b.at)))
           .catch(() => {});
     };
+    const loadChat = () =>
+      api
+        .chat(tab)
+        .then((c) => live && setChat(c))
+        .catch(() => {});
+    setChat(null);
     load();
+    loadChat();
     const id = window.setInterval(load, 20_000);
+    const chatId = window.setInterval(loadChat, 8_000);
     return () => {
       live = false;
       window.clearInterval(id);
+      window.clearInterval(chatId);
     };
   }, [tab]);
 
@@ -158,11 +182,50 @@ export function JournalPanel() {
   }, [journal, tab, classNames]);
 
   const lines = merge(tab === 'clan' ? (clanLog ?? []) : tab === 'server' ? (feed ?? []) : mine);
+  const talk = tab === 'clan' || tab === 'server';
+  const messages = talk && chat?.channel === tab ? chat.messages.filter((m) => m.characterId === null || !ignored.includes(m.characterId)) : [];
+  // Événements et messages, dans l'ordre du temps.
+  const items: ({ kind: 'line'; at: number; line: Line } | { kind: 'chat'; at: number; msg: ChatMessageView })[] = [
+    ...lines.map((line) => ({ kind: 'line' as const, at: line.at, line })),
+    ...messages.map((msg) => ({ kind: 'chat' as const, at: msg.at, msg })),
+  ].sort((a, b) => a.at - b.at);
 
   useEffect(() => {
     const el = listRef.current;
     if (el) el.scrollTop = el.scrollHeight;
-  }, [lines.length, tab]);
+  }, [items.length, tab]);
+
+  const send = async () => {
+    if (!talk || !draft.trim()) return;
+    try {
+      setChat(await api.chatPost(tab, draft));
+      setDraft('');
+    } catch (err) {
+      flash(err instanceof Error ? err.message : 'Message refusé.');
+    }
+  };
+  const hide = (id: number) => {
+    const next = [...new Set([...ignored, id])];
+    setIgnored(next);
+    try {
+      localStorage.setItem(IGNORED, JSON.stringify(next));
+    } catch {
+      // Stockage indisponible : le joueur reste masqué jusqu'au rechargement.
+    }
+  };
+  const report = (id: number) =>
+    api
+      .chatReport(id)
+      .then(() => flash('Message signalé. Merci : trois signalements le masquent.'))
+      .catch((err) => flash(err instanceof Error ? err.message : 'Signalement refusé.'));
+  const moderate = (id: number, action: 'delete' | 'mute') =>
+    api
+      .chatModerate(id, action, action === 'mute' ? 24 : undefined)
+      .then((r) => {
+        flash(r.message);
+        return api.chat(tab as 'server' | 'clan').then(setChat);
+      })
+      .catch((err) => flash(err instanceof Error ? err.message : 'Action refusée.'));
 
   const empty =
     tab === 'clan' ? (clanLog === null ? 'Chargement…' : 'Rien au clan pour le moment (ou pas encore de clan).') : tab === 'server' ? (feed === null ? 'Chargement…' : 'Rien à annoncer pour le moment.') : 'Rien ici pour le moment.';
@@ -185,9 +248,43 @@ export function JournalPanel() {
         ))}
       </div>
       <div className="journal-list scroll" ref={listRef}>
-        {lines.length === 0 && <p className="muted small">{empty}</p>}
-        {lines.map((l, i) => {
-          const prev = lines[i - 1];
+        {items.length === 0 && <p className="muted small">{empty}</p>}
+        {items.map((it, i) => {
+          if (it.kind === 'chat') {
+            const m = it.msg;
+            return (
+              <div key={`m${m.id}`} className={`j-chat${m.mine ? ' mine' : ''}`}>
+                <span className="j-chat-head">
+                  <strong>{m.name}</strong>
+                  <span className="j-time">{hhmm(m.at)}</span>
+                </span>
+                <span className="j-chat-text">{m.text}</span>
+                {!m.mine && m.characterId !== null && (
+                  <span className="j-chat-actions">
+                    <button className="link small" onClick={() => void report(m.id)}>
+                      Signaler
+                    </button>
+                    <button className="link small" onClick={() => hide(m.characterId!)}>
+                      Masquer ce joueur
+                    </button>
+                    {chat?.moderator && (
+                      <>
+                        <button className="link small" onClick={() => void moderate(m.id, 'delete')}>
+                          Supprimer
+                        </button>
+                        <button className="link small" onClick={() => void moderate(m.id, 'mute')}>
+                          Muet 24 h
+                        </button>
+                      </>
+                    )}
+                  </span>
+                )}
+              </div>
+            );
+          }
+          const l = it.line;
+          const prevItem = items[i - 1];
+          const prev = prevItem ? { at: prevItem.at } : undefined;
           // Un séparateur quand plus de 20 minutes séparent deux lignes ; l'heure n'est écrite qu'une fois par minute.
           const gap = !prev || l.at - prev.at > 20 * 60_000;
           const showTime = gap || hhmm(prev.at) !== hhmm(l.at);
@@ -217,12 +314,25 @@ export function JournalPanel() {
           );
         })}
       </div>
-      <div className="sunken journal-input">
-        <input placeholder="La discussion arrive bientôt…" disabled />
-        <button className="btn btn-sm" disabled>
+      <form
+        className="sunken journal-input"
+        onSubmit={(e) => {
+          e.preventDefault();
+          void send();
+        }}
+      >
+        <input
+          id="chat-input"
+          placeholder={!talk ? 'Choisissez Clan ou Serveur pour discuter' : chat && !chat.canWrite ? (chat.reason ?? 'Vous ne pouvez pas écrire ici.') : tab === 'clan' ? 'Écrire au clan…' : 'Écrire à tout le serveur…'}
+          disabled={!talk || !chat?.canWrite}
+          maxLength={content.settings.chat.maxLength}
+          value={draft}
+          onChange={(e) => setDraft(e.target.value)}
+        />
+        <button className="btn btn-sm" disabled={!talk || !chat?.canWrite || !draft.trim()}>
           Envoyer
         </button>
-      </div>
+      </form>
     </section>
   );
 }

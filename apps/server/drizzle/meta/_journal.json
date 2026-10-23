@@ -141,6 +141,27 @@
       "when": 1792744398219,
       "tag": "0019_puits_or",
       "breakpoints": true
+    },
+    {
+      "idx": 20,
+      "version": "7",
+      "when": 1792763102419,
+      "tag": "0020_historique_marche",
+      "breakpoints": true
+    },
+    {
+      "idx": 21,
+      "version": "7",
+      "when": 1792763484133,
+      "tag": "0021_tour_guide",
+      "breakpoints": true
+    },
+    {
+      "idx": 22,
+      "version": "7",
+      "when": 1792763839495,
+      "tag": "0022_discussion",
+      "breakpoints": true
     }
   ]
 }

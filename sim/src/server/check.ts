@@ -41,10 +41,10 @@ export function checks(a: Analysis): Check[] {
   const worst = Math.max(...route.map((g) => g.medianDays));
   add('garder', 'gardiens de la route : pire médiane (au plus 7 jours)', worst, worst <= 7);
   add('garder', 'pièces d’équipement par joueur et par jour (1 à 3)', a.loot.perBotDay, a.loot.perBotDay >= 1 && a.loot.perBotDay <= 3);
-  const absent = a.tide?.live?.absent ?? 0;
-  add('garder', 'Marée : points moyens d’un absent (50 à 90)', absent, absent >= 50 && absent <= 90);
-  const shards = a.tide?.shardsPerPlayerWeek ?? 0;
-  add('garder', 'Marée : éclats par joueur et par semaine (250 à 500)', shards, shards >= 250 && shards <= 500);
+  // Marée : depuis l'inscription de 19 h à 20 h (décision de Louis du 23 octobre), on mesure un soir joué ; la part des
+  // inscrits dépend des horaires des joueurs simulés (rapport), pas d'une règle.
+  const shards = a.tide?.shardsPerNight ?? 0;
+  add('garder', 'Marée : éclats par soir joué (30 à 80)', shards, shards >= 30 && shards <= 80);
   const worn = a.loot.sets.filter((s) => s.worn2plus > 0).length;
   add('garder', 'ensembles portés par au moins un joueur (au moins 12 sur 15)', worn, worn >= 12);
   // --- Points fragiles ---

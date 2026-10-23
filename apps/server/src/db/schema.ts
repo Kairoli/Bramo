@@ -22,6 +22,10 @@ export const accounts = pgTable('accounts', {
   username: text('username').notNull().unique(),
   displayName: text('display_name').notNull(),
   passwordHash: text('password_hash').notNull(),
+  /** Rôle : joueur, ou modérateur de la discussion (donné en ligne de commande, `pnpm --filter @bramo/server role`). */
+  role: text('role').$type<'player' | 'moderator'>().notNull().default('player'),
+  /** Muet dans la discussion jusqu'à cette date (décision d'un modérateur), ou null. */
+  mutedUntil: ts('muted_until'),
   createdAt: ts('created_at').notNull().defaultNow(),
 });
 
@@ -63,6 +67,8 @@ export const characters = pgTable('characters', {
   shown: jsonb('shown').$type<Record<string, number>>().notNull().default({}),
   /** Ornement de métier porté (null = aucun). */
   ornament: text('ornament'),
+  /** Le tour guidé de la première session a été vu (ou passé). */
+  tourDone: boolean('tour_done').notNull().default(false),
   /** Combat : XP par classe, voies, plans, activité de combat (CombatState de @bramo/shared). */
   combat: jsonb('combat').$type<Partial<CombatState>>().notNull().default({}),
   lastTickAt: ts('last_tick_at').notNull(),
@@ -289,6 +295,55 @@ export const tideEntries = pgTable(
     claimed: boolean('claimed').notNull().default(false),
   },
   (t) => [primaryKey({ columns: [t.day, t.characterId] }), index('tide_entries_character').on(t.characterId, t.claimed)],
+);
+
+/** Discussion : le canal du serveur (`server`) ou celui d'un clan (`clan:<id>`). Un message masqué ne s'affiche plus. */
+export const chatMessages = pgTable(
+  'chat_messages',
+  {
+    id: serial('id').primaryKey(),
+    channel: text('channel').notNull(),
+    characterId: integer('character_id').references(() => characters.id, { onDelete: 'set null' }),
+    name: text('name').notNull(),
+    text: text('text').notNull(),
+    at: ts('at').notNull(),
+    hidden: boolean('hidden').notNull().default(false),
+  },
+  (t) => [index('chat_messages_channel').on(t.channel, t.id)],
+);
+
+/** Signalements d'un message (un par joueur) : à partir de `chat.reportsToHide`, le message est masqué. */
+export const chatReports = pgTable(
+  'chat_reports',
+  {
+    messageId: integer('message_id')
+      .notNull()
+      .references(() => chatMessages.id, { onDelete: 'cascade' }),
+    characterId: integer('character_id')
+      .notNull()
+      .references(() => characters.id, { onDelete: 'cascade' }),
+    at: ts('at').notNull(),
+  },
+  (t) => [primaryKey({ columns: [t.messageId, t.characterId] })],
+);
+
+/**
+ * Transactions du marché entre joueurs (une ligne par échange conclu) : courbe de prix d'un objet, historique d'un joueur.
+ * Les joueurs supprimés laissent leurs échanges (acheteur ou vendeur à null) : la courbe de prix ne change pas.
+ */
+export const marketTrades = pgTable(
+  'market_trades',
+  {
+    id: serial('id').primaryKey(),
+    itemId: text('item_id').notNull(),
+    qty: integer('qty').notNull(),
+    /** Prix unitaire de l'échange. */
+    price: integer('price').notNull(),
+    buyerId: integer('buyer_id').references(() => characters.id, { onDelete: 'set null' }),
+    sellerId: integer('seller_id').references(() => characters.id, { onDelete: 'set null' }),
+    at: ts('at').notNull(),
+  },
+  (t) => [index('market_trades_item').on(t.itemId, t.at), index('market_trades_buyer').on(t.buyerId, t.at), index('market_trades_seller').on(t.sellerId, t.at)],
 );
 
 /** Mécènes de la Marée : qui a offert le soir `day` (une place par `slot`, `patron.maxPerNight` au plus). */

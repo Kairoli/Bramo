@@ -19,6 +19,22 @@ presence:
   activeTimeoutSec: 120   # sans signe de vie depuis ce délai, le joueur passe hors ligne
   heartbeatSec: 30        # fréquence des signes de vie du client
 
+# Discussion du serveur et des clans (23 octobre ; apps/server/src/chat.ts). Les liens sont refusés : c'est le premier moyen
+# des arnaques. Trois signalements de joueurs différents masquent un message ; un modérateur peut supprimer et rendre muet.
+chat:
+  maxLength: 300          # caractères par message
+  perMinute: 10           # messages par joueur et par minute
+  minIntervalSec: 2       # écart minimal entre deux messages
+  reportsToHide: 3
+  blockLinks: true
+  history: 60             # messages renvoyés par canal
+
+# Garde-fous des comptes (23 octobre, sortie publique ; apps/server/src/guard.ts).
+security:
+  # Pas de règle « un compte connecté par adresse » : retirée par Louis (un foyer partage la même adresse).
+  loginFailures: { max: 5, windowMin: 15 }   # mots de passe erronés par pseudo et par adresse
+  registrationsPerIpPerDay: 5                  # comptes créés par adresse et par jour
+
 # Rendement unique (décision du 21 octobre) : 100 % en ligne comme hors ligne,
 # pendant 16 h d'autonomie après la dernière visite. Au-delà, l'activité attend ; rien n'est perdu.
 rates:

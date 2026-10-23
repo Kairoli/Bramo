@@ -50,8 +50,8 @@ rapports dans `sim/reports/serveur/`).
   Tous les soirs à 20 h (Paris), une heure, trois Marées qui tournent : la Débâcle (horde, les dégâts de zone), la Nuit
   des Lanternes (escorte : soins, protections et affaiblissements comptent double), la Veille des Géants (le boss). Chaque
   participant marque des points : sa contribution face à la Marée, ramenée à un build moyen de son niveau (un build moyen
-  fait 60 points) ; ou le canal travail (livrer ce que la digue demande ce soir-là). Les absents y vont seuls (case cochée
-  par défaut) ; le joueur connecté marque 15 % de plus. Le serveur additionne les points : quatre lanternes s'allument aux
+  fait 60 points) ; ou le canal travail (livrer ce que la digue demande ce soir-là). Depuis le 23 octobre au soir, on s'inscrit
+  de 19 h à 20 h [Décidé par Louis] : un inscrit combat même déconnecté ; connecté pendant la Marée, il marque 15 % de plus. Le serveur additionne les points : quatre lanternes s'allument aux
   seuils de son objectif, chacune donne des éclats à tout le monde. Le coffre de la semaine compte les quatre meilleurs
   soirs (matières, une chance de cache d'équipement épique, des éclats). Les éclats achètent une tenue Marée haute (une par
   classe, 1 200 éclats ≈ trois semaines). Titres après dix soirs d'une Marée. Le fil du serveur raconte chaque soir.

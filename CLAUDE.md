@@ -55,6 +55,26 @@ Bramo est un **idle-RPG multijoueur jouable dans le navigateur**, dans l'esprit 
 
 ## 5. État du projet (à jour au 23 octobre 2026)
 
+### Fait — vers une sortie publique (23 octobre, soir)
+
+- **Demande de Louis** : « prends ce projet au sérieux, comme un vrai jeu qu'on voudrait sortir au public » ; travailler les points indispensables et importants du rapport [`docs/design/rapport-23-octobre.html`](docs/design/rapport-23-octobre.html).
+- **Marché** [Décidé par Louis : « grand oui »] : historique des transactions (table `market_trades`, migration 0020) ; **courbe de prix du mois**, comme à Dofus (petit bouton sur chaque carte du marché, et en petit dans la fiche d'un objet ; `GET /api/market/history/:itemId`, `components/PriceChart.tsx`) ; **mes transactions** (onglet Mes ordres, `GET /api/market/trades`) ; achat en gros.
+- **Tour guidé** [Décidé par Louis : « très très rapide, puis un wiki »] : six étapes, une par salle (`components/GuidedTour.tsx`, `characters.tour_done`, migration 0021, `POST /api/character/tour`).
+- **Comptes** (`apps/server/src/guard.ts`, `account.ts`, réglages `security`) :
+  - limite d'essais de connexion, et de créations de comptes par adresse ;
+  - pas de règle « un compte connecté par adresse » [Louis l'a retirée : un foyer partage la même adresse] ;
+  - changement de mot de passe (les autres appareils sont déconnectés), export des données et suppression du compte (RGPD ; un chef de clan laisse la direction) ;
+  - fenêtre **Compte** dans la barre du haut.
+- **Pages légales** (brouillons à compléter : `components/Legal.tsx`, `#mentions-legales`, `#confidentialite`, `#conditions`, liens sous la connexion).
+- **Marée du soir : inscription de 19 h à 20 h** [Décidé par Louis : plus d'inscription automatique, pour que personne ne prenne des récompenses sans jamais voir le combat] ; un inscrit combat même déconnecté, un inscrit connecté pendant la Marée garde +15 % (`registrationMin`, `registerTide`, `POST /api/tide/register`).
+- **Notifications** du navigateur (plus rien ne tourne, inscriptions à la Marée ouvertes ; à activer dans Compte ; onglet ouvert seulement : `components/Notifier.tsx`).
+- **Discussion** du serveur et des clans dans le journal de l'accueil, avec modération (`apps/server/src/chat.ts`, réglages `chat`, migration 0022) :
+  - 300 caractères, un message toutes les 2 s, dix par minute, liens refusés ;
+  - trois signalements masquent un message ; masquer un joueur pour soi ;
+  - modérateurs (`accounts.role`, `pnpm --filter @bramo/server role <pseudo> moderator`) : supprimer, rendre muet.
+- **Mise en production préparée, pas lancée** : [`deploy/`](deploy/README.md) (image Docker, PostgreSQL non exposée, Caddy en HTTPS, sauvegarde quotidienne ; `HOST` et `TRUST_PROXY` dans le serveur). L'image n'a pas pu être construite ici (pas de Docker sur la machine de développement).
+- Tests : 190 dans packages/shared, 31 d’API, 21 du simulateur.
+
 ### Fait — économie active, monnaie ×10, puits d'or voulus (23 octobre, journée)
 
 - **Monnaie ×10** [Décidé par Louis] : tous les montants d'or des sections plus anciennes de ce fichier et des documents datés d'avant le 23 octobre après-midi sont à multiplier par 10 (or de départ 1 000, création de clan 5 000, étal, Comptoir, maîtres, bâtiments, valeur des objets recalculée par `sim calibrate --data --write` avec `GOLD_PER_WORK_HOUR = 10000`). Raison : les matières ne restent plus écrasées à « 1 or ».
@@ -393,12 +413,12 @@ Bramo est un **idle-RPG multijoueur jouable dans le navigateur**, dans l'esprit 
 ### Pas encore fait / limites connues
 
 - **Pas de déploiement** : le serveur tourne avec `tsx`, il n'y a ni build de production du serveur, ni service des fichiers statiques du client, ni reverse proxy, ni HTTPS. `secureCookies` s'active avec `NODE_ENV=production`.
-- Pas de limite de tentatives de connexion, pas de changement de mot de passe, pas de suppression de compte.
+- Limite de tentatives, changement de mot de passe, suppression et export de compte : faits le 23 octobre (soir). Pages légales encore en brouillon.
 - Chiffres de `data/` encore provisoires (`# à équilibrer`), mais suivant des règles vérifiées par le simulateur. Le simulateur ne fait pas encore de prix de marché (bilan de flux seulement).
 - Animations de repos seulement (une par pose). Marée haute ne change que les couleurs. Une seule pose par classe (pas encore par voie).
 - L'écran de choix de classe est un contrôle du client : le serveur accepte les actions de jeu d'un personnage sans classe.
 - L'équipement s'obtient au combat (butin, trophées des gardiens, coffre de la Marée), à l'atelier (fabrication, 23 octobre) et à la vitrine du marché.
-- Les onglets Tout / Clan / Serveur du journal et la discussion sont désactivés.
+- La discussion (Clan, Serveur) existe depuis le 23 octobre (soir) ; pas encore de messages privés.
 - Bandeaux des salles : les métiers ont leurs décors (voir « Décors des métiers » ci-dessus) ; Clan, Marché et Combat ont aussi leur décor (`clan`, `market`, `combat`).
 
 ---

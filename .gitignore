@@ -4,3 +4,6 @@ dist/
 *.log
 .pglite/
 coverage/
+
+# Production (deploy/)
+deploy/backups/

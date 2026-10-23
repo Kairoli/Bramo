@@ -1,11 +1,12 @@
 import { type ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
-import type { GearListingView, MarketItemSummary, MarketOrderView, MyOrderView, RepairRequestView } from '@bramo/shared';
+import type { GearListingView, MarketItemSummary, MarketOrderView, MyOrderView, MyTradeView, RepairRequestView } from '@bramo/shared';
 import { GearIcon } from '../components/GearIcon';
 import { api } from '../api';
 import { useGame } from '../game/GameContext';
 import { duration, num } from '../format';
 import { ItemIcon } from '../components/ui';
 import { Scene } from '../components/Scene';
+import { PriceChart, PriceChartModal, usePriceHistory } from '../components/PriceChart';
 
 type Tab = 'book' | 'gear' | 'mine' | 'craft' | 'npc';
 type Run = (call: () => ReturnType<typeof api.state>) => Promise<boolean>;
@@ -42,6 +43,8 @@ export function MarketRoom() {
   const [book, setBook] = useState<MarketOrderView[]>([]);
   const [mine, setMine] = useState<MyOrderView[]>([]);
   const [tick, setTick] = useState(0);
+  const [chart, setChart] = useState<string | null>(null);
+  const [trades, setTrades] = useState<MyTradeView[]>([]);
   const refresh = useCallback(() => setTick((t) => t + 1), []);
   const { settings } = content;
 
@@ -50,6 +53,7 @@ export function MarketRoom() {
     const load = () => {
       api.marketSummary().then((s) => live && setSummary(s)).catch(() => {});
       api.myOrders().then((m) => live && setMine(m)).catch(() => {});
+      api.myTrades().then((t) => live && setTrades(t)).catch(() => {});
       if (selected) api.marketItem(selected).then((b) => live && setBook(b)).catch(() => {});
       else setBook([]);
     };
@@ -131,7 +135,8 @@ export function MarketRoom() {
             <div className="market-cards scroll">
               {cards.length === 0 && <p className="muted small">Rien sur ce rayon pour le moment.</p>}
               {cards.map(({ item, s }) => (
-                <button key={item.id} className={`market-card${selected === item.id ? ' selected' : ''}`} onClick={() => setSelected(item.id)}>
+                <div key={item.id} className="market-card-wrap">
+                <button className={`market-card${selected === item.id ? ' selected' : ''}`} onClick={() => setSelected(item.id)}>
                   <ItemIcon item={item} />
                   <span className="market-card-name">{item.name}</span>
                   <span className="market-card-prices">
@@ -140,6 +145,12 @@ export function MarketRoom() {
                   </span>
                   {(state.inventory[item.id] ?? 0) > 0 && <span className="market-card-own">×{num(state.inventory[item.id]!)}</span>}
                 </button>
+                <button className="market-card-chart" onClick={() => setChart(item.id)} aria-label={`Courbe de prix : ${item.name}`} title="Courbe de prix du mois">
+                  <svg viewBox="0 0 24 24" aria-hidden>
+                    <path d="M3 19h18M4 15l5-5 4 3 7-7" />
+                  </svg>
+                </button>
+                </div>
               ))}
             </div>
           </section>
@@ -180,8 +191,46 @@ export function MarketRoom() {
               </div>
             ))}
           </div>
+          <h2>Mes dernières transactions</h2>
+          <p className="muted small">Vos achats et vos ventes conclus au marché, les plus récents d’abord.</p>
+          {trades.length === 0 ? (
+            <p className="muted">Aucune transaction pour l’instant.</p>
+          ) : (
+            <div className="table-scroll">
+              <table className="trades-table">
+                <thead>
+                  <tr>
+                    <th>Quand</th>
+                    <th>Objet</th>
+                    <th>Échange</th>
+                    <th className="num">Quantité</th>
+                    <th className="num">Prix unitaire</th>
+                    <th className="num">Total</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {trades.map((t) => (
+                    <tr key={t.id}>
+                      <td>{new Date(t.at).toLocaleString('fr-FR', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}</td>
+                      <td>
+                        <button className="link" onClick={() => setChart(t.itemId)}>
+                          {content.items[t.itemId]?.name ?? t.itemId}
+                        </button>
+                      </td>
+                      <td className={t.side === 'buy' ? 'trade-buy' : 'trade-sell'}>{t.side === 'buy' ? 'Achat' : 'Vente'}</td>
+                      <td className="num">{num(t.qty)}</td>
+                      <td className="num">{num(t.price)}</td>
+                      <td className="num">{t.side === 'buy' ? '−' : '+'}{num(t.qty * t.price)} or</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
         </section>
       )}
+
+      {chart && <PriceChartModal itemId={chart} onClose={() => setChart(null)} />}
 
       {tab === 'gear' && <GearShowcase />}
 
@@ -309,6 +358,7 @@ function ItemMarket({ itemId, book, run }: { itemId: string; book: MarketOrderVi
   const copies = state.durability[itemId]?.copies ?? [];
   const have = state.inventory[itemId] ?? 0;
   const bestSell = sells.find((o) => !o.mine);
+  const history = usePriceHistory(itemId);
   // Achat en gros (réflexe du marché pour monter un métier) : ce que coûtent N unités en prenant les offres les moins chères.
   const offers = sells.filter((o) => !o.mine).sort((a, b) => a.price - b.price || a.id - b.id);
   const onSale = offers.reduce((s, o) => s + o.qty, 0);
@@ -365,6 +415,7 @@ function ItemMarket({ itemId, book, run }: { itemId: string; book: MarketOrderVi
           </span>
         </div>
       </header>
+      {history && history.points.length > 0 && <PriceChart history={history} compact />}
 
       <div className="quick-trade">
         <div className="quick-box buy">

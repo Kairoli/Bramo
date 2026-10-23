@@ -56,7 +56,7 @@ export const gearCraftBody = z.object({ modelId: z.string() });
 export const gearSellBody = z.object({ id: z.number().int(), price: z.number().int().min(1).max(1_000_000) });
 export const gearMarketQuery = z.object({ slot: z.string().optional(), classId: z.string().optional(), tier: z.coerce.number().int().optional() });
 export const suppliesBody = z.object({ itemId: z.string(), qty: z.number().int().min(1).max(10000) });
-export const tidePrefsBody = z.object({ auto: z.boolean().optional(), channel: z.enum(['combat', 'work']).optional() });
+export const tidePrefsBody = z.object({ channel: z.enum(['combat', 'work']).optional() });
 export const tideBuyBody = z.object({ offer: z.string() });
 export const gearGrantBody = z.object({ modelId: z.string(), masterpiece: z.boolean().optional(), count: z.number().int().min(1).max(20).optional() });
 export const lookBody = z.object({ slot: z.string(), partId: z.string().nullable() });
@@ -73,6 +73,32 @@ export const placeOrderBody = z.object({
   /** Achat ou vente immédiat : on prend ce qui est disponible jusqu'au prix limite, le reste n'est pas mis en attente. */
   immediate: z.boolean().optional(),
 });
+/** Discussion : écrire dans le canal du serveur ou de son clan ; signaler ; modérer. */
+export const chatPostBody = z.object({ channel: z.enum(['server', 'clan']), text: z.string() });
+export const chatReportBody = z.object({ messageId: z.number().int() });
+export const chatModerateBody = z.object({ messageId: z.number().int(), action: z.enum(['delete', 'mute']), hours: z.number().min(1).max(24 * 365).optional() });
+
+/** Un message de la discussion (GET /api/chat). */
+export interface ChatMessageView {
+  id: number;
+  at: number;
+  name: string;
+  characterId: number | null;
+  text: string;
+  mine: boolean;
+}
+export interface ChatView {
+  channel: 'server' | 'clan';
+  messages: ChatMessageView[];
+  /** Le joueur peut écrire (pas muet, et membre d'un clan pour le canal du clan) ; sinon la raison. */
+  canWrite: boolean;
+  reason: string | null;
+  moderator: boolean;
+}
+
+/** Changer son mot de passe ; supprimer son compte (mot de passe et le mot SUPPRIMER). */
+export const passwordChangeBody = z.object({ current: z.string(), next: z.string().min(8, 'Le nouveau mot de passe doit faire au moins 8 caractères.').max(200) });
+export const accountDeleteBody = z.object({ password: z.string(), confirm: z.string() });
 export const fillOrderBody = z.object({ orderId: z.number().int(), qty: z.number().int().min(1) });
 export const orderIdBody = z.object({ orderId: z.number().int() });
 export const npcOrderBody = z.object({ orderId: z.string() });
@@ -294,7 +320,9 @@ export interface TideView {
     open: boolean;
     work: { text: string; items: { item: string; name: string; qty: number; have: number; delivered: number }[] };
   };
-  prefs: { auto: boolean; channel: 'combat' | 'work' };
+  prefs: { channel: 'combat' | 'work' };
+  /** Inscriptions de ce soir (de 19 h à 20 h) et inscription du joueur. */
+  registration: { start: number; end: number; open: boolean; registered: boolean };
   joinedLive: boolean;
   shards: number;
   nights: TideNight[];
@@ -320,6 +348,27 @@ export interface TideView {
   } | null;
 }
 
+
+/** Courbe de prix d'un objet sur les derniers jours (GET /api/market/history/:itemId). `day` : jours depuis le 1er janvier 1970. */
+export interface PriceHistoryView {
+  itemId: string;
+  days: number;
+  points: { day: number; avg: number; min: number; max: number; volume: number }[];
+  /** Prix moyen pondéré sur la période, ou null sans échange. */
+  average: number | null;
+  volume: number;
+}
+
+/** Une transaction du joueur au marché (GET /api/market/trades). */
+export interface MyTradeView {
+  id: number;
+  at: number;
+  itemId: string;
+  qty: number;
+  /** Prix unitaire. */
+  price: number;
+  side: 'buy' | 'sell';
+}
 
 /** Une pièce en vitrine au marché (GET /api/market/gear). */
 export interface GearListingView {

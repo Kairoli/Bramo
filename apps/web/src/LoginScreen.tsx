@@ -1,3 +1,4 @@
+import { LegalLinks } from './components/Legal';
 import { useState, type FormEvent } from 'react';
 import { api } from './api';
 import { Character } from './rig/Character';
@@ -57,6 +58,12 @@ export function LoginScreen({ onLoggedIn }: { onLoggedIn: () => void }) {
         <button type="button" className="link" onClick={() => setMode(mode === 'login' ? 'register' : 'login')}>
           {mode === 'login' ? 'Pas encore de compte ? En créer un' : 'Déjà un compte ? Se connecter'}
         </button>
+        {mode === 'register' && (
+          <p className="muted small">
+            En créant un compte, vous acceptez les <a href="#conditions">conditions d’utilisation</a>.
+          </p>
+        )}
+        <LegalLinks />
       </form>
     </div>
   );

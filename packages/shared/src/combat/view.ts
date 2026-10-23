@@ -7,7 +7,7 @@ import type { CombatStats, Contributions } from './engine.js';
 import type { CombatContent } from '../schemas/combat.js';
 import { MAX_PRESETS } from './presets.js';
 import { activePrep, readSupplies } from './supplies.js';
-import { activePath, advisedPlan, availableSpells, classLevel, classTier, classXpPerHour, currentPlan, encounterTiers, replayFight, routeStages, wornGear } from './progress.js';
+import { activePath, advisedPlan, availableSpells, classLevel, classTier, classXpPerHour, currentPlan, encounterTiers, replayFight, routeStage, routeStages, wornGear } from './progress.js';
 
 export interface SpellView {
   id: string;
@@ -396,7 +396,7 @@ export function viewCombat(state: CharacterState, content: Content): CombatView 
           name: encounterName(a.encounter),
           tier: a.tier ?? (a.encounter !== null ? (combat.encounters[a.encounter]?.tier ?? null) : null),
           route: !!a.route,
-          stageLabel: a.route ? (routeStages(combat)[state.combat.route.stage]?.label ?? null) : null,
+          stageLabel: a.route ? routeStage(combat, state.combat.route.stage).label : null,
           enemies: a.encounter !== null ? (combat.encounters[a.encounter]?.enemies ?? 1) : 1,
           guardian: a.encounter !== null && combat.encounters[a.encounter]?.kind === 'gardien',
           wins: a.wins,
@@ -450,8 +450,13 @@ export function viewCombat(state: CharacterState, content: Content): CombatView 
 }
 
 function routeView(state: CharacterState, combat: CombatContent): RouteView | null {
-  const stages = routeStages(combat);
-  if (!stages.length) return null;
+  const base = routeStages(combat);
+  if (!base.length) return null;
+  // La route boucle sans fin : le premier cycle, puis les chapitres déjà ouverts des cycles suivants (jusqu'à celui de
+  // l'étape atteinte ou jouée).
+  const r0 = state.combat.route;
+  const lastChapter = Math.max(base.at(-1)!.chapter, routeStage(combat, Math.max(r0.best, r0.stage)).chapter);
+  const stages = Array.from({ length: lastChapter * 10 }, (_, i) => routeStage(combat, i));
   const chapters: RouteView['chapters'] = [];
   for (const s of stages) {
     const e = combat.encounters[s.encounter]!;
@@ -460,5 +465,5 @@ function routeView(state: CharacterState, combat: CombatContent): RouteView | nu
     ch.stages.push({ index: s.index, label: s.label, encounter: s.encounter, name: e.name, tier: s.tier, guardian: s.guardian, enemies: e.enemies });
   }
   const r = state.combat.route;
-  return { stage: Math.min(r.stage, stages.length - 1), best: r.best, running: !!state.combat.activity?.route, chapters };
+  return { stage: r.stage, best: r.best, running: !!state.combat.activity?.route, chapters };
 }

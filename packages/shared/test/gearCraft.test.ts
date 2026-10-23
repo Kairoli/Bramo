@@ -15,7 +15,7 @@ describe('fabrication de l’équipement', () => {
     expect(craftable.length).toBeGreaterThan(2500);
     for (const m of craftable.slice(0, 400)) {
       const r = gearRecipe(m.id, content)!;
-      expect(r.level).toBe(Math.max(1, m.tier));
+      expect(r.level).toBe(Math.max(1, Math.round(m.tier * content.gearCrafting!.levelPerTier)));
       expect(r.inputs.length).toBeGreaterThan(0);
       for (const i of r.inputs) expect(content.items[i.item]).toBeDefined();
     }
@@ -47,6 +47,6 @@ describe('fabrication de l’équipement', () => {
     expect(out.gear.lines.length).toBeGreaterThanOrEqual(m.rolls[0]);
     expect(() => craftGear(makeState({}), m.id, content, rand)).toThrow(/manque/);
     const high = models.find((x) => x.tier === 40 && isCraftable(x, content))!;
-    expect(() => craftGear(makeState({ inventory: inv }), high.id, content, rand)).toThrow(/niveau 40/);
+    expect(() => craftGear(makeState({ inventory: inv }), high.id, content, rand)).toThrow(/niveau 32/);
   });
 });

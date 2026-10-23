@@ -63,7 +63,7 @@ export function gearRecipe(modelId: string, content: Content): GearRecipe | null
       if (same) same.qty += q;
       else inputs.push({ item, qty: q });
     }
-    const level = Math.max(1, Math.min(content.settings.xp.maxLevel, m.tier));
+    const level = Math.max(1, Math.min(content.settings.xp.maxLevel, Math.round(m.tier * c.levelPerTier)));
     const durationSec = Math.round((c.slotMinutes[m.slot] ?? 4) * 60 * interpolate(c.tierMultiplier, m.tier) * Math.sqrt(c.rarityMultiplier[m.rarity] ?? 1));
     const xp = Math.round((durationSec / 3600) * c.xp.perHourAtLevel1 * 2 ** ((level - 1) / c.xp.doubling) * 10) / 10;
     out = { model: m.id, profession, level, durationSec, xp, inputs };

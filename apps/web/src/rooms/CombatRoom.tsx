@@ -188,7 +188,7 @@ function RouteMap({ view }: { view: CombatView }) {
         </button>
         <div className="route-map-title">
           <span className="eyebrow">
-            Chapitre {chapter.number} / {route.chapters.length} · {chapter.region}
+            Chapitre {chapter.number} · {chapter.region}
           </span>
           <strong>{chapter.name}</strong>
         </div>

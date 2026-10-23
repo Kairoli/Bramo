@@ -7,12 +7,12 @@
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { loadContent } from '@bramo/shared/node';
-import { type CharacterState, combatantOf, emptyCombat, fight, routeStages, tierFactorAt } from '@bramo/shared';
+import { type CharacterState, combatantOf, emptyCombat, fight, routeStage, tierFactorAt } from '@bramo/shared';
 
 const root = fileURLToPath(new URL('../../', import.meta.url));
 export function wallTable(content: ReturnType<typeof loadContent>, stageNo: number, gem: string | null, levels = (process.env.LEVELS ?? "1,5,10,15,20").split(",").map(Number)): string[] {
   const combat = content.combat!;
-  const stage = routeStages(combat)[stageNo - 1]!;
+  const stage = routeStage(combat, stageNo - 1);
   const s = tierFactorAt(combat.rules, stage.tier);
   const out: string[] = [`Étape ${stage.label} (${combat.encounters[stage.encounter]!.name}, palier ${stage.tier}) · ${gem ?? 'sans gemme'}`];
   for (const classId of Object.keys(combat.kits)) {

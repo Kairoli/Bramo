@@ -5,7 +5,7 @@
 # - Chaque modèle d'équipement dont la source contient « craft » (ni ensemble, ni nommé, ni de départ) a sa recette,
 #   calculée à partir de ce fichier : le métier selon la famille du modèle, la matière principale de ce métier à son palier,
 #   une matière d'appoint de bas palier, des quantités selon l'emplacement, le palier et la rareté (§3.2 du document).
-# - Niveau requis = le palier du modèle ; on choisit le modèle (donc la rareté et l'orientation) ; les lignes se tirent à la
+# - Niveau requis = palier × levelPerTier (plus bas) ; on choisit le modèle (donc la rareté et l'orientation) ; les lignes se tirent à la
 #   fabrication, avec une chance de chef-d'œuvre (settings.gear.masterpiece) qui grandit avec l'avance de l'artisan.
 # - La Forge et la Menuiserie ont une matière par palier (1 à 90) ; la Tannerie, la Couture, la Joaillerie et l'Enchantement
 #   reprennent leur plus haute matière au-delà, en plus grande quantité (leurs chaînes hautes restent à écrire).
@@ -64,3 +64,6 @@ tierMultiplier: [{ tier: 1, mul: 1 }, { tier: 40, mul: 2 }, { tier: 90, mul: 3.5
 rarityMultiplier: { common: 1, rare: 1.35, epic: 1.8, legendary: 2.6 }
 # XP : comme l'artisanat (sim/src/rules.ts) : 400 × 1,75 XP par heure au niveau 1, doublée tous les 55 niveaux.
 xp: { perHourAtLevel1: 700, doubling: 55 }
+# Niveau requis = palier × 0,8 (23 octobre) : au simulateur, les métiers montaient bien moins vite que les classes, et les
+# artisans ne fabriquaient que des pièces sous le niveau des combattants (26 % des pièces de la vitrine se vendaient).
+levelPerTier: 0.8

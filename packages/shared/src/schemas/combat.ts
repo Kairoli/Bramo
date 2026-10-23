@@ -118,10 +118,11 @@ export const combatRulesSchema = z.object({
   /** Conversion des statistiques d'équipement en statistiques de combat (étape 5a) ; absente : `referenceStats` pour tous. */
   gearStats: gearStatsSchema.optional(),
   /**
-   * Au-delà des Lointains : après les douze chapitres, `beyondChapters` chapitres de plus qui reprennent les régions hautes
-   * au-delà du palier 90 (les ennemis continuent la courbe ; le butin reste au palier 90). Un but sans fin pour qui a tout fini.
+   * La route ne finit jamais (décision de Louis) : une fois les douze chapitres faits, ils recommencent en boucle, chaque
+   * cycle plus dur. Le palier continue de monter d'étape en étape, `loopTierStep` fois plus vite qu'au premier cycle (les
+   * ennemis suivent la courbe au-delà du palier 90 ; le butin reste au palier 90).
    */
-  route: z.object({ beyondChapters: z.number().int().min(0), beyondTierStep: z.number().positive().optional() }).optional(),
+  route: z.object({ loopTierStep: z.number().positive() }).optional(),
   /** Fournitures de combat (potions de secours, préparations) : potions bues au plus par rencontre. */
   supplies: z.object({ potionsPerFight: z.number().int().min(0) }).optional(),
   /**

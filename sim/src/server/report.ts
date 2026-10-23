@@ -2,7 +2,7 @@
  * Lecture d'une simulation de serveur : les chiffres qui disent si le jeu tient (progression, buts, or, marché, butin,
  * ensembles, classes et voies, contenu PvE, clans). Rend un objet (JSON) et un texte Markdown.
  */
-import { type Content, renownRank, routeStages } from '@bramo/shared';
+import { type Content, renownRank, routeStage, routeStages } from '@bramo/shared';
 import type { Bot, ServerResult } from './world.js';
 import type { TideStats } from './tideHook.js';
 
@@ -104,6 +104,7 @@ export function analyze(r: ServerResult, content: Content, tide?: TideStats) {
     return {
       bot: b.id,
       persona: b.persona.id,
+      // La route ne finit jamais : « premier cycle fini » à la place.
       routeDone: b.state.combat.route.best >= stages.length,
       routeIdle: since('best'),
       gearIdle: since('gearScore'),
@@ -204,12 +205,13 @@ export function analyze(r: ServerResult, content: Content, tide?: TideStats) {
   const stuck: Record<number, number> = {};
   for (const b of bots) for (const [s, n] of Object.entries(b.stuck)) stuck[Number(s)] = (stuck[Number(s)] ?? 0) + n;
   const walls = Object.entries(stuck)
-    .map(([s, n]) => ({ stage: stages[Math.min(Number(s), stages.length - 1)]!.label, encounter: combat.encounters[stages[Math.min(Number(s), stages.length - 1)]!.encounter]!.name, botDays: n, done: Number(s) >= stages.length }))
+    .map(([s, n]) => ({ stage: routeStage(combat, Number(s)).label, encounter: combat.encounters[routeStage(combat, Number(s)).encounter]!.name, botDays: n, done: false }))
     .sort((a, b) => b.botDays - a.botDays)
     .slice(0, 12);
 
   // --- Gardiens : combien de jours on y reste (parmi ceux qui l'ont atteint), et qui passe ---
-  const guardians = stages
+  const reachedMax = Math.max(0, ...bots.map((b) => b.state.combat.route.best));
+  const guardians = Array.from({ length: Math.floor(reachedMax / 10) + 1 }, (_, c) => routeStage(combat, c * 10 + 9))
     .filter((st) => st.guardian)
     .map((st) => {
       const reached = bots.filter((b) => b.state.combat.route.best >= st.index);
@@ -281,7 +283,7 @@ export function toMarkdown(a: Analysis): string {
     L.push(`- **${m.persona}** — route : ${f(m.route)} ; classe : ${f(m.classe)} ; métier : ${f(m.metier)}`);
   }
   L.push('', '## Buts : qui n’avance plus ?', '');
-  L.push('| Façon de jouer | route finie | route bloquée 14 j | plus rien n’avance depuis 14 j |', '|---|---|---|---|');
+  L.push('| Façon de jouer | premier cycle fini | route bloquée 14 j | plus rien n’avance depuis 14 j |', '|---|---|---|---|');
   for (const g of a.goalSummary) L.push(`| ${g.persona} | ${pct(g.routeDone)} | ${pct(g.routeStuck14d)} | ${pct(g.noProgress14d)} |`);
   L.push('', '## Or', '');
   L.push(`Robinets : ${Object.entries(a.economy.faucet).map(([k, v]) => `${k} ${v}`).join(', ')} (total ${a.economy.faucetTotal}, plus ${a.economy.startGold} d’or de départ).`);

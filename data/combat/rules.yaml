@@ -106,14 +106,11 @@ loot:
   named: 0.001            # chance par objet nommé de la rencontre, par unité
   namedGuarantee: 1000    # garanti après 1 000 unités sans l'avoir eu (~6 jours sur la même rencontre)
 
-# Au-delà des Lointains (23 octobre, nuit) : la simulation de serveur montrait qu'une fois la route finie, il n'y avait plus
-# rien à faire en combat. Six chapitres de plus reprennent les régions hautes au-delà du palier 90 (les ennemis continuent la
-# courbe, le butin reste au palier 90) : un but sans fin, le classement de la route.
-# 90 jours de simulation : les tryhards en étaient au chapitre 17 sur 18 ; douze chapitres, et un palier qui monte une fois et demie
-# plus vite qu'avant 90 (les ennemis continuent la courbe), pour que même eux finissent par y buter.
+# [Décidé par Louis le 23 octobre : « personne ne termine jamais le PvE solo »] Les douze chapitres bouclent : au cycle 2,
+# le chapitre 13 reprend la zone du chapitre 1, et ainsi de suite, sans fin. Le palier continue de monter, une fois et demie
+# plus vite qu'au premier cycle (les ennemis continuent la courbe au-delà de 90), pour que même les meilleurs finissent par y buter.
 route:
-  beyondChapters: 12
-  beyondTierStep: 1.5
+  loopTierStep: 1.5
 
 # Fournitures de combat (23 octobre, nuit) : potions de secours bues au plus par rencontre (la préparation, elle, dure une heure).
 supplies:

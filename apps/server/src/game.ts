@@ -6,7 +6,7 @@ import {
   type StateResponse,
   advance,
   resumeRoute,
-  routeStages,
+  routeStage,
   stream,
   viewState,
 } from '@bramo/shared';
@@ -44,7 +44,9 @@ export class NoCharacterError extends Error {}
 /** Gardiens franchis pour la première fois entre deux étapes atteintes (route.best avant et après). */
 function guardiansCrossed(before: number, after: number, content: Content): number {
   if (after <= before || !content.combat) return 0;
-  return routeStages(content.combat).filter((s) => s.guardian && s.index >= before && s.index < after).length;
+  let n = 0;
+  for (let i = before; i < after; i++) if (routeStage(content.combat, i).guardian) n++;
+  return n;
 }
 
 const RARITY_NAME: Record<string, string> = { common: 'Commun', rare: 'Rare', epic: 'Épique', legendary: 'Légendaire' };

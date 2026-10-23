@@ -4,7 +4,7 @@ import { loadContent } from '../src/node/index.js';
 import { advance } from '../src/engine/advance.js';
 import { startActivity } from '../src/engine/actions.js';
 import { viewCombat } from '../src/combat/view.js';
-import { advisedPlan, choosePath, classLevel, currentPlan, emptyCombat, equipmentSetup, routeStages, setPlan, startCombat, startRoute, stopCombat } from '../src/combat/progress.js';
+import { advisedPlan, choosePath, classLevel, currentPlan, emptyCombat, equipmentSetup, routeStage, routeStages, setPlan, startCombat, startRoute, stopCombat } from '../src/combat/progress.js';
 import type { Content } from '../src/schemas/content.js';
 import { applyPreset, deletePreset, renamePreset, savePreset } from '../src/combat/presets.js';
 import { chooseClass } from '../src/engine/actions.js';
@@ -207,10 +207,8 @@ describe('la route (PvE solo)', () => {
   const runist = (level: number) => makeState({ classId: 'runist', combat: { ...emptyCombat(), xp: { runist: content.xpTable[level]! } }, equipment: [] });
 
   it('douze zones de dix étapes : neuf dans la zone, la dixième contre le gardien de la région ; le palier monte de 1 à 90', () => {
-    const all = routeStages(content.combat!);
-    const beyond = (content.combat!.rules.route?.beyondChapters ?? 0) * 10;
-    expect(all).toHaveLength(120 + beyond);
-    const stages = all.slice(0, 120);
+    const stages = routeStages(content.combat!);
+    expect(stages).toHaveLength(120);
     expect(stages[0]).toMatchObject({ label: '1-1', encounter: 'z01_lantern_road', tier: 1, guardian: false });
     expect(stages[8]).toMatchObject({ label: '1-9', encounter: 'z01_lantern_road', guardian: false });
     expect(stages[9]).toMatchObject({ label: '1-10', encounter: 'b1_lavandiere', guardian: true });
@@ -218,14 +216,27 @@ describe('la route (PvE solo)', () => {
     for (const s of stages) expect(s.guardian).toBe(s.index % 10 === 9);
     for (let j = 1; j < stages.length; j++) expect(stages[j]!.tier).toBeGreaterThanOrEqual(stages[j - 1]!.tier);
     expect(stages.at(-1)).toMatchObject({ tier: 90, encounter: 'b6_regent' });
-    // Au-delà des Lointains : les régions hautes reviennent au-delà du palier 90, les ennemis continuent la courbe.
-    if (beyond) {
-      const b = all.slice(120);
-      expect(b[0]!.chapterName.startsWith('Au-delà')).toBe(true);
-      expect(b[0]!.tier).toBeGreaterThan(90);
-      for (const s of b) expect(s.guardian).toBe(s.index % 10 === 9);
-      expect(tierFactorAt(content.combat!.rules, b.at(-1)!.tier)).toBeGreaterThan(tierFactorAt(content.combat!.rules, 90));
+  });
+
+  it('la route ne finit jamais : les douze chapitres bouclent, chaque cycle plus dur', () => {
+    const combat = content.combat!;
+    const c2 = routeStage(combat, 120);
+    expect(c2).toMatchObject({ label: '13-1', chapter: 13, encounter: 'z01_lantern_road', guardian: false });
+    expect(c2.chapterName).toContain('cycle 2');
+    expect(c2.tier).toBeGreaterThan(90);
+    expect(routeStage(combat, 129)).toMatchObject({ label: '13-10', encounter: 'b1_lavandiere', guardian: true });
+    // Très loin : toujours une étape, toujours plus dure.
+    for (const i of [240, 1000, 5000]) {
+      const st = routeStage(combat, i);
+      expect(st.encounter).toBe(routeStages(combat)[i % 120]!.encounter);
+      expect(st.tier).toBeGreaterThan(routeStage(combat, i - 1).tier - 1);
     }
+    expect(tierFactorAt(combat.rules, routeStage(combat, 1000).tier)).toBeGreaterThan(tierFactorAt(combat.rules, routeStage(combat, 200).tier));
+    // Une victoire à la dernière étape du premier cycle mène au cycle suivant.
+    const s0 = runist(99);
+    s0.combat.route = { stage: 119, best: 119 };
+    expect(startRoute(s0, T0, content, 119).combat.route.stage).toBe(119);
+    expect(() => startRoute(s0, T0, content, 121)).toThrow(/pas encore ouverte/);
   });
 
   it('la première victoire contre un gardien donne son trophée (son objet nommé, ou une pièce de ses ensembles), une seule fois', () => {

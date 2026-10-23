@@ -124,5 +124,7 @@ export const gearCraftingSchema = z.object({
   tierMultiplier: z.array(z.object({ tier: z.number().int().min(1), mul: z.number().positive() })).min(1),
   rarityMultiplier: z.record(z.string(), z.number().positive()),
   xp: z.object({ perHourAtLevel1: z.number().positive(), doubling: z.number().positive() }),
+  /** Niveau de métier requis = palier × ce facteur (les métiers montent plus lentement que les classes). */
+  levelPerTier: z.number().positive().max(1).default(1),
 });
 export type GearCrafting = z.infer<typeof gearCraftingSchema>;

@@ -63,7 +63,7 @@ import {
   trialBody,
   spellEffects,
   combatRouteBody,
-  routeStages,
+  routeStage,
   startRoute,
   presetIdBody,
   presetRenameBody,
@@ -429,7 +429,7 @@ export async function buildApp({ db, content, clock = Date.now, secureCookies = 
     const { stage } = body(combatRouteBody, req);
     return playAs(req, (state, now) => {
       const next = startRoute(state, now, content, stage);
-      const s = routeStages(content.combat!)[next.combat.route.stage]!;
+      const s = routeStage(content.combat!, next.combat.route.stage);
       return { state: next, log: `Vous prenez la route : étape ${s.label}, ${encounterName(s.encounter)}.` };
     });
   });
@@ -669,7 +669,7 @@ export async function buildApp({ db, content, clock = Date.now, secureCookies = 
       return {
         level,
         models: craftableModels(profession, content)
-          .filter((m) => m.tier <= level + 10)
+          .filter((m) => gearRecipe(m.id, content)!.level <= level + 8)
           .map((m) => ({ id: m.id, name: m.name, slot: m.slot, tier: m.tier, rarity: m.rarity, orientation: m.orientation, classes: m.classes, family: m.family, stats: m.stats, recipe: gearRecipe(m.id, content)! })),
       };
     });

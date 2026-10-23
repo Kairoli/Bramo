@@ -35,7 +35,7 @@ import {
   npcOrdersOfDay,
   repairCost,
   repairItem,
-  routeStages,
+  routeStage,
   skillLevel,
   socketGem,
   startActivity,
@@ -202,7 +202,6 @@ export function runServer(content: Content, input: ServerOptions): ServerResult 
   const opts = { initialShare: 0.6, joinDays: 30, hooks: [] as ServerHook[], ...input };
   const rand = rng(opts.seed);
   const combat = content.combat!;
-  const stages = routeStages(combat);
   const cache = installFightCache();
   const traders = new Map<number, Trader>();
   const exchange = new Exchange(content, traders);
@@ -367,7 +366,7 @@ export function runServer(content: Content, input: ServerOptions): ServerResult 
     }
   };
   /** Le mur du joueur : l'étape qui le bloque (ou la dernière franchie). */
-  const wallStage = (b: Bot) => stages[Math.min(b.state.combat.route.best, stages.length - 1)]!;
+  const wallStage = (b: Bot) => routeStage(combat, b.state.combat.route.best);
   const scoreOf = (b: Bot, gear: GearInstance[]): number => {
     const s = { ...b.state, equipment: gear.filter((g) => g.equipped).map((g) => ({ model: g.model, lines: g.lines, ...(g.gem ? { gem: g.gem } : {}) })) } as CharacterState;
     const st = wallStage(b);
@@ -547,7 +546,7 @@ export function runServer(content: Content, input: ServerOptions): ServerResult 
     for (const p of b.professions) {
       if (!gearProfessions.has(p)) continue;
       const L = lvl(b.state, p);
-      const tier = curveTier(combat.rules, L) ?? 1;
+      const tier = curveTier(combat.rules, Math.floor(L / (content.gearCrafting?.levelPerTier ?? 1))) ?? 1;
       const pool = craftableModels(p, content).filter((m) => m.tier === tier && (m.rarity === 'rare' || m.rarity === 'epic'));
       if (!pool.length) continue;
       for (let k = 0; k < 2; k++) {
@@ -1222,7 +1221,11 @@ export function runServer(content: Content, input: ServerOptions): ServerResult 
     }
     for (const b of active) {
       const best = b.state.combat.route.best;
-      if (best > b.lastBest && b.clan) b.clan.renown += stages.filter((st) => st.guardian && st.index >= b.lastBest && st.index < best).length * (content.settings.clan.renown?.guardian ?? 0);
+      if (best > b.lastBest && b.clan) {
+        let g = 0;
+        for (let i = b.lastBest; i < best; i++) if (routeStage(combat, i).guardian) g++;
+        b.clan.renown += g * (content.settings.clan.renown?.guardian ?? 0);
+      }
       if (best > b.lastBest) {
         b.lastBest = best;
         b.lastRouteDay = day;

@@ -143,22 +143,25 @@ export function routeStages(combat: CombatContent): RouteStage[] {
       out.push({ index, label: `${ci + 1}-${si + 1}`, chapter: ci + 1, chapterName: z.name, region: z.region!, encounter: e.id, tier: tierAt(index), guardian: e.kind === 'gardien' });
     }
   });
-  // Au-delà des Lointains : les chapitres des régions hautes reviennent, au-delà du palier 90, au même rythme.
-  const beyond = combat.rules.route?.beyondChapters ?? 0;
-  const high = zones.filter((z) => z.circles);
-  const step = (total > 1 ? (last - first) / (total - 1) : 1) * (combat.rules.route?.beyondTierStep ?? 1);
-  for (let k = 0; k < beyond && high.length; k++) {
-    const z = high[k % high.length]!;
-    const boss = guardianOf(z.region!);
-    const ci = zones.length + k;
-    for (let si = 0; si < ROUTE_CHAPTER; si++) {
-      const e = si === ROUTE_CHAPTER - 1 && boss ? boss : z;
-      const index = out.length;
-      out.push({ index, label: `${ci + 1}-${si + 1}`, chapter: ci + 1, chapterName: `Au-delà · ${z.name}`, region: z.region!, encounter: e.id, tier: Math.round(last + (index - total + 1) * step), guardian: e.kind === 'gardien' });
-    }
-  }
   stagesCache.set(combat, out);
   return out;
+}
+
+/**
+ * Une étape de la route, quel que soit son rang : la route ne finit jamais (décision de Louis). Après le premier cycle
+ * (`routeStages`), les douze chapitres reviennent dans le même ordre, chapitre 13 = la zone du chapitre 1 au cycle 2, etc. ;
+ * le palier continue de monter d'étape en étape (`rules.route.loopTierStep` fois le pas du premier cycle).
+ */
+export function routeStage(combat: CombatContent, index: number): RouteStage {
+  const base = routeStages(combat);
+  if (index < base.length) return base[Math.max(0, index)]!;
+  const first = base[0]!.tier;
+  const last = base.at(-1)!.tier;
+  const step = (base.length > 1 ? (last - first) / (base.length - 1) : 1) * (combat.rules.route?.loopTierStep ?? 1);
+  const t = base[index % base.length]!;
+  const cycle = Math.floor(index / base.length) + 1;
+  const chapter = Math.floor(index / ROUTE_CHAPTER) + 1;
+  return { ...t, index, chapter, label: `${chapter}-${(index % ROUTE_CHAPTER) + 1}`, chapterName: `${t.chapterName} · cycle ${cycle}`, tier: Math.round(last + (index - base.length + 1) * step) };
 }
 
 /**
@@ -169,9 +172,8 @@ export function routeStages(combat: CombatContent): RouteStage[] {
 export function resumeRoute(state: CharacterState, t: number, content: Content): boolean {
   const combat = content.combat;
   if (state.combat.activity || !state.classId || !combat?.kits[state.classId]) return false;
-  const stages = routeStages(combat);
-  if (!stages.length) return false;
-  const s = stages[Math.min(state.combat.route.stage, stages.length - 1)]!;
+  if (!routeStages(combat).length) return false;
+  const s = routeStage(combat, state.combat.route.stage);
   state.combat.activity = { encounter: s.encounter, tier: s.tier, route: true, startedAt: t, progress: 0, current: null, wins: 0, losses: 0, streak: 0 };
   return true;
 }
@@ -608,18 +610,17 @@ export function runCombat(state: CharacterState, t: number, end: number, rate: n
     // `maxConsecutiveLosses` défaites de suite, elle recule d'une étape (décision de Louis du 22 octobre) : on y gagne
     // (XP entière, butin), puis la victoire suivante retente l'étape qui bloquait.
     if (a.route) {
-      const stages = routeStages(combat);
       const r = state.combat.route;
       if (f.win) {
         // Première victoire contre un gardien : un trophée garanti (une pièce de ses ensembles, sinon son objet nommé).
-        if (r.stage + 1 > r.best && stages[r.stage]?.guardian) guardianTrophy(state, f, content, summary);
+        if (r.stage + 1 > r.best && routeStage(combat, r.stage).guardian) guardianTrophy(state, f, content, summary);
         r.best = Math.max(r.best, r.stage + 1);
-        r.stage = Math.min(r.stage + 1, stages.length - 1);
+        r.stage = r.stage + 1;
       } else if (a.streak >= p.maxConsecutiveLosses && r.stage > 0) {
         r.stage--;
         a.streak = 0;
       }
-      const next = stages[Math.min(r.stage, stages.length - 1)]!;
+      const next = routeStage(combat, r.stage);
       a.encounter = next.encounter;
       a.tier = next.tier;
       continue;
@@ -664,12 +665,11 @@ export function startCombat(input: CharacterState, encounter: string | null, now
 export function startRoute(input: CharacterState, now: number, content: Content, stage?: number): CharacterState {
   const combat = need(content);
   if (!input.classId) throw new GameError('no_class', 'Choisissez d’abord une classe.');
-  const stages = routeStages(combat);
-  if (!stages.length) throw new GameError('no_route', 'La route n’est pas encore ouverte.');
+  if (!routeStages(combat).length) throw new GameError('no_route', 'La route n’est pas encore ouverte.');
   const r = input.combat.route;
-  const at = stage ?? Math.min(r.stage, stages.length - 1);
-  if (at < 0 || at > Math.min(r.best, stages.length - 1)) throw new GameError('route_locked', 'Cette étape n’est pas encore ouverte : franchissez d’abord les précédentes.');
-  const s = stages[at]!;
+  const at = stage ?? r.stage;
+  if (at < 0 || at > r.best) throw new GameError('route_locked', 'Cette étape n’est pas encore ouverte : franchissez d’abord les précédentes.');
+  const s = routeStage(combat, at);
   const state = cloneState(input);
   state.combat.route = { ...r, stage: at };
   state.combat.activity = { encounter: s.encounter, tier: s.tier, route: true, startedAt: now, progress: 0, current: null, wins: 0, losses: 0, streak: 0 };

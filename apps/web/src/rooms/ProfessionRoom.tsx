@@ -64,7 +64,7 @@ export function ProfessionRoom({ id }: { id: string }) {
               ) : (
                 <span className="muted">
                   {' '}
-                  · « {skill.next.nickname} » au niveau {skill.next.rank}, par la commande du maître
+                  · « {skill.next.nickname} » au niveau {skill.next.rank}, par la commande {profession.master?.name.startsWith('Maîtresse') ? 'de la maîtresse' : 'du maître'}
                 </span>
               ))}
           </div>

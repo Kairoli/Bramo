@@ -62,7 +62,7 @@
 
 - id: agriculture
   name: Agriculture
-  nickname: Gratte-sillon
+  nickname: Arrache-chiendent
   family: gathering
   status: playable
   place: Terrasses du Val
@@ -80,7 +80,7 @@
   status: playable
   place: Forge du campement
   description: Fonte des métaux communs, outils de tous les métiers, armes et armures de métal.
-  master: { name: Maître Brunhild, line: "« Tout le monde a besoin d'un forgeron. Même ceux qui l'ignorent. »" }
+  master: { name: Maîtresse Brunhild, line: "« Tout le monde a besoin d'un forgeron. Même ceux qui l'ignorent. »" }
   categories:
     - { id: bars, name: Fonte }
     - { id: tool_parts, name: Fers d'outils }
@@ -116,7 +116,7 @@
 
 - id: tailoring
   name: Couture
-  nickname: Enfileur d'aiguilles
+  nickname: Enfileur d’aiguilles
   family: crafting
   status: playable
   place: Atelier du campement
@@ -205,7 +205,7 @@
 
 - id: exploration
   name: Exploration
-  nickname: Promeneur du dimanche
+  nickname: Plan à l’envers
   family: world
   status: playable
   place: Carte du monde

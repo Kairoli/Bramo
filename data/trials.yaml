@@ -1,14 +1,15 @@
-# Rangs de métier : commandes du maître aux niveaux 20, 40, 60, 80 et 99 (docs/design/rangs.md).
+# Rangs de métier : commandes du maître aux niveaux 20, 40, 60, 80, 90 et 99 (docs/design/rangs.md).
 # Réussir la commande accorde le surnom du palier et débloque la tranche suivante : sans elle, le niveau reste au palier
-# (l'XP continue de s'accumuler, rien n'est perdu). Quantités = budget de travail par palier (30 min, 1 h 30, 3 h, 6 h, 12 h).
-# Récompenses et quantités à équilibrer. # à équilibrer
+# (l’XP continue de s’accumuler, rien n’est perdu). Quantités = budget de travail par palier (30 min, 1 h 30, 3 h, 6 h,
+# 9 h, 12 h). Textes : passe éditoriale du 24 octobre 2026 (docs/design/titres/passe-editoriale.md), régénérés par
+# docs/design/titres/passe-editoriale.mjs. Récompenses et quantités à équilibrer. # à équilibrer
 
-# --- Maître Orvald (mining) ---
+# --- Maître Orvald (mining) : Minage ---
 - id: mining_20
   profession: mining
   rank: 20
   name: "Les cailloux d’Orvald"
-  nickname: "Gratteur de galeries"
+  nickname: "Casse-cailloux"
   intro: "« Mes galeries ont besoin de fer et de charbon. Pas de la caillasse, pas des cailloux « jolis ». Du fer. »"
   outro: "Orvald a rangé ton chargement sans un mot, puis il a fait graver ton nom sur le plus petit casier de la mine. Chez lui, ça s’appelle de l’estime."
   tasks:
@@ -20,7 +21,7 @@
   profession: mining
   rank: 40
   name: "Le filon qui chuchote"
-  nickname: "Chuchoteur de filons"
+  nickname: "Oreille des filons"
   intro: "« On dit que le mithril chuchote aux mineurs patients. Moi, je n’entends rien. Va écouter pour moi. »"
   outro: "Tu es revenu en jurant que le filon avait dit du bien de toi. Orvald n’a rien entendu, mais il a gardé le mithril."
   tasks:
@@ -32,7 +33,7 @@
   profession: mining
   rank: 60
   name: "L’éboulement de trop"
-  nickname: "Fléau des éboulements"
+  nickname: "Étai des galeries"
   intro: "« Il y a eu un éboulement. Il y en a toujours. Rapporte-moi de quoi remplir le trou, de l’or et de l’orichalque. »"
   outro: "La galerie tient debout et Orvald jure que c’est grâce à toi. Les poutres préfèrent ne pas commenter."
   tasks:
@@ -43,14 +44,26 @@
 - id: mining_80
   profession: mining
   rank: 80
-  name: "Le salut des nains"
-  nickname: "Salué par les nains"
-  intro: "« Les nains ne saluent personne. Rapporte-moi de l’azurite et du sombracier, et on verra. »"
-  outro: "Un nain a hoché la tête sur ton passage. Le village en parle encore, à voix basse."
+  name: "Les vieux de la Taupinière"
+  nickname: "Salué par la Taupinière"
+  intro: "« Les vieux de la Taupinière ne saluent personne. Rapporte-moi de l’azurite et du sombracier, et on verra. »"
+  outro: "Le plus vieux de la Taupinière a levé son verre sur ton passage. Il ne l’avait pas levé depuis la Marée. Le bourg en parle encore, à voix basse."
   tasks:
     - { item: azurite_ore, qty: 415 }
     - { item: umbral_ore, qty: 385 }
   reward: { gold: 30000 }
+
+- id: mining_90
+  profession: mining
+  rank: 90
+  name: "Les galeries d’avant"
+  nickname: "Lampe du fond"
+  intro: "« Sous la mine, il y a d’autres galeries. Personne ne se souvient de les avoir creusées. Descends. Garde ta lampe allumée : la brume y dort. »"
+  outro: "Tu es remonté les poches pleines et avec une pioche qui n’était pas la tienne. Orvald l’a reconnue : c’était celle de son père. Il ne t’a rien demandé d’autre."
+  tasks:
+    - { item: azurite_ore, qty: 625 }
+    - { item: umbral_ore, qty: 580 }
+  reward: { gold: 45000 }
 
 - id: mining_99
   profession: mining
@@ -64,14 +77,15 @@
     - { item: astralite_ore, qty: 720 }
   reward: { gold: 60000 }
 
-# --- Maîtresse Aldra (woodcutting) ---
+
+# --- Maîtresse Aldra (woodcutting) : Bûcheronnage ---
 - id: woodcutting_20
   profession: woodcutting
   rank: 20
   name: "Du bois pour l’hiver"
   nickname: "Collectionneur d’écorce"
   intro: "« L’hiver arrive et mon stock de chêne et de frêne est à sec. Je ne fais pas de feu avec de l’espoir. »"
-  outro: "Aldra a compté les bûches trois fois, puis t’a offert un morceau d’écorce. Chez elle, c’est une médaille."
+  outro: "Aldra a compté les bûches trois fois, puis t’a offert un morceau d’écorce, le plus beau du tas. Elle n’en donne jamais."
   tasks:
     - { item: oak_log, qty: 65 }
     - { item: ash_log, qty: 55 }
@@ -93,7 +107,7 @@
   profession: woodcutting
   rank: 60
   name: "Le murmure des chênes"
-  nickname: "Chuchoteur de chênes"
+  nickname: "Beau-parleur des chênes"
   intro: "« Un arbre ne se coupe pas, il se convainc. Apporte-moi du bois de lune, et dis-moi ce qu’il t’a dit. »"
   outro: "Les chênes disent qu’ils ont aimé ta conversation. Aldra a noté qu’ils n’ont pas dit « merci »."
   tasks:
@@ -113,19 +127,106 @@
     - { item: ash_log, qty: 675 }
   reward: { gold: 30000 }
 
+- id: woodcutting_90
+  profession: woodcutting
+  rank: 90
+  name: "Les arbres qui ont vu la Marée"
+  nickname: "La Hache tranquille"
+  intro: "« À la Lisière, les arbres ont vu passer la Marée. Ils ne craignent plus rien, surtout pas toi. Coupe sans te presser : ils détestent qu’on se presse. »"
+  outro: "Tu as coupé toute une saison sans jamais forcer. Les arbres se sont laissé faire, par politesse. Aldra dit qu’elle n’avait jamais vu ça, et qu’elle préfère que ça ne se sache pas."
+  tasks:
+    - { item: moonwood_log, qty: 810 }
+    - { item: ash_log, qty: 1015 }
+  reward: { gold: 45000 }
+
 - id: woodcutting_99
   profession: woodcutting
   rank: 99
-  name: "La forêt à lui seul"
-  nickname: "La forêt à lui tout seul"
-  intro: "« Dernière commande : toute une forêt, ou presque. Je ne demande pas où tu la caches. »"
+  name: "Toute une forêt, ou presque"
+  nickname: "La Forêt qui marche"
+  intro: "« Je n’ai plus rien à t’apprendre, alors je te demande tout : une forêt, ou presque. Je ne demande pas où tu la caches. »"
   outro: "Aldra a replanté tout ce que tu as coupé. Les arbres t’ont reconnu et ont fait semblant de dormir."
   tasks:
     - { item: moonwood_log, qty: 1080 }
     - { item: yew_log, qty: 1200 }
   reward: { gold: 60000 }
 
-# --- Maîtresse Ysolde (herbalism) ---
+
+# --- Maître Naël (fishing) : Pêche ---
+- id: fishing_20
+  profession: fishing
+  rank: 20
+  name: "Le calme de la baie"
+  nickname: "Taiseux de la baie"
+  intro: "« La patience, ça se mesure en truites. Le reste, c’est du bruit. »"
+  outro: "Naël a pesé tes truites sans rien dire, puis il a dit « pas mal ». Pour lui, c’est un discours."
+  tasks:
+    - { item: trout, qty: 55 }
+    - { item: raw_fish, qty: 75 }
+  reward: { gold: 3000 }
+
+- id: fishing_40
+  profession: fishing
+  rank: 40
+  name: "Les fâcheux du lac"
+  nickname: "Fâcheux des brochets"
+  intro: "« Les brochets m’ont déclaré la guerre. Tu es dans mon camp ? »"
+  outro: "Les brochets ont signé une trêve. Ils réclament une pension."
+  tasks:
+    - { item: pike, qty: 150 }
+    - { item: trout, qty: 170 }
+  reward: { gold: 8000 }
+
+- id: fishing_60
+  profession: fishing
+  rank: 60
+  name: "Les poissons qui s’allument"
+  nickname: "Noctambule des quais"
+  intro: "« Les poissons-lanternes ne mordent que la nuit. Tu veilleras. »"
+  outro: "Tu es rentré à l’aube, les yeux rouges et la gloire en bandoulière. Naël dort encore sur la jetée."
+  tasks:
+    - { item: lantern_fish, qty: 245 }
+    - { item: pike, qty: 300 }
+  reward: { gold: 15000 }
+
+- id: fishing_80
+  profession: fishing
+  rank: 80
+  name: "Les marées capricieuses"
+  nickname: "Berger de la houle"
+  intro: "« La mer fait comme elle veut. Fais-lui croire que c’est toi. »"
+  outro: "Les marées arrivent maintenant à l’heure. Les marins ont posé des questions et Naël les a envoyés pêcher."
+  tasks:
+    - { item: abyss_ray, qty: 415 }
+    - { item: lantern_fish, qty: 490 }
+  reward: { gold: 30000 }
+
+- id: fishing_90
+  profession: fishing
+  rank: 90
+  name: "Ce qui mord sous la brume"
+  nickname: "Silence des grands fonds"
+  intro: "« Quand la brume touche l’eau, les raies remontent. Elles ne mordent qu’aux pêcheurs qui se taisent. Tu parles trop. Essaie quand même. »"
+  outro: "Tu n’as pas dit un mot de toute la saison. Les raies sont venues d’elles-mêmes. Naël t’a serré la main, longuement, et c’est tout ce qu’il y avait à dire."
+  tasks:
+    - { item: abyss_ray, qty: 625 }
+    - { item: lantern_fish, qty: 735 }
+  reward: { gold: 45000 }
+
+- id: fishing_99
+  profession: fishing
+  rank: 99
+  name: "La prise de la légende"
+  nickname: "Légende de la jetée"
+  intro: "« Dernière prise : ce qui nage assez profond pour avoir un nom de légende. »"
+  outro: "On a installé une plaque sur la jetée. Elle est un peu de travers, comme tout ce que Naël aime."
+  tasks:
+    - { item: abyss_ray, qty: 830 }
+    - { item: lantern_fish, qty: 980 }
+  reward: { gold: 60000 }
+
+
+# --- Maîtresse Ysolde (herbalism) : Herboristerie ---
 - id: herbalism_20
   profession: herbalism
   rank: 20
@@ -154,7 +255,7 @@
   profession: herbalism
   rank: 60
   name: "La fleur qui refuse"
-  nickname: "Chuchoteur de givre"
+  nickname: "Cueille-à-reculons"
   intro: "« La fleur de givre refuse de fleurir quand on la regarde. Cueille-la sans qu’elle s’en aperçoive. »"
   outro: "Tu as marché à reculons pendant trois heures. Ça a fonctionné et personne ne veut savoir comment."
   tasks:
@@ -174,6 +275,18 @@
     - { item: sage, qty: 600 }
   reward: { gold: 30000 }
 
+- id: herbalism_90
+  profession: herbalism
+  rank: 90
+  name: "Les jardins de la brume"
+  nickname: "Rosée des Lointains"
+  intro: "« Il pousse des herbes dans la brume, là où l’on ne voit plus ses pieds. Je n’y vois rien non plus. Toi, on dit que tu les trouves les yeux fermés. »"
+  outro: "Tu as trouvé les herbes à l’odeur, dans une brume à couper au couteau. Ysolde a reniflé ton panier et, pour la première fois, n’a rien trouvé à redire."
+  tasks:
+    - { item: frost_flower, qty: 675 }
+    - { item: sage, qty: 900 }
+  reward: { gold: 45000 }
+
 - id: herbalism_99
   profession: herbalism
   rank: 99
@@ -186,68 +299,156 @@
     - { item: lantern_lily, qty: 1080 }
   reward: { gold: 60000 }
 
-# --- Maître Naël (fishing) ---
-- id: fishing_20
-  profession: fishing
+
+# --- Maîtresse Brenna (hunting) : Chasse ---
+- id: hunting_20
+  profession: hunting
   rank: 20
-  name: "Le calme de la baie"
-  nickname: "Lanceur patient"
-  intro: "« La patience, ça se mesure en truites. Le reste, c’est du bruit. »"
-  outro: "Naël a pesé tes truites sans rien dire, puis il a dit « pas mal ». Pour lui, c’est un discours."
+  name: "Le garde-manger de Brenna"
+  nickname: "Liseur de traces"
+  intro: "« L’hiver arrive et mon fumoir est vide. Des peaux de cerf et de la viande, et vite. »"
+  outro: "Brenna a pendu tes prises au fumoir en sifflotant. Elle siffle faux, mais c’est bon signe."
   tasks:
-    - { item: trout, qty: 55 }
-    - { item: raw_fish, qty: 75 }
+    - { item: deer_hide, qty: 40 }
+    - { item: game_meat, qty: 60 }
   reward: { gold: 3000 }
 
-- id: fishing_40
-  profession: fishing
+- id: hunting_40
+  profession: hunting
   rank: 40
-  name: "Les fâcheux du lac"
-  nickname: "Fâcheux des brochets"
-  intro: "« Les brochets m’ont déclaré la guerre. Tu es dans mon camp ? »"
-  outro: "Les brochets ont signé une trêve. Ils réclament une pension."
+  name: "Les loups de la lande"
+  nickname: "Sommeil des bergers"
+  intro: "« Une meute rôde près des bergeries. Ramène-moi leurs fourrures, et de quoi nourrir les bergers. »"
+  outro: "Les bergers dorment enfin. Brenna dit que c’est grâce à toi ; les moutons ne disent rien, mais ils approuvent."
   tasks:
-    - { item: pike, qty: 150 }
-    - { item: trout, qty: 170 }
+    - { item: wolf_pelt, qty: 120 }
+    - { item: venison, qty: 60 }
   reward: { gold: 8000 }
 
-- id: fishing_60
-  profession: fishing
+- id: hunting_60
+  profession: hunting
   rank: 60
-  name: "Le veilleur de lanternes"
-  nickname: "Veilleur de lanternes"
-  intro: "« Les poissons-lanternes ne mordent que la nuit. Tu veilleras. »"
-  outro: "Tu es rentré à l’aube, les yeux rouges et la gloire en bandoulière. Naël dort encore sur la jetée."
+  name: "La bête du col"
+  nickname: "Patte-d’Ours"
+  intro: "« Un ours a pris le col pour son garde-manger. Ramène ses cousins, et de quoi fumer tout l’hiver. »"
+  outro: "Le col est libre. Brenna a gardé une griffe pour son chapeau ; elle dit que ça porte chance, à elle surtout."
   tasks:
-    - { item: lantern_fish, qty: 245 }
-    - { item: pike, qty: 300 }
+    - { item: bear_hide, qty: 200 }
+    - { item: venison, qty: 200 }
   reward: { gold: 15000 }
 
-- id: fishing_80
-  profession: fishing
+- id: hunting_80
+  profession: hunting
   rank: 80
-  name: "Les marées capricieuses"
-  nickname: "Seigneur des marées"
-  intro: "« La mer fait comme elle veut. Fais-lui croire que c’est toi. »"
-  outro: "Les marées arrivent maintenant à l’heure. Les marins ont posé des questions et Naël les a envoyés pêcher."
+  name: "Les élans des neiges"
+  nickname: "Pisteur des neiges"
+  intro: "« Là-haut, les élans ont des cornes comme des chandeliers. J’en veux les peaux, pas les chandeliers. »"
+  outro: "Brenna a tendu les peaux devant le feu et, pour la première fois, elle n’a pas sifflé. Elle admirait."
   tasks:
-    - { item: abyss_ray, qty: 415 }
-    - { item: lantern_fish, qty: 490 }
+    - { item: elk_hide, qty: 250 }
+    - { item: bear_hide, qty: 250 }
   reward: { gold: 30000 }
 
-- id: fishing_99
-  profession: fishing
-  rank: 99
-  name: "La prise de la légende"
-  nickname: "Légende de la jetée"
-  intro: "« Dernière prise : ce qui nage assez profond pour avoir un nom de légende. »"
-  outro: "On a installé une plaque sur la jetée. Elle est un peu de travers, comme tout ce que Naël aime."
+- id: hunting_90
+  profession: hunting
+  rank: 90
+  name: "Les traces sans bête"
+  nickname: "Lit-dans-la-brume"
+  intro: "« À la Lisière, il y a des traces qui ne mènent à aucune bête. Les autres chasseurs font demi-tour. Pas toi, j’espère. Rapporte des peaux, et ce que tu auras compris. »"
+  outro: "Tu as suivi les traces jusqu’au bord de la brume, et elles ont continué sans toi. Tu n’as rien compris. Brenna dit que c’est le début de la sagesse, et elle a sifflé juste."
   tasks:
-    - { item: abyss_ray, qty: 830 }
-    - { item: lantern_fish, qty: 980 }
+    - { item: elk_hide, qty: 375 }
+    - { item: bear_hide, qty: 375 }
+  reward: { gold: 45000 }
+
+- id: hunting_99
+  profession: hunting
+  rank: 99
+  name: "La dernière battue"
+  nickname: "L’Arc de Brenna"
+  intro: "« Ma dernière commande. Après, tu chasseras mieux que moi, et je ne veux pas voir ça. »"
+  outro: "Brenna t’a donné son vieil arc, puis l’a repris : « Je plaisantais. » Elle ne plaisantait pas tout à fait."
+  tasks:
+    - { item: elk_hide, qty: 600 }
+    - { item: wolf_pelt, qty: 500 }
   reward: { gold: 60000 }
 
-# --- Maître Brunhild (smithing) ---
+
+# --- Maître Anselme (agriculture) : Agriculture ---
+- id: agriculture_20
+  profession: agriculture
+  rank: 20
+  name: "Le pain de la fête"
+  nickname: "Semeur des terrasses"
+  intro: "« La fête des moissons approche. Il me faut de la farine pour le pain, et du bleu pour les bannières. »"
+  outro: "Les bannières claquent au vent, le pain est doré. Anselme a pleuré un peu ; il dit que c’est la farine."
+  tasks:
+    - { item: flour, qty: 40 }
+    - { item: woad_dye, qty: 30 }
+  reward: { gold: 3000 }
+
+- id: agriculture_40
+  profession: agriculture
+  rank: 40
+  name: "Le coton du Val"
+  nickname: "Récolteur de nuages"
+  intro: "« Les couturiers du bourg réclament du coton. Le Val peut en donner, si on sait lui parler. »"
+  outro: "Les balles de coton s’empilent jusqu’au toit de la grange. Anselme t’a offert la gerbe tressée qu’il accroche d’habitude au-dessus de sa propre porte."
+  tasks:
+    - { item: cotton_fiber, qty: 120 }
+    - { item: flour, qty: 80 }
+  reward: { gold: 8000 }
+
+- id: agriculture_60
+  profession: agriculture
+  rank: 60
+  name: "Les teinturiers du Val"
+  nickname: "Le Bleu du Val"
+  intro: "« Le Val veut du bleu et du blanc. Du coton, et de la guède, et que ça pousse droit. »"
+  outro: "Les teinturiers ont repeint la halle en bleu. Anselme trouve ça criard, mais il sourit en le disant."
+  tasks:
+    - { item: cotton_fiber, qty: 300 }
+    - { item: woad_dye, qty: 150 }
+  reward: { gold: 15000 }
+
+- id: agriculture_80
+  profession: agriculture
+  rank: 80
+  name: "La grande moisson"
+  nickname: "Grenier plein"
+  intro: "« Cette année, la moisson sera la plus grande du bourg, ou je change de métier. Aide-moi à ne pas changer. »"
+  outro: "Anselme n’a pas changé de métier. Il a juste dormi deux jours, entre deux bottes de paille."
+  tasks:
+    - { item: cotton_fiber, qty: 600 }
+    - { item: flour, qty: 400 }
+  reward: { gold: 30000 }
+
+- id: agriculture_90
+  profession: agriculture
+  rank: 90
+  name: "Les champs salés"
+  nickname: "Blé-sur-sel"
+  intro: "« La Marée a laissé du sel dans les champs du bas. Rien n’y pousse, disent-ils. Ils n’ont jamais essayé avec moi. Ni avec toi. »"
+  outro: "Les premiers épis ont poussé, tordus et têtus, dans la terre salée. Anselme en a fait un pain au drôle de goût et l’a mangé en entier sur le pas de sa porte, sans en laisser à personne."
+  tasks:
+    - { item: cotton_fiber, qty: 900 }
+    - { item: flour, qty: 600 }
+  reward: { gold: 45000 }
+
+- id: agriculture_99
+  profession: agriculture
+  rank: 99
+  name: "Le champ qui chante"
+  nickname: "Voix des champs"
+  intro: "« On dit qu’un champ bien tenu chante au vent. Le mien est muet. Fais-le chanter. »"
+  outro: "Le vent passe dans les tiges et Anselme jure entendre une chanson. Personne n’ose le contredire."
+  tasks:
+    - { item: cotton_fiber, qty: 1200 }
+    - { item: woad_dye, qty: 600 }
+  reward: { gold: 60000 }
+
+
+# --- Maîtresse Brunhild (smithing) : Forge ---
 - id: smithing_20
   profession: smithing
   rank: 20
@@ -263,8 +464,8 @@
 - id: smithing_40
   profession: smithing
   rank: 40
-  name: "La pluie d’étincelles"
-  nickname: "Semeur d’étincelles"
+  name: "L’épée artistique"
+  nickname: "Pluie d’étincelles"
   intro: "« Des lingots d’acier et des fers d’outil. Je manque de tout depuis que l’apprenti a voulu forger une épée « artistique ». »"
   outro: "L’épée artistique a fini en porte-manteau. Ta commande, elle, a fini à la forge."
   tasks:
@@ -275,8 +476,8 @@
 - id: smithing_60
   profession: smithing
   rank: 60
-  name: "Le feu sacré"
-  nickname: "Gardien du feu sacré"
+  name: "Le feu qui reconnaît"
+  nickname: "Le Feu sacré"
   intro: "« Le feu sacré a besoin de combustible. Et d’un peu de respect. »"
   outro: "Le feu a flambé plus fort en te voyant. Brunhild dit que c’était le vent. Il n’y avait pas de vent."
   tasks:
@@ -287,28 +488,41 @@
 - id: smithing_80
   profession: smithing
   rank: 80
-  name: "Le marteau du roi"
-  nickname: "Forgeron des rois"
-  intro: "« Un roi passe demain et il veut un marteau. Il n’a pas dit lequel. »"
-  outro: "Le roi a emporté le marteau, laissé le tablier et oublié de payer. Brunhild affirme que c’est un honneur."
+  name: "Le marteau du capitaine"
+  nickname: "Créancier du Bastion"
+  intro: "« Le capitaine du Bastion passe demain et il veut un marteau. Il n’a pas dit lequel. »"
+  outro: "Le capitaine a emporté le marteau, laissé son manteau et oublié de payer. Brunhild affirme que c’est un honneur."
   tasks:
     - { item: steel_tool_head, qty: 5 }
     - { item: steel_bar, qty: 300 }
   reward: { gold: 30000 }
+
+- id: smithing_90
+  profession: smithing
+  rank: 90
+  name: "La forge qui s’était tue"
+  nickname: "Rallume-forges"
+  intro: "« Là-bas, dans les Forges éteintes, une enclume est froide depuis la Marée. Je veux l’entendre sonner une fois avant de mourir. Pas tout de suite, rassure-toi. »"
+  outro: "La vieille forge a ronflé toute une nuit. Brunhild n’a rien dit ; elle a posé la main sur l’enclume tiède, comme on salue quelqu’un qu’on croyait perdu."
+  tasks:
+    - { item: steel_tool_head, qty: 8 }
+    - { item: steel_bar, qty: 450 }
+  reward: { gold: 45000 }
 
 - id: smithing_99
   profession: smithing
   rank: 99
   name: "La dernière enclume"
   nickname: "Enclume vivante"
-  intro: "« Dernière commande : un ouvrage qui survivra à la forge. »"
+  intro: "« Fais-moi un ouvrage qui survivra à la forge. Et à moi. »"
   outro: "Ton nom est gravé sous l’enclume. Brunhild jure qu’elle ne l’a fait pour personne d’autre. C’est faux, mais c’est touchant."
   tasks:
     - { item: steel_tool_head, qty: 10 }
     - { item: steel_bar, qty: 600 }
   reward: { gold: 60000 }
 
-# --- Maître Joris (carpentry) ---
+
+# --- Maître Joris (carpentry) : Menuiserie ---
 - id: carpentry_20
   profession: carpentry
   rank: 20
@@ -337,7 +551,7 @@
   profession: carpentry
   rank: 60
   name: "Les poutres qui grincent"
-  nickname: "Chuchoteur de poutres"
+  nickname: "Maître chanteur des poutres"
   intro: "« Les poutres du comptoir grincent. Il faut leur parler ou les remplacer. »"
   outro: "Les poutres ne grincent plus. Joris suspecte un chantage."
   tasks:
@@ -349,7 +563,7 @@
   profession: carpentry
   rank: 80
   name: "Le toit de la guilde"
-  nickname: "Charpentier de légende"
+  nickname: "Mille-Ans"
   intro: "« Le toit de la guilde doit tenir mille ans. Pas moins. »"
   outro: "Dans mille ans, on se demandera qui a fait ça. Joris a déjà prévenu : « le plus beau, c’était toi »."
   tasks:
@@ -357,19 +571,180 @@
     - { item: bow_stave, qty: 10 }
   reward: { gold: 30000 }
 
+- id: carpentry_90
+  profession: carpentry
+  rank: 90
+  name: "L’escalier qui ne mène nulle part"
+  nickname: "Niveau à bulle"
+  intro: "« Sur la vieille tour, un escalier monte vers le ciel et s’arrête. La Marée a pris le reste. Je veux qu’il mène quelque part. Droit, je précise. Et des hampes pour la rampe. »"
+  outro: "L’escalier mène maintenant à une petite terrasse d’où l’on voit les Lointains. Joris y a posé son niveau : la bulle est restée au milieu. Il a souri, cette fois, sans se cacher."
+  tasks:
+    - { item: oak_plank, qty: 540 }
+    - { item: bow_stave, qty: 15 }
+  reward: { gold: 45000 }
+
 - id: carpentry_99
   profession: carpentry
   rank: 99
   name: "La sciure d’or"
   nickname: "Sciure d’or"
-  intro: "« Dernière commande : toute la sciure du monde, transformée en légende. »"
+  intro: "« De la sciure, encore. Toute celle du monde, si possible, et qu’on en parle encore quand elle sera balayée. »"
   outro: "Il te reste de la sciure dans les bottes. Joris dit que c’est la seule décoration qui compte."
   tasks:
     - { item: oak_plank, qty: 720 }
     - { item: bow_stave, qty: 25 }
   reward: { gold: 60000 }
 
-# --- Maître Bertin (cooking) ---
+
+# --- Maître Hugon (tanning) : Tannerie ---
+- id: tanning_20
+  profession: tanning
+  rank: 20
+  name: "Les sacoches du courrier"
+  nickname: "Nez bouché"
+  intro: "« Le courrier perd ses lettres en route. Des sacoches solides, et du cuir épais pour les réparer. »"
+  outro: "Le courrier n’a plus rien perdu depuis. Sauf son chapeau, mais ce n’est pas ta faute."
+  tasks:
+    - { item: thick_leather, qty: 30 }
+    - { item: leather_satchel, qty: 3 }
+  reward: { gold: 3000 }
+
+- id: tanning_40
+  profession: tanning
+  rank: 40
+  name: "L’équipée du nord"
+  nickname: "Cuir-bouilli"
+  intro: "« Une expédition part vers le nord. Ils auront froid. Fourrures et pourpoints, le meilleur que tu sais faire. »"
+  outro: "L’expédition est partie bien couverte. Hugon a gardé un pourpoint « pour vérifier les coutures ». Depuis, il ne l’enlève plus."
+  tasks:
+    - { item: wolf_fur, qty: 60 }
+    - { item: leather_jerkin, qty: 2 }
+  reward: { gold: 8000 }
+
+- id: tanning_60
+  profession: tanning
+  rank: 60
+  name: "Les selles du Bastion"
+  nickname: "Enfin du sérieux"
+  intro: "« Les cavaliers du Bastion usent leurs selles plus vite que leurs chevaux. Du cuir lourd, et des fourrures pour l’hiver. »"
+  outro: "Le Bastion a renvoyé une selle neuve, avec un mot : « Enfin du sérieux. » Hugon l’a encadré."
+  tasks:
+    - { item: heavy_leather, qty: 120 }
+    - { item: wolf_fur, qty: 120 }
+  reward: { gold: 15000 }
+
+- id: tanning_80
+  profession: tanning
+  rank: 80
+  name: "Le cuir d’élan"
+  nickname: "Increvable"
+  intro: "« Le cuir d’élan ne pardonne rien : mal tanné, il craque au premier froid. Montre-moi qu’il ne craquera pas. »"
+  outro: "Hugon a plié le cuir dans tous les sens, il l’a mordu, il l’a laissé dehors une nuit. Il n’a pas craqué. Lui non plus."
+  tasks:
+    - { item: elk_leather, qty: 150 }
+    - { item: heavy_leather, qty: 200 }
+  reward: { gold: 30000 }
+
+- id: tanning_90
+  profession: tanning
+  rank: 90
+  name: "Les vieilles fosses"
+  nickname: "Un an et un jour"
+  intro: "« Le bon cuir dort un an et un jour dans la fosse. Plus personne n’a cette patience depuis la Marée. Remplis-moi les vieilles fosses, et ne viens pas me dire que ça sent. »"
+  outro: "Un an et un jour plus tard, ou c’est tout comme, Hugon a sorti le premier cuir des vieilles fosses. Il était parfait. Il a dit que ça sentait bon, et personne n’a osé le contredire."
+  tasks:
+    - { item: elk_leather, qty: 225 }
+    - { item: heavy_leather, qty: 300 }
+  reward: { gold: 45000 }
+
+- id: tanning_99
+  profession: tanning
+  rank: 99
+  name: "La peau du monde"
+  nickname: "Main de cuir"
+  intro: "« Ma dernière commande : de quoi habiller une caravane entière. Les Lointains n’ont jamais été tendres avec les peaux. »"
+  outro: "La caravane est partie habillée de ton cuir. Hugon a regardé la route très longtemps, puis il a fermé ses fosses."
+  tasks:
+    - { item: elk_leather, qty: 400 }
+    - { item: heavy_leather, qty: 300 }
+  reward: { gold: 60000 }
+
+
+# --- Maîtresse Lise (tailoring) : Couture ---
+- id: tailoring_20
+  profession: tailoring
+  rank: 20
+  name: "Les robes des novices"
+  nickname: "Ourlet-de-travers"
+  intro: "« Les novices du Cercle grelottent dans leurs vieilles robes. Du lin, du bleu, et des robes dignes de ce nom. »"
+  outro: "Les novices défilent dans tes robes bleues. Lise a corrigé un ourlet, par principe, puis elle a souri."
+  tasks:
+    - { item: linen_robe, qty: 3 }
+    - { item: blue_linen, qty: 20 }
+  reward: { gold: 3000 }
+
+- id: tailoring_40
+  profession: tailoring
+  rank: 40
+  name: "La robe d’adepte"
+  nickname: "Doigts de fée"
+  intro: "« Deux adeptes passent l’épreuve des runes. Il leur faut des robes, et de la toile de coton pour la doublure. »"
+  outro: "Les deux adeptes ont réussi leur épreuve. Ils remercient les runes ; Lise sait très bien à qui revient le mérite."
+  tasks:
+    - { item: adept_robe, qty: 2 }
+    - { item: cotton_cloth, qty: 10 }
+  reward: { gold: 8000 }
+
+- id: tailoring_60
+  profession: tailoring
+  rank: 60
+  name: "Les robes du chapitre"
+  nickname: "Aiguille d’argent"
+  intro: "« Le chapitre des runistes veut des robes neuves, et du coton pour les doublures. Des coutures qui ne bâillent pas. »"
+  outro: "Les runistes ont défilé dans leurs robes neuves. Lise a compté les coutures depuis sa fenêtre ; aucune ne bâillait."
+  tasks:
+    - { item: cotton_cloth, qty: 80 }
+    - { item: adept_robe, qty: 6 }
+  reward: { gold: 15000 }
+
+- id: tailoring_80
+  profession: tailoring
+  rank: 80
+  name: "Les voiles bleues"
+  nickname: "Voile-Bleue"
+  intro: "« Le port veut des voiles bleues, comme dans les chansons. Du lin bleu, beaucoup, et du coton pour les renforts. »"
+  outro: "Les voiles bleues ont pris le vent. Les marins chantent faux, mais ils chantent tes voiles."
+  tasks:
+    - { item: cotton_cloth, qty: 160 }
+    - { item: blue_linen, qty: 200 }
+  reward: { gold: 30000 }
+
+- id: tailoring_90
+  profession: tailoring
+  rank: 90
+  name: "Les bannières rapiécées"
+  nickname: "Reprise invisible"
+  intro: "« Les vieilles bannières du bourg ont traversé la Marée. Elles sont en lambeaux, mais elles se souviennent de leurs couleurs. Reprise-les sans qu’on voie la reprise. »"
+  outro: "Les bannières flottent sur la halle, comme neuves. Les anciens cherchent les reprises du bout du doigt et ne les trouvent pas. Lise, si, mais elle fait semblant que non."
+  tasks:
+    - { item: cotton_cloth, qty: 240 }
+    - { item: blue_linen, qty: 300 }
+  reward: { gold: 45000 }
+
+- id: tailoring_99
+  profession: tailoring
+  rank: 99
+  name: "La robe sans couture"
+  nickname: "Fil d’or"
+  intro: "« Une robe sans couture, ça n’existe pas. Fais-en une quand même. »"
+  outro: "Lise a cherché la couture pendant une semaine. Elle a fini par avouer qu’elle ne la trouvait pas, puis elle l’a trouvée, et elle a ri."
+  tasks:
+    - { item: cotton_cloth, qty: 400 }
+    - { item: adept_robe, qty: 20 }
+  reward: { gold: 60000 }
+
+
+# --- Maître Bertin (cooking) : Cuisine ---
 - id: cooking_20
   profession: cooking
   rank: 20
@@ -398,7 +773,7 @@
   profession: cooking
   rank: 60
   name: "Les buffets vides"
-  nickname: "Terreur des buffets"
+  nickname: "Corne d’abondance"
   intro: "« Les buffets de la guilde se vident en dix minutes. Remplis-les. Plus vite. »"
   outro: "Les buffets tremblent maintenant à ton arrivée. Les convives aussi."
   tasks:
@@ -409,137 +784,48 @@
 - id: cooking_80
   profession: cooking
   rank: 80
-  name: "La table des rois"
-  nickname: "Celui qui régale les rois"
-  intro: "« Le roi a faim, et il est susceptible. »"
-  outro: "Le roi a demandé la recette. Tu as souri. Il a décidé que c’était un secret d’État."
+  name: "Le jury du Concours"
+  nickname: "Coupe-sifflet"
+  intro: "« Le jury du Concours des Maîtres goûte de tout et n’aime rien. Fais-les taire. Par la bouche. »"
+  outro: "Le jury n’a rien dit de tout le repas. Pour la première fois, il a oublié de noter. Bertin a fait encadrer la feuille blanche."
   tasks:
     - { item: frost_feast, qty: 60 }
     - { item: lantern_soup, qty: 90 }
   reward: { gold: 30000 }
 
+- id: cooking_90
+  profession: cooking
+  rank: 90
+  name: "La soupe de grand-mère"
+  nickname: "Goût d’enfance"
+  intro: "« Ma grand-mère faisait une soupe. La Marée m’a pris la recette, pas le souvenir du goût. Fais-en des chaudrons entiers, jusqu’à ce que l’un d’eux ait le bon goût. »"
+  outro: "Au quarantième chaudron, Bertin a goûté et s’est assis. Il n’a pas dit que ce n’était pas dégoûtant. Il n’a rien dit du tout, et il s’est resservi trois fois."
+  tasks:
+    - { item: frost_feast, qty: 90 }
+    - { item: lantern_soup, qty: 135 }
+  reward: { gold: 45000 }
+
 - id: cooking_99
   profession: cooking
   rank: 99
   name: "Le festin du siècle"
-  nickname: "Gourmet de légende"
-  intro: "« Dernière commande : un festin dont on se souviendra, ou dont on sera trop plein pour oublier. »"
+  nickname: "Table ouverte"
+  intro: "« Un festin dont on se souviendra, ou dont on sera trop plein pour oublier. Je n’ai plus rien d’autre à te demander. »"
   outro: "Tout le bourg a mangé jusqu’à l’aube. Bertin affirme que c’est la seule fois où il n’a pas eu besoin de goûter pour se rassurer."
   tasks:
     - { item: frost_feast, qty: 120 }
     - { item: lantern_soup, qty: 180 }
   reward: { gold: 60000 }
 
-# --- Métiers branchés le 23 octobre 2026 : deux commandes de maître chacun (20 et 40), les suivantes viendront. ---
 
-# --- Maîtresse Brenna (hunting) ---
-- id: hunting_20
-  profession: hunting
-  rank: 20
-  name: "Le garde-manger de Brenna"
-  nickname: "Traqueur de cerfs"
-  intro: "« L'hiver arrive et mon fumoir est vide. Des peaux de cerf et de la viande, et vite. »"
-  outro: "Brenna a pendu tes prises au fumoir en sifflotant. Elle siffle faux, mais c'est bon signe."
-  tasks:
-    - { item: deer_hide, qty: 40 }
-    - { item: game_meat, qty: 60 }
-  reward: { gold: 3000 }
-
-- id: hunting_40
-  profession: hunting
-  rank: 40
-  name: "Les loups de la lande"
-  nickname: "Fléau des loups"
-  intro: "« Une meute rôde près des bergeries. Ramène-moi leurs fourrures, et de quoi nourrir les bergers. »"
-  outro: "Les bergers dorment enfin. Brenna dit que c'est grâce à toi ; les moutons ne disent rien, mais ils approuvent."
-  tasks:
-    - { item: wolf_pelt, qty: 120 }
-    - { item: venison, qty: 60 }
-  reward: { gold: 8000 }
-
-# --- Maître Anselme (agriculture) ---
-- id: agriculture_20
-  profession: agriculture
-  rank: 20
-  name: "Le pain de la fête"
-  nickname: "Semeur des terrasses"
-  intro: "« La fête des moissons approche. Il me faut de la farine pour le pain, et du bleu pour les bannières. »"
-  outro: "Les bannières claquent au vent, le pain est doré. Anselme a pleuré un peu ; il dit que c'est la farine."
-  tasks:
-    - { item: flour, qty: 40 }
-    - { item: woad_dye, qty: 30 }
-  reward: { gold: 3000 }
-
-- id: agriculture_40
-  profession: agriculture
-  rank: 40
-  name: "Le coton du Val"
-  nickname: "Maître des récoltes"
-  intro: "« Les couturiers du bourg réclament du coton. Le Val peut en donner, si on sait lui parler. »"
-  outro: "Les balles de coton s'empilent jusqu'au toit de la grange. Anselme t'a offert une gerbe tressée : chez lui, c'est une médaille."
-  tasks:
-    - { item: cotton_fiber, qty: 120 }
-    - { item: flour, qty: 80 }
-  reward: { gold: 8000 }
-
-# --- Maître Hugon (tanning) ---
-- id: tanning_20
-  profession: tanning
-  rank: 20
-  name: "Les sacoches du courrier"
-  nickname: "Tanneur de la fosse"
-  intro: "« Le courrier perd ses lettres en route. Des sacoches solides, et du cuir épais pour les réparer. »"
-  outro: "Le courrier n'a plus rien perdu depuis. Sauf son chapeau, mais ce n'est pas ta faute."
-  tasks:
-    - { item: thick_leather, qty: 30 }
-    - { item: leather_satchel, qty: 3 }
-  reward: { gold: 3000 }
-
-- id: tanning_40
-  profession: tanning
-  rank: 40
-  name: "L'équipée du nord"
-  nickname: "Cuirassier des landes"
-  intro: "« Une expédition part vers le nord. Ils auront froid. Fourrures et pourpoints, le meilleur que tu sais faire. »"
-  outro: "L'expédition est partie bien couverte. Hugon a gardé un pourpoint « pour vérifier les coutures ». Depuis, il ne l'enlève plus."
-  tasks:
-    - { item: wolf_fur, qty: 60 }
-    - { item: leather_jerkin, qty: 2 }
-  reward: { gold: 8000 }
-
-# --- Maîtresse Lise (tailoring) ---
-- id: tailoring_20
-  profession: tailoring
-  rank: 20
-  name: "Les robes des novices"
-  nickname: "Couseuse de lin"
-  intro: "« Les novices du Cercle grelottent dans leurs vieilles robes. Du lin, du bleu, et des robes dignes de ce nom. »"
-  outro: "Les novices défilent dans tes robes bleues. Lise a corrigé un ourlet, par principe, puis elle a souri."
-  tasks:
-    - { item: linen_robe, qty: 3 }
-    - { item: blue_linen, qty: 20 }
-  reward: { gold: 3000 }
-
-- id: tailoring_40
-  profession: tailoring
-  rank: 40
-  name: "La robe d'adepte"
-  nickname: "Tailleur des adeptes"
-  intro: "« Deux adeptes passent l'épreuve des runes. Il leur faut des robes, et de la toile de coton pour la doublure. »"
-  outro: "Les deux adeptes ont réussi leur épreuve. Ils remercient les runes ; Lise sait très bien à qui revient le mérite."
-  tasks:
-    - { item: adept_robe, qty: 2 }
-    - { item: cotton_cloth, qty: 10 }
-  reward: { gold: 8000 }
-
-# --- Maître Évariste (alchemy) ---
+# --- Maître Évariste (alchemy) : Alchimie ---
 - id: alchemy_20
   profession: alchemy
   rank: 20
   name: "Les élixirs de la mine"
-  nickname: "Distillateur d'élixirs"
-  intro: "« Les mineurs d'Orvald veulent des élixirs, et les runistes de l'encre. Tout le monde veut tout, tout de suite. »"
-  outro: "Orvald jure que ses mineurs creusent deux fois plus vite. Évariste soupçonne qu'ils boivent surtout pour le goût."
+  nickname: "Sourcils roussis"
+  intro: "« Les mineurs d’Orvald veulent des élixirs, et les runistes de l’encre. Tout le monde veut tout, tout de suite. »"
+  outro: "Orvald jure que ses mineurs creusent deux fois plus vite. Évariste soupçonne qu’ils boivent surtout pour le goût."
   tasks:
     - { item: miner_elixir, qty: 40 }
     - { item: rune_ink, qty: 60 }
@@ -549,284 +835,13 @@
   profession: alchemy
   rank: 40
   name: "La réserve du dispensaire"
-  nickname: "Apothicaire du bourg"
+  nickname: "Apothicaire de garde"
   intro: "« Le dispensaire est à sec. Des toniques contre le froid, des potions contre le reste. »"
   outro: "Les étagères du dispensaire débordent. Évariste a classé tes fioles par couleur, puis par odeur, puis il a abandonné."
   tasks:
     - { item: frost_tonic, qty: 80 }
     - { item: minor_healing_potion, qty: 100 }
   reward: { gold: 8000 }
-
-# --- Maîtresse Sidonie (jewelcrafting) ---
-- id: jewelcrafting_20
-  profession: jewelcrafting
-  rank: 20
-  name: "Les bagues du marché"
-  nickname: "Sertisseur de perles"
-  intro: "« Le marché de printemps arrive. Des bagues de cuivre et des perles de verre : les gens aiment ce qui brille. »"
-  outro: "Tout s'est vendu avant midi. Sidonie a gardé une bague, « pour l'étalage ». Elle la porte depuis."
-  tasks:
-    - { item: copper_ring, qty: 10 }
-    - { item: glass_bead, qty: 120 }
-  reward: { gold: 3000 }
-
-- id: jewelcrafting_40
-  profession: jewelcrafting
-  rank: 40
-  name: "Les fiançailles du bourgmestre"
-  nickname: "Orfèvre des améthystes"
-  intro: "« Le bourgmestre se fiance. Il veut une bague aux améthystes, et des anneaux pour toute la famille. Toute. »"
-  outro: "La fiancée a dit oui en regardant la bague. Le bourgmestre préfère croire qu'elle le regardait, lui."
-  tasks:
-    - { item: amethyst_ring, qty: 2 }
-    - { item: silver_band, qty: 4 }
-  reward: { gold: 8000 }
-
-# --- Maître Ilian (enchanting) ---
-- id: enchanting_20
-  profession: enchanting
-  rank: 20
-  name: "Les gardes du Cercle"
-  nickname: "Graveur de gardes"
-  intro: "« Les murs du Cercle s'effacent. Des runes de garde, et des parchemins pour les élèves maladroits. »"
-  outro: "Les murs tiennent, les élèves aussi. Ilian a relu chaque glyphe deux fois ; tu en as raté un, il l'a gardé comme souvenir."
-  tasks:
-    - { item: ward_rune, qty: 20 }
-    - { item: glyph_scroll, qty: 40 }
-  reward: { gold: 3000 }
-
-- id: enchanting_40
-  profession: enchanting
-  rank: 40
-  name: "Le cœur des runes"
-  nickname: "Lieur de noyaux"
-  intro: "« Il faut des noyaux runiques pour la grande porte, et une robe runée pour celui qui l'ouvrira. »"
-  outro: "La grande porte s'est ouverte toute seule, en grinçant poliment. Ilian dit que c'est normal. Il a quand même sursauté."
-  tasks:
-    - { item: runic_core, qty: 6 }
-    - { item: warded_adept_robe, qty: 1 }
-  reward: { gold: 8000 }
-
-# --- Maîtresse Capucine (artificing) ---
-- id: artificing_20
-  profession: artificing
-  rank: 20
-  name: "L'horloge du beffroi"
-  nickname: "Horloger du beffroi"
-  intro: "« L'horloge du beffroi sonne quand elle veut. Des mécanismes neufs, et des collets pour les rats qui rongent les cordes. »"
-  outro: "L'horloge sonne enfin à l'heure. Capucine l'a avancée de deux minutes, « pour que les gens soient en avance »."
-  tasks:
-    - { item: clockwork, qty: 3 }
-    - { item: spring_snare, qty: 15 }
-  reward: { gold: 3000 }
-
-- id: artificing_40
-  profession: artificing
-  rank: 40
-  name: "La nuit des fusées"
-  nickname: "Artificier de la Marée"
-  intro: "« La Marée monte plus haut chaque soir. Il nous faut des fusées pour voir venir, et des lanternes pour les guetteurs. »"
-  outro: "Le ciel s'est illuminé au-dessus de la Marée. Les guetteurs ont tout vu venir ; Capucine, elle, regardait surtout les couleurs."
-  tasks:
-    - { item: flare_rocket, qty: 20 }
-    - { item: artificer_lantern, qty: 6 }
-  reward: { gold: 8000 }
-
-# --- Maître Gautier (construction) ---
-- id: construction_20
-  profession: construction
-  rank: 20
-  name: "Le mur du lavoir"
-  nickname: "Bâtisseur du lavoir"
-  intro: "« Le mur du lavoir s'effondre, et l'escalier qui y mène aussi. Des pans de mur et des marches, solides cette fois. »"
-  outro: "Le lavoir tient debout. Mère Grise elle-même aurait approuvé, dit Gautier, avant de vérifier que personne n'avait entendu."
-  tasks:
-    - { item: stone_wall, qty: 4 }
-    - { item: wooden_stairs, qty: 3 }
-  reward: { gold: 3000 }
-
-- id: construction_40
-  profession: construction
-  rank: 40
-  name: "La halle neuve"
-  nickname: "Maître d'œuvre"
-  intro: "« Le bourg veut une halle neuve. Des arches de pierre, des fermes de toit, et pas de fissures. »"
-  outro: "La halle neuve résonne de voix. Gautier a gravé ton nom sous une arche ; personne ne le voit, c'est comme ça qu'il aime les honneurs."
-  tasks:
-    - { item: stone_arch, qty: 4 }
-    - { item: roof_truss, qty: 2 }
-  reward: { gold: 8000 }
-
-# --- Maîtresse Ombeline (exploration) ---
-- id: exploration_20
-  profession: exploration
-  rank: 20
-  name: "La carte du bois"
-  nickname: "Arpenteur du bois"
-  intro: "« On se perd dans le Bois des Murmures. Des cartes, et ce que les ruines voudront bien te donner. »"
-  outro: "Plus personne ne se perd dans le bois. Ombeline, si : elle préfère, dit-elle, « pour le plaisir de retrouver son chemin »."
-  tasks:
-    - { item: forest_map, qty: 40 }
-    - { item: old_coin, qty: 100 }
-  reward: { gold: 3000 }
-
-- id: exploration_40
-  profession: exploration
-  rank: 40
-  name: "Ce que garde la Lisière"
-  nickname: "Éclaireur des Lointains"
-  intro: "« Les mineurs veulent des cartes de gisement, et moi, je veux savoir ce qui dort à la Lisière. »"
-  outro: "Tu as rapporté des curiosités qu'Ombeline n'avait jamais vues. Elle en a classé la moitié ; l'autre moitié la regarde encore."
-  tasks:
-    - { item: vein_map, qty: 80 }
-    - { item: watch_curio, qty: 30 }
-  reward: { gold: 8000 }
-
-# --- Commandes 60, 80 et 99 des dix derniers métiers (23 octobre, nuit, écrites par Claude : à relire par Louis). Mêmes
-#     budgets de travail et récompenses que les autres métiers ; les tâches prennent les plus hautes matières de chaque métier. ---
-- id: hunting_60
-  profession: hunting
-  rank: 60
-  name: "La bête du col"
-  nickname: "Chasseur de l’ours"
-  intro: "« Un ours a pris le col pour son garde-manger. Ramène ses cousins, et de quoi fumer tout l’hiver. »"
-  outro: "Le col est libre. Brenna a gardé une griffe pour son chapeau ; elle dit que ça porte chance, à elle surtout."
-  tasks:
-    - { item: bear_hide, qty: 200 }
-    - { item: venison, qty: 200 }
-  reward: { gold: 15000 }
-
-- id: hunting_80
-  profession: hunting
-  rank: 80
-  name: "Les élans des neiges"
-  nickname: "Pisteur des neiges"
-  intro: "« Là-haut, les élans ont des cornes comme des chandeliers. J’en veux les peaux, pas les chandeliers. »"
-  outro: "Brenna a tendu les peaux devant le feu et n’a rien dit pendant une heure. Chez elle, c’est un discours."
-  tasks:
-    - { item: elk_hide, qty: 250 }
-    - { item: bear_hide, qty: 250 }
-  reward: { gold: 30000 }
-
-- id: hunting_99
-  profession: hunting
-  rank: 99
-  name: "La dernière battue"
-  nickname: "Seigneur des battues"
-  intro: "« Ma dernière commande. Après, tu chasseras mieux que moi, et je ne veux pas voir ça. »"
-  outro: "Brenna t’a donné son vieil arc, puis l’a repris : « Je plaisantais. » Elle ne plaisantait pas tout à fait."
-  tasks:
-    - { item: elk_hide, qty: 600 }
-    - { item: wolf_pelt, qty: 500 }
-  reward: { gold: 60000 }
-
-- id: agriculture_60
-  profession: agriculture
-  rank: 60
-  name: "Les teinturiers du Val"
-  nickname: "Semeur de couleurs"
-  intro: "« Le Val veut du bleu et du blanc. Du coton, et de la guède, et que ça pousse droit. »"
-  outro: "Les teinturiers ont repeint la halle en bleu. Anselme trouve ça criard, mais il sourit en le disant."
-  tasks:
-    - { item: cotton_fiber, qty: 300 }
-    - { item: woad_dye, qty: 150 }
-  reward: { gold: 15000 }
-
-- id: agriculture_80
-  profession: agriculture
-  rank: 80
-  name: "La grande moisson"
-  nickname: "Maître des moissons"
-  intro: "« Cette année, la moisson sera la plus grande du bourg, ou je change de métier. Aide-moi à ne pas changer. »"
-  outro: "Anselme n’a pas changé de métier. Il a juste dormi deux jours, entre deux bottes de paille."
-  tasks:
-    - { item: cotton_fiber, qty: 600 }
-    - { item: flour, qty: 400 }
-  reward: { gold: 30000 }
-
-- id: agriculture_99
-  profession: agriculture
-  rank: 99
-  name: "Le champ qui chante"
-  nickname: "Voix des champs"
-  intro: "« On dit qu’un champ bien tenu chante au vent. Le mien est muet. Fais-le chanter. »"
-  outro: "Le vent passe dans les tiges et Anselme jure entendre une chanson. Personne n’ose le contredire."
-  tasks:
-    - { item: cotton_fiber, qty: 1200 }
-    - { item: woad_dye, qty: 600 }
-  reward: { gold: 60000 }
-
-- id: tanning_60
-  profession: tanning
-  rank: 60
-  name: "Les selles du Bastion"
-  nickname: "Sellier du Bastion"
-  intro: "« Les cavaliers du Bastion usent leurs selles plus vite que leurs chevaux. Du cuir lourd, et des fourrures pour l’hiver. »"
-  outro: "Le Bastion a renvoyé une selle neuve, avec un mot : « Enfin du sérieux. » Hugon l’a encadré."
-  tasks:
-    - { item: heavy_leather, qty: 120 }
-    - { item: wolf_fur, qty: 120 }
-  reward: { gold: 15000 }
-
-- id: tanning_80
-  profession: tanning
-  rank: 80
-  name: "Le cuir d’élan"
-  nickname: "Tanneur des cimes"
-  intro: "« Le cuir d’élan ne pardonne rien : mal tanné, il craque au premier froid. Montre-moi qu’il ne craquera pas. »"
-  outro: "Hugon a plié le cuir dans tous les sens, il l’a mordu, il l’a laissé dehors une nuit. Il n’a pas craqué. Lui non plus."
-  tasks:
-    - { item: elk_leather, qty: 150 }
-    - { item: heavy_leather, qty: 200 }
-  reward: { gold: 30000 }
-
-- id: tanning_99
-  profession: tanning
-  rank: 99
-  name: "La peau du monde"
-  nickname: "Main de cuir"
-  intro: "« Ma dernière commande : de quoi habiller une caravane entière. Les Lointains n’ont jamais été tendres avec les peaux. »"
-  outro: "La caravane est partie habillée de ton cuir. Hugon a regardé la route très longtemps, puis il a fermé ses fosses."
-  tasks:
-    - { item: elk_leather, qty: 400 }
-    - { item: heavy_leather, qty: 300 }
-  reward: { gold: 60000 }
-
-- id: tailoring_60
-  profession: tailoring
-  rank: 60
-  name: "Les robes du chapitre"
-  nickname: "Brodeuse du chapitre"
-  intro: "« Le chapitre des runistes veut des robes neuves, et du coton pour les doublures. Des coutures qui ne bâillent pas. »"
-  outro: "Les runistes ont défilé dans leurs robes neuves. Lise a compté les coutures depuis sa fenêtre ; aucune ne bâillait."
-  tasks:
-    - { item: cotton_cloth, qty: 80 }
-    - { item: adept_robe, qty: 6 }
-  reward: { gold: 15000 }
-
-- id: tailoring_80
-  profession: tailoring
-  rank: 80
-  name: "Les voiles bleues"
-  nickname: "Tisseuse des voiles"
-  intro: "« Le port veut des voiles bleues, comme dans les chansons. Du lin bleu, beaucoup, et du coton pour les renforts. »"
-  outro: "Les voiles bleues ont pris le vent. Les marins chantent faux, mais ils chantent tes voiles."
-  tasks:
-    - { item: cotton_cloth, qty: 160 }
-    - { item: blue_linen, qty: 200 }
-  reward: { gold: 30000 }
-
-- id: tailoring_99
-  profession: tailoring
-  rank: 99
-  name: "La robe sans couture"
-  nickname: "Fil d’or"
-  intro: "« Une robe sans couture, ça n’existe pas. Fais-en une quand même. »"
-  outro: "Lise a cherché la couture pendant une semaine. Elle a fini par avouer qu’elle ne la trouvait pas, puis elle l’a trouvée, et elle a ri."
-  tasks:
-    - { item: cotton_cloth, qty: 400 }
-    - { item: adept_robe, qty: 20 }
-  reward: { gold: 60000 }
 
 - id: alchemy_60
   profession: alchemy
@@ -844,7 +859,7 @@
   profession: alchemy
   rank: 80
   name: "La pharmacie de la digue"
-  nickname: "Gardien des fioles"
+  nickname: "Remède de la digue"
   intro: "« Chaque soir, la Marée nous coûte des blessés. Remplis-moi les étagères, et n’oublie pas le givre. »"
   outro: "Les étagères débordent. Évariste a dû acheter une deuxième pharmacie ; il fait semblant de s’en plaindre."
   tasks:
@@ -852,17 +867,55 @@
     - { item: frost_tonic, qty: 300 }
   reward: { gold: 30000 }
 
+- id: alchemy_90
+  profession: alchemy
+  rank: 90
+  name: "La brume en bouteille"
+  nickname: "Fume-violet"
+  intro: "« J’ai mis de la brume en bouteille. Elle a fumé violet. J’ai couru. Toi, tu ne cours pas, à ce qu’on dit. Distille ce qu’il faut pour la tenir tranquille. »"
+  outro: "La bouteille fume violet sur l’étagère, sagement. Évariste la surveille du coin de l’œil, et il ne court plus quand il passe devant."
+  tasks:
+    - { item: lantern_draught, qty: 600 }
+    - { item: frost_tonic, qty: 450 }
+  reward: { gold: 45000 }
+
 - id: alchemy_99
   profession: alchemy
   rank: 99
-  name: "L’élixir du bourg"
-  nickname: "Alchimiste du bourg"
-  intro: "« Dernière commande : de quoi tenir une saison entière de Marées. Et de l’huile, pour ceux qui chassent les renforts. »"
+  name: "Le remède à presque tout"
+  nickname: "Panacée"
+  intro: "« Une saison entière de Marées, sans un blessé de trop. Et de l’huile, pour ceux qui chassent les renforts. Après ça, je ferme boutique, ou je fais semblant. »"
   outro: "Le bourg a tenu toute la saison. Évariste a gardé une fiole vide sur sa cheminée, « pour se souvenir »."
   tasks:
     - { item: lantern_draught, qty: 900 }
     - { item: drive_oil, qty: 400 }
   reward: { gold: 60000 }
+
+
+# --- Maîtresse Sidonie (jewelcrafting) : Joaillerie ---
+- id: jewelcrafting_20
+  profession: jewelcrafting
+  rank: 20
+  name: "Les bagues du marché"
+  nickname: "Sertisseur de perles"
+  intro: "« Le marché de printemps arrive. Des bagues de cuivre et des perles de verre : les gens aiment ce qui brille. »"
+  outro: "Tout s’est vendu avant midi. Sidonie a gardé une bague, « pour l’étalage ». Elle la porte depuis."
+  tasks:
+    - { item: copper_ring, qty: 10 }
+    - { item: glass_bead, qty: 120 }
+  reward: { gold: 3000 }
+
+- id: jewelcrafting_40
+  profession: jewelcrafting
+  rank: 40
+  name: "Les fiançailles du bourgmestre"
+  nickname: "Fait-dire-oui"
+  intro: "« Le bourgmestre se fiance. Il veut une bague aux améthystes, et des anneaux pour toute la famille. Toute. »"
+  outro: "La fiancée a dit oui en regardant la bague. Le bourgmestre préfère croire qu’elle le regardait, lui."
+  tasks:
+    - { item: amethyst_ring, qty: 2 }
+    - { item: silver_band, qty: 4 }
+  reward: { gold: 8000 }
 
 - id: jewelcrafting_60
   profession: jewelcrafting
@@ -880,7 +933,7 @@
   profession: jewelcrafting
   rank: 80
   name: "Le trésor de la halle"
-  nickname: "Garde du trésor"
+  nickname: "Brille-trop"
   intro: "« La halle veut un trésor qui se voie de loin. De l’or en lingots, et des chaînes pour l’accrocher. »"
   outro: "Le trésor brille tellement qu’on a dû mettre un rideau devant. Sidonie a choisi le rideau."
   tasks:
@@ -888,17 +941,55 @@
     - { item: gold_chain, qty: 20 }
   reward: { gold: 30000 }
 
+- id: jewelcrafting_90
+  profession: jewelcrafting
+  rank: 90
+  name: "Les pierres sans nom"
+  nickname: "Nomme-les-pierres"
+  intro: "« Les Lointains rendent des pierres que personne n’a jamais vues. Elles n’ont pas de nom. Monte-les sur de l’or, et on verra bien comment elles s’appellent. »"
+  outro: "Tu as monté les pierres sans nom et tu leur en as donné un à chacune. Sidonie les a notés dans son grand livre, à l’encre rouge, celle qu’elle garde pour les choses vraies."
+  tasks:
+    - { item: gold_bar, qty: 225 }
+    - { item: gold_chain, qty: 30 }
+  reward: { gold: 45000 }
+
 - id: jewelcrafting_99
   profession: jewelcrafting
   rank: 99
   name: "La couronne qui n’existe pas"
-  nickname: "Joyau du bourg"
+  nickname: "Couronne sans tête"
   intro: "« Bramo n’a pas de roi. Fais-lui quand même une couronne, au cas où. »"
   outro: "La couronne dort dans un coffre, sans tête pour la porter. Sidonie va la voir le dimanche."
   tasks:
     - { item: gold_chain, qty: 50 }
     - { item: amethyst_ring, qty: 20 }
   reward: { gold: 60000 }
+
+
+# --- Maître Ilian (enchanting) : Enchantement ---
+- id: enchanting_20
+  profession: enchanting
+  rank: 20
+  name: "Les gardes du Cercle"
+  nickname: "Graveur de gardes"
+  intro: "« Les murs du Cercle s’effacent. Des runes de garde, et des parchemins pour les élèves maladroits. »"
+  outro: "Les murs tiennent, les élèves aussi. Ilian a relu chaque glyphe deux fois ; tu en as raté un, il l’a gardé comme souvenir."
+  tasks:
+    - { item: ward_rune, qty: 20 }
+    - { item: glyph_scroll, qty: 40 }
+  reward: { gold: 3000 }
+
+- id: enchanting_40
+  profession: enchanting
+  rank: 40
+  name: "Le cœur des runes"
+  nickname: "Ouvre-portes"
+  intro: "« Il faut des noyaux runiques pour la grande porte, et une robe runée pour celui qui l’ouvrira. »"
+  outro: "La grande porte s’est ouverte toute seule, en grinçant poliment. Ilian dit que c’est normal. Il a quand même sursauté."
+  tasks:
+    - { item: runic_core, qty: 6 }
+    - { item: warded_adept_robe, qty: 1 }
+  reward: { gold: 8000 }
 
 - id: enchanting_60
   profession: enchanting
@@ -918,17 +1009,29 @@
   name: "Les robes de veille"
   nickname: "Veilleur des runes"
   intro: "« Les veilleurs de la digue veulent des robes gardées, et assez de liants pour toute une saison. »"
-  outro: "Les robes de veille ont tenu trois Marées sans une déchirure. Ilian a gravé ton nom sous leur col."
+  outro: "Les robes de veille ont tenu trois Marées sans une déchirure. Les veilleurs touchent leur col avant de monter sur la digue ; c’est devenu une superstition."
   tasks:
     - { item: memory_binder, qty: 40 }
     - { item: warded_adept_robe, qty: 6 }
   reward: { gold: 30000 }
 
+- id: enchanting_90
+  profession: enchanting
+  rank: 90
+  name: "L’encre que la Marée n’efface pas"
+  nickname: "L’Encre qui reste"
+  intro: "« La Marée efface tout, même l’encre. Sauf une, paraît-il, qu’on trace en pensant très fort à ce qu’on veut garder. Je n’y arrive pas. J’y pense trop. »"
+  outro: "Tu as tracé une rune, et le lendemain, après la Marée, elle était toujours là. Ilian l’a regardée longtemps, puis il a sorti un vieux carnet aux pages blanches et t’a demandé de recommencer."
+  tasks:
+    - { item: memory_binder, qty: 60 }
+    - { item: warded_adept_robe, qty: 9 }
+  reward: { gold: 45000 }
+
 - id: enchanting_99
   profession: enchanting
   rank: 99
   name: "Ce que la Marée a pris"
-  nickname: "Mémoire du bourg"
+  nickname: "Souvenance"
   intro: "« Dernière commande : de quoi rendre au bourg ce que la Marée lui a pris. Tout ne reviendra pas. Essaie quand même. »"
   outro: "Le bourg s’est souvenu d’une chanson oubliée. Personne ne sait d’où elle vient. Ilian, si."
   tasks:
@@ -936,11 +1039,37 @@
     - { item: runic_core, qty: 80 }
   reward: { gold: 60000 }
 
+
+# --- Maîtresse Capucine (artificing) : Artificerie ---
+- id: artificing_20
+  profession: artificing
+  rank: 20
+  name: "L’horloge du beffroi"
+  nickname: "Deux minutes d’avance"
+  intro: "« L’horloge du beffroi sonne quand elle veut. Des mécanismes neufs, et des collets pour les rats qui rongent les cordes. »"
+  outro: "L’horloge sonne enfin à l’heure. Capucine l’a avancée de deux minutes, « pour que les gens soient en avance »."
+  tasks:
+    - { item: clockwork, qty: 3 }
+    - { item: spring_snare, qty: 15 }
+  reward: { gold: 3000 }
+
+- id: artificing_40
+  profession: artificing
+  rank: 40
+  name: "La nuit des fusées"
+  nickname: "Fusée de garde"
+  intro: "« La Marée monte plus haut chaque soir. Il nous faut des fusées pour voir venir, et des lanternes pour les guetteurs. »"
+  outro: "Le ciel s’est illuminé au-dessus de la Marée. Les guetteurs ont tout vu venir ; Capucine, elle, regardait surtout les couleurs."
+  tasks:
+    - { item: flare_rocket, qty: 20 }
+    - { item: artificer_lantern, qty: 6 }
+  reward: { gold: 8000 }
+
 - id: artificing_60
   profession: artificing
   rank: 60
   name: "Le feu d’artifice de la fête"
-  nickname: "Pyrotechnicien du bourg"
+  nickname: "Bouquet final"
   intro: "« La fête du bourg veut un ciel en feu, et une horloge qui sonne la minute exacte. Tu vois le genre. »"
   outro: "Le ciel a brûlé à la minute exacte. Capucine a pleuré de joie, puis d’une fusée qui lui est tombée sur le pied."
   tasks:
@@ -952,7 +1081,7 @@
   profession: artificing
   rank: 80
   name: "Les phares de la digue"
-  nickname: "Gardien des phares"
+  nickname: "Agace-géants"
   intro: "« La digue a besoin de lanternes qui ne s’éteignent pas, et de fusées pour prévenir les géants. »"
   outro: "Les phares de la digue brillent toute la nuit. Les géants, paraît-il, les trouvent agaçants."
   tasks:
@@ -960,17 +1089,55 @@
     - { item: artificer_lantern, qty: 30 }
   reward: { gold: 30000 }
 
+- id: artificing_90
+  profession: artificing
+  rank: 90
+  name: "Le rabot qui rabote tout seul"
+  nickname: "Apprivoise-outils"
+  intro: "« On a ramené des Lointains un rabot qui rabote tout seul. Tout. La table, la porte, l’apprenti. Il faut l’apprivoiser, et pour ça, de la lumière et un peu de bruit. »"
+  outro: "Le rabot obéit maintenant. Il ne rabote plus que ce qu’on lui montre, et il ronronne. Capucine l’a appelé Gaspard et refuse qu’on le démonte."
+  tasks:
+    - { item: flare_rocket, qty: 180 }
+    - { item: artificer_lantern, qty: 45 }
+  reward: { gold: 45000 }
+
 - id: artificing_99
   profession: artificing
   rank: 99
   name: "La grande mécanique"
   nickname: "Âme des rouages"
-  intro: "« Ma dernière commande : une machine qui tienne la digue toute seule. Bon. Au moins ses rouages. »"
+  intro: "« Une machine qui tienne la digue toute seule. Bon. Au moins ses rouages. Après, je n’aurai plus rien à inventer, et ça m’inquiète un peu. »"
   outro: "La grande mécanique tourne au cœur de la digue. Elle ne tient rien toute seule, mais elle tourne, et c’est beau."
   tasks:
     - { item: flare_rocket, qty: 300 }
     - { item: clockwork, qty: 80 }
   reward: { gold: 60000 }
+
+
+# --- Maître Gautier (construction) : Construction ---
+- id: construction_20
+  profession: construction
+  rank: 20
+  name: "Le mur du lavoir"
+  nickname: "Fil-à-plomb"
+  intro: "« Le mur du lavoir s’effondre, et l’escalier qui y mène aussi. Des pans de mur et des marches, solides cette fois. »"
+  outro: "Le lavoir tient debout. Mère Grise elle-même aurait approuvé, dit Gautier, avant de vérifier que personne n’avait entendu."
+  tasks:
+    - { item: stone_wall, qty: 4 }
+    - { item: wooden_stairs, qty: 3 }
+  reward: { gold: 3000 }
+
+- id: construction_40
+  profession: construction
+  rank: 40
+  name: "La halle neuve"
+  nickname: "Nom sous l’arche"
+  intro: "« Le bourg veut une halle neuve. Des arches de pierre, des fermes de toit, et pas de fissures. »"
+  outro: "La halle neuve résonne de voix. Gautier a gravé ton nom sous une arche ; personne ne le voit, c’est comme ça qu’il aime les honneurs."
+  tasks:
+    - { item: stone_arch, qty: 4 }
+    - { item: roof_truss, qty: 2 }
+  reward: { gold: 8000 }
 
 - id: construction_60
   profession: construction
@@ -988,7 +1155,7 @@
   profession: construction
   rank: 80
   name: "La halle des clans"
-  nickname: "Architecte des halles"
+  nickname: "Pierre d’angle"
   intro: "« Les clans veulent une halle commune, grande, solide, et belle. Dans cet ordre. »"
   outro: "La halle des clans est grande, solide et belle. Les clans se disputent déjà pour savoir qui l’a vue en premier."
   tasks:
@@ -996,17 +1163,55 @@
     - { item: oak_frame, qty: 30 }
   reward: { gold: 30000 }
 
+- id: construction_90
+  profession: construction
+  rank: 90
+  name: "Le mur sans histoire"
+  nickname: "Mur sans histoire"
+  intro: "« Toute ma vie, j’ai voulu un mur sans histoire. Les miens en ont tous une : une fissure, un oubli, une Marée. Fais-m’en un. Un seul. Avec sa charpente, tant qu’à faire. »"
+  outro: "Le mur est droit, sec, sans une fissure. Il n’a pas d’histoire. Gautier l’a regardé une heure, puis il a dit que c’était la plus belle histoire qu’il connaisse."
+  tasks:
+    - { item: roof_truss, qty: 30 }
+    - { item: oak_frame, qty: 45 }
+  reward: { gold: 45000 }
+
 - id: construction_99
   profession: construction
   rank: 99
   name: "La digue de pierre"
-  nickname: "Maître de la digue"
+  nickname: "Cent Marées"
   intro: "« Dernière commande : une digue qui tienne cent Marées. Je ne la verrai pas tenir cent ans. Toi peut-être. »"
-  outro: "La digue de pierre se dresse contre la brume. Gautier a posé la dernière pierre lui-même, et il a mis ton nom dessous."
+  outro: "La digue de pierre se dresse contre la brume. Gautier a posé la dernière pierre lui-même, puis il t’a tendu sa truelle. Il ne l’avait jamais prêtée."
   tasks:
     - { item: roof_truss, qty: 50 }
     - { item: stone_arch, qty: 40 }
   reward: { gold: 60000 }
+
+
+# --- Maîtresse Ombeline (exploration) : Exploration ---
+- id: exploration_20
+  profession: exploration
+  rank: 20
+  name: "La carte du bois"
+  nickname: "Arpenteur du bois"
+  intro: "« On se perd dans le Bois des Murmures. Des cartes, et ce que les ruines voudront bien te donner. »"
+  outro: "Plus personne ne se perd dans le bois. Ombeline, si : elle préfère, dit-elle, « pour le plaisir de retrouver son chemin »."
+  tasks:
+    - { item: forest_map, qty: 40 }
+    - { item: old_coin, qty: 100 }
+  reward: { gold: 3000 }
+
+- id: exploration_40
+  profession: exploration
+  rank: 40
+  name: "Ce que garde la Lisière"
+  nickname: "Poches pleines"
+  intro: "« Les mineurs veulent des cartes de gisement, et moi, je veux savoir ce qui dort à la Lisière. »"
+  outro: "Tu as rapporté des curiosités qu’Ombeline n’avait jamais vues. Elle en a classé la moitié ; l’autre moitié la regarde encore."
+  tasks:
+    - { item: vein_map, qty: 80 }
+    - { item: watch_curio, qty: 30 }
+  reward: { gold: 8000 }
 
 - id: exploration_60
   profession: exploration
@@ -1024,13 +1229,25 @@
   profession: exploration
   rank: 80
   name: "La carte des Lointains"
-  nickname: "Cartographe des Lointains"
+  nickname: "Rose des vents"
   intro: "« Il nous faut la carte des Lointains, en entier, des gisements aux reliques. Personne ne l’a jamais faite. »"
   outro: "La carte couvre tout un mur de la halle. Il reste un coin blanc ; Ombeline dit que c’est exprès, pour toi."
   tasks:
     - { item: sunken_relic, qty: 250 }
     - { item: vein_map, qty: 300 }
   reward: { gold: 30000 }
+
+- id: exploration_90
+  profession: exploration
+  rank: 90
+  name: "La route qui n’était pas là hier"
+  nickname: "Boussole têtue"
+  intro: "« Chaque saison, la Marée déplace une route. Celle de la Cicatrice a changé trois fois ce mois-ci. Suis-la, note tout, et ne crois pas ta boussole : elle a peur. »"
+  outro: "Tu as suivi la route qui bougeait jusqu’à ce qu’elle se fatigue. Ombeline a refait la carte trois fois en riant, puis elle a gravé une boussole sur ta besace."
+  tasks:
+    - { item: sunken_relic, qty: 375 }
+    - { item: vein_map, qty: 450 }
+  reward: { gold: 45000 }
 
 - id: exploration_99
   profession: exploration

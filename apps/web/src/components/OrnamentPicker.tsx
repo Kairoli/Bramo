@@ -112,7 +112,7 @@ export function OrnamentModal({ onClose }: { onClose: () => void }) {
               </div>
             </div>
           ))}
-          <p className="muted small">D’autres titres se gagnent avec les commandes des maîtres (niveaux 20, 40, 60, 80, 99) et les soirs de Marée.</p>
+          <p className="muted small">D’autres titres se gagnent avec les commandes des maîtres (niveaux 20, 40, 60, 80, 90, 99) et les soirs de Marée.</p>
         </div>
       )}
 

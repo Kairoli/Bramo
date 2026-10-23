@@ -21,7 +21,7 @@
 - id: carpentry_90
   profession: carpentry
   rank: 90
-  reserved: true
+  trial: carpentry_90
 - id: carpentry_99
   profession: carpentry
   rank: 99
@@ -45,7 +45,7 @@
 - id: cooking_90
   profession: cooking
   rank: 90
-  reserved: true
+  trial: cooking_90
 - id: cooking_99
   profession: cooking
   rank: 99
@@ -69,7 +69,7 @@
 - id: fishing_90
   profession: fishing
   rank: 90
-  reserved: true
+  trial: fishing_90
 - id: fishing_99
   profession: fishing
   rank: 99
@@ -93,7 +93,7 @@
 - id: herbalism_90
   profession: herbalism
   rank: 90
-  reserved: true
+  trial: herbalism_90
 - id: herbalism_99
   profession: herbalism
   rank: 99
@@ -117,7 +117,7 @@
 - id: mining_90
   profession: mining
   rank: 90
-  reserved: true
+  trial: mining_90
 - id: mining_99
   profession: mining
   rank: 99
@@ -141,7 +141,7 @@
 - id: smithing_90
   profession: smithing
   rank: 90
-  reserved: true
+  trial: smithing_90
 - id: smithing_99
   profession: smithing
   rank: 99
@@ -165,7 +165,7 @@
 - id: woodcutting_90
   profession: woodcutting
   rank: 90
-  reserved: true
+  trial: woodcutting_90
 - id: woodcutting_99
   profession: woodcutting
   rank: 99

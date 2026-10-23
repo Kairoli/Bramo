@@ -143,7 +143,7 @@ describe('API', () => {
     expect(res.json.message).toBe('Niveau 20 requis pour cette commande.');
     const state = (await call('GET', '/api/state')).json as StateResponse;
     expect(state.state.trials.mining_20).toBe('locked');
-    expect(state.state.skills.mining?.next).toMatchObject({ rank: 20, trialId: 'mining_20', nickname: 'Gratteur de galeries', reached: false });
+    expect(state.state.skills.mining?.next).toMatchObject({ rank: 20, trialId: 'mining_20', nickname: 'Casse-cailloux', reached: false });
     expect(state.state.skills.mining?.nickname).toBe('Gratte-sol');
   });
 

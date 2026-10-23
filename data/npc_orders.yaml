@@ -30,9 +30,9 @@
 - {id: fishing_pike, profession: fishing, level: 35, client: Maître Naël, text: "« La mer a donné. À toi de la remercier. »", items: [{item: pike, qty: 50}], gold: 2440}
 - {id: fishing_lantern_fish, profession: fishing, level: 50, client: Maître Naël, text: "« Pas de poisson, pas de dîner. C’est la loi. »", items: [{item: lantern_fish, qty: 40}], gold: 2940}
 - {id: fishing_abyss_ray, profession: fishing, level: 70, client: Maître Naël, text: "« La mer a donné. À toi de la remercier. »", items: [{item: abyss_ray, qty: 35}], gold: 3780}
-- {id: smithing_bronze_bar, profession: smithing, level: 1, client: Maître Brunhild, text: "« Des lingots propres, sans scories. Je regarde. »", items: [{item: bronze_bar, qty: 10}], gold: 1060}
-- {id: smithing_iron_bar, profession: smithing, level: 10, client: Maître Brunhild, text: "« L’enclume est vide, ça se voit. »", items: [{item: iron_bar, qty: 10}], gold: 2300}
-- {id: smithing_steel_bar, profession: smithing, level: 20, client: Maître Brunhild, text: "« Des lingots propres, sans scories. Je regarde. »", items: [{item: steel_bar, qty: 10}], gold: 4420}
+- {id: smithing_bronze_bar, profession: smithing, level: 1, client: Maîtresse Brunhild, text: "« Des lingots propres, sans scories. Je regarde. »", items: [{item: bronze_bar, qty: 10}], gold: 1060}
+- {id: smithing_iron_bar, profession: smithing, level: 10, client: Maîtresse Brunhild, text: "« L’enclume est vide, ça se voit. »", items: [{item: iron_bar, qty: 10}], gold: 2300}
+- {id: smithing_steel_bar, profession: smithing, level: 20, client: Maîtresse Brunhild, text: "« Des lingots propres, sans scories. Je regarde. »", items: [{item: steel_bar, qty: 10}], gold: 4420}
 - {id: carpentry_pine_plank, profession: carpentry, level: 1, client: Maître Joris, text: "« Des planches droites, s’il te plaît. Droites. »", items: [{item: pine_plank, qty: 20}], gold: 1060}
 - {id: carpentry_pine_handle, profession: carpentry, level: 1, client: Maître Joris, text: "« Le comptoir se remplit de sciure, mais pas de bois. »", items: [{item: pine_handle, qty: 20}], gold: 780}
 - {id: carpentry_oak_plank, profession: carpentry, level: 10, client: Maître Joris, text: "« Des planches droites, s’il te plaît. Droites. »", items: [{item: oak_plank, qty: 20}], gold: 1820}
@@ -77,7 +77,7 @@
 - {id: exploration_sunken_relic, profession: exploration, level: 60, client: Maîtresse Ombeline, text: "« Les cartes du bourg sont fausses. Rapporte-m’en des vraies. »", items: [{item: sunken_relic, qty: 40}], gold: 3300}
 
 # --- 23 octobre, nuit (simulation de serveur) : les quatre derniers objets sans débouché trouvent preneur au Comptoir. ---
-- {id: smithing_iron_sword, profession: smithing, level: 20, client: Maître Brunhild, text: "« La garde du bourg manque de lames. Une bonne, pas une jolie. »", items: [{item: iron_sword, qty: 1}], gold: 2100}
+- {id: smithing_iron_sword, profession: smithing, level: 20, client: Maîtresse Brunhild, text: "« La garde du bourg manque de lames. Une bonne, pas une jolie. »", items: [{item: iron_sword, qty: 1}], gold: 2100}
 - {id: tanning_tough_leather, profession: tanning, level: 15, client: Maître Hugon, text: "« Le sellier en veut du solide. Du sanglier, rien d’autre. »", items: [{item: tough_leather, qty: 20}], gold: 1680}
 - {id: tailoring_linen_hood, profession: tailoring, level: 5, client: Maîtresse Lise, text: "« Les pêcheurs rentrent trempés. Des capuches, vite. »", items: [{item: linen_hood, qty: 1}], gold: 1960}
 - {id: tailoring_linen_gloves, profession: tailoring, level: 5, client: Maîtresse Lise, text: "« Des mitaines pour les cueilleuses de l’aube. »", items: [{item: linen_gloves, qty: 1}], gold: 1960}

@@ -55,6 +55,14 @@ Bramo est un **idle-RPG multijoueur jouable dans le navigateur**, dans l'esprit 
 
 ## 5. État du projet (à jour au 23 octobre 2026)
 
+### Fait — passe éditoriale des titres et commandes de maître, palier 90 (24 octobre)
+
+- **Demande de Louis** : corriger les faiblesses des titres, surnoms et commandes des 17 métiers (répétitions « Chuchoteur / Gardien / Seigneur / Maître / Fléau de… », progression du 20 au 99), compléter, garder ce qui marche ; ajouter un **palier 90** (les ornements du 90 étaient prévus). Rapport et règles : [`docs/design/titres/passe-editoriale.md`](docs/design/titres/passe-editoriale.md) ; tableau des surnoms : `docs/design/rangs.md`.
+- **`data/trials.yaml`** est régénéré par `docs/design/titres/passe-editoriale.mjs` (corrections ciblées + commandes du 90 ; identifiants, quantités et récompenses inchangés) : 58 commandes retouchées (surtout le surnom), 17 nouvelles au 90, **102 commandes**. « Nom de Y » passe de 82 % à 55 % des titres ; plus de « Chuchoteur », « Gardien », « Seigneur », « Fléau », ni de roi ou de nains (absents du monde) ; plus de surnom seulement au féminin ; le surnom vient de l'histoire de la commande.
+- **Palier 90** : `settings.ranks.levels` = 20, 40, 60, 80, 90, 99 ; une commande par métier (matières du 80 × 1,5, 45 000 or, à équilibrer), tournée vers ce que la Marée a laissé ; les sept ornements du 90 sortent de la réserve (`ornement/manifest.json`, `node ornement/tools/publish.mjs`).
+- Surnoms de départ : Agriculture « Arrache-chiendent », Exploration « Plan à l'envers ». **Maîtresse Brunhild** (ses histoires disaient « elle ») ; la salle du métier accorde « de la maîtresse ».
+- **À trancher par Louis** : l'ornement du 80 de Minage garde ses motifs « nains » sous le nouveau titre « Salué par la Taupinière ».
+
 ### Fait — retours de Louis du 24 octobre : sac, build, titres, Marée, carte de la route
 
 - **Bourg** : le nom d'un joueur survolé apparaissait deux fois (sa carte, et la bulle grise du navigateur) : plus de `title` sur les silhouettes, l'étiquette s'efface au survol.

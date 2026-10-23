@@ -11,7 +11,7 @@ xp:
 # (décision de Louis du 21 octobre : « seulement pour un titre ») ; true = le niveau s'arrête au palier jusqu'à la commande,
 # l'XP continue de s'accumuler et se débloque à la validation (rien n'est perdu).
 ranks:
-  levels: [20, 40, 60, 80, 99]
+  levels: [20, 40, 60, 80, 90, 99]
   gatesLevel: false
 
 activity:

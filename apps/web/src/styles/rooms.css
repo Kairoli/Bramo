@@ -2195,60 +2195,106 @@
   color: #1a1208;
 }
 .look-picker {
-  display: grid;
+  display: flex;
+  flex-direction: column;
   gap: 10px;
+  flex: 1;
   min-height: 0;
 }
-.look-rows {
+.look-hint {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 13px;
+  color: var(--text-muted);
   display: grid;
-  gap: 6px;
-  max-height: 100%;
-  overflow-y: auto;
+  gap: 4px;
 }
-.look-row {
-  background: var(--sunken);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-}
-.look-row.open {
-  border-color: var(--action);
-}
-.look-head {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  width: 100%;
-  background: none;
-  border: 0;
-  color: inherit;
-  font: inherit;
-  text-align: left;
-  padding: 6px 8px;
-  cursor: pointer;
-  --slot: 42px;
-}
-.look-options {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  padding: 0 8px 8px;
-}
-.look-option {
+.look-hint li {
   display: flex;
   align-items: center;
   gap: 8px;
-  background: var(--panel);
+}
+.look-step {
+  display: inline-grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--action);
+  color: #1a1208;
+  font-weight: 800;
+  font-size: 12px;
+}
+.look-current {
+  display: grid;
+  gap: 6px;
+}
+.look-subtabs {
+  display: grid !important;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+}
+.look-choices {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 8px;
+  align-content: start;
+  padding-right: 4px;
+}
+.look-card {
+  display: grid;
+  justify-items: center;
+  gap: 4px;
+  padding: 8px 6px 10px;
+  background: var(--sunken);
   border: 1px solid var(--border);
-  border-radius: 8px;
+  border-radius: 12px;
   color: inherit;
   font: inherit;
-  font-size: 12px;
-  padding: 4px 8px 4px 4px;
+  font-size: 13px;
+  text-align: center;
   cursor: pointer;
-  --slot: 36px;
+  transition: border-color 0.12s, transform 0.12s;
 }
-.look-option.active {
+.look-card:hover:not(:disabled) {
   border-color: var(--action);
+  transform: translateY(-1px);
+}
+.look-card.active {
+  border-color: var(--action);
+  background: color-mix(in srgb, var(--action) 12%, var(--sunken));
+  cursor: default;
+}
+.look-card-thumb {
+  width: 86px;
+  height: 86px;
+  display: grid;
+  place-items: center;
+}
+.look-card-thumb .part-thumb {
+  width: 100%;
+  height: 100%;
+}
+.look-foot {
+  margin: 0;
+}
+/* Cases autour du personnage en mode Apparence : on les touche pour choisir l'emplacement. */
+.equip-slot.pickable {
+  cursor: pointer;
+}
+.equip-slot.pickable:hover {
+  border-color: var(--action);
+}
+.equip-slot.picked {
+  border-color: var(--action);
+  box-shadow: 0 0 0 2px var(--action), 0 0 16px color-mix(in srgb, var(--action) 45%, transparent);
+}
+.equip-slot.pick-off {
+  opacity: 0.35;
 }
 .equip-list[hidden] {
   display: none;

@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
-import type { GearView, Item } from '@bramo/shared';
+import type { GearView, Item, Slot } from '@bramo/shared';
 import { api } from '../api';
 import { ClassModal, OutfitModal, STYLE_NAMES } from '../components/ClassChoice';
 import { EnergyButton } from '../components/EnergyButton';
 import { useGame } from '../game/GameContext';
 import { duration, num, pct, signedPct } from '../format';
 import { Bar, FAMILY_COLOR, ItemIcon } from '../components/ui';
-import { AppearancePicker } from '../components/AppearancePicker';
+import { AppearancePicker, LOOK_GROUPS, lookGroupOf } from '../components/AppearancePicker';
 import { GearPanel } from '../components/GearPanel';
 import { PaperDoll, PartThumb, useEquipment } from '../components/equipment';
 import { OrnamentPlate, ornamentTitle } from '../components/Ornament';
@@ -25,6 +25,8 @@ export function CharacterRoom() {
   const ornament = state.ornament ? content.ornaments[state.ornament] : undefined;
   /** « Équipement » : ce qui compte pour le build ; « Apparence » : l'aspect de chaque pièce, sans effet sur le build. */
   const [mode, setMode] = useState<'gear' | 'look'>('gear');
+  // Mode Apparence : l'emplacement dont on choisit l'apparence (touché autour du personnage).
+  const [lookSlot, setLookSlot] = useState<Slot>('headwear');
   const [tab, setTab] = useState<'gear' | 'bag'>('gear');
   const [gear, setGear] = useState<GearView | null>(null);
   useEffect(() => {
@@ -43,7 +45,7 @@ export function CharacterRoom() {
         {mode === 'look' ? (
           <>
             <span className="eyebrow">Apparence</span>
-            <AppearancePicker />
+            <AppearancePicker slot={lookSlot} onSlot={setLookSlot} />
           </>
         ) : (
           <>
@@ -89,7 +91,16 @@ export function CharacterRoom() {
             </div>
           )}
         </header>
-        <PaperDoll size="page" mode={mode} gear={gear} />
+        <PaperDoll
+          size="page"
+          mode={mode}
+          gear={gear}
+          pick={
+            mode === 'look'
+              ? { selected: lookGroupOf(lookSlot), pickable: (id) => !!LOOK_GROUPS[id], onPick: (id) => setLookSlot(LOOK_GROUPS[id]!.slots[0]!.slot) }
+              : undefined
+          }
+        />
         <footer className="char-stage-foot">
           <button className="btn btn-sm" onClick={() => setClassOpen(true)}>
             Changer de classe

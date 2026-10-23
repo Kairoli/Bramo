@@ -200,14 +200,21 @@ export function EquipSlot({
   entry,
   side,
   onHover,
+  pick,
 }: {
   entry: EquipEntry;
   side: 'left' | 'right';
   onHover?: (slots: Slot[] | null) => void;
+  /** Case à choisir (mode Apparence) : allumée si c'est l'emplacement choisi, éteinte si elle n'a pas d'apparence. */
+  pick?: { active: boolean; off: boolean; onPick: () => void };
 }) {
   return (
     <div
-      className={`equip-slot equip-${entry.kind}${entry.name ? '' : ' empty'}`}
+      className={`equip-slot equip-${entry.kind}${entry.name ? '' : ' empty'}${pick ? (pick.off ? ' pick-off' : ' pickable') : ''}${pick?.active ? ' picked' : ''}`}
+      role={pick && !pick.off ? 'button' : undefined}
+      aria-pressed={pick && !pick.off ? pick.active : undefined}
+      onClick={pick && !pick.off ? pick.onPick : undefined}
+      onKeyDown={pick && !pick.off ? (e) => (e.key === 'Enter' || e.key === ' ') && (e.preventDefault(), pick.onPick()) : undefined}
       style={entry.rarity ? ({ '--rc': `var(--r-${entry.rarity})` } as React.CSSProperties) : undefined}
       tabIndex={0}
       onMouseEnter={() => onHover?.(entry.highlight)}
@@ -235,7 +242,18 @@ export function EquipSlot({
 }
 
 /** Le personnage en entier, entouré de ce qu'il porte. Survoler un emplacement met la pièce en valeur. */
-export function PaperDoll({ size, mode = 'look', gear = null }: { size: 'card' | 'page'; mode?: 'gear' | 'look'; gear?: GearView | null }) {
+export function PaperDoll({
+  size,
+  mode = 'look',
+  gear = null,
+  pick,
+}: {
+  size: 'card' | 'page';
+  mode?: 'gear' | 'look';
+  gear?: GearView | null;
+  /** Mode Apparence de la salle Personnage : les cases servent à choisir l'emplacement dont on change l'apparence. */
+  pick?: { selected: EquipSlotId | undefined; pickable: (id: EquipSlotId) => boolean; onPick: (id: EquipSlotId) => void };
+}) {
   const { look } = useGame();
   const base = useEquipment();
   const equipment = mode === 'gear' ? gearEntries(base, gear) : base;
@@ -244,7 +262,7 @@ export function PaperDoll({ size, mode = 'look', gear = null }: { size: 'card' |
     <div className={`doll doll-${size}`}>
       <div className="doll-col">
         {(size === 'card' ? CARD_LEFT : DOLL_LEFT).map((id) => (
-          <EquipSlot key={id} entry={equipment[id]} side="left" onHover={setHighlight} />
+          <EquipSlot key={id} entry={equipment[id]} side="left" onHover={setHighlight} pick={pick && { active: pick.selected === id, off: !pick.pickable(id), onPick: () => pick.onPick(id) }} />
         ))}
       </div>
       <div className="doll-figure">
@@ -253,7 +271,7 @@ export function PaperDoll({ size, mode = 'look', gear = null }: { size: 'card' |
       </div>
       <div className="doll-col">
         {(size === 'card' ? CARD_RIGHT : DOLL_RIGHT).map((id) => (
-          <EquipSlot key={id} entry={equipment[id]} side="right" onHover={setHighlight} />
+          <EquipSlot key={id} entry={equipment[id]} side="right" onHover={setHighlight} pick={pick && { active: pick.selected === id, off: !pick.pickable(id), onPick: () => pick.onPick(id) }} />
         ))}
       </div>
     </div>

@@ -30,8 +30,10 @@ export function GearWorkshop({ profession, onClose }: { profession: string; onCl
   const name = content.professions.find((p) => p.id === profession)?.name ?? profession;
   const slots = useMemo(() => [...new Set((data?.models ?? []).map((m) => m.slot))], [data]);
   const list = (data?.models ?? []).filter((m) => (!slot || m.slot === slot) && (!cls || m.classes.includes(cls)) && (!rarity || m.rarity === rarity));
-  // Les plus hauts paliers accessibles d'abord : c'est ce qu'on vient chercher.
-  const shown = [...list].sort((a, b) => b.tier - a.tier || a.slot.localeCompare(b.slot)).slice(0, 40);
+  // Ce qu'on peut fabriquer d'abord (le plus haut palier en tête), puis ce qui vient ensuite.
+  const lv = data?.level ?? 1;
+  const open = (m: (typeof list)[number]) => (m.recipe.level <= lv ? 1 : 0);
+  const shown = [...list].sort((a, b) => open(b) - open(a) || b.tier - a.tier || a.slot.localeCompare(b.slot)).slice(0, 40);
 
   return (
     <Modal onClose={onClose} className="workshop-modal">

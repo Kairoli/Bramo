@@ -63,3 +63,10 @@
 - {id: explore_mountains, name: Sonder les Monts de Brisefer, profession: exploration, category: expeditions, level: 25, durationSec: 16, xp: 2.4, outputs: [{item: vein_map, qty: 1}]}
 - {id: explore_watch, name: Explorer la Lisière des veilleurs, profession: exploration, category: expeditions, level: 40, durationSec: 20, xp: 3.6, outputs: [{item: watch_curio, qty: 1}]}
 - {id: explore_archives, name: Plonger aux Archives englouties, profession: exploration, category: expeditions, level: 60, durationSec: 24, xp: 5.6, outputs: [{item: sunken_relic, qty: 1}]}
+
+# --- Bois nobles (23 octobre, nuit) : le Bûcheronnage continue au-delà du niveau 40, pour la Menuiserie des hauts paliers. ---
+- {id: cut_hornbeam, name: Charme, profession: woodcutting, category: logs, level: 50, durationSec: 22, xp: 4.5, outputs: [{item: hornbeam_log, qty: 1}]}
+- {id: cut_cedar, name: Cèdre, profession: woodcutting, category: logs, level: 60, durationSec: 24, xp: 5.6, outputs: [{item: cedar_log, qty: 1}]}
+- {id: cut_ebony, name: Ébène, profession: woodcutting, category: logs, level: 70, durationSec: 26, xp: 6.9, outputs: [{item: ebony_log, qty: 1}]}
+- {id: cut_shadowwood, name: Bois d'ombre, profession: woodcutting, category: logs, level: 80, durationSec: 28, xp: 8.4, outputs: [{item: shadowwood_log, qty: 1}]}
+- {id: cut_dawnwood, name: Bois d'aurore, profession: woodcutting, category: logs, level: 90, durationSec: 30, xp: 10.2, outputs: [{item: dawnwood_log, qty: 1}]}

@@ -34,6 +34,8 @@ for (const r of recipes) for (const i of r.inputs) used.add(i.item);
 for (const t of Object.values(content.trials)) for (const i of t.tasks) used.add(i.item);
 for (const o of Object.values(content.npcOrders)) for (const i of o.items) used.add(i.item);
 for (const b of Object.values(content.buildings)) for (const i of b.base.items) used.add(i.item);
+for (const list of Object.values(content.gearCrafting?.materials ?? {})) for (const m of list) used.add(m.item);
+for (const t of content.combat?.tide?.tides ?? []) for (const w of t.work.items) used.add(w.item);
 for (const it of Object.values(items)) for (const m of it.repair?.materials ?? []) used.add(m.item);
 
 // 1. Objets sans source, ou sans débouché.

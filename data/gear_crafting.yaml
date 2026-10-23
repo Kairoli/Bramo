@@ -7,8 +7,8 @@
 #   une matière d'appoint de bas palier, des quantités selon l'emplacement, le palier et la rareté (§3.2 du document).
 # - Niveau requis = le palier du modèle ; on choisit le modèle (donc la rareté et l'orientation) ; les lignes se tirent à la
 #   fabrication, avec une chance de chef-d'œuvre (settings.gear.masterpiece) qui grandit avec l'avance de l'artisan.
-# - Pour l'instant, la matière principale est la plus haute qui existe pour ce métier (le reste des chaînes viendra) : au-delà,
-#   la même matière, en plus grande quantité.
+# - La Forge et la Menuiserie ont une matière par palier (1 à 90) ; la Tannerie, la Couture, la Joaillerie et l'Enchantement
+#   reprennent leur plus haute matière au-delà, en plus grande quantité (leurs chaînes hautes restent à écrire).
 
 # Métier qui fabrique chaque famille de modèle.
 families:
@@ -46,13 +46,13 @@ secondary:
 
 # Matière principale de chaque métier, par palier (la plus haute au plus égale au palier du modèle).
 materials:
-  smithing: [{ tier: 1, item: bronze_bar }, { tier: 10, item: iron_bar }, { tier: 20, item: steel_bar }]
-  tanning: [{ tier: 1, item: small_leather }, { tier: 15, item: tough_leather }, { tier: 20, item: thick_leather }, { tier: 50, item: heavy_leather }]
+  smithing: [{ tier: 1, item: bronze_bar }, { tier: 10, item: iron_bar }, { tier: 20, item: steel_bar }, { tier: 30, item: tempered_steel_bar }, { tier: 40, item: mithril_bar }, { tier: 50, item: reinforced_mithril_bar }, { tier: 60, item: orichalcum_bar }, { tier: 70, item: azurite_bar }, { tier: 80, item: umbral_bar }, { tier: 90, item: astralite_bar }]
+  tanning: [{ tier: 1, item: small_leather }, { tier: 15, item: tough_leather }, { tier: 20, item: thick_leather }, { tier: 35, item: wolf_fur }, { tier: 50, item: heavy_leather }, { tier: 70, item: elk_leather }]
   tailoring: [{ tier: 1, item: linen_cloth }, { tier: 15, item: blue_linen }, { tier: 35, item: cotton_cloth }]
-  carpentry: [{ tier: 1, item: pine_plank }, { tier: 10, item: oak_plank }, { tier: 20, item: bow_stave }]
+  carpentry: [{ tier: 1, item: pine_plank }, { tier: 10, item: oak_plank }, { tier: 20, item: ash_plank }, { tier: 30, item: yew_plank }, { tier: 40, item: moonwood_plank }, { tier: 50, item: hornbeam_plank }, { tier: 60, item: cedar_plank }, { tier: 70, item: ebony_plank }, { tier: 80, item: shadowwood_plank }, { tier: 90, item: dawnwood_plank }]
   jewelcrafting: [{ tier: 1, item: copper_wire }, { tier: 25, item: silver_bar }, { tier: 50, item: gold_bar }]
   jewelcrafting_beads: [{ tier: 1, item: glass_bead }]
-  enchanting: [{ tier: 1, item: rune_dust }, { tier: 15, item: ward_rune }, { tier: 35, item: runic_core }]
+  enchanting: [{ tier: 1, item: rune_dust }, { tier: 15, item: ward_rune }, { tier: 35, item: runic_core }, { tier: 45, item: memory_binder }]
 
 # Quantité de matière principale au palier 1 (un plastron, c'est beaucoup de métal ; un anneau, peu).
 slotQty: { torso: 18, legs: 14, head: 10, hands: 8, feet: 8, cape: 8, belt: 6, necklace: 6, ring: 4, weapon: 16 }

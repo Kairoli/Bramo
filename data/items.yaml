@@ -248,3 +248,28 @@
 - {id: wedge_powder, name: Poudre de coin, category: preparation, value: 1, prep: {tool: wedge_powder, minutes: 60}}
 - {id: synchrony_tonic, name: Tonique de synchronie, category: preparation, value: 1, prep: {tool: synchrony_tonic, minutes: 60}}
 - {id: recovery_infusion, name: Infusion de reprise, category: preparation, value: 1, prep: {tool: recovery_infusion, minutes: 60}}
+
+# --- Matières des hauts paliers (23 octobre, nuit) : la Forge fond enfin les minerais du Minage au-delà de l'acier, la
+#     Menuiserie débite les bois nobles, la Tannerie tanne l'élan. Elles servent à l'atelier d'équipement
+#     (data/gear_crafting.yaml), une par palier comme le propose butin-et-recettes.md §3.3. ---
+- {id: tempered_steel_bar, name: Lingot d'acier trempé, category: bar, value: 3}
+- {id: mithril_bar, name: Lingot de mithril, category: bar, value: 2}
+- {id: reinforced_mithril_bar, name: Lingot de mithril renforcé, category: bar, value: 4}
+- {id: orichalcum_bar, name: Lingot d'orichalque, category: bar, value: 3}
+- {id: azurite_bar, name: Lingot d'azurite, category: bar, value: 3}
+- {id: umbral_bar, name: Lingot de sombracier, category: bar, value: 4}
+- {id: astralite_bar, name: Lingot d'astralite, category: bar, value: 4}
+- {id: ash_plank, name: Planche de frêne, category: plank, value: 1}
+- {id: yew_plank, name: Planche d'if, category: plank, value: 1}
+- {id: moonwood_plank, name: Planche de bois de lune, category: plank, value: 1}
+- {id: hornbeam_log, name: Bûche de charme, category: log, value: 1}
+- {id: cedar_log, name: Bûche de cèdre, category: log, value: 1}
+- {id: ebony_log, name: Bûche d'ébène, category: log, value: 1}
+- {id: shadowwood_log, name: Bois d'ombre, category: log, value: 1}
+- {id: dawnwood_log, name: Bois d'aurore, category: log, value: 1}
+- {id: hornbeam_plank, name: Planche de charme, category: plank, value: 1}
+- {id: cedar_plank, name: Planche de cèdre, category: plank, value: 1}
+- {id: ebony_plank, name: Planche d'ébène, category: plank, value: 1}
+- {id: shadowwood_plank, name: Planche de bois d'ombre, category: plank, value: 1}
+- {id: dawnwood_plank, name: Planche de bois d'aurore, category: plank, value: 1}
+- {id: elk_leather, name: Cuir d'élan, category: leather, value: 3}

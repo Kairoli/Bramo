@@ -578,6 +578,15 @@ export function runServer(content: Content, input: ServerOptions): ServerResult 
       }
     }
   };
+  /** Une offre qui ne part pas baisse de 10 % par jour, jusqu'à 70 % du coût de ses matières. */
+  const agePrices = (day: number) => {
+    for (const o of vitrine) {
+      if (o.day >= day) continue;
+      const r = gearRecipe(o.gear.model, content);
+      const cost = r ? r.inputs.reduce((sum, i) => sum + i.qty * ref(i.item), 0) : 20;
+      o.price = Math.max(Math.round(cost * 0.7), 10, Math.round(o.price * 0.9));
+    }
+  };
   /** Un combattant achète à la vitrine ce qui améliore un emplacement (palier puis rareté), s'il en a les moyens. */
   const shopVitrine = (b: Bot) => {
     if (!b.state.classId || b.persona.skill < 0.2) return;
@@ -1005,6 +1014,9 @@ export function runServer(content: Content, input: ServerOptions): ServerResult 
       if (tr && b.persona.trials) for (const task of tr.tasks) keep.add(task.item);
     }
     if (b.professions.includes('jewelcrafting')) for (const i of Object.values(content.items)) if (i.category === 'vestige') keep.add(i.id);
+    // Les éclats de marée se gardent pour la tenue (un spéculateur ou un bradeur les vend quand même).
+    const shard = content.combat?.tide?.shards.item;
+    if (shard && b.persona.priceStyle !== 'speculator' && b.persona.priceStyle !== 'dumper') keep.add(shard);
     return keep;
   };
   const sellSurplus = (b: Bot) => {
@@ -1192,6 +1204,7 @@ export function runServer(content: Content, input: ServerOptions): ServerResult 
       step(b, dayStart + DAY);
     }
     for (const h of opts.hooks) h.onDayEnd?.(ctx, day);
+    agePrices(day);
     // Relevés du jour.
     let gold = 0;
     for (const b of active) gold += b.state.gold;

@@ -1,3 +1,4 @@
+import type { TideAward } from './combat/tide.js';
 import type { Appearance } from './schemas/art.js';
 import { z } from 'zod';
 import type { Content } from './schemas/content.js';
@@ -354,7 +355,7 @@ export interface TideView {
     bestNights: number;
   };
   counts: Record<string, number>;
-  last: { day: number; name: string; participants: number; points: number; objective: number; thresholds: number; of: number } | null;
+  last: { day: number; name: string; participants: number; points: number; objective: number; thresholds: number; of: number; recap: TideAward[] } | null;
   /**
    * Mécène de la Marée : la Marée qu'une offre financerait (ce soir, ou demain si celle de ce soir est finie), son prix,
    * ses mécènes déjà inscrits, le bonus d'éclats ; les soirs que ce joueur a offerts et son prochain titre.
@@ -399,6 +400,8 @@ export interface TideLiveView {
   total: number;
   /** Points de la digue (estimés pendant la Marée, réglés après), objectif, seuils (part de l'objectif) et seuils franchis. */
   progress: { points: number; objective: number; shares: number[]; lit: number };
+  /** Récapitulatif de fin de soirée (le meilleur de chaque rôle), une fois la Marée réglée. */
+  recap: TideAward[];
   /** Démonstration (développement) : une foule d'essai, la Marée qui monte sur dix minutes. */
   demo: boolean;
 }

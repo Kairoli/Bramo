@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { loadContent } from '../src/node/index.js';
 import { emptyCombat } from '../src/combat/progress.js';
 import {
+  tideRecap,
   buyTideItem,
   claimWeeklyChests,
   deliverTideWork,
@@ -144,5 +145,18 @@ describe('la Marée du soir', () => {
     const t = tide.titles[0]!;
     for (let k = 0; k < t.nights; k++) recordTideNight(s, { day: 30_000 + k * 3, tide: t.tide, points: 50, shards: 50, live: false, channel: 'combat' }, content);
     expect(tideTitles(s, content)).toContain(t.title);
+  });
+});
+
+describe('récapitulatif de fin de soirée', () => {
+  it('cite le meilleur de chaque rôle, jamais quelqu’un pour zéro', () => {
+    const recap = tideRecap([
+      { characterId: 1, name: 'Forge', points: 90, channel: 'combat', stats: { damage: 50_000, healing: 0, shielding: 8000, control: 100 } },
+      { characterId: 2, name: 'Rune', points: 70, channel: 'combat', stats: { damage: 30_000, healing: 6000, shielding: 0, control: 4000 } },
+      { characterId: 3, name: 'Pelle', points: 84, channel: 'work' },
+    ]);
+    const by = Object.fromEntries(recap.map((a) => [a.key, a.name]));
+    expect(by).toEqual({ mvp: 'Forge', damage: 'Forge', healing: 'Rune', shielding: 'Forge', control: 'Rune', work: 'Pelle' });
+    expect(tideRecap([{ characterId: 1, name: 'Seul', points: 60, channel: 'combat', stats: { damage: 10, healing: 0, shielding: 0, control: 0 } }]).map((a) => a.key)).toEqual(['mvp', 'damage']);
   });
 });

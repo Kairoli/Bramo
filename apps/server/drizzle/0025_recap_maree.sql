@@ -1,0 +1,1 @@
+ALTER TABLE "tide_days" ADD COLUMN "recap" jsonb DEFAULT '[]'::jsonb NOT NULL;

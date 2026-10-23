@@ -1,5 +1,5 @@
 import { type CSSProperties, memo, useCallback, useEffect, useId, useMemo, useRef, useState } from 'react';
-import type { TideLiveFighter, TideLiveView } from '@bramo/shared';
+import type { TideAward, TideLiveFighter, TideLiveView } from '@bramo/shared';
 import { useContent } from '../game/ContentContext';
 import { Character, colorVars } from '../rig/Character';
 import { BESTIARY } from '../combat-fx/bestiary';
@@ -147,9 +147,48 @@ export function TideLive({ view }: { view: TideLiveView }) {
       </div>
       {view.phase === 'idle' && <div className="tide-live-banner">Inscriptions ce soir à {clock(view.registrationStart)} · la Marée monte à {clock(view.start)}</div>}
       {view.phase === 'gathering' && <div className="tide-live-banner">La Marée monte dans {Math.max(1, Math.round((view.start - now) / 60_000))} min</div>}
+      {/* Le récapitulatif du soir : une fois la Marée finie (et, en démonstration, pendant la dernière minute). */}
+      {(view.phase === 'done' || (view.demo && ((view.serverTime - view.start) / (view.end - view.start) > 0.88 || new URLSearchParams(location.search).has('recap')))) && view.recap.length > 0 && (
+        <div className="tide-live-recap">
+          <span className="eyebrow">Récap de la Marée</span>
+          <TideRecap awards={view.recap} />
+        </div>
+      )}
       {view.phase === 'done' && total > 0 && <div className="tide-live-banner">La digue a tenu : {pr.lit} lanterne{pr.lit > 1 ? 's' : ''} allumée{pr.lit > 1 ? 's' : ''}</div>}
       {total === 0 && view.phase !== 'idle' && <div className="tide-live-banner">{view.phase === 'done' ? 'Personne ne s’était inscrit ce soir.' : 'Personne n’est encore inscrit ce soir.'}</div>}
     </div>
+  );
+}
+
+/** Icône de chaque distinction du récapitulatif. */
+const AWARD_ICON: Record<TideAward['key'], string> = {
+  mvp: 'M12 2l2.9 6.3 6.9.7-5.2 4.6 1.5 6.8L12 17l-6.1 3.4 1.5-6.8L2.2 9l6.9-.7z',
+  damage: 'M14.5 17.5L3 6V3h3l11.5 11.5M13 19l6-6M16 16l4 4M19 21l2-2',
+  healing: 'M12 21s-7-4.5-9.5-9A5.5 5.5 0 0 1 12 5a5.5 5.5 0 0 1 9.5 7c-2.5 4.5-9.5 9-9.5 9zM12 9v6M9 12h6',
+  shielding: 'M12 3l7 3v5c0 5-3 8-7 10-4-2-7-5-7-10V6z',
+  control: 'M12 3v4M12 17v4M3 12h4M17 12h4M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8z',
+  work: 'M3 7h8v5H3zM13 7h8v5h-8zM7 12h10v5H7z',
+};
+
+/** Le meilleur de chaque rôle (dégâts, soins, boucliers, contrôle, travail), en tuiles. */
+export function TideRecap({ awards }: { awards: TideAward[] }) {
+  return (
+    <ul className="tide-recap">
+      {awards.map((a) => (
+        <li key={a.key} className={`tide-award award-${a.key}`}>
+          <svg viewBox="0 0 24 24" aria-hidden>
+            <path d={AWARD_ICON[a.key]} />
+          </svg>
+          <span className="tide-award-text">
+            <span className="muted small">{a.title}</span>
+            <strong>{a.name}</strong>
+            <span className="small">
+              {num(a.value)} {a.unit}
+            </span>
+          </span>
+        </li>
+      ))}
+    </ul>
   );
 }
 

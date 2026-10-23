@@ -4,7 +4,7 @@ import { api } from '../api';
 import { useGame } from '../game/GameContext';
 import { clock, num } from '../format';
 import { Modal } from './ui';
-import { TideLive } from './TideLive';
+import { TideLive, TideRecap } from './TideLive';
 import type { TideLiveView } from '@bramo/shared';
 
 /**
@@ -282,6 +282,7 @@ export function TideModal({ view, refresh, onClose }: { view: TideView; refresh:
             Le serveur a fait {num(last.points)} points sur {num(last.objective)} : {plural(last.thresholds, 'lanterne')} sur {last.of}.
             {lastMine ? ` Vous : ${num(lastMine.points)} points, ${num(lastMine.shards)} éclats.` : ''}
           </p>
+          {last.recap.length > 0 && <TideRecap awards={last.recap} />}
         </section>
       )}
 

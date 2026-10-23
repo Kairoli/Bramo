@@ -32,6 +32,9 @@ import {
   tideOf,
   tideOpen,
   tideScore,
+  tideRecap,
+  type TideAward,
+  type TideStats,
   tideShards,
   tideTitles,
   tideWeek,
@@ -65,6 +68,7 @@ export async function settleTide(db: Db, content: Content, now: number): Promise
       .from(characters)
       .where(and(isNotNull(characters.classId), gte(characters.lastSeenAt, since)));
     const entries: (typeof tideEntries.$inferInsert)[] = [];
+    const recapRows: { characterId: number; name: string; points: number; channel: string; stats?: TideStats }[] = [];
     for (const { id } of rows) {
       const loaded = await loadCharacterById(tx, id, content);
       if (!loaded) continue;
@@ -74,6 +78,7 @@ export async function settleTide(db: Db, content: Content, now: number): Promise
       if (t.registered !== day) continue;
       const r = tideScore(loaded.state, day, content, live);
       entries.push({ day, characterId: id, tide: tideOf(day, rules).id, points: r.points, ratio: r.ratio, channel: r.channel, live, shards: 0 });
+      recapRows.push({ characterId: id, name: loaded.name, points: r.points, channel: r.channel, stats: r.stats });
     }
     const points = entries.reduce((s, e) => s + e.points, 0);
     // Mécènes de ce soir : chacun ajoute des éclats à tous les participants.
@@ -85,7 +90,8 @@ export async function settleTide(db: Db, content: Content, now: number): Promise
       thresholds = s.thresholds;
     }
     for (let i = 0; i < entries.length; i += 200) await tx.insert(tideEntries).values(entries.slice(i, i + 200)).onConflictDoNothing();
-    await tx.update(tideDays).set({ participants: entries.length, points, thresholds }).where(eq(tideDays.day, day));
+    const recap = tideRecap(recapRows);
+    await tx.update(tideDays).set({ participants: entries.length, points, thresholds, recap }).where(eq(tideDays.day, day));
     // Renom : chaque clan gagne un peu par membre qui a vraiment tenu la digue.
     const renown = content.settings.clan.renown;
     const events: { kind: 'clan'; text: string }[] = [];
@@ -105,6 +111,8 @@ export async function settleTide(db: Db, content: Content, now: number): Promise
       const of = rules.shards.thresholds.length;
       const offered = patrons.length ? ` Marée offerte par ${patrons.map((p) => p.characterName).join(', ')}.` : '';
       await recordEvents(tx, now, [{ kind: 'tide', text: `${def.name} : ${entries.length} à la digue, ${thresholds} lanterne${thresholds > 1 ? 's' : ''} sur ${of} allumée${thresholds > 1 ? 's' : ''}.${offered}` }]);
+      // Le récapitulatif : le meilleur de chaque rôle, au fil du serveur.
+      if (recap.length > 1) await recordEvents(tx, now, [{ kind: 'tide', text: `Récap de la Marée : ${recap.map((a) => `${a.title.toLowerCase()} ${a.name}`).join(', ')}.` }]);
     }
   });
   settled.set(db, day);
@@ -183,7 +191,7 @@ export async function tideView(tx: Tx, state: CharacterState, content: Content, 
     counts: t.counts,
     patron: await patronView(tx, state, content, now),
     last: last
-      ? { day: last.day, name: rules.tides.find((x) => x.id === last.tide)?.name ?? last.tide, participants: last.participants, points: last.points, objective: rules.shards.objectivePerParticipant * Math.max(1, last.participants), thresholds: last.thresholds, of: rules.shards.thresholds.length }
+      ? { day: last.day, name: rules.tides.find((x) => x.id === last.tide)?.name ?? last.tide, participants: last.participants, points: last.points, objective: rules.shards.objectivePerParticipant * Math.max(1, last.participants), thresholds: last.thresholds, of: rules.shards.thresholds.length, recap: last.recap ?? [] }
       : null,
   };
 }
@@ -228,9 +236,11 @@ export async function tideLive(tx: Tx, content: Content, now: number, meId: numb
   const total = Number(n);
   const objective = rules.shards.objectivePerParticipant * Math.max(1, total);
   let points = 0;
+  let recap: TideAward[] = [];
   if (phase === 'done') {
     const [settledDay] = await tx.select().from(tideDays).where(eq(tideDays.day, day));
     points = settledDay?.points ?? 0;
+    recap = settledDay?.recap ?? [];
   }
   if (phase === 'battle' || (phase === 'done' && !points)) {
     // Chaque inscrit marque au fil de l'heure ; ses points du soir sont calculés une fois (pour 40 de plus par appel au plus).
@@ -264,6 +274,7 @@ export async function tideLive(tx: Tx, content: Content, now: number, meId: numb
     fighters: fighters.slice(0, SHOWN).map(({ at: _at, ...f }) => f),
     total,
     progress: { points, objective, shares, lit: shares.filter((s) => points >= s * objective).length },
+    recap,
     demo: false,
   };
 }
@@ -308,6 +319,13 @@ export function tideLiveDemo(content: Content, now: number, tideId?: string): Ti
     fighters,
     total,
     progress: { points, objective, shares, lit: shares.filter((s) => points >= s * objective).length },
+    recap: tideRecap(
+      fighters.map((x, i) => {
+        const r = hash32(`demo-stats:${day}:${i}`);
+        const classId = x.appearance.classId;
+        return { characterId: x.id, name: x.name, points: 40 + (r % 90), channel: i % 9 === 4 ? 'work' : 'combat', stats: { damage: 20_000 + (r % 60_000), healing: classId === 'forgefire' ? 0 : (r >>> 3) % 9000, shielding: classId === 'forgefire' ? (r >>> 5) % 12_000 : 0, control: classId === 'tracker' ? (r >>> 7) % 15_000 : (r >>> 7) % 3000 } };
+      }),
+    ),
     demo: true,
   };
 }

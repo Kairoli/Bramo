@@ -115,10 +115,23 @@ export const tideOpen = (t: number, rules: TideRules) => {
   return t >= w.start && t < w.end;
 };
 
+function contributions(combat: CombatContent, setup: CombatantSetup, encounterId: string, scale: number, seed: number) {
+  return fight(combat, [setup], combat.encounters[encounterId]!, { seed, enemyDamageScale: scale, enemyHpScale: scale }).team[0]!.contributions;
+}
+
 function contribution(combat: CombatContent, setup: CombatantSetup, encounterId: string, scale: number, scoring: 'damage' | 'support', seed: number) {
-  const r = fight(combat, [setup], combat.encounters[encounterId]!, { seed, enemyDamageScale: scale, enemyHpScale: scale });
-  const c = r.team[0]!.contributions;
+  const c = contributions(combat, setup, encounterId, scale, seed);
   return scoring === 'damage' ? c.damage : c.damage + combat.tide!.points.supportWeight * (c.healing + c.absorbed + c.mitigated);
+}
+
+/** Ce qu'un combattant a fait contre la Marée, en moyenne sur ses combats du soir (récapitulatif de fin de soirée). */
+export interface TideStats {
+  damage: number;
+  healing: number;
+  /** Dégâts absorbés par ses boucliers. */
+  shielding: number;
+  /** Dégâts ennemis évités par ses affaiblissements et ralentissements. */
+  control: number;
 }
 
 const references = new WeakMap<CombatContent, Map<string, number>>();
@@ -153,7 +166,7 @@ export function tideReference(combat: CombatContent, tideId: string, level: numb
 }
 
 /** Points d'un soir : la contribution du personnage (combat) ou sa livraison (travail). */
-export function tideScore(state: CharacterState, day: number, content: Content, live: boolean): { points: number; ratio: number; channel: TideChannel } {
+export function tideScore(state: CharacterState, day: number, content: Content, live: boolean): { points: number; ratio: number; channel: TideChannel; stats?: TideStats } {
   const { combat, tide } = need(content);
   const def = tideOf(day, tide);
   const t = readTide(state.combat.tide);
@@ -172,11 +185,52 @@ export function tideScore(state: CharacterState, day: number, content: Content, 
   const scale = tierFactorAt(combat.rules, level);
   const setup = combatantOf(state, content);
   let mine = 0;
-  for (let i = 0; i < tide.points.fights; i++) mine += contribution(combat, setup, def.encounter, scale, def.scoring, hash32(`${state.seed}:tide:${day}:${i}`));
-  mine /= tide.points.fights;
+  const stats: TideStats = { damage: 0, healing: 0, shielding: 0, control: 0 };
+  const n = tide.points.fights;
+  for (let i = 0; i < n; i++) {
+    const c = contributions(combat, setup, def.encounter, scale, hash32(`${state.seed}:tide:${day}:${i}`));
+    mine += def.scoring === 'damage' ? c.damage : c.damage + tide.points.supportWeight * (c.healing + c.absorbed + c.mitigated);
+    stats.damage += c.damage / n;
+    stats.healing += c.healing / n;
+    stats.shielding += c.absorbed / n;
+    stats.control += c.mitigated / n;
+  }
+  mine /= n;
   const raw = mine / tideReference(combat, def.id, level);
   const ratio = Math.min(tide.points.maxRatio, Math.max(tide.points.minRatio, raw));
-  return { points: Math.round(full * ratio * bonus), ratio: raw, channel: 'combat' };
+  for (const k of Object.keys(stats) as (keyof TideStats)[]) stats[k] = Math.round(stats[k]);
+  return { points: Math.round(full * ratio * bonus), ratio: raw, channel: 'combat', stats };
+}
+
+/** Une distinction du récapitulatif de fin de soirée. */
+export interface TideAward {
+  key: 'mvp' | 'damage' | 'healing' | 'shielding' | 'control' | 'work';
+  title: string;
+  characterId: number;
+  name: string;
+  value: number;
+  unit: string;
+}
+
+/**
+ * Récapitulatif de fin de soirée [demande de Louis, 23 octobre : « meilleur DPS, meilleur soigneur, meilleur contrôleur… »] :
+ * le meilleur de chaque rôle parmi les participants (personne n'est cité pour zéro).
+ */
+export function tideRecap(entries: { characterId: number; name: string; points: number; channel: string; stats?: TideStats | null }[]): TideAward[] {
+  const best = <T>(list: T[], value: (x: T) => number) => list.reduce<T | null>((b, x) => (value(x) > 0 && (!b || value(x) > value(b)) ? x : b), null);
+  const out: TideAward[] = [];
+  const add = (key: TideAward['key'], title: string, unit: string, list: typeof entries, value: (x: (typeof entries)[number]) => number) => {
+    const b = best(list, value);
+    if (b) out.push({ key, title, characterId: b.characterId, name: b.name, value: Math.round(value(b)), unit });
+  };
+  const fighters = entries.filter((e) => e.channel === 'combat' && e.stats);
+  add('mvp', 'Pilier de la digue', 'points', entries, (e) => e.points);
+  add('damage', 'Plus gros dégâts', 'dégâts', fighters, (e) => e.stats!.damage);
+  add('healing', 'Meilleur soigneur', 'soins', fighters, (e) => e.stats!.healing);
+  add('shielding', 'Meilleur protecteur', 'absorbés', fighters, (e) => e.stats!.shielding);
+  add('control', 'Meilleur contrôleur', 'dégâts évités', fighters, (e) => e.stats!.control);
+  add('work', 'Meilleur ouvrier', 'points de travail', entries.filter((e) => e.channel === 'work'), (e) => e.points);
+  return out;
 }
 
 /** Éclats d'un participant : ses points, plus le bonus de chaque seuil du serveur franchi ; chaque mécène du soir en ajoute. */

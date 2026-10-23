@@ -47,8 +47,12 @@ points:
   fights: 3
 shards:
   item: tide_shard
-  perPoint: 0.5           # ~50 éclats un soir moyen, seuils compris : à 1 par point, 790 par semaine, trop
-  objectivePerParticipant: 55
+  # Un boss de serveur [Décidé par Louis, 23 octobre] : à 55 par inscrit, un build moyen (60 points) allumait les quatre
+  # lanternes tout seul. À 85, un serveur de builds moyens fait ~70 % (deux lanternes) ; la troisième demande de bons builds,
+  # des joueurs en direct ou des travailleurs ; la quatrième, un serveur fort (1,4 fois la moyenne).
+  # perPoint 0,5 → 0,6 pour garder à peu près les éclats d'un soir moyen malgré moins de lanternes.
+  perPoint: 0.6
+  objectivePerParticipant: 85
   thresholds: [{ share: 0.25, bonus: 2 }, { share: 0.5, bonus: 3 }, { share: 0.75, bonus: 4 }, { share: 1, bonus: 6 }]
 weekly:
   bestNights: 4

@@ -658,6 +658,9 @@ describe('API', () => {
     await inscrit('GET', '/api/state'); // la visite qui verse la soirée
     const back = (await inscrit('GET', '/api/tide')).json as import('@bramo/shared').TideView;
     expect(back.nights.some((n) => n.day === day && n.points > 0)).toBe(true);
+    // Le récapitulatif du soir : le seul combattant est le pilier de la digue et le plus gros dégâts.
+    expect(back.last?.recap.find((x) => x.key === 'mvp')?.name).toBe('Inscrite');
+    expect(back.last?.recap.some((x) => x.key === 'damage')).toBe(true);
     await absent('GET', '/api/state');
     const missed = (await absent('GET', '/api/tide')).json as import('@bramo/shared').TideView;
     expect(missed.nights.some((n) => n.day === day)).toBe(false);

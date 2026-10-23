@@ -10,7 +10,7 @@ import {
   text,
   timestamp,
 } from 'drizzle-orm/pg-core';
-import type { Activity, AdvanceSummary, CombatState, EnergyState, MealBuff, QueuedAction, RolledLine } from '@bramo/shared';
+import type { Activity, AdvanceSummary, CombatState, EnergyState, MealBuff, QueuedAction, RolledLine, TideAward } from '@bramo/shared';
 
 /** Postgres standard uniquement : le schéma doit rester compatible Supabase. */
 
@@ -279,6 +279,8 @@ export const tideDays = pgTable('tide_days', {
   participants: integer('participants').notNull().default(0),
   points: integer('points').notNull().default(0),
   thresholds: integer('thresholds').notNull().default(0),
+  /** Récapitulatif de fin de soirée : le meilleur de chaque rôle (tideRecap). */
+  recap: jsonb('recap').$type<TideAward[]>().notNull().default([]),
   settledAt: ts('settled_at').notNull(),
 });
 

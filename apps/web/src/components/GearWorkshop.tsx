@@ -89,7 +89,7 @@ export function GearWorkshop({ profession, onClose }: { profession: string; onCl
                 {m.recipe.inputs.map((i) => {
                   const have = state.inventory[i.item] ?? 0;
                   return (
-                    <span key={i.item} className={have >= i.qty ? '' : 'missing'} title={content.items[i.item]?.name}>
+                    <span key={i.item} className={have >= i.qty ? '' : 'missing'}>
                       <ItemIcon item={content.items[i.item]} small /> {num(Math.min(have, i.qty))}/{num(i.qty)}
                     </span>
                   );

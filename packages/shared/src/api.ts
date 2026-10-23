@@ -328,6 +328,13 @@ export interface MyAvatarView {
   nextChangeAt: number;
 }
 
+/** Premiers pas d'un nouveau joueur : ce que seul le serveur sait (le reste se lit dans l'état). */
+export interface FirstStepsView {
+  clan: boolean;
+  market: boolean;
+  tide: boolean;
+}
+
 export interface StateResponse {
   name: string;
   /** Version de sa photo de profil (adresse /api/avatars/:id?v=), null sans photo. */
@@ -342,7 +349,10 @@ export interface StateResponse {
 }
 
 // Le combat n'est pas encore envoyé au client (salle Combat : étape 4 de docs/design/coeur-du-jeu/integration.md).
-export type ContentResponse = Omit<Content, 'xpTable' | 'gearModels' | 'combat'>;
+export type ContentResponse = Omit<Content, 'xpTable' | 'gearModels' | 'combat'> & {
+  /** Où tombe chaque objet de combat (vestiges) : région et rencontres (infobulles, « où l'obtenir »). */
+  drops: Record<string, { region: string; encounters: string[] }[]>;
+};
 
 export interface ApiError {
   code: string;

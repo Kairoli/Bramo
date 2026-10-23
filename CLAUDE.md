@@ -55,6 +55,35 @@ Bramo est un **idle-RPG multijoueur jouable dans le navigateur**, dans l'esprit 
 
 ## 5. État du projet (à jour au 23 octobre 2026)
 
+### Fait — XP doublée jusqu'au 20, infobulles partout, « où l'obtenir » (23 octobre, nuit)
+
+- **Demandes de Louis** (après la partie jouée) : « remets l'XP double jusqu'au 20, tant pis » ; « que tout ait un survol et son effet, même ce qui n'est pas débloqué » ; « si on a besoin de quelque chose pour une recette, indiquer où l'obtenir, de manière propre et visuelle ».
+- **XP des métiers doublée jusqu'au niveau 20** [Décidé par Louis, revient sur le refus du 21 octobre] : `settings.xp.earlyBoost` (`untilLevel: 20, multiplier: 2`) ; chaque fabrication commencée sous le niveau 20 compte double, exact quel que soit le découpage (`boostedXp` dans `formulas/xp.ts`, `craftXp` dans `engine/state.ts`, utilisé par `advance` et l'atelier d'équipement). `SkillView.boost` ; la salle d'un métier affiche « XP ×2 jusqu'au niveau 20 » et le gain doublé. Les commandes, la prime et les réparations ne sont pas doublées. Le combat (XP de classe) n'est pas touché.
+- **Infobulle du jeu** (`components/Tip.tsx` : carte sombre rendue dans <body>, au-dessus ou au-dessous selon la place, au survol, au clavier, à l'appui long ; `TipHead`, `TipLine`, `TipFoot`) :
+  - **Sorts** (`SpellTip.tsx`), dans la barre de sorts et le répertoire de la Préparation, **appris ou non** : élément, recharge, cibles, ultime, chaque effet en mots simples (« P » écrit « × Puissance »), et ce qu'il faut pour l'apprendre (niveau, ou voie). Les sorts pas encore appris montrent leur nom (plus seulement « Niv. 10 ») et se survolent (un bouton désactivé ne recevait pas la souris).
+  - **Voies** : chaque passif expliqué en une phrase (`about` dans `data/combat/kits.yaml`, `CombatView.paths[].about`), ses sorts propres, « s'ouvrent au niveau 30 ».
+  - **Objets** (`ItemTip.tsx`, sur chaque `ItemIcon` du jeu, `tip={false}` pour l'éviter) : valeur, effet (repas, outil, potion, gemme), **d'où il vient** (recettes : métier, niveau, ingrédients ; combat : région et rencontres ; étal ; marché) et **à quoi il sert** (métiers et recettes).
+  - **Pièces d'équipement** (cases du sac, des emplacements, des préréglages) : nom à la couleur de sa rareté, palier, emplacement, caractéristiques, lignes, ensemble, gemme, usure.
+- **« Où l'obtenir » sous un ingrédient qui manque** (salle d'un métier) : des pastilles sur la ligne de l'ingrédient, à la couleur de leur source : le métier qui le fabrique (ouvre la salle **sur la recette** ; 🔒 si le niveau manque), le combat (région), l'étal, le marché. `openRecipe` dans `GameContext`. Le serveur envoie où tombe chaque vestige (`ContentResponse.drops`) ; les deux objets sans recette ni combat ont une phrase `obtain` dans `data/items.yaml` (éclat de marée, poussière de Lointain).
+- Tests : 197 dans packages/shared, 35 d'API, 21 du simulateur.
+
+### Fait — partie jouée comme un nouveau joueur, critiques réglées (23 octobre, nuit)
+
+- **Demande de Louis** : « agis comme un vrai joueur, et règle les critiques que tu ferais au jeu en jouant ». Deux comptes neufs joués de la création au tour des salles (Edge sans fenêtre, script `play.mjs` de la séance : une suite d'étapes, une capture après chacune, erreurs de la console relevées).
+- **Corrigé** :
+  - **Lancer une recette sans ses matières arrêtait l'activité en cours** (« Lancer à la place de Sable » sur une recette de Forge à 0/1 : plus de récolte, rien de lancé). Le moteur refuse désormais (« Il vous manque : … »), sauf dans la file ; le bouton devient « Il manque des matières ». Test dans `actions.test.ts`.
+  - **Marché** : « je recevrai » annonçait 2 or pour une vente qui en rapporte 3 (taxe arrondie vers le haut à l'écran, au plus proche au serveur) ; les quantités rapides proposaient 100 quand on en a 10, et deux fois « Tout » (clé React en double).
+  - **Premiers pas** sur l'accueil (`rooms/home/FirstSteps.tsx`, `GET /api/first-steps`) : après le tour guidé, rien ne disait quoi faire. Huit étapes dans l'ordre où le jeu s'ouvre (récolte, niveau 5, fabrication, marché, premier gardien, clan, photo, Marée), chacune avec son raccourci ; repliées sur la prochaine ; aucune récompense ; « Masquer ces conseils ».
+  - Salle Personnage : le sac d'équipement vide s'écrivait un mot par ligne ; le rendement disait « Clan : bientôt » alors que la Guilde du bourg compte déjà.
+  - Métiers : les maîtres avaient un rond hachuré (on aurait dit une image manquante) : leur initiale à la couleur du métier, en attendant des portraits. La Forge s'ouvrait à la page 4 sur 9 : la recette choisie par défaut est la plus haute qu'on peut lancer, sinon la première du plus haut niveau accessible.
+  - Combat : « P. 2, P. 2, P. 3… » sous les étapes de la route (le palier, illisible) devient « ici » / « franchie » ; « 1 / 0 » devient « 1 victoire · 0 défaite ».
+  - Bourg : les noms des habitants de passage se chevauchaient et se confondaient avec les joueurs : seuls les vrais joueurs gardent leur nom, celui d'un habitant apparaît au survol.
+- **Pas réglé, pour Louis** :
+  - Le début est lent : Minage 2 demande ~13 min (1,3 XP par sable de 12 s, 83 XP) ; la première vraie fabrication (un outil de bronze) demande trois métiers. Décision de Louis à respecter (pas d'XP doublée au début) ; piste : une première recette de chaque artisanat faite de matières premières.
+  - Les sorts pas encore appris (Préparation) ne montrent que « Niv. 10 » : ni nom ni effet.
+  - Pas pu jouer le retour après 16 h d'absence (pas d'outil pour avancer le temps en développement).
+- Tests : 196 dans packages/shared, 34 d'API, 21 du simulateur.
+
 ### Fait — page profil d'un joueur (23 octobre, nuit)
 
 - **Demande de Louis** : « quand on clique sur une photo de profil ou un nom, ça ouvre une page profil, avec la photo, le perso… un truc sympa, visuel, unique à chacun ».
@@ -512,7 +541,7 @@ Bramo est un **idle-RPG multijoueur jouable dans le navigateur**, dans l'esprit 
 - Classe choisie avant d'entrer, changeable à tout moment et gratuitement.
 - **Rangs : le niveau ne bloque plus (précision de Louis : « seulement pour un titre »)**, `settings.ranks.gatesLevel: false` ; le blocage décrit ci-dessous reste disponible en mettant `true`.
 - **Rangs [Décidé et implémenté le 21 octobre]** : des **surnoms propres à chaque métier** (35 commandes dans `data/trials.yaml`, `design/rangs.md` avec la table). Aux niveaux 20, 40, 60, 80 et 99, le maître propose une commande (objets à livrer, histoire d'introduction et histoire racontée à la réussite) ; la réussir accorde le surnom et **débloque la tranche suivante** : le niveau effectif est **borné au prochain palier non validé** (`effectiveLevel`/`skillLevel`), l'XP continue de s'accumuler (« XP en attente », créditée à la validation, rien n'est perdu). Le joueur affiche le surnom débloqué de son choix (`state.shown`).
-- XP des recettes (règle du simulateur, `sim/src/rules.ts`) : récolte `R(L) = 400 × 2^((L−1)/55)` XP par heure effective, durée 12 s + 2 s par dizaine de niveaux ; artisanat ×1,75. Pas d'XP doublée en début de métier (décision).
+- XP des recettes (règle du simulateur, `sim/src/rules.ts`) : récolte `R(L) = 400 × 2^((L−1)/55)` XP par heure effective, durée 12 s + 2 s par dizaine de niveaux ; artisanat ×1,75. **XP doublée jusqu'au niveau 20** de chaque métier (`settings.xp.earlyBoost`, décidé par Louis le 23 octobre ; il l'avait refusée le 21).
 - Plus tard (dans le game design) : maîtrise après 99 (paliers décroissants, +10 % max), affinité de métier (+1 % par tranche de 10 niveaux du métier lié, +10 % max), objets faits maison signés et de meilleure qualité, progression de classe (voie 30, spécialisation 60, éveil 75).
 
 ## 8. Interface

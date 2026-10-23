@@ -19,9 +19,9 @@ classes:
     elements: [physical, fire]
     weapons: [hammer, sword_shield, axe]
     paths:
-      - {id: red_temper, name: Trempe-Rouge, role: damage, passive: Rebattue, params: {perHeat: 0.22, hits: 3, duration: 8}}
-      - {id: anvil, name: Enclumier, role: control, passive: Le poids du métal, params: {pressurePerHeat: 6, weakenPerHeat: 0.06, weakenDuration: 6, weakenAll: 1, followupPerHeat: 0.30, followupDuration: 8, slowAmount: 0.10, slowDuration: 1.5}}
-      - {id: whetter, name: Rémouleur, role: support, passive: Plaques de recuit, params: {shieldPerHeat: 0.16, duration: 6, ripostePerHeat: 0.12}}
+      - {id: red_temper, name: Trempe-Rouge, role: damage, passive: Rebattue, about: "Après une Trempe, vos trois prochaines attaques de base frappent plus fort (+0,22 × Puissance par Braise dépensée), pendant 8 s.", params: {perHeat: 0.22, hits: 3, duration: 8}}
+      - {id: anvil, name: Enclumier, role: control, passive: Le poids du métal, about: "Une Trempe fait monter la Pression (6 par Braise), affaiblit et ralentit la cible ; votre prochaine Chauffe frappe plus fort (+0,30 × Puissance par Braise).", params: {pressurePerHeat: 6, weakenPerHeat: 0.06, weakenDuration: 6, weakenAll: 1, followupPerHeat: 0.30, followupDuration: 8, slowAmount: 0.10, slowDuration: 1.5}}
+      - {id: whetter, name: Rémouleur, role: support, passive: Plaques de recuit, about: "Une Trempe pose une plaque qui absorbe 0,16 × Puissance par Braise pendant 6 s ; au premier coup absorbé, elle riposte (0,12 × Puissance par Braise).", params: {shieldPerHeat: 0.16, duration: 6, ripostePerHeat: 0.12}}
 
   - id: tracker
     mechanic: angle
@@ -31,9 +31,9 @@ classes:
     elements: [physical, lightning]
     weapons: [longbow, crossbow, daggers]
     paths:
-      - {id: beastslayer, name: Tue-Bête, role: damage, passive: La morsure après le trait, params: {bleed: 0.9, duration: 6}}
-      - {id: trapper, name: Piégeur, role: control, passive: Contrepiège, params: {damage: 0.55, weaken: 0.20, weakenAll: 1, duration: 6, pressure: 10, slowAmount: 0.10, slowDuration: 1.5}}
-      - {id: packleader, name: Meneur de meute, role: support, passive: À mon signal, params: {heal: 0.50, damage: 0.35, duration: 8}}
+      - {id: beastslayer, name: Tue-Bête, role: damage, passive: La morsure après le trait, about: "Consommer un Angle fait saigner la cible : 0,9 × Puissance sur 6 s.", params: {bleed: 0.9, duration: 6}}
+      - {id: trapper, name: Piégeur, role: control, passive: Contrepiège, about: "Consommer un Angle pose un Contrepiège (6 s) : la prochaine attaque de la cible est affaiblie de 20 % et lui renvoie 0,55 × Puissance ; +10 de Pression.", params: {damage: 0.55, weaken: 0.20, weakenAll: 1, duration: 6, pressure: 10, slowAmount: 0.10, slowDuration: 1.5}}
+      - {id: packleader, name: Meneur de meute, role: support, passive: À mon signal, about: "Consommer un Angle prépare un ordre (8 s) : le prochain sort de compagnon soigne de 0,5 × Puissance et frappe de 0,35 × Puissance en plus.", params: {heal: 0.50, damage: 0.35, duration: 8}}
 
   - id: runist
     mechanic: rune
@@ -43,6 +43,6 @@ classes:
     elements: [fire, frost, lightning]
     weapons: [staff, scepter, grimoire]
     paths:
-      - {id: fulgurant, name: Fulgurant, role: damage, passive: Le dernier mot, params: {every: 3, damage: 0.65, sealShare: 0.15}}
-      - {id: sigilbinder, name: Sigillaire, role: control, passive: Mise sous scellés, params: {seals: 3, damage: 0.75, weaken: 0.20, weakenAll: 1, duration: 6, slowAmount: 0.10, slowDuration: 1.5}}
-      - {id: glyphkeeper, name: Glyphiste, role: support, passive: L'encre de garde, params: {cap: 0.65}}
+      - {id: fulgurant, name: Fulgurant, role: damage, passive: Le dernier mot, about: "Chaque troisième sort ajoute un Dernier mot : 0,65 × Puissance de dégâts (partagés sur deux ennemis après un Cercle ; une part devient bouclier après un Sceau).", params: {every: 3, damage: 0.65, sealShare: 0.15}}
+      - {id: sigilbinder, name: Sigillaire, role: control, passive: Mise sous scellés, about: "Chaque contrôle pose un Scellé ; au troisième : 0,75 × Puissance de dégâts, et la cible frappe 20 % moins fort pendant 6 s.", params: {seals: 3, damage: 0.75, weaken: 0.20, weakenAll: 1, duration: 6, slowAmount: 0.10, slowDuration: 1.5}}
+      - {id: glyphkeeper, name: Glyphiste, role: support, passive: L'encre de garde, about: "Les dégâts absorbés par vos boucliers remplissent une Encre (jusqu’à 0,65 × Puissance) ; votre prochain Trait ou Cercle la dépense en dégâts.", params: {cap: 0.65}}

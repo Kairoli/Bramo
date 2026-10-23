@@ -1,4 +1,6 @@
 import type { EnergyState } from '../formulas/rates.js';
+import type { Content } from '../schemas/content.js';
+import { boostedXp } from '../formulas/xp.js';
 import type { CombatState } from '../combat/progress.js';
 
 export interface QueuedAction {
@@ -101,4 +103,17 @@ export function addTo(map: Record<string, number>, key: string, qty: number): vo
 
 export function cloneState(s: CharacterState): CharacterState {
   return structuredClone(s);
+}
+
+/** XP de `n` fabrications à `each` XP pour un métier à `current` XP : doublée au début (`settings.xp.earlyBoost`). */
+export function craftXp(each: number, n: number, current: number, content: Content): number {
+  const boost = content.settings.xp.earlyBoost;
+  if (!boost) return each * n;
+  return boostedXp(each, n, current, content.xpTable[boost.untilLevel] ?? 0, boost.multiplier);
+}
+
+/** Multiplicateur d'XP du début de métier à `current` XP (1 une fois le seuil passé) : pour l'affichage. */
+export function earlyXpMultiplier(current: number, content: Pick<Content, 'settings' | 'xpTable'>): number {
+  const boost = content.settings.xp.earlyBoost;
+  return boost && current < (content.xpTable[boost.untilLevel] ?? 0) ? boost.multiplier : 1;
 }

@@ -1,7 +1,7 @@
 import { type Room, useGame } from '../game/GameContext';
 import { num } from '../format';
 import { EnergyButton } from './EnergyButton';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Banners } from './Banners';
 import { ProfileModal } from './Profile';
 import { Avatar } from './Avatar';
@@ -21,6 +21,18 @@ export function TopBar() {
   const tide = useTide();
   const [tideOpen, setTideOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
+  useEffect(() => {
+    const onOpen = (e: Event) => {
+      const what = (e as CustomEvent<string>).detail;
+      if (what === 'profile') setProfileOpen(true);
+      if (what === 'tide') {
+        tide.refresh();
+        setTideOpen(true);
+      }
+    };
+    window.addEventListener('bramo:open', onOpen);
+    return () => window.removeEventListener('bramo:open', onOpen);
+  }, [tide.refresh]);
   return (
     <header className="topbar">
       <div className="logo">Bramo</div>

@@ -688,7 +688,19 @@ p {
   height: 44px;
   border-radius: 50%;
   border: 2px solid var(--action);
-  background: repeating-linear-gradient(135deg, var(--border) 0 3px, var(--sunken) 3px 6px);
+  display: grid;
+  place-items: center;
+  color: var(--action);
+  background: radial-gradient(circle at 35% 30%, color-mix(in srgb, currentColor 28%, var(--panel)), var(--sunken) 75%);
+}
+.npc-avatar::after {
+  content: attr(data-initial);
+  font-weight: 900;
+  font-size: 20px;
+  line-height: 1;
+}
+.master-card .npc-avatar::after {
+  font-size: 12px;
 }
 
 /* Ornement de métier : plaque d'identité (components/Ornament.tsx). Géométrie à l'échelle 1 : hauteur 128,

@@ -9,7 +9,7 @@
  */
 import type { Content } from '../schemas/content.js';
 import type { GearInstance, GearModel } from '../schemas/gear.js';
-import { type CharacterState, GameError, addStack, cloneState } from './state.js';
+import { type CharacterState, GameError, addStack, cloneState, craftXp } from './state.js';
 import { type Rng, masterpieceChance, newInstance } from './equipment.js';
 import { skillLevel } from './trials.js';
 
@@ -94,7 +94,7 @@ export function craftGear(input: CharacterState, modelId: string, content: Conte
   if (missing) throw new GameError('missing', `Il manque ${missing.qty - (input.inventory[missing.item] ?? 0)} × ${content.items[missing.item]?.name ?? missing.item}.`);
   const state = cloneState(input);
   for (const i of recipe.inputs) addStack(state.inventory, i.item, -i.qty);
-  state.skills[recipe.profession] = (state.skills[recipe.profession] ?? 0) + recipe.xp;
+  state.skills[recipe.profession] = (state.skills[recipe.profession] ?? 0) + craftXp(recipe.xp, 1, state.skills[recipe.profession] ?? 0, content);
   const masterpiece = rand() < masterpieceChance(level, recipe.level, content);
   const gear = newInstance(model, content, rand, { masterpiece, signedBy: masterpiece ? signedBy : null });
   return { state, gear, masterpiece };

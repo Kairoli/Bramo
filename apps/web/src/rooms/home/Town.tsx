@@ -157,7 +157,7 @@ function useVillagers(classes: Record<string, { startingOutfit: string }>, outfi
 
 function VillagerFigure({ v }: { v: Villager }) {
   return (
-    <div className={`walker walker-${v.mode === 'standing' ? 'working' : 'strolling'}${v.pausing ? ' walker-pause' : ''}`} style={v.style}>
+    <div className={`walker walker-villager walker-${v.mode === 'standing' ? 'working' : 'strolling'}${v.pausing ? ' walker-pause' : ''}`} style={v.style}>
       <div className="walker-card">
         <strong>{v.name}</strong>
         <span className="muted">Habitant du bourg</span>

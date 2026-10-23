@@ -42,7 +42,8 @@ describe('fabrication de l’équipement', () => {
     const s = makeState({ inventory: inv });
     const out = craftGear(s, m.id, content, rand, 'Brann');
     for (const i of r.inputs) expect(out.state.inventory[i.item]).toBe(1);
-    expect(out.state.skills[r.profession]).toBeCloseTo(r.xp, 5);
+    // Un métier neuf : l'XP du début compte double (settings.xp.earlyBoost).
+    expect(out.state.skills[r.profession]).toBeCloseTo(r.xp * (content.settings.xp.earlyBoost?.multiplier ?? 1), 5);
     expect(out.gear.model).toBe(m.id);
     expect(out.gear.lines.length).toBeGreaterThanOrEqual(m.rolls[0]);
     expect(() => craftGear(makeState({}), m.id, content, rand)).toThrow(/manque/);

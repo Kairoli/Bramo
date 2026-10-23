@@ -226,7 +226,7 @@ export function EquipSlot({
       {entry.thumb ? (
         <PartThumb slot={entry.thumb.slot} partId={entry.thumb.partId} />
       ) : entry.item ? (
-        <ItemIcon item={entry.item} small />
+        <ItemIcon item={entry.item} small tip={false} />
       ) : entry.gear ? (
         <GearIcon {...entry.gear} />
       ) : (

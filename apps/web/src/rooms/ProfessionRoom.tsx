@@ -4,8 +4,9 @@ import { maxAffordable, trialsOf, type Recipe } from '@bramo/shared';
 import { api } from '../api';
 import { useGame } from '../game/GameContext';
 import { useLiveActivity } from '../game/useLive';
-import { decimal, duration, num, seconds } from '../format';
+import { decimal, duration, num, seconds, initialOf } from '../format';
 import { Bar, ItemIcon, Ring } from '../components/ui';
+import { SourceChips } from '../components/ItemTip';
 import { Character } from '../rig/Character';
 import { QueueChips } from '../components/QueueChips';
 import { Scene } from '../components/Scene';
@@ -13,7 +14,7 @@ import { Scene } from '../components/Scene';
 const PAGE = 6;
 
 export function ProfessionRoom({ id }: { id: string }) {
-  const { content, state, look, go } = useGame();
+  const { content, state, look, go, recipeFocus } = useGame();
   const profession = content.professions.find((p) => p.id === id)!;
   const skill = state.skills[id]!;
   // Les chefs-d'œuvre n'apparaissent que pendant leur épreuve.
@@ -21,9 +22,18 @@ export function ProfessionRoom({ id }: { id: string }) {
     .filter((r) => r.profession === id && (!r.trial || state.trials[r.trial] === 'open'))
     .sort((a, b) => a.level - b.level);
   const current = state.activity?.recipeId;
-  const fallbackId =
-    recipes.find((r) => r.id === current)?.id ?? [...recipes].reverse().find((r) => r.level <= skill.level && !r.trial)?.id ?? recipes[0]!.id;
-  const [chosenId, setSelectedId] = useState<string>(fallbackId);
+  // Par défaut : l'activité en cours, sinon la plus haute recette qu'on peut lancer avec son sac, sinon la première du
+  // plus haut niveau accessible (et pas la dernière, qui ouvrait la Forge à la page 4 sur 9).
+  const open = recipes.filter((r) => r.level <= skill.level && !r.trial);
+  const makeable = open.filter((r) => r.inputs.every((i) => (state.inventory[i.item] ?? 0) >= i.qty));
+  const top = open.length ? open[open.length - 1]!.level : 0;
+  const fallbackId = recipes.find((r) => r.id === current)?.id ?? makeable[makeable.length - 1]?.id ?? open.find((r) => r.level === top)?.id ?? recipes[0]!.id;
+  // Arrivé ici depuis « où l'obtenir » d'un ingrédient : la recette qui le fabrique est choisie.
+  const focused = recipeFocus && recipes.some((r) => r.id === recipeFocus.id) ? recipeFocus.id : null;
+  const [chosenId, setSelectedId] = useState<string>(focused ?? fallbackId);
+  useEffect(() => {
+    if (focused) setSelectedId(focused);
+  }, [recipeFocus?.at]); // eslint-disable-line react-hooks/exhaustive-deps
   // Un chef-d'œuvre disparaît une fois l'épreuve réussie : on revient alors à une recette du métier.
   const selectedId = recipes.some((r) => r.id === chosenId) ? chosenId : fallbackId;
   const selected = content.recipes[selectedId]!;
@@ -67,6 +77,11 @@ export function ProfessionRoom({ id }: { id: string }) {
             {skill.gated
               ? `Niveau bloqué au ${skill.level} · ${num(skill.heldXp)} XP en attente, créditée à la validation`
               : `${num(skill.xp)} XP${skill.nextLevelXp ? ` · encore ${num(skill.nextLevelXp - skill.xp)} pour le niveau ${skill.level + 1}` : ''}`}
+            {skill.boost && (
+              <span className="xp-boost" title={`Tant que ce métier est sous le niveau ${skill.boost.untilLevel}, chaque fabrication rapporte ${skill.boost.multiplier} fois plus d’XP.`}>
+                XP ×{skill.boost.multiplier} jusqu’au niveau {skill.boost.untilLevel}
+              </span>
+            )}
           </div>
         </div>
         {profession.master && <MasterPanel professionId={id} onCraft={setSelectedId} />}
@@ -120,7 +135,7 @@ function MasterPanel({ professionId, onCraft }: { professionId: string; onCraft:
   if (success) {
     return (
       <div className="sunken master-bubble trial-success" role="status">
-        <span className="npc-avatar" />
+        <span className="npc-avatar" data-initial={initialOf(master.name)} />
         <div>
           <span className="eyebrow">Commande réussie</span>
           <strong>{success.title}</strong>
@@ -133,7 +148,7 @@ function MasterPanel({ professionId, onCraft }: { professionId: string; onCraft:
   if (!next) {
     return (
       <div className="sunken master-bubble">
-        <span className="npc-avatar" />
+        <span className="npc-avatar" data-initial={initialOf(master.name)} />
         <div>
           <strong>{master.name}</strong>
           <p className="muted">
@@ -147,7 +162,7 @@ function MasterPanel({ professionId, onCraft }: { professionId: string; onCraft:
   if (!open) {
     return (
       <div className="sunken master-bubble trial-locked">
-        <span className="npc-avatar" />
+        <span className="npc-avatar" data-initial={initialOf(master.name)} />
         <div className="trial-body">
           <strong>{master.name}</strong>
           <p className="muted">{master.line}</p>
@@ -179,7 +194,7 @@ function MasterPanel({ professionId, onCraft }: { professionId: string; onCraft:
 
   return (
     <div className="sunken master-bubble trial-open">
-      <span className="npc-avatar" />
+      <span className="npc-avatar" data-initial={initialOf(master.name)} />
       <div className="trial-body">
         <span className="trial-badge">Commande · surnom « {open.nickname} »</span>
         <strong>
@@ -358,7 +373,10 @@ function RecipeDetail({ recipe, level }: { recipe: Recipe; level: number }) {
             <dt>Temps</dt>
             <dd>{seconds(recipe.durationSec)}</dd>
             <dt>Gain</dt>
-            <dd>{decimal(recipe.xp)} XP</dd>
+            <dd>
+              {decimal(recipe.xp * (state.skills[recipe.profession]?.boost?.multiplier ?? 1))} XP
+              {state.skills[recipe.profession]?.boost && <span className="xp-boost small">×{state.skills[recipe.profession]!.boost!.multiplier}</span>}
+            </dd>
             <dt>Durée pour {num(qty)}</dt>
             <dd>{duration((qty * recipe.durationSec * 1000) / (state.activity?.rate.total || 1))}</dd>
           </dl>
@@ -372,22 +390,19 @@ function RecipeDetail({ recipe, level }: { recipe: Recipe; level: number }) {
           const have = state.inventory[i.item] ?? 0;
           const ok = have >= i.qty * qty;
           return (
-            <div key={i.item} className="ingredient">
+            <div key={i.item} className={`ingredient${ok ? '' : ' missing'}`}>
               <ItemIcon item={content.items[i.item]} small />
               <span>
                 {i.qty} × {content.items[i.item]?.name}
               </span>
+              {/* Ce qui manque : où l'obtenir (métier qui le fabrique, combat, marché), en un clic, sur la même ligne. */}
+              <span className="ingredient-sources">{!ok && <SourceChips itemId={i.item} />}</span>
               <span style={{ color: ok ? 'var(--text-muted)' : 'var(--alert)' }}>
                 {num(have)} / {num(i.qty * qty)}
               </span>
             </div>
           );
         })}
-        {missingInput && (
-          <button className="link" style={{ color: 'var(--market)', justifySelf: 'start' }} onClick={() => openMarket(missingInput.item)}>
-            Chercher {content.items[missingInput.item]?.name.toLowerCase()} sur le marché →
-          </button>
-        )}
       </div>
 
       <div className="launch">
@@ -401,8 +416,14 @@ function RecipeDetail({ recipe, level }: { recipe: Recipe; level: number }) {
           </button>
           <button onClick={() => setQty(clamp(affordable || 1))}>Max</button>
         </div>
-        <button className="btn btn-primary launch-main" disabled={locked} onClick={() => start('replace')}>
-          {state.activity && state.activity.recipeId !== recipe.id ? `Lancer à la place de ${currentName}` : state.activity ? 'Relancer' : 'Lancer'}
+        <button className="btn btn-primary launch-main" disabled={locked || !!missingInput} onClick={() => start('replace')}>
+          {missingInput
+            ? 'Il manque des matières'
+            : state.activity && state.activity.recipeId !== recipe.id
+              ? `Lancer à la place de ${currentName}`
+              : state.activity
+                ? 'Relancer'
+                : 'Lancer'}
         </button>
         {state.activity && (
           <button className="btn" disabled={locked || queueFull} onClick={() => start('queue')}>

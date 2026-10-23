@@ -31,6 +31,9 @@ interface Game {
   /** Objet à afficher en ouvrant le Marché (depuis le sac, une recette…). */
   marketItem: string | null;
   openMarket: (itemId?: string | null) => void;
+  /** Recette à montrer en ouvrant la salle de son métier (« où l'obtenir » d'un ingrédient) ; `at` relance le choix. */
+  recipeFocus: { id: string; at: number } | null;
+  openRecipe: (recipeId: string) => void;
   logout: () => void;
 }
 
@@ -120,6 +123,18 @@ export function GameProvider({
     setProfessionId(p);
   }, []);
 
+  const [recipeFocus, setRecipeFocus] = useState<{ id: string; at: number } | null>(null);
+  const openRecipe = useCallback(
+    (recipeId: string) => {
+      const r = content.recipes[recipeId];
+      if (!r) return;
+      setRecipeFocus({ id: recipeId, at: Date.now() });
+      setRoom('professions');
+      setProfessionId(r.profession);
+    },
+    [content],
+  );
+
   const openMarket = useCallback((itemId: string | null = null) => {
     setMarketItem(itemId);
     setRoom('market');
@@ -150,6 +165,8 @@ export function GameProvider({
     go,
     marketItem,
     openMarket,
+    recipeFocus,
+    openRecipe,
     logout,
   };
   return <GameCtx.Provider value={value}>{children}</GameCtx.Provider>;

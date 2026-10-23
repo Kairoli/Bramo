@@ -13,9 +13,16 @@ describe('actions du joueur', () => {
   });
 
   it('remplace ou met en file', () => {
-    const base = makeState({ activity: mining() });
+    const base = makeState({ activity: mining(), inventory: { ore: 2 } });
     expect(startActivity(base, 'smelt', 5, 'replace', T0, content).activity?.recipeId).toBe('smelt');
     expect(startActivity(base, 'smelt', 5, 'queue', T0, content).queue).toEqual([{ recipeId: 'smelt', quantity: 5 }]);
+  });
+
+  it('refuse de lancer tout de suite sans de quoi en faire une (l’activité en cours continue), mais permet la file', () => {
+    const base = makeState({ activity: mining(), inventory: { ore: 1 } });
+    expect(() => startActivity(base, 'smelt', 1, 'replace', T0, content)).toThrow('Il vous manque');
+    expect(() => startActivity(makeState(), 'smelt', 1, 'queue', T0, content)).toThrow('Il vous manque');
+    expect(startActivity(base, 'smelt', 1, 'queue', T0, content).activity?.recipeId).toBe('mine_ore');
   });
 
   it('la file est limitée à la longueur des réglages', () => {
@@ -34,5 +41,20 @@ describe('actions du joueur', () => {
     const s = eatMeal(makeState({ inventory: { stew: 2 } }), 'stew', T0, content);
     expect(s.inventory.stew).toBe(1);
     expect(s.buff).toEqual({ itemId: 'stew', bonus: 0.1, until: T0 + 30 * MIN });
+  });
+});
+
+describe('XP du début de métier', () => {
+  it('double chaque fabrication commencée sous le seuil, exact quel que soit le découpage', async () => {
+    const { boostedXp } = await import('../src/formulas/xp.js');
+    // Seuil 100 : sous lui, 10 XP comptent 20.
+    expect(boostedXp(10, 3, 0, 100, 2)).toBe(60);
+    expect(boostedXp(10, 10, 0, 100, 2)).toBe(5 * 20 + 5 * 10);
+    expect(boostedXp(10, 4, 95, 100, 2)).toBe(20 + 30);
+    expect(boostedXp(10, 4, 100, 100, 2)).toBe(40);
+    // En un lot ou en deux, même total.
+    const a = boostedXp(10, 10, 0, 100, 2);
+    const first = boostedXp(10, 3, 0, 100, 2);
+    expect(first + boostedXp(10, 7, first, 100, 2)).toBe(a);
   });
 });

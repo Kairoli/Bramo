@@ -10,6 +10,8 @@ const ratio = z.number().min(0);
 export const settingsSchema = z.object({
   xp: z.object({
     maxLevel: z.number().int().min(2),
+    /** XP des métiers multipliée tant que le métier est sous ce niveau (début de métier plus vif). */
+    earlyBoost: z.object({ untilLevel: z.number().int().min(1), multiplier: z.number().min(1) }).optional(),
   }),
   /** Rangs de métier : niveaux où le maître propose une commande (surnom + déblocage de la tranche suivante). */
   ranks: z.object({
@@ -164,6 +166,8 @@ export const itemSchema = z.object({
   value: z.number().int().min(0),
   /** Étal de la guilde : prix auquel le PNJ vend cet objet de palier 1 tant qu'aucun joueur n'en propose. Absent = jamais vendu par le PNJ. */
   stallPrice: z.number().int().min(1).optional(),
+  /** D'où vient l'objet quand ni une recette ni le combat ne le donnent (infobulle « où l'obtenir »). */
+  obtain: z.string().optional(),
   /** Réparation par un artisan ou soi-même : métier et niveau requis, matériaux consommés (≈ 30 % des matériaux principaux). */
   repair: z
     .object({ profession: id, level: z.number().int().min(1), materials: z.array(z.object({ item: id, qty: z.number().int().min(1) })).min(1) })

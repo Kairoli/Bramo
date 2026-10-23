@@ -1,4 +1,5 @@
 import type { ProfessionFamily } from '@bramo/shared';
+import { initialOf } from '../format';
 import { useGame } from '../game/GameContext';
 import { Bar, FAMILY_COLOR, FAMILY_NAME } from '../components/ui';
 import { Character } from '../rig/Character';
@@ -32,7 +33,7 @@ export function Professions() {
         <div className="masters">
           {masters.map((p) => (
             <button key={p.id} className={`master-card${waiting(p.id) ? ' waiting' : ''}`} onClick={() => go('professions', p.id)}>
-              <span className="npc-avatar" style={{ borderColor: FAMILY_COLOR[p.family] }} />
+              <span className="npc-avatar" data-initial={initialOf(p.master!.name)} style={{ borderColor: FAMILY_COLOR[p.family], color: FAMILY_COLOR[p.family] }} />
               <span>
                 <strong>{p.master!.name}</strong>
                 {waiting(p.id) ? (

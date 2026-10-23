@@ -236,10 +236,10 @@
 - {id: gem_recovery_amber, name: Ambre de reprise, category: gem, value: 150, gem: recovery_amber}
 
 # --- La Marée du soir (combat/tide.yaml) : les éclats de marée s'échangent contre des apparences, jamais de la puissance. ---
-- {id: tide_shard, name: Éclat de marée, category: currency, value: 50}
+- {id: tide_shard, name: Éclat de marée, category: currency, value: 50, obtain: "La Marée du soir (20 h), selon les lanternes allumées"}
 
 # --- L'Affineur du bourg : ce que donne une pièce démontée, et ce que coûte une retaille (gear_crafting.yaml, refine). ---
-- {id: lointain_dust, name: Poussière de Lointain, category: dust, value: 60}
+- {id: lointain_dust, name: Poussière de Lointain, category: dust, value: 60, obtain: "Démonter une pièce d’équipement chez l’Affineur"}
 
 # --- Fournitures de combat (23 octobre, nuit) : préparations emportées sur la route. Chacune donne son outil de situation
 #     (combat/tools.yaml, rang prep) pendant une heure de combat. Elles donnent un usage aux restes de la Chasse, de la

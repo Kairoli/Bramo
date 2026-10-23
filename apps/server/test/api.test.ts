@@ -701,6 +701,15 @@ describe('API', () => {
     expect(((await moi('GET', '/api/profile/avatar')).json as { hidden: boolean }).hidden).toBe(true);
   });
 
+  it('contenu public : où tombe chaque vestige (pour dire au joueur où l’obtenir)', async () => {
+    const res = await app.inject({ method: 'GET', url: '/api/content' });
+    const drops = (res.json() as import('@bramo/shared').ContentResponse).drops;
+    for (const e of Object.values(content.combat?.encounters ?? {})) {
+      if (!e.loot?.vestige || !e.region) continue;
+      expect(drops[e.loot.vestige]?.find((d) => d.region === e.region)?.encounters).toContain(e.name);
+    }
+  });
+
   it('page profil : devise et bannière, liens et décors inconnus refusés, palmarès lu par les autres', async () => {
     const moi = player({ value: '' });
     await moi('POST', '/api/auth/register', { username: 'Banniere', password: 'motdepasse' });

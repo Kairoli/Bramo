@@ -2,6 +2,8 @@ import { useEffect, type CSSProperties, type ReactNode } from 'react';
 import { createPortal } from 'react-dom';
 import type { Item, ProfessionFamily } from '@bramo/shared';
 import { ItemArt } from './ItemArt';
+import { ItemTipContent } from './ItemTip';
+import { Tip } from './Tip';
 
 export function Bar({ value, color, style }: { value: number; color?: string; style?: CSSProperties }) {
   return (
@@ -64,9 +66,12 @@ const CATEGORY_COLOR: Record<string, string> = {
   masterwork: 'var(--clan)',
 };
 
-/** Icône d'un objet : son dessin (`ItemArt`) dans un cadre à la couleur de sa catégorie. */
-export function ItemIcon({ item, small, dim }: { item: Item | undefined; small?: boolean; dim?: boolean }) {
-  return (
+/**
+ * Icône d'un objet : son dessin (`ItemArt`) dans un cadre à la couleur de sa catégorie. Au survol, sa bulle (d'où il
+ * vient, à quoi il sert), sauf `tip={false}`.
+ */
+export function ItemIcon({ item, small, dim, tip = true }: { item: Item | undefined; small?: boolean; dim?: boolean; tip?: boolean }) {
+  const icon = (
     <span
       className={`item-icon${small ? ' sm' : ''}${dim ? ' dim' : ''}`}
       style={{ color: dim ? 'var(--border)' : (CATEGORY_COLOR[item?.category ?? ''] ?? 'var(--text-muted)') }}
@@ -75,6 +80,7 @@ export function ItemIcon({ item, small, dim }: { item: Item | undefined; small?:
       {item ? <ItemArt item={item} size={64} /> : '?'}
     </span>
   );
+  return item && tip ? <Tip content={<ItemTipContent item={item} />}>{icon}</Tip> : icon;
 }
 
 export const FAMILY_COLOR: Record<ProfessionFamily, string> = {

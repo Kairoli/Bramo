@@ -892,7 +892,8 @@
   align-items: center;
   gap: 20px;
 }
-.detail-main > .item-icon {
+.detail-main > .item-icon,
+.detail-main > .tip-anchor > .item-icon {
   width: 72px;
   height: 72px;
   font-size: 26px;
@@ -914,7 +915,7 @@
 }
 .ingredient {
   display: grid;
-  grid-template-columns: auto 1fr auto;
+  grid-template-columns: auto minmax(0, 1fr) auto auto;
   align-items: center;
   gap: 10px;
   font-size: 13px;
@@ -1749,7 +1750,8 @@
     padding: 10px 12px;
     gap: 8px;
   }
-  .detail-main > .item-icon {
+  .detail-main > .item-icon,
+  .detail-main > .tip-anchor > .item-icon {
     width: 56px;
     height: 56px;
   }
@@ -7639,4 +7641,336 @@ div.tide-role {
   .pp-body {
     grid-template-columns: minmax(0, 1fr);
   }
+}
+
+/* Sac d'équipement vide : la phrase prend toute la largeur de la grille (elle tenait dans une case, un mot par ligne). */
+.gear-grid-empty {
+  grid-column: 1 / -1;
+}
+
+/* Premiers pas (rooms/home/FirstSteps.tsx) : en tête du journal de l'accueil, repliés sur la prochaine étape. */
+.first-steps {
+  flex: none;
+  display: grid;
+  gap: 8px;
+  padding: 8px 10px;
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--action) 8%, var(--sunken));
+  border: 1px solid color-mix(in srgb, var(--action) 35%, var(--border));
+}
+.first-steps.open {
+  max-height: 62%;
+  overflow-y: auto;
+}
+.first-steps-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.first-steps-toggle {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.first-steps-ring {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  font-size: 11px;
+  font-weight: 800;
+  background:
+    radial-gradient(circle, var(--sunken) 58%, transparent 60%),
+    conic-gradient(var(--action) var(--p), var(--border) 0);
+}
+.first-steps-title {
+  display: grid;
+  min-width: 0;
+}
+.first-steps-title strong {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.first-steps-chevron {
+  color: var(--text-muted);
+}
+.first-steps-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 6px;
+}
+.first-steps-list li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.first-steps-list li.done {
+  opacity: 0.55;
+}
+.first-steps-check {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 6px;
+  border: 1.5px solid var(--border);
+  color: var(--good);
+  font-weight: 900;
+  font-size: 13px;
+}
+.first-steps-list li.done .first-steps-check {
+  border-color: var(--good);
+}
+.first-steps-list li.next .first-steps-check {
+  border-color: var(--action);
+}
+.first-steps-text {
+  flex: 1;
+  min-width: 0;
+  display: grid;
+  gap: 1px;
+  font-size: 13px;
+}
+.first-steps-hide {
+  justify-self: end;
+}
+
+/* Bourg : seuls les vrais joueurs gardent leur nom au-dessus de la tête ; celui des habitants de passage apparaît au
+   survol (les étiquettes se chevauchaient, et on ne savait plus qui était un joueur). */
+.walker-villager .walker-name {
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+.walker-villager:hover .walker-name {
+  opacity: 1;
+}
+
+/* XP doublée du début de métier (settings.xp.earlyBoost). */
+.xp-boost {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 1px 8px;
+  border-radius: 999px;
+  font-size: 11.5px;
+  font-weight: 800;
+  color: var(--good);
+  background: color-mix(in srgb, var(--good) 14%, transparent);
+  border: 1px solid color-mix(in srgb, var(--good) 45%, var(--border));
+  vertical-align: 1px;
+}
+.xp-boost.small {
+  margin-left: 6px;
+  padding: 0 6px;
+  font-size: 10.5px;
+}
+
+/* Répertoire des sorts : les sorts pas encore appris gardent leur nom, grisés, avec leur niveau. */
+.tip-anchor.block {
+  display: block;
+}
+.tip-anchor.block > .book-spell {
+  width: 100%;
+  height: 100%;
+}
+.book-spell.locked {
+  cursor: help;
+  opacity: 0.6;
+}
+.book-spell.locked .book-name {
+  color: var(--text-muted);
+}
+.book-lock {
+  font-size: 10px;
+  font-weight: 800;
+  color: var(--text-muted);
+  padding: 0 6px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+}
+
+/* --- Infobulle du jeu (components/Tip.tsx) --- */
+.tip-anchor {
+  display: inline-flex;
+}
+.tip-card {
+  position: fixed;
+  z-index: 1000;
+  width: max-content;
+  max-width: min(340px, calc(100vw - 16px));
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--sunken) 92%, #000);
+  border: 1px solid color-mix(in srgb, var(--text) 16%, var(--border));
+  box-shadow: 0 12px 30px rgb(0 0 0 / 0.55), 0 0 0 1px rgb(0 0 0 / 0.4);
+  color: var(--text);
+  font-size: 13px;
+  line-height: 1.35;
+  pointer-events: none;
+  display: grid;
+  gap: 8px;
+  animation: tip-in 0.12s ease-out;
+}
+@keyframes tip-in {
+  from {
+    opacity: 0;
+    transform: translateY(3px);
+  }
+}
+.tip-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.tip-icon {
+  flex: none;
+  display: grid;
+  place-items: center;
+}
+.tip-title {
+  display: grid;
+  gap: 1px;
+  min-width: 0;
+  flex: 1;
+}
+.tip-title strong {
+  font-size: 14.5px;
+  color: var(--tc, var(--text));
+}
+.tip-title span {
+  color: var(--text-muted);
+  font-size: 12px;
+}
+.tip-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  width: 100%;
+}
+.tip-chip {
+  padding: 1px 7px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  background: rgb(255 255 255 / 0.06);
+  border: 1px solid rgb(255 255 255 / 0.1);
+  color: var(--text-muted);
+}
+.tip-chip.gold {
+  color: var(--clan);
+  border-color: color-mix(in srgb, var(--clan) 50%, transparent);
+}
+.tip-body {
+  display: grid;
+  gap: 4px;
+}
+.tip-line {
+  display: grid;
+  grid-template-columns: 16px minmax(0, 1fr);
+  gap: 6px;
+  align-items: start;
+}
+.tip-mark {
+  color: var(--tc, var(--text-muted));
+  text-align: center;
+  font-weight: 800;
+}
+.tip-foot {
+  padding-top: 6px;
+  border-top: 1px solid rgb(255 255 255 / 0.08);
+  font-size: 12px;
+  color: var(--text-muted);
+}
+.tip-foot.locked {
+  color: var(--clan);
+}
+.tip-foot.good {
+  color: var(--good);
+}
+.tip-anchor.block > .combat-path {
+  width: 100%;
+  height: 100%;
+}
+.combat-path.locked {
+  opacity: 0.55;
+  cursor: help;
+}
+
+/* « Où l'obtenir » sous un ingrédient qui manque (components/ItemTip.tsx). */
+.ingredient-sources .source-chips {
+  flex-wrap: nowrap;
+  justify-content: flex-end;
+}
+.ingredient-sources .source-chip {
+  padding: 2px 8px;
+  font-size: 11.5px;
+}
+.source-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+.source-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 9px;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--sc) 45%, var(--border));
+  background: color-mix(in srgb, var(--sc) 10%, var(--sunken));
+  color: var(--text);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.source-chip:hover {
+  border-color: var(--sc);
+  background: color-mix(in srgb, var(--sc) 20%, var(--sunken));
+}
+.source-chip.far {
+  opacity: 0.7;
+}
+.source-chip.static {
+  cursor: default;
+  font-weight: 600;
+}
+.source-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--sc);
+  box-shadow: 0 0 6px var(--sc);
+}
+.source-go {
+  color: var(--sc);
+}
+.tip-label {
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+/* Une case d'équipement dans sa bulle garde la taille que lui donne sa grille. */
+.tip-anchor.gear-tip {
+  min-width: 0;
+}
+.tip-anchor.gear-tip > .gear-tile {
+  width: 100%;
 }

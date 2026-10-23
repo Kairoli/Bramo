@@ -74,7 +74,7 @@ export interface CombatView {
   pathLevel: number;
   /** Voie active (null avant le niveau de voie ou sans choix). */
   path: string | null;
-  paths: { id: string; name: string; role: Role; passive: string }[];
+  paths: { id: string; name: string; role: Role; passive: string; about: string | null }[];
   slots: number;
   maxFirstUse: number;
   plan: PlanEntry[];
@@ -328,7 +328,7 @@ export function viewCombat(state: CharacterState, content: Content): CombatView 
     mechanic: { label: kit.label, state: kit.state },
     pathLevel: combat.pathLevel,
     path,
-    paths: kit.paths.map((p) => ({ id: p.id, name: p.name, role: p.role, passive: p.passive })),
+    paths: kit.paths.map((p) => ({ id: p.id, name: p.name, role: p.role, passive: p.passive, about: p.about ?? null })),
     slots: spellSlots(combat, level),
     maxFirstUse: combat.rules.maxFirstUse,
     plan,

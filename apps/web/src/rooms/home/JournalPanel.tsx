@@ -2,6 +2,7 @@ import { type CSSProperties, type ReactNode, useEffect, useMemo, useRef, useStat
 import type { ChatMessageView, ChatView, JournalEntry, TownEvent } from '@bramo/shared';
 import { Avatar } from '../../components/Avatar';
 import { PlayerName } from '../../components/ProfileLink';
+import { FirstSteps } from './FirstSteps';
 import { api } from '../../api';
 import { useGame } from '../../game/GameContext';
 import { hhmm } from '../../format';
@@ -234,6 +235,7 @@ export function JournalPanel() {
 
   return (
     <section className="panel journal">
+      {tab === 'all' && <FirstSteps />}
       <div className="tabs journal-tabs" role="tablist">
         {(
           [

@@ -36,6 +36,16 @@ export function startActivity(
     throw new GameError('quantity', `Quantité entre 1 et ${maxQuantity}.`);
   }
 
+  // Lancer tout de suite une recette sans de quoi en faire une seule arrêtait l'activité en cours pour rien
+  // (relevé en jouant, 23 octobre). Dans la file, c'est permis : ce qui passe avant peut fournir les matières.
+  if (mode === 'replace' || !input.activity) {
+    const missing = recipe.inputs.filter((i) => (input.inventory[i.item] ?? 0) < i.qty);
+    if (missing.length) {
+      const names = missing.map((i) => `${content.items[i.item]?.name ?? i.item} (${input.inventory[i.item] ?? 0}/${i.qty})`).join(', ');
+      throw new GameError('missing_inputs', `Il vous manque : ${names}.`);
+    }
+  }
+
   const state = cloneState(input);
   const action = { recipeId, quantity };
   if (mode === 'replace' || !state.activity) {

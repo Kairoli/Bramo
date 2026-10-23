@@ -8,6 +8,8 @@ import { Bar, Modal } from '../components/ui';
 import { Scene } from '../components/Scene';
 import { LiveFight } from '../components/LiveFight';
 import { SpellIcon } from '../components/SpellIcon';
+import { SpellTipContent } from '../components/SpellTip';
+import { Tip, TipFoot, TipHead } from '../components/Tip';
 
 const ROLE = { damage: 'Dégâts', control: 'Contrôle', support: 'Soutien' } as const;
 
@@ -103,7 +105,7 @@ function ArenaHud({ view }: { view: CombatView }) {
       <div className="hud-right">
         {a && a.encounter !== null && (
           <span className="hud-score">
-            <span style={{ color: 'var(--good)' }}>{num(a.wins)}</span> / <span style={{ color: 'var(--alert)' }}>{num(a.losses)}</span>
+            <span style={{ color: 'var(--good)' }}>{num(a.wins)}</span> victoire{a.wins > 1 ? 's' : ''} · <span style={{ color: 'var(--alert)' }}>{num(a.losses)}</span> défaite{a.losses > 1 ? 's' : ''}
           </span>
         )}
         {a && !a.route && (
@@ -128,9 +130,11 @@ function SpellBar({ view, onEdit }: { view: CombatView; onEdit: () => void }) {
   const lastBasic = c === null ? null : [...basics].reverse().find((e) => e.t <= c + 0.3);
   return (
     <div className="spell-bar">
-      <div className={`spell-slot${lastBasic && c !== null && c - lastBasic.t < 0.25 && c >= lastBasic.t - 0.3 ? ' fire' : ''}`} title="Attaque de base">
-        <SpellIcon id={`basic_${view.classId}`} classId={view.classId} size={46} />
-      </div>
+      <Tip content={<TipHead icon={<SpellIcon id={`basic_${view.classId}`} classId={view.classId} size={40} />} title="Attaque de base" sub="Toujours prête, entre deux sorts : sa cadence vient de l’arme portée." />}>
+        <div className={`spell-slot${lastBasic && c !== null && c - lastBasic.t < 0.25 && c >= lastBasic.t - 0.3 ? ' fire' : ''}`}>
+          <SpellIcon id={`basic_${view.classId}`} classId={view.classId} size={46} />
+        </div>
+      </Tip>
       <span className="spell-bar-sep" />
       {view.plan.map((p, i) => {
         const s = spells[p.spell];
@@ -141,7 +145,8 @@ function SpellBar({ view, onEdit }: { view: CombatView; onEdit: () => void }) {
         const share = last ? left / s.cooldown : p.at > 0 ? left / p.at : 0;
         const just = last && c !== null && c - last.t < 0.3;
         return (
-          <div key={i} className={`spell-slot${just ? ' fire' : ''}`} title={`${s.name} · ${s.text}`}>
+          <Tip key={i} content={<SpellTipContent s={s} classId={view.classId} level={view.level} pathName={view.paths.find((x) => x.id === s.path)?.name} />}>
+          <div className={`spell-slot${just ? ' fire' : ''}`}>
             <SpellIcon id={s.id} classId={view.classId} element={s.element === 'inherit' ? undefined : s.element} ultimate={s.tags.includes('ultimate')} size={46} />
             {left > 0.05 && (
               <>
@@ -150,6 +155,7 @@ function SpellBar({ view, onEdit }: { view: CombatView; onEdit: () => void }) {
               </>
             )}
           </div>
+          </Tip>
         );
       })}
       {Array.from({ length: Math.max(0, view.slots - view.plan.length) }, (_, i) => (
@@ -207,7 +213,7 @@ function RouteMap({ view }: { view: CombatView }) {
           return (
             <button key={s.index} className={`path-node${done ? ' done' : ''}${cur ? ' current' : ''}${locked ? ' locked' : ''}${s.guardian ? ' guardian' : ''}${sel.index === s.index ? ' selected' : ''}`} onClick={() => setPicked(s.index)} title={`${s.label} · ${s.name} · palier ${s.tier}`}>
               <span className="path-node-dot">{s.guardian ? '♛' : s.label.split('-')[1]}</span>
-              <span className="path-node-name">{s.guardian ? 'Gardien' : `P. ${s.tier}`}</span>
+              <span className="path-node-name">{s.guardian ? 'Gardien' : cur ? 'ici' : done ? 'franchie' : ' '}</span>
             </button>
           );
         })}
@@ -375,10 +381,14 @@ function PrepSheet({ view }: { view: CombatView }) {
         {view.spells.map((s) => {
           const used = draft.some((d) => d.spell === s.id);
           return (
-            <button key={s.id} className={`book-spell${used ? ' used' : ''}`} disabled={!s.available} onClick={() => put(s.id)} onMouseEnter={() => setHover(s)} onMouseLeave={() => setHover(null)} title={s.available ? s.name : `${s.name} · niveau ${s.level}`}>
-              <SpellIcon id={s.id} classId={view.classId} element={s.element === 'inherit' ? undefined : s.element} ultimate={s.tags.includes('ultimate')} size={44} dim={!s.available} />
-              <span className="book-name">{s.available ? s.name : `Niv. ${s.level}`}</span>
-            </button>
+            // Un sort pas encore appris se survole aussi (un bouton désactivé ne recevait pas la souris) : il ne se pose pas.
+            <Tip key={s.id} block content={<SpellTipContent s={s} classId={view.classId} level={view.level} pathName={view.paths.find((x) => x.id === s.path)?.name} />}>
+              <button className={`book-spell${used ? ' used' : ''}${s.available ? '' : ' locked'}`} aria-disabled={!s.available} onClick={() => s.available && put(s.id)} onMouseEnter={() => setHover(s)} onMouseLeave={() => setHover(null)}>
+                <SpellIcon id={s.id} classId={view.classId} element={s.element === 'inherit' ? undefined : s.element} ultimate={s.tags.includes('ultimate')} size={44} dim={!s.available} />
+                <span className="book-name">{s.name}</span>
+                {!s.available && <span className="book-lock">niv. {s.level}</span>}
+              </button>
+            </Tip>
           );
         })}
       </div>
@@ -440,11 +450,26 @@ function ClassSheet({ view }: { view: CombatView }) {
       {locked && <p className="muted small">Les voies s’ouvrent au niveau {view.pathLevel} : dégâts, contrôle ou soutien. Le choix est gratuit et se change quand on veut.</p>}
       <div className="combat-paths">
         {view.paths.map((p) => (
-          <button key={p.id} className={`combat-path${view.path === p.id ? ' on' : ''}`} disabled={locked || view.path === p.id} onClick={() => void act(() => api.combatPath(p.id))}>
-            <span className="combat-path-role">{ROLE[p.role]}</span>
-            <strong>{p.name}</strong>
-            <span className="muted small">{p.passive}</span>
-          </button>
+          <Tip
+            key={p.id}
+            block
+            content={
+              <>
+                <TipHead title={p.name} sub={`${ROLE[p.role]} · passif « ${p.passive} »`} />
+                {p.about && <div className="tip-body">{p.about}</div>}
+                {view.spells.some((s) => s.path === p.id) && (
+                  <div className="tip-body muted small">Sorts propres : {view.spells.filter((s) => s.path === p.id).map((s) => `${s.name} (niv. ${s.level})`).join(', ')}</div>
+                )}
+                {locked ? <TipFoot tone="locked">🔒 Les voies s’ouvrent au niveau {view.pathLevel} de la classe.</TipFoot> : view.path === p.id ? <TipFoot tone="good">Votre voie actuelle.</TipFoot> : <TipFoot>Changer est gratuit.</TipFoot>}
+              </>
+            }
+          >
+            <button className={`combat-path${view.path === p.id ? ' on' : ''}${locked ? ' locked' : ''}`} aria-disabled={locked || view.path === p.id} onClick={() => !locked && view.path !== p.id && void act(() => api.combatPath(p.id))}>
+              <span className="combat-path-role">{ROLE[p.role]}</span>
+              <strong>{p.name}</strong>
+              <span className="muted small">{p.passive}</span>
+            </button>
+          </Tip>
         ))}
       </div>
       <div className="eyebrow">Autres classes</div>

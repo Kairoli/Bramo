@@ -396,7 +396,8 @@ function ItemMarket({ itemId, book, run }: { itemId: string; book: MarketOrderVi
 
   const { taxShare, maxPrice, maxQuantity } = content.settings.market;
   const gross = price * (durable ? 1 : qty);
-  const net = gross - Math.ceil(gross * taxShare);
+  // Le même calcul que le serveur (taxe arrondie au plus proche) : l'écran annonçait 2 or pour une vente qui en rapporte 3.
+  const net = gross - Math.round(gross * taxShare);
   const clamp = (n: number, max: number) => Math.max(1, Math.min(max, Math.floor(n) || 1));
   const maxQty = side === 'sell' ? Math.max(1, Math.min(maxQuantity, have)) : maxQuantity;
   const valid = price >= 1 && price <= maxPrice && (durable || (qty >= 1 && qty <= maxQuantity));
@@ -460,7 +461,7 @@ function ItemMarket({ itemId, book, run }: { itemId: string; book: MarketOrderVi
           {bestBuy && !durable ? (
             <>
               <strong>{num(bestBuy.price)} or</strong>
-              <span className="muted small">demandé ×{num(bestBuy.qty)} · vous touchez {num(bestBuy.price - Math.ceil(bestBuy.price * taxShare))} or l’unité</span>
+              <span className="muted small">demandé ×{num(bestBuy.qty)} · vous touchez {num(bestBuy.price - Math.round(bestBuy.price * taxShare))} or l’unité</span>
               <button className="btn btn-primary" disabled={sellNowQty < 1} onClick={() => run(() => api.placeOrder({ side: 'sell', itemId, qty: sellNowQty, price: bestBuy.price }))}>
                 {sellNowQty > 0 ? `Vendre ${num(sellNowQty)}` : 'Vous n’en avez pas'}
               </button>
@@ -496,7 +497,7 @@ function ItemMarket({ itemId, book, run }: { itemId: string; book: MarketOrderVi
           </label>
         ) : (
           !durable && (
-            <Stepper label="Quantité" value={qty} onChange={(v) => setQty(clamp(v, maxQuantity))} presets={[1, 10, 100, ...(side === 'sell' && have > 0 ? [maxQty] : [])]} presetLabel={(v) => (side === 'sell' && v === maxQty && have > 0 ? 'Tout' : String(v))} />
+            <Stepper label="Quantité" value={qty} onChange={(v) => setQty(clamp(v, maxQty))} presets={side === 'sell' && have > 0 ? [...[1, 10, 100].filter((v) => v < maxQty), maxQty] : [1, 10, 100]} presetLabel={(v) => (side === 'sell' && v === maxQty && have > 0 ? 'Tout' : String(v))} />
           )
         )}
         <Stepper label="Prix de l’unité (or)" value={price} onChange={(v) => setPrice(clamp(v, maxPrice))} presets={[...new Set([bestSell?.price, bestBuy?.price, item.value].filter((x): x is number => !!x))]} presetLabel={(v) => (v === bestSell?.price ? `${v} · offre` : v === bestBuy?.price ? `${v} · demande` : `${v} · réf.`)} />

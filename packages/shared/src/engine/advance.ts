@@ -5,7 +5,7 @@ import {
   bonusMultiplier,
   presenceAt,
 } from '../formulas/rates.js';
-import { type CharacterState, addStack, addTo, cloneState, xpMultiplier } from './state.js';
+import { type CharacterState, addStack, addTo, cloneState, craftXp, xpMultiplier } from './state.js';
 import { activeCopy, isDurable, wearCopy } from './gear.js';
 import { skillLevel } from './trials.js';
 import { type CombatSummary, emptyCombatSummary, resumeRoute, runCombat } from '../combat/progress.js';
@@ -206,8 +206,9 @@ export function advance(
       if (!(recipe.profession in levelsBefore)) {
         levelsBefore[recipe.profession] = skillLevel(state, recipe.profession, content);
       }
-      addTo(state.skills, recipe.profession, recipe.xp * n * xpMul);
-      addTo(summary.xp, recipe.profession, recipe.xp * n * xpMul);
+      const gained = craftXp(recipe.xp * xpMul, n, state.skills[recipe.profession] ?? 0, content);
+      addTo(state.skills, recipe.profession, gained);
+      addTo(summary.xp, recipe.profession, gained);
       for (const i of recipe.inputs) {
         addStack(state.inventory, i.item, -i.qty * n);
         addTo(summary.consumed, i.item, i.qty * n);

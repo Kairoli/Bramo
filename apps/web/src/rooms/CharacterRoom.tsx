@@ -182,7 +182,8 @@ function YieldCard() {
   const bonuses = [
     { label: 'Outil', value: rate?.tool ?? 0, cap: settings.bonusCaps.tool, soon: false },
     { label: 'Repas', value: rate?.meal ?? 0, cap: settings.bonusCaps.meal, soon: false },
-    { label: 'Clan', value: 0, cap: settings.bonusCaps.clan, soon: true },
+    // Le clan existe : ses bâtiments (ou, sans clan, la Guilde du bourg) comptent déjà ; « bientôt » laissait croire le contraire.
+    { label: 'Clan', value: rate?.clan ?? 0, cap: settings.bonusCaps.clan, soon: false },
     { label: 'Saison', value: 0, cap: settings.bonusCaps.season, soon: true },
   ];
   return (
@@ -248,7 +249,7 @@ function BagPanel() {
         {items.map(({ item, qty }) => {
           const l = left(item);
           return (
-            <button key={item.id} className={`item-tile${picked === item.id ? ' selected' : ''}`} onClick={() => setPicked(picked === item.id ? null : item.id)} title={item.name}>
+            <button key={item.id} className={`item-tile${picked === item.id ? ' selected' : ''}`} onClick={() => setPicked(picked === item.id ? null : item.id)}>
               <ItemIcon item={item} />
               <span className="item-qty">{num(qty)}</span>
               {l !== null && (

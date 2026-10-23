@@ -127,6 +127,7 @@ import { joinEvent, recordEvents, townView } from './town.js';
 import { contribute, contributeWorks, createClan, joinClan, kickMember, launchBanquet, leaveClan, listClans, myClanView, setRank } from './clans.js';
 import { joinTestClan } from './devClan.js';
 import { playerProfile, setProfileDetails } from './profile.js';
+import { firstSteps } from './firstSteps.js';
 import { cancelRepair, openRepairs, requestRepair, takeRepair } from './repairs.js';
 import { dropMismatchedOwned, equipOwned, giveStarterGear, grantGear, loadGear, refineOwned, salvageOwned, socketOwned, unequipOwned, wearGearSet } from './gear.js';
 import { buyFromStall, cancelOrder, fillOrder, marketBook, marketSummary, myOrders, placeOrder, myTrades, priceHistory } from './market.js';
@@ -224,6 +225,7 @@ export async function buildApp({ db, content, clock = Date.now, secureCookies = 
     gearPools: content.gearPools,
     gearSets: content.gearSets,
     gearCrafting: content.gearCrafting,
+    drops: dropsOf(content),
   };
   app.get('/api/health', async () => ({ ok: true }));
   app.get('/api/content', async () => publicContent);
@@ -727,6 +729,8 @@ export async function buildApp({ db, content, clock = Date.now, secureCookies = 
     const me = await myCharacter(req);
     return db.transaction((tx) => reportAvatar(tx, me.id, characterId, content, clock()));
   });
+  /** Premiers pas d'un nouveau joueur (accueil). */
+  app.get('/api/first-steps', async (req) => firstSteps(db, (await myCharacter(req)).id));
   /** Sa page profil : devise et bannière. */
   app.post('/api/profile/details', async (req) => {
     const details = body(profileDetailsBody, req);
@@ -950,4 +954,17 @@ export async function buildApp({ db, content, clock = Date.now, secureCookies = 
   });
 
   return app;
+}
+
+/** Où tombe chaque vestige : par région, les rencontres qui le donnent (pour dire au joueur où l'obtenir). */
+function dropsOf(content: Content): ContentResponse['drops'] {
+  const out: ContentResponse['drops'] = {};
+  for (const e of Object.values(content.combat?.encounters ?? {})) {
+    const item = e.loot?.vestige;
+    if (!item || !e.region) continue;
+    const list = (out[item] ??= []);
+    const row = list.find((r) => r.region === e.region) ?? (list.push({ region: e.region, encounters: [] }), list[list.length - 1]!);
+    row.encounters.push(e.name);
+  }
+  return out;
 }

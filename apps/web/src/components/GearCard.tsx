@@ -13,7 +13,7 @@ import { ItemIcon, Modal } from './ui';
 const RARITY: Record<string, string> = { common: 'Commun', rare: 'Rare', epic: 'Épique', legendary: 'Légendaire' };
 
 /** Les caractéristiques fixes, avec ce qu'elles font en une ligne. */
-const STATS: Record<string, { name: string; hint: string; icon: string }> = {
+export const STATS: Record<string, { name: string; hint: string; icon: string }> = {
   power: { name: 'Puissance', hint: 'plus de dégâts et de soins', icon: 'M6 18L18 6M14 6h4v4M6 14l4 4' },
   vitality: { name: 'Vitalité', hint: 'plus de points de vie', icon: 'M12 20s-7-4.5-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 10c0 5.5-7 10-7 10z' },
   defense: { name: 'Défense', hint: 'moins de dégâts reçus', icon: 'M12 3l7 3v5c0 5-3 8-7 10-4-2-7-5-7-10V6z' },
@@ -22,7 +22,7 @@ const STATS: Record<string, { name: string; hint: string; icon: string }> = {
   tenacity: { name: 'Ténacité', hint: 'pas encore utilisée en combat', icon: 'M5 20V9l7-5 7 5v11M9 20v-6h6v6' },
 };
 
-const SLOT: Record<string, string> = {
+export const SLOT: Record<string, string> = {
   head: 'Tête',
   torso: 'Torse',
   hands: 'Mains',

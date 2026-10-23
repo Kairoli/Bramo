@@ -31,3 +31,6 @@ export function hhmm(t: number): string {
 }
 
 export const seconds = (s: number) => (Number.isInteger(s) ? `${s} s` : `${s.toFixed(1).replace('.', ',')} s`);
+
+/** Initiale d'un personnage du jeu (« Maîtresse Aldra » → « A ») : pour un médaillon en attendant un portrait. */
+export const initialOf = (name: string) => (name.trim().split(/\s+/).pop() ?? '?').charAt(0).toUpperCase();

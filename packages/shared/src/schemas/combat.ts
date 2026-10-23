@@ -162,6 +162,8 @@ export const pathSchema = z.object({
   name: z.string(),
   role: z.enum(roles),
   passive: z.string(),
+  /** Ce que fait le passif, en une phrase simple (infobulle de la voie). */
+  about: z.string().optional(),
   params,
 });
 

@@ -2,7 +2,8 @@ import { useEffect, useMemo, useState, type CSSProperties, type ReactNode } from
 import type { GearItemView, GearModel, GearView } from '@bramo/shared';
 import { api } from '../api';
 import { GearIcon } from './GearIcon';
-import { GearCard } from './GearCard';
+import { GearCard, SLOT, STATS } from './GearCard';
+import { Tip, TipFoot, TipHead, TipLine } from './Tip';
 import { ItemIcon, Modal } from './ui';
 import { useGame } from '../game/GameContext';
 
@@ -43,13 +44,60 @@ export function SlotGlyph({ slot, size = 26 }: { slot: string; size?: number }) 
 }
 
 /** Une pièce en tuile : le pictogramme de son emplacement dans la couleur de sa rareté, son palier, ★ pour un chef-d'œuvre. */
+/** Bulle d'une pièce : son nom à la couleur de sa rareté, ses caractéristiques et ses lignes, en un coup d'œil. */
+function GearTipContent({ g }: { g: GearItemView }) {
+  const { content } = useGame();
+  return (
+    <>
+      <TipHead
+        icon={<GearIcon slot={g.slot} family={g.family} tier={g.tier} rarity={g.rarity} size={40} />}
+        title={`${g.masterpiece ? 'Chef-d’œuvre · ' : ''}${g.name}`}
+        sub={`${RARITY_NAMES[g.rarity]} · palier ${g.tier} · ${SLOT[g.slot] ?? g.slot}`}
+        color={rarityColor(g.rarity)}
+      />
+      <div className="tip-body">
+        {g.stats.map((s) => (
+          <TipLine key={s.stat} mark="▸">
+            <strong>
+              +{Math.round(s.value)} {STATS[s.stat]?.name ?? s.stat}
+            </strong>{' '}
+            <span className="muted">{STATS[s.stat]?.hint}</span>
+          </TipLine>
+        ))}
+        {g.lines.map((l, i) => (
+          <TipLine key={i} color="var(--good)" mark="+">
+            {Math.round(l.value * 10) / 10} % {l.name}
+          </TipLine>
+        ))}
+        {g.set && (
+          <TipLine color="var(--clan)" mark="◆">
+            Ensemble : {content.gearSets[g.set]?.name ?? g.set}
+          </TipLine>
+        )}
+        {g.gem && (
+          <TipLine color="var(--magic)" mark="◆">
+            Gemme sertie : {content.items[g.gem]?.name ?? g.gem}
+          </TipLine>
+        )}
+      </div>
+      {g.wearShare >= 1 ? (
+        <TipFoot tone="locked">Usée : à réparer pour qu’elle compte de nouveau.</TipFoot>
+      ) : !g.wearable ? (
+        <TipFoot tone="locked">Pas portable par votre classe actuelle.</TipFoot>
+      ) : (
+        <TipFoot>Touchez-la pour sa fiche complète et la comparer.</TipFoot>
+      )}
+    </>
+  );
+}
+
 export function GearTile({ g, slot, selected, onClick, label }: { g?: GearItemView; slot: string; selected?: boolean; onClick?: () => void; label?: string }) {
   return (
+    <Tip block className="gear-tip" content={g ? <GearTipContent g={g} /> : label && label.length > 1 ? <TipHead title={label} sub="Rien de porté ici." /> : null}>
     <button
       className={`gear-tile${g ? '' : ' empty'}${selected ? ' selected' : ''}${g?.worn ? ' worn' : ''}${g && !g.wearable ? ' other' : ''}`}
       style={g ? ({ '--rc': rarityColor(g.rarity) } as CSSProperties) : undefined}
       onClick={onClick}
-      title={g ? `${g.name} · ${RARITY_NAMES[g.rarity]} · palier ${g.tier}` : (label ?? '')}
     >
       {g ? <GearIcon slot={g.slot} family={g.family} tier={g.tier} rarity={g.rarity} size={40} /> : <SlotGlyph slot={slot} />}
       {g && <span className="gear-tile-tier">{g.tier}</span>}
@@ -58,6 +106,7 @@ export function GearTile({ g, slot, selected, onClick, label }: { g?: GearItemVi
       {g?.gem && <span className="gear-tile-gem" title="Gemme sertie" />}
       {label && !g && <span className="gear-tile-label">{label}</span>}
     </button>
+    </Tip>
   );
 }
 
@@ -134,7 +183,7 @@ export function GearPanel({ gear, onChange }: { gear: GearView | null; onChange:
         )}
       </header>
       <div className="gear-grid scroll">
-        {filtered.length === 0 && <p className="muted small">Rien ici pour l’instant : les rencontres en font tomber.</p>}
+        {filtered.length === 0 && <p className="muted small gear-grid-empty">Rien ici pour l’instant : les rencontres en font tomber.</p>}
         {filtered.map((g) => (
           <GearTile key={g.id} g={g} slot={g.slot} selected={pick?.id === g.id} onClick={() => setPick({ id: g.id, slot: pick?.slot })} />
         ))}

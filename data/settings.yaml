@@ -2,6 +2,9 @@
 
 xp:
   maxLevel: 99
+  # XP des métiers doublée jusqu'au niveau 20 [Décidé par Louis le 23 octobre, après avoir joué : « remets l'XP double
+  # jusqu'au 20 »]. Chaque fabrication commencée sous le niveau 20 compte double.
+  earlyBoost: {untilLevel: 20, multiplier: 2}
 
 # Rangs de métier (docs/design/rangs.md) : à ces niveaux, le maître du métier propose une commande spéciale (data/trials.yaml).
 # La réussir accorde le surnom du palier. gatesLevel : false = le niveau monte librement, la commande ne donne que le surnom

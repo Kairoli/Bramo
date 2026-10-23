@@ -3,6 +3,7 @@ import type { Appearance } from '../schemas/art.js';
 import { levelForXp } from '../formulas/xp.js';
 import { bonusMultiplier, energyChargesLeft, energyDurationMs, presenceAt } from '../formulas/rates.js';
 import type { Activity, CharacterState, MealBuff, QueuedAction } from './state.js';
+import { earlyXpMultiplier } from './state.js';
 import { bonusesFor } from './advance.js';
 import { copiesRemaining, durabilityMs, isDurable } from './gear.js';
 import { lookOptions, recycleYield, repairCost, unlockedOutfits } from './actions.js';
@@ -41,6 +42,8 @@ export interface SkillView {
   shownRank: number;
   /** Prochaine commande du maître : `reached` quand le niveau du palier est atteint (le maître attend). */
   next: { rank: number; trialId: string; name: string; nickname: string; reached: boolean } | null;
+  /** XP du début de métier : multiplicateur en cours (1 une fois passé) et niveau où il s'arrête. */
+  boost: { multiplier: number; untilLevel: number } | null;
 }
 
 export interface RateView {
@@ -110,6 +113,7 @@ export function viewSkill(
     nickname: current.nickname,
     nicknames: ranksOf(profession, done, content),
     shownRank: current.rank,
+    boost: earlyXpMultiplier(xp, content) > 1 ? { multiplier: earlyXpMultiplier(xp, content), untilLevel: settings.xp.earlyBoost!.untilLevel } : null,
     next: upcoming
       ? { rank: upcoming.rank, trialId: upcoming.id, name: upcoming.name, nickname: upcoming.nickname, reached: level >= upcoming.rank }
       : null,

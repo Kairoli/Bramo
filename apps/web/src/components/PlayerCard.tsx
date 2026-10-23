@@ -41,7 +41,7 @@ export function PlayerCard({ id, onClose }: { id: number; onClose: () => void })
           </div>
           <div className="player-info">
             <div className="player-photo">
-              <Avatar id={p.id} version={p.avatar} name={p.name} classId={p.classId} appearance={cls ? { classId: cls.id, outfit: p.outfit ?? cls.startingOutfit } : null} size={72} />
+              <Avatar id={p.id} version={p.avatar} name={p.name} classId={p.classId} appearance={cls ? { classId: cls.id, outfit: p.outfit ?? cls.startingOutfit } : null} size={96} />
               <span>
                 <strong>{p.name}</strong>
                 {p.avatar && p.id !== characterId && (

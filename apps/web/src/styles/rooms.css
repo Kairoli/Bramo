@@ -6975,7 +6975,7 @@ div.tide-role {
 .rank-list li,
 .rank-me {
   display: grid;
-  grid-template-columns: 34px 40px minmax(120px, 1.2fr) minmax(80px, 2fr) 120px;
+  grid-template-columns: 34px 46px minmax(120px, 1.2fr) minmax(80px, 2fr) 120px;
   align-items: center;
   gap: 10px;
   padding: 5px 10px;
@@ -7307,8 +7307,9 @@ div.tide-role {
 }
 .rank-step-who {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 6px;
+  gap: 4px;
   max-width: 100%;
   min-width: 0;
 }

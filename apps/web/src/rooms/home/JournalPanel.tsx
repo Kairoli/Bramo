@@ -255,7 +255,7 @@ export function JournalPanel() {
             const m = it.msg;
             return (
               <div key={`m${m.id}`} className={`j-chat${m.mine ? ' mine' : ''}`}>
-                <Avatar id={m.characterId} version={m.avatar} name={m.name} classId={m.classId} size={34} className="j-chat-avatar" />
+                <Avatar id={m.characterId} version={m.avatar} name={m.name} classId={m.classId} size={46} className="j-chat-avatar" />
                 <span className="j-chat-head">
                   <strong>{m.name}</strong>
                   <span className="j-time">{hhmm(m.at)}</span>

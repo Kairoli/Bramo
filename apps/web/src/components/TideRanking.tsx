@@ -126,7 +126,7 @@ export function TideRanking({ demo, tide, onClose }: { demo: boolean; tide?: str
                     {cat.top.slice(3).map((r) => (
                       <li key={r.characterId} className={r.me ? 'me' : ''}>
                         <span className="rank-n">{r.rank}</span>
-                        <Avatar id={r.characterId} version={r.avatar} name={r.name} classId={r.appearance?.classId} appearance={r.appearance} size={40} />
+                        <Avatar id={r.characterId} version={r.avatar} name={r.name} classId={r.appearance?.classId} appearance={r.appearance} size={46} />
                         <span className="rank-name">
                           <strong>{r.name}</strong>
                           {r.me && <span className="rank-you">vous</span>}
@@ -178,7 +178,7 @@ function Podium({ r, place, unit }: { r: TideRankingRow; place: number; unit: st
       <div className="rank-step-block">
         <span className={`rank-medal medal-${MEDAL[place]}`}>{r.rank}</span>
         <span className="rank-step-who">
-          <Avatar id={r.characterId} version={r.avatar} name={r.name} classId={r.appearance?.classId} size={26} />
+          <Avatar id={r.characterId} version={r.avatar} name={r.name} classId={r.appearance?.classId} size={place === 0 ? 56 : 46} />
           <strong className="rank-step-name">{r.name}</strong>
         </span>
         <span className="rank-step-value">{num(r.value)}</span>

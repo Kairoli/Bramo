@@ -48,7 +48,7 @@ function Walker({ p, slot, onOpen }: { p: TownPlayer; slot: number; onOpen: () =
     <div className={`walker clickable ${working ? 'walker-working' : 'walker-strolling'}`} style={style} onClick={onOpen} role="button" tabIndex={0} title={`Voir la fiche de ${p.name}`}>
       <div className="walker-card">
         <span className="walker-card-who">
-          <Avatar id={p.id} version={p.avatar} name={p.name} classId={p.classId} size={28} />
+          <Avatar id={p.id} version={p.avatar} name={p.name} classId={p.classId} size={38} />
           <strong>{p.name}</strong>
         </span>
         <span>

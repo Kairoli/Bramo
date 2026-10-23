@@ -601,7 +601,7 @@ function Members({ clan, run, onOpen }: { clan: ClanView; run: Run; onOpen: (id:
         return (
           <div key={m.id} className={`clan-member${m.active ? '' : ' away'}`}>
             <button className="clan-portrait" onClick={() => onOpen(m.id)} title={`Voir la fiche de ${m.name}`}>
-              <Avatar id={m.id} version={m.avatar} name={m.name} classId={m.classId} appearance={lookOf(m, content.classes)} size={44} />
+              <Avatar id={m.id} version={m.avatar} name={m.name} classId={m.classId} appearance={lookOf(m, content.classes)} size={52} />
               <span className={`clan-dot${m.active ? ' on' : ''}`} />
             </button>
             <span className="clan-member-text">

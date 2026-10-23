@@ -80,3 +80,12 @@ levelPerTier: 0.8
 refine:
   rank: { minRarity: epic, minTier: 40, statPerRank: 0.03, gold: 1200, goldGrowth: 1.15, materialShare: 0.3, materialGrowth: 1.08 }
   hone: { step: 0.1, gold: 400, goldGrowth: 1.25, materialShare: 0.15 }
+  # Démontage [Décidé par Louis, 23 octobre : une poussière pour la retaille] : une pièce du sac disparaît et donne de la
+  # poussière de Lointain, perRarity × multiplicateur du palier (×1 au palier 1, ×2 au 40, ×3,5 au 90), +workedBonus pour un
+  # chef-d'œuvre ou une pièce déjà travaillée chez l'Affineur. Ni or ni matière en retour. docs/design/eclats.md §3.
+  salvage: { item: lointain_dust, perRarity: { common: 1, rare: 3, epic: 8, legendary: 20 }, workedBonus: 0.5 }  # à équilibrer
+  # Retaille [Décidé par Louis : « prix exponentiel, évidemment »] : comme l'enchanteresse de Diablo III, une ligne tirée
+  # reçoit `offers` propositions (une ligne possible de l'emplacement, tirée dans sa plage), et on garde l'une d'elles ou
+  # l'actuelle. Après la première retaille, seule cette ligne-là peut l'être encore. Pas sur un chef-d'œuvre.
+  # Poussière = perRarity × palier × growth^(retailles faites) ; or = gold × palier × rareté × growth^(retailles faites).
+  reroll: { perRarity: { common: 10, rare: 20, epic: 40, legendary: 80 }, gold: 400, growth: 1.5, offers: 2 }  # à équilibrer

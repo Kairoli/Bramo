@@ -1,5 +1,6 @@
 import type {
   ChatView,
+  RefineService,
   MyTradeView,
   PriceHistoryView,
   SpellEffects,
@@ -114,7 +115,8 @@ export const api = {
   gearEquip: (id: number) => request<GearView>('POST', '/gear/equip', { id }),
   gearUnequip: (id: number) => request<GearView>('POST', '/gear/unequip', { id }),
   gearSocket: (id: number, itemId: string | null) => request<{ state: StateResponse; gear: GearView }>('POST', '/gear/socket', { id, itemId }),
-  gearRefine: (id: number, service: { kind: 'rank' } | { kind: 'hone'; line: number }) => request<{ state: StateResponse; gear: GearView }>('POST', '/gear/refine', { id, ...service }),
+  gearRefine: (id: number, service: RefineService) => request<{ state: StateResponse; gear: GearView }>('POST', '/gear/refine', { id, ...service }),
+  gearSalvage: (ids: number[]) => request<{ state: StateResponse; gear: GearView }>('POST', '/gear/salvage', { ids }),
   devGrantGear: (modelId: string, masterpiece = false) => request<GearView>('POST', '/dev/gear/grant', { modelId, masterpiece }),
   chooseOutfit: (outfitId: string) => request<StateResponse>('POST', '/character/outfit', { outfitId }),
   chooseOrnament: (ornamentId: string | null) => request<StateResponse>('POST', '/character/ornament', { ornamentId }),

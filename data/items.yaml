@@ -238,6 +238,9 @@
 # --- La Marée du soir (combat/tide.yaml) : les éclats de marée s'échangent contre des apparences, jamais de la puissance. ---
 - {id: tide_shard, name: Éclat de marée, category: currency, value: 50}
 
+# --- L'Affineur du bourg : ce que donne une pièce démontée, et ce que coûte une retaille (gear_crafting.yaml, refine). ---
+- {id: lointain_dust, name: Poussière de Lointain, category: dust, value: 60}
+
 # --- Fournitures de combat (23 octobre, nuit) : préparations emportées sur la route. Chacune donne son outil de situation
 #     (combat/tools.yaml, rang prep) pendant une heure de combat. Elles donnent un usage aux restes de la Chasse, de la
 #     Menuiserie et de l'Artificerie (viande, hampes, pointes, plumes, ressorts). ---

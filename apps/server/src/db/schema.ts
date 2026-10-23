@@ -110,6 +110,10 @@ export const gearItems = pgTable(
     /** Rang d'affinage (l'Affineur du bourg, sans plafond) et affûtages déjà faits. */
     rank: integer('rank').notNull().default(0),
     hones: integer('hones').notNull().default(0),
+    /** Retaille : la ligne retaillable (fixée à la première), les retailles faites, les propositions en attente. */
+    rerollLine: integer('reroll_line'),
+    rerolls: integer('rerolls').notNull().default(0),
+    rerollOffer: jsonb('reroll_offer').$type<RolledLine[] | null>(),
     createdAt: ts('created_at').notNull().defaultNow(),
   },
   (t) => [index('gear_items_character').on(t.characterId)],

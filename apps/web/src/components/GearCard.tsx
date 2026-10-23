@@ -1,5 +1,5 @@
 import { type CSSProperties, type ReactNode, useState } from 'react';
-import type { GearItemView } from '@bramo/shared';
+import type { GearItemView, RefineService } from '@bramo/shared';
 import { useGame } from '../game/GameContext';
 import { GearIcon } from './GearIcon';
 import { ItemIcon, Modal } from './ui';
@@ -56,6 +56,7 @@ export function GearCard({
   onSocket,
   onSell,
   onRefine,
+  onSalvage,
 }: {
   g: GearItemView;
   compare?: GearItemView | null;
@@ -64,8 +65,10 @@ export function GearCard({
   onSocket?: (itemId: string | null) => void;
   /** Mettre la pièce en vitrine au marché, à ce prix. */
   onSell?: (price: number) => void;
-  /** L'Affineur du bourg : un rang de plus, ou affûter une ligne. */
-  onRefine?: (service: { kind: 'rank' } | { kind: 'hone'; line: number }) => void;
+  /** L'Affineur du bourg : un rang de plus, affûter une ligne, retailler une ligne ou garder une proposition. */
+  onRefine?: (service: RefineService) => void;
+  /** Démonter la pièce en poussière (l'Affineur). */
+  onSalvage?: () => void;
 }) {
   const [price, setPrice] = useState('');
   const { content, state } = useGame();
@@ -222,7 +225,8 @@ export function GearCard({
           </section>
         )}
 
-        {onRefine && (g.rankCost || g.honeCost) && <Refiner g={g} onRefine={onRefine} />}
+        {onRefine && (g.rankCost || g.honeCost || g.rerollCost || g.rerollOffer) && <Refiner g={g} onRefine={onRefine} />}
+        {onSalvage && g.salvage && <Salvage g={g} onSalvage={onSalvage} />}
 
         {onSell && (
           <section className="gear-card-sell">
@@ -249,6 +253,72 @@ export function GearCard({
   );
 }
 
+/**
+ * Les propositions de la retaille (comme l'enchanteresse de Diablo III) : la ligne actuelle et les nouvelles, côte à côte,
+ * avec leur place dans leur plage ; on en garde une. Payé d'avance : garder l'actuelle ne rend rien.
+ */
+function RerollChoice({ g, onRefine }: { g: GearItemView; onRefine: (service: RefineService) => void }) {
+  const current = g.lines[g.rerollLine ?? 0]!;
+  const options = [{ line: current, pick: null as number | null, label: 'Garder l’actuelle' }, ...g.rerollOffer!.map((line, i) => ({ line, pick: i, label: 'Prendre celle-ci' }))];
+  return (
+    <div className="refine-row">
+      <span>
+        <strong>L’Affineur vous propose</strong>
+        <span className="muted small"> · choisissez la ligne que la pièce gardera</span>
+      </span>
+      <div className="reroll-choices">
+        {options.map((o) => {
+          const share = o.line.max > o.line.min ? (o.line.value - o.line.min) / (o.line.max - o.line.min) : 1;
+          return (
+            <button key={o.pick ?? 'keep'} className={`reroll-choice${o.pick === null ? ' current' : ''}`} onClick={() => onRefine({ kind: 'reroll_pick', pick: o.pick })}>
+              <span className="muted small">{o.pick === null ? 'Actuelle' : 'Nouvelle'}</span>
+              <strong>
+                +{fmt(o.line.value)} % {o.line.name}
+              </strong>
+              <span className="gear-roll" title={`Tirage entre ${fmt(o.line.min)} et ${fmt(o.line.max)} %`}>
+                <span style={{ width: `${Math.max(0, Math.min(1, share)) * 100}%` }} />
+              </span>
+              <span className="small">{o.label}</span>
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+/** Démonter la pièce : ce qu'elle rend, et une confirmation dans la fiche (la pièce disparaît). */
+function Salvage({ g, onSalvage }: { g: GearItemView; onSalvage: () => void }) {
+  const { content } = useGame();
+  const [sure, setSure] = useState(false);
+  const dust = g.salvage!;
+  return (
+    <section className="gear-card-block salvage-block">
+      <span>
+        <strong>Démonter</strong>
+        <span className="muted small">
+          {' '}
+          · la pièce disparaît et donne <ItemIcon item={content.items[dust.item]} small /> {dust.qty} × {content.items[dust.item]?.name}, qui sert à retailler
+        </span>
+      </span>
+      {sure ? (
+        <span className="salvage-confirm">
+          <button className="btn btn-sm btn-danger" onClick={onSalvage}>
+            Oui, démonter
+          </button>
+          <button className="btn btn-sm btn-ghost" onClick={() => setSure(false)}>
+            Annuler
+          </button>
+        </span>
+      ) : (
+        <button className="btn btn-sm" onClick={() => setSure(true)}>
+          Démonter
+        </button>
+      )}
+    </section>
+  );
+}
+
 /** Ce que coûte un service de l'Affineur, et si on l'a. */
 function CostLine({ cost }: { cost: NonNullable<GearItemView['rankCost']> }) {
   const { content, state } = useGame();
@@ -268,7 +338,7 @@ function CostLine({ cost }: { cost: NonNullable<GearItemView['rankCost']> }) {
  * L'Affineur du bourg (perfectionnement) : le rang d'affinage, sans plafond [Décidé par Louis, 23 octobre], et l'affûtage
  * d'une ligne vers son maximum. Chaque service coûte plus que le précédent sur la même pièce ; l'or offert disparaît.
  */
-function Refiner({ g, onRefine }: { g: GearItemView; onRefine: NonNullable<Parameters<typeof GearCard>[0]['onRefine']> }) {
+function Refiner({ g, onRefine }: { g: GearItemView; onRefine: (service: RefineService) => void }) {
   const { content, state } = useGame();
   const per = content.gearCrafting?.refine?.rank.statPerRank ?? 0;
   const can = (c: NonNullable<GearItemView['rankCost']>) => state.gold >= c.gold && c.items.every((i) => (state.inventory[i.item] ?? 0) >= i.qty);
@@ -288,6 +358,30 @@ function Refiner({ g, onRefine }: { g: GearItemView; onRefine: NonNullable<Param
         </div>
       ) : (
         <p className="muted small">Les rangs d’affinage sont pour les pièces Épiques et Légendaires du palier 40 et plus.</p>
+      )}
+      {g.rerollOffer ? (
+        <RerollChoice g={g} onRefine={onRefine} />
+      ) : (
+        g.rerollCost && (
+          <div className="refine-row">
+            <span>
+              <strong>Retailler une ligne</strong>
+              <span className="muted small">
+                {g.rerollLine == null
+                  ? ' · deux autres lignes vous sont proposées, vous gardez celle que vous voulez ; ensuite, seule cette ligne pourra l’être encore'
+                  : ' · chaque retaille de cette pièce coûte la moitié de plus que la précédente'}
+              </span>
+            </span>
+            <CostLine cost={g.rerollCost} />
+            <span className="refine-lines">
+              {g.rerollable.map((i) => (
+                <button key={i} className="btn btn-sm" disabled={!can(g.rerollCost!) || g.price != null} onClick={() => onRefine({ kind: 'reroll', line: i })}>
+                  {g.lines[i]!.name} ({fmt(g.lines[i]!.value)} %)
+                </button>
+              ))}
+            </span>
+          </div>
+        )
       )}
       {g.honeCost && (
         <div className="refine-row">

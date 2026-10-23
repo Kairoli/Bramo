@@ -25,7 +25,7 @@ const SHELVES: { id: string; name: string; cats: string[] }[] = [
   { id: 'works', name: 'Mécanismes et chantier', cats: ['mechanism', 'powder', 'device', 'element'] },
   { id: 'food', name: 'Repas', cats: ['meal'] },
   { id: 'tools', name: 'Outils et pièces', cats: ['tool', 'tool_part', 'hardware', 'weapon'] },
-  { id: 'finds', name: 'Cartes et trouvailles', cats: ['map', 'curio', 'vestige'] },
+  { id: 'finds', name: 'Cartes et trouvailles', cats: ['map', 'curio', 'vestige', 'dust'] },
 ];
 
 /**
@@ -318,6 +318,7 @@ const CATEGORY_NAME: Record<string, string> = {
   hardware: 'Quincaillerie',
   weapon: 'Arme',
   vestige: 'Vestige de combat',
+  dust: 'Poussière de démontage',
   hide: 'Peau',
   meat: 'Viande',
   feather: 'Plumes',

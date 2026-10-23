@@ -742,4 +742,34 @@ describe('API', () => {
     const honed = r2.gear.items.find((g) => g.id === piece.id)!;
     expect(honed.lines[line]!.value).toBeGreaterThan(up.lines[line]!.value);
   });
+
+  it('l’Affineur : démonter des pièces en poussière, puis retailler une ligne et garder une proposition', async () => {
+    type GV = import('@bramo/shared').GearView;
+    const a = player({ value: '' });
+    await a('POST', '/api/auth/register', { username: 'Retailleuse', password: 'motdepasse' });
+    await a('POST', '/api/character/class', { classId: 'forgefire' });
+    const model = Object.values(content.gearModels).find((m) => m.rarity === 'epic' && m.tier === 40 && !m.set && !m.talent && m.slot === 'torso' && m.classes.includes('forgefire') && m.rolls[1] >= 2)!;
+    for (let i = 0; i < 6; i++) await a('POST', '/api/dev/gear/grant', { modelId: model.id });
+    const bag = ((await a('GET', '/api/gear')).json as GV).items.filter((g) => g.model === model.id);
+    const [keep, ...junk] = bag;
+    expect(keep!.salvage).toEqual({ item: 'lointain_dust', qty: 16 });
+    // Une pièce portée ne se démonte pas.
+    await a('POST', '/api/gear/equip', { id: keep!.id });
+    expect((await a('POST', '/api/gear/salvage', { ids: [keep!.id] })).status).toBe(400);
+    const s1 = (await a('POST', '/api/gear/salvage', { ids: junk.map((g) => g.id) })).json as { state: StateResponse; gear: GV };
+    expect(s1.state.state.inventory.lointain_dust).toBe(16 * junk.length);
+    expect(s1.gear.items.some((g) => junk.some((j) => j.id === g.id))).toBe(false);
+    // Retailler la pièce portée : propositions, puis choix.
+    await grant('Retailleuse', 100_000, {});
+    const piece = s1.gear.items.find((g) => g.id === keep!.id)!;
+    const r1 = (await a('POST', '/api/gear/refine', { id: piece.id, kind: 'reroll', line: 0 })).json as { state: StateResponse; gear: GV };
+    const offered = r1.gear.items.find((g) => g.id === piece.id)!;
+    expect(offered.rerollOffer!.length).toBe(2);
+    expect(r1.state.state.inventory.lointain_dust ?? 0).toBe(16 * junk.length - piece.rerollCost!.items[0]!.qty);
+    const r2 = (await a('POST', '/api/gear/refine', { id: piece.id, kind: 'reroll_pick', pick: 1 })).json as { gear: GV };
+    const done = r2.gear.items.find((g) => g.id === piece.id)!;
+    expect(done.lines[0]).toEqual(offered.rerollOffer![1]);
+    expect(done.rerollOffer).toBeNull();
+    expect(done.rerollable).toEqual([0]);
+  });
 });

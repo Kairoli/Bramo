@@ -3,6 +3,7 @@ import type { GearItemView, GearModel, GearView } from '@bramo/shared';
 import { api } from '../api';
 import { GearIcon } from './GearIcon';
 import { GearCard } from './GearCard';
+import { ItemIcon, Modal } from './ui';
 import { useGame } from '../game/GameContext';
 
 export const STAT_NAMES: Record<string, string> = {
@@ -68,6 +69,7 @@ export function GearPanel({ gear, onChange }: { gear: GearView | null; onChange:
   const { content, state, flash, act } = useGame();
   const [pick, setPick] = useState<{ id?: number; slot?: string } | null>(null);
   const [busy, setBusy] = useState(false);
+  const [bulk, setBulk] = useState(false);
   const call = async (fn: () => Promise<GearView>) => {
     setBusy(true);
     try {
@@ -125,6 +127,11 @@ export function GearPanel({ gear, onChange }: { gear: GearView | null; onChange:
             Tout voir
           </button>
         )}
+        {bag.some((g) => g.salvage) && (
+          <button className="link small" onClick={() => setBulk(true)}>
+            Démonter…
+          </button>
+        )}
       </header>
       <div className="gear-grid scroll">
         {filtered.length === 0 && <p className="muted small">Rien ici pour l’instant : les rencontres en font tomber.</p>}
@@ -169,10 +176,92 @@ export function GearPanel({ gear, onChange }: { gear: GearView | null; onChange:
             })
           }
           onSell={selected.bound || selected.price != null ? undefined : (price) => void call(() => api.gearSell(selected.id, price)).then(() => setPick(null))}
+          onSalvage={() =>
+            void act(async () => {
+              const r = await api.gearSalvage([selected.id]);
+              onChange(r.gear);
+              setPick(null);
+              return r.state;
+            })
+          }
+        />
+      )}
+      {bulk && (
+        <BulkSalvage
+          bag={bag}
+          onClose={() => setBulk(false)}
+          onDone={(ids) =>
+            void act(async () => {
+              const r = await api.gearSalvage(ids);
+              onChange(r.gear);
+              setBulk(false);
+              setPick(null);
+              return r.state;
+            })
+          }
         />
       )}
       {state.classId && import.meta.env.DEV && <DevGrant onChange={onChange} />}
     </div>
+  );
+}
+
+/**
+ * Démonter en lot chez l'Affineur (docs/design/eclats.md §3) : les pièces du sac des raretés cochées. Les chefs-d'œuvre,
+ * les pièces d'ensemble, les nommées et celles déjà travaillées restent : elles se démontent une à une depuis leur fiche.
+ */
+function BulkSalvage({ bag, onClose, onDone }: { bag: GearItemView[]; onClose: () => void; onDone: (ids: number[]) => void }) {
+  const { content } = useGame();
+  const [rarities, setRarities] = useState<string[]>(['common', 'rare']);
+  const [sure, setSure] = useState(false);
+  const kept = (g: GearItemView) => g.masterpiece || !!g.set || g.rank > 0 || g.rerollLine != null || g.named;
+  const chosen = bag.filter((g) => g.salvage && !kept(g) && rarities.includes(g.rarity));
+  const dust = chosen.reduce((s, g) => s + (g.salvage?.qty ?? 0), 0);
+  const dustItem = content.gearCrafting?.refine?.salvage?.item;
+  const toggle = (r: string) => {
+    setSure(false);
+    setRarities((x) => (x.includes(r) ? x.filter((y) => y !== r) : [...x, r]));
+  };
+  return (
+    <Modal onClose={onClose} className="salvage-modal">
+      <h2>Démonter chez l’Affineur</h2>
+      <p className="muted small">Les pièces disparaissent et donnent de la poussière, qui sert à retailler une ligne. Les chefs-d’œuvre, pièces d’ensemble, nommées et pièces déjà travaillées sont gardés : démontez-les une à une depuis leur fiche.</p>
+      <div className="salvage-rarities">
+        {(['common', 'rare', 'epic', 'legendary'] as const).map((r) => {
+          const n = bag.filter((g) => g.salvage && !kept(g) && g.rarity === r).length;
+          return (
+            <button key={r} className={`chip${rarities.includes(r) ? ' on' : ''}`} style={{ '--rc': rarityColor(r) } as CSSProperties} disabled={!n} onClick={() => toggle(r)}>
+              {RARITY_NAMES[r]} · {n}
+            </button>
+          );
+        })}
+      </div>
+      <div className="salvage-preview gear-grid">
+        {chosen.map((g) => (
+          <GearTile key={g.id} g={g} slot={g.slot} />
+        ))}
+        {!chosen.length && <p className="muted small">Aucune pièce de ces raretés à démonter.</p>}
+      </div>
+      <footer className="salvage-foot">
+        <span>
+          {chosen.length} pièce{chosen.length > 1 ? 's' : ''} → {dustItem && <ItemIcon item={content.items[dustItem]} small />} <strong>{dust.toLocaleString('fr-FR')}</strong> × {dustItem ? content.items[dustItem]?.name : 'poussière'}
+        </span>
+        {sure ? (
+          <span className="salvage-confirm">
+            <button className="btn btn-danger" onClick={() => onDone(chosen.map((g) => g.id))}>
+              Oui, démonter {chosen.length} pièce{chosen.length > 1 ? 's' : ''}
+            </button>
+            <button className="btn btn-ghost" onClick={() => setSure(false)}>
+              Annuler
+            </button>
+          </span>
+        ) : (
+          <button className="btn btn-primary" disabled={!chosen.length} onClick={() => setSure(true)}>
+            Démonter
+          </button>
+        )}
+      </footer>
+    </Modal>
   );
 }
 

@@ -1,4 +1,4 @@
-import { eq } from 'drizzle-orm';
+import { eq, inArray } from 'drizzle-orm';
 import {
   type CharacterState,
   type Content,
@@ -8,6 +8,9 @@ import {
   cloneState,
   socketGem,
   honeLine,
+  chooseReroll,
+  rerollLine,
+  salvageGear,
   rankUp,
   unsocketGem,
   type Rng,
@@ -36,6 +39,9 @@ export async function loadGear(tx: Tx | Db, characterId: number): Promise<GearIn
       price: r.price,
       rank: r.rank,
       hones: r.hones,
+      rerollLine: r.rerollLine,
+      rerolls: r.rerolls,
+      rerollOffer: r.rerollOffer,
     }))
     .sort((a, b) => a.id - b.id);
 }
@@ -112,8 +118,9 @@ export async function refineOwned(
   characterId: number,
   input: CharacterState,
   id: number,
-  service: { kind: 'rank' } | { kind: 'hone'; line: number },
+  service: { kind: 'rank' } | { kind: 'hone'; line: number } | { kind: 'reroll'; line: number } | { kind: 'reroll_pick'; pick: number | null },
   content: Content,
+  rand: Rng = Math.random,
 ): Promise<{ state: CharacterState; log: string; gold: number }> {
   const g = (await loadGear(tx, characterId)).find((x) => x.id === id);
   if (!g) throw new GameError('unknown_gear', 'Objet introuvable.');
@@ -123,10 +130,35 @@ export async function refineOwned(
     await tx.update(gearItems).set({ rank: r.gear.rank ?? 0 }).where(eq(gearItems.id, id));
     return { state: r.state, gold: r.cost.gold, log: `L’Affineur monte ${name} au rang +${r.gear.rank} (${r.cost.gold} or).` };
   }
+  if (service.kind === 'reroll') {
+    const r = rerollLine(input, g, service.line, content, rand);
+    await tx.update(gearItems).set({ rerollLine: r.gear.rerollLine ?? null, rerolls: r.gear.rerolls ?? 0, rerollOffer: r.gear.rerollOffer ?? null }).where(eq(gearItems.id, id));
+    const dust = r.cost.items.map((i) => `${i.qty} × ${content.items[i.item]?.name ?? i.item}`).join(', ');
+    return { state: r.state, gold: r.cost.gold, log: `L’Affineur retaille ${name} : ${g.lines[service.line]?.name} (${r.cost.gold} or, ${dust}).` };
+  }
+  if (service.kind === 'reroll_pick') {
+    const next = chooseReroll(g, service.pick);
+    await tx.update(gearItems).set({ lines: next.lines, rerollOffer: null }).where(eq(gearItems.id, id));
+    const l = next.lines[g.rerollLine ?? 0];
+    return { state: input, gold: 0, log: service.pick === null ? `Vous gardez la ligne de ${name}.` : `${name} : nouvelle ligne ${l?.name} ${l?.value}.` };
+  }
   const r = honeLine(input, g, service.line, content);
   await tx.update(gearItems).set({ lines: r.gear.lines, hones: r.gear.hones ?? 0 }).where(eq(gearItems.id, id));
   const l = r.gear.lines[service.line]!;
   return { state: r.state, gold: r.cost.gold, log: `L’Affineur affûte ${name} : ${l.name} ${l.value} (sur ${l.max}).` };
+}
+
+/**
+ * Démonter des pièces du sac chez l'Affineur : elles disparaissent et leur poussière va au sac (docs/design/eclats.md §3).
+ */
+export async function salvageOwned(tx: Tx, characterId: number, input: CharacterState, ids: number[], content: Content): Promise<{ state: CharacterState; log: string }> {
+  const owned = await loadGear(tx, characterId);
+  const pieces = [...new Set(ids)].map((id) => owned.find((g) => g.id === id));
+  if (pieces.some((g) => !g)) throw new GameError('unknown_gear', 'Objet introuvable.');
+  const r = salvageGear(input, pieces as GearInstance[], content);
+  await tx.delete(gearItems).where(inArray(gearItems.id, pieces.map((g) => g!.id)));
+  const what = pieces.length === 1 ? (content.gearModels[pieces[0]!.model]?.name ?? 'une pièce') : `${pieces.length} pièces`;
+  return { state: r.state, log: `L’Affineur démonte ${what} : ${r.qty} × ${content.items[r.item]?.name ?? r.item}.` };
 }
 
 /** Changement de classe : les pièces qui ne sont pas du style de la nouvelle classe retournent au sac. */

@@ -1,7 +1,7 @@
 import type { Content } from '../schemas/content.js';
 import type { GearInstance, GearLine, GearModel, Rarity, RolledLine } from '../schemas/gear.js';
 import { GameError } from './state.js';
-import { type RefineCost, honeCost, honeableLines, rankCost, rankedStats } from './refine.js';
+import { type RefineCost, honeCost, honeableLines, rankCost, rankedStats, rerollCost, rerollableLines, salvageYield } from './refine.js';
 
 /** Tirage aléatoire uniforme dans [0, 1) (injecté : le serveur donne Math.random, les tests une suite fixe). */
 export type Rng = () => number;
@@ -194,6 +194,15 @@ export interface GearItemView {
   honeCost: RefineCost | null;
   /** Lignes qui peuvent encore s'affûter (index dans lines). */
   honeable: number[];
+  /** Objet nommé (talent propre) : gardé au démontage en lot. */
+  named: boolean;
+  /** Poussière que donnerait son démontage (null : portée, en vitrine, de départ). */
+  salvage: { item: string; qty: number } | null;
+  /** Retaille : coût de la prochaine (null : impossible), lignes retaillables, propositions en attente du choix. */
+  rerollCost: RefineCost | null;
+  rerollable: number[];
+  rerollLine: number | null;
+  rerollOffer: RolledLine[] | null;
 }
 
 /** Emplacements des places de talent majeur (docs/design/coherence/build.md §2) : là où une gemme se sertit. */
@@ -273,6 +282,12 @@ export function viewGear(items: GearInstance[], classId: string | null, content:
       rankCost: rankCost(g, content),
       honeCost: honeCost(g, content),
       honeable: honeableLines(g),
+      named: !!m.named || !!m.talent,
+      salvage: salvageYield(g, content),
+      rerollCost: rerollCost(g, content),
+      rerollable: rerollableLines(g, content),
+      rerollLine: g.rerollLine ?? null,
+      rerollOffer: g.rerollOffer?.length ? g.rerollOffer : null,
     });
   }
   return { items: views, totals: gearTotals(items, content) };

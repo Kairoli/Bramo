@@ -156,7 +156,15 @@ export const clanContributeBody = z.object({ buildingId: z.string(), what: z.str
 /** Apport à l'ouvrage en cours du clan. */
 export const clanWorksBody = z.object({ what: z.string(), qty: z.number().int().min(1) });
 /** L'Affineur du bourg : monter d'un rang, ou affûter une ligne (son index). */
-export const gearRefineBody = z.discriminatedUnion('kind', [z.object({ id: z.number().int(), kind: z.literal('rank') }), z.object({ id: z.number().int(), kind: z.literal('hone'), line: z.number().int().min(0) })]);
+export const gearRefineBody = z.discriminatedUnion('kind', [
+  z.object({ id: z.number().int(), kind: z.literal('rank') }),
+  z.object({ id: z.number().int(), kind: z.literal('hone'), line: z.number().int().min(0) }),
+  // Retaille (docs/design/eclats.md §4) : payer et recevoir les propositions, puis en garder une (pick) ou l'actuelle (null).
+  z.object({ id: z.number().int(), kind: z.literal('reroll'), line: z.number().int().min(0) }),
+  z.object({ id: z.number().int(), kind: z.literal('reroll_pick'), pick: z.number().int().min(0).nullable() }),
+]);
+/** Démonter des pièces du sac (une, ou un lot choisi). */
+export const gearSalvageBody = z.object({ ids: z.array(z.number().int()).min(1).max(500) });
 
 export type ClanRank = 'leader' | 'officer' | 'member';
 
@@ -378,3 +386,6 @@ export interface GearListingView {
   mine: boolean;
   item: GearItemView;
 }
+
+/** Un service de l'Affineur sur une pièce (sans son identifiant). */
+export type RefineService = { kind: 'rank' } | { kind: 'hone'; line: number } | { kind: 'reroll'; line: number } | { kind: 'reroll_pick'; pick: number | null };

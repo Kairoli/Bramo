@@ -33,6 +33,7 @@ import {
   gearGrantBody,
   gearIdBody,
   gearRefineBody,
+  gearSalvageBody,
   passwordChangeBody,
   chatPostBody,
   chatReportBody,
@@ -122,7 +123,7 @@ import { contribute, contributeWorks, createClan, joinClan, kickMember, launchBa
 import { joinTestClan } from './devClan.js';
 import { playerProfile } from './profile.js';
 import { cancelRepair, openRepairs, requestRepair, takeRepair } from './repairs.js';
-import { dropMismatchedOwned, equipOwned, giveStarterGear, grantGear, loadGear, refineOwned, socketOwned, unequipOwned, wearGearSet } from './gear.js';
+import { dropMismatchedOwned, equipOwned, giveStarterGear, grantGear, loadGear, refineOwned, salvageOwned, socketOwned, unequipOwned, wearGearSet } from './gear.js';
 import { buyFromStall, cancelOrder, fillOrder, marketBook, marketSummary, myOrders, placeOrder, myTrades, priceHistory } from './market.js';
 
 export interface AppOptions {
@@ -627,6 +628,8 @@ export async function buildApp({ db, content, clock = Date.now, secureCookies = 
     /** Test : mettre des objets dans son sac (jamais en production). */
     app.post('/api/dev/items/grant', (req) => {
       const { itemId, qty } = body(devItemGrantBody, req);
+      // « gold » : de l'or de test (pour essayer l'Affineur sans jouer des heures).
+      if (itemId === 'gold') return playAs(req, (state) => ({ state: { ...cloneState(state), gold: state.gold + qty * 100 }, log: `Or de test obtenu : ${qty * 100}.` }));
       if (!content.items[itemId]) throw new HttpError(404, 'unknown_item', 'Objet inconnu.');
       return playAs(req, (state) => {
         const next = cloneState(state);
@@ -800,7 +803,18 @@ export async function buildApp({ db, content, clock = Date.now, secureCookies = 
   app.post('/api/gear/refine', async (req) => {
     const p = body(gearRefineBody, req);
     const res = await playAs(req, async (state, _now, ctx) => {
-      const r = await refineOwned(ctx.tx, ctx.characterId, state, p.id, p.kind === 'rank' ? { kind: 'rank' } : { kind: 'hone', line: p.line }, content);
+      const { id, ...service } = p;
+      const r = await refineOwned(ctx.tx, ctx.characterId, state, id, service, content);
+      return { state: r.state, log: r.log, logKind: 'info' };
+    });
+    const me = await myCharacter(req);
+    return { state: res, gear: viewGear(await loadGear(db, me.id), me.classId, content) };
+  });
+  /** L'Affineur : démonter des pièces du sac en poussière de Lointain. */
+  app.post('/api/gear/salvage', async (req) => {
+    const { ids } = body(gearSalvageBody, req);
+    const res = await playAs(req, async (state, _now, ctx) => {
+      const r = await salvageOwned(ctx.tx, ctx.characterId, state, ids, content);
       return { state: r.state, log: r.log, logKind: 'info' };
     });
     const me = await myCharacter(req);

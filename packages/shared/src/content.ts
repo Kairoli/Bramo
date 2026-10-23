@@ -214,6 +214,9 @@ export function buildContent(raw: RawContent): Content {
     }
     for (const [fam, s] of Object.entries(gearCrafting.secondary)) if (!gearCrafting.materials[s.profession]) errors.push(`gear_crafting.yaml : ${fam} : matière d'appoint inconnue « ${s.profession} »`);
     for (const [p, list] of Object.entries(gearCrafting.materials)) for (const m of list) if (!items[m.item]) errors.push(`gear_crafting.yaml : ${p} : objet inconnu « ${m.item} »`);
+    const salvage = gearCrafting.refine?.salvage;
+    if (salvage && !items[salvage.item]) errors.push(`gear_crafting.yaml : refine.salvage : objet inconnu « ${salvage.item} »`);
+    if (gearCrafting.refine?.reroll && !salvage) errors.push('gear_crafting.yaml : refine.reroll demande refine.salvage (la poussière qu’elle coûte)');
   }
   if (errors.length) throw new ContentError(`Données incohérentes :\n- ${errors.join('\n- ')}`);
 

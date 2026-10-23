@@ -113,6 +113,11 @@ export interface GearInstance {
   rank?: number;
   /** Affûtages déjà faits sur cet exemplaire (chacun coûte plus que le précédent) ; absent = 0. */
   hones?: number;
+  /** Retaille : la seule ligne qu'on peut encore retailler (fixée à la première retaille), les retailles faites, et les
+   * propositions en attente du choix du joueur (absentes : aucune). */
+  rerollLine?: number | null;
+  rerolls?: number;
+  rerollOffer?: RolledLine[] | null;
 }
 
 /**
@@ -155,6 +160,24 @@ export const gearCraftingSchema = z.object({
         goldGrowth: z.number().min(1),
         materialShare: z.number().positive(),
       }),
+      /** Démontage d'une pièce du sac en poussière (docs/design/eclats.md §3). */
+      salvage: z
+        .object({
+          item: z.string(),
+          perRarity: z.record(z.enum(['common', 'rare', 'epic', 'legendary']), z.number().min(0)),
+          /** Part de plus pour un chef-d'œuvre ou une pièce déjà affinée, affûtée ou retaillée. */
+          workedBonus: z.number().min(0),
+        })
+        .optional(),
+      /** Retaille d'une ligne tirée (docs/design/eclats.md §4) : `offers` propositions, prix × growth^(retailles faites). */
+      reroll: z
+        .object({
+          perRarity: z.record(z.enum(['common', 'rare', 'epic', 'legendary']), z.number().positive()),
+          gold: z.number().positive(),
+          growth: z.number().min(1),
+          offers: z.number().int().min(1).max(4),
+        })
+        .optional(),
     })
     .optional(),
 });

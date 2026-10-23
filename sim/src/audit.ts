@@ -40,9 +40,11 @@ for (const it of Object.values(items)) for (const m of it.repair?.materials ?? [
 
 // 1. Objets sans source, ou sans débouché.
 for (const it of Object.values(items)) {
-  const source = producedAt.has(it.id) || looted.has(it.id) || !!it.stallPrice || it.id === content.combat?.tide?.shards.item;
+  // La poussière de l'Affineur vient du démontage des pièces et sert à la retaille (gear_crafting.yaml, refine).
+  const dust = it.id === content.gearCrafting?.refine?.salvage?.item;
+  const source = producedAt.has(it.id) || looted.has(it.id) || !!it.stallPrice || it.id === content.combat?.tide?.shards.item || dust;
   if (!source) note('Objets impossibles à obtenir', `${it.name} (${it.id}, ${it.category})`);
-  const use = used.has(it.id) || !!it.meal || !!it.tool || !!it.gem || !!it.potion || !!it.prep || it.id === content.combat?.tide?.shards.item;
+  const use = used.has(it.id) || !!it.meal || !!it.tool || !!it.gem || !!it.potion || !!it.prep || it.id === content.combat?.tide?.shards.item || (dust && !!content.gearCrafting?.refine?.reroll);
   if (!use) note('Objets sans débouché (ne servent qu’à la vente)', `${it.name} (${it.category})`);
 }
 

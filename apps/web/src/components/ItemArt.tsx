@@ -65,6 +65,7 @@ const tintOf = (id: string, fallback: Tone): Tone => TINTS.find(([re]) => re.tes
 const CATEGORY_TONE: Record<string, Tone> = {
   meal: ['#D98A4A', '#7A4422', '#F6C08E'],
   vestige: ['#B9A27A', '#6A5A3E', '#E6D6B0'],
+  dust: ['#9C8FD8', '#4A4078', '#E4DCFF'],
   hardware: ['#8D949A', '#4F555B', '#C9D0D5'],
   plank: ['#C9A06A', '#7A5A30', '#F0D2A0'],
 };
@@ -226,6 +227,16 @@ const TOOLS: Record<string, (p: P) => ReactNode> = {
 
 /** Un dessin par catégorie. `id` permet de distinguer quelques objets particuliers (sable, thé, festin…). */
 const DRAW: Record<string, (p: P, id: string) => ReactNode> = {
+  // Poussière de Lointain (démontage) : un petit tas qui scintille, avec des éclats d'équipement dedans.
+  dust: (p) => (
+    <>
+      {body(p, 'M6 54 C10 40 22 32 32 32 C42 32 54 40 58 54 C46 58 18 58 6 54 Z')}
+      <path d="M20 46 L24 42 L27 47 Z M36 40 L41 37 L42 43 Z M30 51 L35 48 L36 53 Z" fill={p.l} opacity=".9" />
+      <path d="M44 48 L48 45 L50 50 Z M14 51 L17 48 L19 52 Z" fill="#C9D0D5" />
+      {shine(p, 'M16 44 C22 38 28 35 32 35', 1.6)}
+      <path d="M32 10 V20 M27 15 H37 M48 18 V24 M45 21 H51 M16 20 V25 M13.5 22.5 H18.5" stroke={p.l} strokeWidth="1.8" strokeLinecap="round" />
+    </>
+  ),
   ore: (p, id) =>
     id === 'coal' ? (
       <>

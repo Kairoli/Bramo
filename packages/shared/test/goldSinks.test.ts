@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { loadContent } from '../src/node/index.js';
 import { offerTide, patronDay, patronPrice, readTide, tideShards, tideTitles, tideWindow } from '../src/combat/tide.js';
 import { worksNeeds, workAt } from '../src/engine/commission.js';
-import { canRankUp, honeCost, honeLine, rankCost, rankUp, rankedStats } from '../src/engine/refine.js';
+import { canRankUp, chooseReroll, honeCost, honeLine, rankCost, rankUp, rankedStats, rerollCost, rerollLine, rerollableLines, salvageGear, salvageYield } from '../src/engine/refine.js';
 import { newInstance } from '../src/engine/equipment.js';
 import { advance } from '../src/engine/advance.js';
 import { startActivity } from '../src/engine/actions.js';
@@ -120,5 +120,67 @@ describe('l’Affineur du bourg', () => {
     const g = { ...newInstance(epic, content, rand), id: 1 };
     expect(() => rankUp(makeState({ gold: 0 }), g, content)).toThrow(/or/);
     expect(() => rankUp(makeState({ gold: 10_000_000 }), g, content)).toThrow(/Il faut/);
+  });
+});
+
+describe('démontage et retaille (docs/design/eclats.md)', () => {
+  let n = 0;
+  const rand = () => ((n = (n * 9301 + 49297) % 233280), n / 233280);
+  const find = (rarity: string, tier: number) => Object.values(content.gearModels).find((m) => m.rarity === rarity && m.tier === tier && !m.set && !m.talent && !m.starter && m.slot === 'torso' && m.rolls[1] >= 2)!;
+  const epic40 = find('epic', 40);
+  const dust = content.gearCrafting!.refine!.salvage!.item;
+
+  it('une pièce du sac se démonte en poussière, selon sa rareté et son palier ; portée ou en vitrine, non', () => {
+    const g = { ...newInstance(epic40, content, rand), id: 1 };
+    expect(salvageYield(g, content)).toEqual({ item: dust, qty: 16 }); // 8 × palier 40 (×2)
+    expect(salvageYield({ ...g, equipped: 'torso' }, content)).toBeNull();
+    expect(salvageYield({ ...g, price: 100 }, content)).toBeNull();
+    expect(salvageYield({ ...g, rank: 1 }, content)!.qty).toBe(24); // pièce travaillée : +50 %
+    const c1 = Object.values(content.gearModels).find((m) => m.rarity === 'common' && m.tier === 1 && !m.starter)!;
+    const common1 = { ...newInstance(c1, content, rand), id: 2 };
+    const r = salvageGear(makeState({}), [g, common1], content);
+    expect(r.state.inventory[dust]).toBe(17);
+    expect(r.state.gold).toBe(makeState({}).gold); // ni or ni matière en retour
+    expect(() => salvageGear(makeState({}), [{ ...g, equipped: 'torso' }], content)).toThrow(/portée/);
+  });
+
+  it('la retaille propose deux lignes, on garde l’une ou l’actuelle, et seule cette ligne se retaille ensuite', () => {
+    let g = { ...newInstance(epic40, content, rand), id: 1 };
+    expect(rerollableLines(g, content).length).toBe(g.lines.length);
+    const c0 = rerollCost(g, content)!;
+    expect(c0.items).toEqual([{ item: dust, qty: 80 }]); // 40 × palier 40 (×2)
+    let s = makeState({ gold: 10_000_000, inventory: { [dust]: 100_000 } });
+    ({ state: s, gear: g } = rerollLine(s, g, 1, content, rand));
+    expect(s.inventory[dust]).toBe(100_000 - 80);
+    expect(g.rerollOffer!.length).toBe(2);
+    const others = g.lines.filter((_, i) => i !== 1).map((l) => l.name);
+    for (const o of g.rerollOffer!) {
+      expect(others).not.toContain(o.name); // jamais une ligne que la pièce a déjà ailleurs
+      expect(o.value).toBeGreaterThanOrEqual(o.min);
+      expect(o.value).toBeLessThanOrEqual(o.max);
+    }
+    // Il faut choisir avant de retailler encore.
+    expect(() => rerollLine(s, g, 1, content, rand)).toThrow(/Choisissez/);
+    const picked = g.rerollOffer![0]!;
+    g = chooseReroll(g, 0);
+    expect(g.lines[1]).toEqual(picked);
+    expect(g.rerollOffer).toBeNull();
+    // Désormais, seule la ligne 1 se retaille, et elle coûte ×1,5.
+    expect(rerollableLines(g, content)).toEqual([1]);
+    expect(() => rerollLine(s, g, 0, content, rand)).toThrow(/Seule la ligne/);
+    expect(rerollCost(g, content)!.items[0]!.qty).toBe(120);
+    expect(rerollCost(g, content)!.gold).toBeGreaterThan(c0.gold);
+    // Garder l'actuelle : la ligne ne change pas.
+    ({ state: s, gear: g } = rerollLine(s, g, 1, content, rand));
+    const before = g.lines[1];
+    expect(chooseReroll(g, null).lines[1]).toEqual(before);
+  });
+
+  it('les lignes d’un chef-d’œuvre et les pièces de départ ne se retaillent pas', () => {
+    const mp = { ...newInstance(epic40, content, rand, { masterpiece: true }), id: 1 };
+    expect(rerollCost(mp, content)).toBeNull();
+    expect(() => rerollLine(makeState({ gold: 1e7, inventory: { [dust]: 1e5 } }), mp, 0, content, rand)).toThrow(/chef-d’œuvre/);
+    const starter = Object.values(content.gearModels).find((m) => m.starter)!;
+    expect(rerollCost({ ...newInstance(starter, content, rand), id: 2 }, content)).toBeNull();
   });
 });

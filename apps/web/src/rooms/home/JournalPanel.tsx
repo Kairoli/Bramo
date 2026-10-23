@@ -55,6 +55,7 @@ const TOWN: Record<TownEvent['kind'], { tone: Tone; icon: string }> = {
   join: { tone: 'event', icon: ICON.bell },
   clan: { tone: 'clan', icon: ICON.shield },
   loot: { tone: 'magic', icon: ICON.chest },
+  tide: { tone: 'event', icon: ICON.bell },
 };
 const TONE: Record<Tone, string> = {
   event: 'var(--event)',

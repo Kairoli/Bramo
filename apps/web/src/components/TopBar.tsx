@@ -28,7 +28,14 @@ export function TopBar() {
           </button>
         ))}
       </nav>
-      <Banners events={[<TideBanner key="tide" view={tide.view} onOpen={() => setTideOpen(true)} />]} />
+      <Banners events={[<TideBanner
+          key="tide"
+          view={tide.view}
+          onOpen={() => {
+            tide.refresh();
+            setTideOpen(true);
+          }}
+        />]} />
       {tideOpen && tide.view && <TideModal view={tide.view} refresh={tide.refresh} onClose={() => setTideOpen(false)} />}
       <div className="topbar-right">
         <div className="status-box">

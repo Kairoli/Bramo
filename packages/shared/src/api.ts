@@ -221,7 +221,7 @@ export interface PlayerProfile {
 export interface TownEvent {
   id: number;
   at: number;
-  kind: 'level' | 'trial' | 'first' | 'join' | 'clan' | 'loot';
+  kind: 'level' | 'trial' | 'first' | 'join' | 'clan' | 'loot' | 'tide';
   text: string;
 }
 

@@ -12,7 +12,6 @@ import { Modal } from './ui';
  */
 
 export function useTide() {
-  const { state } = useGame();
   const [view, setView] = useState<TideView | null>(null);
   const refresh = useCallback(() => {
     api
@@ -20,8 +19,8 @@ export function useTide() {
       .then(setView)
       .catch(() => setView(null));
   }, []);
-  // Rafraîchi avec l'état du jeu (or, inventaire) et toutes les minutes pour le compte à rebours.
-  useEffect(refresh, [refresh, state.gold]);
+  // Au chargement, puis toutes les minutes (compte à rebours, résultat du soir) ; la fenêtre rafraîchit après chaque action.
+  useEffect(refresh, [refresh]);
   useEffect(() => {
     const id = window.setInterval(refresh, 60_000);
     return () => window.clearInterval(id);

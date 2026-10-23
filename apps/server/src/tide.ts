@@ -30,6 +30,7 @@ import type { Db, Tx } from './db/index.js';
 import { characters, tideDays, tideEntries } from './db/schema.js';
 import { loadCharacterById } from './characters.js';
 import { grantGear } from './gear.js';
+import { recordEvents } from './town.js';
 
 const DAY = 86_400_000;
 /** Un personnage qui n'est pas venu depuis une semaine ne part plus à la Marée (comptes oubliés). */
@@ -70,6 +71,12 @@ export async function settleTide(db: Db, content: Content, now: number): Promise
     }
     for (let i = 0; i < entries.length; i += 200) await tx.insert(tideEntries).values(entries.slice(i, i + 200)).onConflictDoNothing();
     await tx.update(tideDays).set({ participants: entries.length, points, thresholds }).where(eq(tideDays.day, day));
+    // Le fil du serveur raconte le soir : combien sont venus, combien de lanternes la digue a allumées.
+    if (entries.length) {
+      const def = tideOf(day, rules);
+      const of = rules.shards.thresholds.length;
+      await recordEvents(tx, now, [{ kind: 'tide', text: `${def.name} : ${entries.length} à la digue, ${thresholds} lanterne${thresholds > 1 ? 's' : ''} sur ${of} allumée${thresholds > 1 ? 's' : ''}.` }]);
+    }
   });
   settled.set(db, day);
 }

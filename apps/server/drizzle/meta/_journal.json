@@ -197,6 +197,13 @@
       "when": 1792784296079,
       "tag": "0027_photo_profil",
       "breakpoints": true
+    },
+    {
+      "idx": 28,
+      "version": "7",
+      "when": 1792786902146,
+      "tag": "0028_page_profil",
+      "breakpoints": true
     }
   ]
 }

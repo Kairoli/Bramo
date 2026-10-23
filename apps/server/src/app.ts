@@ -101,6 +101,7 @@ import {
   tideDay,
   avatarBody,
   avatarTargetBody,
+  profileDetailsBody,
 } from '@bramo/shared';
 import type { Db } from './db/index.js';
 import { offerPatron, settleTide, tideView, recordSignup, tideLive, tideLiveDemo, tideRankingDemo, tideRankingView } from './tide.js';
@@ -125,7 +126,7 @@ import { recentEntries } from './journal.js';
 import { joinEvent, recordEvents, townView } from './town.js';
 import { contribute, contributeWorks, createClan, joinClan, kickMember, launchBanquet, leaveClan, listClans, myClanView, setRank } from './clans.js';
 import { joinTestClan } from './devClan.js';
-import { playerProfile } from './profile.js';
+import { playerProfile, setProfileDetails } from './profile.js';
 import { cancelRepair, openRepairs, requestRepair, takeRepair } from './repairs.js';
 import { dropMismatchedOwned, equipOwned, giveStarterGear, grantGear, loadGear, refineOwned, salvageOwned, socketOwned, unequipOwned, wearGearSet } from './gear.js';
 import { buyFromStall, cancelOrder, fillOrder, marketBook, marketSummary, myOrders, placeOrder, myTrades, priceHistory } from './market.js';
@@ -725,6 +726,13 @@ export async function buildApp({ db, content, clock = Date.now, secureCookies = 
     const { characterId } = body(avatarTargetBody, req);
     const me = await myCharacter(req);
     return db.transaction((tx) => reportAvatar(tx, me.id, characterId, content, clock()));
+  });
+  /** Sa page profil : devise et bannière. */
+  app.post('/api/profile/details', async (req) => {
+    const details = body(profileDetailsBody, req);
+    const me = await myCharacter(req);
+    await db.transaction((tx) => setProfileDetails(tx, me.id, details));
+    return playerProfile(db, content, me.id);
   });
   app.post('/api/profile/avatar/moderate', async (req) => {
     const { characterId } = body(avatarTargetBody, req);

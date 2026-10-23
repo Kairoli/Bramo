@@ -701,6 +701,27 @@ describe('API', () => {
     expect(((await moi('GET', '/api/profile/avatar')).json as { hidden: boolean }).hidden).toBe(true);
   });
 
+  it('page profil : devise et bannière, liens et décors inconnus refusés, palmarès lu par les autres', async () => {
+    const moi = player({ value: '' });
+    await moi('POST', '/api/auth/register', { username: 'Banniere', password: 'motdepasse' });
+    await moi('POST', '/api/character/class', { classId: 'forgefire' });
+    const id = ((await moi('GET', '/api/state')).json as StateResponse).characterId;
+    expect((await moi('POST', '/api/profile/details', { motto: 'Venez voir www.triche.com' })).status).toBe(400);
+    expect((await moi('POST', '/api/profile/details', { banner: 'lune' })).status).toBe(400);
+    expect((await moi('POST', '/api/profile/details', { motto: 'x'.repeat(81) })).status).toBe(400);
+    const saved = await moi('POST', '/api/profile/details', { motto: '  Le  feu ne dort jamais ', banner: 'smithing' });
+    expect(saved.json).toMatchObject({ id, motto: 'Le feu ne dort jamais', banner: 'smithing', tide: { nights: 0, titles: [] } });
+    // Un autre joueur voit la même page ; une devise vide la retire, la bannière reste.
+    const autre = player({ value: '' });
+    await autre('POST', '/api/auth/register', { username: 'Visiteur', password: 'motdepasse' });
+    expect((await autre('GET', '/api/players/' + id)).json).toMatchObject({ motto: 'Le feu ne dort jamais', banner: 'smithing' });
+    await moi('POST', '/api/profile/details', { motto: '' });
+    const after = (await autre('GET', '/api/players/' + id)).json as import('@bramo/shared').PlayerProfile;
+    expect(after.motto).toBeNull();
+    expect(after.banner).toBe('smithing');
+    expect(after.joinedAt).toBeGreaterThan(0);
+  });
+
   it('tour guidé : proposé une fois, puis retenu', async () => {
     const p = player({ value: '' });
     await p('POST', '/api/auth/register', { username: 'Novice', password: 'motdepasse' });

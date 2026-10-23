@@ -141,6 +141,7 @@ export const api = {
   myAvatar: () => request<MyAvatarView>('GET', '/profile/avatar'),
   setAvatar: (image: string) => request<MyAvatarView>('POST', '/profile/avatar', { image }),
   removeAvatar: () => request<MyAvatarView>('POST', '/profile/avatar/remove'),
+  profileDetails: (details: { motto?: string | null; banner?: string | null }) => request<PlayerProfile>('POST', '/profile/details', details),
   reportAvatar: (characterId: number) => request<{ hidden: boolean }>('POST', '/profile/avatar/report', { characterId }),
   moderateAvatar: (characterId: number) => request<{ ok: boolean }>('POST', '/profile/avatar/moderate', { characterId }),
   tideRanking: (demo = false, tide?: string) => request<TideRankingView | null>('GET', `/tide/ranking${demo ? `?demo=1${tide ? `&tide=${tide}` : ''}` : ''}`),

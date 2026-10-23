@@ -5,7 +5,7 @@ import { useTown } from '../../game/useTown';
 import { Character } from '../../rig/Character';
 import { hhmm } from '../../format';
 import { Scene } from '../../components/Scene';
-import { PlayerCard } from '../../components/PlayerCard';
+import { useOpenProfile } from '../../components/ProfileLink';
 import { Avatar } from '../../components/Avatar';
 
 /** Où se tient quelqu'un qui pratique ce métier (en % de la largeur ; centre de l'image, jamais recadré). */
@@ -172,7 +172,7 @@ export function Town() {
   const { openMarket, name, content } = useGame();
   const town = useTown();
   const [onlyMine, setOnlyMine] = useState(false);
-  const [profile, setProfile] = useState<number | null>(null);
+  const openProfile = useOpenProfile();
   const others = useMemo(() => (town?.players ?? []).filter((p) => !p.self), [town]);
   // Positions (en %) des vrais joueurs qui travaillent, pour que les habitants ne se mettent pas dessus.
   const busy = useMemo(() => others.flatMap((p, i) => (p.doingProfession && WORKPLACES[p.doingProfession] !== undefined ? [WORKPLACES[p.doingProfession]! + (i % 3) * 4 - 4] : [])), [others]);
@@ -185,7 +185,7 @@ export function Town() {
         <Scene ids={['town']} position="50% 50%" shade={false} />
         <div className="town-walkers" aria-label="Joueurs dans le bourg">
           {others.map((p, i) => (
-            <Walker key={p.id} p={p} slot={i} onOpen={() => setProfile(p.id)} />
+            <Walker key={p.id} p={p} slot={i} onOpen={() => openProfile?.(p.id)} />
           ))}
           {villagers.map((v) => (
             <VillagerFigure key={v.key} v={v} />
@@ -226,7 +226,6 @@ export function Town() {
           </button>
         </div>
       </aside>
-      {profile !== null && <PlayerCard id={profile} onClose={() => setProfile(null)} />}
     </section>
   );
 }

@@ -26,6 +26,7 @@ import { BestiaryPage } from './rooms/Bestiary';
 import { SeasonBoard } from './rooms/SeasonBoard';
 import { PerfBench } from './rooms/PerfBench';
 import { ContentContext } from './game/ContentContext';
+import { ProfileOpener } from './components/ProfileLink';
 import './styles/global.css';
 import './styles/rooms.css';
 
@@ -41,6 +42,7 @@ function Shell() {
     );
   }
   return (
+    <ProfileOpener>
     <div className="app">
       <TopBar />
       {room === 'home' && <Home />}
@@ -54,6 +56,7 @@ function Shell() {
       <Notifier />
       {error && <div className="toast">{error}</div>}
     </div>
+    </ProfileOpener>
   );
 }
 

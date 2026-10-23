@@ -262,6 +262,13 @@ export interface PlayerProfile {
   id: number;
   name: string;
   avatar: number | null;
+  /** Page profil : sa devise et sa bannière (un décor du jeu ; null : celui de son meilleur métier). */
+  motto: string | null;
+  banner: string | null;
+  /** Arrivé à Bramo (création du personnage). */
+  joinedAt: number;
+  /** Son palmarès de la Marée : soirs joués (tous), meilleur soir et soirs en direct (sur les 14 derniers), titres, Marées offertes. */
+  tide: { nights: number; best: number; live: number; titles: string[]; offered: number };
   classId: string | null;
   outfit: string | null;
   look: Record<string, string>;
@@ -309,6 +316,10 @@ export interface JournalEntry {
 /** Photo de profil : envoi (image recadrée, data URL), signalement, retrait par un modérateur. */
 export const avatarBody = z.object({ image: z.string().max(600_000) });
 export const avatarTargetBody = z.object({ characterId: z.number().int() });
+/** Les décors qu'on peut choisir comme bannière de sa page profil (apps/web/public/scenes). */
+export const PROFILE_BANNERS = ['town', 'mining', 'woodcutting', 'herbalism', 'fishing', 'smithing', 'carpentry', 'cooking', 'hunting', 'agriculture', 'tanning', 'tailoring', 'alchemy', 'jewelcrafting', 'enchanting', 'artificing', 'construction', 'exploration', 'clan', 'market', 'combat'] as const;
+/** Sa page profil : devise (80 caractères, sans lien) et bannière. */
+export const profileDetailsBody = z.object({ motto: z.string().max(80).nullable().optional(), banner: z.enum(PROFILE_BANNERS).nullable().optional() });
 /** Sa photo de profil, pour la fenêtre Profil. */
 export interface MyAvatarView {
   avatar: number | null;

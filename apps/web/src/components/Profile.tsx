@@ -5,6 +5,7 @@ import { useGame } from '../game/GameContext';
 import { AccountModal } from './Account';
 import { Avatar } from './Avatar';
 import { AvatarPicker } from './AvatarPicker';
+import { useOpenProfile } from './ProfileLink';
 import { Modal } from './ui';
 
 /**
@@ -19,6 +20,7 @@ export function ProfileModal({ onClose }: { onClose: () => void }) {
   const [picking, setPicking] = useState(false);
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
+  const openProfile = useOpenProfile();
   useEffect(() => {
     api.myAvatar().then(setMine).catch(() => {});
   }, []);
@@ -59,7 +61,7 @@ export function ProfileModal({ onClose }: { onClose: () => void }) {
         <>
           <section className="profile-card">
             <div className="profile-photo">
-              <Avatar id={characterId} version={avatar} name={name} classId={look?.classId} appearance={look} size={132} />
+              <Avatar id={characterId} version={avatar} name={name} classId={look?.classId} appearance={look} size={132} open={false} />
               {!picking && (
                 <div className="profile-photo-actions">
                   <button className="btn btn-primary btn-sm" onClick={() => setPicking(true)}>
@@ -88,6 +90,11 @@ export function ProfileModal({ onClose }: { onClose: () => void }) {
                 </span>
               )}
               <span className="profile-line muted small">Identifiant : #{characterId}</span>
+              {openProfile && (
+                <button className="btn btn-sm profile-page-btn" onClick={() => (onClose(), openProfile(characterId))}>
+                  Voir et modifier ma page profil
+                </button>
+              )}
               <p className="muted small">Votre photo apparaît partout où l’on vous voit : la discussion, le clan, votre fiche, les classements de la Marée, le bourg. Sans photo, c’est votre personnage.</p>
             </div>
           </section>

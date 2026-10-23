@@ -48,7 +48,7 @@ export function TopBar() {
         </div>
         {/* Le profil : la photo du joueur (sinon son personnage) ; la fenêtre a aussi le compte et la déconnexion. */}
         <button className="topbar-profile" onClick={() => setProfileOpen(true)} title="Profil et compte" data-tour="profile">
-          <Avatar id={characterId} version={avatar} name={name} classId={look?.classId} appearance={look} size={46} />
+          <Avatar id={characterId} version={avatar} name={name} classId={look?.classId} appearance={look} size={46} open={false} />
         </button>
       </div>
     </header>

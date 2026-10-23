@@ -1,6 +1,6 @@
 import { and, eq } from 'drizzle-orm';
-import { type Content, type PlayerProfile, effectiveLevel, levelForXp, shownNickname } from '@bramo/shared';
-import type { Db } from './db/index.js';
+import { type CharacterState, type Content, GameError, type PlayerProfile, effectiveLevel, levelForXp, readTide, shownNickname, tideTitles } from '@bramo/shared';
+import type { Db, Tx } from './db/index.js';
 import { characterSkills, characters, clanMembers, clans, gearItems } from './db/schema.js';
 
 /**
@@ -28,10 +28,17 @@ export async function playerProfile(db: Db, content: Content, id: number): Promi
   const recipe = r.activity ? content.recipes[r.activity.recipeId] : undefined;
   const playable = content.professions.filter((p) => p.status === 'playable');
 
+  // Son palmarès de la Marée (titres compris), lu dans son état de combat.
+  const tide = readTide((r.combat as CharacterState['combat'] | undefined)?.tide);
+  const titles = tideTitles({ combat: { tide } } as unknown as CharacterState, content);
   return {
     id: r.id,
     name: r.name,
     avatar: r.avatar,
+    motto: r.motto,
+    banner: r.banner,
+    joinedAt: r.createdAt.getTime(),
+    tide: { nights: Object.values(tide.counts).reduce((a, b) => a + b, 0), best: tide.nights.reduce((m, n) => Math.max(m, n.points), 0), live: tide.nights.filter((n) => n.live).length, titles, offered: tide.patron },
     classId: r.classId,
     outfit: r.outfit,
     look: r.look,
@@ -55,4 +62,18 @@ export async function playerProfile(db: Db, content: Content, id: number): Promi
     doing: recipe?.name ?? null,
     lastSeenAt: r.lastSeenAt.getTime(),
   };
+}
+
+const LINK = /(https?:\/\/|www\.|\b[a-z0-9-]+\.(com|fr|net|org|io|gg|ru|xyz|ly|me)\b)/i;
+
+/** Sa page profil : la devise (80 caractères, sans lien ; vide = aucune) et la bannière (un décor du jeu, ou celle par défaut). */
+export async function setProfileDetails(tx: Tx, characterId: number, details: { motto?: string | null; banner?: string | null }): Promise<void> {
+  const set: { motto?: string | null; banner?: string | null } = {};
+  if (details.motto !== undefined) {
+    const motto = (details.motto ?? '').replace(/\s+/g, ' ').trim();
+    if (LINK.test(motto)) throw new GameError('link', 'Les liens ne sont pas autorisés dans la devise.');
+    set.motto = motto || null;
+  }
+  if (details.banner !== undefined) set.banner = details.banner;
+  if (Object.keys(set).length) await tx.update(characters).set(set).where(eq(characters.id, characterId));
 }

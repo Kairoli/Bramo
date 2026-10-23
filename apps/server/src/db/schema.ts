@@ -69,6 +69,9 @@ export const characters = pgTable('characters', {
   ornament: text('ornament'),
   /** Photo de profil visible : son numéro de version (adresse de l'image), null sans photo ou photo masquée. */
   avatar: integer('avatar'),
+  /** Page profil : la devise (une phrase) et la bannière (un décor du jeu, apps/web/public/scenes) ; null : par défaut. */
+  motto: text('motto'),
+  banner: text('banner'),
   /** Le tour guidé de la première session a été vu (ou passé). */
   tourDone: boolean('tour_done').notNull().default(false),
   /** Combat : XP par classe, voies, plans, activité de combat (CombatState de @bramo/shared). */

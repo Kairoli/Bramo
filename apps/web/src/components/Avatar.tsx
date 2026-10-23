@@ -2,6 +2,7 @@ import { type CSSProperties, useState } from 'react';
 import type { Appearance } from '@bramo/shared';
 import { useContent } from '../game/ContentContext';
 import { Character } from '../rig/Character';
+import { useOpenProfile } from './ProfileLink';
 
 /**
  * Photo de profil d'un joueur [demande de Louis, 23 octobre : « elle apparaît partout où le personnage est présent »] :
@@ -17,6 +18,7 @@ export function Avatar({
   appearance,
   size = 40,
   className,
+  open = true,
 }: {
   id: number | null;
   version: number | null | undefined;
@@ -25,13 +27,32 @@ export function Avatar({
   appearance?: Appearance | null;
   size?: number;
   className?: string;
+  /** Un clic ouvre la page profil du joueur (dans le jeu). */
+  open?: boolean;
 }) {
   const content = useContent();
   const [broken, setBroken] = useState(false);
   const color = (classId && content.classes[classId]?.affinityColor) || 'var(--text-muted)';
+  const opener = useOpenProfile();
+  const clickable = open && opener && id !== null && id > 0;
   const style = { '--av': `${size}px`, '--av-color': color } as CSSProperties;
   return (
-    <span className={`avatar${className ? ` ${className}` : ''}`} style={style} title={name}>
+    <span
+      className={`avatar${clickable ? ' clickable' : ''}${className ? ` ${className}` : ''}`}
+      style={style}
+      title={clickable ? `Voir la page de ${name}` : name}
+      {...(clickable && {
+        role: 'button',
+        tabIndex: 0,
+        onClick: (e: React.MouseEvent) => {
+          e.stopPropagation();
+          opener(id);
+        },
+        onKeyDown: (e: React.KeyboardEvent) => {
+          if (e.key === 'Enter') opener(id);
+        },
+      })}
+    >
       {id !== null && id > 0 && version && !broken ? (
         <img src={`/api/avatars/${id}?v=${version}`} alt="" loading="lazy" decoding="async" onError={() => setBroken(true)} />
       ) : appearance ? (

@@ -55,13 +55,22 @@ Bramo est un **idle-RPG multijoueur jouable dans le navigateur**, dans l'esprit 
 
 ## 5. État du projet (à jour au 23 octobre 2026)
 
+### Fait — page profil d'un joueur (23 octobre, nuit)
+
+- **Demande de Louis** : « quand on clique sur une photo de profil ou un nom, ça ouvre une page profil, avec la photo, le perso… un truc sympa, visuel, unique à chacun ».
+- **De partout** : toute photo (`Avatar`, sauf la barre du haut qui ouvre Profil et compte) et tout nom (`PlayerName`) ouvrent la page : discussion, classement de la Marée (podium et liste), membres du clan, joueurs du bourg et de la place du clan. Une seule page à la fois, rendue au niveau du jeu (`components/ProfileLink.tsx` : `ProfileOpener`, `useOpenProfile`) ; les joueurs d'essai (identifiant négatif) n'en ont pas.
+- **La page** (`components/PlayerCard.tsx`) : en haut la **bannière** (un décor du jeu choisi par le joueur ; par défaut celui de son meilleur métier), son personnage debout, sa photo dans un cadre à la couleur de sa classe, son nom ou son ornement, sa **devise**, sa classe, son clan (avec son blason, `components/Crest.tsx`), en ligne ou vu il y a… ; puis cinq chiffres (niveau de classe, niveau total des métiers, soirs de Marée, meilleur soir récent, arrivée à Bramo), sa **pièce maîtresse** (la plus rare et la plus haute qu'il porte) et son équipement, ses six meilleurs métiers en barres, son **palmarès de la Marée** (titres, soirs en direct, Marées offertes).
+- **Sa propre page** : « Modifier ma page » (devise de 80 caractères sans lien, bannière parmi 21 décors, l'aperçu suit) ; aussi depuis la fenêtre Profil (« Voir et modifier ma page profil »).
+- **Serveur** : colonnes `characters.motto` et `banner` (migration 0028), `POST /api/profile/details` (`profileDetailsBody`, `PROFILE_BANNERS`), `PlayerProfile` gagne `motto`, `banner`, `joinedAt`, `tide` ; un modérateur qui retire une photo retire aussi la devise. Test d'API « page profil ».
+- Tests : 195 dans packages/shared, 34 d'API, 21 du simulateur.
+
 ### Fait — photo de profil (23 octobre, nuit)
 
 - **Demande de Louis** (inspirée de Legend of Mushroom) : « pouvoir être qui on veut » ; une photo de profil libre (une image d'anime ou autre), en haut à droite à la place d'Atelier et Compte, visible partout où le personnage apparaît ; dans la discussion, ses propres messages à droite avec la photo à droite du texte (effet escalier).
 - **Forme** [choix de Claude, à valider] : carré aux coins arrondis (garde plus d'une image qu'un rond, s'accorde aux tuiles ; des cadres cosmétiques pourront l'entourer). Sans photo : le portrait du personnage, sinon l'initiale dans la couleur de la classe (`components/Avatar.tsx`).
 - **Fenêtre Profil** (`components/Profile.tsx`, bouton photo en haut à droite) : photo, nom, classe, titre, identifiant ; onglet Compte (l'ancienne fenêtre, avec « Se déconnecter » ; « Quitter » et « Atelier » ne sont plus dans la barre). **Recadrage** dans le jeu (`AvatarPicker.tsx` : choisir ou glisser une image, la déplacer, zoomer en gardant le centre, aperçu en trois tailles ; enregistrée en 256 × 256 WebP).
 - **Serveur** (`apps/server/src/avatar.ts`, migration 0027) : WebP, PNG ou JPEG seulement (jamais SVG), 300 ko au plus, signature vérifiée ; un changement par minute ; masquée après 3 signalements de joueurs différents ; retrait par un modérateur (`POST /api/profile/avatar/moderate`) ; servie par `GET /api/avatars/:id?v=` (cache long, `nosniff`) ; comprise dans l'export des données du compte ; règle ajoutée aux conditions d'utilisation (brouillon). Réglages `avatar` dans `data/settings.yaml`.
-- **Où elle apparaît** : barre du haut, discussion (escalier), membres du clan, fiche d'un joueur (avec « Signaler la photo »), classement de la Marée (podium et liste), carte d'un joueur au bourg.
+- **Où elle apparaît** : barre du haut, discussion (escalier), membres du clan, page profil d'un joueur (avec « Signaler la photo »), classement de la Marée (podium et liste), carte d'un joueur au bourg.
 
 ### Fait — la Marée en direct (23 octobre, soir)
 

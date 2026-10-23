@@ -6,6 +6,7 @@ import { Character } from '../rig/Character';
 import { Modal } from './ui';
 import { AWARD_ICON } from './TideLive';
 import { Avatar } from './Avatar';
+import { PlayerName } from './ProfileLink';
 
 /**
  * Le classement d'un soir de Marée [demande de Louis, 23 octobre : « un top 10 dans chaque catégorie, plus visuel, une
@@ -128,7 +129,7 @@ export function TideRanking({ demo, tide, onClose }: { demo: boolean; tide?: str
                         <span className="rank-n">{r.rank}</span>
                         <Avatar id={r.characterId} version={r.avatar} name={r.name} classId={r.appearance?.classId} appearance={r.appearance} size={46} />
                         <span className="rank-name">
-                          <strong>{r.name}</strong>
+                          <PlayerName id={r.characterId}>{r.name}</PlayerName>
                           {r.me && <span className="rank-you">vous</span>}
                           {r.live && <span className="rank-live">en direct</span>}
                         </span>
@@ -179,7 +180,7 @@ function Podium({ r, place, unit }: { r: TideRankingRow; place: number; unit: st
         <span className={`rank-medal medal-${MEDAL[place]}`}>{r.rank}</span>
         <span className="rank-step-who">
           <Avatar id={r.characterId} version={r.avatar} name={r.name} classId={r.appearance?.classId} size={place === 0 ? 56 : 46} />
-          <strong className="rank-step-name">{r.name}</strong>
+          <PlayerName id={r.characterId} className="rank-step-name">{r.name}</PlayerName>
         </span>
         <span className="rank-step-value">{num(r.value)}</span>
         <span className="muted small">{unit}</span>

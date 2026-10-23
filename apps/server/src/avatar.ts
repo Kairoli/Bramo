@@ -71,6 +71,8 @@ export async function moderateAvatar(tx: Tx, moderatorId: number, characterId: n
   const [me] = await tx.select({ role: accounts.role }).from(characters).innerJoin(accounts, eq(accounts.id, characters.accountId)).where(eq(characters.id, moderatorId));
   if (me?.role !== 'moderator') throw new GameError('not_moderator', 'Réservé aux modérateurs.');
   await removeAvatar(tx, characterId);
+  // La devise de la page profil part avec la photo.
+  await tx.update(characters).set({ motto: null }).where(eq(characters.id, characterId));
 }
 
 /** La photo à servir (pas une photo masquée). */

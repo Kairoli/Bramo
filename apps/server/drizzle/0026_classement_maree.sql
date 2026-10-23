@@ -1,0 +1,1 @@
+ALTER TABLE "tide_entries" ADD COLUMN "stats" jsonb;

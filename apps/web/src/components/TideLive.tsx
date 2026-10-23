@@ -65,7 +65,7 @@ const rand = (seed: number) => {
   return () => ((s = (s * 1664525 + 1013904223) >>> 0), s / 4294967296);
 };
 
-export function TideLive({ view }: { view: TideLiveView }) {
+export function TideLive({ view, onRanking }: { view: TideLiveView; onRanking?: () => void }) {
   const content = useContent();
   // Placement : le joueur au premier rang, puis les autres répartis sur les trois rangs (le premier rang devant).
   const placed = useMemo<Placed[]>(() => {
@@ -152,6 +152,11 @@ export function TideLive({ view }: { view: TideLiveView }) {
         <div className="tide-live-recap">
           <span className="eyebrow">Récap de la Marée</span>
           <TideRecap awards={view.recap} />
+          {onRanking && (
+            <button className="btn btn-primary btn-sm" onClick={onRanking}>
+              Voir le classement complet
+            </button>
+          )}
         </div>
       )}
       {view.phase === 'done' && total > 0 && <div className="tide-live-banner">La digue a tenu : {pr.lit} lanterne{pr.lit > 1 ? 's' : ''} allumée{pr.lit > 1 ? 's' : ''}</div>}
@@ -161,7 +166,7 @@ export function TideLive({ view }: { view: TideLiveView }) {
 }
 
 /** Icône de chaque distinction du récapitulatif. */
-const AWARD_ICON: Record<TideAward['key'], string> = {
+export const AWARD_ICON: Record<TideAward['key'], string> = {
   mvp: 'M12 2l2.9 6.3 6.9.7-5.2 4.6 1.5 6.8L12 17l-6.1 3.4 1.5-6.8L2.2 9l6.9-.7z',
   damage: 'M14.5 17.5L3 6V3h3l11.5 11.5M13 19l6-6M16 16l4 4M19 21l2-2',
   healing: 'M12 21s-7-4.5-9.5-9A5.5 5.5 0 0 1 12 5a5.5 5.5 0 0 1 9.5 7c-2.5 4.5-9.5 9-9.5 9zM12 9v6M9 12h6',

@@ -101,7 +101,7 @@ import {
   tideDay,
 } from '@bramo/shared';
 import type { Db } from './db/index.js';
-import { offerPatron, settleTide, tideView, recordSignup, tideLive, tideLiveDemo } from './tide.js';
+import { offerPatron, settleTide, tideView, recordSignup, tideLive, tideLiveDemo, tideRankingDemo, tideRankingView } from './tide.js';
 import { AccountGuard, GuardError } from './guard.js';
 import { deleteAccount, exportAccount } from './account.js';
 import { moderateChat, postChat, readChat, reportChat } from './chat.js';
@@ -866,6 +866,14 @@ export async function buildApp({ db, content, clock = Date.now, secureCookies = 
       return { state: next, log: 'Inscrit à la Marée du soir : votre personnage combattra à 20 h, même si vous êtes déconnecté.', logKind: 'combat' };
     }),
   );
+  /** Le classement d'un soir de Marée (le dernier réglé, ou ?day=) : top 10 par catégorie. ?demo=1 en développement. */
+  app.get('/api/tide/ranking', async (req) => {
+    const me = await myCharacter(req);
+    const q = req.query as { demo?: string; tide?: string; day?: string } | undefined;
+    if (devTools && q?.demo) return tideRankingDemo(content, clock(), q.tide);
+    await settleTide(db, content, clock());
+    return db.transaction((tx) => tideRankingView(tx, content, clock(), me.id, q?.day ? Number(q.day) : undefined));
+  });
   /** La Marée en direct : les inscrits devant la digue, l'ennemi du soir, l'avancée de la digue. ?demo=1 en développement. */
   app.get('/api/tide/live', async (req) => {
     const me = await myCharacter(req);

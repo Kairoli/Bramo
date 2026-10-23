@@ -406,6 +406,31 @@ export interface TideLiveView {
   demo: boolean;
 }
 
+/** Une ligne du classement de la Marée : rang, joueur (son apparence pour le podium), valeur. */
+export interface TideRankingRow {
+  rank: number;
+  characterId: number;
+  name: string;
+  appearance: Appearance | null;
+  value: number;
+  live: boolean;
+  me: boolean;
+}
+
+/** Le classement d'un soir de Marée (GET /api/tide/ranking) : un top 10 par catégorie, et le rang du joueur. */
+export interface TideRankingView {
+  day: number;
+  tide: string;
+  name: string;
+  participants: number;
+  points: number;
+  objective: number;
+  lit: number;
+  of: number;
+  categories: { key: string; title: string; short: string; unit: string; count: number; total: number; top: TideRankingRow[]; me: { rank: number; value: number } | null }[];
+  demo: boolean;
+}
+
 /** Courbe de prix d'un objet sur les derniers jours (GET /api/market/history/:itemId). `day` : jours depuis le 1er janvier 1970. */
 export interface PriceHistoryView {
   itemId: string;

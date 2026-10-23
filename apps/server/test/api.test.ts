@@ -661,6 +661,11 @@ describe('API', () => {
     // Le récapitulatif du soir : le seul combattant est le pilier de la digue et le plus gros dégâts.
     expect(back.last?.recap.find((x) => x.key === 'mvp')?.name).toBe('Inscrite');
     expect(back.last?.recap.some((x) => x.key === 'damage')).toBe(true);
+    // Le classement du soir : elle est première aux points, et c'est bien elle.
+    const ranking = (await inscrit('GET', '/api/tide/ranking')).json as import('@bramo/shared').TideRankingView;
+    const pts = ranking.categories.find((c) => c.key === 'mvp')!;
+    expect(pts.top[0]).toMatchObject({ rank: 1, name: 'Inscrite', me: true });
+    expect(pts.me?.rank).toBe(1);
     await absent('GET', '/api/state');
     const missed = (await absent('GET', '/api/tide')).json as import('@bramo/shared').TideView;
     expect(missed.nights.some((n) => n.day === day)).toBe(false);

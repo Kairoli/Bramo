@@ -21,6 +21,7 @@ import type {
   StateResponse,
   TideView,
   TideLiveView,
+  TideRankingView,
   TownView,
 } from '@bramo/shared';
 
@@ -136,6 +137,7 @@ export const api = {
   stockSupplies: (itemId: string, qty: number) => request<StateResponse>('POST', '/combat/supplies/stock', { itemId, qty }),
   unstockSupplies: (itemId: string, qty: number) => request<StateResponse>('POST', '/combat/supplies/unstock', { itemId, qty }),
   tide: () => request<TideView | null>('GET', '/tide'),
+  tideRanking: (demo = false, tide?: string) => request<TideRankingView | null>('GET', `/tide/ranking${demo ? `?demo=1${tide ? `&tide=${tide}` : ''}` : ''}`),
   tideLive: (demo = false, tide?: string) => request<TideLiveView | null>('GET', `/tide/live${demo ? `?demo=1${tide ? `&tide=${tide}` : ''}` : ''}`),
   tidePrefs: (prefs: { channel?: 'combat' | 'work' }) => request<StateResponse>('POST', '/tide/prefs', prefs),
   tideRegister: () => request<StateResponse>('POST', '/tide/register'),

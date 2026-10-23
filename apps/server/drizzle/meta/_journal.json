@@ -183,6 +183,13 @@
       "when": 1792782547032,
       "tag": "0025_recap_maree",
       "breakpoints": true
+    },
+    {
+      "idx": 26,
+      "version": "7",
+      "when": 1792783181019,
+      "tag": "0026_classement_maree",
+      "breakpoints": true
     }
   ]
 }

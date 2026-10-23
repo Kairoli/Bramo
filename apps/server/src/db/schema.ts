@@ -10,7 +10,7 @@ import {
   text,
   timestamp,
 } from 'drizzle-orm/pg-core';
-import type { Activity, AdvanceSummary, CombatState, EnergyState, MealBuff, QueuedAction, RolledLine, TideAward } from '@bramo/shared';
+import type { Activity, AdvanceSummary, CombatState, EnergyState, MealBuff, QueuedAction, RolledLine, TideAward, TideStats } from '@bramo/shared';
 
 /** Postgres standard uniquement : le schéma doit rester compatible Supabase. */
 
@@ -312,6 +312,8 @@ export const tideEntries = pgTable(
     live: boolean('live').notNull().default(false),
     shards: integer('shards').notNull().default(0),
     claimed: boolean('claimed').notNull().default(false),
+    /** Ce qu'il a fait ce soir-là (dégâts, soins, boucliers, contrôle), pour le classement ; null : canal travail. */
+    stats: jsonb('stats').$type<TideStats | null>(),
   },
   (t) => [primaryKey({ columns: [t.day, t.characterId] }), index('tide_entries_character').on(t.characterId, t.claimed)],
 );

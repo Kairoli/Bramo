@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { loadContent } from '../src/node/index.js';
 import { emptyCombat } from '../src/combat/progress.js';
 import {
+  tideRanking,
   tideRecap,
   buyTideItem,
   claimWeeklyChests,
@@ -158,5 +159,24 @@ describe('récapitulatif de fin de soirée', () => {
     const by = Object.fromEntries(recap.map((a) => [a.key, a.name]));
     expect(by).toEqual({ mvp: 'Forge', damage: 'Forge', healing: 'Rune', shielding: 'Forge', control: 'Rune', work: 'Pelle' });
     expect(tideRecap([{ characterId: 1, name: 'Seul', points: 60, channel: 'combat', stats: { damage: 10, healing: 0, shielding: 0, control: 0 } }]).map((a) => a.key)).toEqual(['mvp', 'damage']);
+  });
+});
+
+describe('classement d’un soir', () => {
+  it('trie chaque catégorie, partage les ex æquo, donne le rang du joueur et garde dix lignes', () => {
+    const entries = Array.from({ length: 14 }, (_, i) => ({ characterId: i + 1, name: 'J' + (i + 1), points: 100 - i, channel: 'combat', stats: { damage: i === 1 ? 5000 : 1000 * (14 - i), healing: 0, shielding: 0, control: 0 } }));
+    entries.push({ characterId: 99, name: 'Ouvrier', points: 84, channel: 'work', stats: null } as never);
+    const r = tideRanking(entries, 12);
+    const points = r.find((c) => c.key === 'mvp')!;
+    expect(points.top.length).toBe(10);
+    expect(points.top[0]!.entry.name).toBe('J1');
+    expect(points.me).toEqual({ rank: 12, value: 89 });
+    expect(points.count).toBe(15);
+    const damage = r.find((c) => c.key === 'damage')!;
+    expect(damage.count).toBe(14); // l'ouvrier ne compte pas aux dégâts
+    expect(damage.top[0]!.value).toBe(14000);
+    expect(r.find((c) => c.key === 'healing')!.count).toBe(0); // personne pour zéro
+    const tie = tideRanking([{ characterId: 1, name: 'A', points: 50, channel: 'combat' }, { characterId: 2, name: 'B', points: 50, channel: 'combat' }], null)[0]!;
+    expect(tie.top.map((x) => x.rank)).toEqual([1, 1]);
   });
 });

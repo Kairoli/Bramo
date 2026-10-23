@@ -5,6 +5,7 @@ import { useGame } from '../game/GameContext';
 import { clock, num } from '../format';
 import { Modal } from './ui';
 import { TideLive, TideRecap } from './TideLive';
+import { TideRanking } from './TideRanking';
 import type { TideLiveView } from '@bramo/shared';
 
 /**
@@ -96,6 +97,7 @@ function useTideLive(demo: boolean) {
 export function TideModal({ view, refresh, onClose }: { view: TideView; refresh: () => void; onClose: () => void }) {
   const { act, state } = useGame();
   const [demo, setDemo] = useState(false);
+  const [ranking, setRanking] = useState(false);
   const live = useTideLive(demo);
   const t = view.tonight;
   const r = view.rules;
@@ -115,13 +117,22 @@ export function TideModal({ view, refresh, onClose }: { view: TideView; refresh:
   const pts = (ratio: number) => Math.round(r.fullPoints * ratio);
   const plural = (n: number, word: string) => `${num(n)} ${word}${n > 1 ? 's' : ''}`;
 
+  // Le classement complet remplace la fenêtre le temps qu'on le regarde.
+  if (ranking) return <TideRanking demo={demo} tide={new URLSearchParams(location.search).get('maree') ?? undefined} onClose={() => setRanking(false)} />;
   return (
     <Modal onClose={onClose} className="tide-modal with-live">
-      {live && <TideLive view={live} />}
+      {live && <TideLive view={live} onRanking={() => setRanking(true)} />}
       {import.meta.env.DEV && (
-        <button className="btn btn-ghost btn-sm tide-demo" onClick={() => setDemo(!demo)}>
-          {demo ? 'Revenir à la vraie Marée' : 'Démo : voir la digue en direct'}
-        </button>
+        <div className="tide-demo">
+          <button className="btn btn-ghost btn-sm" onClick={() => setDemo(!demo)}>
+            {demo ? 'Revenir à la vraie Marée' : 'Démo : voir la digue en direct'}
+          </button>
+          {demo && (
+            <button className="btn btn-ghost btn-sm" onClick={() => setRanking(true)}>
+              Démo : le classement
+            </button>
+          )}
+        </div>
       )}
 
       <header className="tide-head">
@@ -283,6 +294,9 @@ export function TideModal({ view, refresh, onClose }: { view: TideView; refresh:
             {lastMine ? ` Vous : ${num(lastMine.points)} points, ${num(lastMine.shards)} éclats.` : ''}
           </p>
           {last.recap.length > 0 && <TideRecap awards={last.recap} />}
+          <button className="btn btn-primary btn-sm tide-rank-open" onClick={() => setRanking(true)}>
+            Classement complet de la soirée
+          </button>
         </section>
       )}
 

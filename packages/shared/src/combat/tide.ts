@@ -216,21 +216,59 @@ export interface TideAward {
  * Récapitulatif de fin de soirée [demande de Louis, 23 octobre : « meilleur DPS, meilleur soigneur, meilleur contrôleur… »] :
  * le meilleur de chaque rôle parmi les participants (personne n'est cité pour zéro).
  */
-export function tideRecap(entries: { characterId: number; name: string; points: number; channel: string; stats?: TideStats | null }[]): TideAward[] {
-  const best = <T>(list: T[], value: (x: T) => number) => list.reduce<T | null>((b, x) => (value(x) > 0 && (!b || value(x) > value(b)) ? x : b), null);
+export function tideRecap(entries: TideEntryLike[]): TideAward[] {
   const out: TideAward[] = [];
-  const add = (key: TideAward['key'], title: string, unit: string, list: typeof entries, value: (x: (typeof entries)[number]) => number) => {
-    const b = best(list, value);
-    if (b) out.push({ key, title, characterId: b.characterId, name: b.name, value: Math.round(value(b)), unit });
-  };
-  const fighters = entries.filter((e) => e.channel === 'combat' && e.stats);
-  add('mvp', 'Pilier de la digue', 'points', entries, (e) => e.points);
-  add('damage', 'Plus gros dégâts', 'dégâts', fighters, (e) => e.stats!.damage);
-  add('healing', 'Meilleur soigneur', 'soins', fighters, (e) => e.stats!.healing);
-  add('shielding', 'Meilleur protecteur', 'absorbés', fighters, (e) => e.stats!.shielding);
-  add('control', 'Meilleur contrôleur', 'dégâts évités', fighters, (e) => e.stats!.control);
-  add('work', 'Meilleur ouvrier', 'points de travail', entries.filter((e) => e.channel === 'work'), (e) => e.points);
+  for (const c of TIDE_CATEGORIES) {
+    const b = entries.filter(c.counts).reduce<TideEntryLike | null>((best, x) => (c.value(x) > 0 && (!best || c.value(x) > c.value(best)) ? x : best), null);
+    if (b) out.push({ key: c.key, title: c.title, characterId: b.characterId, name: b.name, value: Math.round(c.value(b)), unit: c.unit });
+  }
   return out;
+}
+
+/** Ce qu'il faut d'un participant pour le récap et le classement. */
+export interface TideEntryLike {
+  characterId: number;
+  name: string;
+  points: number;
+  channel: string;
+  stats?: TideStats | null;
+}
+
+/** Les catégories du récapitulatif et du classement : le titre, l'unité, qui y compte, et la valeur. */
+export const TIDE_CATEGORIES: { key: TideAward['key']; title: string; short: string; unit: string; counts: (e: TideEntryLike) => boolean; value: (e: TideEntryLike) => number }[] = [
+  { key: 'mvp', title: 'Pilier de la digue', short: 'Points', unit: 'points', counts: () => true, value: (e) => e.points },
+  { key: 'damage', title: 'Plus gros dégâts', short: 'Dégâts', unit: 'dégâts', counts: (e) => e.channel === 'combat' && !!e.stats, value: (e) => e.stats?.damage ?? 0 },
+  { key: 'healing', title: 'Meilleur soigneur', short: 'Soins', unit: 'soins', counts: (e) => e.channel === 'combat' && !!e.stats, value: (e) => e.stats?.healing ?? 0 },
+  { key: 'shielding', title: 'Meilleur protecteur', short: 'Protection', unit: 'absorbés', counts: (e) => e.channel === 'combat' && !!e.stats, value: (e) => e.stats?.shielding ?? 0 },
+  { key: 'control', title: 'Meilleur contrôleur', short: 'Contrôle', unit: 'dégâts évités', counts: (e) => e.channel === 'combat' && !!e.stats, value: (e) => e.stats?.control ?? 0 },
+  { key: 'work', title: 'Meilleur ouvrier', short: 'Travail', unit: 'points de travail', counts: (e) => e.channel === 'work', value: (e) => e.points },
+];
+
+/** Une ligne d'un classement : le rang (ex æquo partagés), le participant et sa valeur. */
+export interface TideRankRow<E extends TideEntryLike = TideEntryLike> {
+  rank: number;
+  entry: E;
+  value: number;
+}
+
+/**
+ * Classement d'un soir [demande de Louis, 23 octobre : « un top 10 dans chaque catégorie, pas uniquement le meilleur »] :
+ * pour chaque catégorie, les `top` premiers (valeur positive), le rang du joueur `meId` et le total de la catégorie.
+ */
+export function tideRanking<E extends TideEntryLike>(entries: E[], meId: number | null, top = 10) {
+  return TIDE_CATEGORIES.map((c) => {
+    const ranked = entries
+      .filter((e) => c.counts(e) && c.value(e) > 0)
+      .sort((a, b) => c.value(b) - c.value(a) || a.name.localeCompare(b.name));
+    const rows: TideRankRow<E>[] = [];
+    ranked.forEach((e, i) => {
+      const prev = rows[i - 1];
+      const value = Math.round(c.value(e));
+      rows.push({ rank: prev && prev.value === value ? prev.rank : i + 1, entry: e, value });
+    });
+    const mine = meId === null ? undefined : rows.find((r) => r.entry.characterId === meId);
+    return { key: c.key, title: c.title, short: c.short, unit: c.unit, count: rows.length, total: rows.reduce((s, r) => s + r.value, 0), top: rows.slice(0, top), me: mine ? { rank: mine.rank, value: mine.value } : null };
+  });
 }
 
 /** Éclats d'un participant : ses points, plus le bonus de chaque seuil du serveur franchi ; chaque mécène du soir en ajoute. */

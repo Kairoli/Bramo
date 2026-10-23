@@ -33,6 +33,10 @@ import {
   tideOpen,
   tideScore,
   tideRecap,
+  tideRanking as rankNight,
+  type TideEntryLike,
+  type TideRankingView,
+  type Appearance,
   type TideAward,
   type TideStats,
   tideShards,
@@ -77,7 +81,7 @@ export async function settleTide(db: Db, content: Content, now: number): Promise
       // Seuls les inscrits participent (inscription de 19 h à 20 h) ; inscrits, ils combattent même déconnectés.
       if (t.registered !== day) continue;
       const r = tideScore(loaded.state, day, content, live);
-      entries.push({ day, characterId: id, tide: tideOf(day, rules).id, points: r.points, ratio: r.ratio, channel: r.channel, live, shards: 0 });
+      entries.push({ day, characterId: id, tide: tideOf(day, rules).id, points: r.points, ratio: r.ratio, channel: r.channel, live, shards: 0, stats: r.stats ?? null });
       recapRows.push({ characterId: id, name: loaded.name, points: r.points, channel: r.channel, stats: r.stats });
     }
     const points = entries.reduce((s, e) => s + e.points, 0);
@@ -279,6 +283,95 @@ export async function tideLive(tx: Tx, content: Content, now: number, meId: numb
   };
 }
 
+type DemoEntry = TideEntryLike & { appearance: Appearance; live: boolean };
+
+/**
+ * Une soirée d'essai (développement) : des joueurs dont les points, les dégâts, les soins, les boucliers et le contrôle
+ * suivent le même niveau de jeu et leur classe, comme dans une vraie soirée (le Forgefeu protège, le Runiste soigne et
+ * contrôle un peu, le Traqueur contrôle) ; un sur dix travaille pour la digue.
+ */
+function demoNight(content: Content, day: number, n = 128): DemoEntry[] {
+  const first = ['Brume', 'Tisonne', 'Aulne', 'Grésil', 'Ferrand', 'Lysandre', 'Pétrel', 'Marne', 'Sorbe', 'Cendrine', 'Galet', 'Ronce', 'Vireo', 'Halle', 'Ombeline', 'Tarn', 'Écume', 'Bastide', 'Saule', 'Fauve', 'Lanterne', 'Corvin', 'Ysolde', 'Rocaille', 'Varech', 'Bruyère', 'Héron', 'Molène', 'Givre', 'Escarbille', 'Pistil', 'Gravelot'];
+  const second = ['', ' du Gué', ' Fendeforge', ' Lavegrise', ' de la Halle', ' Tirelune'];
+  const classes = Object.keys(content.classes);
+  const pieces = (content.cosmetics.pieces ?? []).filter((p) => p.slot !== 'weapon');
+  return Array.from({ length: n }, (_, i) => {
+    const r = hash32(`demo:${day}:${i}`);
+    const rr = (k: number) => ((r >>> k) % 1000) / 1000;
+    const classId = classes[r % classes.length]!;
+    const outfits = content.cosmetics.outfits.filter((o) => o.classes.includes(classId) && (!o.id.startsWith('sketch_') || o.id.startsWith('sketch_season_')));
+    const outfit = outfits[(r >>> 4) % outfits.length]!.id;
+    const extra = (r >>> 9) % 5 === 0 ? pieces[(r >>> 12) % Math.max(1, pieces.length)] : undefined;
+    const appearance: Appearance = { classId, outfit, ...(extra ? { overrides: { [extra.slot]: extra.id } } : {}) };
+    const name = first[i % first.length]! + second[Math.floor(i / first.length) % second.length]!;
+    const live = rr(15) < 0.35;
+    if (i % 10 === 7) return { characterId: -1 - i, name, points: Math.round(84 * (0.4 + 0.6 * rr(3)) * (live ? 1.15 : 1)), channel: 'work', stats: null, appearance, live };
+    // Le niveau de jeu (build, équipement) : de 0,5 à 1,7 fois un build moyen.
+    const skill = 0.5 + 1.2 * rr(5) ** 1.6;
+    const stats = {
+      damage: Math.round(46_000 * skill * (classId === 'tracker' ? 1.12 : classId === 'forgefire' ? 1.04 : 0.92)),
+      healing: Math.round(classId === 'runist' ? 7_500 * skill * (0.6 + 0.8 * rr(7)) : classId === 'tracker' ? 900 * skill * rr(8) : 0),
+      shielding: Math.round(classId === 'forgefire' ? 11_000 * skill * (0.6 + 0.8 * rr(10)) : classId === 'runist' ? 2_000 * skill * rr(11) : 0),
+      control: Math.round(classId === 'tracker' ? 13_000 * skill * (0.6 + 0.8 * rr(13)) : classId === 'runist' ? 5_000 * skill * rr(14) : 1_200 * skill * rr(14)),
+    };
+    const points = Math.round(60 * Math.min(2, Math.max(0.4, skill * (0.92 + 0.16 * rr(17)))) * (live ? 1.15 : 1));
+    return { characterId: -1 - i, name, points, channel: 'combat', stats, appearance, live };
+  });
+}
+
+/** Le classement d'un soir réglé (le dernier par défaut) : top 10 par catégorie, rang du joueur. */
+export async function tideRankingView(tx: Tx, content: Content, now: number, meId: number, wanted?: number): Promise<TideRankingView | null> {
+  const rules = content.combat?.tide;
+  if (!rules) return null;
+  const day = wanted ?? lastFinishedTide(now, rules);
+  const [night] = await tx.select().from(tideDays).where(eq(tideDays.day, day));
+  if (!night) return null;
+  const rows = await tx.select().from(tideEntries).where(eq(tideEntries.day, day));
+  const ids = rows.map((r) => r.characterId);
+  const chars = ids.length ? await tx.select({ id: characters.id, name: characters.name, classId: characters.classId, outfit: characters.outfit, look: characters.look }).from(characters).where(inArray(characters.id, ids)) : [];
+  const byId = new Map(chars.map((c) => [c.id, c]));
+  const entries = rows.map((r) => {
+    const c = byId.get(r.characterId);
+    return { characterId: r.characterId, name: c?.name ?? '?', points: r.points, channel: r.channel, stats: r.stats ?? null, live: r.live, appearance: c ? viewAppearance({ classId: c.classId, outfit: c.outfit, look: c.look } as unknown as State, content) : null };
+  });
+  const objective = rules.shards.objectivePerParticipant * Math.max(1, night.participants);
+  return {
+    day,
+    tide: night.tide,
+    name: rules.tides.find((x) => x.id === night.tide)?.name ?? night.tide,
+    participants: night.participants,
+    points: night.points,
+    objective,
+    lit: night.thresholds,
+    of: rules.shards.thresholds.length,
+    categories: rankNight(entries, meId).map((c) => ({ ...c, top: c.top.map((t) => ({ rank: t.rank, characterId: t.entry.characterId, name: t.entry.name, appearance: t.entry.appearance, value: t.value, live: t.entry.live, me: t.entry.characterId === meId })) })),
+    demo: false,
+  };
+}
+
+/** Le classement de la soirée d'essai (développement). */
+export function tideRankingDemo(content: Content, now: number, tideId?: string): TideRankingView | null {
+  const rules = content.combat?.tide;
+  if (!rules) return null;
+  const day = tideDay(now);
+  const def = rules.tides.find((x) => x.id === tideId) ?? rules.tides[Math.floor(now / (10 * 60_000)) % rules.tides.length]!;
+  const entries = demoNight(content, day);
+  const points = entries.reduce((s, e) => s + e.points, 0);
+  const objective = rules.shards.objectivePerParticipant * entries.length;
+  return {
+    day,
+    tide: def.id,
+    name: def.name,
+    participants: entries.length,
+    points,
+    objective,
+    lit: rules.shards.thresholds.filter((t) => points >= t.share * objective).length,
+    of: rules.shards.thresholds.length,
+    categories: rankNight(entries, null).map((c) => ({ ...c, top: c.top.map((t) => ({ rank: t.rank, characterId: t.entry.characterId, name: t.entry.name, appearance: t.entry.appearance, value: t.value, live: t.entry.live, me: false })) })),
+    demo: true,
+  };
+}
+
 /**
  * Démonstration de la scène (développement, pour la voir à toute heure) : une foule d'essai tirée du jour, toutes les
  * tenues (de départ, de saison, Marée haute), quelques pièces d'Halloween ; la Marée monte sur dix minutes, puis recommence.
@@ -289,17 +382,8 @@ export function tideLiveDemo(content: Content, now: number, tideId?: string): Ti
   const day = tideDay(now);
   // Les trois Marées se suivent, une par cycle de dix minutes, pour toutes les voir.
   const def = rules.tides.find((x) => x.id === tideId) ?? rules.tides[Math.floor(now / (10 * 60_000)) % rules.tides.length]!;
-  const names = ['Brume', 'Tisonne', 'Aulne', 'Grésil', 'Ferrand', 'Lysandre', 'Pétrel', 'Marne', 'Sorbe', 'Cendrine', 'Galet', 'Ronce', 'Vireo', 'Halle', 'Ombeline', 'Tarn', 'Écume', 'Bastide', 'Saule', 'Fauve', 'Lanterne', 'Corvin', 'Ysolde', 'Rocaille', 'Varech', 'Bruyère', 'Héron', 'Molène'];
-  const classes = Object.keys(content.classes);
-  const pieces = (content.cosmetics.pieces ?? []).filter((p) => p.slot !== 'weapon');
-  const fighters: TideLiveFighter[] = names.map((name, i) => {
-    const r = hash32(`demo:${day}:${i}`);
-    const classId = classes[r % classes.length]!;
-    const outfits = content.cosmetics.outfits.filter((o) => o.classes.includes(classId) && (!o.id.startsWith('sketch_') || o.id.startsWith('sketch_season_')));
-    const outfit = outfits[(r >>> 4) % outfits.length]!.id;
-    const extra = (r >>> 9) % 5 === 0 ? pieces[(r >>> 12) % Math.max(1, pieces.length)] : undefined;
-    return { id: -1 - i, name, appearance: { classId, outfit, ...(extra ? { overrides: { [extra.slot]: extra.id } } : {}) }, live: (r >>> 15) % 3 === 0, me: false };
-  });
+  const night = demoNight(content, day);
+  const fighters: TideLiveFighter[] = night.slice(0, SHOWN).map((e) => ({ id: e.characterId, name: e.name, appearance: e.appearance, live: e.live, me: false }));
   const cycle = 10 * 60_000;
   const start = now - (now % cycle);
   const total = 128;
@@ -319,13 +403,7 @@ export function tideLiveDemo(content: Content, now: number, tideId?: string): Ti
     fighters,
     total,
     progress: { points, objective, shares, lit: shares.filter((s) => points >= s * objective).length },
-    recap: tideRecap(
-      fighters.map((x, i) => {
-        const r = hash32(`demo-stats:${day}:${i}`);
-        const classId = x.appearance.classId;
-        return { characterId: x.id, name: x.name, points: 40 + (r % 90), channel: i % 9 === 4 ? 'work' : 'combat', stats: { damage: 20_000 + (r % 60_000), healing: classId === 'forgefire' ? 0 : (r >>> 3) % 9000, shielding: classId === 'forgefire' ? (r >>> 5) % 12_000 : 0, control: classId === 'tracker' ? (r >>> 7) % 15_000 : (r >>> 7) % 3000 } };
-      }),
-    ),
+    recap: tideRecap(night),
     demo: true,
   };
 }

@@ -12,6 +12,7 @@
 | **Développé ?** | Oui pour l'**ambiance** : une idée forte et originale (une brume qui éteint les feux et fait oublier), six régions qui racontent chacune quelque chose, dix-sept maîtres attachants, des ennemis qui ne sont pas des monstres génériques (une lanterne à pattes, un notaire noyé, une lavandière de brume). **Non** pour le **fond** : on ne sait ni d'où vient la Marée, ni quand elle est montée, ni ce qu'il y a derrière Bramo, ni ce que veulent les choses des Lointains. |
 | **Suivable ?** | **Pas encore.** Le lore était éparpillé dans six documents et les données ; dans le jeu, il n'apparaît que par petites phrases (descriptions des zones, histoires des maîtres). Aucun fil qu'un joueur pourrait suivre, aucune révélation, aucune raison d'avancer « pour savoir ». |
 | **Intéressant pour le jeu ?** | **Oui, et c'est sa force** : les mécaniques racontent déjà l'histoire (la Marée remonte chaque soir à 20 h ; elle éteint les feux et les Forgefeux combattent par le feu ; elle fait oublier et les Runistes écrivent ; les outils travaillent seuls et les artisans les apprivoisent). Peu de jeux idle ont un univers aussi lié à leur boucle. Il manque un fil rouge : c'est l'objet des §9 et §10. |
+| **Prêt pour la suite ?** | Le §13 donne la règle et un modèle pour ajouter des classes, des saisons (numérotées, chacune un thème et une histoire, qui ne reviennent pas), des régions et des métiers sans casser le reste, et liste les portes à garder ouvertes. |
 
 ## 1. Le ton [Canon]
 
@@ -24,7 +25,7 @@
 
 Il y a deux générations, la **Grande Marée** est montée. Pas une marée d'eau : une **brume lourde et salée, qui éteint les feux et fait oublier**. Les forges se sont tues, les archives ont coulé, les veilleurs ont fermé leurs portes. Quand elle s'est retirée, elle a laissé les **Lointains** : des terres pleines de choses à moitié vivantes, d'**outils qui travaillent seuls**, de **lanternes qui marchent**.
 
-**Bramo** est le bourg qui s'est bâti au bord, là où la Marée s'arrête, derrière sa **digue**. On y vit de ce qu'on récolte, de ce qu'on fabrique et de ce que les braves rapportent des Lointains. Mais la Marée n'est pas partie : **chaque soir, elle remonte jusqu'à la digue**, et chaque saison un peu plus haut.
+**Bramo** est le bourg qui s'est bâti au bord, là où la Marée s'arrête, derrière sa **digue**. On y vit de ce qu'on récolte, de ce qu'on fabrique et de ce que les braves rapportent des Lointains. Mais la Marée n'est pas partie : **chaque soir, elle remonte jusqu'à la digue**, et chaque saison elle change d'humeur.
 
 ## 3. La Marée
 
@@ -36,7 +37,7 @@ Il y a deux générations, la **Grande Marée** est montée. Pas une marée d'ea
   - **la Débâcle** : la digue du Fossé gris a cédé, et tout ce que la Marée avait pris descend la rivière ;
   - **la Nuit des Lanternes** : les lanternes de la Chaussée marchent vers le bourg ; **derrière chacune, une âme qui rentre** ;
   - **la Veille des Géants** : un géant sort de la brume (le Porte-Fanal, la Veuve de cuivre, le Grand Arpenteur).
-- **Elle monte un peu plus chaque saison** et déplace le monde : une mutation, des créatures nouvelles, une route qui change.
+- **Elle change d'humeur à chaque saison** (Saison 1, 2, 3… : chacune un thème et une histoire, qui ne revient jamais, §13.3) et déplace le monde : une mutation, des créatures nouvelles, une route qui change.
 - **Ce qu'elle prend ne revient pas toujours** : « Tout ne reviendra pas. Essaie quand même » (Ilian).
 
 ### 3.2 La Grande Marée [Proposé]
@@ -129,9 +130,9 @@ Derrière Bramo, loin de la Marée, il y a **l'Arrière-pays** : des bourgs plus
 
 Le plus vieux de la Taupinière ; le courrier qui perd son chapeau ; le bourgmestre et sa fiancée ; les novices du Cercle ; les veilleurs de la digue ; les bergers de la lande ; **Gaspard**, le rabot apprivoisé. À réutiliser : un monde se tient par ses personnages qui reviennent.
 
-## 7. Les trois classes face à la Marée [Proposé : un fil thématique]
+## 7. Les classes face à la Marée [Proposé : un fil thématique, ouvert à d'autres classes]
 
-Les trois classes existent déjà (Runiste, Forgefeu, Traqueur). Le lore peut leur donner une raison d'être, qui colle à leurs mécaniques :
+**La règle** : la Marée prend quelque chose ; **chaque classe est une manière de le lui disputer**. Trois classes existent (Runiste, Forgefeu, Traqueur) ; la règle en accueille d'autres sans rien changer (voir §13.2). Pour les trois premières, cela colle à leurs mécaniques :
 
 | Classe | Ce que la Marée fait | Ce que la classe lui oppose | Déjà dans le jeu |
 |---|---|---|---|
@@ -139,7 +140,7 @@ Les trois classes existent déjà (Runiste, Forgefeu, Traqueur). Le lore peut le
 | **Runiste** | elle **fait oublier** | il **écrit** : une rune lue, une rune écrite, une phrase qui reste | la phrase runique (Trait, Cercle, Sceau) ; le Cercle des runes ; « l'encre qui reste » |
 | **Traqueur** | elle **déplace les routes et emporte** | il **retrouve** : il lit les traces, repère, poursuit | la Proie et l'Angle mort ; Brenna, les traces sans bête |
 
-Conséquence pour l'écriture : chaque classe a une phrase de bienvenue qui dit cela, et ses ultimes portent ce sens (La Grande Trempe rallume, La Phrase souveraine fixe, La Grande Battue ramène).
+Les classes de métier déjà prévues (Artificier, Alchimiste) et les suivantes suivent la même règle (§13.2). Conséquence pour l'écriture : chaque classe a une phrase de bienvenue qui dit cela, et ses ultimes portent ce sens (La Grande Trempe rallume, La Phrase souveraine fixe, La Grande Battue ramène).
 
 ## 8. Les grands motifs [Canon, rassemblés]
 
@@ -157,7 +158,7 @@ Le joueur d'un jeu idle ne lit pas de longs textes ; il faut que l'histoire **vi
 1. **Le Registre du Notaire, un fil rouge.** Le Notaire des marées tient le registre de tout ce que la Marée a pris. **Chaque gardien vaincu pour la première fois rend une page** (douze zones, douze pages ; une de plus par saison). Une page = trois ou quatre phrases, une trouvaille, un nom. Réunies, elles racontent la Grande Marée. Un **Carnet** dans la salle Personnage les garde.
 2. **Le Panneau raconte le monde.** Des annonces courtes mêlées au fil du serveur : « On a revu Mère Grise au lavoir », « La Vigie a fait un pas cette nuit ». Une ligne, jamais plus.
 3. **Les maîtres font le lien.** Leurs commandes du 90 parlent déjà de la Grande Marée ; un maître peut citer une page du Registre que le joueur vient de trouver.
-4. **Les saisons font avancer l'histoire.** Chaque saison, la Marée monte plus haut et ajoute une page, une créature, un lieu ; la Grande Marée de fin de saison en est le point d'orgue.
+4. **Les saisons font avancer l'histoire.** Chaque saison, la Marée change d'humeur et fait remonter une page, une créature, un lieu (§13.3) ; la Grande Marée de fin de saison en est le point d'orgue.
 5. **Ne jamais tout dire.** Une révélation par saison au plus ; les grandes questions (§3.3) restent ouvertes longtemps.
 
 Ce que le jeu montre déjà : la description de chaque zone (Combat), les histoires des maîtres (salle du métier), les visages de la Marée (sa fenêtre), les titres. Ce qui manque pour le §9 : le Carnet, les pages, des annonces de lore sur le Panneau.
@@ -171,6 +172,7 @@ Une proposition, qui répond aux quatre mystères sans tuer la poésie :
 - **Le Notaire des marées tient le registre de tout ce qui a été pris** : il ne signe qu'à marée haute, parce que c'est là qu'il reçoit. Son registre est le fil rouge (§9).
 - **Les lanternes sont les souvenirs qui rentrent** : chaque soir, quelques-uns reviennent vers ceux qui pensent encore à eux. C'est pour cela qu'il faut les protéger.
 - **La Marée remonte chaque soir** parce que le serment n'est pas fini : chaque nuit, elle cherche la dernière phrase.
+- **Le serment a beaucoup de phrases**, et personne ne sait combien. Chaque saison en fait remonter une (§13.3) ; aucune n'est la dernière tant que Louis ne le décide pas. Le jeu n'a donc **pas de fin écrite** : finir le serment (et laisser la brume se retirer), ou choisir de continuer à se souvenir, pourra être, un jour lointain, une décision du serveur tout entier.
 - **Les outils qui travaillent seuls** se souviennent de leurs gestes, pas de ceux qui les faisaient : la brume a pris les gens, pas le travail.
 - **La Cicatrice des trois vents** est l'endroit où le serment a été prononcé ; le Régent des courants en porte la couronne.
 
@@ -187,6 +189,7 @@ Pourquoi elle fonctionne pour le jeu : elle rend les trois classes nécessaires 
 | La Veille des Géants montre aujourd'hui **le Gardien des trois portes** en géant, alors que le lore nomme trois géants (le Porte-Fanal, la Veuve de cuivre, le Grand Arpenteur) | fenêtre de la Marée en direct | **À faire** : dessiner les trois géants, ou décider que le Gardien en est un |
 | « Linge qui sèche depuis cent ans » quand la Grande Marée date de deux générations | `le-monde.md` §1.2 | Lu comme une exagération des gens du bourg ; à reformuler si on fixe la date (§3.2) |
 | Le mot « lanterne » partout (poissons, lys, potion, soupe, Marée, phares, Ville-lanterne) | données | **À doser** pour les futurs objets (§8) |
+| « Chaque saison, elle monte un peu plus haut » (le-monde.md) : une montée sans fin userait le monde | le-monde.md | **Corrigé ici** : à chaque saison numérotée, la Marée change d'humeur et l'histoire avance (§13.3) |
 | « Village » pour l'ensemble des bâtiments d'un clan, alors que Bramo est un bourg | `buildings.yaml` | Acceptable (c'est le village du clan, dans le bourg) ; à garder distinct |
 
 ## 12. Glossaire
@@ -203,3 +206,103 @@ Pourquoi elle fonctionne pour le jeu : elle rend les trois classes nécessaires 
 | **Le Renom** | l'histoire d'un clan, qui ne baisse jamais [Canon] |
 | **L'Arrière-pays** | ce qu'il y a derrière Bramo, loin de la Marée [Proposé] |
 | **Le Registre** | le registre du Notaire, fil rouge du lore [Proposé] |
+
+## 13. Faire grandir le monde sans le casser [Proposé : la règle pour tout contenu futur]
+
+Le monde de Bramo doit accueillir, pendant des années, des classes, des saisons, des régions, des métiers et des événements qu'on n'a pas encore imaginés. Ce chapitre donne la règle et un modèle pour chacun.
+
+### 13.1 Les règles d'or
+
+1. **Toute nouveauté répond à une question** : *qu'est-ce que la Marée a pris, ou rendu, ici ?* Une classe, une saison, une région, un métier ou un objet qui n'y répond pas n'a pas sa place, ou doit être retravaillé.
+2. **Ne jamais fermer une porte sans en ouvrir une.** Une révélation répond à une question et en pose une autre. Les grands mystères (§3.3) ne se résolvent que par petites pièces, une par saison au plus.
+3. **Les Lointains sont plus grands que la carte.** Les six régions ne sont que celles qu'on connaît ; au-delà de la Cicatrice, il y a le « coin blanc » d'Ombeline. Une nouvelle région s'ajoute toujours plus loin, ou dans un repli qu'on n'avait pas vu, jamais à la place d'une autre.
+4. **Le canon ne se contredit pas, il se révise.** Changer un fait déjà écrit se fait ouvertement (« on croyait que… »), par une page du Registre ou une histoire de maître, jamais en silence.
+5. **Pas de dates précises.** La Grande Marée est « il y a deux générations », pas « en l'an 312 » : le monde peut vieillir des années sans recompter.
+6. **Le bourg reste le cœur.** Toute nouveauté a un pied à Bramo : un lieu, un maître, une rumeur au Panneau, une fête.
+7. **Le ton ne change pas** (§1) : l'humour vient des gens, le sérieux de la Marée ; pas de rois, de nains ni de dieux qui parlent.
+
+### 13.2 Ajouter une classe
+
+**Le cadre** : la Marée prend plusieurs choses. Trois sont déjà disputées ; les autres attendent leur classe. Chaque classe est liée à un métier (Runiste et Enchantement, Forgefeu et Forge, Traqueur et Chasse, dans `data/classes.yaml`).
+
+| Ce que la Marée prend | La classe qui le lui dispute | Statut |
+|---|---|---|
+| les feux | **Forgefeu** : il garde le feu | Canon |
+| la mémoire | **Runiste** : il écrit | Canon |
+| les chemins, ce qu'elle emporte | **Traqueur** : il retrouve | Canon |
+| le mouvement des choses (les outils qui travaillent seuls) | **Artificier** : il les apprivoise et les fait travailler pour soi (Capucine et Gaspard) | Piste : la « classe de métier » de l'Artificerie déjà prévue (phase P5) |
+| la brume elle-même | **Alchimiste** : il la distille, la met en fiole, la retourne contre elle (Évariste et sa bouteille qui fume violet) | Piste : la classe de métier de l'Alchimie déjà prévue (P5) |
+| les voix, les chants, les noms qu'on appelle | une classe de soutien qui chante ou qui appelle (le champ qui chante d'Anselme, la chanson revenue d'Ilian) | Piste libre |
+| le sommeil, les rêves | une classe qui veille (les veilleurs de la digue) | Piste libre |
+| les liens (les bêtes, les compagnons) | une classe qui garde ses compagnons (la meute du Traqueur en serait la cousine) | Piste libre |
+
+**Le modèle d'une classe** :
+
+| Champ | À remplir |
+|---|---|
+| Ce qu'elle dispute à la Marée | une chose prise (tableau ci-dessus) |
+| Son métier et son lieu au bourg | le métier lié, l'atelier ou l'école |
+| Sa phrase de bienvenue | une ligne au choix de classe, qui dit ce qu'elle oppose à la Marée |
+| Sa mécanique, racontée | ce que fait sa jauge ou son état (les Braises qui se gardent, la rune qui se lit), en mots du monde |
+| Ses voies | trois façons de le faire (dégâts, contrôle, soutien) |
+| Son ultime | le geste qui accomplit son sens (rallumer, fixer, ramener…) |
+| Sa tenue de départ | une silhouette reconnaissable hors pose (règle des tenues par classe, `../eclats.md` §7) |
+
+### 13.3 Les saisons
+
+**[Décidé par Louis le 24 octobre]** Les saisons sont **numérotées et ne reviennent jamais** : Saison 1, Saison 2, Saison 3… comme dans les jeux en ligne, mais **chacune est un thème et une histoire**, pas une période de l'année. Ce qui reste décidé avant : la progression n'est jamais remise à zéro, et un cosmétique n'est pas exclusif pour toujours (il peut revenir un jour en boutique, la saison, elle, ne revient pas).
+
+**Le cadre du lore** : une saison est **un chapitre de l'histoire de Bramo**. La Marée change d'humeur, quelque chose arrive au bourg, on vit une histoire pendant quelques semaines, et **quand la saison se termine, le monde a changé pour de bon** : un lieu, un personnage, une page du Registre, un titre restent. Le monde ne tourne pas en rond, il avance.
+
+**Ce que contient une saison** (le modèle) :
+
+| Champ | À remplir |
+|---|---|
+| **Numéro et titre** | « Saison 3 : Le Carnaval des Masques » |
+| **Le thème** | une idée en quelques mots (l'identité, le froid qui écrit, la mer profonde) |
+| **Ce que fait la Marée** | son humeur de la saison, en une phrase : ce qu'elle prend, ou rend, autrement |
+| **L'histoire en actes** | trois ou quatre temps sur la saison : une rumeur au Panneau, une découverte, un sommet, un dénouement ; chaque acte s'ouvre à une date, pour tout le serveur |
+| **En jeu** | une mutation (une règle de combat qui tord une réserve) ; un quatrième visage de la Marée du soir pour la saison ; un gardien ou un géant de saison ; une route ou une zone de saison ; des commandes et des contrats à thème |
+| **Ce qu'on gagne** | la boutique d'éclats à thème (apparences, décorations de halle), des titres de saison, un classement de saison (sans perte pour personne) |
+| **Le final** | une Grande Marée de fin de saison, que tout le serveur vit ensemble |
+| **Ce qui reste après** | **obligatoire** : la page du Registre ; et au moins une chose permanente (la zone de saison rejoint les Lointains, un nouveau PNJ s'installe au bourg, un lieu change) |
+| **La question laissée ouverte** | ce que la saison suivante pourra reprendre |
+
+**Les règles des saisons** :
+
+1. **Une saison, un thème, une histoire.** Jamais deux fois le même thème ; une saison peut faire écho à une ancienne (un personnage qui revient), jamais la rejouer.
+2. **Elle laisse une trace.** Un joueur arrivé à la Saison 5 voit au bourg ce que les saisons 1 à 4 ont changé, et peut lire leurs pages du Registre.
+3. **On peut la rattraper.** Ce qui est permanent (zone, page, PNJ) reste jouable après ; seul le classement de la saison et son final se vivent en direct.
+4. **Rien n'est perdu à la fin** : pas de remise à zéro, les éclats se gardent.
+5. **L'histoire de fond avance lentement** : au plus une vraie révélation par saison (§13.1, règle 2).
+
+**Une première suite de saisons** [Proposé, à valider ; elles réutilisent les essais d'apparences déjà dessinés] :
+
+| Saison | Le thème | Ce que fait la Marée | L'histoire, en bref | Ce qui reste | Apparence |
+|---|---|---|---|---|---|
+| **1. La Marée haute** | le commencement | elle monte plus haut que jamais depuis la Grande Marée | la digue tient de justesse ; le Notaire des marées laisse tomber une page de son registre sur la digue ; le bourg découvre que la Marée **tient des comptes** | le Registre et le Carnet (le fil rouge, §9) ; la digue rehaussée | Marée haute |
+| **2. Le Givre qui écrit** | le froid qui se souvient | elle gèle et dépose sur les vitres des mots oubliés | chaque matin, le bourg recopie le givre ; un nom revient, que personne ne reconnaît, sauf le plus vieux de la Taupinière | une famille du bourg retrouve son nom ; une zone gelée de la Lisière | Sentinelle du Givre |
+| **3. Le Carnaval des Masques** | l'identité | une nuit par semaine, elle **ne reconnaît plus personne** : qui porte un masque passe à travers elle | des masqués franchissent la digue et ramènent des choses de l'autre côté ; l'un d'eux ne revient pas sans son masque | le Bal des masques au bourg ; un masque sans visage au Registre | Masque du Carnaval |
+| **4. Les Abysses** | ce qui dort au fond | elle touche la mer profonde et remonte avec ce qui y dormait | Naël sort la nuit sans rien dire ; un héritier venu du fond réclame quelque chose au bourg | la jetée prolongée ; une zone sous la mer | Héritier des Abysses |
+| **5. La Moisson salée** | le geste perdu | elle se retire loin et rend les champs salés, lourds d'un grain qu'on ne connaît pas | Anselme retrouve un geste d'avant la Grande Marée ; le grain nouveau ne pousse que chez ceux qui s'en souviennent | les champs du bas, cultivables ; une recette d'avant | Gardien des Moissons |
+
+**Les événements courts** (quelques jours, à l'intérieur d'une saison, une seule fois chacun) : la **Veillée des Courges** (la nuit où les souvenirs reviennent déguisés ; on creuse des courges et on y met une bougie pour qu'ils retrouvent leur maison), une Nuit des Braises, un Concours des Maîtres spécial. Ils colorent la saison sans la remplacer.
+
+### 13.4 Les régions au-delà
+
+Le modèle d'une région : **ce qu'elle raconte** (une idée en quatre mots, comme « le travail sans personne ») ; ce que la Marée y a pris ; deux zones et leurs créatures (des choses ordinaires qui ont mal tourné) ; un gardien ; son vestige ; un parcours de donjon ; une rumeur au bourg avant qu'on y aille. Pistes déjà semées : **le coin blanc** de la carte d'Ombeline, **les galeries d'avant** sous la mine, **les champs salés** du Val, la mer profonde des Abysses.
+
+### 13.5 Les métiers et les maîtres
+
+Le modèle d'un métier : son maître (un tic, une phrase, une manie) ; son lieu au bourg ; **ce que la Grande Marée a fait à ce métier** (la recette perdue, la forge éteinte, les fosses fermées) ; son surnom de départ (modeste) et ses six commandes, du 20 au 99, celle du 90 tournée vers les Lointains (règles : `../titres/passe-editoriale.md`).
+
+### 13.6 Les portes à garder ouvertes
+
+Rien de ce qui suit ne doit être fermé par du contenu sans une décision de Louis :
+
+- d'où vient la Marée, et la dernière phrase du serment ;
+- qui sont les âmes derrière les lanternes ;
+- ce qu'il y a au-delà de la Cicatrice, et dans le coin blanc ;
+- ce que garde vraiment le Bastion ;
+- l'Arrière-pays et les grandes villes (on n'y va jamais, mais on peut en recevoir des visiteurs) ;
+- les géants : d'où ils sortent, et s'ils ont été des gens.

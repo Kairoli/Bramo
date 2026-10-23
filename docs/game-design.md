@@ -127,9 +127,10 @@ Marché entre joueurs : ordres d'achat et de vente, **taxe de 5 %**, commandes a
 - [Décidé] Axe social important ; fonctionnement à construire. Pas de chantier commun au serveur.
 - [Recommandé] Entrepôt à droits par rang, commandes internes sans taxe, projets de halle (champs, ateliers, bonus jusqu'à +10 %), postes d'experts comptés dans le plafond de clan, **Guilde du bourg** pour les joueurs sans clan ([`design/monde.md`](design/monde.md) §3).
 
-### 8.3 Saisons → événements récurrents (P5)
+### 8.3 Saisons (P5)
 - [Décidé] Progression permanente conservée ; contenus qui reviennent en rerun ; pas d'exclusivité définitive.
-- [Recommandé] Quatre événements de 4 semaines par an (Givre, Marées, Moisson, Braises), ressources et recettes thématiques, rencontres asynchrones, ensembles **latéraux** jamais indispensables, jetons conservés d'une édition à l'autre ([`design/monde.md`](design/monde.md) §2).
+- [Décidé par Louis le 24 octobre] **Des saisons numérotées qui ne reviennent jamais** (Saison 1, Saison 2…), comme dans les jeux en ligne, mais **chacune un thème et une histoire** : un chapitre de l'histoire de Bramo, qui laisse le monde changé. Ce ne sont pas les saisons de l'année. Modèle et première suite proposée : [`design/lore/bible-de-bramo.md`](design/lore/bible-de-bramo.md) §13.3.
+- [Recommandé, à reprendre dans ce cadre] Ressources et recettes thématiques, rencontres asynchrones, ensembles **latéraux** jamais indispensables, jetons conservés d'une saison à l'autre ([`design/monde.md`](design/monde.md) §2). [Remplacé] Quatre événements par an (Givre, Marées, Moisson, Braises) qui reviennent chaque année.
 - [Prototype du v1.0, abandonné] Saisons de 6 semaines avec remise à zéro du classement, de la monnaie et des bâtiments de saison.
 
 ## 9. Interface [Décidé]

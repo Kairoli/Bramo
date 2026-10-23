@@ -14,7 +14,7 @@ Proposition de Claude du 23 octobre 2026 (soir), **[Recommandé]** sauf mention,
 - Les éclats sont un objet du sac : **ils se vendent déjà au marché** comme le reste (rien ne l'interdit).
 - **Aucun moyen de changer une ligne d'une pièce.** L'Affineur la fait seulement monter vers son maximum (affûtage : or et matière de la pièce, `engine/refine.ts`).
 - **Les pièces d'équipement ne se recyclent pas** : le recyclage ne vaut que pour les objets ordinaires (outils : 40 % des matériaux de la recette). Une pièce inutile se garde ou se vend à la vitrine. Avec environ 46 pièces tombées par jour, les sacs se remplissent.
-- **La Marée n'est liée à aucune saison** : ses trois types (Débâcle, Lanternes, Géants) tournent chaque soir, toute l'année. Les saisons n'existent pas encore dans le jeu (phase P5 ; `game-design.md` §8.3 recommande quatre événements par an : Givre, Marées, Moisson, Braises, qui reviennent chaque année, sans exclusivité définitive [Décidé]).
+- **La Marée n'est liée à aucune saison** : ses trois types (Débâcle, Lanternes, Géants) tournent chaque soir, toute l'année. Les saisons n'existent pas encore dans le jeu (phase P5). [Décidé par Louis le 24 octobre] : des saisons numérotées à thème et à histoire, qui ne reviennent pas (`lore/bible-de-bramo.md` §13.3) ; pas d'exclusivité définitive des apparences.
 
 ## 2. La règle
 
@@ -77,7 +77,7 @@ Les premières retailles sont abordables ; chercher la ligne parfaite devient vi
 
 ### A. La boutique de saison (le gros puits)
 
-La boutique de la Marée change **quatre fois par an**, avec les quatre saisons de l'année (Givre en hiver, Marées au printemps, Moisson en été, Braises en automne : les noms des événements de `game-design.md` §8.3). Chaque saison :
+La boutique de la Marée change **à chaque saison** : des saisons numérotées (Saison 1, 2, 3…), chacune un thème et une histoire, qui ne reviennent pas [Décidé par Louis le 24 octobre ; `lore/bible-de-bramo.md` §13.3]. Chaque saison :
 
 | Quoi | Prix |
 |---|---|
@@ -85,7 +85,7 @@ La boutique de la Marée change **quatre fois par an**, avec les quatre saisons 
 | Deux **pièces d'apparence à part** (une arme d'apparence, une cape) | 600 chacune |
 | Un **ornement de nom** de la saison | 600 |
 
-Soit **3 300 éclats** par saison pour une classe, **13 200 par an** : ce que gagne un habitué. Ce qui part à la fin de la saison **revient l'année suivante** (pas d'exclusivité définitive).
+Soit **3 300 éclats** par saison pour une classe : ce que gagne un habitué. La saison ne revient pas, mais ses apparences ne sont pas exclusives pour toujours : elles peuvent revenir un jour en boutique (pas d'exclusivité définitive).
 
 Toujours en vente, hors saison :
 

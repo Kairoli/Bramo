@@ -41,7 +41,9 @@ Passif au rang du niveau 80 du métier principal ([`rangs.md`](rangs.md)) : **qu
 
 ### Proposition [Recommandé]
 
-**Calendrier** : quatre événements par an (Givre, Marées, Moisson, Braises), **4 semaines** chacun, revenant chaque année, séparés par 8 semaines sans événement majeur (rencontres de 48 h seulement). Le rythme laisse respirer un petit serveur.
+> **[Remplacé le 24 octobre]** Louis a décidé des **saisons numérotées qui ne reviennent jamais** (Saison 1, 2, 3…), chacune un thème et une histoire : [`lore/bible-de-bramo.md`](lore/bible-de-bramo.md) §13.3. Le calendrier ci-dessous (quatre événements qui reviennent chaque année) ne vaut plus ; ce qui suit sur le contenu d'un événement reste une piste pour l'intérieur d'une saison.
+
+**Calendrier (ancienne proposition)** : quatre événements par an (Givre, Marées, Moisson, Braises), **4 semaines** chacun, revenant chaque année, séparés par 8 semaines sans événement majeur (rencontres de 48 h seulement). Le rythme laisse respirer un petit serveur.
 
 **Pendant l'événement** :
 - **Ressources d'événement** récoltées par les métiers existants dans un lieu temporaire (fleur de givre éternelle en Herboristerie, glace runique en Minage…). Aucun nouveau métier.

@@ -228,6 +228,20 @@ describe('la route (PvE solo)', () => {
     }
   });
 
+  it('la première victoire contre un gardien donne son trophée (son objet nommé, ou une pièce de ses ensembles), une seule fois', () => {
+    const s0 = runist(30);
+    s0.combat.route = { stage: 9, best: 9 };
+    const s = startRoute(s0, T0, content, 9);
+    const { state, summary } = advance(s, T0 + 2 * HOUR, content);
+    expect(state.combat.route.best).toBeGreaterThan(9);
+    const named = summary.combat.loot.filter((l) => content.gearModels[l.model]?.talent === 'petit_arrangement');
+    expect(named.length).toBeGreaterThanOrEqual(1);
+    // Rejouer le gardien déjà battu ne redonne pas le trophée.
+    const again = startRoute(state, T0 + 2 * HOUR, content, 9);
+    const r2 = advance(again, T0 + 2 * HOUR + 5 * 60_000, content);
+    expect(r2.summary.combat.loot.filter((l) => content.gearModels[l.model]?.talent === 'petit_arrangement').length).toBeLessThanOrEqual(1);
+  });
+
   it('une victoire mène à l’étape suivante ; trois défaites de suite font reculer d’une étape ; jamais d’arrêt', () => {
     const s = startRoute(runist(80), T0, content);
     const { state, summary } = advance(s, T0 + 6 * HOUR, content);

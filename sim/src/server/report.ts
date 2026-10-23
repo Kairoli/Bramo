@@ -208,6 +208,17 @@ export function analyze(r: ServerResult, content: Content, tide?: TideStats) {
     .sort((a, b) => b.botDays - a.botDays)
     .slice(0, 12);
 
+  // --- Gardiens : combien de jours on y reste (parmi ceux qui l'ont atteint), et qui passe ---
+  const guardians = stages
+    .filter((st) => st.guardian)
+    .map((st) => {
+      const reached = bots.filter((b) => b.state.combat.route.best >= st.index);
+      const passed = reached.filter((b) => b.state.combat.route.best > st.index);
+      const days = reached.map((b) => b.stuck[st.index] ?? 0);
+      return { stage: st.label, name: combat.encounters[st.encounter]!.name, reached: reached.length, passed: passed.length, medianDays: median(days), p90Days: [...days].sort((a, b) => a - b)[Math.floor(days.length * 0.9)] ?? 0 };
+    })
+    .filter((g) => g.reached > 0);
+
   // --- Clans ---
   const clans = r.clans.map((c) => ({ id: c.id, members: c.members.filter((m) => m.started).length, levels: Object.values(c.levels).reduce((s, l) => s + l, 0), detail: c.levels }));
   const maxLevels = Object.values(content.buildings).reduce((s, b) => s + b.maxLevel, 0);
@@ -241,6 +252,7 @@ export function analyze(r: ServerResult, content: Content, tide?: TideStats) {
       .map((i) => ({ id: i.id, name: i.name, produced: r.ledger.produced[i.id] ?? 0, bought: r.ledger.delivered[i.id] ?? 0, price: r.prices[i.id]?.weekly.filter((x) => x > 0).at(-1) ?? 0 })),
     classes: { byClass, byPath, classFair },
     walls,
+    guardians,
     clans: { list: clans, maxLevels },
     trials,
     tide: tideSummary(tide, r),
@@ -301,6 +313,9 @@ export function toMarkdown(a: Analysis): string {
   for (const p of a.classes.byPath) L.push(`| ${p.name} | ${p.classId} | ${p.role} | ${p.n} | ${p.routeMedian} |`);
   L.push('', '## Où les joueurs restent bloqués (jours-joueurs à la même étape)', '');
   for (const w of a.walls) L.push(`- ${w.done ? 'route finie' : `${w.stage} ${w.encounter}`} : ${w.botDays}`);
+  L.push('', '## Gardiens : jours passés devant (médiane, 90 % des joueurs), parmi ceux qui l’ont atteint', '');
+  L.push('| Étape | gardien | atteint | passé | jours (médiane) | jours (90 %) |', '|---|---|---|---|---|---|');
+  for (const g of a.guardians) L.push(`| ${g.stage} | ${g.name} | ${g.reached} | ${g.passed} | ${g.medianDays} | ${g.p90Days} |`);
   L.push('', '## Clans', '');
   L.push(`${a.clans.list.length} clans ; niveaux de bâtiments construits (sur ${a.clans.maxLevels} possibles) : ${a.clans.list.map((c) => `${c.levels} (${c.members} m.)`).join(', ')}.`);
   if (a.tide) {

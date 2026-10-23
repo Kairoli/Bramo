@@ -38,9 +38,9 @@ for (const it of Object.values(items)) for (const m of it.repair?.materials ?? [
 
 // 1. Objets sans source, ou sans débouché.
 for (const it of Object.values(items)) {
-  const source = producedAt.has(it.id) || looted.has(it.id) || !!it.stallPrice;
+  const source = producedAt.has(it.id) || looted.has(it.id) || !!it.stallPrice || it.id === content.combat?.tide?.shards.item;
   if (!source) note('Objets impossibles à obtenir', `${it.name} (${it.id}, ${it.category})`);
-  const use = used.has(it.id) || !!it.meal || !!it.tool || !!it.gem;
+  const use = used.has(it.id) || !!it.meal || !!it.tool || !!it.gem || !!it.potion || !!it.prep || it.id === content.combat?.tide?.shards.item;
   if (!use) note('Objets sans débouché (ne servent qu’à la vente)', `${it.name} (${it.category})`);
 }
 

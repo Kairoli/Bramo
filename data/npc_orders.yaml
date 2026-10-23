@@ -72,3 +72,9 @@
 - {id: exploration_survey_notes, profession: exploration, level: 1, client: Maîtresse Ombeline, text: "« Les cartes du bourg sont fausses. Rapporte-m’en des vraies. »", items: [{item: survey_notes, qty: 75}], gold: 115}
 - {id: exploration_vein_map, profession: exploration, level: 25, client: Maîtresse Ombeline, text: "« Ce que tu trouves, je l’achète. Presque tout. »", items: [{item: vein_map, qty: 55}], gold: 150}
 - {id: exploration_sunken_relic, profession: exploration, level: 60, client: Maîtresse Ombeline, text: "« Les cartes du bourg sont fausses. Rapporte-m’en des vraies. »", items: [{item: sunken_relic, qty: 40}], gold: 235}
+
+# --- 23 octobre, nuit (simulation de serveur) : les quatre derniers objets sans débouché trouvent preneur au Comptoir. ---
+- {id: smithing_iron_sword, profession: smithing, level: 20, client: Maître Brunhild, text: "« La garde du bourg manque de lames. Une bonne, pas une jolie. »", items: [{item: iron_sword, qty: 1}], gold: 150}
+- {id: tanning_tough_leather, profession: tanning, level: 15, client: Maître Hugon, text: "« Le sellier en veut du solide. Du sanglier, rien d’autre. »", items: [{item: tough_leather, qty: 20}], gold: 120}
+- {id: tailoring_linen_hood, profession: tailoring, level: 5, client: Maîtresse Lise, text: "« Les pêcheurs rentrent trempés. Des capuches, vite. »", items: [{item: linen_hood, qty: 1}], gold: 140}
+- {id: tailoring_linen_gloves, profession: tailoring, level: 5, client: Maîtresse Lise, text: "« Des mitaines pour les cueilleuses de l’aube. »", items: [{item: linen_gloves, qty: 1}], gold: 140}

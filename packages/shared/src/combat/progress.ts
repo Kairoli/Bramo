@@ -146,7 +146,7 @@ export function routeStages(combat: CombatContent): RouteStage[] {
   // Au-delà des Lointains : les chapitres des régions hautes reviennent, au-delà du palier 90, au même rythme.
   const beyond = combat.rules.route?.beyondChapters ?? 0;
   const high = zones.filter((z) => z.circles);
-  const step = total > 1 ? (last - first) / (total - 1) : 1;
+  const step = (total > 1 ? (last - first) / (total - 1) : 1) * (combat.rules.route?.beyondTierStep ?? 1);
   for (let k = 0; k < beyond && high.length; k++) {
     const z = high[k % high.length]!;
     const boss = guardianOf(z.region!);
@@ -502,6 +502,30 @@ function rollLoot(state: CharacterState, f: FightRecord, content: Content, summa
   }
 }
 
+/**
+ * Trophée du gardien : la route ne bat chaque gardien qu'une fois, et son butin propre (ensembles de classe, objets nommés)
+ * ne tombait presque jamais. La première victoire en donne un, garanti : une pièce épique d'un de ses ensembles au palier
+ * joué, sinon un de ses objets nommés.
+ */
+function guardianTrophy(state: CharacterState, f: FightRecord, content: Content, summary: CombatSummary): void {
+  const combat = need(content);
+  const e = combat.encounters[f.encounter];
+  if (!e?.loot || !f.tier) return;
+  const rand = stream(state.seed, `trophy:${f.index}`);
+  const idx = lootIndex(content);
+  const tier = curveTier(combat.rules, f.tier) ?? f.tier;
+  const cls = f.setup.classId;
+  const sets = (e.loot.sets ?? []).filter((s) => (idx.sets.get(`${s}|${tier}|epic|${cls}`) ?? []).length);
+  if (sets.length) {
+    const set = sets[Math.floor(rand() * sets.length)]!;
+    const models = idx.sets.get(`${set}|${tier}|epic|${cls}`)!;
+    summary.loot.push({ model: models[Math.floor(rand() * models.length)]!, encounter: e.id });
+    return;
+  }
+  const named = (e.loot.named ?? []).map((n) => (idx.named.get(n) ?? []).find((m) => m.tier <= tier)).filter((m): m is { id: string; tier: number } => !!m);
+  if (named.length) summary.loot.push({ model: named[Math.floor(rand() * named.length)]!.id, encounter: e.id });
+}
+
 function gainXp(state: CharacterState, classId: string, xp: number, content: Content, summary: CombatSummary) {
   const from = classLevel(state, classId, content);
   state.combat.xp[classId] = (state.combat.xp[classId] ?? 0) + xp;
@@ -587,6 +611,8 @@ export function runCombat(state: CharacterState, t: number, end: number, rate: n
       const stages = routeStages(combat);
       const r = state.combat.route;
       if (f.win) {
+        // Première victoire contre un gardien : un trophée garanti (une pièce de ses ensembles, sinon son objet nommé).
+        if (r.stage + 1 > r.best && stages[r.stage]?.guardian) guardianTrophy(state, f, content, summary);
         r.best = Math.max(r.best, r.stage + 1);
         r.stage = Math.min(r.stage + 1, stages.length - 1);
       } else if (a.streak >= p.maxConsecutiveLosses && r.stage > 0) {

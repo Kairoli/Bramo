@@ -121,7 +121,7 @@ export const combatRulesSchema = z.object({
    * Au-delà des Lointains : après les douze chapitres, `beyondChapters` chapitres de plus qui reprennent les régions hautes
    * au-delà du palier 90 (les ennemis continuent la courbe ; le butin reste au palier 90). Un but sans fin pour qui a tout fini.
    */
-  route: z.object({ beyondChapters: z.number().int().min(0) }).optional(),
+  route: z.object({ beyondChapters: z.number().int().min(0), beyondTierStep: z.number().positive().optional() }).optional(),
   /** Fournitures de combat (potions de secours, préparations) : potions bues au plus par rencontre. */
   supplies: z.object({ potionsPerFight: z.number().int().min(0) }).optional(),
   /**

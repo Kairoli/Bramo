@@ -268,6 +268,18 @@ Le monde de Bramo doit accueillir, pendant des années, des classes, des saisons
 | **Ce qui reste après** | **obligatoire** : la page du Registre ; et au moins une chose permanente (la zone de saison rejoint les Lointains, un nouveau PNJ s'installe au bourg, un lieu change) |
 | **La question laissée ouverte** | ce que la saison suivante pourra reprendre |
 
+**Le dosage** [Décidé par Louis le 24 octobre : « il n'y a que toi et moi ; on ne doit pas se donner énormément de travail toutes les X semaines »] : une saison doit rester **légère à produire**. Les arcs (des saisons regroupées autour d'un grand but) ne sont **pas validés** pour l'instant.
+
+| Une saison, c'est au minimum | En plus, seulement si on a le temps |
+|---|---|
+| un thème et une page du Registre | un gardien ou un géant de saison |
+| une mutation (une règle qui change, dans les données) | une zone de saison |
+| une boutique d'éclats à thème (une tenue par classe, deux pièces) | un quatrième visage de la Marée du soir |
+| trois annonces au Panneau (les actes de l'histoire) | un événement court |
+| une chose qui reste après (un PNJ, un lieu, un titre) | des commandes et contrats à thème |
+
+Pour tenir ce rythme : des saisons **longues** (deux à trois mois plutôt que six semaines), qui **réutilisent les systèmes existants** (une mutation est une ligne de données, pas du code) ; une saison peut se préparer pendant la précédente.
+
 **Les règles des saisons** :
 
 1. **Une saison, un thème, une histoire.** Jamais deux fois le même thème ; une saison peut faire écho à une ancienne (un personnage qui revient), jamais la rejouer.
@@ -276,7 +288,7 @@ Le monde de Bramo doit accueillir, pendant des années, des classes, des saisons
 4. **Rien n'est perdu à la fin** : pas de remise à zéro, les éclats se gardent.
 5. **L'histoire de fond avance lentement** : au plus une vraie révélation par saison (§13.1, règle 2).
 
-**Une première suite de saisons** [Proposé, à valider ; elles réutilisent les essais d'apparences déjà dessinés] :
+**Une première suite de saisons** [Validée par Louis le 24 octobre, pour l'instant ; elles réutilisent les essais d'apparences déjà dessinés] :
 
 | Saison | Le thème | Ce que fait la Marée | L'histoire, en bref | Ce qui reste | Apparence |
 |---|---|---|---|---|---|

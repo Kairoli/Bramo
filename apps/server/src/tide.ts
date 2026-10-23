@@ -174,6 +174,12 @@ export async function tideView(tx: Tx, state: CharacterState, content: Content, 
       open: tideOpen(now, rules),
       work: { text: def.work.text, items: def.work.items.map((x) => ({ item: x.item, name: content.items[x.item]?.name ?? x.item, qty: x.qty, have: state.inventory[x.item] ?? 0, delivered: delivered[x.item] ?? 0 })) },
     },
+    // La rotation : hier, ce soir et les trois prochains soirs [Louis, 24 octobre : « on ne sait pas sur quelle Marée on est, ni
+    // laquelle vient demain »].
+    rotation: [-1, 0, 1, 2, 3].map((d) => {
+      const x = tideOf(day + d, rules);
+      return { day: day + d, id: x.id, name: x.name, shines: x.shines };
+    }),
     prefs: { channel: t.channel },
     registration: { ...registrationWindow(day, rules), open: registrationOpen(now, rules), registered: t.registered === day },
     joinedLive: t.liveDay === day,

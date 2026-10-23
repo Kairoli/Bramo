@@ -70,7 +70,7 @@ export function OutfitModal({ onClose }: { onClose: () => void }) {
   const { content, state, look, act } = useGame();
   const unlocked = new Set(state.unlockedOutfits);
   return (
-    <Modal onClose={onClose} className="class-modal">
+    <Modal onClose={onClose} className="class-modal outfit-modal">
       <div className="class-modal-head">
         <div>
           <div className="eyebrow">Tenue</div>
@@ -80,18 +80,18 @@ export function OutfitModal({ onClose }: { onClose: () => void }) {
           Fermer
         </button>
       </div>
-      <p className="muted">La tenue est un cosmétique : elle ne change ni vos statistiques ni votre classe. Elle se limite aux styles de votre classe ; pièce par pièce, c’est le mode Apparence du personnage.</p>
-      <div className="class-cards">
+      <p className="muted small">Un cosmétique : il ne change ni vos statistiques ni votre classe. Pièce par pièce : le mode Apparence du personnage.</p>
+      <div className="class-cards outfit-cards scroll">
         {content.cosmetics.outfits.filter((o) => (!o.id.startsWith('sketch_') || (import.meta.env.DEV && o.id.startsWith('sketch_season_'))) && (!look || o.classes.includes(look.classId))).map((o) => {
           const ok = unlocked.has(o.id);
           const current = look?.outfit === o.id;
           return (
             <article key={o.id} className={`panel class-card${current ? ' current' : ''}${ok ? '' : ' locked'}`}>
               <div className="class-figure sunken" style={ok ? undefined : { opacity: 0.45 }}>
-                <Character appearance={{ classId: look?.classId ?? content.cosmetics.default.class, outfit: o.id }} lod="scene" title={o.name} />
+                <Character appearance={{ classId: look?.classId ?? content.cosmetics.default.class, outfit: o.id }} lod="scene" centered />
               </div>
               <div className="class-text">
-                <h2>{o.name}</h2>
+                <h3>{o.name}</h3>
                 <p className="muted">{o.subtitle}</p>
               </div>
               <button

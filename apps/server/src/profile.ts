@@ -43,7 +43,8 @@ export async function playerProfile(db: Db, content: Content, id: number): Promi
     outfit: r.outfit,
     look: r.look,
     ornament: r.ornament,
-    nickname: best ? shownNickname(best.profession, r.trials, r.shown, content).nickname : '',
+    nickname: r.title ?? (best ? shownNickname(best.profession, r.trials, r.shown, content).nickname : ''),
+    title: r.title,
     clan: member ? { name: member.name, rank: member.rank } : null,
     classLevel: r.classId ? classLevel(r.classId) : 1,
     // La voie ne compte qu'à partir du niveau de voie.

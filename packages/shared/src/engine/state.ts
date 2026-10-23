@@ -60,6 +60,8 @@ export interface CharacterState {
   shown: Record<string, number>;
   /** Ornement de métier porté (identifiant de data/ornaments.yaml) ; null = aucun. */
   ornament: string | null;
+  /** Titre affiché, choisi à part de l'ornement (engine/titles.ts) ; null ou absent = le titre par défaut. */
+  title?: string | null;
   /** Tour guidé de la première session vu (ou passé) ; absent = pas encore. */
   tourDone?: boolean;
   /** Combat : XP par classe, voies, plans, activité de combat (voir combat/progress.ts). */

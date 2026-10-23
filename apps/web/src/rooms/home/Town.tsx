@@ -45,7 +45,7 @@ function Walker({ p, slot, onOpen }: { p: TownPlayer; slot: number; onOpen: () =
     zIndex: 3 - depth,
   } as React.CSSProperties;
   return (
-    <div className={`walker clickable ${working ? 'walker-working' : 'walker-strolling'}`} style={style} onClick={onOpen} role="button" tabIndex={0} title={`Voir la fiche de ${p.name}`}>
+    <div className={`walker clickable ${working ? 'walker-working' : 'walker-strolling'}`} style={style} onClick={onOpen} role="button" tabIndex={0} aria-label={`Voir la fiche de ${p.name}`}>
       <div className="walker-card">
         <span className="walker-card-who">
           <Avatar id={p.id} version={p.avatar} name={p.name} classId={p.classId} size={38} />
@@ -57,7 +57,7 @@ function Walker({ p, slot, onOpen }: { p: TownPlayer; slot: number; onOpen: () =
         </span>
         <span className="muted">{p.doing ?? 'se promène'}</span>
       </div>
-      <Character appearance={{ classId: p.classId, outfit: p.outfit }} lod="scene" title={p.name} crowd />
+      <Character appearance={{ classId: p.classId, outfit: p.outfit }} lod="scene" crowd />
       <span className="walker-name">{p.name}</span>
     </div>
   );
@@ -162,7 +162,7 @@ function VillagerFigure({ v }: { v: Villager }) {
         <strong>{v.name}</strong>
         <span className="muted">Habitant du bourg</span>
       </div>
-      <Character appearance={{ classId: v.classId, outfit: v.outfit }} lod="scene" title={v.name} crowd />
+      <Character appearance={{ classId: v.classId, outfit: v.outfit }} lod="scene" crowd />
       <span className="walker-name">{v.name}</span>
     </div>
   );

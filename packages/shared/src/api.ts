@@ -273,8 +273,10 @@ export interface PlayerProfile {
   outfit: string | null;
   look: Record<string, string>;
   ornament: string | null;
-  /** Surnom et métier du meilleur métier. */
+  /** Titre affiché : le titre choisi, sinon le surnom du meilleur métier. */
   nickname: string;
+  /** Titre choisi (null = par défaut : celui de l'ornement). */
+  title: string | null;
   clan: { name: string; rank: ClanRank } | null;
   /** Classe actuelle : niveau et voie ; les autres classes jouées. */
   classLevel: number;
@@ -316,6 +318,8 @@ export interface JournalEntry {
 /** Photo de profil : envoi (image recadrée, data URL), signalement, retrait par un modérateur. */
 export const avatarBody = z.object({ image: z.string().max(600_000) });
 export const avatarTargetBody = z.object({ characterId: z.number().int() });
+/** Son titre (un titre gagné, ou null pour le titre par défaut). */
+export const titleBody = z.object({ title: z.string().max(80).nullable() });
 /** Les décors qu'on peut choisir comme bannière de sa page profil (apps/web/public/scenes). */
 export const PROFILE_BANNERS = ['town', 'mining', 'woodcutting', 'herbalism', 'fishing', 'smithing', 'carpentry', 'cooking', 'hunting', 'agriculture', 'tanning', 'tailoring', 'alchemy', 'jewelcrafting', 'enchanting', 'artificing', 'construction', 'exploration', 'clan', 'market', 'combat'] as const;
 /** Sa page profil : devise (80 caractères, sans lien) et bannière. */
@@ -372,6 +376,8 @@ export interface TideView {
     open: boolean;
     work: { text: string; items: { item: string; name: string; qty: number; have: number; delivered: number }[] };
   };
+  /** Les Marées d'hier, de ce soir et des trois prochains soirs. */
+  rotation: { day: number; id: string; name: string; shines: string }[];
   prefs: { channel: 'combat' | 'work' };
   /** Inscriptions de ce soir (de 19 h à 20 h) et inscription du joueur. */
   registration: { start: number; end: number; open: boolean; registered: boolean };

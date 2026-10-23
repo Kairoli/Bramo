@@ -14,6 +14,7 @@ export * from './content.js';
 export * from './formulas/xp.js';
 export * from './formulas/rates.js';
 export * from './engine/state.js';
+export * from './engine/titles.js';
 export * from './engine/advance.js';
 export * from './engine/actions.js';
 export * from './engine/equipment.js';

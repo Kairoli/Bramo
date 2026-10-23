@@ -92,7 +92,7 @@ export async function townView(db: Db, content: Content, now: number, selfId: nu
         doingProfession: recipe?.profession ?? null,
         profession: best?.skill ?? null,
         level: best?.level ?? 1,
-        nickname: best ? shownNickname(best.skill, r.trials, r.shown, content).nickname : '',
+        nickname: r.title ?? (best ? shownNickname(best.skill, r.trials, r.shown, content).nickname : ''),
         self: r.id === selfId,
       };
     });

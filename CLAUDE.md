@@ -55,6 +55,27 @@ Bramo est un **idle-RPG multijoueur jouable dans le navigateur**, dans l'esprit 
 
 ## 5. État du projet (à jour au 23 octobre 2026)
 
+### Fait — retours de Louis du 24 octobre : sac, build, titres, Marée, carte de la route
+
+- **Bourg** : le nom d'un joueur survolé apparaissait deux fois (sa carte, et la bulle grise du navigateur) : plus de `title` sur les silhouettes, l'étiquette s'efface au survol.
+- **Coup de fouet** : une confirmation avant d'en dépenser un (`EnergyButton`, fenêtre à côté du bouton).
+- **« Niveau total »** devient « Métiers (total) », expliqué au survol (somme des niveaux des 17 métiers, 17 au départ).
+- **Accueil** : les cases autour du personnage montrent le **vrai build** (l'équipement porté, `PaperDoll mode="gear"`), plus l'apparence.
+- **Tenues** : l'aperçu était écrasé en bande (huit tenues dans une grille à hauteur fixe) : cartes de 280 px qui défilent.
+- **Classement de la Marée** : toute la fenêtre défile (plus d'ascenseur dans la liste) ; sa place reste en bas.
+- **Sac d'équipement** (`GearPanel`) : filtres en un clic (emplacement, rareté, « ma classe »), tri (rareté, palier, emplacement, plus récentes), bulle au survol ; **sélection multiple** pour démonter (« Sélectionner », cases à cocher, « Toutes les Communes… », une confirmation pour le lot ; remplace la fenêtre « Démonter… »). **Fiche d'une pièce** en onglets : Fiche, Gemme, Affineur, Vendre ; « Chaton » devient « Emplacement de gemme » ; démonter une pièce ordinaire se fait en un clic (confirmation seulement pour Épique, Légendaire, chef-d'œuvre, ensemble, nommée, pièce travaillée).
+- **Ornements et titres** [demande de Louis] : le titre se choisit à part de l'ornement (`engine/titles.ts` : `unlockedTitles`, `chooseTitle`, `chosenTitle` ; surnoms de métier gagnés et titres de la Marée ; colonne `characters.title`, migration 0029 ; `POST /api/character/title`). Fenêtre « Ornements et titres » à deux onglets, aperçu de la plaque en direct. Le titre choisi s'affiche sur la plaque, la page profil et le bourg.
+- **Marée** allégée [Louis : « trop de texte ; les joueurs s'habituent »] : la **rotation** (hier, ce soir, trois soirs suivants ; `TideView.rotation`), « 🏆 Classement » en haut, une ligne de temps (inscription, digue, éclats), deux boutons de rôle avec leurs points (le détail dans une bulle « ? »), trois chiffres (éclats, digue d'hier, coffre), le reste en volets (boutique, mécène, derniers soirs).
+- **La route en carte** (salle Combat, `RouteMap`) [Louis : « je n'arrive pas à piger zones, chapitres, paliers »] : un seul vocabulaire, **12 zones de 10 étapes** (la 10ᵉ = gardien), groupées par région ; une frise des zones ; la zone sur le décor de sa région, un chemin sinueux, sa photo sur l'étape en cours ; chaque étape colorée selon le **danger pour soi** (facile, à votre portée, difficile : le palier comparé à celui de la classe), le mot « palier » seulement dans les bulles.
+- **Question de Louis sur les ouvrages du clan** (ouverts seulement quand tout est bâti ?) : réponse donnée en conversation, rien changé.
+- Tests : 198 dans packages/shared, 35 d'API, 21 du simulateur.
+
+### Fait — atelier d'équipement refait, personnage de l'accueil agrandi (24 octobre)
+
+- **Retours de Louis** : le bouton « Atelier d'équipement » était « super mal placé » (entre la barre d'XP et le texte de la carte du métier) et l'intérieur « faisait gros pâté » ; « je rendrais le perso un peu plus grand » sur la carte de l'accueil.
+- **L'atelier devient un onglet** de la salle d'un métier d'équipement : « Recettes | ⚒ Équipement » en tête du panneau du bas (plus de fenêtre ni de bouton dans la carte). Même disposition que les recettes : à gauche des filtres en un clic (emplacement en pictogrammes, rareté en couleurs, offensive ou protectrice, classe ; par défaut la sienne si le métier l'habille, sinon toutes : la Forge n'habillant pas le Runiste, la liste s'ouvrait vide) et une grille de pièces (« prêt », « niv. 10 ») ; à droite la pièce en grand : caractéristiques en pastilles (leur effet au survol), lignes tirées et chance de chef-d'œuvre, matières avec « où l'obtenir », « Fabriquer ». `GET /api/gear/recipes` envoie aussi `rolls` et `masterpiece`. Trois rangées de pièces sur un écran bas (1280 × 720), quatre sinon.
+- **Carte de l'accueil** : le personnage agrandi de 12 % depuis ses pieds ; préréglages et « Ouvrir le personnage » sur une seule ligne pour lui laisser la place.
+
 ### Fait — XP doublée jusqu'au 20, infobulles partout, « où l'obtenir » (23 octobre, nuit)
 
 - **Demandes de Louis** (après la partie jouée) : « remets l'XP double jusqu'au 20, tant pis » ; « que tout ait un survol et son effet, même ce qui n'est pas débloqué » ; « si on a besoin de quelque chose pour une recette, indiquer où l'obtenir, de manière propre et visuelle ».

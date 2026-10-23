@@ -228,7 +228,7 @@ function Hero({
       <div className="pp-id">
         <Avatar id={p.id} version={p.avatar} name={p.name} classId={p.classId} appearance={appearance} size={124} className="pp-avatar" open={false} />
         <div className="pp-id-text">
-          {ornament ? <OrnamentPlate ornament={ornament} name={p.name} title={ornamentTitle(ornament, content)} width={330} className="pp-plate" /> : <h2 className="pp-name">{p.name}</h2>}
+          {ornament ? <OrnamentPlate ornament={ornament} name={p.name} title={ornamentTitle(ornament, content, undefined, p.title)} width={330} className="pp-plate" /> : <h2 className="pp-name">{p.name}</h2>}
           {!ornament && p.nickname && <span className="pp-nick">{p.nickname}</span>}
           {p.motto && <p className="pp-motto">« {p.motto} »</p>}
           <div className="pp-chips">

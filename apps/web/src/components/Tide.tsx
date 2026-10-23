@@ -3,7 +3,8 @@ import type { TideView } from '@bramo/shared';
 import { api } from '../api';
 import { useGame } from '../game/GameContext';
 import { clock, num } from '../format';
-import { Modal } from './ui';
+import { ItemIcon, Modal } from './ui';
+import { Tip, TipHead, TipLine } from './Tip';
 import { TideLive, TideRecap } from './TideLive';
 import { TideRanking } from './TideRanking';
 import type { TideLiveView } from '@bramo/shared';
@@ -95,7 +96,7 @@ function useTideLive(demo: boolean) {
 }
 
 export function TideModal({ view, refresh, onClose }: { view: TideView; refresh: () => void; onClose: () => void }) {
-  const { act, state } = useGame();
+  const { act, state, content } = useGame();
   const [demo, setDemo] = useState(false);
   const [ranking, setRanking] = useState(false);
   const live = useTideLive(demo);
@@ -119,6 +120,9 @@ export function TideModal({ view, refresh, onClose }: { view: TideView; refresh:
 
   // Le classement complet remplace la fenêtre le temps qu'on le regarde.
   if (ranking) return <TideRanking demo={demo} tide={new URLSearchParams(location.search).get('maree') ?? undefined} onClose={() => setRanking(false)} />;
+  const DAY = ['Hier', 'Ce soir', 'Demain'];
+  // [Louis, 24 octobre : « trop de texte, pas assez d'infos ; les joueurs s'habituent »] : l'essentiel en chiffres et en
+  // boutons, les explications dans les bulles « ? ».
   return (
     <Modal onClose={onClose} className="tide-modal with-live">
       {live && <TideLive view={live} onRanking={() => setRanking(true)} />}
@@ -127,187 +131,192 @@ export function TideModal({ view, refresh, onClose }: { view: TideView; refresh:
           <button className="btn btn-ghost btn-sm" onClick={() => setDemo(!demo)}>
             {demo ? 'Revenir à la vraie Marée' : 'Démo : voir la digue en direct'}
           </button>
-          {demo && (
-            <button className="btn btn-ghost btn-sm" onClick={() => setRanking(true)}>
-              Démo : le classement
-            </button>
-          )}
         </div>
       )}
 
-      <header className="tide-head">
-        <WaveIcon size={40} />
-        <div>
-          <span className="eyebrow">Marée du soir · tous les soirs, tout le serveur ensemble</span>
-          <h2>{t.name}</h2>
-          <p className="muted">{t.blurb}</p>
-          <p className="small">Ce soir, ce qui marque le plus : {t.shines}.</p>
-        </div>
+      <header className="tide-top">
+        <WaveIcon size={34} />
+        <Tip content={<TipHead title={t.name} sub={t.blurb} />}>
+          <div className="tide-top-title">
+            <span className="eyebrow">Marée du soir · {clock(t.start)}</span>
+            <h2>{t.name}</h2>
+            <span className="small tide-shines">Marque le plus : {t.shines}</span>
+          </div>
+        </Tip>
+        <button className="btn btn-primary tide-rank-btn" onClick={() => setRanking(true)}>
+          🏆 Classement
+        </button>
       </header>
 
-      {/* Les trois temps du soir. Inscrit, le personnage combat même si le joueur se déconnecte [Décidé par Louis]. */}
-      <ol className="tide-steps">
+      {/* La rotation : hier, ce soir, les prochains soirs. */}
+      <ol className="tide-rotation">
+        {view.rotation.map((x, i) => (
+          <li key={x.day} className={x.day === t.day ? 'now' : x.day < t.day ? 'past' : ''}>
+            <span className="tide-rot-day">{DAY[i] ?? new Date(x.day * 86_400_000).toLocaleDateString('fr-FR', { weekday: 'long' })}</span>
+            <Tip content={<TipHead title={x.name} sub={`Marque le plus : ${x.shines}`} />}>
+              <strong className={`tide-rot-name t-${x.id}`}>{x.name}</strong>
+            </Tip>
+          </li>
+        ))}
+      </ol>
+
+      {/* Les trois temps du soir, en une ligne. Inscrit, le personnage combat même déconnecté [Décidé par Louis]. */}
+      <ol className="tide-timeline">
         <li className={step === 1 ? 'now' : reg.registered ? 'done' : ''}>
           <span className="tide-step-n">1</span>
-          <strong>S’inscrire</strong>
-          <span className="muted small">
-            {clock(reg.start)} – {clock(reg.end)}
+          <span className="tide-tl-text">
+            <strong>Inscription</strong>
+            <span className="muted small">
+              {clock(reg.start)} – {clock(reg.end)}
+            </span>
           </span>
           {reg.registered ? (
-            <span className="tide-ok small">Inscrit pour ce soir</span>
+            <span className="tide-ok small">✓ Inscrit</span>
           ) : reg.open ? (
             <button className="btn btn-primary btn-sm" onClick={() => void run(api.tideRegister)}>
               S’inscrire
             </button>
           ) : (
-            <span className="muted small">{now < reg.start ? `ouvre dans ${until(reg.start - now)}` : 'fermé ce soir'}</span>
+            <span className="muted small">{now < reg.start ? `dans ${until(reg.start - now)}` : 'fermée'}</span>
           )}
         </li>
         <li className={step === 2 ? 'now' : step === 3 && reg.registered ? 'done' : ''}>
           <span className="tide-step-n">2</span>
-          <strong>Tenir la digue</strong>
-          <span className="muted small">
-            {clock(t.start)} – {clock(t.end)}
+          <span className="tide-tl-text">
+            <strong>La digue</strong>
+            <span className="muted small">
+              {clock(t.start)} – {clock(t.end)}
+            </span>
           </span>
           {t.open && reg.registered && !view.joinedLive ? (
             <button className="btn btn-primary btn-sm" onClick={() => void run(api.tideJoin)}>
-              Être là en direct (+{Math.round(r.liveBonus * 100)} %)
+              En direct +{Math.round(r.liveBonus * 100)} %
             </button>
           ) : view.joinedLive ? (
-            <span className="tide-ok small">En direct : +{Math.round(r.liveBonus * 100)} % ce soir</span>
-          ) : (
-            <span className="muted small">{reg.registered ? 'même si vous êtes déconnecté' : 'pour les inscrits'}</span>
-          )}
+            <span className="tide-ok small">En direct +{Math.round(r.liveBonus * 100)} %</span>
+          ) : null}
         </li>
         <li className={step === 3 && reg.registered ? 'now' : ''}>
           <span className="tide-step-n">3</span>
-          <strong>Recevoir ses éclats</strong>
-          <span className="muted small">après {clock(t.end)}</span>
-          <span className="muted small">à votre prochaine visite</span>
+          <span className="tide-tl-text">
+            <strong>Éclats</strong>
+            <span className="muted small">à votre visite</span>
+          </span>
         </li>
       </ol>
 
-      {/* Les deux façons de tenir la digue, avec ce qu'elles rapportent vraiment (data/combat/tide.yaml). */}
-      <section className="tide-roles">
-        <h3>Votre rôle ce soir</h3>
-        <p className="muted small">On choisit l’un ou l’autre ; on peut changer jusqu’à la fin de la Marée.</p>
-        <div className="tide-role-cards">
-          <button className={`tide-role${working ? '' : ' on'}`} aria-pressed={!working} onClick={() => void run(() => api.tidePrefs({ channel: 'combat' }))}>
-            <span className="tide-role-icon">
-              <svg viewBox="0 0 24 24" aria-hidden>
-                <path d="M14.5 17.5L3 6V3h3l11.5 11.5M13 19l6-6M16 16l4 4M19 21l2-2" />
-              </svg>
-            </span>
-            <strong>Combattre</strong>
-            <span className="small">Votre personnage se bat contre la Marée avec sa classe, ses sorts et son équipement.</span>
-            <span className="tide-role-gain">
-              {pts(r.minRatio)} à {pts(r.maxRatio)} points · un build moyen de son niveau : <b>{pts(1)}</b>
-            </span>
-            <span className="muted small">Meilleur équipement, meilleurs points. Personne ne repart avec moins de {pts(r.minRatio)}.</span>
-          </button>
-          <div className={`tide-role${working ? ' on' : ''}`}>
-            <button className="tide-role-pick" aria-pressed={working} onClick={() => void run(() => api.tidePrefs({ channel: 'work' }))}>
-              <span className="tide-role-icon">
-                <svg viewBox="0 0 24 24" aria-hidden>
-                  <path d="M3 7h8v5H3zM13 7h8v5h-8zM7 12h10v5H7zM3 17h4M17 17h4" />
-                </svg>
+      {/* Le rôle : deux boutons et leurs points ; le détail au survol. */}
+      <div className="tide-role-toggle" role="radiogroup" aria-label="Votre rôle ce soir">
+        <button className={working ? '' : 'on'} aria-pressed={!working} onClick={() => void run(() => api.tidePrefs({ channel: 'combat' }))}>
+          <strong>⚔ Combattre</strong>
+          <span>
+            {pts(r.minRatio)} à {pts(r.maxRatio)} pts
+          </span>
+        </button>
+        <button className={working ? 'on' : ''} aria-pressed={working} onClick={() => void run(() => api.tidePrefs({ channel: 'work' }))}>
+          <strong>⛏ Travailler</strong>
+          <span>{pts(r.workMultiplier)} pts si tout est livré</span>
+        </button>
+        <Tip
+          content={
+            <>
+              <TipHead title="Combattre ou travailler" />
+              <div className="tide-tip-body">
+                <TipLine mark="⚔">Votre personnage se bat avec sa classe et son équipement : un build moyen de son niveau fait {pts(1)} points.</TipLine>
+                <TipLine mark="⛏">Vous livrez ce que la digue demande ce soir, sans combattre. Une partie livrée : des points au prorata. Rien livré : il combat.</TipLine>
+              </div>
+            </>
+          }
+        >
+          <span className="tide-help" tabIndex={0}>
+            ?
+          </span>
+        </Tip>
+      </div>
+      {working && (
+        <div className="tide-work">
+          {t.work.items.map((w) => (
+            <div key={w.item} className="tide-work-row">
+              <ItemIcon item={content.items[w.item]} small />
+              <span>{w.name}</span>
+              <span className="tide-work-bar">
+                <span style={{ width: `${Math.min(100, (w.delivered / Math.max(1, w.qty)) * 100)}%` }} />
               </span>
-              <strong>Travailler pour la digue</strong>
-              <span className="small">Au lieu de combattre, vous apportez ce que la digue demande ce soir. Pour les récolteurs et les artisans.</span>
-              <span className="tide-role-gain">
-                Tout livré : <b>{pts(r.workMultiplier)}</b> points, sans combattre
+              <span className="small">
+                {num(w.delivered)} / {num(w.qty)} <span className="muted">· sac {num(w.have)}</span>
               </span>
-              <span className="muted small">Une partie seulement : les points au prorata (moins que combattre). Rien livré : votre personnage combat.</span>
-            </button>
-            <ul className="tide-work-list">
-              {t.work.items.map((w) => (
-                <li key={w.item}>
-                  <span>{w.name}</span>
-                  <span className="tide-work-bar">
-                    <span style={{ width: `${Math.min(100, (w.delivered / Math.max(1, w.qty)) * 100)}%` }} />
-                  </span>
-                  <span className="small">
-                    {num(w.delivered)} / {num(w.qty)} <span className="muted">(sac : {num(w.have)})</span>
-                  </span>
-                </li>
-              ))}
-            </ul>
-            {workDone ? (
-              <span className="tide-ok small">Tout est livré : {pts(r.workMultiplier)} points assurés ce soir.</span>
-            ) : (
-              <button className="btn btn-sm" disabled={!workReady} onClick={() => void run(api.tideDeliver)}>
-                Livrer ce que j’ai
-              </button>
-            )}
-          </div>
-        </div>
-      </section>
-
-      {/* Ce que rapportent les points. */}
-      <section className="tide-gains">
-        <h3>Ce que vous gagnez</h3>
-        <div className="tide-gain-tiles">
-          <div className="tide-gain">
-            <strong>Éclats de marée</strong>
-            <span className="small">1 éclat pour {Math.round(1 / r.perPoint)} points. Ils achètent des apparences (plus bas).</span>
-            <span className="tide-gain-big">{num(view.shards)}</span>
-            <span className="muted small">éclats en poche</span>
-          </div>
-          <div className="tide-gain">
-            <strong>Lanternes du serveur</strong>
-            <span className="small">Tous ensemble : chaque lanterne allumée donne des éclats en plus à chaque participant.</span>
-            <span className="tide-lantern-rules">
-              {r.thresholds.map((th) => (
-                <span key={th.share}>
-                  <i /> {Math.round(th.share * 100)} % : +{th.bonus}
-                </span>
-              ))}
-            </span>
-          </div>
-          <div className="tide-gain">
-            <strong>Coffre du lundi</strong>
-            <span className="small">Vos {r.bestNights} meilleurs soirs de la semaine : des matières, et une chance d’équipement Épique.</span>
-            <span className="tide-gain-big">{plural(view.week.nights, 'soir')}</span>
-            <span className="muted small">
-              sur {view.week.bestNights} cette semaine · {num(view.week.points)} points
-            </span>
-          </div>
-        </div>
-      </section>
-
-      {last && (
-        <section className="tide-last">
-          <h3>
-            Hier soir : {last.name} · {plural(last.participants, 'participant')}
-          </h3>
-          <div className="tide-dike">
-            {/* Les lanternes sont posées sur leur seuil, le long de la barre. */}
-            <div className="tide-dike-bar">
-              <span style={{ width: `${Math.min(100, (last.points / Math.max(1, last.objective)) * 100)}%` }} />
-              {r.thresholds.map((th, i) => (
-                <i key={th.share} className={i < last.thresholds ? 'lit' : ''} style={{ left: `${Math.min(100, th.share * 100)}%` }} title={`${Math.round(th.share * 100)} % : +${th.bonus} éclats`} />
-              ))}
             </div>
-          </div>
-          <p className="muted small">
-            Le serveur a fait {num(last.points)} points sur {num(last.objective)} : {plural(last.thresholds, 'lanterne')} sur {last.of}.
-            {lastMine ? ` Vous : ${num(lastMine.points)} points, ${num(lastMine.shards)} éclats.` : ''}
-          </p>
-          {last.recap.length > 0 && <TideRecap awards={last.recap} />}
-          <button className="btn btn-primary btn-sm tide-rank-open" onClick={() => setRanking(true)}>
-            Classement complet de la soirée
-          </button>
-        </section>
+          ))}
+          {workDone ? (
+            <span className="tide-ok small">✓ Tout est livré : {pts(r.workMultiplier)} points</span>
+          ) : (
+            <button className="btn btn-sm" disabled={!workReady} onClick={() => void run(api.tideDeliver)}>
+              Livrer ce que j’ai
+            </button>
+          )}
+        </div>
       )}
 
-      {view.patron && <PatronSection patron={view.patron} gold={state.gold} run={run} />}
+      {/* Trois chiffres : ses éclats, la digue d'hier, son coffre de la semaine. */}
+      <div className="tide-stats">
+        <Tip content={<TipHead title="Éclats de marée" sub={`1 éclat pour ${Math.round(1 / r.perPoint)} points, plus les lanternes du serveur : ${r.thresholds.map((th) => `${Math.round(th.share * 100)} % → +${th.bonus}`).join(' · ')}. Ils achètent des apparences.`} />}>
+          <div className="tide-stat">
+            <span className="tide-stat-big">{num(view.shards)}</span>
+            <span className="muted small">éclats</span>
+          </div>
+        </Tip>
+        <Tip content={last ? <TipHead title={`Hier soir : ${last.name}`} sub={`${plural(last.participants, 'participant')} · ${num(last.points)} points sur ${num(last.objective)}${lastMine ? ` · vous : ${num(lastMine.points)} points, ${num(lastMine.shards)} éclats` : ''}`} /> : <TipHead title="Pas encore de soir joué" />}>
+          <div className="tide-stat wide">
+            <span className="muted small">Hier soir</span>
+            <div className="tide-dike-bar">
+              <span style={{ width: `${last ? Math.min(100, (last.points / Math.max(1, last.objective)) * 100) : 0}%` }} />
+              {r.thresholds.map((th, i) => (
+                <i key={th.share} className={last && i < last.thresholds ? 'lit' : ''} style={{ left: `${Math.min(100, th.share * 100)}%` }} />
+              ))}
+            </div>
+            <span className="small">{last ? `${last.thresholds} lanterne${last.thresholds > 1 ? 's' : ''} sur ${last.of}` : '—'}</span>
+          </div>
+        </Tip>
+        <Tip content={<TipHead title="Coffre du lundi" sub={`Vos ${r.bestNights} meilleurs soirs de la semaine : des matières, et une chance d’équipement Épique.`} />}>
+          <div className="tide-stat">
+            <span className="tide-stat-big">
+              {view.week.nights}/{view.week.bestNights}
+            </span>
+            <span className="muted small">soirs · coffre</span>
+          </div>
+        </Tip>
+      </div>
+      {last && last.recap.length > 0 && <TideRecap awards={last.recap} />}
 
+      <details className="tide-more">
+        <summary>Boutique des éclats</summary>
+        <ul className="tide-shop-list">
+          {view.shop
+            .filter((o) => o.forClass)
+            .map((o) => (
+              <li key={o.id}>
+                <span>{o.name}</span>
+                {o.owned ? (
+                  <span className="chip on">Débloquée</span>
+                ) : (
+                  <button className="btn btn-sm" disabled={view.shards < o.cost} onClick={() => void run(() => api.tideBuy(o.id))}>
+                    {num(o.cost)} éclats
+                  </button>
+                )}
+              </li>
+            ))}
+        </ul>
+      </details>
+      {view.patron && (
+        <details className="tide-more">
+          <summary>Offrir la Marée</summary>
+          <PatronSection patron={view.patron} gold={state.gold} run={run} />
+        </details>
+      )}
       {view.nights.length > 0 && (
-        <details className="tide-nights">
-          <summary>
-            <h3>Vos derniers soirs</h3>
-          </summary>
-          <ul>
+        <details className="tide-more">
+          <summary>Vos derniers soirs</summary>
+          <ul className="tide-nights-list">
             {[...view.nights]
               .reverse()
               .slice(0, 7)
@@ -324,27 +333,6 @@ export function TideModal({ view, refresh, onClose }: { view: TideView; refresh:
           </ul>
         </details>
       )}
-
-      <section className="tide-shop">
-        <h3>Ce que les éclats achètent</h3>
-        <p className="muted small">Des apparences, jamais de la puissance.</p>
-        <ul>
-          {view.shop
-            .filter((o) => o.forClass)
-            .map((o) => (
-              <li key={o.id}>
-                <span>{o.name}</span>
-                {o.owned ? (
-                  <span className="chip on">Débloquée</span>
-                ) : (
-                  <button className="btn btn-sm" disabled={view.shards < o.cost} onClick={() => void run(() => api.tideBuy(o.id))}>
-                    {num(o.cost)} éclats
-                  </button>
-                )}
-              </li>
-            ))}
-        </ul>
-      </section>
     </Modal>
   );
 }
@@ -359,7 +347,6 @@ function PatronSection({ patron, gold, run }: { patron: NonNullable<TideView['pa
   const when = patron.tonight ? 'ce soir' : 'demain soir';
   return (
     <section className="tide-patron">
-      <h3>Offrir la Marée</h3>
       <p className="muted small">
         Offrez la Marée {when} à tout le serveur : chaque mécène donne +{bonus} % d’éclats à tous les participants ({patron.max} mécènes au plus). Votre nom est
         annoncé au bourg. L’or offert disparaît.

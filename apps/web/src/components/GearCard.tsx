@@ -71,6 +71,9 @@ export function GearCard({
   onSalvage?: () => void;
 }) {
   const [price, setPrice] = useState('');
+  // Une chose à la fois [Louis, 24 octobre : « la pop-up contient énormément d'infos »] : la fiche d'abord ; la gemme,
+  // l'Affineur et la vitrine dans leurs onglets.
+  const [tab, setTab] = useState<'sheet' | 'gem' | 'refine' | 'sell'>('sheet');
   const { content, state } = useGame();
   const gemsInBag = Object.entries(state.inventory).filter(([id, n]) => n > 0 && content.items[id]?.gem);
   const set = g.set ? content.gearSets[g.set] : undefined;
@@ -107,13 +110,30 @@ export function GearCard({
           </div>
         </header>
 
-        {compare && (
+        {(() => {
+          const tabs: [typeof tab, string][] = [['sheet', 'Fiche']];
+          if (g.gemSlot) tabs.push(['gem', g.gem ? 'Gemme ◆' : 'Gemme']);
+          if ((onRefine && (g.rankCost || g.honeCost || g.rerollCost || g.rerollOffer)) || (onSalvage && g.salvage)) tabs.push(['refine', 'Affineur']);
+          if (onSell) tabs.push(['sell', 'Vendre']);
+          return tabs.length > 1 ? (
+            <nav className="gear-card-tabs" role="tablist">
+              {tabs.map(([id, label]) => (
+                <button key={id} role="tab" aria-selected={tab === id} onClick={() => setTab(id)}>
+                  {label}
+                </button>
+              ))}
+            </nav>
+          ) : null;
+        })()}
+
+        {tab === 'sheet' && compare && (
           <div className={`gear-verdict ${better > worse ? 'up' : worse > better ? 'down' : ''}`}>
             {better > worse ? '▲ Meilleure' : worse > better ? '▼ Moins bonne' : '= Équivalente'} que <strong>{compare.name}</strong>, portée maintenant
             <span className="muted"> · {better} en mieux, {worse} en moins bien</span>
           </div>
         )}
 
+        {tab === 'sheet' && (
         <section className="gear-card-block">
           <span className="eyebrow">Ce qu’elle donne</span>
           {statKeys.map((k) => {
@@ -137,8 +157,9 @@ export function GearCard({
             );
           })}
         </section>
+        )}
 
-        {lineNames.length > 0 && (
+        {tab === 'sheet' && lineNames.length > 0 && (
           <section className="gear-card-block">
             <span className="eyebrow">Bonus</span>
             {lineNames.map((n) => {
@@ -164,9 +185,10 @@ export function GearCard({
           </section>
         )}
 
-        {g.gemSlot && (
+        {tab === 'gem' && g.gemSlot && (
           <section className={`gear-card-block gem-block${g.gem ? ' filled' : ''}`}>
-            <span className="eyebrow">Chaton · une gemme de situation</span>
+            {/* « Chaton » (le terme de joaillier) ne parlait à personne [Louis, 24 octobre]. */}
+            <span className="eyebrow">Emplacement de gemme</span>
             {g.gem ? (
               <div className="gem-row">
                 <ItemIcon item={content.items[g.gem]} />
@@ -183,7 +205,7 @@ export function GearCard({
                 )}
               </div>
             ) : (
-              <p className="muted small">Vide. Une gemme taillée en Joaillerie avec des vestiges répond à une mécanique ennemie (fenêtres, érosion, coups lourds, renforts, gardes, auras). Elle prend une des quatre places de talent majeur.</p>
+              <p className="muted small">Vide. Une gemme aide contre un type d’ennemi (érosion, coups lourds, renforts…). Elle se taille en Joaillerie avec des vestiges du combat.</p>
             )}
             {onSocket && gemsInBag.length > 0 && (
               <div className="gem-choices">
@@ -202,7 +224,7 @@ export function GearCard({
           </section>
         )}
 
-        {(g.conditional || set) && (
+        {tab === 'sheet' && (g.conditional || set) && (
           <section className="gear-card-block special">
             {g.conditional && (
               <p>
@@ -225,10 +247,10 @@ export function GearCard({
           </section>
         )}
 
-        {onRefine && (g.rankCost || g.honeCost || g.rerollCost || g.rerollOffer) && <Refiner g={g} onRefine={onRefine} />}
-        {onSalvage && g.salvage && <Salvage g={g} onSalvage={onSalvage} />}
+        {tab === 'refine' && onRefine && (g.rankCost || g.honeCost || g.rerollCost || g.rerollOffer) && <Refiner g={g} onRefine={onRefine} />}
+        {tab === 'refine' && onSalvage && g.salvage && <Salvage g={g} onSalvage={onSalvage} />}
 
-        {onSell && (
+        {tab === 'sell' && onSell && (
           <section className="gear-card-sell">
             <span className="muted small">Vitrine du marché : une fois en vente, la pièce ne se porte plus ; l’or arrive à votre visite.</span>
             <span className="gear-sell-row">
@@ -287,11 +309,16 @@ function RerollChoice({ g, onRefine }: { g: GearItemView; onRefine: (service: Re
   );
 }
 
-/** Démonter la pièce : ce qu'elle rend, et une confirmation dans la fiche (la pièce disparaît). */
+/**
+ * Démonter la pièce : ce qu'elle rend. Un seul clic pour une pièce ordinaire ; une confirmation seulement pour ce qui a
+ * de la valeur (Épique, Légendaire, chef-d'œuvre, ensemble, nommée, pièce travaillée) [Louis : « un double clic pour un
+ * seul objet »].
+ */
 function Salvage({ g, onSalvage }: { g: GearItemView; onSalvage: () => void }) {
   const { content } = useGame();
   const [sure, setSure] = useState(false);
   const dust = g.salvage!;
+  const precious = g.masterpiece || !!g.set || g.named || g.rank > 0 || g.rerollLine != null || g.rarity === 'epic' || g.rarity === 'legendary';
   return (
     <section className="gear-card-block salvage-block">
       <span>
@@ -311,7 +338,7 @@ function Salvage({ g, onSalvage }: { g: GearItemView; onSalvage: () => void }) {
           </button>
         </span>
       ) : (
-        <button className="btn btn-sm" onClick={() => setSure(true)}>
+        <button className="btn btn-sm" onClick={() => (precious ? setSure(true) : onSalvage())}>
           Démonter
         </button>
       )}

@@ -12,6 +12,7 @@ import { PaperDoll, PartThumb, useEquipment } from '../components/equipment';
 import { OrnamentPlate, ornamentTitle } from '../components/Ornament';
 import { OrnamentModal } from '../components/OrnamentPicker';
 import { PresetsCard } from '../components/Presets';
+import { Tip, TipHead } from '../components/Tip';
 
 /**
  * Salle Personnage, comme un écran de jeu : à gauche l'inventaire (équipement en tuiles, sac, apparence), au centre le
@@ -109,7 +110,7 @@ export function CharacterRoom() {
             Changer de tenue
           </button>
           <button className="btn btn-sm" onClick={() => setOrnamentOpen(true)}>
-            Ornement
+            Ornements et titres
           </button>
           {outfit && <span className="chip">Tenue {outfit.name}</span>}
         </footer>
@@ -122,7 +123,9 @@ export function CharacterRoom() {
         <PresetsCard gear={gear} />
         <div className="card">
           <div className="quick-tiles">
-            <QuickTile label="Niveau total" value={String(totalLevel)} />
+            <Tip block content={<TipHead title="Niveau des métiers" sub={`La somme des niveaux de vos ${content.professions.length} métiers : ${content.professions.length} au départ, ${num(content.professions.length * content.settings.xp.maxLevel)} au maximum. Il monte à chaque niveau gagné dans n’importe quel métier.`} />}>
+              <QuickTile label="Métiers (total)" value={String(totalLevel)} />
+            </Tip>
             <QuickTile label="Or" value={num(state.gold)} tone="var(--action)" />
             <QuickTile label="Combat" value={state.combat ? `Niv. ${state.combat.level}` : '—'} tone="var(--alert)" sub={state.combat ? `palier ${state.combat.classTier}` : undefined} />
           </div>

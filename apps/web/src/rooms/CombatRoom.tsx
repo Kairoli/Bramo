@@ -1,4 +1,4 @@
-import { type ReactNode, useEffect, useMemo, useState } from 'react';
+import { type CSSProperties, type ReactNode, useEffect, useMemo, useState } from 'react';
 import type { CombatView, EncounterView, PlanEntry, SpellView } from '@bramo/shared';
 import { api } from '../api';
 import { useGame } from '../game/GameContext';
@@ -9,7 +9,8 @@ import { Scene } from '../components/Scene';
 import { LiveFight } from '../components/LiveFight';
 import { SpellIcon } from '../components/SpellIcon';
 import { SpellTipContent } from '../components/SpellTip';
-import { Tip, TipFoot, TipHead } from '../components/Tip';
+import { Tip, TipFoot, TipHead, TipLine } from '../components/Tip';
+import { Avatar } from '../components/Avatar';
 
 const ROLE = { damage: 'Dégâts', control: 'Contrôle', support: 'Soutien' } as const;
 
@@ -172,9 +173,39 @@ function SpellBar({ view, onEdit }: { view: CombatView; onEdit: () => void }) {
 
 // --- La route ----------------------------------------------------------------------------------------------------------
 
-/** Carte de la route : les chapitres, et les étapes du chapitre affiché reliées comme un chemin. */
+/**
+ * La route en carte [Louis, 24 octobre : « une map ; je n'arrive pas à piger la différence entre zones, chapitres,
+ * paliers »]. Un seul vocabulaire à l'écran : des **zones** (douze, groupées par région) de **dix étapes**, la dixième
+ * contre le gardien. En haut, la frise des zones ; au milieu, la zone choisie sur le décor de sa région, un chemin
+ * sinueux et ses étapes, colorées selon le danger pour soi (le palier comparé à celui de sa classe) ; en bas, l'étape
+ * choisie. Le mot « palier » ne reste que dans les bulles.
+ */
+const REGION_SCENE: Record<string, string> = {
+  'Les Abords du bourg': 'town',
+  'Les Forges éteintes': 'smithing',
+  'La Lisière des veilleurs': 'woodcutting',
+  'Les Archives englouties': 'enchanting',
+  'Le Bastion des longues veilles': 'construction',
+  'La Cicatrice des trois vents': 'exploration',
+};
+const DANGER = {
+  easy: { label: 'Facile', color: 'var(--good)' },
+  fair: { label: 'À votre portée', color: 'var(--clan)' },
+  hard: { label: 'Difficile', color: 'var(--alert)' },
+} as const;
+type Danger = keyof typeof DANGER;
+const dangerOf = (tier: number, classTier: number): Danger => (tier < classTier ? 'easy' : tier <= classTier + 2 ? 'fair' : 'hard');
+// Les dix étapes le long d'un chemin qui serpente (repère 1000 × 300).
+const NODE = Array.from({ length: 10 }, (_, i) => ({ x: 60 + i * 97, y: 150 + Math.sin(i * 0.95 + 0.4) * 78 }));
+const PATH = NODE.reduce((d, p, i) => {
+  if (i === 0) return `M ${p.x} ${p.y}`;
+  const prev = NODE[i - 1]!;
+  const mx = (prev.x + p.x) / 2;
+  return `${d} C ${mx} ${prev.y}, ${mx} ${p.y}, ${p.x} ${p.y}`;
+}, '');
+
 function RouteMap({ view }: { view: CombatView }) {
-  const { act } = useGame();
+  const { act, characterId, avatar, name, look } = useGame();
   const route = view.route;
   const currentChapter = route ? (route.chapters.find((c) => c.stages.some((s) => s.index === route.stage))?.number ?? 1) : 1;
   const [chapterNo, setChapterNo] = useState<number | null>(null);
@@ -185,58 +216,135 @@ function RouteMap({ view }: { view: CombatView }) {
   const e = view.encounters.find((x) => x.id === sel.encounter);
   const open = sel.index <= route.best;
   const playing = route.running && route.stage === sel.index;
-  const unlockedChapters = route.chapters.filter((c) => c.stages[0]!.index <= route.best).length;
+  const reached = (c: (typeof route.chapters)[number]) => c.stages[0]!.index <= route.best;
+  const danger = dangerOf(sel.tier, view.classTier);
+  const regions = [...new Set(route.chapters.map((c) => c.region))];
+  const pick = (n: number) => {
+    setChapterNo(n);
+    setPicked(null);
+  };
+
   return (
     <section className="panel route-map">
       <header className="route-map-head">
-        <button className="round-btn" disabled={chapter.number <= 1} onClick={() => { setChapterNo(chapter.number - 1); setPicked(null); }} aria-label="Chapitre précédent">
+        <div className="route-map-title">
+          <span className="eyebrow">{chapter.region}</span>
+          <strong>
+            Zone {chapter.number} · {chapter.name}
+          </strong>
+        </div>
+        <Tip
+          content={
+            <>
+              <TipHead title="La route" sub="Votre personnage la joue tout seul, en boucle, même à côté d’un métier." />
+              <div className="tip-body">
+                <TipLine mark="▸">{route.chapters.length} zones à la suite, groupées par région ; chacune a 10 étapes, la 10ᵉ contre le gardien de la zone.</TipLine>
+                <TipLine mark="▸">Une victoire fait passer à l’étape suivante ; trois défaites de suite font reculer d’une étape.</TipLine>
+                <TipLine mark="●" color="var(--good)">
+                  La couleur dit le danger pour vous : facile, à votre portée, difficile (le palier des ennemis comparé à celui de votre classe, {view.classTier}).
+                </TipLine>
+              </div>
+            </>
+          }
+        >
+          <span className="tide-help" tabIndex={0}>
+            ?
+          </span>
+        </Tip>
+      </header>
+
+      {/* La frise des zones, région par région. */}
+      <div className="rmap-zones">
+        {regions.map((r) => (
+          <div key={r} className="rmap-zone-group" title={r}>
+            {route.chapters
+              .filter((c) => c.region === r)
+              .map((c) => {
+                const done = c.stages.at(-1)!.index < route.best;
+                const here = c.number === currentChapter;
+                return (
+                  <button
+                    key={c.number}
+                    className={`rmap-zone${done ? ' done' : ''}${here ? ' here' : ''}${reached(c) ? '' : ' locked'}${c.number === chapter.number ? ' on' : ''}`}
+                    disabled={!reached(c) && !here}
+                    onClick={() => pick(c.number)}
+                    aria-label={`Zone ${c.number} : ${c.name}`}
+                  >
+                    {c.number}
+                  </button>
+                );
+              })}
+          </div>
+        ))}
+      </div>
+
+      {/* La zone sur le décor de sa région. */}
+      <div className="rmap-land" style={{ backgroundImage: `url(/scenes/${REGION_SCENE[chapter.region] ?? 'combat'}.webp)` }}>
+        <button className="round-btn rmap-prev" disabled={chapter.number <= 1} onClick={() => pick(chapter.number - 1)} aria-label="Zone précédente">
           ‹
         </button>
-        <div className="route-map-title">
-          <span className="eyebrow">
-            Chapitre {chapter.number} · {chapter.region}
-          </span>
-          <strong>{chapter.name}</strong>
-        </div>
-        <button className="round-btn" disabled={chapter.number >= Math.max(unlockedChapters, currentChapter)} onClick={() => { setChapterNo(chapter.number + 1); setPicked(null); }} aria-label="Chapitre suivant">
+        <button className="round-btn rmap-next" disabled={chapter.number >= route.chapters.length || !reached(route.chapters[chapter.number] ?? chapter)} onClick={() => pick(chapter.number + 1)} aria-label="Zone suivante">
           ›
         </button>
-      </header>
-      <div className="route-path">
-        <svg className="route-path-line" preserveAspectRatio="none" viewBox="0 0 100 10" aria-hidden>
-          <path d="M5 5 L95 5" />
+        <svg className="rmap-path" viewBox="0 0 1000 300" preserveAspectRatio="none" aria-hidden>
+          <path d={PATH} className="rmap-trail" />
         </svg>
-        {chapter.stages.map((s) => {
+        {chapter.stages.map((s, i) => {
           const done = s.index < route.best;
           const cur = s.index === route.stage;
           const locked = s.index > route.best;
+          const d = dangerOf(s.tier, view.classTier);
+          const p = NODE[i] ?? NODE[9]!;
           return (
-            <button key={s.index} className={`path-node${done ? ' done' : ''}${cur ? ' current' : ''}${locked ? ' locked' : ''}${s.guardian ? ' guardian' : ''}${sel.index === s.index ? ' selected' : ''}`} onClick={() => setPicked(s.index)} title={`${s.label} · ${s.name} · palier ${s.tier}`}>
-              <span className="path-node-dot">{s.guardian ? '♛' : s.label.split('-')[1]}</span>
-              <span className="path-node-name">{s.guardian ? 'Gardien' : cur ? 'ici' : done ? 'franchie' : ' '}</span>
-            </button>
+            <Tip
+              key={s.index}
+              className="rmap-node-tip"
+              style={{ left: `${p.x / 10}%`, top: `${p.y / 3}%` }}
+              content={<TipHead title={`${s.label} · ${s.name}`} sub={`${DANGER[d].label} · palier ${s.tier} (votre classe : ${view.classTier})${done ? ' · franchie' : locked ? ' · pas encore atteinte' : ''}`} />}
+            >
+              <button
+                className={`rmap-node${done ? ' done' : ''}${cur ? ' current' : ''}${locked ? ' locked' : ''}${s.guardian ? ' guardian' : ''}${sel.index === s.index ? ' selected' : ''}`}
+                style={{ '--dc': DANGER[d].color } as CSSProperties}
+                onClick={() => setPicked(s.index)}
+              >
+                {s.guardian ? '♛' : i + 1}
+              </button>
+            </Tip>
           );
         })}
+        {/* Le joueur, sur l'étape où il se bat. */}
+        {chapter.stages.some((s) => s.index === route.stage) && (
+          <span
+            className="rmap-me"
+            style={{ left: `${(NODE[chapter.stages.findIndex((s) => s.index === route.stage)] ?? NODE[0]!).x / 10}%`, top: `${(NODE[chapter.stages.findIndex((s) => s.index === route.stage)] ?? NODE[0]!).y / 3}%` }}
+          >
+            <Avatar id={characterId} version={avatar} name={name} classId={look?.classId} appearance={look} size={30} open={false} />
+          </span>
+        )}
       </div>
+
       <div className="route-detail">
         <div className="route-detail-text">
           <div className="route-detail-title">
-            <span className={`hud-chip${sel.guardian ? ' guardian' : ''}`}>{sel.label}</span>
+            <span className={`hud-chip${sel.guardian ? ' guardian' : ''}`}>{sel.guardian ? 'Gardien' : `Étape ${sel.label}`}</span>
             <strong>{sel.name}</strong>
-            <span className="chip">Palier {sel.tier}</span>
+            <span className="rmap-danger" style={{ '--dc': DANGER[danger].color } as CSSProperties}>
+              {DANGER[danger].label}
+            </span>
           </div>
-          {e?.blurb && <p className="small muted route-blurb">{e.blurb}</p>}
-          {e && <p className="small route-mech">{e.text}</p>}
+          {e && <p className="small muted rmap-mech">{e.text}</p>}
         </div>
         <div className="route-detail-actions">
           {playing ? (
-            <span className="chip chip-own">En cours, en boucle</span>
+            <span className="chip chip-own">En cours</span>
           ) : (
-            <button className="btn btn-primary" disabled={!open} onClick={() => void act(() => api.combatRoute(sel.index))}>
-              {open ? (sel.index === route.stage ? 'Reprendre ici' : 'Rejouer ici') : 'Étape fermée'}
+            <button className="btn btn-primary btn-sm" disabled={!open} onClick={() => void act(() => api.combatRoute(sel.index))}>
+              {open ? (sel.index === route.stage ? 'Reprendre ici' : 'Rejouer ici') : 'Pas encore atteinte'}
             </button>
           )}
-          <span className="muted small">{num(route.best)} étape{route.best > 1 ? 's' : ''} franchie{route.best > 1 ? 's' : ''}</span>
+          <span className="muted small">
+            {num(route.best)} étape{route.best > 1 ? 's' : ''} franchie{route.best > 1 ? 's' : ''}
+          </span>
         </div>
       </div>
     </section>

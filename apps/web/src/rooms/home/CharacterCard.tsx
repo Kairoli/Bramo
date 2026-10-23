@@ -1,4 +1,6 @@
-import type { CSSProperties } from 'react';
+import { type CSSProperties, useEffect, useState } from 'react';
+import type { GearView } from '@bramo/shared';
+import { api } from '../../api';
 import { useGame } from '../../game/GameContext';
 import { EquipSlot, PaperDoll, useEquipment } from '../../components/equipment';
 import { STYLE_NAMES } from '../../components/ClassChoice';
@@ -13,6 +15,12 @@ import { num } from '../../format';
 export function CharacterCard() {
   const { name, content, state, go } = useGame();
   const equipment = useEquipment();
+  // Le vrai build autour du personnage [Louis, 24 octobre : « les items autour du perso sont ses cosmétiques »] :
+  // l'équipement porté, relu quand le préréglage change.
+  const [gear, setGear] = useState<GearView | null>(null);
+  useEffect(() => {
+    api.gear().then(setGear).catch(() => {});
+  }, [state.combat?.activePreset, state.classId]);
   const best = content.professions
     .filter((p) => p.status === 'playable')
     .map((p) => ({ p, s: state.skills[p.id]! }))
@@ -33,12 +41,12 @@ export function CharacterCard() {
           <>
             <h3>{name}</h3>
             <div style={{ color: 'var(--clan)' }}>
-              {best.s.nickname} · {best.p.name} {best.s.level}
+              {state.title ?? `${best.s.nickname} · ${best.p.name} ${best.s.level}`}
             </div>
           </>
         )}
       </div>
-      <PaperDoll size="card" />
+      <PaperDoll size="card" mode="gear" gear={gear} />
       <div className="char-strip">
         {cls && (
           <button className="class-badge" onClick={() => go('combat')} title={combat ? `${num(Math.floor(combat.xp - combat.levelXp))} / ${num(span)} XP vers le niveau ${combat.level + 1}` : undefined}>
@@ -60,10 +68,13 @@ export function CharacterCard() {
           <EquipSlot entry={equipment.meal} side="right" />
         </div>
       </div>
-      <PresetSwitch />
-      <button className="link character-open" onClick={() => go('character')}>
-        Ouvrir le personnage →
-      </button>
+      {/* Préréglages et lien vers la salle Personnage sur une seule ligne : la place gagnée va au personnage. */}
+      <div className="char-foot">
+        <PresetSwitch />
+        <button className="link character-open" onClick={() => go('character')}>
+          Ouvrir le personnage →
+        </button>
+      </div>
     </section>
   );
 }

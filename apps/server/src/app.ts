@@ -28,6 +28,8 @@ import {
   chooseClass,
   chooseOutfit,
   chooseOrnament,
+  chooseTitle,
+  titleBody,
   setLook,
   viewGear,
   gearGrantBody,
@@ -88,6 +90,7 @@ import {
   gearCraftBody,
   gearMarketQuery,
   gearRecipe,
+  masterpieceChance,
   gearSellBody,
   skillLevel,
   stockSupplies,
@@ -479,6 +482,11 @@ export async function buildApp({ db, content, clock = Date.now, secureCookies = 
     }));
   });
 
+  /** Son titre, choisi à part de l'ornement (null = par défaut). */
+  app.post('/api/character/title', (req) => {
+    const { title } = body(titleBody, req);
+    return playAs(req, (state) => ({ state: chooseTitle(state, title, content) }));
+  });
   app.post('/api/character/ornament', (req) => {
     const { ornamentId } = body(ornamentBody, req);
     return playAs(req, (state) => ({ state: chooseOrnament(state, ornamentId, content) }));
@@ -826,7 +834,11 @@ export async function buildApp({ db, content, clock = Date.now, secureCookies = 
         level,
         models: craftableModels(profession, content)
           .filter((m) => gearRecipe(m.id, content)!.level <= level + 8)
-          .map((m) => ({ id: m.id, name: m.name, slot: m.slot, tier: m.tier, rarity: m.rarity, orientation: m.orientation, classes: m.classes, family: m.family, stats: m.stats, recipe: gearRecipe(m.id, content)! })),
+          .map((m) => {
+            const recipe = gearRecipe(m.id, content)!;
+            // Lignes tirées (au plus, au moins) et chance de chef-d'œuvre à son niveau : de quoi décider avant de fabriquer.
+            return { id: m.id, name: m.name, slot: m.slot, tier: m.tier, rarity: m.rarity, orientation: m.orientation, classes: m.classes, family: m.family, stats: m.stats, rolls: m.rolls, masterpiece: masterpieceChance(level, recipe.level, content), recipe };
+          }),
       };
     });
   });

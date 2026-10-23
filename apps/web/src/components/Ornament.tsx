@@ -25,7 +25,10 @@ export function plateWidth(width: number): number {
 }
 
 /** Titre écrit dans la plaque : le surnom de la commande ; pour une variante en réserve, le surnom affiché du métier. */
-export function ornamentTitle(o: Ornament, content: ContentResponse, state?: StateView): string {
+export function ornamentTitle(o: Ornament, content: ContentResponse, state?: StateView, title?: string | null): string {
+  // Le titre choisi passe avant celui de l'ornement (titres et ornements se choisissent séparément).
+  const chosen = title !== undefined ? title : state?.title;
+  if (chosen) return chosen;
   const trial = o.trial ? content.trials[o.trial] : undefined;
   return trial?.nickname ?? state?.skills[o.profession]?.nickname ?? '';
 }

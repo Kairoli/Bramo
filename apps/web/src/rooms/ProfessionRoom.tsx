@@ -37,7 +37,8 @@ export function ProfessionRoom({ id }: { id: string }) {
   // Un chef-d'œuvre disparaît une fois l'épreuve réussie : on revient alors à une recette du métier.
   const selectedId = recipes.some((r) => r.id === chosenId) ? chosenId : fallbackId;
   const selected = content.recipes[selectedId]!;
-  const [workshop, setWorkshop] = useState(false);
+  // Les métiers d'équipement ont deux espaces en bas de la salle : leurs recettes, et l'atelier d'équipement.
+  const [mode, setMode] = useState<'recipes' | 'gear'>('recipes');
   // Les métiers qui fabriquent de l'équipement de combat ont leur atelier (data/gear_crafting.yaml).
   const makesGear = Object.values(content.gearCrafting?.families ?? {}).includes(id);
   const span = skill.nextLevelXp ? Math.min(1, (skill.xp - skill.levelXp) / (skill.nextLevelXp - skill.levelXp)) : 1;
@@ -68,11 +69,6 @@ export function ProfessionRoom({ id }: { id: string }) {
               ))}
           </div>
           <Bar value={span} color={skill.gated ? 'var(--clan)' : undefined} />
-          {makesGear && (
-            <button className="btn btn-sm workshop-open" onClick={() => setWorkshop(true)}>
-              Atelier d’équipement
-            </button>
-          )}
           <div className="muted skill-xp">
             {skill.gated
               ? `Niveau bloqué au ${skill.level} · ${num(skill.heldXp)} XP en attente, créditée à la validation`
@@ -86,13 +82,32 @@ export function ProfessionRoom({ id }: { id: string }) {
         </div>
         {profession.master && <MasterPanel professionId={id} onCraft={setSelectedId} />}
       </section>
-      {workshop && <GearWorkshop profession={id} onClose={() => setWorkshop(false)} />}
 
       <div className="profession-bottom">
-        <RecipeList recipes={recipes} level={skill.level} selectedId={selectedId} onSelect={setSelectedId} />
-        <RecipeDetail key={selected.id} recipe={selected} level={skill.level} />
+        {makesGear && mode === 'gear' ? (
+          <GearWorkshop profession={id} switcher={<ModeSwitch mode={mode} onMode={setMode} />} />
+        ) : (
+          <>
+            <RecipeList recipes={recipes} level={skill.level} selectedId={selectedId} onSelect={setSelectedId} switcher={makesGear ? <ModeSwitch mode={mode} onMode={setMode} /> : null} />
+            <RecipeDetail key={selected.id} recipe={selected} level={skill.level} />
+          </>
+        )}
       </div>
     </main>
+  );
+}
+
+/** Recettes ou atelier d'équipement : deux grands onglets en tête du panneau du bas. */
+function ModeSwitch({ mode, onMode }: { mode: 'recipes' | 'gear'; onMode: (m: 'recipes' | 'gear') => void }) {
+  return (
+    <div className="mode-tabs" role="tablist">
+      <button role="tab" aria-selected={mode === 'recipes'} onClick={() => onMode('recipes')}>
+        Recettes
+      </button>
+      <button role="tab" aria-selected={mode === 'gear'} onClick={() => onMode('gear')}>
+        <span aria-hidden>⚒</span> Équipement
+      </button>
+    </div>
   );
 }
 
@@ -240,11 +255,13 @@ function RecipeList({
   level,
   selectedId,
   onSelect,
+  switcher,
 }: {
   recipes: Recipe[];
   level: number;
   selectedId: string;
   onSelect: (id: string) => void;
+  switcher?: React.ReactNode;
 }) {
   const { content, state } = useGame();
   const profession = content.professions.find((p) => p.id === recipes[0]?.profession)!;
@@ -268,7 +285,7 @@ function RecipeList({
   return (
     <section className="panel recipes">
       <header className="recipes-head">
-        <span className="eyebrow">Recettes</span>
+        {switcher ?? <span className="eyebrow">Recettes</span>}
         {categories.length > 1 && (
           <div className="tabs tabs-sm" role="tablist">
             <button role="tab" aria-selected={!category} onClick={() => setCategory(null)}>

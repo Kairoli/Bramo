@@ -4,6 +4,7 @@ import { levelForXp } from '../formulas/xp.js';
 import { bonusMultiplier, energyChargesLeft, energyDurationMs, presenceAt } from '../formulas/rates.js';
 import type { Activity, CharacterState, MealBuff, QueuedAction } from './state.js';
 import { earlyXpMultiplier } from './state.js';
+import { type TitleOption, chosenTitle, unlockedTitles } from './titles.js';
 import { bonusesFor } from './advance.js';
 import { copiesRemaining, durabilityMs, isDurable } from './gear.js';
 import { lookOptions, recycleYield, repairCost, unlockedOutfits } from './actions.js';
@@ -87,6 +88,9 @@ export interface StateView {
   /** Ornement de métier porté (null = aucun) et ceux que le personnage peut porter. */
   ornament: string | null;
   unlockedOrnaments: string[];
+  /** Titre choisi (null = par défaut) et tous les titres gagnés. */
+  title: string | null;
+  titles: TitleOption[];
   trials: Record<string, TrialStatus>;
   /** Combat de la classe actuelle (null sans classe ou sans data/combat/). */
   combat: CombatView | null;
@@ -204,6 +208,8 @@ export function viewState(state: CharacterState, now: number, content: Content):
     lookOptions: lookOptions(state, content),
     appearance: viewAppearance(state, content),
     ornament: wornOrnament(state, content),
+    title: chosenTitle(state, content),
+    titles: unlockedTitles(state, content),
     tourDone: !!state.tourDone,
     unlockedOrnaments: unlockedOrnaments(state, content),
     trials,

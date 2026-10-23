@@ -58,3 +58,15 @@ describe('XP du début de métier', () => {
     expect(first + boostedXp(10, 7, first, 100, 2)).toBe(a);
   });
 });
+
+describe('titres', () => {
+  it('on choisit un titre gagné, à part de l’ornement ; un titre pas gagné est refusé', async () => {
+    const { chooseTitle, chosenTitle, unlockedTitles } = await import('../src/engine/titles.js');
+    const s = makeState();
+    expect(unlockedTitles(s, content).map((t) => t.text)).toContain('Gratte-sol');
+    expect(() => chooseTitle(s, 'Roi du monde', content)).toThrow('pas encore gagné');
+    const t = chooseTitle(s, 'Souffleur', content);
+    expect(chosenTitle(t, content)).toBe('Souffleur');
+    expect(chosenTitle(chooseTitle(t, null, content), content)).toBeNull();
+  });
+});

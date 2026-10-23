@@ -118,7 +118,11 @@ export function GearPanel({ gear, onChange }: { gear: GearView | null; onChange:
   const { content, state, flash, act } = useGame();
   const [pick, setPick] = useState<{ id?: number; slot?: string } | null>(null);
   const [busy, setBusy] = useState(false);
-  const [bulk, setBulk] = useState(false);
+  const [selecting, setSelecting] = useState(false);
+  const [chosen, setChosen] = useState<number[]>([]);
+  const [rarityF, setRarityF] = useState('');
+  const [mine, setMine] = useState(false);
+  const [sort, setSort] = useState<'rarity' | 'tier' | 'slot' | 'new'>('rarity');
   const call = async (fn: () => Promise<GearView>) => {
     setBusy(true);
     try {
@@ -132,7 +136,18 @@ export function GearPanel({ gear, onChange }: { gear: GearView | null; onChange:
   const items = gear?.items ?? [];
   const slots = SLOT_ORDER.filter((s) => content.gearSlots[s]);
   const bag = items.filter((g) => !g.equipped);
-  const filtered = pick?.slot ? bag.filter((g) => g.slot === pick.slot) : bag;
+  const RANK_OF: Record<string, number> = { common: 0, rare: 1, epic: 2, legendary: 3 };
+  const shown = bag
+    .filter((g) => (!pick?.slot || g.slot === pick.slot) && (!rarityF || g.rarity === rarityF) && (!mine || g.wearable))
+    .sort((a, b) =>
+      sort === 'new'
+        ? b.id - a.id
+        : sort === 'slot'
+          ? SLOT_ORDER.indexOf(a.slot) - SLOT_ORDER.indexOf(b.slot) || RANK_OF[b.rarity]! - RANK_OF[a.rarity]! || b.tier - a.tier
+          : sort === 'tier'
+            ? b.tier - a.tier || RANK_OF[b.rarity]! - RANK_OF[a.rarity]!
+            : RANK_OF[b.rarity]! - RANK_OF[a.rarity]! || b.tier - a.tier || Number(b.masterpiece) - Number(a.masterpiece),
+    );
   const selected = pick?.id !== undefined ? items.find((g) => g.id === pick.id) : undefined;
   const sets = gear?.totals.sets ?? [];
 
@@ -168,27 +183,80 @@ export function GearPanel({ gear, onChange }: { gear: GearView | null; onChange:
       )}
       <header className="bag-head">
         <span className="eyebrow">
-          Sac d’équipement · {filtered.length}
-          {pick?.slot ? ` · ${content.gearSlots[pick.slot]?.name}` : ''}
+          Sac d’équipement · {shown.length}
+          {shown.length !== bag.length ? ` sur ${bag.length}` : ''}
         </span>
-        {pick?.slot && (
-          <button className="link small" onClick={() => setPick(null)}>
-            Tout voir
-          </button>
-        )}
         {bag.some((g) => g.salvage) && (
-          <button className="link small" onClick={() => setBulk(true)}>
-            Démonter…
+          <button className={`btn btn-sm${selecting ? ' btn-primary' : ''}`} onClick={() => (setSelecting(!selecting), setChosen([]))}>
+            {selecting ? 'Terminer' : 'Sélectionner'}
           </button>
         )}
       </header>
-      <div className="gear-grid scroll">
-        {filtered.length === 0 && <p className="muted small gear-grid-empty">Rien ici pour l’instant : les rencontres en font tomber.</p>}
-        {filtered.map((g) => (
-          <GearTile key={g.id} g={g} slot={g.slot} selected={pick?.id === g.id} onClick={() => setPick({ id: g.id, slot: pick?.slot })} />
-        ))}
+      {/* Trier et filtrer le sac [Louis, 24 octobre : « tout est juste déposé dans le sac, c'est chiant pour s'y retrouver »]. */}
+      <div className="bag-tools">
+        <div className="bag-row">
+          <button className={`ws-chip${!pick?.slot ? ' on' : ''}`} onClick={() => setPick(null)}>
+            Tout
+          </button>
+          {slots
+            .filter((s) => bag.some((g) => g.slot === s))
+            .map((s) => (
+              <Tip key={s} content={<TipHead title={content.gearSlots[s]?.name ?? s} sub={`${bag.filter((g) => g.slot === s).length} au sac`} />}>
+                <button className={`ws-chip icon${pick?.slot === s ? ' on' : ''}`} onClick={() => setPick(pick?.slot === s ? null : { slot: s })}>
+                  <SlotGlyph slot={s} size={16} />
+                </button>
+              </Tip>
+            ))}
+        </div>
+        <div className="bag-row">
+          {(['common', 'rare', 'epic', 'legendary'] as const)
+            .filter((r) => bag.some((g) => g.rarity === r))
+            .map((r) => (
+              <button key={r} className={`ws-chip${rarityF === r ? ' on' : ''}`} style={{ '--cc': rarityColor(r) } as CSSProperties} onClick={() => setRarityF(rarityF === r ? '' : r)}>
+                {RARITY_NAMES[r]}
+              </button>
+            ))}
+          <button className={`ws-chip${mine ? ' on' : ''}`} onClick={() => setMine(!mine)} title="Seulement les pièces que votre classe peut porter">
+            Ma classe
+          </button>
+          <select className="input bag-sort" value={sort} onChange={(e) => setSort(e.target.value as typeof sort)} aria-label="Trier">
+            <option value="rarity">Rareté</option>
+            <option value="tier">Palier</option>
+            <option value="slot">Emplacement</option>
+            <option value="new">Plus récentes</option>
+          </select>
+        </div>
       </div>
-      <p className="muted small gear-hint">Touchez une pièce pour voir sa fiche et la comparer à celle que vous portez.</p>
+      <div className="gear-grid scroll">
+        {shown.length === 0 && <p className="muted small gear-grid-empty">{bag.length ? 'Rien avec ces filtres.' : 'Rien ici pour l’instant : les rencontres en font tomber.'}</p>}
+        {shown.map((g) =>
+          selecting ? (
+            <span key={g.id} className={`bag-pick${chosen.includes(g.id) ? ' checked' : ''}${g.salvage ? '' : ' off'}`}>
+              <GearTile g={g} slot={g.slot} selected={chosen.includes(g.id)} onClick={() => g.salvage && setChosen(chosen.includes(g.id) ? chosen.filter((x) => x !== g.id) : [...chosen, g.id])} />
+            </span>
+          ) : (
+            <GearTile key={g.id} g={g} slot={g.slot} selected={pick?.id === g.id} onClick={() => setPick({ id: g.id, slot: pick?.slot })} />
+          ),
+        )}
+      </div>
+      {selecting ? (
+        <SalvageBar
+          bag={shown}
+          chosen={bag.filter((g) => chosen.includes(g.id))}
+          onChoose={setChosen}
+          onDone={() =>
+            void act(async () => {
+              const r = await api.gearSalvage(chosen);
+              onChange(r.gear);
+              setChosen([]);
+              setSelecting(false);
+              return r.state;
+            })
+          }
+        />
+      ) : (
+        <p className="muted small gear-hint">Survolez une pièce pour la voir ; touchez-la pour la comparer et l’équiper.</p>
+      )}
       {selected && (
         <GearCard
           g={selected}
@@ -235,82 +303,63 @@ export function GearPanel({ gear, onChange }: { gear: GearView | null; onChange:
           }
         />
       )}
-      {bulk && (
-        <BulkSalvage
-          bag={bag}
-          onClose={() => setBulk(false)}
-          onDone={(ids) =>
-            void act(async () => {
-              const r = await api.gearSalvage(ids);
-              onChange(r.gear);
-              setBulk(false);
-              setPick(null);
-              return r.state;
-            })
-          }
-        />
-      )}
       {state.classId && import.meta.env.DEV && <DevGrant onChange={onChange} />}
     </div>
   );
 }
 
 /**
- * Démonter en lot chez l'Affineur (docs/design/eclats.md §3) : les pièces du sac des raretés cochées. Les chefs-d'œuvre,
- * les pièces d'ensemble, les nommées et celles déjà travaillées restent : elles se démontent une à une depuis leur fiche.
+ * Démonter plusieurs pièces d'un coup chez l'Affineur [Louis, 24 octobre : « pas de démontage en multi-sélection »] : on
+ * coche les pièces dans le sac (ou « Toutes les Communes »…), on voit la poussière, une confirmation pour tout le lot.
+ * Les raccourcis par rareté laissent de côté les chefs-d'œuvre, ensembles, nommées et pièces travaillées.
  */
-function BulkSalvage({ bag, onClose, onDone }: { bag: GearItemView[]; onClose: () => void; onDone: (ids: number[]) => void }) {
+const PLURAL: Record<string, string> = { common: 'Toutes les Communes', rare: 'Toutes les Rares', epic: 'Toutes les Épiques' };
+
+function SalvageBar({ bag, chosen, onChoose, onDone }: { bag: GearItemView[]; chosen: GearItemView[]; onChoose: (ids: number[]) => void; onDone: () => void }) {
   const { content } = useGame();
-  const [rarities, setRarities] = useState<string[]>(['common', 'rare']);
   const [sure, setSure] = useState(false);
   const kept = (g: GearItemView) => g.masterpiece || !!g.set || g.rank > 0 || g.rerollLine != null || g.named;
-  const chosen = bag.filter((g) => g.salvage && !kept(g) && rarities.includes(g.rarity));
   const dust = chosen.reduce((s, g) => s + (g.salvage?.qty ?? 0), 0);
   const dustItem = content.gearCrafting?.refine?.salvage?.item;
-  const toggle = (r: string) => {
-    setSure(false);
-    setRarities((x) => (x.includes(r) ? x.filter((y) => y !== r) : [...x, r]));
-  };
+  const ids = new Set(chosen.map((g) => g.id));
+  const add = (r: string) => onChoose([...ids, ...bag.filter((g) => g.salvage && !kept(g) && g.rarity === r).map((g) => g.id)]);
   return (
-    <Modal onClose={onClose} className="salvage-modal">
-      <h2>Démonter chez l’Affineur</h2>
-      <p className="muted small">Les pièces disparaissent et donnent de la poussière, qui sert à retailler une ligne. Les chefs-d’œuvre, pièces d’ensemble, nommées et pièces déjà travaillées sont gardés : démontez-les une à une depuis leur fiche.</p>
-      <div className="salvage-rarities">
-        {(['common', 'rare', 'epic', 'legendary'] as const).map((r) => {
-          const n = bag.filter((g) => g.salvage && !kept(g) && g.rarity === r).length;
-          return (
-            <button key={r} className={`chip${rarities.includes(r) ? ' on' : ''}`} style={{ '--rc': rarityColor(r) } as CSSProperties} disabled={!n} onClick={() => toggle(r)}>
-              {RARITY_NAMES[r]} · {n}
+    <div className="salvage-bar">
+      <div className="bag-row">
+        <span className="muted small">Ajouter :</span>
+        {(['common', 'rare', 'epic'] as const)
+          .filter((r) => bag.some((g) => g.salvage && !kept(g) && g.rarity === r))
+          .map((r) => (
+            <button key={r} className="ws-chip" style={{ '--cc': rarityColor(r) } as CSSProperties} onClick={() => (setSure(false), add(r))}>
+              {PLURAL[r]}
             </button>
-          );
-        })}
+          ))}
+        {chosen.length > 0 && (
+          <button className="link small" onClick={() => (setSure(false), onChoose([]))}>
+            Vider
+          </button>
+        )}
       </div>
-      <div className="salvage-preview gear-grid">
-        {chosen.map((g) => (
-          <GearTile key={g.id} g={g} slot={g.slot} />
-        ))}
-        {!chosen.length && <p className="muted small">Aucune pièce de ces raretés à démonter.</p>}
-      </div>
-      <footer className="salvage-foot">
+      <div className="salvage-bar-foot">
         <span>
-          {chosen.length} pièce{chosen.length > 1 ? 's' : ''} → {dustItem && <ItemIcon item={content.items[dustItem]} small />} <strong>{dust.toLocaleString('fr-FR')}</strong> × {dustItem ? content.items[dustItem]?.name : 'poussière'}
+          <strong>{chosen.length}</strong> pièce{chosen.length > 1 ? 's' : ''} → {dustItem && <ItemIcon item={content.items[dustItem]} small />} <strong>{dust.toLocaleString('fr-FR')}</strong> poussière
         </span>
         {sure ? (
           <span className="salvage-confirm">
-            <button className="btn btn-danger" onClick={() => onDone(chosen.map((g) => g.id))}>
-              Oui, démonter {chosen.length} pièce{chosen.length > 1 ? 's' : ''}
+            <button className="btn btn-sm btn-danger" onClick={onDone}>
+              Oui, démonter
             </button>
-            <button className="btn btn-ghost" onClick={() => setSure(false)}>
-              Annuler
+            <button className="btn btn-sm btn-ghost" onClick={() => setSure(false)}>
+              Non
             </button>
           </span>
         ) : (
-          <button className="btn btn-primary" disabled={!chosen.length} onClick={() => setSure(true)}>
+          <button className="btn btn-sm btn-primary" disabled={!chosen.length} onClick={() => setSure(true)}>
             Démonter
           </button>
         )}
-      </footer>
-    </Modal>
+      </div>
+    </div>
   );
 }
 

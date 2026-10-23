@@ -67,6 +67,8 @@ export const characters = pgTable('characters', {
   shown: jsonb('shown').$type<Record<string, number>>().notNull().default({}),
   /** Ornement de métier porté (null = aucun). */
   ornament: text('ornament'),
+  /** Titre affiché sous le nom, choisi à part de l'ornement (null = par défaut). */
+  title: text('title'),
   /** Photo de profil visible : son numéro de version (adresse de l'image), null sans photo ou photo masquée. */
   avatar: integer('avatar'),
   /** Page profil : la devise (une phrase) et la bannière (un décor du jeu, apps/web/public/scenes) ; null : par défaut. */

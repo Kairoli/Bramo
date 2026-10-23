@@ -7,7 +7,7 @@ import { createPortal } from 'react-dom';
  * la place), rendue dans <body> pour ne jamais être coupée par un panneau. Au survol, au focus clavier, et à l'appui
  * long sur écran tactile. Le contenu se compose avec TipHead / TipLine / TipFoot.
  */
-export function Tip({ content, children, className, block, delay = 120 }: { content: ReactNode; children: ReactNode; className?: string; block?: boolean; delay?: number }) {
+export function Tip({ content, children, className, block, delay = 120, style }: { content: ReactNode; children: ReactNode; className?: string; block?: boolean; delay?: number; style?: CSSProperties }) {
   const anchor = useRef<HTMLSpanElement>(null);
   const [rect, setRect] = useState<DOMRect | null>(null);
   const timer = useRef<number | undefined>(undefined);
@@ -35,6 +35,7 @@ export function Tip({ content, children, className, block, delay = 120 }: { cont
     <span
       ref={anchor}
       className={`tip-anchor${block ? ' block' : ''}${className ? ` ${className}` : ''}`}
+      style={style}
       onPointerEnter={(e) => e.pointerType === 'mouse' && show()}
       onPointerLeave={hide}
       onFocus={show}

@@ -5975,86 +5975,6 @@
   gap: 6px;
 }
 
-/* --- Atelier d'équipement (components/GearWorkshop.tsx) --- */
-.workshop-open {
-  margin-top: 6px;
-  align-self: flex-start;
-}
-.workshop-modal {
-  width: min(820px, 95vw);
-  max-height: 88vh;
-  display: grid;
-  grid-template-rows: auto auto auto auto minmax(0, 1fr);
-  gap: 10px;
-}
-.workshop-modal h2 {
-  margin: 0;
-}
-.workshop-filters {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-.workshop-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: grid;
-  gap: 6px;
-  overflow-y: auto;
-  min-height: 0;
-}
-.workshop-row {
-  display: grid;
-  grid-template-columns: 44px minmax(0, 1fr) auto auto;
-  gap: 10px;
-  align-items: center;
-  padding: 6px 8px;
-  border-radius: var(--radius-sm);
-  background: var(--sunken);
-  border-left: 3px solid var(--r-common);
-}
-.workshop-row.r-rare {
-  border-left-color: var(--r-rare);
-}
-.workshop-row.r-epic {
-  border-left-color: var(--r-epic);
-}
-.workshop-row.r-legendary {
-  border-left-color: var(--r-legendary);
-}
-.workshop-row.locked {
-  opacity: 0.55;
-}
-.workshop-name {
-  display: grid;
-  min-width: 0;
-}
-.workshop-name strong,
-.workshop-name span {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.workshop-inputs {
-  display: flex;
-  gap: 8px;
-  font-size: 13px;
-}
-.workshop-inputs span {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-}
-.workshop-inputs .missing {
-  color: var(--alert);
-}
-@media (max-width: 640px) {
-  .workshop-row {
-    grid-template-columns: 44px minmax(0, 1fr);
-  }
-}
-
 /* --- Vitrine du marché --- */
 .showcase {
   display: grid;
@@ -7973,4 +7893,881 @@ div.tide-role {
 }
 .tip-anchor.gear-tip > .gear-tile {
   width: 100%;
+}
+
+/* --- Salle d'un métier d'équipement : onglets Recettes / Équipement en tête du panneau du bas --- */
+.mode-tabs {
+  display: inline-flex;
+  gap: 4px;
+  padding: 3px;
+  border-radius: 12px;
+  background: var(--sunken);
+  border: 1px solid var(--border);
+}
+.mode-tabs button {
+  padding: 6px 14px;
+  border: 0;
+  border-radius: 9px;
+  background: none;
+  color: var(--text-muted);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 800;
+  cursor: pointer;
+}
+.mode-tabs button[aria-selected='true'] {
+  background: var(--action);
+  color: #1d1410;
+}
+.mode-tabs button:not([aria-selected='true']):hover {
+  color: var(--text);
+}
+
+/* --- Atelier d'équipement (components/GearWorkshop.tsx) : filtres en un clic, grille de pièces, détail à droite --- */
+.workshop-filters {
+  display: grid;
+  gap: 6px;
+}
+.ws-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 5px;
+}
+.ws-row .ws-group + .ws-group {
+  margin-left: 8px;
+  padding-left: 10px;
+  border-left: 1px solid var(--border);
+}
+.ws-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+.ws-chip {
+  --cc: var(--text);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--sunken);
+  color: color-mix(in srgb, var(--cc) 75%, var(--text-muted));
+  font: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.ws-chip.icon {
+  padding: 4px 7px;
+}
+.ws-chip:hover {
+  border-color: color-mix(in srgb, var(--cc) 50%, var(--border));
+}
+.ws-chip.on {
+  color: var(--cc);
+  border-color: var(--cc);
+  background: color-mix(in srgb, var(--cc) 16%, var(--sunken));
+}
+.ws-chip:not([style]).on {
+  --cc: var(--action);
+}
+.ws-empty {
+  flex: 1;
+}
+.ws-grid {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-rows: repeat(var(--rows, 4), minmax(0, 1fr));
+  gap: 6px;
+}
+.ws-card {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  min-height: 0;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--rc);
+  border-radius: 10px;
+  background: var(--sunken);
+  color: var(--text);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.ws-card:hover {
+  border-color: color-mix(in srgb, var(--rc) 60%, var(--border));
+  border-left-color: var(--rc);
+}
+.ws-card.selected {
+  border-color: var(--rc);
+  box-shadow: inset 0 0 0 1px var(--rc), 0 0 14px color-mix(in srgb, var(--rc) 25%, transparent);
+}
+.ws-card.locked {
+  opacity: 0.55;
+}
+.ws-card .gear-icon,
+.ws-card svg {
+  flex: none;
+}
+.ws-card-text {
+  display: grid;
+  gap: 1px;
+  min-width: 0;
+  font-size: 11.5px;
+}
+.ws-card-text strong {
+  font-size: 12.5px;
+  color: var(--rc);
+  line-height: 1.2;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.ws-badge {
+  position: absolute;
+  top: 4px;
+  right: 5px;
+  padding: 0 6px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 800;
+}
+.ws-badge.locked {
+  color: var(--alert);
+  background: color-mix(in srgb, var(--alert) 14%, transparent);
+}
+.ws-badge.ready {
+  color: var(--good);
+  background: color-mix(in srgb, var(--good) 14%, transparent);
+}
+
+/* La pièce choisie. */
+.ws-detail-empty {
+  display: grid;
+  place-items: center;
+}
+.ws-hero {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.ws-hero-icon {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 92px;
+  height: 92px;
+  border-radius: 16px;
+  border: 2px solid var(--rc);
+  background: radial-gradient(circle at 50% 40%, color-mix(in srgb, var(--rc) 28%, var(--sunken)), var(--sunken) 75%);
+  box-shadow: 0 0 22px color-mix(in srgb, var(--rc) 30%, transparent);
+}
+.ws-hero-text {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+}
+.ws-hero-text h3 {
+  margin: 0;
+  font-size: 19px;
+  color: var(--rc);
+  text-wrap: balance;
+}
+.ws-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+.ws-tag {
+  padding: 1px 8px;
+  border-radius: 999px;
+  font-size: 11.5px;
+  font-weight: 700;
+  background: var(--sunken);
+  border: 1px solid var(--border);
+}
+.ws-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.ws-detail {
+  overflow-y: auto;
+}
+.ws-detail .launch {
+  margin-top: auto;
+  position: sticky;
+  bottom: 0;
+  padding-top: 6px;
+  background: var(--panel);
+}
+.ws-bonus {
+  font-size: 12.5px;
+}
+.ws-stat {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: 10px;
+  background: var(--sunken);
+  border: 1px solid var(--border);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: help;
+}
+.ws-stat strong {
+  font-size: 17px;
+  color: var(--good);
+}
+.ws-stat.bonus strong {
+  color: var(--magic);
+}
+.ws-help {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  font-weight: 900;
+  cursor: help;
+}
+
+/* Carte de l'accueil [Louis, 24 octobre : « je rendrais le perso un peu plus grand »] : préréglages et lien sur une
+   ligne, et le personnage agrandi depuis ses pieds (la scène garde de la marge pour l'arme et les effets). */
+.char-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px 10px;
+}
+.char-foot .preset-chips {
+  justify-content: flex-start;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.char-foot .character-open {
+  margin-left: auto;
+}
+.doll-card .doll-figure .rig {
+  transform: scale(1.12);
+  transform-origin: 50% 96%;
+}
+.character-card .character-id {
+  position: relative;
+  z-index: 2;
+}
+
+/* Au survol d'un joueur du bourg, sa carte suffit : l'étiquette du nom s'efface (elle doublait le nom). */
+.walker:hover .walker-name,
+.clan-member-figure:hover .clan-tag {
+  opacity: 0;
+}
+
+/* Petite fenêtre de confirmation (coup de fouet…). */
+.modal.confirm-modal {
+  width: min(400px, calc(100vw - 32px));
+  display: grid;
+  gap: 8px;
+}
+.confirm-modal h3 {
+  margin: 0;
+}
+.confirm-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+/* Fenêtre des tenues : des cartes à hauteur fixe qui défilent (avec huit tenues, la grille écrasait l'aperçu en bande). */
+.class-modal.outfit-modal {
+  height: auto;
+  max-height: calc(100vh - 48px);
+  grid-template-rows: auto auto minmax(0, 1fr);
+}
+.outfit-cards {
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  grid-auto-rows: max-content;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+.outfit-cards .class-card {
+  grid-template-rows: 280px auto auto;
+  gap: 8px;
+  padding: 10px;
+}
+.outfit-cards .class-text h3 {
+  margin: 0;
+  font-size: 18px;
+}
+@media (max-height: 780px) {
+  .outfit-cards .class-card {
+    grid-template-rows: 220px auto auto;
+  }
+}
+
+/* Classement : toute la fenêtre défile (plus d'ascenseur dans la liste [Louis, 24 octobre]) ; sa place reste en bas. */
+.rank-modal {
+  height: auto;
+  max-height: 92vh;
+  grid-template-rows: auto auto auto;
+  overflow-y: auto;
+}
+.rank-body {
+  grid-template-rows: auto;
+  grid-auto-rows: auto;
+}
+.rank-list {
+  overflow: visible;
+}
+.rank-me {
+  position: sticky;
+  bottom: 0;
+  z-index: 2;
+}
+
+/* Sac d'équipement : filtres et tri en un clic, sélection multiple pour démonter (components/GearPanel.tsx). */
+.bag-tools {
+  display: grid;
+  gap: 5px;
+}
+.bag-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+}
+.bag-sort.input {
+  width: auto;
+  margin-left: auto;
+  padding: 3px 8px;
+  font-size: 12px;
+}
+.bag-pick {
+  position: relative;
+  display: block;
+}
+.bag-pick .tip-anchor,
+.bag-pick .gear-tile {
+  width: 100%;
+}
+.bag-pick::after {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 15px;
+  height: 15px;
+  border-radius: 4px;
+  border: 1.5px solid var(--text-muted);
+  background: var(--sunken);
+  pointer-events: none;
+}
+.bag-pick.checked::after {
+  content: '✓';
+  display: grid;
+  place-items: center;
+  color: #1d1410;
+  font-size: 11px;
+  font-weight: 900;
+  background: var(--action);
+  border-color: var(--action);
+}
+.bag-pick.off {
+  opacity: 0.35;
+}
+.bag-pick.off::after {
+  display: none;
+}
+.salvage-bar {
+  display: grid;
+  gap: 6px;
+  padding: 8px 10px;
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--action) 8%, var(--sunken));
+  border: 1px solid color-mix(in srgb, var(--action) 35%, var(--border));
+}
+.salvage-bar-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 13px;
+}
+.salvage-bar-foot > span:first-child {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Fiche d'une pièce : onglets Fiche, Gemme, Affineur, Vendre. */
+.gear-card-tabs {
+  display: flex;
+  gap: 4px;
+  padding: 3px;
+  border-radius: 12px;
+  background: var(--sunken);
+  border: 1px solid var(--border);
+}
+.gear-card-tabs button {
+  flex: 1;
+  padding: 6px 10px;
+  border: 0;
+  border-radius: 9px;
+  background: none;
+  color: var(--text-muted);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 800;
+  cursor: pointer;
+}
+.gear-card-tabs button[aria-selected='true'] {
+  background: color-mix(in srgb, var(--rc) 22%, var(--panel));
+  color: var(--text);
+}
+
+/* Ornements et titres : l'onglet des titres. */
+.ornament-none-mark {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  font-size: 22px;
+  color: var(--text-muted);
+}
+.title-grid {
+  display: grid;
+  align-content: start;
+  gap: 12px;
+}
+.title-group {
+  display: grid;
+  gap: 5px;
+}
+.title-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.title-chip {
+  padding: 5px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--sunken);
+  color: var(--text);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.title-chip:hover {
+  border-color: color-mix(in srgb, var(--clan) 55%, var(--border));
+}
+.title-chip.on {
+  color: var(--clan);
+  border-color: var(--clan);
+  background: color-mix(in srgb, var(--clan) 14%, var(--sunken));
+}
+.title-chip.default {
+  justify-self: start;
+}
+
+/* --- Fenêtre de la Marée allégée [Louis, 24 octobre] : la rotation, une ligne de temps, deux boutons de rôle, trois
+   chiffres ; le reste en volets et en bulles. --- */
+.tide-top {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  color: var(--event);
+}
+.tide-top .tip-anchor {
+  flex: 1;
+  min-width: 0;
+}
+.tide-top-title {
+  display: grid;
+  gap: 2px;
+  color: var(--text);
+}
+.tide-top-title h2 {
+  margin: 0;
+  font-size: 26px;
+}
+.tide-shines {
+  color: var(--event);
+}
+.tide-rank-btn {
+  flex: none;
+}
+.tide-rotation {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 6px;
+}
+.tide-rotation li {
+  display: grid;
+  gap: 2px;
+  padding: 8px 10px;
+  border-radius: 12px;
+  background: var(--sunken);
+  border: 1px solid var(--border);
+  text-align: center;
+  justify-items: center;
+}
+.tide-rotation li.past {
+  opacity: 0.55;
+}
+.tide-rotation li.now {
+  border-color: var(--event);
+  background: color-mix(in srgb, var(--event) 14%, var(--sunken));
+  box-shadow: 0 0 14px color-mix(in srgb, var(--event) 25%, transparent);
+}
+.tide-rot-day {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+.tide-rotation li.now .tide-rot-day {
+  color: var(--event);
+}
+.tide-rot-name {
+  font-size: 13px;
+  line-height: 1.2;
+}
+.tide-timeline {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+}
+.tide-timeline li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--sunken);
+}
+.tide-timeline li.now {
+  border-color: var(--event);
+}
+.tide-timeline li.done {
+  opacity: 0.75;
+}
+.tide-timeline li.now .tide-step-n {
+  background: var(--event);
+  color: #0b2328;
+}
+.tide-tl-text {
+  flex: 1;
+  min-width: 0;
+  display: grid;
+}
+.tide-role-toggle {
+  display: grid;
+  grid-template-columns: 1fr 1fr auto;
+  align-items: stretch;
+  gap: 6px;
+}
+.tide-role-toggle > button {
+  display: grid;
+  gap: 2px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--sunken);
+  color: var(--text);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.tide-role-toggle > button span {
+  font-size: 12.5px;
+  color: var(--text-muted);
+}
+.tide-role-toggle > button.on {
+  border-color: var(--event);
+  background: color-mix(in srgb, var(--event) 14%, var(--sunken));
+}
+.tide-role-toggle > button.on span {
+  color: var(--event);
+}
+.tide-role-toggle .tip-anchor {
+  align-self: center;
+}
+.tide-help {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  font-weight: 900;
+  cursor: help;
+}
+.tide-tip-body {
+  display: grid;
+  gap: 4px;
+}
+.tide-work {
+  display: grid;
+  gap: 6px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: var(--sunken);
+}
+.tide-work .btn {
+  justify-self: start;
+}
+.tide-work-row {
+  display: grid;
+  grid-template-columns: auto minmax(90px, auto) minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+}
+.tide-stats {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 6px;
+}
+.tide-stats > .tip-anchor > .tide-stat {
+  width: 100%;
+}
+.tide-stats .tide-stat {
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: 2px;
+  min-width: 110px;
+  padding: 8px 14px;
+  border-radius: 12px;
+  background: var(--sunken);
+  border: 1px solid var(--border);
+  cursor: help;
+}
+.tide-stats .tide-stat.wide {
+  justify-items: stretch;
+  text-align: center;
+}
+.tide-stat-big {
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--event);
+  line-height: 1.1;
+}
+.tide-stats .tide-dike-bar {
+  margin: 8px 8px 6px;
+}
+.tide-more {
+  border-top: 1px solid var(--border);
+  padding-top: 8px;
+}
+.tide-more summary {
+  cursor: pointer;
+  font-weight: 800;
+  font-size: 14px;
+  color: var(--text-muted);
+}
+.tide-more[open] summary {
+  color: var(--text);
+  margin-bottom: 8px;
+}
+.tide-more .tide-patron {
+  border-top: 0;
+  padding-top: 0;
+}
+.tide-shop-list li,
+.tide-nights-list li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 13px;
+}
+@media (max-width: 760px) {
+  .tide-rotation {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .tide-timeline,
+  .tide-stats {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* --- La route en carte (CombatRoom, RouteMap) [Louis, 24 octobre] --- */
+.rmap-zones {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.rmap-zone-group {
+  display: flex;
+  gap: 3px;
+  padding: 3px;
+  border-radius: 10px;
+  background: var(--sunken);
+  border: 1px solid var(--border);
+}
+.rmap-zone {
+  width: 26px;
+  height: 22px;
+  border-radius: 7px;
+  border: 0;
+  background: var(--panel);
+  color: var(--text-muted);
+  font: inherit;
+  font-size: 11px;
+  font-weight: 800;
+  cursor: pointer;
+}
+.rmap-zone.done {
+  background: color-mix(in srgb, var(--good) 22%, var(--panel));
+  color: var(--good);
+}
+.rmap-zone.here {
+  box-shadow: inset 0 0 0 1.5px var(--alert);
+  color: var(--text);
+}
+.rmap-zone.on {
+  background: var(--alert);
+  color: #1d1410;
+}
+.rmap-zone.locked {
+  opacity: 0.4;
+  cursor: default;
+}
+.rmap-land {
+  position: relative;
+  flex: 1;
+  min-height: 150px;
+  border-radius: 14px;
+  overflow: hidden;
+  background-size: cover;
+  background-position: 60% 50%;
+  border: 1px solid var(--border);
+}
+.rmap-land::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgb(12 15 17 / 0.45), rgb(12 15 17 / 0.62));
+}
+.rmap-path {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.rmap-trail {
+  fill: none;
+  stroke: #e8dcc0;
+  stroke-opacity: 0.55;
+  stroke-width: 5;
+  stroke-dasharray: 2 14;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+}
+.rmap-node-tip {
+  position: absolute;
+  z-index: 2;
+  width: 32px;
+  height: 32px;
+  margin: -16px 0 0 -16px;
+}
+.rmap-node {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 32px;
+  height: 32px;
+  margin: -16px 0 0 -16px;
+  border-radius: 50%;
+  border: 3px solid var(--dc);
+  background: #151a1d;
+  color: var(--text);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 900;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgb(0 0 0 / 0.6);
+  transition: transform 0.12s;
+}
+.rmap-node:hover {
+  transform: scale(1.12);
+}
+.rmap-node.done {
+  background: color-mix(in srgb, var(--good) 35%, #151a1d);
+}
+.rmap-node.locked {
+  opacity: 0.55;
+  background: #0f1315;
+}
+.rmap-node.guardian {
+  width: 42px;
+  height: 42px;
+  margin: -21px 0 0 -21px;
+  font-size: 17px;
+  color: var(--clan);
+}
+.rmap-node.selected {
+  box-shadow: 0 0 0 3px #fff8, 0 0 16px var(--dc);
+}
+.rmap-node.current {
+  animation: rmap-pulse 1.6s ease-in-out infinite;
+}
+@keyframes rmap-pulse {
+  50% {
+    box-shadow: 0 0 0 6px color-mix(in srgb, var(--dc) 35%, transparent), 0 2px 8px rgb(0 0 0 / 0.6);
+  }
+}
+.rmap-me {
+  position: absolute;
+  z-index: 3;
+  transform: translate(-50%, -150%);
+  pointer-events: none;
+  filter: drop-shadow(0 2px 4px rgb(0 0 0 / 0.7));
+}
+.rmap-prev,
+.rmap-next {
+  position: absolute;
+  z-index: 3;
+  top: 50%;
+  transform: translateY(-50%);
+}
+.rmap-prev {
+  left: 6px;
+}
+.rmap-next {
+  right: 6px;
+}
+.rmap-danger {
+  padding: 1px 8px;
+  border-radius: 999px;
+  font-size: 11.5px;
+  font-weight: 800;
+  color: var(--dc);
+  border: 1px solid color-mix(in srgb, var(--dc) 55%, var(--border));
 }

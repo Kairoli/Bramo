@@ -1,6 +1,10 @@
 {
   "id": "runist",
-  "description": "Runiste : la pose de référence du gabarit. Bâton planté dans la main proche, main du sort levée vers la droite.",
-  "bones": {},
+  "description": "Runiste : la pose de référence du gabarit, bras du bâton un peu écarté du corps [demande de Louis, 23 octobre : « le bâton lui rentre dedans »] ; le poignet compense pour garder le bâton droit. Main du sort levée vers la droite.",
+  "bones": {
+    "upperarm_near": 15,
+    "forearm_near": -3,
+    "hand_near": -12
+  },
   "animation": "idle"
 }

@@ -5625,6 +5625,209 @@
   display: grid;
   gap: 14px;
 }
+/* Avec la scène en direct, la fenêtre s'élargit pour la digue. */
+.tide-modal.with-live {
+  width: min(1100px, 96vw);
+  /* Les rangées gardent leur hauteur (la scène a une hauteur fixée par ses proportions). */
+  grid-auto-rows: max-content;
+  align-content: start;
+}
+.tide-demo {
+  justify-self: end;
+}
+
+/* --- La Marée en direct (components/TideLive.tsx) : une scène de 1000 × 420. --- */
+.tide-live {
+  position: relative;
+  aspect-ratio: 1000 / 420;
+  width: 100%;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  background: #0c1420;
+}
+.tide-live-bg,
+.tide-live-fx {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.tide-live-fx {
+  pointer-events: none;
+  z-index: 500;
+  will-change: transform;
+}
+.tide-live-crowd {
+  position: absolute;
+  inset: 0;
+}
+.tide-fighter {
+  position: absolute;
+  aspect-ratio: 400 / 750;
+  transform: translateX(-50%);
+  /* Un calque par combattant : celui qui bouge se redessine seul. */
+  will-change: transform;
+}
+.tide-fighter .rig {
+  width: 100%;
+  height: 100%;
+}
+.tide-fighter-name {
+  position: absolute;
+  left: 50%;
+  bottom: -2px;
+  transform: translateX(-50%);
+  font-size: 10px;
+  white-space: nowrap;
+  color: var(--text-muted);
+  text-shadow: 0 1px 2px #000;
+}
+.tide-fighter.me .tide-fighter-name {
+  color: var(--action);
+  font-weight: 800;
+}
+.tide-fighter.me::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 70%;
+  height: 8%;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  border: 2px solid var(--action);
+  opacity: 0.8;
+}
+.tide-live-hud {
+  position: absolute;
+  inset: 0 0 auto;
+  z-index: 600;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 18px;
+  padding: 10px 14px;
+  background: linear-gradient(to bottom, rgb(8 12 18 / 0.85), transparent);
+}
+.tide-live-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.tide-live-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--text-muted);
+}
+.tide-live-dot.on {
+  background: #ff5a5a;
+  box-shadow: 0 0 8px #ff5a5a;
+  animation: tide-live-blink 1.4s ease-in-out infinite;
+}
+.tide-live-dike {
+  flex: 1;
+  min-width: 220px;
+  display: grid;
+  gap: 3px;
+}
+.tide-live-bar {
+  position: relative;
+  height: 9px;
+  border-radius: 5px;
+  background: rgb(255 255 255 / 0.12);
+}
+.tide-live-bar > span {
+  position: absolute;
+  inset: 0 auto 0 0;
+  border-radius: 5px;
+  background: linear-gradient(90deg, var(--event), #ffd27a);
+  transition: width 1s linear;
+}
+.tide-live-bar > i {
+  position: absolute;
+  top: -4px;
+  width: 9px;
+  height: 17px;
+  margin-left: -4px;
+  border-radius: 3px;
+  background: #3a3a36;
+  border: 1px solid #000;
+}
+.tide-live-bar > i.lit {
+  background: #ffd27a;
+  box-shadow: 0 0 10px #ffb040;
+}
+.tide-live-count {
+  color: var(--text-muted);
+}
+.tide-live-banner {
+  position: absolute;
+  left: 50%;
+  bottom: 14px;
+  transform: translateX(-50%);
+  z-index: 600;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: rgb(8 12 18 / 0.8);
+  border: 1px solid var(--border);
+  font-weight: 700;
+  white-space: nowrap;
+}
+.tide-live-num {
+  font: 800 22px 'Bricolage Grotesque', sans-serif;
+  fill: #fff;
+  stroke: #000;
+  stroke-width: 4px;
+  paint-order: stroke;
+}
+.tide-live-num.crit {
+  fill: #ffd27a;
+  font-size: 28px;
+}
+.tide-live-waves {
+  animation: tide-live-waves 6s ease-in-out infinite alternate;
+}
+.tide-live-foam {
+  animation: tide-live-foam 2.6s ease-in-out infinite;
+}
+.tide-live-lamp {
+  animation: tide-live-lamp 2.2s ease-in-out infinite;
+}
+.tide-live-fog {
+  animation: tide-live-fog 7s ease-in-out infinite alternate;
+}
+@keyframes tide-live-blink {
+  50% {
+    opacity: 0.35;
+  }
+}
+@keyframes tide-live-waves {
+  from {
+    transform: translateX(-12px);
+  }
+  to {
+    transform: translateX(12px);
+  }
+}
+@keyframes tide-live-foam {
+  50% {
+    opacity: 0.3;
+    transform: translateX(6px);
+  }
+}
+@keyframes tide-live-lamp {
+  50% {
+    opacity: 0.7;
+  }
+}
+@keyframes tide-live-fog {
+  to {
+    opacity: 0.28;
+    transform: translateX(-20px);
+  }
+}
 .tide-head {
   display: flex;
   gap: 14px;

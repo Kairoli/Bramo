@@ -98,9 +98,10 @@ import {
   setTidePrefs,
   tideBuyBody,
   tidePrefsBody,
+  tideDay,
 } from '@bramo/shared';
 import type { Db } from './db/index.js';
-import { offerPatron, settleTide, tideView } from './tide.js';
+import { offerPatron, settleTide, tideView, recordSignup, tideLive, tideLiveDemo } from './tide.js';
 import { AccountGuard, GuardError } from './guard.js';
 import { deleteAccount, exportAccount } from './account.js';
 import { moderateChat, postChat, readChat, reportChat } from './chat.js';
@@ -859,8 +860,19 @@ export async function buildApp({ db, content, clock = Date.now, secureCookies = 
     return playAs(req, (state) => ({ state: setTidePrefs(state, prefs, content) }));
   });
   app.post('/api/tide/register', (req) =>
-    playAs(req, (state, now) => ({ state: registerTide(state, now, content), log: 'Inscrit à la Marée du soir : votre personnage combattra à 20 h, même si vous êtes déconnecté.', logKind: 'combat' })),
+    playAs(req, async (state, now, ctx) => {
+      const next = registerTide(state, now, content);
+      await recordSignup(ctx.tx, tideDay(now), ctx.characterId);
+      return { state: next, log: 'Inscrit à la Marée du soir : votre personnage combattra à 20 h, même si vous êtes déconnecté.', logKind: 'combat' };
+    }),
   );
+  /** La Marée en direct : les inscrits devant la digue, l'ennemi du soir, l'avancée de la digue. ?demo=1 en développement. */
+  app.get('/api/tide/live', async (req) => {
+    const me = await myCharacter(req);
+    const q = req.query as { demo?: string; tide?: string } | undefined;
+    if (devTools && q?.demo) return tideLiveDemo(content, clock(), q.tide);
+    return db.transaction((tx) => tideLive(tx, content, clock(), me.id));
+  });
   app.post('/api/tide/join', (req) =>
     playAs(req, (state, now) => ({ state: joinTideLive(state, now, content), log: 'Vous rejoignez la digue : la Marée du soir compte vos points en direct.', logKind: 'combat' })),
   );

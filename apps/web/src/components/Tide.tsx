@@ -4,6 +4,8 @@ import { api } from '../api';
 import { useGame } from '../game/GameContext';
 import { clock, num } from '../format';
 import { Modal } from './ui';
+import { TideLive } from './TideLive';
+import type { TideLiveView } from '@bramo/shared';
 
 /**
  * La Marée du soir (docs/design/contenu/le-monde.md §5) : un bandeau dans la barre du haut (ce soir, dans combien de
@@ -70,8 +72,32 @@ export function TideBanner({ onOpen, view }: { onOpen: () => void; view: TideVie
   );
 }
 
+/** La scène en direct : relue toutes les 15 s tant que la fenêtre est ouverte (démonstration à toute heure en développement). */
+function useTideLive(demo: boolean) {
+  const [live, setLive] = useState<TideLiveView | null>(null);
+  useEffect(() => {
+    let stop = false;
+    const load = () =>
+      api
+        // ?maree=giants avant le # : la démonstration montre cette Marée (développement).
+        .tideLive(demo, new URLSearchParams(location.search).get('maree') ?? undefined)
+        .then((v) => !stop && setLive(v))
+        .catch(() => {});
+    load();
+    const id = window.setInterval(load, 15_000);
+    return () => {
+      stop = true;
+      window.clearInterval(id);
+    };
+  }, [demo]);
+  return live;
+}
+
 export function TideModal({ view, refresh, onClose }: { view: TideView; refresh: () => void; onClose: () => void }) {
   const { act, state } = useGame();
+  const [demo, setDemo] = useState(false);
+  const live = useTideLive(demo);
+  const showLive = !!live && (live.demo || live.phase !== 'idle');
   const t = view.tonight;
   const now = Date.now();
   const run = async (call: () => ReturnType<typeof api.state>) => {
@@ -83,7 +109,13 @@ export function TideModal({ view, refresh, onClose }: { view: TideView; refresh:
   const last = view.last;
   const lit = last ? last.thresholds : 0;
   return (
-    <Modal onClose={onClose} className="tide-modal">
+    <Modal onClose={onClose} className={`tide-modal${showLive ? ' with-live' : ''}`}>
+      {showLive && <TideLive view={live!} />}
+      {import.meta.env.DEV && (
+        <button className="btn btn-ghost btn-sm tide-demo" onClick={() => setDemo(!demo)}>
+          {demo ? 'Revenir à la vraie Marée' : 'Démo : voir la digue en direct'}
+        </button>
+      )}
       <div className="tide-head">
         <WaveIcon size={40} />
         <div>

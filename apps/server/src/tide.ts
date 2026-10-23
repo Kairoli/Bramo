@@ -6,13 +6,18 @@
  *   la digue) : points, total du serveur, seuils franchis, éclats de chacun.
  * - Les éclats, le coffre de la semaine et sa cache d'équipement arrivent à la prochaine visite du joueur (`claimTide`).
  */
-import { and, asc, desc, eq, gte, isNotNull } from 'drizzle-orm';
+import { and, asc, count, desc, eq, gte, inArray, isNotNull } from 'drizzle-orm';
 import {
   type CharacterState,
   type Content,
   GameError,
   type TideNight,
   type TideView,
+  type TideLiveFighter,
+  type TideLiveView,
+  type CharacterState as State,
+  viewAppearance,
+  hash32,
   claimWeeklyChests,
   lastFinishedTide,
   offerTide,
@@ -33,7 +38,7 @@ import {
   tideWindow,
 } from '@bramo/shared';
 import type { Db, Tx } from './db/index.js';
-import { characters, clanMembers, tideDays, tideEntries, tidePatrons } from './db/schema.js';
+import { characters, clanMembers, tideDays, tideEntries, tidePatrons, tideSignups } from './db/schema.js';
 import { addRenown } from './clans.js';
 import { loadCharacterById } from './characters.js';
 import { grantGear } from './gear.js';
@@ -168,6 +173,130 @@ export async function tideView(tx: Tx, state: CharacterState, content: Content, 
     last: last
       ? { day: last.day, name: rules.tides.find((x) => x.id === last.tide)?.name ?? last.tide, participants: last.participants, points: last.points, objective: rules.shards.objectivePerParticipant * Math.max(1, last.participants), thresholds: last.thresholds, of: rules.shards.thresholds.length }
       : null,
+  };
+}
+
+// --- La Marée en direct (demande de Louis, 23 octobre : « voir le combat de la Marée, tous les gens qui ont rejoint à
+// gauche, ce qu'ils affrontent à droite ») ---
+
+/** Inscription d'un soir, pour la scène en direct. */
+export async function recordSignup(tx: Tx, day: number, characterId: number): Promise<void> {
+  await tx.insert(tideSignups).values({ day, characterId }).onConflictDoNothing();
+}
+
+/** Points de chaque inscrit ce soir (calculés une fois : quelques combats simulés chacun). */
+const scoreCache = new Map<string, number>();
+/** Combattants montrés dans la scène (les autres sont comptés). */
+const SHOWN = 28;
+
+/** La scène de la Marée en direct : inscrits, phase, avancée estimée de la digue (réglée après la fin). */
+export async function tideLive(tx: Tx, content: Content, now: number, meId: number): Promise<TideLiveView | null> {
+  const rules = content.combat?.tide;
+  if (!rules) return null;
+  const day = tideDay(now);
+  const def = tideOf(day, rules);
+  const w = tideWindow(day, rules);
+  const reg = registrationWindow(day, rules);
+  const phase: TideLiveView['phase'] = now < reg.start ? 'idle' : now < w.start ? 'gathering' : now < w.end ? 'battle' : 'done';
+  const n = (await tx.select({ n: count() }).from(tideSignups).where(eq(tideSignups.day, day)))[0]?.n ?? 0;
+  const signups = await tx.select().from(tideSignups).where(eq(tideSignups.day, day)).orderBy(asc(tideSignups.at)).limit(400);
+  const ids = signups.map((s) => s.characterId);
+  const rows = ids.length ? await tx.select({ id: characters.id, name: characters.name, classId: characters.classId, outfit: characters.outfit, look: characters.look, combat: characters.combat }).from(characters).where(inArray(characters.id, ids)) : [];
+  const byId = new Map(rows.map((r) => [r.id, r]));
+  const fighters: (TideLiveFighter & { at: number })[] = [];
+  for (const s of signups) {
+    const r = byId.get(s.characterId);
+    if (!r) continue;
+    const appearance = viewAppearance({ classId: r.classId, outfit: r.outfit, look: r.look } as unknown as State, content);
+    if (!appearance) continue;
+    fighters.push({ id: r.id, name: r.name, appearance, live: readTide((r.combat as State['combat'] | undefined)?.tide).liveDay === day, me: r.id === meId, at: s.at.getTime() });
+  }
+  // Le joueur d'abord, puis ceux qui tiennent la digue en direct, puis les premiers inscrits.
+  fighters.sort((a, b) => Number(b.me) - Number(a.me) || Number(b.live) - Number(a.live) || a.at - b.at);
+  const total = Number(n);
+  const objective = rules.shards.objectivePerParticipant * Math.max(1, total);
+  let points = 0;
+  if (phase === 'done') {
+    const [settledDay] = await tx.select().from(tideDays).where(eq(tideDays.day, day));
+    points = settledDay?.points ?? 0;
+  }
+  if (phase === 'battle' || (phase === 'done' && !points)) {
+    // Chaque inscrit marque au fil de l'heure ; ses points du soir sont calculés une fois (pour 40 de plus par appel au plus).
+    let computed = 0;
+    let known = 0;
+    let sum = 0;
+    for (const id of ids) {
+      const key = `${day}:${id}`;
+      if (!scoreCache.has(key) && computed < SHOWN) {
+        const loaded = await loadCharacterById(tx, id, content);
+        if (loaded) scoreCache.set(key, tideScore(loaded.state, day, content, readTide(loaded.state.combat.tide).liveDay === day).points);
+        computed++;
+      }
+      const v = scoreCache.get(key);
+      if (v !== undefined) (known++, (sum += v));
+    }
+    const average = known ? sum / known : rules.points.perMinute * rules.durationMin;
+    const f = phase === 'done' ? 1 : Math.min(1, Math.max(0, (now - w.start) / (w.end - w.start)));
+    points = Math.round((sum + average * (total - known)) * f);
+  }
+  const shares = rules.shards.thresholds.map((t) => t.share);
+  return {
+    day,
+    tide: def.id,
+    name: def.name,
+    phase,
+    registrationStart: reg.start,
+    start: w.start,
+    end: w.end,
+    serverTime: now,
+    fighters: fighters.slice(0, SHOWN).map(({ at: _at, ...f }) => f),
+    total,
+    progress: { points, objective, shares, lit: shares.filter((s) => points >= s * objective).length },
+    demo: false,
+  };
+}
+
+/**
+ * Démonstration de la scène (développement, pour la voir à toute heure) : une foule d'essai tirée du jour, toutes les
+ * tenues (de départ, de saison, Marée haute), quelques pièces d'Halloween ; la Marée monte sur dix minutes, puis recommence.
+ */
+export function tideLiveDemo(content: Content, now: number, tideId?: string): TideLiveView | null {
+  const rules = content.combat?.tide;
+  if (!rules) return null;
+  const day = tideDay(now);
+  // Les trois Marées se suivent, une par cycle de dix minutes, pour toutes les voir.
+  const def = rules.tides.find((x) => x.id === tideId) ?? rules.tides[Math.floor(now / (10 * 60_000)) % rules.tides.length]!;
+  const names = ['Brume', 'Tisonne', 'Aulne', 'Grésil', 'Ferrand', 'Lysandre', 'Pétrel', 'Marne', 'Sorbe', 'Cendrine', 'Galet', 'Ronce', 'Vireo', 'Halle', 'Ombeline', 'Tarn', 'Écume', 'Bastide', 'Saule', 'Fauve', 'Lanterne', 'Corvin', 'Ysolde', 'Rocaille', 'Varech', 'Bruyère', 'Héron', 'Molène'];
+  const classes = Object.keys(content.classes);
+  const pieces = (content.cosmetics.pieces ?? []).filter((p) => p.slot !== 'weapon');
+  const fighters: TideLiveFighter[] = names.map((name, i) => {
+    const r = hash32(`demo:${day}:${i}`);
+    const classId = classes[r % classes.length]!;
+    const outfits = content.cosmetics.outfits.filter((o) => o.classes.includes(classId) && (!o.id.startsWith('sketch_') || o.id.startsWith('sketch_season_')));
+    const outfit = outfits[(r >>> 4) % outfits.length]!.id;
+    const extra = (r >>> 9) % 5 === 0 ? pieces[(r >>> 12) % Math.max(1, pieces.length)] : undefined;
+    return { id: -1 - i, name, appearance: { classId, outfit, ...(extra ? { overrides: { [extra.slot]: extra.id } } : {}) }, live: (r >>> 15) % 3 === 0, me: false };
+  });
+  const cycle = 10 * 60_000;
+  const start = now - (now % cycle);
+  const total = 128;
+  const objective = rules.shards.objectivePerParticipant * total;
+  const f = (now - start) / cycle;
+  const points = Math.round(total * rules.points.perMinute * rules.durationMin * 1.05 * f);
+  const shares = rules.shards.thresholds.map((t) => t.share);
+  return {
+    day,
+    tide: def.id,
+    name: def.name,
+    phase: 'battle',
+    registrationStart: start - cycle,
+    start,
+    end: start + cycle,
+    serverTime: now,
+    fighters,
+    total,
+    progress: { points, objective, shares, lit: shares.filter((s) => points >= s * objective).length },
+    demo: true,
   };
 }
 

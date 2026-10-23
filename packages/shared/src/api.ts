@@ -1,3 +1,4 @@
+import type { Appearance } from './schemas/art.js';
 import { z } from 'zod';
 import type { Content } from './schemas/content.js';
 import type { AdvanceSummary } from './engine/advance.js';
@@ -356,6 +357,37 @@ export interface TideView {
   } | null;
 }
 
+
+/** Un combattant de la scène en direct de la Marée : son apparence, et s'il tient la digue en direct. */
+export interface TideLiveFighter {
+  id: number;
+  name: string;
+  appearance: Appearance;
+  live: boolean;
+  me: boolean;
+}
+
+/**
+ * La Marée en direct (GET /api/tide/live) : les inscrits devant la digue, ce que la Marée envoie ce soir, et l'avancée de
+ * la digue. `gathering` : inscriptions (19 h à 20 h) ; `battle` : la Marée est là ; `done` : le soir est passé.
+ */
+export interface TideLiveView {
+  day: number;
+  tide: string;
+  name: string;
+  phase: 'idle' | 'gathering' | 'battle' | 'done';
+  registrationStart: number;
+  start: number;
+  end: number;
+  serverTime: number;
+  fighters: TideLiveFighter[];
+  /** Tous les inscrits (la scène n'en montre qu'une partie). */
+  total: number;
+  /** Points de la digue (estimés pendant la Marée, réglés après), objectif, seuils (part de l'objectif) et seuils franchis. */
+  progress: { points: number; objective: number; shares: number[]; lit: number };
+  /** Démonstration (développement) : une foule d'essai, la Marée qui monte sur dix minutes. */
+  demo: boolean;
+}
 
 /** Courbe de prix d'un objet sur les derniers jours (GET /api/market/history/:itemId). `day` : jours depuis le 1er janvier 1970. */
 export interface PriceHistoryView {

@@ -218,14 +218,17 @@ export function Character({
     const zs = layers.map((l) => l.z);
     const zMid = (Math.min(...zs) + Math.max(...zs)) / 2;
     let frame = 0;
-    let last = -Infinity;
+    let last = -1;
 
     const draw = (now: number) => {
-      if (crowd && now - last < 48) {
+      // Foule : tous les personnages avancent sur la même horloge (20 images par seconde), dans la même image : les autres
+      // images n'ont rien à redessiner (mesure du 23 octobre, scène de la Marée : 6 → voir art/perf.mjs).
+      const slot = Math.floor(now / 50);
+      if (crowd && slot === last) {
         frame = requestAnimationFrame(draw);
         return;
       }
-      last = now;
+      last = slot;
       const target = explode ? 1 : 0;
       explodeAmount.current += (target - explodeAmount.current) * (reduced ? 1 : 0.12);
       const act = actionRef.current;
@@ -242,11 +245,14 @@ export function Character({
       }
       for (const [id, el] of boneRefs.current) el.setAttribute('transform', toSvg(world[id]!));
       const settling = Math.abs(target - explodeAmount.current) > 0.001;
-      if (anim || settling) frame = requestAnimationFrame(draw);
+      // Sans animation de repos, la boucle tourne encore le temps d'une action (une attaque), puis s'arrête.
+      const acting = !!actAnim && actT < actAnim.duration;
+      if (anim || settling || acting) frame = requestAnimationFrame(draw);
     };
     frame = requestAnimationFrame(draw);
     return () => cancelAnimationFrame(frame);
-  }, [layers, animate, explode, pose, crowd]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [layers, animate, explode, pose, crowd, action?.at]);
 
   const [x0, y, w, h] = level.viewBox;
   const axis = rig.bones.find((b) => b.id === 'root')?.pivot[0];

@@ -55,6 +55,13 @@ Bramo est un **idle-RPG multijoueur jouable dans le navigateur**, dans l'esprit 
 
 ## 5. État du projet (à jour au 23 octobre 2026)
 
+### Fait — la Marée en direct (23 octobre, soir)
+
+- **Demande de Louis** : voir le combat de la Marée en direct, « à gauche tous les gens qui ont rejoint, avec leurs skins, qui attaquent ; à droite ce qu'ils affrontent ».
+- **Scène en haut de la fenêtre de la Marée** (`components/TideLive.tsx`, repère 1000 × 420) : les inscrits sur la digue en trois rangs (le joueur devant, son nom en orange), chacun frappe à son rythme et son coup file vers la Marée dans la couleur de ses sorts ; nombres de dégâts ; à droite l'ennemi du soir (l'Ombre et la vase pour la Débâcle, trois lanternes qui marchent, le Gardien des trois portes en géant) ; en haut la digue qui se remplit, ses seuils, ses lanternes qui s'allument (aussi sur la digue du décor). Phases : on se rassemble (19 h à 20 h, la Marée dans la brume), en direct, terminée. Images : `docs/design/maree/`.
+- **Serveur** : table `tide_signups` (migration 0024, remplie par `POST /api/tide/register`) ; `GET /api/tide/live` (`tideLive` : 28 combattants montrés, le total compté ; avancée estimée = points de chaque inscrit, calculés une fois, × part de l'heure écoulée ; réglée après la fin). En développement, `?demo=1` (bouton « Démo » de la fenêtre ; `?maree=giants` avant le # pour choisir la Marée) : une foule d'essai, la Marée sur dix minutes.
+- **Coût d'affichage** (banc logiciel, page entière) : 5 → 15 images par seconde, comme les autres écrans : combattants immobiles au repos qui ne bougent que pour frapper (`Character animate={false}` joue encore une action), horloge commune de la foule, un calque par combattant, ennemis et coups à 30 images par seconde.
+
 ### Fait — poussière, retaille, essais d'apparences de saison (23 octobre, soir)
 
 - **Demande de Louis** : à quoi servent les éclats ; une poussière pour retailler une ligne, à prix exponentiel ; des essais de skins de saison (« les visuels ne sont pas nos points forts »). Proposition et chiffres : [`docs/design/eclats.md`](docs/design/eclats.md).

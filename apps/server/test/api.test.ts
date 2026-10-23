@@ -643,6 +643,15 @@ describe('API', () => {
     expect(view.registration).toMatchObject({ open: true, registered: false });
     expect((await inscrit('POST', '/api/tide/register')).status).toBe(200);
     expect(((await inscrit('GET', '/api/tide')).json as import('@bramo/shared').TideView).registration.registered).toBe(true);
+    // La scène en direct : l'inscrit est devant la digue, on se rassemble ; pendant la Marée, la digue avance.
+    type Live = import('@bramo/shared').TideLiveView;
+    const gathering = (await inscrit('GET', '/api/tide/live')).json as Live;
+    expect(gathering).toMatchObject({ phase: 'gathering', total: 1 });
+    expect(gathering.fighters[0]).toMatchObject({ me: true });
+    now = tideWindow(day, rules).start + 30 * 60_000;
+    const battle = (await inscrit('GET', '/api/tide/live')).json as Live;
+    expect(battle.phase).toBe('battle');
+    expect(battle.progress.points).toBeGreaterThan(0);
     // Le joueur se déconnecte ; la Marée passe ; il revient le lendemain : ses points et ses éclats sont là.
     now = tideWindow(day, rules).end + 60_000;
     await absent('GET', '/api/state'); // règle le soir

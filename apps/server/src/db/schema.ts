@@ -282,6 +282,19 @@ export const tideDays = pgTable('tide_days', {
   settledAt: ts('settled_at').notNull(),
 });
 
+/** Inscrits à la Marée d'un soir (19 h à 20 h), pour la scène en direct (GET /api/tide/live). */
+export const tideSignups = pgTable(
+  'tide_signups',
+  {
+    day: integer('day').notNull(),
+    characterId: integer('character_id')
+      .notNull()
+      .references(() => characters.id, { onDelete: 'cascade' }),
+    at: ts('at').notNull().defaultNow(),
+  },
+  (t) => [primaryKey({ columns: [t.day, t.characterId] })],
+);
+
 /** Ce que chaque participant a marqué un soir ; les éclats arrivent à sa prochaine visite (`claimed`). */
 export const tideEntries = pgTable(
   'tide_entries',

@@ -91,6 +91,10 @@ Série finale (graine 11, serveur `real`, 120 joueurs, 90 jours : `sim/reports/s
 | Renom des clans | — | 1 100 à 2 600 en 90 jours (Village à Bourg franc) |
 | Commandes du maître réussies | — | 149 au rang 20, 115 au 40, 46 au 60 ; personne n'atteint 80 en 90 jours (des buts de long terme) |
 
+**À quatre mois** (200 joueurs, 120 jours, `v5-real-200x120`, avant le dernier réglage des éclats dans le simulateur) :
+les meilleurs joueurs sont aux chapitres 18 et 19 de l'Au-delà, où le Régent des courants les retient ~47 jours ; personne
+n'a tout fini ; 0 à 13 % des joueurs n'ont plus rien qui avance ; ~9 000 or par joueur ; 1 168 pièces fabriquées.
+
 **Classes et voies.** À façon de jouer égale (casus), la route au jour 30 : Runiste 119, Forgefeu 109, Traqueur 93. En fin
 de partie, le Runiste reste devant (médiane 159 contre 149-150), surtout le Fulgurant (169) ; l'Enclumier et le Sigillaire
 sont les voies les plus lentes. À la Marée : Runiste 92 points, Forgefeu 84, Traqueur 70. Sur un serveur 100 % méta, tout le

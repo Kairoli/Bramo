@@ -1,0 +1,167 @@
+<title>Feuille de route Bramo</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+/* Mise en page : une colonne de lecture, la palette « anthracite et cuivre » du jeu ; les priorités en pastilles. */
+:root {
+  --bg: #20262a;
+  --panel: #2a3135;
+  --sunken: #1a1f22;
+  --border: #3c464a;
+  --text: #f1f0ec;
+  --muted: #a9b3b5;
+  --copper: #f08a4b;
+  --tide: #4cc9d6;
+  --clan: #e3c770;
+  --good: #7ed6a2;
+  --alert: #ff7c7c;
+  --display: 'Bricolage Grotesque', 'Segoe UI', system-ui, sans-serif;
+  --body: 'IBM Plex Sans', 'Segoe UI', system-ui, sans-serif;
+  --mono: 'IBM Plex Mono', ui-monospace, 'Cascadia Mono', monospace;
+  color-scheme: dark;
+}
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    --bg: #f4f1ec; --panel: #ffffff; --sunken: #ebe6de; --border: #d6cfc4; --text: #22282b; --muted: #5d676a;
+    --copper: #b4581f; --tide: #137f8a; --clan: #8a6d12; --good: #237a4c; --alert: #b3262a; color-scheme: light;
+  }
+}
+:root[data-theme="light"] {
+  --bg: #f4f1ec; --panel: #ffffff; --sunken: #ebe6de; --border: #d6cfc4; --text: #22282b; --muted: #5d676a;
+  --copper: #b4581f; --tide: #137f8a; --clan: #8a6d12; --good: #237a4c; --alert: #b3262a; color-scheme: light;
+}
+body { background: var(--bg); color: var(--text); font-family: var(--body); font-size: 16px; line-height: 1.6; }
+.page { max-width: 860px; margin: 0 auto; padding-block: 40px 72px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: grid; gap: 44px; }
+h1, h2, h3 { font-family: var(--display); text-wrap: balance; line-height: 1.15; margin: 0; }
+h1 { font-size: clamp(30px, 6vw, 46px); font-weight: 800; letter-spacing: -0.01em; }
+h2 { font-size: 26px; font-weight: 800; }
+h3 { font-size: 18px; font-weight: 700; }
+p { margin: 0; max-width: 68ch; }
+a { color: var(--tide); text-underline-offset: 3px; }
+a:focus-visible, summary:focus-visible { outline: 2px solid var(--copper); outline-offset: 3px; border-radius: 4px; }
+.eyebrow { font-family: var(--mono); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--copper); }
+header { display: grid; gap: 14px; }
+header .lead { font-size: 18px; color: var(--muted); }
+section { display: grid; gap: 16px; }
+.muted { color: var(--muted); }
+.table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 12px; background: var(--panel); }
+table { border-collapse: collapse; width: 100%; min-width: 560px; font-size: 15px; }
+th, td { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--border); vertical-align: top; }
+th { font-family: var(--display); font-weight: 700; font-size: 14px; color: var(--muted); background: var(--sunken); }
+tr:last-child td { border-bottom: 0; }
+td.num { font-family: var(--mono); font-variant-numeric: tabular-nums; white-space: nowrap; }
+td.up { color: var(--good); }
+.systems { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; }
+.system { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 16px; display: grid; gap: 6px; align-content: start; }
+.system .tag { font-family: var(--mono); font-size: 12px; color: var(--muted); }
+.system.tide h3 { color: var(--tide); }
+.system.clan h3 { color: var(--clan); }
+.system.copper h3 { color: var(--copper); }
+.list { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
+.item { display: grid; grid-template-columns: auto 1fr; gap: 6px 14px; padding: 14px 16px; background: var(--panel); border: 1px solid var(--border); border-radius: 12px; }
+.item > div { min-width: 0; display: grid; gap: 4px; }
+.pill { align-self: start; font-family: var(--mono); font-size: 12px; padding: 3px 9px; border-radius: 999px; border: 1px solid currentColor; white-space: nowrap; }
+.pill.must { color: var(--alert); }
+.pill.should { color: var(--copper); }
+.pill.later { color: var(--muted); }
+.lessons { display: grid; gap: 12px; }
+.lesson { border-left: 3px solid var(--tide); padding: 2px 0 2px 14px; display: grid; gap: 4px; }
+.questions { counter-reset: q; display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
+.questions li { counter-increment: q; display: grid; grid-template-columns: 2.2em 1fr; gap: 10px; }
+.questions li::before { content: counter(q); font-family: var(--display); font-weight: 800; font-size: 20px; color: var(--copper); }
+.sources { font-size: 14px; color: var(--muted); display: grid; gap: 4px; }
+@media (max-width: 480px) { .item { grid-template-columns: 1fr; } }
+</style>
+
+<div class="page">
+  <header>
+    <span class="eyebrow">Bramo · 23 octobre 2026</span>
+    <h1>Feuille de route Bramo</h1>
+    <p class="lead">Ce qui a été construit aujourd'hui, ce que mesure le simulateur, ce que font les autres jeux, et ce qu'il reste avant de pouvoir ouvrir Bramo au public.</p>
+  </header>
+
+  <section>
+    <span class="eyebrow">Fait aujourd'hui</span>
+    <h2>Une économie qui tourne, et des dépenses voulues</h2>
+    <div class="systems">
+      <div class="system tide"><h3>Mécène de la Marée</h3><p>Offrir la Marée du soir au serveur : +10 % d'éclats pour tous, nom annoncé au bourg, titres de 1 à 100 soirs offerts.</p><span class="tag">Presque un mécène par soir au simulateur</span></div>
+      <div class="system clan"><h3>Ouvrages et Banquet</h3><p>Une suite sans fin d'ouvrages de clan. Chacun donne un Banquet : 12 h de +20 % d'XP pour tout le clan.</p><span class="tag">Un Banquet par semaine pour les plus actifs</span></div>
+      <div class="system copper"><h3>L'Affineur du bourg</h3><p>Rangs d'affinage +1, +2… sans plafond (+3 % par rang), et affûtage d'une ligne jusqu'à son maximum.</p><span class="tag">Le puits de fin de jeu</span></div>
+      <div class="system"><h3>Monnaie ×10</h3><p>Plus de minerai bloqué à 1 or : les prix ont de la place pour respirer, et les montants parlent plus.</p><span class="tag">Comptoir ×2 en plus</span></div>
+      <div class="system"><h3>Achat en gros</h3><p>« Acheter 10 / 100 / 1 000 maintenant » au marché, prix total affiché, les offres les moins chères d'abord.</p><span class="tag">Le réflexe Dofus</span></div>
+      <div class="system"><h3>Recettes croisées</h3><p>Clans, ouvrages et recettes moyennes demandent le travail d'autres artisans, ou un achat.</p><span class="tag">16 pièces fabriquées sur 24 demandées par les bâtiments</span></div>
+    </div>
+  </section>
+
+  <section>
+    <span class="eyebrow">Mesures</span>
+    <h2>Le marché est devenu le cœur du jeu</h2>
+    <p class="muted">Simulateur : 120 joueurs aux façons de jouer variées, 90 jours, trois tirages. « Avant » : le même serveur ce matin.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Mesure</th><th>Avant</th><th>Maintenant</th></tr></thead>
+        <tbody>
+          <tr><td>Joueurs qui achètent au marché chaque jour</td><td class="num">56 %</td><td class="num up">63 à 74 %</td></tr>
+          <tr><td>Unités achetées par joueur et par jour</td><td class="num">61</td><td class="num up">184 à 243</td></tr>
+          <tr><td>Achats en gros (100 unités et plus) par jour</td><td class="num">20</td><td class="num up">50 à 62</td></tr>
+          <tr><td>Joueurs qui renoncent à un achat faute d'or, par jour</td><td class="num">12 à 21 %</td><td class="num up">9 à 11 %</td></tr>
+          <tr><td>Or créé pour 1 or détruit (30 derniers jours)</td><td class="num">1,6 à 2,1</td><td class="num up">1,3 à 1,5</td></tr>
+          <tr><td>Prix des matières (100 = valeur du travail)</td><td class="num">50 à 60</td><td class="num">44 à 72</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>Ce qui tient toujours : le rythme de la route, les gardiens, le butin, la Marée, les ensembles portés. Ce qui reste à surveiller : quelques joueurs très riches (tu l'acceptes), et un serveur de bradeurs qui écrase les prix, faute de plancher au marché.</p>
+  </section>
+
+  <section>
+    <span class="eyebrow">Ce que font les autres</span>
+    <h2>Leçons d'autres jeux</h2>
+    <div class="lessons">
+      <div class="lesson"><h3>Old School RuneScape : la taxe et le puits ciblé</h3><p>Une étude du Grand Exchange montre qu'une taxe sur les ventes change peu les volumes, mais qu'un « puits d'objet » ciblé fait remonter le prix de l'objet visé. Jagex utilise une petite part de la taxe pour racheter et détruire certains objets. Pour Bramo, c'est une piste de plancher pour les matières sans créer d'or neuf.</p></div>
+      <div class="lesson"><h3>Old School RuneScape : les comptes neufs</h3><p>Un compte gratuit tout neuf ne peut rien sortir de son compte pendant ses premières 24 h de jeu, et certaines ventes restent bloquées jusqu'à un minimum de temps et de niveaux. L'objectif : empêcher les comptes jetables de nourrir l'économie.</p></div>
+      <div class="lesson"><h3>Idle Clans : le marché a besoin de mémoire</h3><p>Ce MMO idle a refait son marché en 2024 : ordres d'achat en plus des offres, prix moyens et historiques visibles. Sans historique, un joueur ne sait pas s'il fait une bonne affaire en achetant 1 000 unités.</p></div>
+      <div class="lesson"><h3>AdVenture Capitalist : la première session</h3><p>Ses créateurs conseillent de n'enseigner que l'essentiel et de laisser jouer tout de suite : trop de tutoriel trop tôt fait fuir. Bramo n'a aujourd'hui aucun guide de première session.</p></div>
+    </div>
+  </section>
+
+  <section>
+    <span class="eyebrow">Avant d'ouvrir au public</span>
+    <h2>Ce qu'il reste à faire, par priorité</h2>
+    <ul class="list">
+      <li class="item"><span class="pill must">Indispensable</span><div><h3>Les comptes multiples</h3><p>Un compte neuf reçoit 3 commandes du Comptoir par jour, soit environ 4 900 or pour un quart d'heure de récolte. Un joueur moyen garde environ 850 or par jour. Dix comptes secondaires rapporteraient près de 50 000 or par jour à leur propriétaire. Pistes : réserver le Comptoir aux comptes qui ont un peu joué, bloquer les ventes au marché pendant les premières heures de jeu, repérer les ventes à des prix absurdes.</p></div></li>
+      <li class="item"><span class="pill must">Indispensable</span><div><h3>Mise en ligne</h3><p>Serveur de production, HTTPS, base PostgreSQL et sauvegardes automatiques. Le plan existe déjà (homeserver, Docker) ; il n'a pas encore été fait.</p></div></li>
+      <li class="item"><span class="pill must">Indispensable</span><div><h3>Comptes et loi</h3><p>Limiter les essais de mot de passe, permettre de changer son mot de passe et de supprimer son compte (droit à l'effacement, RGPD). Publier mentions légales, conditions d'utilisation et politique de confidentialité. Les mots de passe, eux, sont déjà bien protégés.</p></div></li>
+      <li class="item"><span class="pill must">Indispensable</span><div><h3>Une première session guidée</h3><p>Quatre ou cinq objectifs courts : choisir sa classe, lancer une récolte, vendre au marché, rejoindre un clan, voir la Marée du soir. Le reste se découvre ensuite.</p></div></li>
+      <li class="item"><span class="pill should">Important</span><div><h3>Prix moyens et historique au marché</h3><p>Afficher le prix moyen de la semaine et une petite courbe pour chaque objet, pour que l'achat en gros se fasse en confiance.</p></div></li>
+      <li class="item"><span class="pill should">Important</span><div><h3>Un plancher pour les matières</h3><p>La récolte produit six fois ce que le jeu consomme ; sur un serveur de bradeurs, les prix tombent à 9 % de leur valeur. Deux pistes : un puits ciblé payé par la taxe (comme RuneScape), ou moins d'unités par récolte à XP égale.</p></div></li>
+      <li class="item"><span class="pill should">Important</span><div><h3>Notifications</h3><p>Prévenir quand une activité se termine et quand la Marée monte à 20 h : c'est ce qui fait revenir dans un jeu idle.</p></div></li>
+      <li class="item"><span class="pill should">Important</span><div><h3>Discussion et modération</h3><p>Le fil du serveur raconte déjà la vie du bourg ; une discussion de clan et de serveur demande ensuite signalement et mise en sourdine.</p></div></li>
+      <li class="item"><span class="pill later">Plus tard</span><div><h3>Saisons, Routes franches, arènes</h3><p>Déjà au programme (P5, P6). À garder pour après l'ouverture, quand de vrais joueurs auront validé le cœur du jeu.</p></div></li>
+    </ul>
+  </section>
+
+  <section>
+    <span class="eyebrow">À trancher</span>
+    <h2>Questions pour Louis</h2>
+    <ol class="questions">
+      <li><p>Les comptes multiples : on réserve le Comptoir aux comptes qui ont joué un peu (par exemple 10 heures ou un niveau total), et on bloque les ventes au marché le premier jour ?</p></li>
+      <li><p>Le plancher des matières : un puits ciblé payé par une part de la taxe, ou moins d'unités par récolte ?</p></li>
+      <li><p>Les chiffres proposés : Mécène à 250 or par participant, Banquet de 12 h à +20 %, Affineur à +3 % par rang.</p></li>
+      <li><p>La première session guidée : je la conçois et te la montre avant de la brancher ?</p></li>
+    </ol>
+  </section>
+
+  <section>
+    <span class="eyebrow">Sources</span>
+    <div class="sources">
+      <a href="https://arxiv.org/pdf/2210.07970">Market Interventions in a Large-Scale Virtual Economy (étude du Grand Exchange)</a>
+      <a href="https://oldschool.runescape.wiki/w/Tax">Old School RuneScape Wiki : taxe du Grand Exchange</a>
+      <a href="https://oldschool.runescape.wiki/w/Update:Permanent_F2P_-_The_Details">Old School RuneScape Wiki : restrictions des comptes gratuits</a>
+      <a href="https://wiki.idleclans.com/index.php/6/19/2024_-_%27Player_market_overhaul,_Leaderboard_rework,_Public_API%27">Idle Clans : refonte du marché (juin 2024)</a>
+      <a href="https://www.globalgamesforum.com/ctv/idle-game-design-lessons-from-developing-adventure-capitalist">Leçons de conception d'AdVenture Capitalist</a>
+      <a href="https://bpifrance-creation.fr/system/files/Support%20webinaire%20conformit%C3%A9%20des%20sites%20internet%20-%2005%2007%202023%20MSA.pdf">Bpifrance : conformité des sites internet (mentions légales, RGPD)</a>
+    </div>
+  </section>
+</div>

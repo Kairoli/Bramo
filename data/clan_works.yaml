@@ -1,0 +1,57 @@
+# Ouvrages du clan [Décidé par Louis, 23 octobre : prestige des clans, la progression continue après les bâtiments ; une
+# vraie récompense, pas un titre : le Banquet du clan, 12 h seulement]. Chiffres proposés par Claude, à équilibrer. # à équilibrer
+#
+# - Une suite sans fin : le niveau 1 bâtit le premier ouvrage, le niveau 2 le suivant… la liste recommence (deuxième statue,
+#   deuxième phare). Les membres apportent or et matières comme pour les bâtiments.
+# - Coût d'un niveau : `gold` et `items` pour 3 membres actifs (settings.clan.minMembersForCost), proportionnels au-delà,
+#   × min(1 + growth.perLevel × (niveau − 1), growth.max) : un peu plus cher au début, puis stable, jamais hors de portée.
+# - Chaque ouvrage demande une récolte que les joueurs produisent en trop, une matière transformée et une pièce finie d'un
+#   autre artisan (Construction, Cuisine, Couture, Joaillerie…) : il faut plusieurs métiers, ou des achats [Décidé par Louis].
+# - Chaque niveau achevé donne un Banquet au clan (au plus `maxStock` en réserve) : le chef ou un officier le lance quand il
+#   veut ; pendant `hours`, tous les membres gagnent +`xpBonus` d'XP (métiers et combat). Un seul banquet à la fois.
+# Rythme visé [Louis, 23 octobre] : un Banquet par semaine pour les clans les plus actifs. Au simulateur (120 joueurs), les
+# quantités ci-dessous ne freinent plus : c'est l'or qui fixe le rythme (5 000 par ouvrage pour 3 membres actifs, choix de Louis ;
+# le poisson, moins récolté, est demandé en moindre quantité).
+banquet: { hours: 12, xpBonus: 0.2, maxStock: 3 }
+growth: { perLevel: 0.1, max: 2 }
+works:
+  - id: statue
+    name: La Statue du fondateur
+    description: "Taillée dans le bloc, elle regarde le chemin par où les premiers sont arrivés."
+    gold: 5000
+    items: [{ item: iron_ore, qty: 630 }, { item: mortar, qty: 150 }, { item: bronze_bar, qty: 50 }]
+  - id: lighthouse
+    name: Le Phare du clan
+    description: "Une flamme au bout du ponton : les barques du clan rentrent toujours."
+    gold: 5000
+    items: [{ item: yew_log, qty: 630 }, { item: vial, qty: 100 }, { item: oak_frame, qty: 3 }]
+  - id: gardens
+    name: Les Jardins suspendus
+    description: "Des terrasses d'herbes qui sentent jusqu'au bourg."
+    gold: 5000
+    items: [{ item: thyme, qty: 840 }, { item: glass_bead, qty: 150 }, { item: wooden_stairs, qty: 2 }]
+  - id: great_table
+    name: La Grande Table
+    description: "Assez longue pour tout le clan, et encore deux bancs pour les invités."
+    gold: 5000
+    items: [{ item: venison, qty: 500 }, { item: country_bread, qty: 60 }, { item: hunter_stew, qty: 40 }]
+  - id: hangings
+    name: Les Tentures du clan
+    description: "Les couleurs du clan, cousues sur toute la longueur de la halle."
+    gold: 5000
+    items: [{ item: cotton_fiber, qty: 630 }, { item: blue_linen, qty: 8 }, { item: leather_strap, qty: 300 }]
+  - id: observatory
+    name: L'Observatoire
+    description: "On y compte les étoiles, et surtout les soirs de Marée."
+    gold: 5000
+    items: [{ item: moonwood_log, qty: 420 }, { item: silver_bar, qty: 20 }, { item: stone_arch, qty: 2 }]
+  - id: trophy_hall
+    name: Le Pavillon des trophées
+    description: "Chaque gardien vaincu y laisse quelque chose : une corne, un sceau, une histoire."
+    gold: 5000
+    items: [{ item: bear_hide, qty: 420 }, { item: yew_plank, qty: 75 }, { item: roof_truss, qty: 1 }]
+  - id: fountain
+    name: La Fontaine des Marées
+    description: "Elle monte et descend à l'heure de la digue, personne ne sait comment."
+    gold: 5000
+    items: [{ item: pike, qty: 250 }, { item: mortar, qty: 100 }, { item: stone_arch, qty: 2 }]

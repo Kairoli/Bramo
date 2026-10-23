@@ -309,6 +309,23 @@ function ItemMarket({ itemId, book, run }: { itemId: string; book: MarketOrderVi
   const copies = state.durability[itemId]?.copies ?? [];
   const have = state.inventory[itemId] ?? 0;
   const bestSell = sells.find((o) => !o.mine);
+  // Achat en gros (réflexe du marché pour monter un métier) : ce que coûtent N unités en prenant les offres les moins chères.
+  const offers = sells.filter((o) => !o.mine).sort((a, b) => a.price - b.price || a.id - b.id);
+  const onSale = offers.reduce((s, o) => s + o.qty, 0);
+  const sweep = (n: number) => {
+    let left = n;
+    let cost = 0;
+    let limit = 0;
+    for (const o of offers) {
+      if (left <= 0) break;
+      const take = Math.min(left, o.qty);
+      cost += take * o.price;
+      limit = o.price;
+      left -= take;
+    }
+    return { cost, limit };
+  };
+  const bulk = [10, 100, 1000].filter((n) => n <= onSale);
   const bestBuy = buys.find((o) => !o.mine);
 
   const [side, setSide] = useState<'buy' | 'sell'>('sell');
@@ -361,6 +378,18 @@ function ItemMarket({ itemId, book, run }: { itemId: string; book: MarketOrderVi
               <button className="btn btn-primary" disabled={state.gold < bestSell.price} onClick={() => run(() => api.fillOrder(bestSell.id, 1))}>
                 Acheter 1
               </button>
+              {!durable && bulk.length > 0 && (
+                <span className="quick-bulk">
+                  {bulk.map((n) => {
+                    const s = sweep(n);
+                    return (
+                      <button key={n} className="btn btn-sm" disabled={state.gold < s.cost} onClick={() => run(() => api.placeOrder({ side: 'buy', itemId, qty: n, price: s.limit, immediate: true }))} title={`Les ${num(n)} moins chers, jusqu’à ${num(s.limit)} or l’unité`}>
+                        {num(n)} · {num(s.cost)} or
+                      </button>
+                    );
+                  })}
+                </span>
+              )}
             </>
           ) : item.stallPrice ? (
             <>

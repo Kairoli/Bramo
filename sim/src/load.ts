@@ -52,6 +52,8 @@ export function readProposalRaw(name: string): RawContent {
   if ((existsSync(join(dir, 'items.yaml')) || existsSync(join(dir, 'combat.yaml'))) && raw.combat) delete (raw.combat as { tide?: unknown }).tide;
   // De même pour la fabrication de l'équipement, qui nomme des matières de data/.
   if (existsSync(join(dir, 'items.yaml'))) delete raw.gearCrafting;
+  // Et pour les ouvrages du clan.
+  if (existsSync(join(dir, 'items.yaml'))) delete raw.clanWorks;
   if (existsSync(join(dir, 'recipes'))) {
     raw.recipes = readdirSync(join(dir, 'recipes'))
       .filter((f) => f.endsWith('.yaml'))

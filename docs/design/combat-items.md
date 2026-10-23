@@ -174,7 +174,7 @@ Correspondance avec les ressources : cuivre et étain (1), fer (10), acier (20),
 - **L'équipement s'use** au temps de combat (repères : une armure de palier ≈ 150 h). Usé, il perd ses statistiques mais n'est jamais perdu. Réparation par soi-même, par un artisan ou chez le PNJ. La durabilité maximale ne baisse jamais.
 - **Reforge** (par un artisan) : retire la ligne variable et en tire une nouvelle. Le joueur peut **garder l'ancienne ligne** si la nouvelle ne convient pas. Le coût **croît à chaque reforge** du même exemplaire.
 - **Pas de re-tirage de ligne** pour l'instant [Décidé par Louis, 21 octobre] ; peut-être plus tard, via des événements.
-- **Perfectionnement** [Décidé par Louis : un artisan peut monter une ligne jusqu'à son maximum] : monter la valeur d'une ligne (une à la fois) vers son plafond, contre matériaux et or, coût croissant. Jamais au-delà du maximum et jamais pour obtenir un Chef-d'œuvre. Pas de montée en +15 ni de rang supplémentaire dans la première version.
+- **Perfectionnement** [Décidé par Louis : un artisan peut monter une ligne jusqu'à son maximum] : monter la valeur d'une ligne (une à la fois) vers son plafond, contre matériaux et or, coût croissant. Jamais au-delà du maximum et jamais pour obtenir un Chef-d'œuvre. **Rangs d'affinage** [Décidé par Louis, 23 octobre : « ne plafonne pas, ça récompense si tu t'investis »] : +1, +2… sans fin, +3 % des caractéristiques de la pièce par rang, pièces Épiques et Légendaires du palier 40 et plus, coût croissant (`docs/design/puits-or.md` §3). Fait chez l'Affineur du bourg.
 - Ce sont des **puits d'or et de matériaux pour tous les joueurs**, clan ou non.
 - Pas de conversion d'un objet vers le palier supérieur ni de changement de rareté dans la première version.
 

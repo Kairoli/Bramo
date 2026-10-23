@@ -219,8 +219,26 @@ export const buildingSchema = z.object({
   maxLevel: z.number().int().min(1),
   /** Métiers accélérés par chaque niveau : une liste de métiers, ou `[all]` pour toute la production. */
   boost: z.object({ professions: z.array(z.string()).min(1), perLevel: ratio }),
-  base: z.object({ gold: z.number().int().min(0), items: z.array(stackSchema).default([]) }),
+  /** `fromLevel` : cet objet n'est demandé qu'à partir de ce niveau (les premiers niveaux restent simples, les derniers demandent
+   * des pièces fabriquées par d'autres artisans). */
+  base: z.object({ gold: z.number().int().min(0), items: z.array(stackSchema.extend({ fromLevel: z.number().int().min(1).optional() })).default([]) }),
 });
+
+/**
+ * Ouvrages du clan (data/clan_works.yaml) [Décidé par Louis, 23 octobre] : une suite sans fin d'ouvrages, bâtis comme les
+ * bâtiments (or et matières des membres). Chaque niveau achevé donne au clan un Banquet : `banquet.hours` de
+ * +`banquet.xpBonus` d'XP (métiers et combat) pour tous ses membres, lancé quand le clan le veut.
+ * Coût du niveau N : celui de l'ouvrage N (la liste tourne) × membres actifs / `settings.clan.minMembersForCost`
+ * × min(1 + growth.perLevel × (N − 1), growth.max) : il monte un peu, puis se stabilise (jamais hors de portée).
+ */
+export const clanWorksSchema = z.object({
+  banquet: z.object({ hours: z.number().positive(), xpBonus: z.number().positive(), maxStock: z.number().int().min(1) }),
+  growth: z.object({ perLevel: z.number().min(0), max: z.number().min(1) }),
+  works: z
+    .array(z.object({ id, name: z.string(), description: z.string(), gold: z.number().int().min(0), items: z.array(stackSchema).min(1) }))
+    .min(1),
+});
+export type ClanWorks = z.infer<typeof clanWorksSchema>;
 
 /**
  * Ornement de métier : cadre dessiné autour du pseudo et du titre (images dans apps/web/public/ornaments/<métier>/<rang>/).
@@ -265,6 +283,8 @@ export interface Content {
   npcOrders: Record<string, NpcOrder>;
   /** Bâtiments de clan. */
   buildings: Record<string, Building>;
+  /** Ouvrages du clan et Banquet (null sans data/clan_works.yaml). */
+  clanWorks: ClanWorks | null;
   /** Ornements de métier, par métier puis par palier. */
   ornaments: Record<string, Ornament>;
   classes: Record<string, CharacterClass>;

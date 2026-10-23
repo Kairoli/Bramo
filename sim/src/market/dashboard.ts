@@ -224,7 +224,7 @@ a { color: var(--market); }
   </section>
   <section class="panel">
     <h2>Prix et échanges</h2>
-    <p class="muted">Prix moyen des transactions rapporté au prix de référence (10 or la minute de travail, qui croît avec le niveau). À 1, le marché paie le travail à sa valeur ; sous 0,5, l’objet se vend à perte.</p>
+    <p class="muted">Prix moyen des transactions rapporté au prix de référence (100 or la minute de travail, qui croît avec le niveau). À 1, le marché paie le travail à sa valeur ; sous 0,5, l’objet se vend à perte.</p>
     <div class="cols"><div><div id="chPrices"></div><div class="legend" id="lgPrices"></div></div><div><div id="chVolume"></div><div class="legend" id="lgVolume"></div></div></div>
   </section>
   <section class="panel">

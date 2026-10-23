@@ -50,6 +50,9 @@ import {
   tierFactorAt,
   wallIndex,
   wornGear,
+  rankCost,
+  rankUp,
+  worksNeeds,
 } from '@bramo/shared';
 import { SIM_START } from '../bot.js';
 import { unitCost, workSec } from '../chains.js';
@@ -61,8 +64,8 @@ import { MIXES, PERSONAS, type Persona } from './personas.js';
 
 const HOUR = 3_600_000;
 const DAY = 24 * HOUR;
-/** Or par minute de travail au niveau 1 (même échelle que les commandes PNJ : 15 min de récolte = 150 or). */
-const GOLD_PER_MIN = 10;
+/** Or par minute de travail au niveau 1 (même échelle que les commandes PNJ : 15 min de récolte = 1 500 or, monnaie ×10). */
+const GOLD_PER_MIN = 100;
 /** Un vestige ≈ 3 minutes de combat gagné (2 vestiges par unité de 6 min). */
 const VESTIGE_REF = 30;
 const RARITY_RANK: Record<string, number> = { common: 0, rare: 1, epic: 2, legendary: 3 };
@@ -112,6 +115,10 @@ export interface Ledger {
   gemsSocketed: Record<string, number>;
   trials: { id: string; day: number; bot: number }[];
   notes: { day: number; text: string }[];
+  /** Puits d'or voulus (23 octobre) : soirs offerts, ouvrages achevés, banquets lancés, rangs d'affinage achetés. */
+  sinks: { patrons: number; works: number; banquets: number; ranks: number; maxRank: number };
+  /** Achats voulus mais impossibles faute d'or (« joueur:jour »). */
+  market: { noGold: Set<string> };
 }
 
 export interface SimClan {
@@ -121,6 +128,8 @@ export interface SimClan {
   members: Bot[];
   levels: Record<string, number>;
   progress: Record<string, Record<string, number>>;
+  /** Ouvrages du clan : niveaux achevés, Banquets en réserve, fin du banquet en cours, apports de l'ouvrage en cours. */
+  works: { level: number; banquets: number; until: number; progress: Record<string, number> };
 }
 
 export interface Bot extends Trader {
@@ -167,6 +176,7 @@ export interface ServerResult {
   fightCache: { calls: number; hits: number; ms: number };
   runtimeSec: number;
   /** Vitrine de l'équipement : offres restées en vente, ventes conclues. */
+  activity: { day: number; players: number; buyers: number; purchases: number; units: number; gold: number; bulk: number; noGold: number }[];
   vitrine: { listed: number; sales: { day: number; price: number; tier: number; rarity: string }[] };
 }
 
@@ -216,7 +226,10 @@ export function runServer(content: Content, input: ServerOptions): ServerResult 
     gemsSocketed: {},
     trials: [],
     notes: [],
+    sinks: { patrons: 0, works: 0, banquets: 0, ranks: 0, maxRank: 0 },
+    market: { noGold: new Set() },
   };
+  let today = 0;
   const note = (day: number, text: string) => ledger.notes.length < 3000 && ledger.notes.push({ day, text });
   const playable = content.professions.filter((p) => p.status === 'playable');
   const recipes = Object.values(content.recipes).filter((r) => !r.trial);
@@ -224,7 +237,7 @@ export function runServer(content: Content, input: ServerOptions): ServerResult 
   for (const r of recipes) for (const o of r.outputs) producers.set(o.item, [...(producers.get(o.item) ?? []), r]);
   const lvl = (s: CharacterState, p: string) => skillLevel(s, p, content);
 
-  // --- Prix de référence : 10 or par minute de travail de chaîne, qui croît avec le niveau requis ---
+  // --- Prix de référence : 100 or par minute de travail de chaîne (monnaie ×10), qui croît avec le niveau requis ---
   const refCache = new Map<string, number>();
   const ref = (id: string, depth = 0): number => {
     const hit = refCache.get(id);
@@ -263,7 +276,9 @@ export function runServer(content: Content, input: ServerOptions): ServerResult 
     const professions: string[] = [];
     for (let k = 0; k < persona.professions.count; k++) {
       const fam = persona.professions.families[k % persona.professions.families.length]!;
-      const pool = playable.filter((p) => p.family === fam && !professions.includes(p.id));
+      // Les métiers « du monde » se rangent avec les autres : la Construction fabrique (un artisanat), l'Exploration récolte.
+      const familyOf = (p: (typeof playable)[number]) => (p.family !== 'world' ? p.family : p.id === 'construction' ? 'crafting' : 'gathering');
+      const pool = playable.filter((p) => familyOf(p) === fam && !professions.includes(p.id));
       const p = pool[Math.floor(r() * pool.length)];
       if (p) professions.push(p.id);
     }
@@ -301,7 +316,7 @@ export function runServer(content: Content, input: ServerOptions): ServerResult 
     let next = 0;
     while (next < willing.length) {
       const size = Math.min(willing.length - next, 5 + Math.floor(rand() * 11));
-      const clan: SimClan = { id: clans.length + 1, renown: 0, members: willing.slice(next, next + size), levels: {}, progress: {} };
+      const clan: SimClan = { id: clans.length + 1, renown: 0, members: willing.slice(next, next + size), levels: {}, progress: {}, works: { level: 0, banquets: 0, until: 0, progress: {} } };
       for (const m of clan.members) m.clan = clan;
       clans.push(clan);
       next += size;
@@ -344,7 +359,7 @@ export function runServer(content: Content, input: ServerOptions): ServerResult 
 
   // --- Équipement ---
   const syncEquipment = (b: Bot) => {
-    b.state.equipment = b.gear.filter((g) => g.equipped).map((g) => ({ model: g.model, lines: g.lines, ...(g.gem ? { gem: g.gem } : {}) }));
+    b.state.equipment = b.gear.filter((g) => g.equipped).map((g) => ({ model: g.model, lines: g.lines, ...(g.gem ? { gem: g.gem } : {}), ...(g.rank ? { rank: g.rank } : {}) }));
   };
   const grantGear = (b: Bot, modelId: string, source: string) => {
     const m = content.gearModels[modelId];
@@ -580,7 +595,7 @@ export function runServer(content: Content, input: ServerOptions): ServerResult 
         const wornH = Math.max(-1, ...b.gear.filter((x) => x.equipped && content.gearModels[x.model]!.slot === m.slot).map((x) => heuristic(content.gearModels[x.model]!)));
         if (m.classes.includes(b.state.classId ?? '') && heuristic(m) > wornH) continue;
         listedIds.add(`${b.id}:${g.id}`);
-        vitrine.push({ seller: b, gear: g, price: Math.max(20, Math.round(cost * (b.persona.priceStyle === 'dumper' ? 1.1 : 1.6))), day });
+        vitrine.push({ seller: b, gear: g, price: Math.max(200, Math.round(cost * (b.persona.priceStyle === 'dumper' ? 1.1 : 1.6))), day });
       }
     }
   };
@@ -590,7 +605,7 @@ export function runServer(content: Content, input: ServerOptions): ServerResult 
       if (o.day >= day) continue;
       const r = gearRecipe(o.gear.model, content);
       const cost = r ? r.inputs.reduce((sum, i) => sum + i.qty * ref(i.item), 0) : 20;
-      o.price = Math.max(Math.round(cost * 0.7), 10, Math.round(o.price * 0.9));
+      o.price = Math.max(Math.round(cost * 0.7), 100, Math.round(o.price * 0.9));
     }
   };
   /** Un combattant achète à la vitrine ce qui améliore un emplacement (palier puis rareté), s'il en a les moyens. */
@@ -815,12 +830,16 @@ export function runServer(content: Content, input: ServerOptions): ServerResult 
   };
 
   // --- Clans ---
-  const RESERVE = 300;
-  const contributeToClan = (b: Bot, day: number) => {
+  const RESERVE = 3000;
+  const contributeToClan = (b: Bot, day: number, t: number) => {
     const clan = b.clan;
     if (!clan) return;
     const active = clan.members.filter((m) => m.started).length;
     let budget = Math.max(0, b.state.gold - RESERVE) * b.persona.clanGenerosity;
+    // Hypothèse : le Banquet attire ; une part de ce qu'on donne au clan va aux ouvrages, le reste aux bâtiments d'abord.
+    const worksShare = content.clanWorks ? 0.4 : 0;
+    const worksBudget = budget * worksShare;
+    budget -= worksBudget;
     const own = Object.values(content.buildings).find((x) => b.professions.some((p) => x.boost.professions.includes(p)))?.id;
     const order = [own, 'hall', ...Object.keys(content.buildings).sort((x, y) => (clan.levels[x] ?? 0) - (clan.levels[y] ?? 0))].filter(
       (id, i, all): id is string => !!id && all.indexOf(id) === i && !!content.buildings[id],
@@ -866,6 +885,93 @@ export function runServer(content: Content, input: ServerOptions): ServerResult 
         note(day, `Clan ${clan.id} : ${def.name} niveau ${level + 1}`);
       }
     }
+    // Ouvrages du clan (data/clan_works.yaml) : le reste du budget, et ce que le sac contient de ce qu'ils demandent.
+    const cw = content.clanWorks;
+    if (!cw) return;
+    budget += worksBudget;
+    const w = clan.works;
+    const needs = worksNeeds(w.level + 1, active, content);
+    for (const it of needs.items) {
+      const rem = it.qty - (w.progress[it.item] ?? 0);
+      if (rem <= 0) continue;
+      let give = Math.min(rem, b.state.inventory[it.item] ?? 0);
+      if (give <= 0 && budget > 0) {
+        const bought = buy(b, it.item, Math.min(rem, 300), Math.max(2, Math.round(ref(it.item) * 2)), true);
+        b.totals.purchases += bought.gold;
+        budget -= bought.gold;
+        give = Math.min(rem, b.state.inventory[it.item] ?? 0);
+      }
+      if (give > 0) {
+        addStack(b.state.inventory, it.item, -give);
+        w.progress[it.item] = (w.progress[it.item] ?? 0) + give;
+        add(ledger.delivered, it.item, give);
+      }
+    }
+    const remGold = needs.gold - (w.progress.gold ?? 0);
+    if (remGold > 0 && budget > 0) {
+      const g = Math.min(remGold, Math.floor(budget));
+      if (g > 0) {
+        b.state.gold -= g;
+        w.progress.gold = (w.progress.gold ?? 0) + g;
+        b.totals.clanGold += g;
+        add(ledger.sink, 'ouvrages du clan', g);
+      }
+    }
+    if ((w.progress.gold ?? 0) >= needs.gold && needs.items.every((i) => (w.progress[i.item] ?? 0) >= i.qty)) {
+      w.level++;
+      w.banquets = Math.min(cw.banquet.maxStock, w.banquets + 1);
+      w.progress = {};
+      ledger.sinks.works++;
+      clan.renown += (content.settings.clan.renown?.buildingLevel ?? 0) * 3;
+      note(day, `Clan ${clan.id} : ouvrage n° ${w.level}`);
+    }
+    // Le chef lance le banquet dès qu'il y en a un en réserve (le simulateur ne choisit pas son moment).
+    if (w.banquets > 0 && w.until <= t) {
+      w.banquets--;
+      w.until = t + cw.banquet.hours * 3_600_000;
+      ledger.sinks.banquets++;
+      for (const m of clan.members) if (m.started) m.state.banquet = { from: t, until: w.until, bonus: cw.banquet.xpBonus };
+    }
+  };
+
+  /**
+   * L'Affineur : un joueur qui calcule et qui a de l'or en trop monte ses belles pièces portées, la moins chère d'abord,
+   * en achetant la matière au marché (au plus deux fois sa référence). Une part de son or au-dessus d'une réserve.
+   */
+  const refine = (b: Bot) => {
+    if (!content.gearCrafting?.refine || b.persona.skill < 0.5 || b.state.gold < 50_000) return;
+    let budget = (b.state.gold - 30_000) * 0.3;
+    for (let n = 0; n < 20 && budget > 0; n++) {
+      const options = b.gear
+        .filter((g) => g.equipped && g.price == null)
+        .map((g) => ({ g, cost: rankCost(g, content) }))
+        .filter((x): x is { g: GearInstance; cost: NonNullable<ReturnType<typeof rankCost>> } => !!x.cost)
+        .sort((x, y) => x.cost.gold - y.cost.gold);
+      const pick = options[0];
+      if (!pick || pick.cost.gold > budget) return;
+      for (const i of pick.cost.items) {
+        const need = i.qty - (b.state.inventory[i.item] ?? 0);
+        if (need > 0) {
+          const bought = buy(b, i.item, need, Math.max(2, Math.round(ref(i.item) * 2)), false);
+          b.totals.purchases += bought.gold;
+          budget -= bought.gold;
+        }
+      }
+      try {
+        const r = rankUp(b.state, pick.g, content);
+        b.state = r.state;
+        traders.get(b.id)!.state = b.state;
+        pick.g.rank = r.gear.rank;
+        budget -= r.cost.gold;
+        add(ledger.sink, 'Affineur (rangs)', r.cost.gold);
+        for (const i of r.cost.items) add(ledger.delivered, i.item, i.qty);
+        ledger.sinks.ranks++;
+        ledger.sinks.maxRank = Math.max(ledger.sinks.maxRank, r.gear.rank ?? 0);
+      } catch (e) {
+        if (!(e instanceof GameError)) throw e;
+        return;
+      }
+    }
   };
 
   // --- Travail : choisir quoi produire ---
@@ -907,16 +1013,26 @@ export function runServer(content: Content, input: ServerOptions): ServerResult 
 
   const choosePlan = (b: Bot, horizonSec: number): Plan | null => {
     const candidates: { score: number; plan: Plan; xps: number; gps: number }[] = [];
+    // Ce que son clan attend vaut au moins une fois et demie sa référence : il le fabrique pour le clan.
+    const wants = clanWants(b);
+    // Pour son clan, un membre fabrique aussi hors de ses métiers ce que son niveau permet (n'importe qui sait faire du bronze).
+    const wantRecipes = new Set(recipes.filter((r) => r.inputs.length && r.outputs.some((o) => wants.has(o.item)) && r.level <= lvl(b.state, r.profession)).map((r) => r.id));
+    const wantProfs = [...new Set(recipes.filter((r) => wantRecipes.has(r.id)).map((r) => r.profession))];
     // Le métier travaillé : un joueur qui cherche l'or prend le plus rentable ; les autres montent leurs métiers ensemble
     // (le moins avancé d'abord, le principal un peu devant).
     const target =
       b.persona.goal === 'gold'
         ? null
         : [...b.professions].sort((x, y) => lvl(b.state, x) - (x === b.professions[0] ? 3 : 0) - (lvl(b.state, y) - (y === b.professions[0] ? 3 : 0)))[0]!;
-    for (const p of b.professions) {
-      if (target && p !== target) continue;
-      for (const r of recipes) {
-        if (r.profession !== p || !canDo(b, r) || r.category === 'masterwork') continue;
+    // Deux façons de se fournir : produire soi-même ce qui manque, ou l'acheter au marché (un joueur qui joue un peu au
+    // calcul y pense : acheter un gros stock de minerai plutôt que miner des heures pour monter la Forge).
+    const modes: ('self' | 'market')[] = b.persona.skill >= 0.3 && process.env.MARKET !== '0' ? ['self', 'market'] : ['self'];
+    for (const p of [...new Set([...b.professions, ...wantProfs])]) {
+      const own = b.professions.includes(p);
+      if (target && p !== target && own) continue;
+      for (const r of recipes) for (const mode of modes) {
+        if (r.profession !== p || r.category === 'masterwork') continue;
+        if (own ? !canDo(b, r) : !wantRecipes.has(r.id)) continue;
         // Temps par fabrication, avec ce qu'il faut produire soi-même avant.
         let sec = r.durationSec;
         let buyCost = 0;
@@ -931,7 +1047,7 @@ export function runServer(content: Content, input: ServerOptions): ServerResult 
           const askQty = exchange.asks(i.item, b.id).reduce((n, a) => n + a.qty, 0);
           // Un joueur qui calcule achète si c'est moins cher que son temps ; les autres produisent s'ils peuvent.
           const timeValue = self ? (self.sec * i.qty * GOLD_PER_MIN) / 60 : Infinity;
-          if (askP !== undefined && askQty >= i.qty * 5 && (!self || (b.persona.goal === 'gold' && askP * i.qty < timeValue * 0.8))) {
+          if (askP !== undefined && askQty >= i.qty * 5 && (!self || mode === 'market' || (b.persona.goal === 'gold' && askP * i.qty < timeValue * 0.8))) {
             buyCost += askP * i.qty;
             buys.push({ item: i.item, qty: i.qty, price: askP });
           } else if (self) {
@@ -943,15 +1059,19 @@ export function runServer(content: Content, input: ServerOptions): ServerResult 
           }
         }
         if (!ok) continue;
+        if (mode === 'market' && !buys.length) continue;
         if (pre.length > 3) continue;
         const xp = r.xp + pre.reduce((s, c) => s + c.recipe.xp * c.perUnit, 0);
-        const value = r.outputs.reduce((s, o) => s + o.qty * sellEstimate(o.item, b.id), 0);
+        const value = r.outputs.reduce((s, o) => s + o.qty * (wants.has(o.item) ? Math.max(sellEstimate(o.item, b.id), ref(o.item) * 1.5) : sellEstimate(o.item, b.id)), 0);
         const xps = xp / sec;
         const gps = (value - buyCost) / sec;
         const n = Math.max(1, Math.min(content.settings.activity.maxQuantity, Math.floor(horizonSec / sec)));
         const affordable = buyCost > 0 ? Math.floor((b.state.gold * 0.6) / buyCost) : n;
         const qty = Math.max(1, Math.min(n, affordable));
-        if (buyCost > 0 && affordable < 1) continue;
+        if (buyCost > 0 && affordable < 1) {
+          ledger.market.noGold.add(`${b.id}:${today}`);
+          continue;
+        }
         // Étapes : ce qu'il faut produire avant, regroupé par recette, puis la fabrication.
         const merged = new Map<string, { recipe: Recipe; qty: number }>();
         for (const c of pre) {
@@ -1015,8 +1135,23 @@ export function runServer(content: Content, input: ServerOptions): ServerResult 
   };
 
   // --- Vendre ce qu'on ne garde pas ---
+  const clanWants = (b: Bot): Set<string> => {
+    const out = new Set<string>();
+    const clan = b.clan;
+    if (!clan || b.persona.clanGenerosity <= 0) return out;
+    const active = clan.members.filter((m) => m.started).length;
+    for (const [id, def] of Object.entries(content.buildings)) {
+      const level = clan.levels[id] ?? 0;
+      if (level >= def.maxLevel) continue;
+      const prog = clan.progress[id] ?? {};
+      for (const it of buildingNeeds(id, level + 1, active, content).items) if ((prog[it.item] ?? 0) < it.qty) out.add(it.item);
+    }
+    if (content.clanWorks) for (const it of worksNeeds(clan.works.level + 1, active, content).items) if ((clan.works.progress[it.item] ?? 0) < it.qty) out.add(it.item);
+    return out;
+  };
   const keepSet = (b: Bot): Set<string> => {
     const keep = new Set(b.plan);
+    for (const i of clanWants(b)) keep.add(i);
     for (const p of b.professions) {
       const tr = nextTrial(p, b.state.trials, content);
       if (tr && b.persona.trials) for (const task of tr.tasks) keep.add(task.item);
@@ -1167,7 +1302,8 @@ export function runServer(content: Content, input: ServerOptions): ServerResult 
     shopVitrine(b);
     useGems(b, day);
     supplies(b, day);
-    contributeToClan(b, day);
+    contributeToClan(b, day, t);
+    refine(b);
     meals(b);
     chaseProfit(b, day);
     for (const h of opts.hooks) h.onVisit?.(ctx, b, t, day);
@@ -1193,6 +1329,7 @@ export function runServer(content: Content, input: ServerOptions): ServerResult 
   let lastVolume = 0;
   let lastTrades = 0;
   for (let day = 0; day < opts.days; day++) {
+    today = day;
     const dayStart = SIM_START + day * DAY;
     exchange.day = day;
     const active = bots.filter((b) => b.joinDay <= day);
@@ -1300,6 +1437,12 @@ export function runServer(content: Content, input: ServerOptions): ServerResult 
     refs,
     fightCache: cache.stats,
     vitrine: { listed: vitrine.length, sales: vitrineSales },
+    // Activité d'achat du marché, jour par jour (joueurs actifs ce jour-là pour les parts).
+    activity: dayRows.map((d) => {
+      const a = exchange.daily.get(d.day);
+      const noGold = [...ledger.market.noGold].filter((k) => k.endsWith(`:${d.day}`)).length;
+      return { day: d.day, players: d.players, buyers: a?.buyers.size ?? 0, purchases: a?.purchases ?? 0, units: a?.units ?? 0, gold: a?.gold ?? 0, bulk: a?.bulk ?? 0, noGold };
+    }),
     runtimeSec: Math.round((performance.now() - t0) / 1000),
   };
 }

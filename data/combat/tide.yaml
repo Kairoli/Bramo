@@ -63,3 +63,18 @@ titles:
   - { tide: debacle, nights: 10, title: "A tenu la digue" }
   - { tide: lanterns, nights: 10, title: "Porte-lanterne" }
   - { tide: giants, nights: 10, title: "A vu un géant" }
+# Mécène de la Marée [Décidé par Louis, 23 octobre : « surtout le 1 », avec des titres selon le nombre de soirs offerts].
+# Un joueur offre la Marée du soir au serveur : son or est détruit (le puits d'or qui vise ceux qui en ont trop), et tous les
+# participants de ce soir ont +10 % d'éclats par mécène (trois au plus). Son nom s'affiche à la Marée, au bourg et au fil.
+# Prix : 250 or par participant du dernier soir (~28 000 or pour 113 participants), au moins 5 000. Chiffres à équilibrer.
+patron:
+  perParticipant: 250
+  minPrice: 5000
+  maxPerNight: 3
+  shardBonus: 0.1
+  titles:
+    - { offered: 1, title: "Mécène d'un soir" }
+    - { offered: 5, title: "Ami de la digue" }
+    - { offered: 15, title: "Bienfaiteur des Marées" }
+    - { offered: 40, title: "Lanterne du bourg" }
+    - { offered: 100, title: "Grand Mécène de la Marée" }

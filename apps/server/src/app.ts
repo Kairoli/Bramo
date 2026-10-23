@@ -32,6 +32,8 @@ import {
   viewGear,
   gearGrantBody,
   gearIdBody,
+  gearRefineBody,
+  clanWorksBody,
   gearSocketBody,
   devItemGrantBody,
   addStack,
@@ -91,7 +93,7 @@ import {
   tidePrefsBody,
 } from '@bramo/shared';
 import type { Db } from './db/index.js';
-import { settleTide, tideView } from './tide.js';
+import { offerPatron, settleTide, tideView } from './tide.js';
 import { buyGear, craftOwned, gearListings, listGear, unlistGear } from './vitrine.js';
 import { loadCharacterById } from './characters.js';
 import { accounts, characters } from './db/schema.js';
@@ -107,11 +109,11 @@ import {
 import { type Action, NoCharacterError, play } from './game.js';
 import { recentEntries } from './journal.js';
 import { joinEvent, recordEvents, townView } from './town.js';
-import { contribute, createClan, joinClan, kickMember, leaveClan, listClans, myClanView, setRank } from './clans.js';
+import { contribute, contributeWorks, createClan, joinClan, kickMember, launchBanquet, leaveClan, listClans, myClanView, setRank } from './clans.js';
 import { joinTestClan } from './devClan.js';
 import { playerProfile } from './profile.js';
 import { cancelRepair, openRepairs, requestRepair, takeRepair } from './repairs.js';
-import { dropMismatchedOwned, equipOwned, giveStarterGear, grantGear, loadGear, socketOwned, unequipOwned, wearGearSet } from './gear.js';
+import { dropMismatchedOwned, equipOwned, giveStarterGear, grantGear, loadGear, refineOwned, socketOwned, unequipOwned, wearGearSet } from './gear.js';
 import { buyFromStall, cancelOrder, fillOrder, marketBook, marketSummary, myOrders, placeOrder } from './market.js';
 
 export interface AppOptions {
@@ -194,6 +196,7 @@ export async function buildApp({ db, content, clock = Date.now, secureCookies = 
     items: content.items,
     npcOrders: content.npcOrders,
     buildings: content.buildings,
+    clanWorks: content.clanWorks,
     ornaments: content.ornaments,
     recipes: content.recipes,
     trials: content.trials,
@@ -642,6 +645,13 @@ export async function buildApp({ db, content, clock = Date.now, secureCookies = 
     return playAs(req, (state, now, { tx, characterId, characterName }) => contribute(tx, content, characterId, characterName, state, p, now));
   });
 
+  // Ouvrages du clan et Banquet.
+  app.post('/api/clan/works/contribute', (req) => {
+    const p = body(clanWorksBody, req);
+    return playAs(req, (state, now, { tx, characterId, characterName }) => contributeWorks(tx, content, characterId, characterName, state, p, now));
+  });
+  app.post('/api/clan/banquet', (req) => playAs(req, (state, now, { tx, characterId, characterName }) => launchBanquet(tx, content, characterId, characterName, state, now)));
+
   app.get('/api/town', async (req) => {
     const me = await myCharacter(req);
     return townView(db, content, clock(), me.id);
@@ -694,6 +704,16 @@ export async function buildApp({ db, content, clock = Date.now, secureCookies = 
     await db.transaction((tx) => unlistGear(tx, me.id, id));
     return loadGear(db, me.id).then((items) => viewGear(items, me.classId, content));
   });
+  /** L'Affineur du bourg : rang d'affinage (sans plafond) ou affûtage d'une ligne. */
+  app.post('/api/gear/refine', async (req) => {
+    const p = body(gearRefineBody, req);
+    const res = await playAs(req, async (state, _now, ctx) => {
+      const r = await refineOwned(ctx.tx, ctx.characterId, state, p.id, p.kind === 'rank' ? { kind: 'rank' } : { kind: 'hone', line: p.line }, content);
+      return { state: r.state, log: r.log, logKind: 'info' };
+    });
+    const me = await myCharacter(req);
+    return { state: res, gear: viewGear(await loadGear(db, me.id), me.classId, content) };
+  });
   app.get('/api/market/gear', async (req) => {
     const me = await myCharacter(req);
     const q = gearMarketQuery.parse(req.query ?? {});
@@ -741,6 +761,7 @@ export async function buildApp({ db, content, clock = Date.now, secureCookies = 
       return { state: r.state, log: `Livré à la digue : ${Object.entries(r.delivered).map(([k, n]) => `${n} × ${itemName(k)}`).join(', ')}.`, logKind: 'combat' };
     }),
   );
+  app.post('/api/tide/patron', (req) => playAs(req, (state, now, { tx, characterId, characterName }) => offerPatron(tx, characterId, characterName, state, content, now)));
   app.post('/api/tide/buy', (req) => {
     const { offer } = body(tideBuyBody, req);
     return playAs(req, (state) => ({ state: buyTideItem(state, offer, content), log: `Éclats de marée échangés : ${content.combat?.tide?.shop.find((o) => o.id === offer)?.name ?? offer}.`, logKind: 'info' }));

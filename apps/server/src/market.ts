@@ -83,7 +83,7 @@ export async function placeOrder(
   content: Content,
   characterId: number,
   input: CharacterState,
-  p: { side: 'buy' | 'sell'; itemId: string; qty: number; price: number; copy?: number },
+  p: { side: 'buy' | 'sell'; itemId: string; qty: number; price: number; copy?: number; immediate?: boolean },
   now: number,
 ): Promise<MarketResult> {
   validateOrder(content, p.side, p.itemId, p.qty, p.price);
@@ -92,7 +92,7 @@ export async function placeOrder(
     .select()
     .from(marketOrders)
     .where(and(eq(marketOrders.characterId, characterId), gt(marketOrders.qty, 0)));
-  if (mine.length >= content.settings.market.maxOpenOrders) {
+  if (!p.immediate && mine.length >= content.settings.market.maxOpenOrders) {
     throw new GameError('too_many_orders', `Vous ne pouvez pas avoir plus de ${content.settings.market.maxOpenOrders} ordres ouverts.`);
   }
   const crossesOwn = mine.some(
@@ -113,7 +113,7 @@ export async function placeOrder(
       if ((state.inventory[p.itemId] ?? 0) < p.qty) throw new GameError('missing', 'Vous n’en avez pas assez.');
       addStack(state.inventory, p.itemId, -p.qty);
     }
-  } else if (state.gold < p.price * p.qty) {
+  } else if (!p.immediate && state.gold < p.price * p.qty) {
     throw new GameError('gold', 'Pas assez d’or pour cet ordre (le prix limite est mis de côté).');
   }
 
@@ -132,6 +132,11 @@ export async function placeOrder(
     .orderBy(asc(marketOrders.id))
     .for('update');
   const fills = match(resting.map(toOrder), p.side, p.itemId, p.qty, p.price, characterId);
+  // Achat immédiat (« Acheter 100 maintenant ») : il faut un vendeur, et l'or de ce qui s'échange vraiment.
+  if (p.immediate) {
+    if (!fills.length) throw new GameError('no_match', 'Plus personne ne vend à ce prix : regardez les offres à jour.');
+    if (p.side === 'buy' && fills.reduce((s, f) => s + f.qty * f.order.price, 0) > state.gold) throw new GameError('gold', 'Pas assez d’or pour cet achat.');
+  }
 
   let filled = 0;
   let primed = 0;
@@ -168,7 +173,7 @@ export async function placeOrder(
   }
 
   const rest = p.qty - filled;
-  if (rest > 0) {
+  if (rest > 0 && !p.immediate) {
     if (p.side === 'buy') state.gold -= rest * p.price;
     await tx.insert(marketOrders).values({ characterId, side: p.side, itemId: p.itemId, qty: rest, price: p.price, wear });
   }
@@ -176,7 +181,9 @@ export async function placeOrder(
   const done = filled ? ` ${filled} échangé(s) tout de suite (${money >= 0 ? '+' : '−'}${Math.abs(money)} or).` : '';
   return {
     state,
-    log: `Ordre d’${verb} : ${p.qty} × ${name} à ${p.price} or.${done}${rest > 0 ? ` ${rest} en attente.` : ''}${primeLog}`,
+    log: p.immediate
+      ? `Marché : ${p.side === 'buy' ? 'achat' : 'vente'} de ${filled} × ${name} (${money >= 0 ? '+' : '−'}${Math.abs(money)} or).${primeLog}`
+      : `Ordre d’${verb} : ${p.qty} × ${name} à ${p.price} or.${done}${rest > 0 ? ` ${rest} en attente.` : ''}${primeLog}`,
   };
 }
 

@@ -30,6 +30,7 @@ export function readRawContent(dataDir: string): RawContent {
     cosmetics: read('cosmetics.yaml'),
     trials: read('trials.yaml'),
     buildings: existsSync(join(dataDir, 'buildings.yaml')) ? read('buildings.yaml') : [],
+    ...(existsSync(join(dataDir, 'clan_works.yaml')) ? { clanWorks: read('clan_works.yaml') } : {}),
     ornaments: existsSync(join(dataDir, 'ornaments.yaml')) ? read('ornaments.yaml') : [],
     npcOrders: existsSync(join(dataDir, 'npc_orders.yaml')) ? read('npc_orders.yaml') : [],
     gear: existsSync(join(dataDir, 'gear.yaml')) ? read('gear.yaml') : [],

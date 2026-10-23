@@ -16,6 +16,8 @@ import {
   tideWindow,
   buyTideItem,
   GameError,
+  offerTide,
+  patronPrice,
 } from '@bramo/shared';
 import { SIM_START } from '../bot.js';
 import type { Bot, HookContext, ServerHook } from './world.js';
@@ -23,7 +25,7 @@ import type { Bot, HookContext, ServerHook } from './world.js';
 const DAY = 86_400_000;
 
 export interface TideStats {
-  nights: { day: number; tide: string; participants: number; live: number; work: number; points: number; thresholds: number }[];
+  nights: { day: number; tide: string; participants: number; live: number; work: number; points: number; thresholds: number; patrons: number }[];
   /** Points par soir et par joueur, pour les moyennes par façon de jouer, classe et voie. */
   rows: { bot: number; persona: string; classId: string; path: string | null; tide: string; points: number; ratio: number; live: boolean; channel: string }[];
   outfits: number;
@@ -42,6 +44,20 @@ export function tideHook(stats: TideStats): ServerHook {
       const w = tideWindow(day, tide);
       const startH = (w.start - dayStart) / 3_600_000;
       const endH = (w.end - dayStart) / 3_600_000;
+      // Mécènes du soir : un joueur qui a au moins six fois le prix offre la Marée, selon sa générosité (le simulateur ne
+      // sait pas qui aime le prestige ; la générosité envers son clan sert de mesure), trois au plus.
+      const patrons: Bot[] = [];
+      if (tide.patron) {
+        const price = patronPrice(stats.nights.at(-1)?.participants ?? 0, ctx.content);
+        for (const b of [...ctx.bots].filter((x) => x.started).sort((x, y) => y.state.gold - x.state.gold)) {
+          if (patrons.length >= tide.patron.maxPerNight || b.state.gold < price * 6) break;
+          if (b.rand() >= b.persona.clanGenerosity * 0.5) continue;
+          b.state = offerTide(b.state, price, ctx.content);
+          ctx.ledger.sink['mécène de la Marée'] = (ctx.ledger.sink['mécène de la Marée'] ?? 0) + price;
+          ctx.ledger.sinks.patrons++;
+          patrons.push(b);
+        }
+      }
       const scored: { b: Bot; points: number; ratio: number; live: boolean; channel: string }[] = [];
       for (const b of ctx.bots) {
         if (!b.started || !b.state.classId) continue;
@@ -89,7 +105,7 @@ export function tideHook(stats: TideStats): ServerHook {
       const total = scored.reduce((s, x) => s + x.points, 0);
       let thresholds = 0;
       for (const x of scored) {
-        const s = tideShards(x.points, total, scored.length, ctx.content);
+        const s = tideShards(x.points, total, scored.length, ctx.content, patrons.length);
         thresholds = s.thresholds;
         recordTideNight(x.b.state, { day, tide: def.id, points: x.points, shards: s.shards, live: x.live, channel: x.channel as 'combat' | 'work' }, ctx.content);
         ctx.ledger.produced[tide.shards.item] = (ctx.ledger.produced[tide.shards.item] ?? 0) + s.shards;
@@ -118,7 +134,7 @@ export function tideHook(stats: TideStats): ServerHook {
         for (const x of scored) if (x.b.clan && x.points >= rn.tideMinPoints) byClan.set(x.b.clan, (byClan.get(x.b.clan) ?? 0) + 1);
         for (const [clan, n] of byClan) (clan as { renown: number }).renown += Math.min(rn.tideMaxPerNight, n) * rn.tideMember;
       }
-      stats.nights.push({ day: simDay, tide: def.id, participants: scored.length, live: scored.filter((x) => x.live).length, work: scored.filter((x) => x.channel === 'work').length, points: total, thresholds });
+      stats.nights.push({ day: simDay, tide: def.id, participants: scored.length, live: scored.filter((x) => x.live).length, work: scored.filter((x) => x.channel === 'work').length, points: total, thresholds, patrons: patrons.length });
     },
   };
 }

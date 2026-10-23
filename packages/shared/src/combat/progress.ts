@@ -354,7 +354,10 @@ function computeWornGear(state: CharacterState, content: Content) {
   const pieces = state.equipment!.flatMap((p) => {
     const m = content.gearModels[p.model];
     if (!m) return [];
-    return [{ tier: m.tier, weight: content.gearSlots[m.slot]?.weight ?? 1, stats: m.stats, lines: p.lines, ...(m.set ? { set: m.set } : {}), ...(m.talent ? { talent: m.talent } : {}), ...(p.gem ? { gem: p.gem } : {}) }];
+    // Rang d'affinage (l'Affineur du bourg) : les lignes fixes de la pièce, +statPerRank par rang.
+    const up = 1 + (p.rank ?? 0) * (content.gearCrafting?.refine?.rank.statPerRank ?? 0);
+    const stats = up === 1 ? m.stats : m.stats.map((x) => ({ ...x, value: x.value * up }));
+    return [{ tier: m.tier, weight: content.gearSlots[m.slot]?.weight ?? 1, stats, lines: p.lines, ...(m.set ? { set: m.set } : {}), ...(m.talent ? { talent: m.talent } : {}), ...(p.gem ? { gem: p.gem } : {}) }];
   });
   return wornLoadout(rules, combat.talents, combat.tools, pieces, floor);
 }
@@ -557,9 +560,9 @@ function gainXp(state: CharacterState, classId: string, xp: number, content: Con
 
 /**
  * Fait tourner l'activité de combat de `t` à `end` (temps réel), au multiplicateur de présence `rate`.
- * Renvoie l'instant où elle s'arrête (`end`, ou plus tôt si elle se met en pause).
+ * Renvoie l'instant où elle s'arrête (`end`, ou plus tôt si elle se met en pause). `xpMul` : Banquet du clan.
  */
-export function runCombat(state: CharacterState, t: number, end: number, rate: number, content: Content, summary: CombatSummary): number {
+export function runCombat(state: CharacterState, t: number, end: number, rate: number, content: Content, summary: CombatSummary, xpMul = 1): number {
   const a = state.combat.activity;
   if (!a || rate <= 0 || !state.classId) return end;
   const classId = state.classId;
@@ -584,7 +587,7 @@ export function runCombat(state: CharacterState, t: number, end: number, rate: n
       const toNext = content.xpTable[level + 1]! - (state.combat.xp[classId] ?? 0);
       const msToNext = toNext / perMs / rate;
       const step = Math.min(end - t, Math.max(1, msToNext));
-      gainXp(state, classId, perMs * step * rate, content, summary);
+      gainXp(state, classId, perMs * step * rate * xpMul, content, summary);
       t += step;
     }
     return end;
@@ -608,13 +611,13 @@ export function runCombat(state: CharacterState, t: number, end: number, rate: n
       a.wins++;
       a.streak = 0;
       summary.wins++;
-      gainXp(state, fighter, perMs * f.ms, content, summary);
+      gainXp(state, fighter, perMs * f.ms * xpMul, content, summary);
       rollLoot(state, f, content, summary);
     } else {
       a.losses++;
       a.streak++;
       summary.losses++;
-      gainXp(state, fighter, perMs * f.ms * p.lossXpShare, content, summary);
+      gainXp(state, fighter, perMs * f.ms * p.lossXpShare * xpMul, content, summary);
     }
     state.combat.last = f;
     // Fournitures : les potions bues, le temps de la préparation en cours.

@@ -245,6 +245,27 @@ describe('API', () => {
     expect(((await a('GET', '/api/market')).json as unknown[]).length).toBe(0);
   });
 
+  it('marché : acheter en gros d’un coup, des offres les moins chères à la plus chère, sans ordre en attente', async () => {
+    const s1 = player({ value: '' });
+    const s2 = player({ value: '' });
+    const buyer = player({ value: '' });
+    await s1('POST', '/api/auth/register', { username: 'Grossiste', password: 'motdepasse' });
+    await s2('POST', '/api/auth/register', { username: 'Detaillant', password: 'motdepasse' });
+    await buyer('POST', '/api/auth/register', { username: 'Apprentie', password: 'motdepasse' });
+    await grant('Grossiste', 0, { tin_ore: 30 });
+    await grant('Detaillant', 0, { tin_ore: 30 });
+    await s1('POST', '/api/market/order', { side: 'sell', itemId: 'tin_ore', qty: 30, price: 5 });
+    await s2('POST', '/api/market/order', { side: 'sell', itemId: 'tin_ore', qty: 30, price: 7 });
+    // 50 unités : les 30 à 5 or, puis 20 à 7 or = 290 or ; rien ne reste en attente.
+    const r = (await buyer('POST', '/api/market/order', { side: 'buy', itemId: 'tin_ore', qty: 50, price: 7, immediate: true })).json as StateResponse;
+    expect(r.state.inventory.tin_ore).toBe(50);
+    expect(r.state.gold).toBe(content.settings.character.startingGold - 290);
+    expect((await buyer('GET', '/api/market/mine')).json).toEqual([]);
+    // Plus d'offre à ce prix : refusé, pas d'ordre posé.
+    expect((await buyer('POST', '/api/market/order', { side: 'buy', itemId: 'tin_ore', qty: 50, price: 6, immediate: true })).status).toBe(400);
+    expect((await buyer('GET', '/api/market/mine')).json).toEqual([]);
+  });
+
   it('commandes PNJ : trois par jour, une fois chacune', async () => {
     const a = player({ value: '' });
     await a('POST', '/api/auth/register', { username: 'Livreur', password: 'motdepasse' });
@@ -271,14 +292,14 @@ describe('API', () => {
     const b = player({ value: '' });
     await a('POST', '/api/auth/register', { username: 'Eleveur', password: 'motdepasse' });
     await b('POST', '/api/auth/register', { username: 'Forgeur', password: 'motdepasse' });
-    await grant('Eleveur', 500, {});
+    await grant('Eleveur', 5000, {});
     expect((await a('POST', '/api/stall/buy', { itemId: 'iron_pickaxe', qty: 1 })).status).toBe(400); // pas de palier 1
     const bought = await a('POST', '/api/stall/buy', { itemId: 'bronze_pickaxe', qty: 1 });
     expect((bought.json as StateResponse).state.inventory.bronze_pickaxe).toBe(1);
-    expect((bought.json as StateResponse).state.gold).toBe(500 - 150);
+    expect((bought.json as StateResponse).state.gold).toBe(5000 - 1500);
     // Un joueur met une pioche en vente : l'étal ferme pour cet objet.
     await grant('Forgeur', 0, { bronze_pickaxe: 1 });
-    await b('POST', '/api/market/order', { side: 'sell', itemId: 'bronze_pickaxe', qty: 1, price: 120, copy: 0 });
+    await b('POST', '/api/market/order', { side: 'sell', itemId: 'bronze_pickaxe', qty: 1, price: 1200, copy: 0 });
     const closed = await a('POST', '/api/stall/buy', { itemId: 'bronze_pickaxe', qty: 1 });
     expect(closed.status).toBe(400);
     expect((closed.json as { code: string }).code).toBe('players_sell');
@@ -337,8 +358,8 @@ describe('API', () => {
     await client('POST', '/api/auth/register', { username: 'Commanditaire', password: 'motdepasse' });
     await maker('POST', '/api/auth/register', { username: 'Fondeur', password: 'motdepasse' });
     await grant('Fondeur', 0, { bronze_bar: 5 });
-    await client('POST', '/api/market/order', { side: 'buy', itemId: 'bronze_bar', qty: 5, price: 5 });
-    const res = (await maker('POST', '/api/market/order', { side: 'sell', itemId: 'bronze_bar', qty: 5, price: 5 })).json as StateResponse;
+    await client('POST', '/api/market/order', { side: 'buy', itemId: 'bronze_bar', qty: 5, price: 10 });
+    const res = (await maker('POST', '/api/market/order', { side: 'sell', itemId: 'bronze_bar', qty: 5, price: 10 })).json as StateResponse;
     // « Lingot de bronze » : 1,6 XP par lingot × 5 × prime de 20 % = 1,6 XP.
     expect(res.state.skills.smithing!.xp).toBeCloseTo(1.6);
     expect(res.journal.some((j) => j.text.includes('Prime de commande'))).toBe(true);
@@ -370,9 +391,9 @@ describe('API', () => {
     await intrus('POST', '/api/auth/register', { username: 'Intrus', password: 'motdepasse' });
     // Sans clan : le bonus de la Guilde du bourg ; fonder coûte de l'or.
     expect((await chef('POST', '/api/clan/create', { name: 'Les Braises' })).status).toBe(400);
-    await grant('Chefclan', 3000, {});
+    await grant('Chefclan', 30000, {});
     const created = (await chef('POST', '/api/clan/create', { name: 'Les Braises', description: 'Forgerons du matin' })).json as StateResponse;
-    expect(created.state.gold).toBe(3000 - content.settings.clan.creationCost);
+    expect(created.state.gold).toBe(30000 - content.settings.clan.creationCost);
     expect((await intrus('POST', '/api/clan/create', { name: 'les braises' })).status).toBe(400); // nom déjà pris
     const view0 = (await chef('GET', '/api/clan')).json as import('@bramo/shared').ClanView;
     expect(view0.myRank).toBe('leader');
@@ -381,27 +402,27 @@ describe('API', () => {
     const list = (await recrue('GET', '/api/clans')).json as import('@bramo/shared').ClanListItem[];
     expect(list).toHaveLength(1);
     await recrue('POST', '/api/clan/join', { clanId: list[0]!.id });
-    await grant('Recrue', 0, { stone_block: 3000, coal: 1500, copper_ore: 5 });
+    await grant('Recrue', 0, { dressed_stone: 200, coal: 1500, copper_ore: 5 });
 
-    // Forge, niveau 1 : 1 500 or, 2 000 blocs de pierre, 1 000 de charbon (2 membres actifs : coût de référence).
+    // Forge, niveau 1 : 15 000 or, 1 000 de charbon et 200 moellons (2 membres actifs : coût de référence) ; lingots et arches aux niveaux 2 et 3.
     const gallery = view0.buildings.find((b) => b.id === 'forge')!;
-    expect(gallery.next?.gold.need).toBe(1500);
+    expect(gallery.next?.gold.need).toBe(15000);
     // L'or : l'apport est plafonné à ce qu'il manque ; un objet non demandé est refusé ; un non-membre ne peut rien apporter.
-    expect((await chef('POST', '/api/clan/contribute', { buildingId: 'forge', what: 'gold', qty: 1000 })).status).toBe(200);
+    expect((await chef('POST', '/api/clan/contribute', { buildingId: 'forge', what: 'gold', qty: 10000 })).status).toBe(200);
     expect((await recrue('POST', '/api/clan/contribute', { buildingId: 'forge', what: 'copper_ore', qty: 5 })).status).toBe(400);
     expect((await intrus('POST', '/api/clan/contribute', { buildingId: 'forge', what: 'gold', qty: 10 })).status).toBe(400);
-    const capped = (await chef('POST', '/api/clan/contribute', { buildingId: 'forge', what: 'gold', qty: 2000 })).json as StateResponse;
-    expect(capped.state.gold).toBe(3000 - content.settings.clan.creationCost - 1500);
+    const capped = (await chef('POST', '/api/clan/contribute', { buildingId: 'forge', what: 'gold', qty: 20000 })).json as StateResponse;
+    expect(capped.state.gold).toBe(30000 - content.settings.clan.creationCost - 15000);
     expect((await chef('POST', '/api/clan/contribute', { buildingId: 'forge', what: 'gold', qty: 1 })).status).toBe(400); // complet
     // Les membres apportent ensemble : le bâtiment monte quand tout est réuni.
-    await recrue('POST', '/api/clan/contribute', { buildingId: 'forge', what: 'stone_block', qty: 2000 });
+    await recrue('POST', '/api/clan/contribute', { buildingId: 'forge', what: 'dressed_stone', qty: 200 });
     const mid = (await chef('GET', '/api/clan')).json as import('@bramo/shared').ClanView;
     expect(mid.buildings.find((b) => b.id === 'forge')?.level).toBe(0);
     const done = (await recrue('POST', '/api/clan/contribute', { buildingId: 'forge', what: 'coal', qty: 1000 })).json as StateResponse;
     expect(done.journal.some((j) => j.text.includes('niveau 1'))).toBe(true);
     expect(done.state.inventory.coal).toBe(500);
     const after = (await chef('GET', '/api/clan')).json as import('@bramo/shared').ClanView;
-    expect(after.buildings.find((b) => b.id === 'forge')).toMatchObject({ level: 1, next: { gold: { need: 3000, have: 0 } } });
+    expect(after.buildings.find((b) => b.id === 'forge')).toMatchObject({ level: 1, next: { gold: { need: 30000, have: 0 } } });
     expect(after.bonuses.mining).toBeCloseTo(0.02);
     expect(after.bonuses.smithing).toBeCloseTo(0.02); // la forge sert aussi les forgerons
     expect(after.log.some((l) => l.text.includes('Forge passe au niveau 1'))).toBe(true);
@@ -494,5 +515,86 @@ describe('API', () => {
     expect(mine.items.some((g) => g.id === piece.id)).toBe(true);
     const paid = (await smith('GET', '/api/state')).json as StateResponse;
     expect(paid.journal.some((e) => e.text.includes('Vitrine'))).toBe(true);
+  });
+
+  it('Mécène de la Marée : on offre la prochaine Marée, l’or part, le nom s’affiche, trois places au plus', async () => {
+    const rules = content.combat!.tide!.patron!;
+    const names = ['Mecene', 'Mecenedeux', 'Mecenetrois', 'Mecenequatre'];
+    const players = names.map(() => player({ value: '' }));
+    for (const [i, p] of players.entries()) {
+      await p('POST', '/api/auth/register', { username: names[i]!, password: 'motdepasse' });
+      await p('POST', '/api/character/class', { classId: 'runist' });
+    }
+    expect((await players[0]!('POST', '/api/tide/patron')).status).toBe(400); // pas assez d'or
+    for (const n of names) await grant(n, 5000, {});
+    const view0 = (await players[0]!('GET', '/api/tide')).json as import('@bramo/shared').TideView;
+    const price = view0.patron!.price;
+    expect(price).toBeGreaterThanOrEqual(rules.minPrice);
+    const offered = (await players[0]!('POST', '/api/tide/patron')).json as StateResponse;
+    expect(offered.state.gold).toBe(5000 - price);
+    expect((await players[0]!('POST', '/api/tide/patron')).status).toBe(400); // une fois par soir
+    await players[1]!('POST', '/api/tide/patron');
+    await players[2]!('POST', '/api/tide/patron');
+    expect((await players[3]!('POST', '/api/tide/patron')).status).toBe(400); // complet
+    const view = (await players[3]!('GET', '/api/tide')).json as import('@bramo/shared').TideView;
+    expect(view.patron!.names).toEqual(names.slice(0, 3));
+    const mine = (await players[0]!('GET', '/api/tide')).json as import('@bramo/shared').TideView;
+    expect(mine.patron!.offered).toBe(1);
+    expect(mine.titles).toContain(rules.titles[0]!.title);
+    const feed = ((await players[0]!('GET', '/api/town')).json as import('@bramo/shared').TownView).feed;
+    expect(feed.some((e) => e.kind === 'tide' && e.text.includes('Mecene offre'))).toBe(true);
+  });
+
+  it('Ouvrages du clan : on bâtit ensemble, l’ouvrage achevé donne un Banquet que le chef lance', async () => {
+    const chef = player({ value: '' });
+    const membre = player({ value: '' });
+    await chef('POST', '/api/auth/register', { username: 'Batisseuse', password: 'motdepasse' });
+    await membre('POST', '/api/auth/register', { username: 'Gacheur', password: 'motdepasse' });
+    await grant('Batisseuse', 100_000, {});
+    await chef('POST', '/api/clan/create', { name: 'Les Maçons' });
+    const list = (await membre('GET', '/api/clans')).json as import('@bramo/shared').ClanListItem[];
+    await membre('POST', '/api/clan/join', { clanId: list.find((c) => c.name === 'Les Maçons')!.id });
+    const v0 = (await chef('GET', '/api/clan')).json as import('@bramo/shared').ClanView;
+    expect(v0.works).toMatchObject({ level: 0, banquets: 0, banquet: null, canLaunch: false });
+    const next = v0.works!.next;
+    expect(next.id).toBe(content.clanWorks!.works[0]!.id);
+    await grant('Gacheur', 0, Object.fromEntries(next.items.map((i) => [i.item, i.need])));
+    expect((await chef('POST', '/api/clan/banquet')).status).toBe(400); // pas de banquet en réserve
+    await chef('POST', '/api/clan/works/contribute', { what: 'gold', qty: next.gold.need });
+    for (const i of next.items) await membre('POST', '/api/clan/works/contribute', { what: i.item, qty: i.need });
+    const v1 = (await chef('GET', '/api/clan')).json as import('@bramo/shared').ClanView;
+    expect(v1.works).toMatchObject({ level: 1, banquets: 1, canLaunch: true });
+    expect(v1.works!.next.id).toBe(content.clanWorks!.works[1]!.id);
+    // Un simple membre ne lance pas le banquet ; le chef, oui, une fois à la fois.
+    expect((await membre('POST', '/api/clan/banquet')).status).toBe(400);
+    const launched = (await chef('POST', '/api/clan/banquet')).json as StateResponse;
+    expect(launched.journal.some((j) => j.text.includes('Banquet'))).toBe(true);
+    expect((await chef('POST', '/api/clan/banquet')).status).toBe(400);
+    const v2 = (await membre('GET', '/api/clan')).json as import('@bramo/shared').ClanView;
+    expect(v2.works!.banquet).toMatchObject({ bonus: content.clanWorks!.banquet.xpBonus });
+    expect(v2.works!.banquet!.until - v2.works!.banquet!.from).toBe(content.clanWorks!.banquet.hours * 3_600_000);
+  });
+
+  it('l’Affineur du bourg : un rang de plus (or et matière de la pièce), un affûtage de ligne', async () => {
+    const a = player({ value: '' });
+    await a('POST', '/api/auth/register', { username: 'Affineuse', password: 'motdepasse' });
+    await a('POST', '/api/character/class', { classId: 'forgefire' });
+    const model = Object.values(content.gearModels).find((m) => m.rarity === 'epic' && m.tier === 60 && !m.set && !m.talent && m.slot === 'torso' && m.classes.includes('forgefire'))!;
+    const gear0 = (await a('POST', '/api/dev/gear/grant', { modelId: model.id })).json as import('@bramo/shared').GearView;
+    const piece = gear0.items.find((g) => g.model === model.id)!;
+    expect(piece.rank).toBe(0);
+    const cost = piece.rankCost!;
+    expect((await a('POST', '/api/gear/refine', { id: piece.id, kind: 'rank' })).status).toBe(400); // sans or ni matière
+    await grant('Affineuse', 100_000, { [cost.items[0]!.item]: 10_000 });
+    const r1 = (await a('POST', '/api/gear/refine', { id: piece.id, kind: 'rank' })).json as { state: StateResponse; gear: import('@bramo/shared').GearView };
+    const up = r1.gear.items.find((g) => g.id === piece.id)!;
+    expect(up.rank).toBe(1);
+    expect(up.rankCost!.gold).toBeGreaterThan(cost.gold);
+    expect(r1.state.state.gold).toBe(100_000 - cost.gold);
+    expect(up.stats[0]!.value).toBeGreaterThan(piece.stats[0]!.value);
+    const line = up.honeable[0]!;
+    const r2 = (await a('POST', '/api/gear/refine', { id: piece.id, kind: 'hone', line })).json as { gear: import('@bramo/shared').GearView };
+    const honed = r2.gear.items.find((g) => g.id === piece.id)!;
+    expect(honed.lines[line]!.value).toBeGreaterThan(up.lines[line]!.value);
   });
 });

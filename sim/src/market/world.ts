@@ -30,8 +30,8 @@ import { Exchange, type Trader } from './exchange.js';
 
 const HOUR = 3_600_000;
 const DAY = 24 * HOUR;
-/** Or par minute de travail au niveau 1 : même échelle que les commandes PNJ (15 min de récolte = 150 or). */
-const GOLD_PER_MIN = 10;
+/** Or par minute de travail au niveau 1 : même échelle que les commandes PNJ (15 min de récolte = 1 500 or, monnaie ×10). */
+const GOLD_PER_MIN = 100;
 
 export interface WorldOptions {
   players: number;
@@ -213,7 +213,7 @@ export function runWorld(content: Content, input: WorldOptions): WorldResult {
   const itemName = (id: string) => content.items[id]?.name ?? id;
   const lvl = (s: CharacterState, p: string) => levelForXp(s.skills[p] ?? 0, content.xpTable);
 
-  // --- Prix de référence : 10 or par minute de travail de chaîne, qui croît avec le niveau requis ---
+  // --- Prix de référence : 100 or par minute de travail de chaîne (monnaie ×10), qui croît avec le niveau requis ---
   const refCache = new Map<string, number>();
   const ref = (id: string): number => {
     const hit = refCache.get(id);

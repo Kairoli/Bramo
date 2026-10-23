@@ -74,6 +74,18 @@ export class Exchange {
     return this.open.get(ownerId) ?? 0;
   }
   stats: ExchangeStats = { tax: 0, volume: 0, trades: 0, primeXp: 0 };
+  /** Activité d'achat par jour : acheteurs distincts, achats, unités, or, achats en gros (100 unités et plus d'un coup). */
+  daily = new Map<number, { buyers: Set<number>; purchases: number; units: number; gold: number; bulk: number }>();
+  private noteBuy(botId: number, units: number, gold: number) {
+    if (units <= 0) return;
+    let d = this.daily.get(this.day);
+    if (!d) this.daily.set(this.day, (d = { buyers: new Set(), purchases: 0, units: 0, gold: 0, bulk: 0 }));
+    d.buyers.add(botId);
+    d.purchases++;
+    d.units += units;
+    d.gold += gold;
+    if (units >= 100) d.bulk++;
+  }
   /** Ventes réalisées depuis la dernière remise à zéro, par vendeur puis objet (qty, or brut). */
   sold = new Map<number, Map<string, { qty: number; gross: number }>>();
   /** Achats réalisés, par acheteur puis objet. */
@@ -215,6 +227,7 @@ export class Exchange {
       this.note(this.bought, bot.id, item, f.qty, gross);
       if (seller) this.note(this.sold, seller.id, item, f.qty, gross);
     }
+    this.noteBuy(bot.id, filled, paid);
     const left = qty - filled;
     if (rest && left > 0 && state.gold >= left * limit) {
       state.gold -= left * limit;

@@ -44,6 +44,7 @@ export function TideBanner({ onOpen, view }: { onOpen: () => void; view: TideVie
     : now < t.start
       ? `Ce soir à ${clock(t.start)} · dans ${until(t.start - now)}`
       : 'Terminée pour ce soir';
+  const patrons = view.patron?.tonight && view.patron.names.length ? ` · offerte par ${view.patron.names.join(', ')}` : '';
   return (
     <div className={`banner tide-banner${t.open ? ' is-open' : ''}`} style={{ ['--tone' as string]: 'var(--event)' }}>
       <button className="banner-main" onClick={onOpen}>
@@ -52,7 +53,10 @@ export function TideBanner({ onOpen, view }: { onOpen: () => void; view: TideVie
         </span>
         <span className="banner-text">
           <strong>Marée du soir · {t.name}</strong>
-          <span className="muted">{sub}</span>
+          <span className="muted">
+            {sub}
+            {patrons}
+          </span>
         </span>
       </button>
     </div>
@@ -60,7 +64,7 @@ export function TideBanner({ onOpen, view }: { onOpen: () => void; view: TideVie
 }
 
 export function TideModal({ view, refresh, onClose }: { view: TideView; refresh: () => void; onClose: () => void }) {
-  const { act } = useGame();
+  const { act, state } = useGame();
   const t = view.tonight;
   const now = Date.now();
   const run = async (call: () => ReturnType<typeof api.state>) => {
@@ -107,6 +111,8 @@ export function TideModal({ view, refresh, onClose }: { view: TideView; refresh:
           </button>
         </div>
       </section>
+
+      {view.patron && <PatronSection patron={view.patron} gold={state.gold} run={run} />}
 
       <section className="tide-work">
         <h3>Ce que la digue demande ce soir</h3>
@@ -207,6 +213,41 @@ export function TideModal({ view, refresh, onClose }: { view: TideView; refresh:
         </ul>
       </section>
     </Modal>
+  );
+}
+
+/**
+ * Mécène de la Marée [Décidé par Louis, 23 octobre] : offrir la prochaine Marée au serveur. L'or est détruit ; chaque mécène
+ * donne des éclats en plus à tous les participants du soir ; des titres selon le nombre de soirs offerts.
+ */
+function PatronSection({ patron, gold, run }: { patron: NonNullable<TideView['patron']>; gold: number; run: (call: () => ReturnType<typeof api.state>) => Promise<void> }) {
+  const bonus = Math.round(patron.shardBonus * 100);
+  const full = patron.names.length >= patron.max;
+  const when = patron.tonight ? 'ce soir' : 'demain soir';
+  return (
+    <section className="tide-patron">
+      <h3>Offrir la Marée</h3>
+      <p className="muted small">
+        Offrez la Marée {when} à tout le serveur : chaque mécène donne +{bonus} % d’éclats à tous les participants ({patron.max} mécènes au plus). Votre nom est
+        annoncé au bourg. L’or offert disparaît.
+      </p>
+      <p className="small">
+        {patron.names.length ? (
+          <>
+            Mécènes {when} : <strong>{patron.names.join(', ')}</strong> ({patron.names.length}/{patron.max}, +{bonus * patron.names.length} % d’éclats)
+          </>
+        ) : (
+          <>Personne n’a encore offert la Marée {when}.</>
+        )}
+      </p>
+      <button className="btn btn-primary btn-sm" disabled={full || gold < patron.price} onClick={() => void run(api.tidePatron)}>
+        {full ? 'Les places de mécène sont prises' : `Offrir la Marée (${num(patron.price)} or)`}
+      </button>
+      <p className="muted small">
+        Vous avez offert {patron.offered} Marée{patron.offered > 1 ? 's' : ''}
+        {patron.next ? ` · prochain titre « ${patron.next.title} » à ${patron.next.offered}` : ''}
+      </p>
+    </section>
   );
 }
 

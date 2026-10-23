@@ -25,8 +25,8 @@ export function ruleXp(level: number, durationSec: number, crafting: boolean): n
 /** Un repas doit rapporter environ 2 fois le temps de chaîne qu'il coûte (joueur autonome). */
 export const MEAL_PAYBACK = 2;
 
-/** Valeur de référence : 1 000 or par heure de travail autonome (outils de base). */
-export const GOLD_PER_WORK_HOUR = 1000;
+/** Valeur de référence : 10 000 or par heure de travail autonome (outils de base ; monnaie ×10 depuis le 23 octobre). */
+export const GOLD_PER_WORK_HOUR = 10000;
 
 /** Le marchand PNJ rachète à 10 % de la valeur de référence (plafonné par semaine) : un plancher, pas un débouché. */
 export const NPC_BUYBACK = 0.1;

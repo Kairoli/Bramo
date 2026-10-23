@@ -19,6 +19,8 @@ for (const [path, value] of Object.entries(JSON.parse(process.env.PATCH ?? '{}')
   for (const k of keys.slice(0, -1)) o = o[k] as Record<string, unknown>;
   o[keys.at(-1)!] = value;
 }
+// Essais : GOLD_MUL=1.5 multiplie l'or des commandes du Comptoir (la question : plus d'or, plus d'échanges ?).
+if (process.env.GOLD_MUL) for (const o of Object.values(content.npcOrders)) o.gold = Math.round(o.gold * Number(process.env.GOLD_MUL));
 const [players = '20', days = '10', mix = 'real', seed = '1', name] = process.argv.slice(2);
 const tide: TideStats = { nights: [], rows: [], outfits: 0, chests: { caches: 0, total: 0 } };
 const hooks = process.env.TIDE === '0' ? [] : [tideHook(tide)];

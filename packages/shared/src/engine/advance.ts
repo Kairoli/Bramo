@@ -5,7 +5,7 @@ import {
   bonusMultiplier,
   presenceAt,
 } from '../formulas/rates.js';
-import { type CharacterState, addStack, addTo, cloneState } from './state.js';
+import { type CharacterState, addStack, addTo, cloneState, xpMultiplier } from './state.js';
 import { activeCopy, isDurable, wearCopy } from './gear.js';
 import { skillLevel } from './trials.js';
 import { type CombatSummary, emptyCombatSummary, resumeRoute, runCombat } from '../combat/progress.js';
@@ -150,6 +150,9 @@ export function advance(
       }
     }
     if (state.buff && t < state.buff.until) end = Math.min(end, state.buff.until);
+    // Banquet du clan : l'XP change à ses bornes.
+    if (state.banquet) for (const b of [state.banquet.from, state.banquet.until]) if (b > t) end = Math.min(end, b);
+    const xpMul = xpMultiplier(state, t);
 
     const workStart = t;
     while (state.activity && t < end && win.multiplier > 0) {
@@ -203,8 +206,8 @@ export function advance(
       if (!(recipe.profession in levelsBefore)) {
         levelsBefore[recipe.profession] = skillLevel(state, recipe.profession, content);
       }
-      addTo(state.skills, recipe.profession, recipe.xp * n);
-      addTo(summary.xp, recipe.profession, recipe.xp * n);
+      addTo(state.skills, recipe.profession, recipe.xp * n * xpMul);
+      addTo(summary.xp, recipe.profession, recipe.xp * n * xpMul);
       for (const i of recipe.inputs) {
         addStack(state.inventory, i.item, -i.qty * n);
         addTo(summary.consumed, i.item, i.qty * n);
@@ -220,7 +223,7 @@ export function advance(
     while (ct < end && win.multiplier > 0) {
       resumeRoute(state, ct, content);
       if (!state.combat.activity) break;
-      const stop = runCombat(state, ct, end, win.multiplier, content, summary.combat);
+      const stop = runCombat(state, ct, end, win.multiplier, content, summary.combat, xpMul);
       // Arrêt immédiat (rencontre retirée des données) : la route reprend tout de suite, ou rien ne tourne plus.
       if (stop <= ct && !resumeRoute(state, stop, content)) break;
       ct = stop;

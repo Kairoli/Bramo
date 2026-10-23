@@ -79,12 +79,14 @@ export const api = {
   clanRank: (characterId: number, rank: 'officer' | 'member') => request<StateResponse>('POST', '/clan/rank', { characterId, rank }),
   clanLeader: (characterId: number) => request<StateResponse>('POST', '/clan/leader', { characterId }),
   clanContribute: (buildingId: string, what: string, qty: number) => request<StateResponse>('POST', '/clan/contribute', { buildingId, what, qty }),
+  clanWorksContribute: (what: string, qty: number) => request<StateResponse>('POST', '/clan/works/contribute', { what, qty }),
+  clanBanquet: () => request<StateResponse>('POST', '/clan/banquet'),
   town: () => request<TownView>('GET', '/town'),
   player: (id: number) => request<PlayerProfile>('GET', `/players/${id}`),
   marketSummary: () => request<MarketItemSummary[]>('GET', '/market'),
   marketItem: (itemId: string) => request<MarketOrderView[]>('GET', `/market/item/${itemId}`),
   myOrders: () => request<MyOrderView[]>('GET', '/market/mine'),
-  placeOrder: (p: { side: 'buy' | 'sell'; itemId: string; qty: number; price: number; copy?: number }) =>
+  placeOrder: (p: { side: 'buy' | 'sell'; itemId: string; qty: number; price: number; copy?: number; immediate?: boolean }) =>
     request<StateResponse>('POST', '/market/order', p),
   fillOrder: (orderId: number, qty: number) => request<StateResponse>('POST', '/market/fill', { orderId, qty }),
   cancelOrder: (orderId: number) => request<StateResponse>('POST', '/market/cancel', { orderId }),
@@ -107,6 +109,7 @@ export const api = {
   gearEquip: (id: number) => request<GearView>('POST', '/gear/equip', { id }),
   gearUnequip: (id: number) => request<GearView>('POST', '/gear/unequip', { id }),
   gearSocket: (id: number, itemId: string | null) => request<{ state: StateResponse; gear: GearView }>('POST', '/gear/socket', { id, itemId }),
+  gearRefine: (id: number, service: { kind: 'rank' } | { kind: 'hone'; line: number }) => request<{ state: StateResponse; gear: GearView }>('POST', '/gear/refine', { id, ...service }),
   devGrantGear: (modelId: string, masterpiece = false) => request<GearView>('POST', '/dev/gear/grant', { modelId, masterpiece }),
   chooseOutfit: (outfitId: string) => request<StateResponse>('POST', '/character/outfit', { outfitId }),
   chooseOrnament: (ornamentId: string | null) => request<StateResponse>('POST', '/character/ornament', { ornamentId }),
@@ -129,4 +132,5 @@ export const api = {
   tideJoin: () => request<StateResponse>('POST', '/tide/join'),
   tideDeliver: () => request<StateResponse>('POST', '/tide/deliver'),
   tideBuy: (offer: string) => request<StateResponse>('POST', '/tide/buy', { offer }),
+  tidePatron: () => request<StateResponse>('POST', '/tide/patron'),
 };

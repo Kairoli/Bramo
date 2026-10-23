@@ -127,7 +127,26 @@ export function buildingNeeds(
   if (!b) return { gold: 0, items: [] };
   const ref = content.settings.clan.minMembersForCost;
   const factor = (level * Math.max(ref, activeMembers)) / ref;
-  return { gold: Math.ceil(b.base.gold * factor), items: b.base.items.map((s) => ({ item: s.item, qty: Math.ceil(s.qty * factor) })) };
+  return { gold: Math.ceil(b.base.gold * factor), items: b.base.items.filter((s) => (s.fromLevel ?? 1) <= level).map((s) => ({ item: s.item, qty: Math.ceil(s.qty * factor) })) };
+}
+
+/** L'ouvrage du niveau `level` (1 = le premier) : la liste de data/clan_works.yaml tourne sans fin. */
+export function workAt(level: number, content: Pick<Content, 'clanWorks'>) {
+  const works = content.clanWorks?.works ?? [];
+  return works.length ? works[(Math.max(1, level) - 1) % works.length]! : null;
+}
+
+/**
+ * Ce que demande le niveau `level` des ouvrages : ceux de son ouvrage, proportionnels aux membres actifs (comme les
+ * bâtiments), × min(1 + growth.perLevel × (level − 1), growth.max) : il monte un peu, puis reste stable.
+ */
+export function worksNeeds(level: number, activeMembers: number, content: Pick<Content, 'clanWorks' | 'settings'>): { gold: number; items: { item: string; qty: number }[] } {
+  const w = workAt(level, content);
+  const c = content.clanWorks;
+  if (!w || !c) return { gold: 0, items: [] };
+  const ref = content.settings.clan.minMembersForCost;
+  const factor = (Math.max(ref, activeMembers) / ref) * Math.min(1 + c.growth.perLevel * (level - 1), c.growth.max);
+  return { gold: Math.ceil(w.gold * factor), items: w.items.map((s) => ({ item: s.item, qty: Math.ceil(s.qty * factor) })) };
 }
 
 /** Rang de prestige d'un clan selon son Renom (settings.clan.renown), et le rang suivant. */

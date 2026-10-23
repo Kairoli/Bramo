@@ -14,7 +14,7 @@
   tasks:
     - { item: iron_ore, qty: 65 }
     - { item: coal, qty: 55 }
-  reward: { gold: 300 }
+  reward: { gold: 3000 }
 
 - id: mining_40
   profession: mining
@@ -26,7 +26,7 @@
   tasks:
     - { item: silver_ore, qty: 150 }
     - { item: mithril_ore, qty: 135 }
-  reward: { gold: 800 }
+  reward: { gold: 8000 }
 
 - id: mining_60
   profession: mining
@@ -38,7 +38,7 @@
   tasks:
     - { item: gold_ore, qty: 245 }
     - { item: orichalcum_ore, qty: 225 }
-  reward: { gold: 1500 }
+  reward: { gold: 15000 }
 
 - id: mining_80
   profession: mining
@@ -50,7 +50,7 @@
   tasks:
     - { item: azurite_ore, qty: 415 }
     - { item: umbral_ore, qty: 385 }
-  reward: { gold: 3000 }
+  reward: { gold: 30000 }
 
 - id: mining_99
   profession: mining
@@ -62,7 +62,7 @@
   tasks:
     - { item: umbral_ore, qty: 770 }
     - { item: astralite_ore, qty: 720 }
-  reward: { gold: 6000 }
+  reward: { gold: 60000 }
 
 # --- Maîtresse Aldra (woodcutting) ---
 - id: woodcutting_20
@@ -75,7 +75,7 @@
   tasks:
     - { item: oak_log, qty: 65 }
     - { item: ash_log, qty: 55 }
-  reward: { gold: 300 }
+  reward: { gold: 3000 }
 
 - id: woodcutting_40
   profession: woodcutting
@@ -87,7 +87,7 @@
   tasks:
     - { item: yew_log, qty: 150 }
     - { item: moonwood_log, qty: 135 }
-  reward: { gold: 800 }
+  reward: { gold: 8000 }
 
 - id: woodcutting_60
   profession: woodcutting
@@ -99,7 +99,7 @@
   tasks:
     - { item: moonwood_log, qty: 270 }
     - { item: yew_log, qty: 300 }
-  reward: { gold: 1500 }
+  reward: { gold: 15000 }
 
 - id: woodcutting_80
   profession: woodcutting
@@ -111,7 +111,7 @@
   tasks:
     - { item: moonwood_log, qty: 540 }
     - { item: ash_log, qty: 675 }
-  reward: { gold: 3000 }
+  reward: { gold: 30000 }
 
 - id: woodcutting_99
   profession: woodcutting
@@ -123,7 +123,7 @@
   tasks:
     - { item: moonwood_log, qty: 1080 }
     - { item: yew_log, qty: 1200 }
-  reward: { gold: 6000 }
+  reward: { gold: 60000 }
 
 # --- Maîtresse Ysolde (herbalism) ---
 - id: herbalism_20
@@ -136,7 +136,7 @@
   tasks:
     - { item: thyme, qty: 65 }
     - { item: nettle_root, qty: 55 }
-  reward: { gold: 300 }
+  reward: { gold: 3000 }
 
 - id: herbalism_40
   profession: herbalism
@@ -148,7 +148,7 @@
   tasks:
     - { item: sage, qty: 150 }
     - { item: lantern_lily, qty: 135 }
-  reward: { gold: 800 }
+  reward: { gold: 8000 }
 
 - id: herbalism_60
   profession: herbalism
@@ -160,7 +160,7 @@
   tasks:
     - { item: frost_flower, qty: 225 }
     - { item: lantern_lily, qty: 270 }
-  reward: { gold: 1500 }
+  reward: { gold: 15000 }
 
 - id: herbalism_80
   profession: herbalism
@@ -172,7 +172,7 @@
   tasks:
     - { item: frost_flower, qty: 450 }
     - { item: sage, qty: 600 }
-  reward: { gold: 3000 }
+  reward: { gold: 30000 }
 
 - id: herbalism_99
   profession: herbalism
@@ -184,7 +184,7 @@
   tasks:
     - { item: frost_flower, qty: 900 }
     - { item: lantern_lily, qty: 1080 }
-  reward: { gold: 6000 }
+  reward: { gold: 60000 }
 
 # --- Maître Naël (fishing) ---
 - id: fishing_20
@@ -197,7 +197,7 @@
   tasks:
     - { item: trout, qty: 55 }
     - { item: raw_fish, qty: 75 }
-  reward: { gold: 300 }
+  reward: { gold: 3000 }
 
 - id: fishing_40
   profession: fishing
@@ -209,7 +209,7 @@
   tasks:
     - { item: pike, qty: 150 }
     - { item: trout, qty: 170 }
-  reward: { gold: 800 }
+  reward: { gold: 8000 }
 
 - id: fishing_60
   profession: fishing
@@ -221,7 +221,7 @@
   tasks:
     - { item: lantern_fish, qty: 245 }
     - { item: pike, qty: 300 }
-  reward: { gold: 1500 }
+  reward: { gold: 15000 }
 
 - id: fishing_80
   profession: fishing
@@ -233,7 +233,7 @@
   tasks:
     - { item: abyss_ray, qty: 415 }
     - { item: lantern_fish, qty: 490 }
-  reward: { gold: 3000 }
+  reward: { gold: 30000 }
 
 - id: fishing_99
   profession: fishing
@@ -245,7 +245,7 @@
   tasks:
     - { item: abyss_ray, qty: 830 }
     - { item: lantern_fish, qty: 980 }
-  reward: { gold: 6000 }
+  reward: { gold: 60000 }
 
 # --- Maître Brunhild (smithing) ---
 - id: smithing_20
@@ -258,7 +258,7 @@
   tasks:
     - { item: iron_bar, qty: 30 }
     - { item: bronze_bar, qty: 40 }
-  reward: { gold: 300 }
+  reward: { gold: 3000 }
 
 - id: smithing_40
   profession: smithing
@@ -270,7 +270,7 @@
   tasks:
     - { item: steel_bar, qty: 75 }
     - { item: iron_tool_head, qty: 5 }
-  reward: { gold: 800 }
+  reward: { gold: 8000 }
 
 - id: smithing_60
   profession: smithing
@@ -282,7 +282,7 @@
   tasks:
     - { item: steel_bar, qty: 150 }
     - { item: steel_tool_head, qty: 5 }
-  reward: { gold: 1500 }
+  reward: { gold: 15000 }
 
 - id: smithing_80
   profession: smithing
@@ -294,7 +294,7 @@
   tasks:
     - { item: steel_tool_head, qty: 5 }
     - { item: steel_bar, qty: 300 }
-  reward: { gold: 3000 }
+  reward: { gold: 30000 }
 
 - id: smithing_99
   profession: smithing
@@ -306,7 +306,7 @@
   tasks:
     - { item: steel_tool_head, qty: 10 }
     - { item: steel_bar, qty: 600 }
-  reward: { gold: 6000 }
+  reward: { gold: 60000 }
 
 # --- Maître Joris (carpentry) ---
 - id: carpentry_20
@@ -319,7 +319,7 @@
   tasks:
     - { item: oak_plank, qty: 30 }
     - { item: oak_handle, qty: 60 }
-  reward: { gold: 300 }
+  reward: { gold: 3000 }
 
 - id: carpentry_40
   profession: carpentry
@@ -331,7 +331,7 @@
   tasks:
     - { item: bow_stave, qty: 5 }
     - { item: oak_plank, qty: 90 }
-  reward: { gold: 800 }
+  reward: { gold: 8000 }
 
 - id: carpentry_60
   profession: carpentry
@@ -343,7 +343,7 @@
   tasks:
     - { item: bow_stave, qty: 5 }
     - { item: oak_plank, qty: 180 }
-  reward: { gold: 1500 }
+  reward: { gold: 15000 }
 
 - id: carpentry_80
   profession: carpentry
@@ -355,7 +355,7 @@
   tasks:
     - { item: oak_plank, qty: 360 }
     - { item: bow_stave, qty: 10 }
-  reward: { gold: 3000 }
+  reward: { gold: 30000 }
 
 - id: carpentry_99
   profession: carpentry
@@ -367,7 +367,7 @@
   tasks:
     - { item: oak_plank, qty: 720 }
     - { item: bow_stave, qty: 25 }
-  reward: { gold: 6000 }
+  reward: { gold: 60000 }
 
 # --- Maître Bertin (cooking) ---
 - id: cooking_20
@@ -380,7 +380,7 @@
   tasks:
     - { item: nettle_broth, qty: 10 }
     - { item: grilled_fish, qty: 15 }
-  reward: { gold: 300 }
+  reward: { gold: 3000 }
 
 - id: cooking_40
   profession: cooking
@@ -392,7 +392,7 @@
   tasks:
     - { item: sage_trout, qty: 30 }
     - { item: nettle_broth, qty: 35 }
-  reward: { gold: 800 }
+  reward: { gold: 8000 }
 
 - id: cooking_60
   profession: cooking
@@ -404,7 +404,7 @@
   tasks:
     - { item: lantern_soup, qty: 45 }
     - { item: sage_trout, qty: 60 }
-  reward: { gold: 1500 }
+  reward: { gold: 15000 }
 
 - id: cooking_80
   profession: cooking
@@ -416,7 +416,7 @@
   tasks:
     - { item: frost_feast, qty: 60 }
     - { item: lantern_soup, qty: 90 }
-  reward: { gold: 3000 }
+  reward: { gold: 30000 }
 
 - id: cooking_99
   profession: cooking
@@ -428,7 +428,7 @@
   tasks:
     - { item: frost_feast, qty: 120 }
     - { item: lantern_soup, qty: 180 }
-  reward: { gold: 6000 }
+  reward: { gold: 60000 }
 
 # --- Métiers branchés le 23 octobre 2026 : deux commandes de maître chacun (20 et 40), les suivantes viendront. ---
 
@@ -443,7 +443,7 @@
   tasks:
     - { item: deer_hide, qty: 40 }
     - { item: game_meat, qty: 60 }
-  reward: { gold: 300 }
+  reward: { gold: 3000 }
 
 - id: hunting_40
   profession: hunting
@@ -455,7 +455,7 @@
   tasks:
     - { item: wolf_pelt, qty: 120 }
     - { item: venison, qty: 60 }
-  reward: { gold: 800 }
+  reward: { gold: 8000 }
 
 # --- Maître Anselme (agriculture) ---
 - id: agriculture_20
@@ -468,7 +468,7 @@
   tasks:
     - { item: flour, qty: 40 }
     - { item: woad_dye, qty: 30 }
-  reward: { gold: 300 }
+  reward: { gold: 3000 }
 
 - id: agriculture_40
   profession: agriculture
@@ -480,7 +480,7 @@
   tasks:
     - { item: cotton_fiber, qty: 120 }
     - { item: flour, qty: 80 }
-  reward: { gold: 800 }
+  reward: { gold: 8000 }
 
 # --- Maître Hugon (tanning) ---
 - id: tanning_20
@@ -493,7 +493,7 @@
   tasks:
     - { item: thick_leather, qty: 30 }
     - { item: leather_satchel, qty: 3 }
-  reward: { gold: 300 }
+  reward: { gold: 3000 }
 
 - id: tanning_40
   profession: tanning
@@ -505,7 +505,7 @@
   tasks:
     - { item: wolf_fur, qty: 60 }
     - { item: leather_jerkin, qty: 2 }
-  reward: { gold: 800 }
+  reward: { gold: 8000 }
 
 # --- Maîtresse Lise (tailoring) ---
 - id: tailoring_20
@@ -518,7 +518,7 @@
   tasks:
     - { item: linen_robe, qty: 3 }
     - { item: blue_linen, qty: 20 }
-  reward: { gold: 300 }
+  reward: { gold: 3000 }
 
 - id: tailoring_40
   profession: tailoring
@@ -530,7 +530,7 @@
   tasks:
     - { item: adept_robe, qty: 2 }
     - { item: cotton_cloth, qty: 10 }
-  reward: { gold: 800 }
+  reward: { gold: 8000 }
 
 # --- Maître Évariste (alchemy) ---
 - id: alchemy_20
@@ -543,7 +543,7 @@
   tasks:
     - { item: miner_elixir, qty: 40 }
     - { item: rune_ink, qty: 60 }
-  reward: { gold: 300 }
+  reward: { gold: 3000 }
 
 - id: alchemy_40
   profession: alchemy
@@ -555,7 +555,7 @@
   tasks:
     - { item: frost_tonic, qty: 80 }
     - { item: minor_healing_potion, qty: 100 }
-  reward: { gold: 800 }
+  reward: { gold: 8000 }
 
 # --- Maîtresse Sidonie (jewelcrafting) ---
 - id: jewelcrafting_20
@@ -568,7 +568,7 @@
   tasks:
     - { item: copper_ring, qty: 10 }
     - { item: glass_bead, qty: 120 }
-  reward: { gold: 300 }
+  reward: { gold: 3000 }
 
 - id: jewelcrafting_40
   profession: jewelcrafting
@@ -580,7 +580,7 @@
   tasks:
     - { item: amethyst_ring, qty: 2 }
     - { item: silver_band, qty: 4 }
-  reward: { gold: 800 }
+  reward: { gold: 8000 }
 
 # --- Maître Ilian (enchanting) ---
 - id: enchanting_20
@@ -593,7 +593,7 @@
   tasks:
     - { item: ward_rune, qty: 20 }
     - { item: glyph_scroll, qty: 40 }
-  reward: { gold: 300 }
+  reward: { gold: 3000 }
 
 - id: enchanting_40
   profession: enchanting
@@ -605,7 +605,7 @@
   tasks:
     - { item: runic_core, qty: 6 }
     - { item: warded_adept_robe, qty: 1 }
-  reward: { gold: 800 }
+  reward: { gold: 8000 }
 
 # --- Maîtresse Capucine (artificing) ---
 - id: artificing_20
@@ -618,7 +618,7 @@
   tasks:
     - { item: clockwork, qty: 3 }
     - { item: spring_snare, qty: 15 }
-  reward: { gold: 300 }
+  reward: { gold: 3000 }
 
 - id: artificing_40
   profession: artificing
@@ -630,7 +630,7 @@
   tasks:
     - { item: flare_rocket, qty: 20 }
     - { item: artificer_lantern, qty: 6 }
-  reward: { gold: 800 }
+  reward: { gold: 8000 }
 
 # --- Maître Gautier (construction) ---
 - id: construction_20
@@ -643,7 +643,7 @@
   tasks:
     - { item: stone_wall, qty: 4 }
     - { item: wooden_stairs, qty: 3 }
-  reward: { gold: 300 }
+  reward: { gold: 3000 }
 
 - id: construction_40
   profession: construction
@@ -655,7 +655,7 @@
   tasks:
     - { item: stone_arch, qty: 4 }
     - { item: roof_truss, qty: 2 }
-  reward: { gold: 800 }
+  reward: { gold: 8000 }
 
 # --- Maîtresse Ombeline (exploration) ---
 - id: exploration_20
@@ -668,7 +668,7 @@
   tasks:
     - { item: forest_map, qty: 40 }
     - { item: old_coin, qty: 100 }
-  reward: { gold: 300 }
+  reward: { gold: 3000 }
 
 - id: exploration_40
   profession: exploration
@@ -680,7 +680,7 @@
   tasks:
     - { item: vein_map, qty: 80 }
     - { item: watch_curio, qty: 30 }
-  reward: { gold: 800 }
+  reward: { gold: 8000 }
 
 # --- Commandes 60, 80 et 99 des dix derniers métiers (23 octobre, nuit, écrites par Claude : à relire par Louis). Mêmes
 #     budgets de travail et récompenses que les autres métiers ; les tâches prennent les plus hautes matières de chaque métier. ---
@@ -694,7 +694,7 @@
   tasks:
     - { item: bear_hide, qty: 200 }
     - { item: venison, qty: 200 }
-  reward: { gold: 1500 }
+  reward: { gold: 15000 }
 
 - id: hunting_80
   profession: hunting
@@ -706,7 +706,7 @@
   tasks:
     - { item: elk_hide, qty: 250 }
     - { item: bear_hide, qty: 250 }
-  reward: { gold: 3000 }
+  reward: { gold: 30000 }
 
 - id: hunting_99
   profession: hunting
@@ -718,7 +718,7 @@
   tasks:
     - { item: elk_hide, qty: 600 }
     - { item: wolf_pelt, qty: 500 }
-  reward: { gold: 6000 }
+  reward: { gold: 60000 }
 
 - id: agriculture_60
   profession: agriculture
@@ -730,7 +730,7 @@
   tasks:
     - { item: cotton_fiber, qty: 300 }
     - { item: woad_dye, qty: 150 }
-  reward: { gold: 1500 }
+  reward: { gold: 15000 }
 
 - id: agriculture_80
   profession: agriculture
@@ -742,7 +742,7 @@
   tasks:
     - { item: cotton_fiber, qty: 600 }
     - { item: flour, qty: 400 }
-  reward: { gold: 3000 }
+  reward: { gold: 30000 }
 
 - id: agriculture_99
   profession: agriculture
@@ -754,7 +754,7 @@
   tasks:
     - { item: cotton_fiber, qty: 1200 }
     - { item: woad_dye, qty: 600 }
-  reward: { gold: 6000 }
+  reward: { gold: 60000 }
 
 - id: tanning_60
   profession: tanning
@@ -766,7 +766,7 @@
   tasks:
     - { item: heavy_leather, qty: 120 }
     - { item: wolf_fur, qty: 120 }
-  reward: { gold: 1500 }
+  reward: { gold: 15000 }
 
 - id: tanning_80
   profession: tanning
@@ -778,7 +778,7 @@
   tasks:
     - { item: elk_leather, qty: 150 }
     - { item: heavy_leather, qty: 200 }
-  reward: { gold: 3000 }
+  reward: { gold: 30000 }
 
 - id: tanning_99
   profession: tanning
@@ -790,7 +790,7 @@
   tasks:
     - { item: elk_leather, qty: 400 }
     - { item: heavy_leather, qty: 300 }
-  reward: { gold: 6000 }
+  reward: { gold: 60000 }
 
 - id: tailoring_60
   profession: tailoring
@@ -802,7 +802,7 @@
   tasks:
     - { item: cotton_cloth, qty: 80 }
     - { item: adept_robe, qty: 6 }
-  reward: { gold: 1500 }
+  reward: { gold: 15000 }
 
 - id: tailoring_80
   profession: tailoring
@@ -814,7 +814,7 @@
   tasks:
     - { item: cotton_cloth, qty: 160 }
     - { item: blue_linen, qty: 200 }
-  reward: { gold: 3000 }
+  reward: { gold: 30000 }
 
 - id: tailoring_99
   profession: tailoring
@@ -826,7 +826,7 @@
   tasks:
     - { item: cotton_cloth, qty: 400 }
     - { item: adept_robe, qty: 20 }
-  reward: { gold: 6000 }
+  reward: { gold: 60000 }
 
 - id: alchemy_60
   profession: alchemy
@@ -838,7 +838,7 @@
   tasks:
     - { item: lantern_draught, qty: 200 }
     - { item: synchrony_tonic, qty: 100 }
-  reward: { gold: 1500 }
+  reward: { gold: 15000 }
 
 - id: alchemy_80
   profession: alchemy
@@ -850,7 +850,7 @@
   tasks:
     - { item: lantern_draught, qty: 400 }
     - { item: frost_tonic, qty: 300 }
-  reward: { gold: 3000 }
+  reward: { gold: 30000 }
 
 - id: alchemy_99
   profession: alchemy
@@ -862,7 +862,7 @@
   tasks:
     - { item: lantern_draught, qty: 900 }
     - { item: drive_oil, qty: 400 }
-  reward: { gold: 6000 }
+  reward: { gold: 60000 }
 
 - id: jewelcrafting_60
   profession: jewelcrafting
@@ -874,7 +874,7 @@
   tasks:
     - { item: gold_chain, qty: 10 }
     - { item: amethyst_ring, qty: 6 }
-  reward: { gold: 1500 }
+  reward: { gold: 15000 }
 
 - id: jewelcrafting_80
   profession: jewelcrafting
@@ -886,7 +886,7 @@
   tasks:
     - { item: gold_bar, qty: 150 }
     - { item: gold_chain, qty: 20 }
-  reward: { gold: 3000 }
+  reward: { gold: 30000 }
 
 - id: jewelcrafting_99
   profession: jewelcrafting
@@ -898,7 +898,7 @@
   tasks:
     - { item: gold_chain, qty: 50 }
     - { item: amethyst_ring, qty: 20 }
-  reward: { gold: 6000 }
+  reward: { gold: 60000 }
 
 - id: enchanting_60
   profession: enchanting
@@ -910,7 +910,7 @@
   tasks:
     - { item: memory_binder, qty: 20 }
     - { item: runic_core, qty: 20 }
-  reward: { gold: 1500 }
+  reward: { gold: 15000 }
 
 - id: enchanting_80
   profession: enchanting
@@ -922,7 +922,7 @@
   tasks:
     - { item: memory_binder, qty: 40 }
     - { item: warded_adept_robe, qty: 6 }
-  reward: { gold: 3000 }
+  reward: { gold: 30000 }
 
 - id: enchanting_99
   profession: enchanting
@@ -934,7 +934,7 @@
   tasks:
     - { item: memory_binder, qty: 100 }
     - { item: runic_core, qty: 80 }
-  reward: { gold: 6000 }
+  reward: { gold: 60000 }
 
 - id: artificing_60
   profession: artificing
@@ -946,7 +946,7 @@
   tasks:
     - { item: flare_rocket, qty: 60 }
     - { item: clockwork, qty: 20 }
-  reward: { gold: 1500 }
+  reward: { gold: 15000 }
 
 - id: artificing_80
   profession: artificing
@@ -958,7 +958,7 @@
   tasks:
     - { item: flare_rocket, qty: 120 }
     - { item: artificer_lantern, qty: 30 }
-  reward: { gold: 3000 }
+  reward: { gold: 30000 }
 
 - id: artificing_99
   profession: artificing
@@ -970,7 +970,7 @@
   tasks:
     - { item: flare_rocket, qty: 300 }
     - { item: clockwork, qty: 80 }
-  reward: { gold: 6000 }
+  reward: { gold: 60000 }
 
 - id: construction_60
   profession: construction
@@ -982,7 +982,7 @@
   tasks:
     - { item: roof_truss, qty: 10 }
     - { item: stone_arch, qty: 10 }
-  reward: { gold: 1500 }
+  reward: { gold: 15000 }
 
 - id: construction_80
   profession: construction
@@ -994,7 +994,7 @@
   tasks:
     - { item: roof_truss, qty: 20 }
     - { item: oak_frame, qty: 30 }
-  reward: { gold: 3000 }
+  reward: { gold: 30000 }
 
 - id: construction_99
   profession: construction
@@ -1006,7 +1006,7 @@
   tasks:
     - { item: roof_truss, qty: 50 }
     - { item: stone_arch, qty: 40 }
-  reward: { gold: 6000 }
+  reward: { gold: 60000 }
 
 - id: exploration_60
   profession: exploration
@@ -1018,7 +1018,7 @@
   tasks:
     - { item: sunken_relic, qty: 120 }
     - { item: watch_curio, qty: 100 }
-  reward: { gold: 1500 }
+  reward: { gold: 15000 }
 
 - id: exploration_80
   profession: exploration
@@ -1030,7 +1030,7 @@
   tasks:
     - { item: sunken_relic, qty: 250 }
     - { item: vein_map, qty: 300 }
-  reward: { gold: 3000 }
+  reward: { gold: 30000 }
 
 - id: exploration_99
   profession: exploration
@@ -1042,4 +1042,4 @@
   tasks:
     - { item: sunken_relic, qty: 600 }
     - { item: watch_curio, qty: 400 }
-  reward: { gold: 6000 }
+  reward: { gold: 60000 }

@@ -16,6 +16,8 @@ import {
   levelForXp,
   memberBonuses,
   renownRank,
+  workAt,
+  worksNeeds,
 } from '@bramo/shared';
 import type { Db, Tx } from './db/index.js';
 import { characters, clanBuildings, clanLog, clanMembers, clanProgress, clans } from './db/schema.js';
@@ -339,6 +341,7 @@ export async function myClanView(db: Db, content: Content, characterId: number, 
     activeMembers: active,
     log: log.map((l) => ({ id: l.id, at: l.at.getTime(), text: l.text })),
     renown: { value: clan.renown, ...renownRank(clan.renown, content) },
+    works: worksView(clan, progress, active, me.rank, content, now),
   };
 }
 
@@ -363,4 +366,126 @@ export async function addRenown(tx: Tx, clanId: number, amount: number, now: num
 export async function clanOf(tx: Tx, characterId: number): Promise<number | null> {
   const [m] = await tx.select().from(clanMembers).where(eq(clanMembers.characterId, characterId));
   return m?.clanId ?? null;
+}
+
+// --- Ouvrages du clan et Banquet (data/clan_works.yaml) ---
+
+/** Les apports des ouvrages se rangent dans clan_progress sous cet identifiant (aucun bâtiment ne s'appelle ainsi). */
+const WORKS = '__works';
+
+/** Banquet en cours du clan d'un personnage (ce qu'il met dans `CharacterState.banquet`), ou null. */
+export async function banquetOfCharacter(tx: Tx | Db, characterId: number, content: Content): Promise<{ from: number; until: number; bonus: number } | null> {
+  if (!content.clanWorks) return null;
+  const [row] = await tx
+    .select({ from: clans.banquetFrom, until: clans.banquetUntil })
+    .from(clanMembers)
+    .innerJoin(clans, eq(clans.id, clanMembers.clanId))
+    .where(eq(clanMembers.characterId, characterId));
+  if (!row?.from || !row.until) return null;
+  return { from: row.from.getTime(), until: row.until.getTime(), bonus: content.clanWorks.banquet.xpBonus };
+}
+
+/**
+ * Apport d'un membre à l'ouvrage en cours (de l'or, ou un des objets demandés), plafonné à ce qu'il manque. Quand tout
+ * est réuni, l'ouvrage est achevé : le niveau des ouvrages monte, le clan gagne un Banquet (au plus `maxStock` en
+ * réserve) et du Renom, et l'ouvrage suivant commence.
+ */
+export async function contributeWorks(
+  tx: Tx,
+  content: Content,
+  characterId: number,
+  characterName: string,
+  input: CharacterState,
+  p: { what: string; qty: number },
+  now: number,
+): Promise<ClanResult> {
+  const cw = content.clanWorks;
+  if (!cw) throw new GameError('no_works', 'Les ouvrages ne sont pas encore là.');
+  const me = await membership(tx, characterId);
+  if (!me) throw new GameError('no_clan', 'Vous n’êtes dans aucun clan.');
+  const [clan] = await tx.select().from(clans).where(eq(clans.id, me.clanId)).for('update');
+  if (!clan) throw new GameError('no_clan', 'Ce clan n’existe plus.');
+  const level = clan.worksLevel + 1;
+  const work = workAt(level, content)!;
+  const needs = worksNeeds(level, await activeCount(tx, clan.id, now, content), content);
+  const required = new Map<string, number>([['gold', needs.gold], ...needs.items.map((i) => [i.item, i.qty] as [string, number])]);
+  if (!required.has(p.what) || (required.get(p.what) ?? 0) <= 0) throw new GameError('not_needed', 'Cet ouvrage ne demande pas cela.');
+  const rows = await tx.select().from(clanProgress).where(and(eq(clanProgress.clanId, clan.id), eq(clanProgress.buildingId, WORKS))).for('update');
+  const have = new Map(rows.map((r) => [r.what, r.qty]));
+  const remaining = required.get(p.what)! - (have.get(p.what) ?? 0);
+  if (remaining <= 0) throw new GameError('complete', 'Cet apport est déjà complet pour cet ouvrage.');
+  const give = Math.min(p.qty, remaining);
+  const state = cloneState(input);
+  if (p.what === 'gold') {
+    if (state.gold < give) throw new GameError('gold', 'Pas assez d’or.');
+    state.gold -= give;
+  } else {
+    if ((state.inventory[p.what] ?? 0) < give) throw new GameError('missing', 'Vous n’en avez pas assez.');
+    addStack(state.inventory, p.what, -give);
+  }
+  have.set(p.what, (have.get(p.what) ?? 0) + give);
+  await tx
+    .insert(clanProgress)
+    .values({ clanId: clan.id, buildingId: WORKS, what: p.what, qty: have.get(p.what)! })
+    .onConflictDoUpdate({ target: [clanProgress.clanId, clanProgress.buildingId, clanProgress.what], set: { qty: have.get(p.what)! } });
+  const label = p.what === 'gold' ? `${give} or` : `${give} × ${content.items[p.what]?.name ?? p.what}`;
+  await logLine(tx, clan.id, now, `${characterName} apporte ${label} : ${work.name}.`, content.settings.clan.logSize);
+
+  const done = [...required].every(([what, need]) => (have.get(what) ?? 0) >= need);
+  if (!done) return { state, log: `Apport au clan : ${label} (${work.name}).` };
+  const banquets = Math.min(cw.banquet.maxStock, clan.banquets + 1);
+  await tx.update(clans).set({ worksLevel: level, banquets }).where(eq(clans.id, clan.id));
+  await tx.delete(clanProgress).where(and(eq(clanProgress.clanId, clan.id), eq(clanProgress.buildingId, WORKS)));
+  await logLine(tx, clan.id, now, `${work.name} est achevé (ouvrage n° ${level}) : un Banquet de plus pour le clan.`, content.settings.clan.logSize);
+  const rank = await addRenown(tx, clan.id, (content.settings.clan.renown?.buildingLevel ?? 0) * 3, now, content, work.name);
+  return {
+    state,
+    log: `Apport au clan : ${label}. ${work.name} est achevé : le clan gagne un Banquet !`,
+    serverEvents: [{ kind: 'clan', text: `Le clan « ${clan.name} » achève ${work.name}.` }, ...(rank ? [rank] : [])],
+  };
+}
+
+/** Le chef ou un officier lance un Banquet : `hours` de +`xpBonus` d'XP pour tous les membres. Un seul à la fois. */
+export async function launchBanquet(tx: Tx, content: Content, characterId: number, characterName: string, input: CharacterState, now: number): Promise<ClanResult> {
+  const cw = content.clanWorks;
+  if (!cw) throw new GameError('no_works', 'Les ouvrages ne sont pas encore là.');
+  const me = await membership(tx, characterId);
+  if (!me) throw new GameError('no_clan', 'Vous n’êtes dans aucun clan.');
+  if (me.rank === 'member') throw new GameError('rank', 'Seuls le chef et les officiers lancent un Banquet.');
+  const [clan] = await tx.select().from(clans).where(eq(clans.id, me.clanId)).for('update');
+  if (!clan) throw new GameError('no_clan', 'Ce clan n’existe plus.');
+  if (clan.banquetUntil && clan.banquetUntil.getTime() > now) throw new GameError('banquet_on', 'Un Banquet est déjà en cours.');
+  if (clan.banquets <= 0) throw new GameError('no_banquet', 'Le clan n’a pas de Banquet en réserve : achevez un ouvrage.');
+  const until = now + cw.banquet.hours * 3_600_000;
+  await tx.update(clans).set({ banquets: clan.banquets - 1, banquetFrom: new Date(now), banquetUntil: new Date(until) }).where(eq(clans.id, clan.id));
+  const bonus = Math.round(cw.banquet.xpBonus * 100);
+  await logLine(tx, clan.id, now, `${characterName} lance un Banquet : +${bonus} % d’XP pour tous pendant ${cw.banquet.hours} h.`, content.settings.clan.logSize);
+  const state = cloneState(input);
+  state.banquet = { from: now, until, bonus: cw.banquet.xpBonus };
+  return {
+    state,
+    log: `Banquet du clan : +${bonus} % d’XP (métiers et combat) pour tous les membres pendant ${cw.banquet.hours} h.`,
+    serverEvents: [{ kind: 'clan', text: `Le clan « ${clan.name} » ouvre un Banquet.` }],
+  };
+}
+
+/** Ce que la salle du clan montre des ouvrages. */
+function worksView(clan: typeof clans.$inferSelect, progress: (typeof clanProgress.$inferSelect)[], active: number, myRank: ClanRank, content: Content, now: number): ClanView['works'] {
+  const cw = content.clanWorks;
+  if (!cw) return null;
+  const level = clan.worksLevel + 1;
+  const work = workAt(level, content)!;
+  const needs = worksNeeds(level, active, content);
+  const have = (what: string) => progress.find((p) => p.buildingId === WORKS && p.what === what)?.qty ?? 0;
+  const on = !!clan.banquetFrom && !!clan.banquetUntil && clan.banquetUntil.getTime() > now;
+  return {
+    level: clan.worksLevel,
+    next: { id: work.id, name: work.name, description: work.description, gold: { need: needs.gold, have: have('gold') }, items: needs.items.map((i) => ({ item: i.item, need: i.qty, have: have(i.item) })) },
+    banquets: clan.banquets,
+    maxBanquets: cw.banquet.maxStock,
+    banquet: on ? { from: clan.banquetFrom!.getTime(), until: clan.banquetUntil!.getTime(), bonus: cw.banquet.xpBonus } : null,
+    hours: cw.banquet.hours,
+    bonus: cw.banquet.xpBonus,
+    canLaunch: myRank !== 'member' && clan.banquets > 0 && !on,
+  };
 }

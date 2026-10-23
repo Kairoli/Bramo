@@ -75,7 +75,7 @@ npcOrders:
 # Clans (docs/design/monde.md §3) : un clan construit des bâtiments (data/buildings.yaml) avec les apports de ses membres ;
 # chaque niveau donne un bonus de production, plafonné ensemble par bonusCaps.clan.
 clan:
-  creationCost: 500       # or ; à équilibrer
+  creationCost: 5000      # or ; à équilibrer
   nameMin: 3
   nameMax: 24
   maxMembers: 30
@@ -105,7 +105,7 @@ absence:
   minSummaryMin: 5        # en dessous, pas de fenêtre de résumé à la connexion
 
 character:
-  startingGold: 100       # à équilibrer
+  startingGold: 1000      # à équilibrer (×10 le 23 octobre : toute la monnaie est à l'échelle ×10)
 
 # Ornements de métier (data/ornaments.yaml) : cadre autour du pseudo, débloqué par la commande du maître du palier.
 # unlockAll : true = tous portables sans commande, variantes du 90 en réserve comprises. Essais de Louis (22 octobre) : à repasser à false.

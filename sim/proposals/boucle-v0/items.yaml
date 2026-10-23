@@ -5,139 +5,139 @@
 # leur durée est réglée pour qu'une heure de bonus coûte environ la moitié de ce qu'elle rapporte.
 
 # --- Minage ---
-- {id: copper_ore, name: Minerai de cuivre, category: ore, value: 1}
-- {id: tin_ore, name: Minerai d'étain, category: ore, value: 1}
-- {id: stone_block, name: Bloc de pierre, category: stone, value: 1}
-- {id: sand, name: Sable, category: stone, value: 1}
-- {id: iron_ore, name: Minerai de fer, category: ore, value: 1}
-- {id: rune_stone, name: Pierre runique, category: stone, value: 1}
-- {id: coal, name: Charbon, category: ore, value: 1}
-- {id: silver_ore, name: Minerai d'argent, category: ore, value: 1}
-- {id: rough_amethyst, name: Améthyste brute, category: gem, value: 2}
-- {id: mithril_ore, name: Minerai de mithril, category: ore, value: 1}
-- {id: gold_ore, name: Minerai d'or, category: ore, value: 1}
-- {id: orichalcum_ore, name: Minerai d'orichalque, category: ore, value: 1}
-- {id: azurite_ore, name: Minerai d'azurite, category: ore, value: 1}
-- {id: umbral_ore, name: Minerai de sombracier, category: ore, value: 1}
-- {id: astralite_ore, name: Astralite, category: ore, value: 1}
+- {id: copper_ore, name: Minerai de cuivre, category: ore, value: 3}
+- {id: tin_ore, name: Minerai d'étain, category: ore, value: 3}
+- {id: stone_block, name: Bloc de pierre, category: stone, value: 3}
+- {id: sand, name: Sable, category: stone, value: 3}
+- {id: iron_ore, name: Minerai de fer, category: ore, value: 4}
+- {id: rune_stone, name: Pierre runique, category: stone, value: 4}
+- {id: coal, name: Charbon, category: ore, value: 4}
+- {id: silver_ore, name: Minerai d'argent, category: ore, value: 5}
+- {id: rough_amethyst, name: Améthyste brute, category: gem, value: 17}
+- {id: mithril_ore, name: Minerai de mithril, category: ore, value: 6}
+- {id: gold_ore, name: Minerai d'or, category: ore, value: 6}
+- {id: orichalcum_ore, name: Minerai d'orichalque, category: ore, value: 7}
+- {id: azurite_ore, name: Minerai d'azurite, category: ore, value: 7}
+- {id: umbral_ore, name: Minerai de sombracier, category: ore, value: 8}
+- {id: astralite_ore, name: Astralite, category: ore, value: 8}
 
 # --- Bûcheronnage ---
-- {id: pine_log, name: Bûche de pin, category: log, value: 1}
-- {id: bark, name: Écorce, category: log, value: 1}
-- {id: oak_log, name: Bûche de chêne, category: log, value: 1}
-- {id: ash_log, name: Bûche de frêne, category: log, value: 1}
-- {id: yew_log, name: Bûche d'if, category: log, value: 1}
-- {id: moonwood_log, name: Bois de lune, category: log, value: 1}
+- {id: pine_log, name: Bûche de pin, category: log, value: 3}
+- {id: bark, name: Écorce, category: log, value: 3}
+- {id: oak_log, name: Bûche de chêne, category: log, value: 4}
+- {id: ash_log, name: Bûche de frêne, category: log, value: 4}
+- {id: yew_log, name: Bûche d'if, category: log, value: 5}
+- {id: moonwood_log, name: Bois de lune, category: log, value: 6}
 
 # --- Herboristerie ---
-- {id: mint, name: Menthe sauvage, category: herb, value: 1}
-- {id: thyme, name: Thym, category: herb, value: 1}
-- {id: nettle_root, name: Racine d'ortie, category: herb, value: 1}
-- {id: sage, name: Sauge pourpre, category: herb, value: 1}
-- {id: lantern_lily, name: Lys-lanterne, category: herb, value: 1}
-- {id: frost_flower, name: Fleur de givre, category: herb, value: 1}
+- {id: mint, name: Menthe sauvage, category: herb, value: 3}
+- {id: thyme, name: Thym, category: herb, value: 4}
+- {id: nettle_root, name: Racine d'ortie, category: herb, value: 4}
+- {id: sage, name: Sauge pourpre, category: herb, value: 5}
+- {id: lantern_lily, name: Lys-lanterne, category: herb, value: 6}
+- {id: frost_flower, name: Fleur de givre, category: herb, value: 7}
 
 # --- Pêche (le marchand du port vend encore le poisson) ---
-- {id: raw_fish, name: Poisson frais, category: fish, value: 1, shopPrice: 12}
-- {id: trout, name: Truite, category: fish, value: 1, shopPrice: 25}
+- {id: raw_fish, name: Poisson frais, category: fish, value: 3, shopPrice: 12}
+- {id: trout, name: Truite, category: fish, value: 4, shopPrice: 25}
 
 # --- Chasse ---
-- {id: small_hide, name: Petite peau, category: hide, value: 1}
-- {id: game_meat, name: Viande de gibier, category: meat, value: 1}
+- {id: small_hide, name: Petite peau, category: hide, value: 3}
+- {id: game_meat, name: Viande de gibier, category: meat, value: 3}
 - {id: feather, name: Plume, category: hunt_material, value: 1}
-- {id: deer_hide, name: Peau de cerf, category: hide, value: 1}
-- {id: venison, name: Venaison, category: meat, value: 1}
+- {id: deer_hide, name: Peau de cerf, category: hide, value: 4}
+- {id: venison, name: Venaison, category: meat, value: 4}
 
 # --- Agriculture (récoltes des parcelles, puis préparation) ---
-- {id: flax_stalk, name: Tiges de lin, category: crop, value: 1}
-- {id: wheat_sheaf, name: Gerbe de blé, category: crop, value: 1}
-- {id: carrot, name: Carotte, category: crop, value: 1}
-- {id: woad_leaves, name: Feuilles de guède, category: crop, value: 1}
-- {id: flax_fiber, name: Filasse de lin, category: fiber, value: 1}
-- {id: grain, name: Grain, category: crop, value: 1}
-- {id: woad_dye, name: Teinture de guède, category: dye, value: 1}
+- {id: flax_stalk, name: Tiges de lin, category: crop, value: 2}
+- {id: wheat_sheaf, name: Gerbe de blé, category: crop, value: 3}
+- {id: carrot, name: Carotte, category: crop, value: 3}
+- {id: woad_leaves, name: Feuilles de guède, category: crop, value: 4}
+- {id: flax_fiber, name: Filasse de lin, category: fiber, value: 6}
+- {id: grain, name: Grain, category: crop, value: 3}
+- {id: woad_dye, name: Teinture de guède, category: dye, value: 14}
 
 # --- Forge ---
-- {id: bronze_bar, name: Lingot de bronze, category: bar, value: 1}
-- {id: iron_bar, name: Lingot de fer, category: bar, value: 1}
-- {id: steel_bar, name: Lingot d'acier, category: bar, value: 2}
+- {id: bronze_bar, name: Lingot de bronze, category: bar, value: 9}
+- {id: iron_bar, name: Lingot de fer, category: bar, value: 11}
+- {id: steel_bar, name: Lingot d'acier, category: bar, value: 20}
 - {id: rivets, name: Clous et rivets, category: hardware, value: 1}
-- {id: bronze_tool_head, name: Fer d'outil en bronze, category: tool_part, value: 12}
-- {id: iron_tool_head, name: Fer d'outil en fer, category: tool_part, value: 59}
-- {id: steel_tool_head, name: Fer d'outil en acier, category: tool_part, value: 105}
+- {id: bronze_tool_head, name: Fer d'outil en bronze, category: tool_part, value: 122}
+- {id: iron_tool_head, name: Fer d'outil en fer, category: tool_part, value: 589}
+- {id: steel_tool_head, name: Fer d'outil en acier, category: tool_part, value: 1050}
 - {id: iron_arrowhead, name: Pointes de flèche en fer, category: hardware, value: 1}
-- {id: iron_sword, name: Épée de fer, category: weapon, value: 59}
+- {id: iron_sword, name: Épée de fer, category: weapon, value: 589}
 
 # Outils : un par métier et par métal. Bonus plafonné à +30 % (settings.bonusCaps.tool).
-- {id: bronze_pickaxe, name: Pioche de bronze, category: tool, value: 13, tool: {profession: mining, bonus: 0.10}}
-- {id: iron_pickaxe, name: Pioche de fer, category: tool, value: 61, tool: {profession: mining, bonus: 0.15}}
-- {id: steel_pickaxe, name: Pioche d'acier, category: tool, value: 108, tool: {profession: mining, bonus: 0.20}}
+- {id: bronze_pickaxe, name: Pioche de bronze, category: tool, value: 132, tool: {profession: mining, bonus: 0.10}}
+- {id: iron_pickaxe, name: Pioche de fer, category: tool, value: 610, tool: {profession: mining, bonus: 0.15}}
+- {id: steel_pickaxe, name: Pioche d'acier, category: tool, value: 1080, tool: {profession: mining, bonus: 0.20}}
 # Paliers suivants (recettes à venir), pour simuler la progression jusqu'au 99 :
 - {id: mithril_pickaxe, name: Pioche de mithril, category: tool, value: 400, tool: {profession: mining, bonus: 0.25}}
 - {id: orichalcum_pickaxe, name: Pioche d'orichalque, category: tool, value: 900, tool: {profession: mining, bonus: 0.30}}
-- {id: bronze_axe, name: Hache de bronze, category: tool, value: 13, tool: {profession: woodcutting, bonus: 0.10}}
-- {id: iron_axe, name: Hache de fer, category: tool, value: 61, tool: {profession: woodcutting, bonus: 0.15}}
-- {id: bronze_sickle, name: Serpe de bronze, category: tool, value: 13, tool: {profession: herbalism, bonus: 0.10}}
-- {id: iron_sickle, name: Serpe de fer, category: tool, value: 61, tool: {profession: herbalism, bonus: 0.15}}
-- {id: bronze_hammer, name: Marteau de bronze, category: tool, value: 13, tool: {profession: smithing, bonus: 0.10}}
-- {id: iron_hammer, name: Marteau de fer, category: tool, value: 61, tool: {profession: smithing, bonus: 0.15}}
-- {id: bronze_saw, name: Scie de bronze, category: tool, value: 13, tool: {profession: carpentry, bonus: 0.10}}
-- {id: iron_saw, name: Scie de fer, category: tool, value: 61, tool: {profession: carpentry, bonus: 0.15}}
-- {id: bronze_knife, name: Couteau de bronze, category: tool, value: 13, tool: {profession: cooking, bonus: 0.10}}
-- {id: iron_knife, name: Couteau de fer, category: tool, value: 61, tool: {profession: cooking, bonus: 0.15}}
+- {id: bronze_axe, name: Hache de bronze, category: tool, value: 132, tool: {profession: woodcutting, bonus: 0.10}}
+- {id: iron_axe, name: Hache de fer, category: tool, value: 610, tool: {profession: woodcutting, bonus: 0.15}}
+- {id: bronze_sickle, name: Serpe de bronze, category: tool, value: 132, tool: {profession: herbalism, bonus: 0.10}}
+- {id: iron_sickle, name: Serpe de fer, category: tool, value: 610, tool: {profession: herbalism, bonus: 0.15}}
+- {id: bronze_hammer, name: Marteau de bronze, category: tool, value: 132, tool: {profession: smithing, bonus: 0.10}}
+- {id: iron_hammer, name: Marteau de fer, category: tool, value: 610, tool: {profession: smithing, bonus: 0.15}}
+- {id: bronze_saw, name: Scie de bronze, category: tool, value: 132, tool: {profession: carpentry, bonus: 0.10}}
+- {id: iron_saw, name: Scie de fer, category: tool, value: 610, tool: {profession: carpentry, bonus: 0.15}}
+- {id: bronze_knife, name: Couteau de bronze, category: tool, value: 132, tool: {profession: cooking, bonus: 0.10}}
+- {id: iron_knife, name: Couteau de fer, category: tool, value: 610, tool: {profession: cooking, bonus: 0.15}}
 
 # --- Menuiserie ---
-- {id: pine_plank, name: Planche de pin, category: plank, value: 1}
-- {id: pine_handle, name: Manche de pin, category: handle, value: 1}
-- {id: oak_plank, name: Planche de chêne, category: plank, value: 1}
-- {id: oak_handle, name: Manche de chêne, category: handle, value: 1}
+- {id: pine_plank, name: Planche de pin, category: plank, value: 6}
+- {id: pine_handle, name: Manche de pin, category: handle, value: 4}
+- {id: oak_plank, name: Planche de chêne, category: plank, value: 7}
+- {id: oak_handle, name: Manche de chêne, category: handle, value: 5}
 - {id: arrow_shaft, name: Hampes de flèche, category: archery, value: 1}
 - {id: iron_arrow, name: Flèche à pointe de fer, category: ammo, value: 1}
-- {id: bow_stave, name: Douelle d'arc en frêne, category: archery, value: 12}
-- {id: ash_bow, name: Arc court de frêne, category: weapon, value: 45}
+- {id: bow_stave, name: Douelle d'arc en frêne, category: archery, value: 119}
+- {id: ash_bow, name: Arc court de frêne, category: weapon, value: 454}
 
 # --- Tannerie ---
-- {id: small_leather, name: Cuir souple, category: leather, value: 1}
-- {id: leather_strap, name: Lanières de cuir, category: leather, value: 1}
-- {id: thick_leather, name: Cuir épais, category: leather, value: 2}
-- {id: leather_jerkin, name: Pourpoint de cuir, category: armor, value: 111}
+- {id: small_leather, name: Cuir souple, category: leather, value: 9}
+- {id: leather_strap, name: Lanières de cuir, category: leather, value: 4}
+- {id: thick_leather, name: Cuir épais, category: leather, value: 23}
+- {id: leather_jerkin, name: Pourpoint de cuir, category: armor, value: 1111}
 
 # --- Couture ---
-- {id: linen_thread, name: Fil de lin, category: thread, value: 1}
-- {id: linen_cloth, name: Toile de lin, category: cloth, value: 11}
-- {id: blue_linen, name: Toile teinte en bleu, category: cloth, value: 13}
-- {id: linen_hood, name: Capuche de lin, category: armor, value: 49}
-- {id: linen_robe, name: Robe de lin, category: armor, value: 122}
-- {id: linen_breeches, name: Chausses de lin, category: armor, value: 73}
-- {id: linen_gloves, name: Mitaines de lin, category: armor, value: 37}
-- {id: adept_robe, name: Robe d'adepte, category: armor, value: 233}
+- {id: linen_thread, name: Fil de lin, category: thread, value: 4}
+- {id: linen_cloth, name: Toile de lin, category: cloth, value: 108}
+- {id: blue_linen, name: Toile teinte en bleu, category: cloth, value: 125}
+- {id: linen_hood, name: Capuche de lin, category: armor, value: 492}
+- {id: linen_robe, name: Robe de lin, category: armor, value: 1217}
+- {id: linen_breeches, name: Chausses de lin, category: armor, value: 733}
+- {id: linen_gloves, name: Mitaines de lin, category: armor, value: 373}
+- {id: adept_robe, name: Robe d'adepte, category: armor, value: 2333}
 
 # --- Alchimie ---
-- {id: vial, name: Fiole, category: glass, value: 1}
-- {id: minor_healing_potion, name: Potion de soin mineure, category: potion, value: 2}
-- {id: miner_elixir, name: Élixir du mineur, category: potion, value: 4}
-- {id: rune_ink, name: Encre runique, category: reagent, value: 1}
+- {id: vial, name: Fiole, category: glass, value: 3}
+- {id: minor_healing_potion, name: Potion de soin mineure, category: potion, value: 22}
+- {id: miner_elixir, name: Élixir du mineur, category: potion, value: 37}
+- {id: rune_ink, name: Encre runique, category: reagent, value: 5}
 
 # --- Joaillerie ---
-- {id: silver_bar, name: Lingot d'argent, category: bar, value: 1}
-- {id: amethyst, name: Améthyste taillée, category: gem, value: 5}
-- {id: silver_band, name: Anneau d'argent, category: jewelry, value: 22}
-- {id: amethyst_ring, name: Anneau d'argent à l'améthyste, category: jewelry, value: 40}
+- {id: silver_bar, name: Lingot d'argent, category: bar, value: 13}
+- {id: amethyst, name: Améthyste taillée, category: gem, value: 50}
+- {id: silver_band, name: Anneau d'argent, category: jewelry, value: 217}
+- {id: amethyst_ring, name: Anneau d'argent à l'améthyste, category: jewelry, value: 400}
 
 # --- Enchantement ---
-- {id: ward_rune, name: Rune de garde, category: rune, value: 2}
-- {id: warded_adept_robe, name: Robe d'adepte runée, category: armor, value: 264}
+- {id: ward_rune, name: Rune de garde, category: rune, value: 23}
+- {id: warded_adept_robe, name: Robe d'adepte runée, category: armor, value: 2642}
 
 # --- Construction ---
-- {id: oak_frame, name: Charpente de chêne, category: element, value: 26}
-- {id: stone_wall, name: Pan de mur en pierre, category: element, value: 18}
+- {id: oak_frame, name: Charpente de chêne, category: element, value: 261}
+- {id: stone_wall, name: Pan de mur en pierre, category: element, value: 183}
 
 # --- Cuisine : repas (un seul actif, bonus plafonné à +10 %) ---
-- {id: mint_tea, name: Tisane de menthe, category: meal, value: 1, meal: {bonus: 0.03, durationMin: 60}}
-- {id: grilled_fish, name: Poisson grillé au thym, category: meal, value: 2, meal: {bonus: 0.04, durationMin: 60}}
-- {id: bread, name: Pain de campagne, category: meal, value: 2, meal: {bonus: 0.03, durationMin: 90}}
-- {id: nettle_broth, name: Bouillon d'ortie, category: meal, value: 3, meal: {bonus: 0.05, durationMin: 75}}
-- {id: hunter_stew, name: Ragoût du traqueur, category: meal, value: 6, meal: {bonus: 0.06, durationMin: 120}}
-- {id: sage_trout, name: Truite à la sauge, category: meal, value: 5, meal: {bonus: 0.07, durationMin: 75}}
-- {id: lantern_soup, name: Soupe aux lys-lanternes, category: meal, value: 5, meal: {bonus: 0.08, durationMin: 75}}
-- {id: frost_feast, name: Festin du givre, category: meal, value: 9, meal: {bonus: 0.10, durationMin: 105}}
+- {id: mint_tea, name: Tisane de menthe, category: meal, value: 14, meal: {bonus: 0.03, durationMin: 60}}
+- {id: grilled_fish, name: Poisson grillé au thym, category: meal, value: 20, meal: {bonus: 0.04, durationMin: 60}}
+- {id: bread, name: Pain de campagne, category: meal, value: 22, meal: {bonus: 0.03, durationMin: 90}}
+- {id: nettle_broth, name: Bouillon d'ortie, category: meal, value: 33, meal: {bonus: 0.05, durationMin: 75}}
+- {id: hunter_stew, name: Ragoût du traqueur, category: meal, value: 58, meal: {bonus: 0.06, durationMin: 120}}
+- {id: sage_trout, name: Truite à la sauge, category: meal, value: 46, meal: {bonus: 0.07, durationMin: 75}}
+- {id: lantern_soup, name: Soupe aux lys-lanternes, category: meal, value: 52, meal: {bonus: 0.08, durationMin: 75}}
+- {id: frost_feast, name: Festin du givre, category: meal, value: 88, meal: {bonus: 0.10, durationMin: 105}}

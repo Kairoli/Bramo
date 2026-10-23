@@ -101,6 +101,9 @@ export const gearItems = pgTable(
     gem: text('gem'),
     /** En vitrine au marché à ce prix (ni portée, ni sertie), ou null. */
     price: integer('price'),
+    /** Rang d'affinage (l'Affineur du bourg, sans plafond) et affûtages déjà faits. */
+    rank: integer('rank').notNull().default(0),
+    hones: integer('hones').notNull().default(0),
     createdAt: ts('created_at').notNull().defaultNow(),
   },
   (t) => [index('gear_items_character').on(t.characterId)],
@@ -185,6 +188,11 @@ export const clans = pgTable('clans', {
   description: text('description').notNull().default(''),
   /** Renom : l'histoire du clan, qui ne baisse jamais (rangs de prestige). */
   renown: integer('renown').notNull().default(0),
+  /** Ouvrages du clan : niveaux achevés, Banquets en réserve, banquet en cours (data/clan_works.yaml). */
+  worksLevel: integer('works_level').notNull().default(0),
+  banquets: integer('banquets').notNull().default(0),
+  banquetFrom: ts('banquet_from'),
+  banquetUntil: ts('banquet_until'),
   createdAt: ts('created_at').notNull().defaultNow(),
 });
 
@@ -281,6 +289,22 @@ export const tideEntries = pgTable(
     claimed: boolean('claimed').notNull().default(false),
   },
   (t) => [primaryKey({ columns: [t.day, t.characterId] }), index('tide_entries_character').on(t.characterId, t.claimed)],
+);
+
+/** Mécènes de la Marée : qui a offert le soir `day` (une place par `slot`, `patron.maxPerNight` au plus). */
+export const tidePatrons = pgTable(
+  'tide_patrons',
+  {
+    day: integer('day').notNull(),
+    slot: integer('slot').notNull(),
+    characterId: integer('character_id')
+      .notNull()
+      .references(() => characters.id, { onDelete: 'cascade' }),
+    characterName: text('character_name').notNull(),
+    gold: integer('gold').notNull(),
+    at: ts('at').notNull(),
+  },
+  (t) => [primaryKey({ columns: [t.day, t.slot] })],
 );
 
 /** Vitrine : l'or d'une pièce vendue, versé au vendeur à sa prochaine visite. */

@@ -161,6 +161,13 @@ export function GearPanel({ gear, onChange }: { gear: GearView | null; onChange:
               </button>
             )
           }
+          onRefine={(service) =>
+            void act(async () => {
+              const r = await api.gearRefine(selected.id, service);
+              onChange(r.gear);
+              return r.state;
+            })
+          }
           onSell={selected.bound || selected.price != null ? undefined : (price) => void call(() => api.gearSell(selected.id, price)).then(() => setPick(null))}
         />
       )}

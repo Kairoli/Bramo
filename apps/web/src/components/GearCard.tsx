@@ -55,6 +55,7 @@ export function GearCard({
   actions,
   onSocket,
   onSell,
+  onRefine,
 }: {
   g: GearItemView;
   compare?: GearItemView | null;
@@ -63,6 +64,8 @@ export function GearCard({
   onSocket?: (itemId: string | null) => void;
   /** Mettre la pièce en vitrine au marché, à ce prix. */
   onSell?: (price: number) => void;
+  /** L'Affineur du bourg : un rang de plus, ou affûter une ligne. */
+  onRefine?: (service: { kind: 'rank' } | { kind: 'hone'; line: number }) => void;
 }) {
   const [price, setPrice] = useState('');
   const { content, state } = useGame();
@@ -89,7 +92,10 @@ export function GearCard({
             <span className="gear-card-rarity">
               {RARITY[g.rarity]} · {SLOT[g.slot] ?? g.slot} · palier {g.tier}
             </span>
-            <h2>{g.masterpiece ? `Chef-d’œuvre ${g.name}` : g.name}</h2>
+            <h2>
+              {g.masterpiece ? `Chef-d’œuvre ${g.name}` : g.name}
+              {g.rank > 0 && <span className="gear-rank"> +{g.rank}</span>}
+            </h2>
             <span className="muted small">
               {classes.join(', ')}
               {g.bound ? ' · liée à vous' : ''}
@@ -216,6 +222,8 @@ export function GearCard({
           </section>
         )}
 
+        {onRefine && (g.rankCost || g.honeCost) && <Refiner g={g} onRefine={onRefine} />}
+
         {onSell && (
           <section className="gear-card-sell">
             <span className="muted small">Vitrine du marché : une fois en vente, la pièce ne se porte plus ; l’or arrive à votre visite.</span>
@@ -238,5 +246,65 @@ export function GearCard({
         </footer>
       </div>
     </Modal>
+  );
+}
+
+/** Ce que coûte un service de l'Affineur, et si on l'a. */
+function CostLine({ cost }: { cost: NonNullable<GearItemView['rankCost']> }) {
+  const { content, state } = useGame();
+  return (
+    <span className="refine-cost">
+      <span className={state.gold >= cost.gold ? '' : 'short'}>{cost.gold.toLocaleString('fr-FR')} or</span>
+      {cost.items.map((i) => (
+        <span key={i.item} className={(state.inventory[i.item] ?? 0) >= i.qty ? '' : 'short'} title={`Vous en avez ${(state.inventory[i.item] ?? 0).toLocaleString('fr-FR')}`}>
+          <ItemIcon item={content.items[i.item]} small /> {i.qty.toLocaleString('fr-FR')} × {content.items[i.item]?.name ?? i.item}
+        </span>
+      ))}
+    </span>
+  );
+}
+
+/**
+ * L'Affineur du bourg (perfectionnement) : le rang d'affinage, sans plafond [Décidé par Louis, 23 octobre], et l'affûtage
+ * d'une ligne vers son maximum. Chaque service coûte plus que le précédent sur la même pièce ; l'or offert disparaît.
+ */
+function Refiner({ g, onRefine }: { g: GearItemView; onRefine: NonNullable<Parameters<typeof GearCard>[0]['onRefine']> }) {
+  const { content, state } = useGame();
+  const per = content.gearCrafting?.refine?.rank.statPerRank ?? 0;
+  const can = (c: NonNullable<GearItemView['rankCost']>) => state.gold >= c.gold && c.items.every((i) => (state.inventory[i.item] ?? 0) >= i.qty);
+  return (
+    <section className="gear-card-block refine-block">
+      <span className="eyebrow">L’Affineur du bourg</span>
+      {g.rankCost ? (
+        <div className="refine-row">
+          <span>
+            <strong>Rang +{g.rank + 1}</strong>
+            <span className="muted small"> · +{Math.round(per * 100)} % sur ce que donne la pièce, à chaque rang, sans limite</span>
+          </span>
+          <CostLine cost={g.rankCost} />
+          <button className="btn btn-sm btn-primary" disabled={!can(g.rankCost) || g.price != null} onClick={() => onRefine({ kind: 'rank' })}>
+            Monter au rang +{g.rank + 1}
+          </button>
+        </div>
+      ) : (
+        <p className="muted small">Les rangs d’affinage sont pour les pièces Épiques et Légendaires du palier 40 et plus.</p>
+      )}
+      {g.honeCost && (
+        <div className="refine-row">
+          <span>
+            <strong>Affûter une ligne</strong>
+            <span className="muted small"> · elle monte vers son maximum, jamais au-delà</span>
+          </span>
+          <CostLine cost={g.honeCost} />
+          <span className="refine-lines">
+            {g.honeable.map((i) => (
+              <button key={i} className="btn btn-sm" disabled={!can(g.honeCost!) || g.price != null} onClick={() => onRefine({ kind: 'hone', line: i })}>
+                {g.lines[i]!.name} ({fmt(g.lines[i]!.value)} / {fmt(g.lines[i]!.max)})
+              </button>
+            ))}
+          </span>
+        </div>
+      )}
+    </section>
   );
 }

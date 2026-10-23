@@ -109,6 +109,10 @@ export interface GearInstance {
   gem: string | null;
   /** En vitrine au marché à ce prix (ni portée ni sertie tant qu'elle y est), ou absent. */
   price?: number | null;
+  /** Rang d'affinage (l'Affineur du bourg) : +1, +2… sans plafond ; absent = 0. */
+  rank?: number;
+  /** Affûtages déjà faits sur cet exemplaire (chacun coûte plus que le précédent) ; absent = 0. */
+  hones?: number;
 }
 
 /**
@@ -126,5 +130,32 @@ export const gearCraftingSchema = z.object({
   xp: z.object({ perHourAtLevel1: z.number().positive(), doubling: z.number().positive() }),
   /** Niveau de métier requis = palier × ce facteur (les métiers montent plus lentement que les classes). */
   levelPerTier: z.number().positive().max(1).default(1),
+  /**
+   * L'Affineur du bourg (perfectionnement, docs/design/combat-items.md §5.6) : son or est détruit, ses matières sont celles
+   * de la pièce (la matière principale de sa famille à son palier). Coût = base × multiplicateurs du palier et de la rareté
+   * × croissance^(services déjà faits sur cette pièce).
+   */
+  refine: z
+    .object({
+      /** Rang d'affinage (+1, +2…, sans plafond [Décidé par Louis, 23 octobre]) : les lignes fixes de la pièce, +statPerRank par rang. */
+      rank: z.object({
+        minRarity: z.enum(['common', 'rare', 'epic', 'legendary']),
+        minTier: z.number().int().min(1),
+        statPerRank: z.number().positive(),
+        gold: z.number().positive(),
+        goldGrowth: z.number().min(1),
+        /** Matière : cette part de la quantité principale de la recette du modèle, × materialGrowth^rang. */
+        materialShare: z.number().positive(),
+        materialGrowth: z.number().min(1),
+      }),
+      /** Affûtage d'une ligne tirée : +step de sa plage, jamais au-delà de son maximum [Décidé par Louis]. */
+      hone: z.object({
+        step: z.number().positive().max(1),
+        gold: z.number().positive(),
+        goldGrowth: z.number().min(1),
+        materialShare: z.number().positive(),
+      }),
+    })
+    .optional(),
 });
 export type GearCrafting = z.infer<typeof gearCraftingSchema>;

@@ -49,9 +49,11 @@ export interface TideState {
   unlocked: string[];
   /** Dernière semaine dont le coffre a été donné. */
   weekly: number;
+  /** Soirs offerts au serveur (Mécène de la Marée, titres). */
+  patron: number;
 }
 
-export const emptyTide = (): TideState => ({ auto: true, channel: 'combat', liveDay: null, work: null, nights: [], counts: {}, unlocked: [], weekly: 0 });
+export const emptyTide = (): TideState => ({ auto: true, channel: 'combat', liveDay: null, work: null, nights: [], counts: {}, unlocked: [], weekly: 0, patron: 0 });
 export const readTide = (raw: Partial<TideState> | null | undefined): TideState => ({ ...emptyTide(), ...(raw ?? {}) });
 
 const need = (content: Content): { combat: CombatContent; tide: TideRules } => {
@@ -165,8 +167,8 @@ export function tideScore(state: CharacterState, day: number, content: Content, 
   return { points: Math.round(full * ratio * bonus), ratio: raw, channel: 'combat' };
 }
 
-/** Éclats d'un participant : ses points, plus le bonus de chaque seuil du serveur franchi. */
-export function tideShards(points: number, serverPoints: number, participants: number, content: Content): { shards: number; thresholds: number } {
+/** Éclats d'un participant : ses points, plus le bonus de chaque seuil du serveur franchi ; chaque mécène du soir en ajoute. */
+export function tideShards(points: number, serverPoints: number, participants: number, content: Content, patrons = 0): { shards: number; thresholds: number } {
   const { tide } = need(content);
   const objective = tide.shards.objectivePerParticipant * Math.max(1, participants);
   let shards = Math.round(points * tide.shards.perPoint);
@@ -177,7 +179,35 @@ export function tideShards(points: number, serverPoints: number, participants: n
       reached++;
     }
   }
+  if (patrons > 0 && tide.patron) shards = Math.round(shards * (1 + Math.min(patrons, tide.patron.maxPerNight) * tide.patron.shardBonus));
   return { shards, thresholds: reached };
+}
+
+/** Le soir qu'une offre de mécène finance : la Marée de ce soir tant qu'elle n'est pas finie, sinon celle de demain. */
+export function patronDay(now: number, rules: TideRules): number {
+  const day = tideDay(now);
+  return now < tideWindow(day, rules).end ? day : day + 1;
+}
+
+/** Prix pour offrir la Marée : selon les participants du dernier soir réglé (un grand serveur coûte plus cher). */
+export function patronPrice(lastParticipants: number, content: Content): number {
+  const p = need(content).tide.patron;
+  if (!p) throw new GameError('no_patron', 'On ne peut pas encore offrir la Marée.');
+  return Math.max(p.minPrice, Math.round(p.perParticipant * lastParticipants));
+}
+
+/**
+ * Offrir la Marée : l'or est retiré (détruit), le compte des soirs offerts monte (titres). Le serveur vérifie qu'il reste
+ * une place ce soir-là (`patron.maxPerNight`) et enregistre le mécène.
+ */
+export function offerTide(input: CharacterState, price: number, content: Content): CharacterState {
+  need(content);
+  if (input.gold < price) throw new GameError('gold', `Il faut ${price} or pour offrir la Marée.`);
+  const state = cloneState(input);
+  state.gold -= price;
+  const t = readTide(state.combat.tide);
+  state.combat.tide = { ...t, patron: t.patron + 1 };
+  return state;
 }
 
 /** Prend part à la Marée en direct (le joueur est là pendant l'heure) : son bonus de points est acquis pour ce soir. */
@@ -291,5 +321,5 @@ export function tideTitles(state: CharacterState, content: Content): string[] {
   const tide = content.combat?.tide;
   if (!tide) return [];
   const t = readTide(state.combat.tide);
-  return tide.titles.filter((x) => (t.counts[x.tide] ?? 0) >= x.nights).map((x) => x.title);
+  return [...tide.titles.filter((x) => (t.counts[x.tide] ?? 0) >= x.nights).map((x) => x.title), ...(tide.patron?.titles ?? []).filter((x) => t.patron >= x.offered).map((x) => x.title)];
 }

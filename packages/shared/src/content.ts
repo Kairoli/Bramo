@@ -5,6 +5,7 @@ import {
   professionsFileSchema,
   recipesFileSchema,
   buildingsFileSchema,
+  clanWorksSchema,
   npcOrdersFileSchema,
   ornamentsFileSchema,
   settingsSchema,
@@ -26,6 +27,7 @@ export interface RawContent {
   trials: unknown;
   npcOrders: unknown;
   buildings?: unknown;
+  clanWorks?: unknown;
   ornaments?: unknown;
   /** Équipement : modèles, emplacements, lignes aléatoires, ensembles (optionnels pour les propositions du simulateur). */
   gear?: unknown;
@@ -55,6 +57,7 @@ export function buildContent(raw: RawContent): Content {
   const trialList = parse(trialsFileSchema, raw.trials, 'trials.yaml');
   const npcOrderList = parse(npcOrdersFileSchema, raw.npcOrders ?? [], 'npc_orders.yaml');
   const buildingList = parse(buildingsFileSchema, raw.buildings ?? [], 'buildings.yaml');
+  const clanWorks = raw.clanWorks === undefined ? null : parse(clanWorksSchema, raw.clanWorks, 'clan_works.yaml');
   const ornamentList = parse(ornamentsFileSchema, raw.ornaments ?? [], 'ornaments.yaml');
   const gearSlotList = parse(gearSlotsFileSchema, raw.gearSlots ?? [], 'gear_slots.yaml');
   const gearPools = parse(gearPoolsFileSchema.default({ tierScale: {}, pools: {} }), raw.gearPools ?? undefined, 'gear_pools.yaml');
@@ -133,6 +136,7 @@ export function buildContent(raw: RawContent): Content {
     for (const p of b.boost.professions) if (p !== 'all' && !professionMap[p]) errors.push(`buildings.yaml : ${b.id} améliore un métier inconnu « ${p} »`);
     for (const s of b.base.items) if (!items[s.item]) errors.push(`buildings.yaml : ${b.id} demande un objet inconnu « ${s.item} »`);
   }
+  for (const w of clanWorks?.works ?? []) for (const s of w.items) if (!items[s.item]) errors.push(`clan_works.yaml : ${w.id} demande un objet inconnu « ${s.item} »`);
   const ornaments = unique(
     [...ornamentList].sort((a, b) => a.profession.localeCompare(b.profession) || a.rank - b.rank),
     'ornaments.yaml',
@@ -213,5 +217,5 @@ export function buildContent(raw: RawContent): Content {
   }
   if (errors.length) throw new ContentError(`Données incohérentes :\n- ${errors.join('\n- ')}`);
 
-  return { settings, professions, items, recipes, trials, npcOrders, buildings, ornaments, classes, cosmetics, gearSlots, gearPools, gearModels, gearSets, gearCrafting, combat, xpTable: buildXpTable(settings.xp.maxLevel) };
+  return { settings, professions, items, recipes, trials, npcOrders, buildings, clanWorks, ornaments, classes, cosmetics, gearSlots, gearPools, gearModels, gearSets, gearCrafting, combat, xpTable: buildXpTable(settings.xp.maxLevel) };
 }

@@ -5,8 +5,11 @@
 #
 # Coût du niveau N = `base` × N, pour un clan de `settings.clan.minMembersForCost` membres actifs ; il croît
 # proportionnellement au-delà (un petit clan bâtit aussi vite par tête qu'un grand).
-# Les matériaux sont des matières premières de récolte (milliers d'unités) : les bâtiments absorbent le surplus des récolteurs,
-# alors que l'or est un puits plus modeste. Chiffres provisoires : à équilibrer avec le simulateur. # à équilibrer
+# Les matériaux : une récolte du métier du bâtiment (milliers d'unités, le surplus des récolteurs) et des éléments fabriqués
+# par d'autres artisans (Construction : moellons, mortier, escaliers, charpentes, arches ; verre, voiles, lanières, pain,
+# parchemins) [Décidé par Louis, 23 octobre : « certains crafts requièrent plusieurs métiers, ou un achat »]. Chiffres provisoires : à équilibrer avec le simulateur. # à équilibrer
+# Le niveau 1 reste simple (une récolte, une pièce de premier niveau) ; `fromLevel` ajoute les pièces plus dures aux niveaux 2
+# et 3 (charpentes, escaliers, arches, fermes de toit, lingots, toile, parchemins).
 # `professions: [all]` = toute la production.
 
 - id: hall
@@ -14,53 +17,53 @@
   description: "Le cœur du village. Son foyer réchauffe tous les métiers."
   maxLevel: 3
   boost: { professions: [all], perLevel: 0.01 }
-  base: { gold: 3000, items: [{ item: stone_block, qty: 4000 }, { item: pine_log, qty: 4000 }] }
+  base: { gold: 30000, items: [{ item: stone_block, qty: 4000 }, { item: pine_plank, qty: 800 }, { item: oak_frame, qty: 12, fromLevel: 2 }, { item: roof_truss, qty: 3, fromLevel: 3 }] }
 
 - id: forge
   name: Forge
   description: "Fourneaux, enclumes et galeries : tout ce qui se tire de la roche et du métal."
   maxLevel: 3
   boost: { professions: [mining, smithing, jewelcrafting], perLevel: 0.02 }
-  base: { gold: 1500, items: [{ item: stone_block, qty: 2000 }, { item: coal, qty: 1000 }] }
+  base: { gold: 15000, items: [{ item: coal, qty: 1000 }, { item: dressed_stone, qty: 200 }, { item: iron_bar, qty: 150, fromLevel: 2 }, { item: stone_arch, qty: 3, fromLevel: 3 }] }
 
 - id: sawmill
   name: Scierie
   description: "Une scie hydraulique et un chantier couvert pour le bois et la construction."
   maxLevel: 3
   boost: { professions: [woodcutting, carpentry, construction], perLevel: 0.02 }
-  base: { gold: 1500, items: [{ item: pine_log, qty: 2500 }, { item: oak_log, qty: 1000 }] }
+  base: { gold: 15000, items: [{ item: pine_log, qty: 2500 }, { item: oak_plank, qty: 400 }, { item: wooden_stairs, qty: 8, fromLevel: 2 }, { item: oak_frame, qty: 5, fromLevel: 3 }] }
 
 - id: fields
   name: Champs et jardins
   description: "Parcelles, serres et plates-bandes pour ce qui pousse."
   maxLevel: 3
   boost: { professions: [agriculture, herbalism], perLevel: 0.02 }
-  base: { gold: 1500, items: [{ item: thyme, qty: 2000 }, { item: pine_log, qty: 1000 }] }
+  base: { gold: 15000, items: [{ item: thyme, qty: 2000 }, { item: glass_bead, qty: 400 }, { item: wooden_stairs, qty: 5, fromLevel: 2 }, { item: oak_frame, qty: 4, fromLevel: 3 }] }
 
 - id: harbor
   name: Embarcadère
   description: "Un ponton, une barque et une carte aux trésors pour ceux qui prennent le large."
   maxLevel: 3
   boost: { professions: [fishing, exploration], perLevel: 0.02 }
-  base: { gold: 1500, items: [{ item: pine_log, qty: 2000 }, { item: raw_fish, qty: 1500 }] }
+  base: { gold: 15000, items: [{ item: raw_fish, qty: 1500 }, { item: pine_plank, qty: 600 }, { item: linen_cloth, qty: 8, fromLevel: 2 }, { item: oak_frame, qty: 6, fromLevel: 3 }] }
 
 - id: lodge
   name: Pavillon de chasse
   description: "Des peaux qui sèchent, une table de couture : chasseurs, tanneurs et couturiers y ont leurs habitudes."
   maxLevel: 3
   boost: { professions: [hunting, tanning, tailoring], perLevel: 0.02 }
-  base: { gold: 1500, items: [{ item: oak_log, qty: 2000 }, { item: stone_block, qty: 1000 }] }
+  base: { gold: 15000, items: [{ item: oak_log, qty: 2000 }, { item: leather_strap, qty: 1000 }, { item: wooden_stairs, qty: 6, fromLevel: 2 }, { item: oak_frame, qty: 4, fromLevel: 3 }] }
 
 - id: arcane_tower
   name: Tour des arcanes
   description: "Alambics, runes et rouages au sommet d'une tour : alchimistes, enchanteurs et artificiers."
   maxLevel: 3
   boost: { professions: [alchemy, enchanting, artificing], perLevel: 0.02 }
-  base: { gold: 1500, items: [{ item: stone_block, qty: 2000 }, { item: rune_stone, qty: 500 }] }
+  base: { gold: 15000, items: [{ item: rune_stone, qty: 500 }, { item: dressed_stone, qty: 200 }, { item: glyph_scroll, qty: 40, fromLevel: 2 }, { item: stone_arch, qty: 3, fromLevel: 3 }] }
 
 - id: tavern
   name: Taverne
   description: "De grandes marmites et une cheminée qui ne s'éteint jamais pour les cuisiniers du clan."
   maxLevel: 3
   boost: { professions: [cooking], perLevel: 0.02 }
-  base: { gold: 1500, items: [{ item: stone_block, qty: 1500 }, { item: raw_fish, qty: 1500 }] }
+  base: { gold: 15000, items: [{ item: raw_fish, qty: 1500 }, { item: country_bread, qty: 100 }, { item: oak_frame, qty: 6, fromLevel: 2 }, { item: stone_arch, qty: 2, fromLevel: 3 }] }

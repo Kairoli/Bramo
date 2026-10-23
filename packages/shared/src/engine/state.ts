@@ -66,8 +66,17 @@ export interface CharacterState {
    * Pièces portées et non usées (renseignées au chargement depuis l'équipement, jamais enregistrées) : elles font les
    * statistiques, les ensembles et les objets nommés du combat. Absent : statistiques de référence du combat.
    */
-  equipment?: { model: string; lines: { name: string; value: number }[]; gem?: string }[];
+  equipment?: { model: string; lines: { name: string; value: number }[]; gem?: string; rank?: number }[];
+  /**
+   * Banquet du clan (data/clan_works.yaml) : +bonus d'XP, métiers et combat, de from à until. Renseigné au chargement depuis
+   * le clan, jamais enregistré.
+   */
+  banquet?: { from: number; until: number; bonus: number } | null;
 }
+
+/** Multiplicateur d'XP à l'instant t (Banquet du clan). */
+export const xpMultiplier = (state: Pick<CharacterState, 'banquet'>, t: number): number =>
+  state.banquet && t >= state.banquet.from && t < state.banquet.until ? 1 + state.banquet.bonus : 1;
 
 export class GameError extends Error {
   constructor(

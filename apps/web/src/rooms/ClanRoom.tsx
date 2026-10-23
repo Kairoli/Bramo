@@ -12,6 +12,8 @@ type Tab = 'log' | 'members' | 'roads';
 type Run = (call: () => ReturnType<typeof api.state>) => Promise<boolean>;
 
 const RANK_NAME: Record<ClanRank, string> = { leader: 'Chef', officer: 'Officier', member: 'Membre' };
+/** La fenêtre ouverte est celle des ouvrages (aucun bâtiment ne porte cet identifiant). */
+const WORKS_OPEN = '__works';
 
 /**
  * Salle Clan, comme un écran de jeu (retour de Louis : « gros pâté de texte », « ambiance clan ») : en haut la place du
@@ -220,6 +222,7 @@ function ClanHall({ clan, run }: { clan: ClanView; run: Run }) {
               <BuildingTile key={b.id} b={b} onOpen={() => setOpen(b.id)} />
             ))}
           </div>
+          {clan.works && <WorksStrip works={clan.works} onOpen={() => setOpen(WORKS_OPEN)} run={run} />}
         </section>
         <section className="panel clan-side">
           <div className="tabs" role="tablist">
@@ -253,6 +256,11 @@ function ClanHall({ clan, run }: { clan: ClanView; run: Run }) {
       {building && (
         <Modal onClose={() => setOpen(null)} className="building-modal">
           <BuildingSheet b={building} run={run} />
+        </Modal>
+      )}
+      {open === WORKS_OPEN && clan.works && (
+        <Modal onClose={() => setOpen(null)} className="building-modal">
+          <WorksSheet works={clan.works} run={run} />
         </Modal>
       )}
     </main>
@@ -378,17 +386,9 @@ function BuildingTile({ b, onOpen }: { b: ClanBuildingView; onOpen: () => void }
 
 /** Fenêtre d'un bâtiment : ce qu'il fait, son prochain niveau, et les apports. */
 function BuildingSheet({ b, run }: { b: ClanBuildingView; run: Run }) {
-  const { content, state } = useGame();
+  const { content } = useGame();
   const def = content.buildings[b.id]!;
   const art = BUILDING_ART[b.id] ?? BUILDING_ART.hall!;
-  const [amount, setAmount] = useState<Record<string, number>>({});
-  const qty = (key: string, max: number) => Math.max(1, Math.min(max, amount[key] ?? max));
-  const rows: { key: string; label: string; need: number; have: number; mine: number; item?: string }[] = b.next
-    ? [
-        { key: 'gold', label: 'Or', need: b.next.gold.need, have: b.next.gold.have, mine: state.gold },
-        ...b.next.items.map((i) => ({ key: i.item, label: content.items[i.item]?.name ?? i.item, need: i.need, have: i.have, mine: state.inventory[i.item] ?? 0, item: i.item })),
-      ].filter((r) => r.need > 0)
-    : [];
   return (
     <div className="building-sheet" style={{ '--bc': art.color } as CSSProperties}>
       <header className="building-sheet-head">
@@ -413,6 +413,26 @@ function BuildingSheet({ b, run }: { b: ClanBuildingView; run: Run }) {
       ) : (
         <div className="building-needs">
           <span className="eyebrow">Pour le niveau {b.level + 1}</span>
+          <NeedRows next={b.next} give={(what, n) => run(() => api.clanContribute(b.id, what, n))} />
+        </div>
+      )}
+    </div>
+  );
+}
+
+type Needs = NonNullable<ClanBuildingView['next']>;
+
+/** Ce que demande un niveau (bâtiment ou ouvrage), ce qui est déjà apporté, et de quoi apporter sa part. */
+function NeedRows({ next, give }: { next: Needs; give: (what: string, qty: number) => Promise<boolean> }) {
+  const { content, state } = useGame();
+  const [amount, setAmount] = useState<Record<string, number>>({});
+  const qty = (key: string, max: number) => Math.max(1, Math.min(max, amount[key] ?? max));
+  const rows: { key: string; label: string; need: number; have: number; mine: number; item?: string }[] = [
+    { key: 'gold', label: 'Or', need: next.gold.need, have: next.gold.have, mine: state.gold },
+    ...next.items.map((i) => ({ key: i.item, label: content.items[i.item]?.name ?? i.item, need: i.need, have: i.have, mine: state.inventory[i.item] ?? 0, item: i.item })),
+  ].filter((r) => r.need > 0);
+  return (
+    <>
           {rows.map((r) => {
             const left = Math.max(0, r.need - r.have);
             const n = qty(r.key, Math.min(left, Math.max(1, r.mine)));
@@ -429,7 +449,7 @@ function BuildingSheet({ b, run }: { b: ClanBuildingView; run: Run }) {
                 {left > 0 ? (
                   <span className="bag-actions">
                     <input className="input" type="number" min={1} aria-label={`Quantité de ${r.label}`} style={{ width: 80 }} value={n} onChange={(e) => setAmount({ ...amount, [r.key]: Math.floor(Number(e.target.value)) || 1 })} />
-                    <button className="btn btn-sm btn-primary" disabled={r.mine <= 0} onClick={() => run(() => api.clanContribute(b.id, r.key, n))} title={`Vous en avez ${num(r.mine)}`}>
+                    <button className="btn btn-sm btn-primary" disabled={r.mine <= 0} onClick={() => void give(r.key, n)} title={`Vous en avez ${num(r.mine)}`}>
                       Apporter
                     </button>
                   </span>
@@ -442,8 +462,87 @@ function BuildingSheet({ b, run }: { b: ClanBuildingView; run: Run }) {
             );
           })}
           <p className="muted small">Vous avez : {rows.map((r) => `${num(r.mine)} ${r.label.toLowerCase()}`).join(' · ')}.</p>
+    </>
+  );
+}
+
+// --- Ouvrages du clan et Banquet ---------------------------------------------------------------------------------------
+
+const WORKS_ART = { color: '#F0B35A', d: 'M5 21h14M7 21v-3h10v3M9 18V9h6v9M8 9l4-6 4 6M11 12h2M3 21h2M19 21h2' };
+
+/** Part réunie pour l'ouvrage en cours. */
+function worksReady(next: Needs): number {
+  const parts = [next.gold, ...next.items].filter((p) => p.need > 0);
+  return parts.length ? parts.reduce((s, p) => s + Math.min(1, p.have / p.need), 0) / parts.length : 0;
+}
+
+/**
+ * Les ouvrages [Décidé par Louis, 23 octobre] : le prestige du clan, sans fin. Chaque ouvrage achevé donne un Banquet que le
+ * chef ou un officier lance : quelques heures d'XP en plus pour tous les membres.
+ */
+function WorksStrip({ works, onOpen, run }: { works: NonNullable<ClanView['works']>; onOpen: () => void; run: Run }) {
+  const ready = worksReady(works.next);
+  const pct = Math.round(works.bonus * 100);
+  return (
+    <div className="works-strip" style={{ '--bc': WORKS_ART.color } as CSSProperties}>
+      <button className="works-main" onClick={onOpen}>
+        <span className="building-art">
+          <svg viewBox="0 0 24 24" width={40} height={40} fill="none" stroke={WORKS_ART.color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+            <path d={WORKS_ART.d} />
+          </svg>
+          {ready > 0 && <span className="building-ring" style={{ '--p': `${ready * 360}deg` } as CSSProperties} />}
+        </span>
+        <span className="building-text">
+          <span className="eyebrow">Ouvrages · {works.level} achevé{works.level > 1 ? 's' : ''}</span>
+          <strong>{works.next.name}</strong>
+          <span className="muted small">{Math.round(ready * 100)} % réuni · chaque ouvrage achevé donne un Banquet</span>
+        </span>
+      </button>
+      <div className="works-banquet">
+        <span className="works-stock" aria-label={`${works.banquets} Banquets en réserve sur ${works.maxBanquets}`}>
+          {Array.from({ length: works.maxBanquets }, (_, i) => (
+            <span key={i} className={i < works.banquets ? 'on' : ''} />
+          ))}
+        </span>
+        {works.banquet ? (
+          <span className="works-on">
+            Banquet en cours : +{pct} % d’XP jusqu’à {hhmm(works.banquet.until)}
+          </span>
+        ) : (
+          <button className="btn btn-sm btn-primary" disabled={!works.canLaunch} onClick={() => void run(api.clanBanquet)} title={works.canLaunch ? '' : 'Le chef ou un officier lance un Banquet en réserve.'}>
+            Lancer le Banquet ({works.hours} h, +{pct} % d’XP)
+          </button>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function WorksSheet({ works, run }: { works: NonNullable<ClanView['works']>; run: Run }) {
+  return (
+    <div className="building-sheet" style={{ '--bc': WORKS_ART.color } as CSSProperties}>
+      <header className="building-sheet-head">
+        <span className="building-art big">
+          <svg viewBox="0 0 24 24" width={60} height={60} fill="none" stroke={WORKS_ART.color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+            <path d={WORKS_ART.d} />
+          </svg>
+        </span>
+        <div>
+          <span className="eyebrow">Ouvrage n° {works.level + 1}</span>
+          <h2>{works.next.name}</h2>
+          <p className="muted small">{works.next.description}</p>
+          <div className="row-gap">
+            <span className="chip" style={{ color: 'var(--good)', borderColor: 'var(--good)' }}>
+              Achevé : un Banquet de {works.hours} h, +{Math.round(works.bonus * 100)} % d’XP pour tout le clan
+            </span>
+          </div>
         </div>
-      )}
+      </header>
+      <div className="building-needs">
+        <span className="eyebrow">Ce qu’il demande</span>
+        <NeedRows next={works.next} give={(what, n) => run(() => api.clanWorksContribute(what, n))} />
+      </div>
+      <p className="muted small">Les ouvrages ne s’arrêtent jamais : le suivant commence dès que celui-ci est achevé. Le clan garde au plus {works.maxBanquets} Banquets en réserve.</p>
     </div>
   );
 }

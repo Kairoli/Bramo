@@ -4348,6 +4348,60 @@
 .building-modal {
   width: min(640px, calc(100vw - 32px));
 }
+/* Ouvrages du clan : une bande sous les bâtiments, l'ouvrage en cours à gauche, le Banquet à droite. */
+.works-strip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding: 10px 12px;
+  border: 1px solid color-mix(in srgb, var(--bc) 45%, var(--border));
+  border-radius: 16px;
+  background:
+    radial-gradient(circle at 8% 50%, color-mix(in srgb, var(--bc) 18%, transparent), transparent 55%),
+    linear-gradient(to bottom, rgb(255 255 255 / 0.03), rgb(0 0 0 / 0.2));
+}
+.works-main {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  text-align: left;
+  background: none;
+  border: 0;
+  color: inherit;
+  cursor: pointer;
+  padding: 0;
+}
+.works-main .building-text {
+  justify-items: start;
+}
+.works-banquet {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.works-stock {
+  display: flex;
+  gap: 4px;
+}
+.works-stock span {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 1.5px solid color-mix(in srgb, var(--bc) 55%, transparent);
+}
+.works-stock span.on {
+  background: var(--bc);
+  box-shadow: 0 0 6px color-mix(in srgb, var(--bc) 60%, transparent);
+}
+.works-on {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--good);
+}
 .building-sheet {
   display: grid;
   gap: 14px;
@@ -4979,6 +5033,13 @@
   font-size: 24px;
   font-weight: 800;
 }
+/* Achat en gros : 10, 100, 1 000 unités d'un coup, au prix total affiché. */
+.quick-bulk {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 4px;
+}
 .quick-box.buy strong {
   color: var(--action);
 }
@@ -5367,6 +5428,16 @@
   margin: 0;
   font-size: 15px;
 }
+.tide-modal p {
+  margin: 0;
+}
+/* Mécène de la Marée : un bloc mis en avant, le bouton à sa taille. */
+.tide-modal .tide-patron h3 {
+  color: var(--event);
+}
+.tide-patron .btn {
+  justify-self: start;
+}
 .tide-ok {
   color: var(--event);
   margin: 0;
@@ -5490,6 +5561,41 @@
 }
 .gear-sell-row .input {
   width: 120px;
+}
+
+/* --- L'Affineur du bourg (fiche d'une pièce) --- */
+.gear-rank {
+  color: var(--rc);
+  font-weight: 800;
+}
+.refine-block {
+  display: grid;
+  gap: 10px;
+}
+.refine-row {
+  display: grid;
+  gap: 6px;
+  justify-items: start;
+}
+.refine-cost {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  font-size: 13px;
+  align-items: center;
+}
+.refine-cost > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.refine-cost .short {
+  color: var(--alert);
+}
+.refine-lines {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
 }
 
 /* --- Atelier d'équipement (components/GearWorkshop.tsx) --- */

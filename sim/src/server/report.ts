@@ -115,7 +115,7 @@ export function analyze(r: ServerResult, content: Content, tide?: TideStats) {
   const idle = (g: (typeof goals)[number]) => g.routeIdle >= 14 && g.gearIdle >= 14 && g.metierIdle >= 14;
   const goalSummary = personas.map((p) => {
     const g = goals.filter((x) => x.persona === p);
-    return { persona: p, routeDone: g.filter((x) => x.routeDone).length / g.length, noProgress14d: g.filter(idle).length / g.length, routeStuck14d: g.filter((x) => !x.routeDone && x.routeIdle >= 14).length / g.length };
+    return { persona: p, n: g.length, routeDone: g.filter((x) => x.routeDone).length / g.length, noProgress14d: g.filter(idle).length / g.length, routeStuck14d: g.filter((x) => !x.routeDone && x.routeIdle >= 14).length / g.length };
   });
 
   // --- Or ---
@@ -130,6 +130,23 @@ export function analyze(r: ServerResult, content: Content, tide?: TideStats) {
   const sum = golds.reduce((s, g) => s + g, 0);
   const gini = sum ? golds.reduce((acc, g, i) => acc + (2 * (i + 1) - golds.length - 1) * g, 0) / (golds.length * sum) : 0;
   const richest = [...bots].sort((a, b) => b.state.gold - a.state.gold).slice(0, 5).map((b) => ({ persona: b.persona.id, gold: b.state.gold, metiers: b.professions }));
+
+  // --- Activité du marché (30 derniers jours) : le marché est-il le réflexe des joueurs ? ---
+  const act = r.activity.slice(-30);
+  const sumA = (k: 'buyers' | 'purchases' | 'units' | 'gold' | 'bulk' | 'noGold' | 'players') => act.reduce((t, d) => t + d[k], 0);
+  const activity = {
+    buyersShare: r1((sumA('buyers') / Math.max(1, sumA('players'))) * 100) / 100,
+    purchasesPerPlayerDay: r1(sumA('purchases') / Math.max(1, sumA('players'))),
+    unitsPerPlayerDay: Math.round(sumA('units') / Math.max(1, sumA('players'))),
+    goldPerPlayerDay: Math.round(sumA('gold') / Math.max(1, sumA('players'))),
+    bulkPerDay: r1(sumA('bulk') / Math.max(1, act.length)),
+    noGoldShare: r1((sumA('noGold') / Math.max(1, sumA('players'))) * 100) / 100,
+    weekly: Array.from({ length: Math.ceil(r.activity.length / 7) }, (_, w) => {
+      const xs = r.activity.slice(w * 7, w * 7 + 7);
+      const p = xs.reduce((t, d) => t + d.players, 0);
+      return { buyersShare: Math.round((xs.reduce((t, d) => t + d.buyers, 0) / Math.max(1, p)) * 100), unitsPerPlayerDay: Math.round(xs.reduce((t, d) => t + d.units, 0) / Math.max(1, p)) };
+    }),
+  };
 
   // --- Prix : indice pondéré par les volumes, semaine par semaine, et objets bradés ---
   const weeks = Math.ceil(days / 7);
@@ -259,8 +276,8 @@ export function analyze(r: ServerResult, content: Content, tide?: TideStats) {
     progression,
     milestones,
     goalSummary,
-    economy: { faucet: r.ledger.faucet, sink: r.ledger.sink, faucetTotal: faucet, sinkTotal: sink, lateRatio: r1(lateRatio), startGold, gini: r1(gini), gold: gold.filter((_, i) => i % 7 === 0 || i === gold.length - 1), richest },
-    market: { index, top: traded.slice(0, 25), crashed: crashed.slice(0, 20), soared: soared.slice(0, 20), lastDay: r.days.at(-1), traders },
+    economy: { faucet: r.ledger.faucet, sink: r.ledger.sink, faucetTotal: faucet, sinkTotal: sink, lateRatio: r1(lateRatio), sinks: { ...r.ledger.sinks, worksLevels: r.clans.map((c) => c.works.level).sort((a, b) => b - a) }, startGold, gini: r1(gini), gold: gold.filter((_, i) => i % 7 === 0 || i === gold.length - 1), richest },
+    market: { activity, index, top: traded.slice(0, 25), crashed: crashed.slice(0, 20), soared: soared.slice(0, 20), lastDay: r.days.at(-1), traders },
     flows: { rawBalance, deadEnds: deadEnds.slice(0, 30), neverMade },
     loot: { perBotDay: r1(perBotDay), total: r.ledger.drops.total, rarity, sets, named, gearOwnedMedian: gearOwned, gems: r.ledger.gemsSocketed, bySource: r.ledger.drops.bySource },
     vitrine: { listed: r.vitrine.listed, sold: r.vitrine.sales.length, medianPrice: median(r.vitrine.sales.map((x) => x.price)), crafted: r.ledger.drops.bySource['fabrication'] ?? 0 },
@@ -303,9 +320,13 @@ export function toMarkdown(a: Analysis): string {
   L.push(`Robinets : ${Object.entries(a.economy.faucet).map(([k, v]) => `${k} ${v}`).join(', ')} (total ${a.economy.faucetTotal}, plus ${a.economy.startGold} d’or de départ).`);
   L.push(`Puits : ${Object.entries(a.economy.sink).map(([k, v]) => `${k} ${v}`).join(', ')} (total ${a.economy.sinkTotal}). Sur les 30 derniers jours, or créé / détruit : ${a.economy.lateRatio}.`);
   L.push(`Or par joueur : ${a.economy.gold.map((g) => `j${g.day} ${g.perPlayer}`).join(' · ')}. Gini ${a.economy.gini}.`);
+  const k = a.economy.sinks;
+  L.push(`Puits voulus : ${k.patrons} Marées offertes par des mécènes, ${k.works} ouvrages de clan achevés (niveaux des clans : ${k.worksLevels.join(', ') || 'aucun'}), ${k.banquets} banquets lancés, ${k.ranks} rangs d’affinage achetés (au plus +${k.maxRank}).`);
   L.push(`Plus riches : ${a.economy.richest.map((r) => `${r.persona} ${r.gold} (${r.metiers.join('/')})`).join(' ; ')}.`);
   L.push('', '## Marché', '');
   L.push(`Indice des prix (100 = prix de référence), par semaine : ${a.market.index.join(' · ')}.`);
+  const ma = a.market.activity;
+  L.push('', `Activité d'achat (30 derniers jours) : ${Math.round(ma.buyersShare * 100)} % des joueurs achètent chaque jour, ${ma.purchasesPerPlayerDay} achats et ${ma.unitsPerPlayerDay} unités (${ma.goldPerPlayerDay} or) par joueur et par jour, ${ma.bulkPerDay} achats en gros (100 unités et plus) par jour ; ${Math.round(ma.noGoldShare * 100)} % des joueurs-jours renoncent à un achat faute d'or. Par semaine (acheteurs du jour, unités) : ${ma.weekly.map((w) => `${w.buyersShare} % / ${w.unitsPerPlayerDay}`).join(' · ')}.`);
   L.push('', '| Objet | réf. | échangés | prix 1re sem. | prix dernière sem. |', '|---|---|---|---|---|');
   for (const t of a.market.top.slice(0, 15)) L.push(`| ${t.name} | ${t.ref} | ${t.qty} | ${t.first} | ${t.last} |`);
   L.push('', `Effondrés (sous 40 % de la référence) : ${a.market.crashed.map((t) => `${t.name} ${t.last}/${t.ref}`).join(', ') || 'aucun'}.`);

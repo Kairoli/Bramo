@@ -134,6 +134,13 @@
       "when": 1792716839109,
       "tag": "0018_renom",
       "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "7",
+      "when": 1792744398219,
+      "tag": "0019_puits_or",
+      "breakpoints": true
     }
   ]
 }

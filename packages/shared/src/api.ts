@@ -70,6 +70,8 @@ export const placeOrderBody = z.object({
   price: z.number().int(),
   /** Objets durables : rang de l'exemplaire proposé (0 = le plus usé), tel que le sac les liste. */
   copy: z.number().int().min(0).optional(),
+  /** Achat ou vente immédiat : on prend ce qui est disponible jusqu'au prix limite, le reste n'est pas mis en attente. */
+  immediate: z.boolean().optional(),
 });
 export const fillOrderBody = z.object({ orderId: z.number().int(), qty: z.number().int().min(1) });
 export const orderIdBody = z.object({ orderId: z.number().int() });
@@ -125,6 +127,10 @@ export const clanMemberBody = z.object({ characterId: z.number().int() });
 export const clanRankBody = z.object({ characterId: z.number().int(), rank: z.enum(['officer', 'member']) });
 /** Apport à un bâtiment : de l'or (`what` = « gold ») ou des objets. */
 export const clanContributeBody = z.object({ buildingId: z.string(), what: z.string(), qty: z.number().int().min(1) });
+/** Apport à l'ouvrage en cours du clan. */
+export const clanWorksBody = z.object({ what: z.string(), qty: z.number().int().min(1) });
+/** L'Affineur du bourg : monter d'un rang, ou affûter une ligne (son index). */
+export const gearRefineBody = z.discriminatedUnion('kind', [z.object({ id: z.number().int(), kind: z.literal('rank') }), z.object({ id: z.number().int(), kind: z.literal('hone'), line: z.number().int().min(0) })]);
 
 export type ClanRank = 'leader' | 'officer' | 'member';
 
@@ -176,6 +182,20 @@ export interface ClanView {
   log: { id: number; at: number; text: string }[];
   /** Renom et rang de prestige (jamais de puissance) ; le prochain rang, s'il y en a un. */
   renown: { value: number; rank: string; next: { name: string; at: number } | null };
+  /**
+   * Ouvrages du clan : niveaux achevés, l'ouvrage en cours et ce qu'il demande (apports déjà faits), Banquets en réserve et
+   * banquet en cours (null sans data/clan_works.yaml).
+   */
+  works: {
+    level: number;
+    next: { id: string; name: string; description: string; gold: { need: number; have: number }; items: { item: string; need: number; have: number }[] };
+    banquets: number;
+    maxBanquets: number;
+    banquet: { from: number; until: number; bonus: number } | null;
+    hours: number;
+    bonus: number;
+    canLaunch: boolean;
+  } | null;
 }
 
 /** Un joueur vu dans la scène du bourg (informations publiques seulement). */
@@ -284,6 +304,20 @@ export interface TideView {
   titles: string[];
   counts: Record<string, number>;
   last: { day: number; name: string; participants: number; points: number; objective: number; thresholds: number; of: number } | null;
+  /**
+   * Mécène de la Marée : la Marée qu'une offre financerait (ce soir, ou demain si celle de ce soir est finie), son prix,
+   * ses mécènes déjà inscrits, le bonus d'éclats ; les soirs que ce joueur a offerts et son prochain titre.
+   */
+  patron: {
+    day: number;
+    tonight: boolean;
+    price: number;
+    names: string[];
+    max: number;
+    shardBonus: number;
+    offered: number;
+    next: { offered: number; title: string } | null;
+  } | null;
 }
 
 

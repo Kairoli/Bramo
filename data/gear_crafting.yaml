@@ -67,3 +67,16 @@ xp: { perHourAtLevel1: 700, doubling: 55 }
 # Niveau requis = palier × 0,8 (23 octobre) : au simulateur, les métiers montaient bien moins vite que les classes, et les
 # artisans ne fabriquaient que des pièces sous le niveau des combattants (26 % des pièces de la vitrine se vendaient).
 levelPerTier: 0.8
+
+# L'Affineur du bourg : le perfectionnement de l'équipement (proposé par Claude le 23 octobre, chiffres à équilibrer). Son or
+# est détruit ; ses matières sont celles de la pièce (la matière principale de sa famille à son palier), achetées aux artisans.
+# Chaque service coûte plus que le précédent sur la même pièce.
+# - Rang d'affinage [Décidé par Louis, 23 octobre : « ne plafonne pas, ça récompense si tu t'investis »] : +1, +2… sans fin,
+#   chaque rang +3 % sur les lignes fixes de la pièce ; pièces Épiques et Légendaires, palier 40 et plus (le « beau stuff »).
+#   L'or croît de 15 % par rang, la matière de 8 % : un rang de plus coûte toujours plus, sans jamais être interdit.
+# - Affûtage [Décidé par Louis : une ligne monte jusqu'à son maximum, jamais au-delà, jamais un chef-d'œuvre] : +10 % de la
+#   plage d'une ligne tirée par service ; toutes raretés.
+# Or d'un service = base × multiplicateur du palier (tierMultiplier) × multiplicateur de la rareté × croissance^(services faits).
+refine:
+  rank: { minRarity: epic, minTier: 40, statPerRank: 0.03, gold: 1200, goldGrowth: 1.15, materialShare: 0.3, materialGrowth: 1.08 }
+  hone: { step: 0.1, gold: 400, goldGrowth: 1.25, materialShare: 0.15 }

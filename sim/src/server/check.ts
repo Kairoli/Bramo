@@ -32,7 +32,10 @@ export function checks(a: Analysis): Check[] {
   add('garder', 'route principale finie par un casu (jour, 30 à 70)', casual ?? '—', casual !== null && casual >= 30 && casual <= 70);
   const ratio = casual && tryhard ? casual / tryhard : 0;
   add('garder', 'tryhard / casu sur la route (1,2 à 2,5)', ratio.toFixed(2), ratio >= 1.2 && ratio <= 2.5);
-  const idle = Math.max(...a.goalSummary.filter((g) => g.persona !== 'afk').map((g) => g.noProgress14d));
+  // Tous les joueurs (sauf l'onglet oublié), pondérés : un petit groupe de quatre joueurs ne fait plus 25 % à lui seul.
+  const groups = a.goalSummary.filter((g) => g.persona !== 'afk');
+  const counted = groups.reduce((s, g) => s + (g.n ?? 1), 0);
+  const idle = groups.reduce((s, g) => s + g.noProgress14d * (g.n ?? 1), 0) / Math.max(1, counted);
   add('garder', 'joueurs sans aucun progrès depuis 14 jours (au plus 10 %)', `${Math.round(idle * 100)} %`, idle <= 0.1);
   const route = a.guardians.slice(0, 12);
   const worst = Math.max(...route.map((g) => g.medianDays));
@@ -51,7 +54,7 @@ export function checks(a: Analysis): Check[] {
   if (a.economy.lateRatio !== undefined) add('fragile', 'or créé / or détruit, 30 derniers jours (au plus 1,5)', a.economy.lateRatio, a.economy.lateRatio <= 1.5);
   const last = a.economy.gold.at(-1)!;
   const perDay = last.perPlayer / Math.max(1, last.day);
-  add('fragile', 'or gagné et gardé par joueur et par jour (au plus 35)', perDay.toFixed(0), perDay <= 35);
+  add('fragile', 'or gagné et gardé par joueur et par jour (au plus 350)', perDay.toFixed(0), perDay <= 350);
   const index = median(a.market.index.slice(-4));
   add('fragile', 'indice des prix, dernières semaines (au moins 65)', index, index >= 65);
   const soldShare = a.vitrine.sold / Math.max(1, a.vitrine.sold + a.vitrine.listed);

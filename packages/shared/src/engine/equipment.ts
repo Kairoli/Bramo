@@ -1,6 +1,7 @@
 import type { Content } from '../schemas/content.js';
 import type { GearInstance, GearLine, GearModel, Rarity, RolledLine } from '../schemas/gear.js';
 import { GameError } from './state.js';
+import { type RefineCost, honeCost, honeableLines, rankCost, rankedStats } from './refine.js';
 
 /** Tirage aléatoire uniforme dans [0, 1) (injecté : le serveur donne Math.random, les tests une suite fixe). */
 export type Rng = () => number;
@@ -142,7 +143,7 @@ export function gearTotals(items: GearInstance[], content: Content): GearTotals 
     if (!g.equipped) continue;
     const model = content.gearModels[g.model];
     if (!model || isWorn(g, content)) continue;
-    for (const s of model.stats) stats[s.stat] = (stats[s.stat] ?? 0) + s.value;
+    for (const s of rankedStats(model, g.rank, content)) stats[s.stat] = (stats[s.stat] ?? 0) + s.value;
     for (const l of g.lines) lines[l.name] = round1((lines[l.name] ?? 0) + l.value);
     if (model.set) setPieces[model.set] = (setPieces[model.set] ?? 0) + 1;
   }
@@ -187,6 +188,12 @@ export interface GearItemView {
   price: number | null;
   /** Fabriquée par le métier (atelier) : sa recette existe. */
   craftable: boolean;
+  /** Rang d'affinage (+N) et services de l'Affineur : coût du prochain rang et du prochain affûtage (null : impossible). */
+  rank: number;
+  rankCost: RefineCost | null;
+  honeCost: RefineCost | null;
+  /** Lignes qui peuvent encore s'affûter (index dans lines). */
+  honeable: number[];
 }
 
 /** Emplacements des places de talent majeur (docs/design/coherence/build.md §2) : là où une gemme se sertit. */
@@ -245,7 +252,7 @@ export function viewGear(items: GearInstance[], classId: string | null, content:
       tier: m.tier,
       family: m.family,
       material: m.material,
-      stats: m.stats,
+      stats: rankedStats(m, g.rank, content),
       lines: g.lines,
       socket: m.socket,
       set: m.set ?? null,
@@ -262,6 +269,10 @@ export function viewGear(items: GearInstance[], classId: string | null, content:
       gem: g.gem ? gemItemOf(g.gem, content) : null,
       price: g.price ?? null,
       craftable: m.source.includes('craft') && !m.set && !m.talent && !m.starter,
+      rank: g.rank ?? 0,
+      rankCost: rankCost(g, content),
+      honeCost: honeCost(g, content),
+      honeable: honeableLines(g),
     });
   }
   return { items: views, totals: gearTotals(items, content) };

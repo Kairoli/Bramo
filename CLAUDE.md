@@ -55,6 +55,14 @@ Bramo est un **idle-RPG multijoueur jouable dans le navigateur**, dans l'esprit 
 
 ## 5. État du projet (à jour au 23 octobre 2026)
 
+### Fait — économie active, monnaie ×10, puits d'or voulus (23 octobre, journée)
+
+- **Monnaie ×10** [Décidé par Louis] : tous les montants d'or des sections plus anciennes de ce fichier et des documents datés d'avant le 23 octobre après-midi sont à multiplier par 10 (or de départ 1 000, création de clan 5 000, étal, Comptoir, maîtres, bâtiments, valeur des objets recalculée par `sim calibrate --data --write` avec `GOLD_PER_WORK_HOUR = 10000`). Raison : les matières ne restent plus écrasées à « 1 or ».
+- **Économie active** [Décidé par Louis : le marché, réflexe n° 1 pour monter un métier, « ni noir ni blanc »] : Comptoir ×2 ; achat en gros au marché (« Acheter 10 / 100 / 1 000 », `immediate` sur `POST /api/market/order`) ; recettes croisées (Couture, Cuisine, Menuiserie, Construction) ; bâtiments de clan par niveaux (`fromLevel` dans `data/buildings.yaml` : niveau 1 simple, pièces d'autres artisans aux niveaux 2 et 3). Rapport : [`docs/design/economie-active.md`](docs/design/economie-active.md).
+- **Puits d'or voulus** [Décidé par Louis] : **Mécène de la Marée** (offrir la Marée au serveur, +10 % d'éclats pour tous par mécène, trois par soir, titres de 1 à 100 soirs offerts ; `tide_patrons`, `POST /api/tide/patron`) ; **Ouvrages du clan** et **Banquet** (suite sans fin, 5 000 or + une récolte, une matière transformée, une pièce d'un autre artisan ; chaque ouvrage donne un Banquet de 12 h à +20 % d'XP métiers et combat, lancé par le chef ou un officier ; `data/clan_works.yaml`, `CharacterState.banquet`, `POST /api/clan/works/contribute`, `POST /api/clan/banquet`) ; **l'Affineur du bourg** (rangs d'affinage sans plafond, +3 % par rang sur les pièces Épiques et Légendaires du palier 40 et plus, affûtage d'une ligne jusqu'à son maximum ; `engine/refine.ts`, `gear_items.rank`/`hones`, `POST /api/gear/refine`, bloc dans la fiche d'une pièce). Migration `0019_puits_or`. Rapport : [`docs/design/puits-or.md`](docs/design/puits-or.md).
+- **Simulateur** : choix acheter / récolter, Construction et Exploration enfin exercées, fabrication pour son clan, mesures d'activité du marché (`activity` du rapport), garde-fou `check.ts`.
+- Tests : 190 dans packages/shared, 26 d'API, 21 du simulateur.
+
 ### Fait — simulation d'un vrai serveur, failles corrigées, systèmes manquants ajoutés (23 octobre, nuit, carte blanche de Louis)
 
 - **Demande de Louis** : simuler un vrai serveur (population, clans, world boss, tout le contenu), des joueurs très différents ou tous méta, trouver les failles (trop simple, trop dur, trop long, marché, bradeurs, butin, ensembles ignorés, classes et voies), ajouter ce qui manque, resimuler. **Rapport complet : [`docs/design/simulation-serveur.md`](docs/design/simulation-serveur.md).** Tout ce qui suit est **proposé par Claude**, à valider par Louis.

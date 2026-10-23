@@ -652,6 +652,20 @@ export const tideSchema = z.object({
   shop: z.array(z.object({ id, name: z.string(), outfit: id, cost: z.number().int().min(1) })),
   /** Titres : nombre de soirs d'une Marée pour le titre. */
   titles: z.array(z.object({ tide: id, nights: z.number().int().min(1), title: z.string() })),
+  /**
+   * Mécène de la Marée [Décidé par Louis, 23 octobre] : un joueur offre la Marée du soir au serveur (son or est détruit) ;
+   * chaque mécène donne `shardBonus` d'éclats en plus à tous les participants de ce soir, `maxPerNight` au plus.
+   * Prix : `perParticipant` × participants du dernier soir réglé, au moins `minPrice`. Titres selon le nombre de soirs offerts.
+   */
+  patron: z
+    .object({
+      perParticipant: z.number().min(0),
+      minPrice: z.number().int().min(1),
+      maxPerNight: z.number().int().min(1),
+      shardBonus: z.number().min(0),
+      titles: z.array(z.object({ offered: z.number().int().min(1), title: z.string() })),
+    })
+    .optional(),
 });
 
 export const spellsFileSchema = z.array(spellSchema);

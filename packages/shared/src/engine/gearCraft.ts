@@ -22,7 +22,7 @@ export interface GearRecipe {
   inputs: { item: string; qty: number }[];
 }
 
-const interpolate = (points: { tier: number; mul: number }[], tier: number) => {
+export const interpolate = (points: { tier: number; mul: number }[], tier: number) => {
   const p = [...points].sort((a, b) => a.tier - b.tier);
   if (tier <= p[0]!.tier) return p[0]!.mul;
   for (let i = 1; i < p.length; i++) {
@@ -33,7 +33,7 @@ const interpolate = (points: { tier: number; mul: number }[], tier: number) => {
   return p.at(-1)!.mul;
 };
 
-const materialAt = (list: { tier: number; item: string }[], tier: number) => [...list].sort((a, b) => b.tier - a.tier).find((m) => m.tier <= tier) ?? list[0]!;
+export const materialAt = (list: { tier: number; item: string }[], tier: number) => [...list].sort((a, b) => b.tier - a.tier).find((m) => m.tier <= tier) ?? list[0]!;
 
 /** Ce modèle se fabrique-t-il ? */
 export const isCraftable = (m: GearModel, content: Content): boolean =>

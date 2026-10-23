@@ -7,6 +7,8 @@ import {
   addStack,
   cloneState,
   socketGem,
+  honeLine,
+  rankUp,
   unsocketGem,
   type Rng,
   dropMismatched,
@@ -32,6 +34,8 @@ export async function loadGear(tx: Tx | Db, characterId: number): Promise<GearIn
       equipped: r.equipped,
       gem: r.gem,
       price: r.price,
+      rank: r.rank,
+      hones: r.hones,
     }))
     .sort((a, b) => a.id - b.id);
 }
@@ -59,7 +63,7 @@ export async function unequipOwned(tx: Tx, characterId: number, id: number): Pro
  * Préréglage : porter exactement ces exemplaires (ceux qui existent encore, du style de la classe et pas usés), le reste
  * retourne au sac. Renvoie l'équipement porté, sous la forme que le combat lit (`CharacterState.equipment`).
  */
-export async function wearGearSet(tx: Tx, characterId: number, classId: string | null, ids: number[], content: Content): Promise<{ model: string; lines: { name: string; value: number }[]; gem?: string }[]> {
+export async function wearGearSet(tx: Tx, characterId: number, classId: string | null, ids: number[], content: Content): Promise<{ model: string; lines: { name: string; value: number }[]; gem?: string; rank?: number }[]> {
   const before = await loadGear(tx, characterId);
   let after = before.map((g) => ({ ...g, equipped: null as string | null }));
   for (const id of ids) {
@@ -72,7 +76,7 @@ export async function wearGearSet(tx: Tx, characterId: number, classId: string |
     }
   }
   await saveEquipped(tx, before, after);
-  return after.filter((g) => g.equipped && !isWorn(g, content) && content.gearModels[g.model]).map((g) => ({ model: g.model, lines: g.lines.map((l) => ({ name: l.name, value: l.value })), ...(g.gem ? { gem: g.gem } : {}) }));
+  return after.filter((g) => g.equipped && !isWorn(g, content) && content.gearModels[g.model]).map((g) => ({ model: g.model, lines: g.lines.map((l) => ({ name: l.name, value: l.value })), ...(g.gem ? { gem: g.gem } : {}), ...(g.rank ? { rank: g.rank } : {}) }));
 }
 
 /**
@@ -97,6 +101,32 @@ export async function socketOwned(tx: Tx, characterId: number, input: CharacterS
   addStack(state.inventory, r.take, -1);
   if (r.give) addStack(state.inventory, r.give, 1);
   return { state, log: `Vous sertissez ${content.items[itemId]?.name} dans ${pieceName}.${r.give ? ` ${content.items[r.give]?.name} revient au sac.` : ''}` };
+}
+
+/**
+ * L'Affineur du bourg : monter une pièce d'un rang (sans plafond), ou affûter une de ses lignes vers son maximum. Son or
+ * est détruit ; la matière de la pièce est prise dans le sac.
+ */
+export async function refineOwned(
+  tx: Tx,
+  characterId: number,
+  input: CharacterState,
+  id: number,
+  service: { kind: 'rank' } | { kind: 'hone'; line: number },
+  content: Content,
+): Promise<{ state: CharacterState; log: string; gold: number }> {
+  const g = (await loadGear(tx, characterId)).find((x) => x.id === id);
+  if (!g) throw new GameError('unknown_gear', 'Objet introuvable.');
+  const name = content.gearModels[g.model]?.name ?? 'la pièce';
+  if (service.kind === 'rank') {
+    const r = rankUp(input, g, content);
+    await tx.update(gearItems).set({ rank: r.gear.rank ?? 0 }).where(eq(gearItems.id, id));
+    return { state: r.state, gold: r.cost.gold, log: `L’Affineur monte ${name} au rang +${r.gear.rank} (${r.cost.gold} or).` };
+  }
+  const r = honeLine(input, g, service.line, content);
+  await tx.update(gearItems).set({ lines: r.gear.lines, hones: r.gear.hones ?? 0 }).where(eq(gearItems.id, id));
+  const l = r.gear.lines[service.line]!;
+  return { state: r.state, gold: r.cost.gold, log: `L’Affineur affûte ${name} : ${l.name} ${l.value} (sur ${l.max}).` };
 }
 
 /** Changement de classe : les pièces qui ne sont pas du style de la nouvelle classe retournent au sac. */

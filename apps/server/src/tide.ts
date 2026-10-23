@@ -6,14 +6,18 @@
  *   la digue) : points, total du serveur, seuils franchis, éclats de chacun.
  * - Les éclats, le coffre de la semaine et sa cache d'équipement arrivent à la prochaine visite du joueur (`claimTide`).
  */
-import { and, eq, gte, isNotNull } from 'drizzle-orm';
+import { and, asc, desc, eq, gte, isNotNull } from 'drizzle-orm';
 import {
   type CharacterState,
   type Content,
+  GameError,
   type TideNight,
   type TideView,
   claimWeeklyChests,
   lastFinishedTide,
+  offerTide,
+  patronDay,
+  patronPrice,
   readTide,
   recordTideNight,
   stream,
@@ -27,11 +31,11 @@ import {
   tideWindow,
 } from '@bramo/shared';
 import type { Db, Tx } from './db/index.js';
-import { characters, clanMembers, tideDays, tideEntries } from './db/schema.js';
+import { characters, clanMembers, tideDays, tideEntries, tidePatrons } from './db/schema.js';
 import { addRenown } from './clans.js';
 import { loadCharacterById } from './characters.js';
 import { grantGear } from './gear.js';
-import { recordEvents } from './town.js';
+import { type NewServerEvent, recordEvents } from './town.js';
 
 const DAY = 86_400_000;
 /** Un personnage qui n'est pas venu depuis une semaine ne part plus à la Marée (comptes oubliés). */
@@ -64,9 +68,11 @@ export async function settleTide(db: Db, content: Content, now: number): Promise
       entries.push({ day, characterId: id, tide: tideOf(day, rules).id, points: r.points, ratio: r.ratio, channel: r.channel, live, shards: 0 });
     }
     const points = entries.reduce((s, e) => s + e.points, 0);
+    // Mécènes de ce soir : chacun ajoute des éclats à tous les participants.
+    const patrons = await tx.select().from(tidePatrons).where(eq(tidePatrons.day, day)).orderBy(asc(tidePatrons.slot));
     let thresholds = 0;
     for (const e of entries) {
-      const s = tideShards(e.points, points, entries.length, content);
+      const s = tideShards(e.points, points, entries.length, content, patrons.length);
       e.shards = s.shards;
       thresholds = s.thresholds;
     }
@@ -89,7 +95,8 @@ export async function settleTide(db: Db, content: Content, now: number): Promise
     if (entries.length) {
       const def = tideOf(day, rules);
       const of = rules.shards.thresholds.length;
-      await recordEvents(tx, now, [{ kind: 'tide', text: `${def.name} : ${entries.length} à la digue, ${thresholds} lanterne${thresholds > 1 ? 's' : ''} sur ${of} allumée${thresholds > 1 ? 's' : ''}.` }]);
+      const offered = patrons.length ? ` Marée offerte par ${patrons.map((p) => p.characterName).join(', ')}.` : '';
+      await recordEvents(tx, now, [{ kind: 'tide', text: `${def.name} : ${entries.length} à la digue, ${thresholds} lanterne${thresholds > 1 ? 's' : ''} sur ${of} allumée${thresholds > 1 ? 's' : ''}.${offered}` }]);
     }
   });
   settled.set(db, day);
@@ -153,8 +160,70 @@ export async function tideView(tx: Tx, state: CharacterState, content: Content, 
     shop: rules.shop.map((o) => ({ ...o, owned: t.unlocked.includes(o.outfit), forClass: !!state.classId && !!content.cosmetics.outfits.find((x) => x.id === o.outfit)?.classes.includes(state.classId) })),
     titles: tideTitles(state, content),
     counts: t.counts,
+    patron: await patronView(tx, state, content, now),
     last: last
       ? { day: last.day, name: rules.tides.find((x) => x.id === last.tide)?.name ?? last.tide, participants: last.participants, points: last.points, objective: rules.shards.objectivePerParticipant * Math.max(1, last.participants), thresholds: last.thresholds, of: rules.shards.thresholds.length }
       : null,
+  };
+}
+
+/** Participants du dernier soir réglé (le prix du mécène suit la taille du serveur). */
+async function lastParticipants(tx: Tx): Promise<number> {
+  const [last] = await tx.select({ participants: tideDays.participants }).from(tideDays).orderBy(desc(tideDays.day)).limit(1);
+  return last?.participants ?? 0;
+}
+
+/**
+ * Mécène de la Marée : le joueur offre la prochaine Marée au serveur. Son or est détruit, son nom est inscrit (une place
+ * par `slot`, `patron.maxPerNight` au plus : deux offres simultanées pour la dernière place, l'une échoue), le fil le raconte.
+ */
+export async function offerPatron(
+  tx: Tx,
+  characterId: number,
+  characterName: string,
+  state: CharacterState,
+  content: Content,
+  now: number,
+): Promise<{ state: CharacterState; log: string; serverEvents: NewServerEvent[] }> {
+  const rules = content.combat?.tide;
+  if (!rules?.patron) throw new GameError('no_patron', 'On ne peut pas encore offrir la Marée.');
+  const day = patronDay(now, rules);
+  const taken = await tx.select().from(tidePatrons).where(eq(tidePatrons.day, day));
+  if (taken.some((p) => p.characterId === characterId)) throw new GameError('already_patron', 'Vous offrez déjà cette Marée.');
+  if (taken.length >= rules.patron.maxPerNight) throw new GameError('patrons_full', `Cette Marée a déjà ${rules.patron.maxPerNight} mécènes : revenez demain.`);
+  const price = patronPrice(await lastParticipants(tx), content);
+  const next = offerTide(state, price, content);
+  const inserted = await tx
+    .insert(tidePatrons)
+    .values({ day, slot: taken.length + 1, characterId, characterName, gold: price, at: new Date(now) })
+    .onConflictDoNothing()
+    .returning();
+  if (!inserted.length) throw new GameError('patrons_full', 'Quelqu’un vient de prendre cette place : réessayez.');
+  const def = tideOf(day, rules);
+  const when = day === tideDay(now) ? 'de ce soir' : 'de demain soir';
+  const bonus = Math.round(rules.patron.shardBonus * 100);
+  return {
+    state: next,
+    log: `Vous offrez ${def.name} ${when} au serveur (${price} or) : +${bonus} % d’éclats pour tous les participants.`,
+    serverEvents: [{ kind: 'tide', text: `${characterName} offre ${def.name} ${when} au serveur : +${bonus} % d’éclats pour tous.` }],
+  };
+}
+
+/** Ce que la Marée montre du mécénat : la prochaine Marée finançable, son prix, ses mécènes, et les titres du joueur. */
+async function patronView(tx: Tx, state: CharacterState, content: Content, now: number): Promise<TideView['patron']> {
+  const rules = content.combat?.tide;
+  if (!rules?.patron) return null;
+  const day = patronDay(now, rules);
+  const names = (await tx.select().from(tidePatrons).where(eq(tidePatrons.day, day)).orderBy(asc(tidePatrons.slot))).map((p) => p.characterName);
+  const offered = readTide(state.combat.tide).patron;
+  return {
+    day,
+    tonight: day === tideDay(now),
+    price: patronPrice(await lastParticipants(tx), content),
+    names,
+    max: rules.patron.maxPerNight,
+    shardBonus: rules.patron.shardBonus,
+    offered,
+    next: rules.patron.titles.find((t) => t.offered > offered) ?? null,
   };
 }

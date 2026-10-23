@@ -37,15 +37,15 @@
 - {id: saw_oak, name: Planche de chêne, profession: carpentry, category: planks, level: 10, durationSec: 10, xp: 2.2, inputs: [{item: oak_log, qty: 1}], outputs: [{item: oak_plank, qty: 1}]}
 - {id: carve_oak_handle, name: Manches de chêne, profession: carpentry, category: handles, level: 10, durationSec: 10, xp: 2.2, inputs: [{item: oak_plank, qty: 1}], outputs: [{item: oak_handle, qty: 2}]}
 - {id: cut_arrow_shafts, name: Hampes de flèche, profession: carpentry, category: archery, level: 1, durationSec: 10, xp: 1.9, inputs: [{item: pine_plank, qty: 1}], outputs: [{item: arrow_shaft, qty: 60}]}
-- {id: carve_bow_stave, name: Douelle d'arc, profession: carpentry, category: archery, level: 20, durationSec: 300, xp: 74.1, inputs: [{item: ash_log, qty: 8}], outputs: [{item: bow_stave, qty: 1}]}
+- {id: carve_bow_stave, name: Douelle d'arc, profession: carpentry, category: archery, level: 20, durationSec: 300, xp: 74.1, inputs: [{item: ash_log, qty: 8}, {item: leather_strap, qty: 4}], outputs: [{item: bow_stave, qty: 1}]}
 
 # --- Cuisine (la durée des repas suit le coût de la chaîne : voir items.yaml) ---
 - {id: cook_mint_tea, name: Tisane de menthe, profession: cooking, category: dishes, level: 1, durationSec: 15, xp: 2.9, inputs: [{item: mint, qty: 3}], outputs: [{item: mint_tea, qty: 1}]}
 - {id: cook_grilled_fish, name: Poisson grillé au thym, profession: cooking, category: dishes, level: 5, durationSec: 20, xp: 4.1, inputs: [{item: raw_fish, qty: 2}, {item: thyme, qty: 2}], outputs: [{item: grilled_fish, qty: 1}]}
-- {id: cook_nettle_broth, name: Bouillon d'ortie, profession: cooking, category: dishes, level: 15, durationSec: 25, xp: 5.8, inputs: [{item: nettle_root, qty: 4}, {item: thyme, qty: 2}], outputs: [{item: nettle_broth, qty: 1}]}
-- {id: cook_sage_trout, name: Truite à la sauge, profession: cooking, category: dishes, level: 30, durationSec: 30, xp: 8.4, inputs: [{item: trout, qty: 4}, {item: sage, qty: 4}], outputs: [{item: sage_trout, qty: 1}]}
-- {id: cook_lantern_soup, name: Soupe aux lys-lanternes, profession: cooking, category: dishes, level: 45, durationSec: 40, xp: 13.5, inputs: [{item: lantern_lily, qty: 5}, {item: raw_fish, qty: 4}], outputs: [{item: lantern_soup, qty: 1}]}
-- {id: cook_frost_feast, name: Festin du givre, profession: cooking, category: dishes, level: 65, durationSec: 60, xp: 26.1, inputs: [{item: frost_flower, qty: 5}, {item: trout, qty: 4}, {item: sage, qty: 4}], outputs: [{item: frost_feast, qty: 1}]}
+- {id: cook_nettle_broth, name: Bouillon d'ortie, profession: cooking, category: dishes, level: 15, durationSec: 25, xp: 5.8, inputs: [{item: nettle_root, qty: 4}, {item: thyme, qty: 2}, {item: carrot, qty: 2}], outputs: [{item: nettle_broth, qty: 1}]}
+- {id: cook_sage_trout, name: Truite à la sauge, profession: cooking, category: dishes, level: 30, durationSec: 30, xp: 8.4, inputs: [{item: trout, qty: 4}, {item: sage, qty: 4}, {item: flour, qty: 1}], outputs: [{item: sage_trout, qty: 1}]}
+- {id: cook_lantern_soup, name: Soupe aux lys-lanternes, profession: cooking, category: dishes, level: 45, durationSec: 40, xp: 13.5, inputs: [{item: lantern_lily, qty: 5}, {item: raw_fish, qty: 4}, {item: country_bread, qty: 1}], outputs: [{item: lantern_soup, qty: 1}]}
+- {id: cook_frost_feast, name: Festin du givre, profession: cooking, category: dishes, level: 65, durationSec: 60, xp: 26.1, inputs: [{item: frost_flower, qty: 5}, {item: trout, qty: 4}, {item: sage, qty: 4}, {item: country_bread, qty: 2}], outputs: [{item: frost_feast, qty: 1}]}
 
 # --- Métiers branchés le 23 octobre 2026 (proposition boucle-v0 complétée ; durées et quantités à équilibrer) ---
 
@@ -93,12 +93,12 @@
 - {id: weave_linen, name: Rouleau de toile de lin, profession: tailoring, category: spinning, level: 5, durationSec: 90, xp: 18.4, inputs: [{item: linen_thread, qty: 20}], outputs: [{item: linen_cloth, qty: 1}]}
 - {id: sew_linen_hood, name: Capuche de lin, profession: tailoring, category: garments, level: 5, durationSec: 120, xp: 24.5, inputs: [{item: linen_cloth, qty: 4}, {item: linen_thread, qty: 6}], outputs: [{item: linen_hood, qty: 1}]}
 - {id: sew_linen_gloves, name: Mitaines de lin, profession: tailoring, category: garments, level: 5, durationSec: 120, xp: 24.5, inputs: [{item: linen_cloth, qty: 3}, {item: leather_strap, qty: 4}], outputs: [{item: linen_gloves, qty: 1}]}
-- {id: sew_linen_robe, name: Robe de lin, profession: tailoring, category: garments, level: 10, durationSec: 300, xp: 65.3, inputs: [{item: linen_cloth, qty: 10}, {item: linen_thread, qty: 12}], outputs: [{item: linen_robe, qty: 1}]}
-- {id: sew_linen_breeches, name: Chausses de lin, profession: tailoring, category: garments, level: 10, durationSec: 180, xp: 39.2, inputs: [{item: linen_cloth, qty: 6}, {item: linen_thread, qty: 8}], outputs: [{item: linen_breeches, qty: 1}]}
+- {id: sew_linen_robe, name: Robe de lin, profession: tailoring, category: garments, level: 10, durationSec: 300, xp: 65.3, inputs: [{item: linen_cloth, qty: 10}, {item: linen_thread, qty: 12}, {item: rivets, qty: 6}], outputs: [{item: linen_robe, qty: 1}]}
+- {id: sew_linen_breeches, name: Chausses de lin, profession: tailoring, category: garments, level: 10, durationSec: 180, xp: 39.2, inputs: [{item: linen_cloth, qty: 6}, {item: linen_thread, qty: 8}, {item: leather_strap, qty: 4}], outputs: [{item: linen_breeches, qty: 1}]}
 - {id: dye_linen_blue, name: Toile teinte en bleu, profession: tailoring, category: spinning, level: 15, durationSec: 10, xp: 2.3, inputs: [{item: linen_cloth, qty: 1}, {item: woad_dye, qty: 1}], outputs: [{item: blue_linen, qty: 1}]}
-- {id: sew_adept_robe, name: Robe d'adepte, profession: tailoring, category: garments, level: 25, durationSec: 900, xp: 236.8, inputs: [{item: blue_linen, qty: 16}, {item: linen_thread, qty: 20}], outputs: [{item: adept_robe, qty: 1}]}
+- {id: sew_adept_robe, name: Robe d'adepte, profession: tailoring, category: garments, level: 25, durationSec: 900, xp: 236.8, inputs: [{item: blue_linen, qty: 16}, {item: linen_thread, qty: 20}, {item: ward_rune, qty: 2}], outputs: [{item: adept_robe, qty: 1}]}
 - {id: spin_cotton, name: Fil de coton, profession: tailoring, category: spinning, level: 30, durationSec: 10, xp: 2.8, inputs: [{item: cotton_fiber, qty: 1}], outputs: [{item: cotton_thread, qty: 2}]}
-- {id: weave_cotton, name: Rouleau de toile de coton, profession: tailoring, category: spinning, level: 35, durationSec: 120, xp: 35.8, inputs: [{item: cotton_thread, qty: 20}], outputs: [{item: cotton_cloth, qty: 1}]}
+- {id: weave_cotton, name: Rouleau de toile de coton, profession: tailoring, category: spinning, level: 35, durationSec: 120, xp: 35.8, inputs: [{item: cotton_thread, qty: 20}, {item: woad_dye, qty: 1}], outputs: [{item: cotton_cloth, qty: 1}]}
 
 # --- Alchimie ---
 - {id: blow_vials, name: Fioles, profession: alchemy, category: glass, level: 1, durationSec: 10, xp: 1.9, inputs: [{item: sand, qty: 2}, {item: pine_log, qty: 1}], outputs: [{item: vial, qty: 4}]}
@@ -142,7 +142,7 @@
 - {id: dress_stone, name: Moellons taillés, profession: construction, category: materials, level: 5, durationSec: 12, xp: 2.5, inputs: [{item: stone_block, qty: 4}], outputs: [{item: dressed_stone, qty: 1}]}
 - {id: build_wooden_stairs, name: Escalier de bois, profession: construction, category: elements, level: 10, durationSec: 240, xp: 52.3, inputs: [{item: pine_plank, qty: 12}, {item: rivets, qty: 20}], outputs: [{item: wooden_stairs, qty: 1}]}
 - {id: build_oak_frame, name: Charpente de chêne, profession: construction, category: elements, level: 15, durationSec: 300, xp: 69.6, inputs: [{item: oak_plank, qty: 20}, {item: rivets, qty: 40}], outputs: [{item: oak_frame, qty: 1}]}
-- {id: build_stone_arch, name: Arche de pierre, profession: construction, category: elements, level: 25, durationSec: 420, xp: 110.5, inputs: [{item: dressed_stone, qty: 20}, {item: mortar, qty: 10}], outputs: [{item: stone_arch, qty: 1}]}
+- {id: build_stone_arch, name: Arche de pierre, profession: construction, category: elements, level: 25, durationSec: 420, xp: 110.5, inputs: [{item: dressed_stone, qty: 20}, {item: mortar, qty: 10}, {item: iron_bar, qty: 4}], outputs: [{item: stone_arch, qty: 1}]}
 - {id: build_roof_truss, name: Ferme de toit, profession: construction, category: elements, level: 35, durationSec: 480, xp: 143.3, inputs: [{item: oak_frame, qty: 2}, {item: pine_plank, qty: 30}], outputs: [{item: roof_truss, qty: 1}]}
 
 # --- Cuisine : repas des nouveaux métiers ---

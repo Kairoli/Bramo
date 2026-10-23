@@ -112,7 +112,7 @@ for (const e of Object.values(content.combat?.encounters ?? {})) {
   if (e.loot?.vestige && !items[e.loot.vestige]) note('Butin : vestige inconnu', `${e.id} → ${e.loot.vestige}`);
   for (const n of e.loot?.named ?? []) if (!models.some((m) => m.talent === n)) note('Butin : objet nommé sans modèle', `${e.id} → ${n}`);
   for (const s of e.loot?.sets ?? []) if (!content.gearSets[s]) note('Butin : ensemble inconnu', `${e.id} → ${s}`);
-  if (!e.loot) note('Rencontres sans butin', e.id);
+  if (!e.loot && e.kind !== 'maree') note('Rencontres sans butin', e.id);
 }
 const craftable = models.filter((m) => (m as { source?: string[] }).source?.includes('craft')).length;
 if (craftable) note('Équipement « fabricable » sans recette', `${craftable} modèles d’équipement ont la source « craft », mais aucune recette ne fabrique d’équipement de combat`);

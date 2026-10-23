@@ -681,3 +681,365 @@
     - { item: vein_map, qty: 80 }
     - { item: watch_curio, qty: 30 }
   reward: { gold: 800 }
+
+# --- Commandes 60, 80 et 99 des dix derniers métiers (23 octobre, nuit, écrites par Claude : à relire par Louis). Mêmes
+#     budgets de travail et récompenses que les autres métiers ; les tâches prennent les plus hautes matières de chaque métier. ---
+- id: hunting_60
+  profession: hunting
+  rank: 60
+  name: "La bête du col"
+  nickname: "Chasseur de l’ours"
+  intro: "« Un ours a pris le col pour son garde-manger. Ramène ses cousins, et de quoi fumer tout l’hiver. »"
+  outro: "Le col est libre. Brenna a gardé une griffe pour son chapeau ; elle dit que ça porte chance, à elle surtout."
+  tasks:
+    - { item: bear_hide, qty: 200 }
+    - { item: venison, qty: 200 }
+  reward: { gold: 1500 }
+
+- id: hunting_80
+  profession: hunting
+  rank: 80
+  name: "Les élans des neiges"
+  nickname: "Pisteur des neiges"
+  intro: "« Là-haut, les élans ont des cornes comme des chandeliers. J’en veux les peaux, pas les chandeliers. »"
+  outro: "Brenna a tendu les peaux devant le feu et n’a rien dit pendant une heure. Chez elle, c’est un discours."
+  tasks:
+    - { item: elk_hide, qty: 250 }
+    - { item: bear_hide, qty: 250 }
+  reward: { gold: 3000 }
+
+- id: hunting_99
+  profession: hunting
+  rank: 99
+  name: "La dernière battue"
+  nickname: "Seigneur des battues"
+  intro: "« Ma dernière commande. Après, tu chasseras mieux que moi, et je ne veux pas voir ça. »"
+  outro: "Brenna t’a donné son vieil arc, puis l’a repris : « Je plaisantais. » Elle ne plaisantait pas tout à fait."
+  tasks:
+    - { item: elk_hide, qty: 600 }
+    - { item: wolf_pelt, qty: 500 }
+  reward: { gold: 6000 }
+
+- id: agriculture_60
+  profession: agriculture
+  rank: 60
+  name: "Les teinturiers du Val"
+  nickname: "Semeur de couleurs"
+  intro: "« Le Val veut du bleu et du blanc. Du coton, et de la guède, et que ça pousse droit. »"
+  outro: "Les teinturiers ont repeint la halle en bleu. Anselme trouve ça criard, mais il sourit en le disant."
+  tasks:
+    - { item: cotton_fiber, qty: 300 }
+    - { item: woad_dye, qty: 150 }
+  reward: { gold: 1500 }
+
+- id: agriculture_80
+  profession: agriculture
+  rank: 80
+  name: "La grande moisson"
+  nickname: "Maître des moissons"
+  intro: "« Cette année, la moisson sera la plus grande du bourg, ou je change de métier. Aide-moi à ne pas changer. »"
+  outro: "Anselme n’a pas changé de métier. Il a juste dormi deux jours, entre deux bottes de paille."
+  tasks:
+    - { item: cotton_fiber, qty: 600 }
+    - { item: flour, qty: 400 }
+  reward: { gold: 3000 }
+
+- id: agriculture_99
+  profession: agriculture
+  rank: 99
+  name: "Le champ qui chante"
+  nickname: "Voix des champs"
+  intro: "« On dit qu’un champ bien tenu chante au vent. Le mien est muet. Fais-le chanter. »"
+  outro: "Le vent passe dans les tiges et Anselme jure entendre une chanson. Personne n’ose le contredire."
+  tasks:
+    - { item: cotton_fiber, qty: 1200 }
+    - { item: woad_dye, qty: 600 }
+  reward: { gold: 6000 }
+
+- id: tanning_60
+  profession: tanning
+  rank: 60
+  name: "Les selles du Bastion"
+  nickname: "Sellier du Bastion"
+  intro: "« Les cavaliers du Bastion usent leurs selles plus vite que leurs chevaux. Du cuir lourd, et des fourrures pour l’hiver. »"
+  outro: "Le Bastion a renvoyé une selle neuve, avec un mot : « Enfin du sérieux. » Hugon l’a encadré."
+  tasks:
+    - { item: heavy_leather, qty: 120 }
+    - { item: wolf_fur, qty: 120 }
+  reward: { gold: 1500 }
+
+- id: tanning_80
+  profession: tanning
+  rank: 80
+  name: "Le cuir d’élan"
+  nickname: "Tanneur des cimes"
+  intro: "« Le cuir d’élan ne pardonne rien : mal tanné, il craque au premier froid. Montre-moi qu’il ne craquera pas. »"
+  outro: "Hugon a plié le cuir dans tous les sens, il l’a mordu, il l’a laissé dehors une nuit. Il n’a pas craqué. Lui non plus."
+  tasks:
+    - { item: elk_leather, qty: 150 }
+    - { item: heavy_leather, qty: 200 }
+  reward: { gold: 3000 }
+
+- id: tanning_99
+  profession: tanning
+  rank: 99
+  name: "La peau du monde"
+  nickname: "Main de cuir"
+  intro: "« Ma dernière commande : de quoi habiller une caravane entière. Les Lointains n’ont jamais été tendres avec les peaux. »"
+  outro: "La caravane est partie habillée de ton cuir. Hugon a regardé la route très longtemps, puis il a fermé ses fosses."
+  tasks:
+    - { item: elk_leather, qty: 400 }
+    - { item: heavy_leather, qty: 300 }
+  reward: { gold: 6000 }
+
+- id: tailoring_60
+  profession: tailoring
+  rank: 60
+  name: "Les robes du chapitre"
+  nickname: "Brodeuse du chapitre"
+  intro: "« Le chapitre des runistes veut des robes neuves, et du coton pour les doublures. Des coutures qui ne bâillent pas. »"
+  outro: "Les runistes ont défilé dans leurs robes neuves. Lise a compté les coutures depuis sa fenêtre ; aucune ne bâillait."
+  tasks:
+    - { item: cotton_cloth, qty: 80 }
+    - { item: adept_robe, qty: 6 }
+  reward: { gold: 1500 }
+
+- id: tailoring_80
+  profession: tailoring
+  rank: 80
+  name: "Les voiles bleues"
+  nickname: "Tisseuse des voiles"
+  intro: "« Le port veut des voiles bleues, comme dans les chansons. Du lin bleu, beaucoup, et du coton pour les renforts. »"
+  outro: "Les voiles bleues ont pris le vent. Les marins chantent faux, mais ils chantent tes voiles."
+  tasks:
+    - { item: cotton_cloth, qty: 160 }
+    - { item: blue_linen, qty: 200 }
+  reward: { gold: 3000 }
+
+- id: tailoring_99
+  profession: tailoring
+  rank: 99
+  name: "La robe sans couture"
+  nickname: "Fil d’or"
+  intro: "« Une robe sans couture, ça n’existe pas. Fais-en une quand même. »"
+  outro: "Lise a cherché la couture pendant une semaine. Elle a fini par avouer qu’elle ne la trouvait pas, puis elle l’a trouvée, et elle a ri."
+  tasks:
+    - { item: cotton_cloth, qty: 400 }
+    - { item: adept_robe, qty: 20 }
+  reward: { gold: 6000 }
+
+- id: alchemy_60
+  profession: alchemy
+  rank: 60
+  name: "Les lanternes du dispensaire"
+  nickname: "Distillateur de lumière"
+  intro: "« Le dispensaire veut des philtres des lanternes pour les veilleurs de nuit, et des toniques pour ceux qui gardent la digue. »"
+  outro: "Les veilleurs ne s’endorment plus. Évariste dit que c’est son philtre ; les veilleurs disent que c’est le goût."
+  tasks:
+    - { item: lantern_draught, qty: 200 }
+    - { item: synchrony_tonic, qty: 100 }
+  reward: { gold: 1500 }
+
+- id: alchemy_80
+  profession: alchemy
+  rank: 80
+  name: "La pharmacie de la digue"
+  nickname: "Gardien des fioles"
+  intro: "« Chaque soir, la Marée nous coûte des blessés. Remplis-moi les étagères, et n’oublie pas le givre. »"
+  outro: "Les étagères débordent. Évariste a dû acheter une deuxième pharmacie ; il fait semblant de s’en plaindre."
+  tasks:
+    - { item: lantern_draught, qty: 400 }
+    - { item: frost_tonic, qty: 300 }
+  reward: { gold: 3000 }
+
+- id: alchemy_99
+  profession: alchemy
+  rank: 99
+  name: "L’élixir du bourg"
+  nickname: "Alchimiste du bourg"
+  intro: "« Dernière commande : de quoi tenir une saison entière de Marées. Et de l’huile, pour ceux qui chassent les renforts. »"
+  outro: "Le bourg a tenu toute la saison. Évariste a gardé une fiole vide sur sa cheminée, « pour se souvenir »."
+  tasks:
+    - { item: lantern_draught, qty: 900 }
+    - { item: drive_oil, qty: 400 }
+  reward: { gold: 6000 }
+
+- id: jewelcrafting_60
+  profession: jewelcrafting
+  rank: 60
+  name: "Les chaînes du conseil"
+  nickname: "Orfèvre du conseil"
+  intro: "« Le conseil du bourg veut des chaînes d’or, comme les grandes villes. Et des bagues, pour les témoins. »"
+  outro: "Le conseil porte tes chaînes et se sent important. Sidonie trouve que c’est déjà beaucoup."
+  tasks:
+    - { item: gold_chain, qty: 10 }
+    - { item: amethyst_ring, qty: 6 }
+  reward: { gold: 1500 }
+
+- id: jewelcrafting_80
+  profession: jewelcrafting
+  rank: 80
+  name: "Le trésor de la halle"
+  nickname: "Garde du trésor"
+  intro: "« La halle veut un trésor qui se voie de loin. De l’or en lingots, et des chaînes pour l’accrocher. »"
+  outro: "Le trésor brille tellement qu’on a dû mettre un rideau devant. Sidonie a choisi le rideau."
+  tasks:
+    - { item: gold_bar, qty: 150 }
+    - { item: gold_chain, qty: 20 }
+  reward: { gold: 3000 }
+
+- id: jewelcrafting_99
+  profession: jewelcrafting
+  rank: 99
+  name: "La couronne qui n’existe pas"
+  nickname: "Joyau du bourg"
+  intro: "« Bramo n’a pas de roi. Fais-lui quand même une couronne, au cas où. »"
+  outro: "La couronne dort dans un coffre, sans tête pour la porter. Sidonie va la voir le dimanche."
+  tasks:
+    - { item: gold_chain, qty: 50 }
+    - { item: amethyst_ring, qty: 20 }
+  reward: { gold: 6000 }
+
+- id: enchanting_60
+  profession: enchanting
+  rank: 60
+  name: "Les liants de la mémoire"
+  nickname: "Lieur de mémoire"
+  intro: "« Ce que la Marée fait oublier, un liant le retient. Il m’en faut, et des noyaux pour les porter. »"
+  outro: "Ilian a lié un souvenir à un noyau, devant toi. Il a refusé de dire lequel ; tu crois que c’était le tien."
+  tasks:
+    - { item: memory_binder, qty: 20 }
+    - { item: runic_core, qty: 20 }
+  reward: { gold: 1500 }
+
+- id: enchanting_80
+  profession: enchanting
+  rank: 80
+  name: "Les robes de veille"
+  nickname: "Veilleur des runes"
+  intro: "« Les veilleurs de la digue veulent des robes gardées, et assez de liants pour toute une saison. »"
+  outro: "Les robes de veille ont tenu trois Marées sans une déchirure. Ilian a gravé ton nom sous leur col."
+  tasks:
+    - { item: memory_binder, qty: 40 }
+    - { item: warded_adept_robe, qty: 6 }
+  reward: { gold: 3000 }
+
+- id: enchanting_99
+  profession: enchanting
+  rank: 99
+  name: "Ce que la Marée a pris"
+  nickname: "Mémoire du bourg"
+  intro: "« Dernière commande : de quoi rendre au bourg ce que la Marée lui a pris. Tout ne reviendra pas. Essaie quand même. »"
+  outro: "Le bourg s’est souvenu d’une chanson oubliée. Personne ne sait d’où elle vient. Ilian, si."
+  tasks:
+    - { item: memory_binder, qty: 100 }
+    - { item: runic_core, qty: 80 }
+  reward: { gold: 6000 }
+
+- id: artificing_60
+  profession: artificing
+  rank: 60
+  name: "Le feu d’artifice de la fête"
+  nickname: "Pyrotechnicien du bourg"
+  intro: "« La fête du bourg veut un ciel en feu, et une horloge qui sonne la minute exacte. Tu vois le genre. »"
+  outro: "Le ciel a brûlé à la minute exacte. Capucine a pleuré de joie, puis d’une fusée qui lui est tombée sur le pied."
+  tasks:
+    - { item: flare_rocket, qty: 60 }
+    - { item: clockwork, qty: 20 }
+  reward: { gold: 1500 }
+
+- id: artificing_80
+  profession: artificing
+  rank: 80
+  name: "Les phares de la digue"
+  nickname: "Gardien des phares"
+  intro: "« La digue a besoin de lanternes qui ne s’éteignent pas, et de fusées pour prévenir les géants. »"
+  outro: "Les phares de la digue brillent toute la nuit. Les géants, paraît-il, les trouvent agaçants."
+  tasks:
+    - { item: flare_rocket, qty: 120 }
+    - { item: artificer_lantern, qty: 30 }
+  reward: { gold: 3000 }
+
+- id: artificing_99
+  profession: artificing
+  rank: 99
+  name: "La grande mécanique"
+  nickname: "Âme des rouages"
+  intro: "« Ma dernière commande : une machine qui tienne la digue toute seule. Bon. Au moins ses rouages. »"
+  outro: "La grande mécanique tourne au cœur de la digue. Elle ne tient rien toute seule, mais elle tourne, et c’est beau."
+  tasks:
+    - { item: flare_rocket, qty: 300 }
+    - { item: clockwork, qty: 80 }
+  reward: { gold: 6000 }
+
+- id: construction_60
+  profession: construction
+  rank: 60
+  name: "Le pont du Fossé gris"
+  nickname: "Bâtisseur de ponts"
+  intro: "« Le Fossé gris a mangé le dernier pont. On en refait un, en pierre, et avec un toit pour les jours de pluie. »"
+  outro: "Le pont tient. Gautier a sauté dessus à pieds joints, devant tout le monde, pour le prouver."
+  tasks:
+    - { item: roof_truss, qty: 10 }
+    - { item: stone_arch, qty: 10 }
+  reward: { gold: 1500 }
+
+- id: construction_80
+  profession: construction
+  rank: 80
+  name: "La halle des clans"
+  nickname: "Architecte des halles"
+  intro: "« Les clans veulent une halle commune, grande, solide, et belle. Dans cet ordre. »"
+  outro: "La halle des clans est grande, solide et belle. Les clans se disputent déjà pour savoir qui l’a vue en premier."
+  tasks:
+    - { item: roof_truss, qty: 20 }
+    - { item: oak_frame, qty: 30 }
+  reward: { gold: 3000 }
+
+- id: construction_99
+  profession: construction
+  rank: 99
+  name: "La digue de pierre"
+  nickname: "Maître de la digue"
+  intro: "« Dernière commande : une digue qui tienne cent Marées. Je ne la verrai pas tenir cent ans. Toi peut-être. »"
+  outro: "La digue de pierre se dresse contre la brume. Gautier a posé la dernière pierre lui-même, et il a mis ton nom dessous."
+  tasks:
+    - { item: roof_truss, qty: 50 }
+    - { item: stone_arch, qty: 40 }
+  reward: { gold: 6000 }
+
+- id: exploration_60
+  profession: exploration
+  rank: 60
+  name: "Les archives englouties"
+  nickname: "Plongeur des archives"
+  intro: "« Les Archives ont coulé avec leurs secrets. Remonte-m’en quelques-uns, et ce que la Lisière cache encore. »"
+  outro: "Ombeline a déroulé une carte trempée et a souri : « Celle-là, personne ne l’avait vue depuis la Marée. »"
+  tasks:
+    - { item: sunken_relic, qty: 120 }
+    - { item: watch_curio, qty: 100 }
+  reward: { gold: 1500 }
+
+- id: exploration_80
+  profession: exploration
+  rank: 80
+  name: "La carte des Lointains"
+  nickname: "Cartographe des Lointains"
+  intro: "« Il nous faut la carte des Lointains, en entier, des gisements aux reliques. Personne ne l’a jamais faite. »"
+  outro: "La carte couvre tout un mur de la halle. Il reste un coin blanc ; Ombeline dit que c’est exprès, pour toi."
+  tasks:
+    - { item: sunken_relic, qty: 250 }
+    - { item: vein_map, qty: 300 }
+  reward: { gold: 3000 }
+
+- id: exploration_99
+  profession: exploration
+  rank: 99
+  name: "Le coin blanc de la carte"
+  nickname: "Pas-perdu des Lointains"
+  intro: "« Dernière commande : le coin blanc. Va voir ce qu’il y a, et reviens me le dire. Reviens surtout. »"
+  outro: "Tu es revenu. Le coin blanc est rempli. Ombeline n’a rien demandé ; elle a juste écrit ton nom au bord de la carte."
+  tasks:
+    - { item: sunken_relic, qty: 600 }
+    - { item: watch_curio, qty: 400 }
+  reward: { gold: 6000 }

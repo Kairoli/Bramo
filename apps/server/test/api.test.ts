@@ -437,22 +437,23 @@ describe('API', () => {
     expect((await f('POST', '/api/combat/plan', { plan: [{ spell: 'fg_workshop', at: 11 }] })).status).toBe(400);
     const planned = (await f('POST', '/api/combat/plan', { plan: [{ spell: 'fg_quench', at: 0 }, { spell: 'fg_workshop', at: 2 }] })).json as StateResponse;
     expect(planned.state.combat!.advised).toBe(false);
-    const started = (await f('POST', '/api/combat/start', { encounter: 'duel' })).json as StateResponse;
-    expect(started.state.combat!.activity?.name).toBe('Cible durable');
+    // Une zone du palier 1 : le set de départ y gagne (les profils d'essai se jouent au palier de la classe, plus durs).
+    const started = (await f('POST', '/api/combat/start', { encounter: 'z01_lantern_road' })).json as StateResponse;
+    expect(started.state.combat!.activity?.name).toBe('La Chaussée des lanternes');
     now += 3_600_000;
     const after = (await f('GET', '/api/state')).json as StateResponse;
     const c = after.state.combat!;
-    expect(c.activity!.wins).toBeGreaterThan(20);
+    expect(c.activity!.wins).toBeGreaterThan(10);
     expect(c.xp).toBeGreaterThan(0);
     expect(c.lastFight?.win).toBe(true);
     expect(c.lastFight!.lines.some((l) => l.text.includes('Braise'))).toBe(true);
     expect(after.state.skills.mining?.xp ?? 0).toBe(0);
-    expect(after.absence?.combat.fights).toBeGreaterThan(20);
+    expect(after.absence?.combat.fights).toBeGreaterThan(10);
     expect(after.journal.some((e) => e.kind === 'combat')).toBe(true);
     // Le combat tourne à côté du métier ; quitter la patrouille rend la main à la route, qui ne s'arrête pas.
     const mining = (await f('POST', '/api/activity/start', { recipeId: 'mine_copper', quantity: 10, mode: 'replace' })).json as StateResponse;
     expect(mining.state.activity?.recipeId).toBe('mine_copper');
-    expect(mining.state.combat!.activity?.name).toBe('Cible durable');
+    expect(mining.state.combat!.activity?.name).toBe('La Chaussée des lanternes');
     const route = (await f('POST', '/api/combat/stop')).json as StateResponse;
     expect(route.state.combat!.activity?.route).toBe(true);
     expect(route.state.activity?.recipeId).toBe('mine_copper');

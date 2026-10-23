@@ -54,6 +54,13 @@ gearStats:
   power: {base: 0, perPoint: 0.230}
   maxHp: {base: 1602, perPoint: 4.8, perDefense: 1.5}
   tiers: {"1": {norm: 4.69, factor: 0.797}, "10": {norm: 1.698, factor: 0.893}, "20": {norm: 1, factor: 1}, "30": {norm: 0.691, factor: 1.12}, "40": {norm: 0.534, factor: 1.254}, "50": {norm: 0.436, factor: 1.405}, "60": {norm: 0.368, factor: 1.574}, "70": {norm: 0.32, factor: 1.762}, "80": {norm: 0.282, factor: 1.974}, "90": {norm: 0.251, factor: 2.211}}
+  # Plancher (23 octobre, simulation de serveur) : à 100 % d'un équipement Rare complet de son niveau, aucun butin ne faisait
+  # mieux (tout le monde avait exactement la même force, l'équipement ne comptait pas, un tryhard allait aussi vite qu'un casu).
+  # À 75 %, on avance encore « tout nu » grâce au niveau, mais un équipement récent fait clairement mieux.
+  # Il descend en douceur : 100 % au niveau 1 (le set de départ est « le plus low possible »), 75 % au niveau 40 ; assez lentement
+  # pour qu’un niveau de plus ne rende jamais plus faible (le palier monte plus vite que le plancher ne descend).
+  floorShare: 0.75
+  floorRampLevel: 40
   defense: {cap: 0.45, k: {"1": 212}}
   haste: {cap: 0.23, base: 0.12, k: {"1": 200}}
   crit: {cap: 0.3, base: 0.05, k: {"1": 172}}
@@ -86,15 +93,18 @@ gearStats:
 
 # Butin d'une victoire (docs/design/contenu/butin-et-recettes.md §2), compté en unités de 6 minutes de combat : un combat de
 # 36 s vaut 0,1 unité. Pas de matière première (c'est le travail des métiers) ni d'or neuf. À équilibrer.
+# Simulation de serveur du 23 octobre (sim/src/server) : la route tourne ~16 h par jour, soit ~160 unités. Les taux d'origine
+# (pensés pour 6 min de jeu) donnaient 46 pièces par joueur et par jour, 2 400 pièces en 60 jours et un nommé toutes les
+# deux heures : la route était finie en 2 semaines. Divisés par 10 (nommés par 50, garantie à ~6 jours de la même rencontre).
 loot:
   unitSeconds: 360
-  vestiges: 2             # vestiges de la région par unité
-  classic: 0.20           # chance d'un objet classique du palier par unité
+  vestiges: 0.25          # vestiges de la région par unité (~40 par jour)
+  classic: 0.02           # chance d'un objet classique du palier par unité (~3 par jour)
   rarity: {common: 0.55, rare: 0.30, epic: 0.13, legendary: 0.02}
-  setPiece: 0.04          # chance d'une pièce d'ensemble par unité (palier 40 et plus)
+  setPiece: 0.004         # chance d'une pièce d'ensemble par unité (palier 40 et plus ; ~1 tous les 2 jours)
   setLegendary: 0.10
-  named: 0.05             # chance par objet nommé de la rencontre, par unité
-  namedGuarantee: 20      # garanti après 20 unités sans l'avoir eu
+  named: 0.001            # chance par objet nommé de la rencontre, par unité
+  namedGuarantee: 1000    # garanti après 1 000 unités sans l'avoir eu (~6 jours sur la même rencontre)
 
 # Progression de classe et activité de combat (étape 4). [Décidé par Louis : XP de classe au combat seulement ;
 # Terrain d'entraînement validé.] Chiffres proposés par Claude, à équilibrer.

@@ -170,10 +170,12 @@ describe('équipement, paliers et butin', () => {
     const floor = equipmentSetup(runist(1, starter), content).stats!;
     expect(floor.power).toBeCloseTo(content.combat!.rules.referenceStats.power * 0.797, 1);
     // Chaque niveau compte : le plancher monte entre deux paliers de la courbe (avant, le niveau 9 valait le niveau 1).
-    const at = (level: number) => equipmentSetup(runist(level, starter), content).stats!.power;
+    const at = (level: number) => equipmentSetup(runist(level, starter), content).stats!.power!;
     expect(at(5)).toBeGreaterThan(at(1));
     expect(at(9)).toBeGreaterThan(at(5));
     expect(at(10)).toBeGreaterThan(at(9));
+    // Le plancher descend vers `floorShare` en douceur : un niveau de plus ne rend jamais plus faible.
+    for (let l = 1; l < 99; l++) expect(at(l + 1)).toBeGreaterThanOrEqual(at(l));
     const legend = equipmentSetup(runist(90, kit(90, 'legendary')), content).stats!;
     expect(legend.power).toBeGreaterThan(floor.power! * 2);
   });

@@ -38,6 +38,13 @@ export const gearStatsSchema = z.object({
    * palier). Sans elle, les points comptent tels quels.
    */
   tiers: z.record(z.string(), z.object({ norm: z.number().positive(), factor: z.number().positive() })).optional(),
+  /**
+   * Plancher : part de l'équipement de référence du niveau de la classe (Puissance et PV) sous laquelle un personnage ne
+   * descend jamais (1 = un équipement Rare complet de son niveau). Plus bas, le butin et la fabrication comptent vraiment.
+   */
+  floorShare: z.number().min(0).max(1).optional(),
+  /** Le plancher part de 100 % au niveau 1 et descend jusqu'à `floorShare` à ce niveau (un débutant n'a pas encore de butin). */
+  floorRampLevel: z.number().int().min(2).optional(),
   defense: ratioStat,
   /** Cadence et Critique : `base` + rendement décroissant (`cap` est le plafond de la part venue de l'équipement). */
   haste: ratioStat.extend({ base: z.number().min(0).max(1) }),
@@ -525,7 +532,7 @@ export const encounterSchema = z.object({
    * Place dans le monde (docs/design/contenu/le-monde.md) : `profil` (rencontre d'essai du banc), `zone` (zone de la route)
    * ou `gardien` (gardien de région). Absent : profil.
    */
-  kind: z.enum(['profil', 'zone', 'gardien']).optional(),
+  kind: z.enum(['profil', 'zone', 'gardien', 'maree']).optional(),
   /** Région du monde (nom affiché). */
   region: z.string().optional(),
   /** Palier de la rencontre : ses ennemis suivent la courbe d'équipement de ce palier (`rules.gearStats.tiers`). */
@@ -569,6 +576,69 @@ export const encounterSchema = z.object({
   enrage: z.object({ after: z.number().positive(), perSecond: z.number().positive() }).optional(),
 });
 
+/**
+ * La Marée du soir (docs/design/contenu/le-monde.md §5, décidé par Louis : tous les soirs à 20 h pendant une heure, le type
+ * tourne chaque soir). Chaque participant marque des points : en combat, sa contribution face à la Marée ramenée à celle
+ * d'un build moyen de son palier ; ou en travail, ce que la digue demande ce soir-là. Les points donnent des éclats de
+ * marée (cosmétiques, jamais de puissance), les seuils du serveur un bonus pour tous, et le coffre de la semaine compte
+ * les meilleurs soirs.
+ */
+export const tideSchema = z.object({
+  /** Heure de début (UTC) et durée. */
+  startHourUtc: z.number().int().min(0).max(23),
+  durationMin: z.number().int().min(1),
+  /** Ordre des Marées, un soir chacune, puis on recommence. */
+  rotation: z.array(id).min(1),
+  tides: z.array(
+    z.object({
+      id,
+      name: z.string(),
+      blurb: z.string(),
+      /** Ce qui marque : les dégâts, ou les dégâts avec les soins, protections et atténuations (l'escorte). */
+      scoring: z.enum(['damage', 'support']),
+      /** Rencontre jouée (encounters.yaml, kind: maree), à la hauteur du palier de la classe. */
+      encounter: id,
+      /** Qui y brille, en mots simples. */
+      shines: z.string(),
+      /** Canal travail : ce que la digue demande ce soir-là (une heure de travail pour 100 % des points). */
+      work: z.object({ text: z.string(), items: z.array(z.object({ item: id, qty: z.number().int().min(1) })).min(1) }),
+    }),
+  ),
+  points: z.object({
+    /** Points par minute d'un build moyen de son palier. */
+    perMinute: z.number().positive(),
+    minRatio: z.number().min(0),
+    maxRatio: z.number().positive(),
+    /** Joueur connecté pendant la Marée : ce bonus de points (petit, ~15 %). */
+    liveBonus: z.number().min(0),
+    /** Rencontres jouées pour mesurer la contribution (graines différentes). */
+    fights: z.number().int().min(1),
+  }),
+  shards: z.object({
+    /** Objet des éclats de marée (items.yaml). */
+    item: id,
+    perPoint: z.number().min(0),
+    /** Objectif du serveur : points par participant ; à chaque seuil franchi, tout le monde reçoit le bonus. */
+    objectivePerParticipant: z.number().positive(),
+    thresholds: z.array(z.object({ share: z.number().positive(), bonus: z.number().int().min(0) })),
+  }),
+  /** Coffre de la semaine : les meilleurs soirs comptent (dimanche). */
+  weekly: z.object({
+    bestNights: z.number().int().min(1),
+    /** Réserve de matières : minutes de la meilleure récolte du joueur. */
+    materialsMinutes: z.number().min(0),
+    /** Chance d'une cache d'équipement (pièce épique du palier de la classe). */
+    cacheChance: z.number().min(0).max(1),
+    /** Éclats en plus si les meilleurs soirs dépassent ce total de points. */
+    bonusAbove: z.number().min(0),
+    bonusShards: z.number().int().min(0),
+  }),
+  /** Ce que les éclats achètent : des tenues verrouillées (jamais de puissance). */
+  shop: z.array(z.object({ id, name: z.string(), outfit: id, cost: z.number().int().min(1) })),
+  /** Titres : nombre de soirs d'une Marée pour le titre. */
+  titles: z.array(z.object({ tide: id, nights: z.number().int().min(1), title: z.string() })),
+});
+
 export const spellsFileSchema = z.array(spellSchema);
 export const plansFileSchema = z.array(examplePlanSchema);
 export const encountersFileSchema = z.array(encounterSchema);
@@ -581,6 +651,7 @@ export type Spell = z.infer<typeof spellSchema>;
 export type PlanEntry = z.infer<typeof planEntrySchema>;
 export type ExamplePlan = z.infer<typeof examplePlanSchema>;
 export type Encounter = z.infer<typeof encounterSchema>;
+export type TideRules = z.infer<typeof tideSchema>;
 
 /** Contenu de combat validé et indexé. */
 export interface CombatContent {
@@ -596,4 +667,6 @@ export interface CombatContent {
   talents: TalentCatalog | null;
   /** Outils de situation (data/combat/tools.yaml) : le 4 pièces des ensembles, gemmes et préparations de situation. */
   tools: Tool[];
+  /** La Marée du soir (data/combat/tide.yaml), s'il existe. */
+  tide: TideRules | null;
 }

@@ -36,6 +36,7 @@ export function readRawContent(dataDir: string): RawContent {
     gearSlots: existsSync(join(dataDir, 'gear_slots.yaml')) ? read('gear_slots.yaml') : [],
     gearPools: existsSync(join(dataDir, 'gear_pools.yaml')) ? read('gear_pools.yaml') : undefined,
     gearSets: existsSync(join(dataDir, 'gear_sets.yaml')) ? read('gear_sets.yaml') : [],
+    ...(existsSync(join(dataDir, 'gear_crafting.yaml')) ? { gearCrafting: read('gear_crafting.yaml') } : {}),
     combat: existsSync(join(dataDir, 'combat', 'rules.yaml'))
       ? {
           rules: read('combat/rules.yaml'),

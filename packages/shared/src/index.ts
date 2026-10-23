@@ -17,6 +17,7 @@ export * from './engine/state.js';
 export * from './engine/advance.js';
 export * from './engine/actions.js';
 export * from './engine/equipment.js';
+export * from './engine/gearCraft.js';
 export * from './engine/trials.js';
 export * from './engine/view.js';
 export * from './api.js';

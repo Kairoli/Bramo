@@ -1,4 +1,4 @@
-import type { CSSProperties, ReactNode } from 'react';
+import { type CSSProperties, type ReactNode, useState } from 'react';
 import type { GearItemView } from '@bramo/shared';
 import { useGame } from '../game/GameContext';
 import { GearIcon } from './GearIcon';
@@ -48,7 +48,23 @@ export const GEM_TEXT: Record<string, { against: string; text: string }> = {
   gem_recovery_amber: { against: 'les auras', text: 'Rend une part des points de vie perdus à l’usure des auras.' },
 };
 
-export function GearCard({ g, compare, onClose, actions, onSocket }: { g: GearItemView; compare?: GearItemView | null; onClose: () => void; actions?: ReactNode; onSocket?: (itemId: string | null) => void }) {
+export function GearCard({
+  g,
+  compare,
+  onClose,
+  actions,
+  onSocket,
+  onSell,
+}: {
+  g: GearItemView;
+  compare?: GearItemView | null;
+  onClose: () => void;
+  actions?: ReactNode;
+  onSocket?: (itemId: string | null) => void;
+  /** Mettre la pièce en vitrine au marché, à ce prix. */
+  onSell?: (price: number) => void;
+}) {
+  const [price, setPrice] = useState('');
   const { content, state } = useGame();
   const gemsInBag = Object.entries(state.inventory).filter(([id, n]) => n > 0 && content.items[id]?.gem);
   const set = g.set ? content.gearSets[g.set] : undefined;
@@ -200,6 +216,17 @@ export function GearCard({ g, compare, onClose, actions, onSocket }: { g: GearIt
           </section>
         )}
 
+        {onSell && (
+          <section className="gear-card-sell">
+            <span className="muted small">Vitrine du marché : une fois en vente, la pièce ne se porte plus ; l’or arrive à votre visite.</span>
+            <span className="gear-sell-row">
+              <input className="input" inputMode="numeric" placeholder="Prix (or)" value={price} onChange={(e) => setPrice(e.target.value.replace(/[^0-9]/g, ''))} />
+              <button className="btn btn-sm" disabled={!Number(price)} onClick={() => onSell(Number(price))}>
+                Mettre en vente
+              </button>
+            </span>
+          </section>
+        )}
         <footer className="gear-card-foot">
           <span className="gear-wear" title="Usure : une pièce usée ne compte plus jusqu’à sa réparation">
             <span className="muted small">{g.worn ? 'Usée : à réparer' : `État ${Math.round((1 - g.wearShare) * 100)} %`}</span>

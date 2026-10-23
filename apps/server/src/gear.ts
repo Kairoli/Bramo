@@ -31,6 +31,7 @@ export async function loadGear(tx: Tx | Db, characterId: number): Promise<GearIn
       wear: r.wear,
       equipped: r.equipped,
       gem: r.gem,
+      price: r.price,
     }))
     .sort((a, b) => a.id - b.id);
 }
@@ -45,6 +46,7 @@ async function saveEquipped(tx: Tx, before: GearInstance[], after: GearInstance[
 
 export async function equipOwned(tx: Tx, characterId: number, state: CharacterState, id: number, content: Content): Promise<void> {
   const before = await loadGear(tx, characterId);
+  if (before.find((g) => g.id === id)?.price != null) throw new GameError('listed', 'Cette pièce est en vitrine : retirez-la d’abord.');
   await saveEquipped(tx, before, equipGear(before, id, state.classId, content));
 }
 
@@ -62,7 +64,7 @@ export async function wearGearSet(tx: Tx, characterId: number, classId: string |
   let after = before.map((g) => ({ ...g, equipped: null as string | null }));
   for (const id of ids) {
     const g = after.find((x) => x.id === id);
-    if (!g || isWorn(g, content)) continue;
+    if (!g || isWorn(g, content) || g.price != null) continue;
     try {
       after = equipGear(after, id, classId, content);
     } catch {
@@ -81,6 +83,7 @@ export async function socketOwned(tx: Tx, characterId: number, input: CharacterS
   const before = await loadGear(tx, characterId);
   const state = cloneState(input);
   const piece = before.find((g) => g.id === id);
+  if (piece?.price != null) throw new GameError('listed', 'Cette pièce est en vitrine : retirez-la d’abord.');
   const pieceName = piece ? (content.gearModels[piece.model]?.name ?? 'la pièce') : 'la pièce';
   if (itemId === null) {
     const r = unsocketGem(before, id, content);

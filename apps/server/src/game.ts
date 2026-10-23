@@ -14,6 +14,7 @@ import { grantGear } from './gear.js';
 import { claimOrders } from './market.js';
 import { claimRepairs } from './repairs.js';
 import { claimTide } from './tide.js';
+import { claimGearSales } from './vitrine.js';
 import { type NewServerEvent, eventsFromSummary, recordEvents } from './town.js';
 import { loadCharacterForUpdate, saveCharacter } from './characters.js';
 import { entriesFromSummary, insertEntries } from './journal.js';
@@ -88,6 +89,7 @@ export async function play(db: Db, content: Content, accountId: number, now: num
 
     const repaired = await claimRepairs(tx, loaded.id, claimed.state, content);
     for (const text of repaired.lines) entries.push({ at: now, kind: 'info', text });
+    for (const text of await claimGearSales(tx, loaded.id, repaired.state, content)) entries.push({ at: now, kind: 'info', text });
     // La Marée du soir : éclats des soirs réglés, coffre des semaines finies.
     for (const text of await claimTide(tx, loaded.id, repaired.state, content, now)) entries.push({ at: now, kind: 'combat', text });
 

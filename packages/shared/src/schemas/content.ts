@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import type { CharacterClass, Cosmetics } from './art.js';
-import type { GearModel, GearPools, GearSet, GearSlot } from './gear.js';
+import type { GearCrafting, GearModel, GearPools, GearSet, GearSlot } from './gear.js';
 import type { CombatContent } from './combat.js';
 
 /** Identifiants techniques : anglais, snake_case. */
@@ -266,6 +266,8 @@ export interface Content {
   gearModels: Record<string, GearModel>;
   /** Ensembles d'équipement. */
   gearSets: Record<string, GearSet>;
+  /** Fabrication de l'équipement (null sans data/gear_crafting.yaml). */
+  gearCrafting: GearCrafting | null;
   /** Combat automatique (null si data/combat/ est absent). */
   combat: CombatContent | null;
   /** xpTable[L] = XP totale pour atteindre le niveau L (index 0 inutilisé). */

@@ -41,6 +41,11 @@ import {
   startActivity,
   stockSupplies,
   readSupplies,
+  craftGear,
+  craftableModels,
+  gearRecipe,
+  curveTier,
+  netProceeds,
   stockPantry,
   tierFactorAt,
   wallIndex,
@@ -158,6 +163,8 @@ export interface ServerResult {
   refs: Record<string, number>;
   fightCache: { calls: number; hits: number; ms: number };
   runtimeSec: number;
+  /** Vitrine de l'équipement : offres restées en vente, ventes conclues. */
+  vitrine: { listed: number; sales: { day: number; price: number; tier: number; rarity: string }[] };
 }
 
 function rng(seed: number) {
@@ -378,7 +385,7 @@ export function runServer(content: Content, input: ServerOptions): ServerResult 
     if (!classId) return;
     const owned = b.gear.filter((g) => {
       const m = content.gearModels[g.model];
-      return m && canWear(m, classId);
+      return m && canWear(m, classId) && !listedIds.has(`${b.id}:${g.id}`);
     });
     const bySlot = new Map<string, GearInstance[]>();
     for (const g of owned) {
@@ -525,6 +532,77 @@ export function runServer(content: Content, input: ServerOptions): ServerResult 
         }
       }
     }
+  };
+
+  // --- Atelier et vitrine de l'équipement ---
+  const vitrine: { seller: Bot; gear: GearInstance; price: number; day: number }[] = [];
+  const vitrineSales: { day: number; price: number; tier: number; rarity: string }[] = [];
+  /** Pièces en vitrine (ni portées ni comparées). */
+  const listedIds = new Set<string>();
+  const gearProfessions = new Set(Object.values(content.gearCrafting?.families ?? {}));
+  /** Un artisan d'équipement fabrique une ou deux pièces de son palier (sa classe d'abord), et met en vente ce qu'il ne porte pas. */
+  const craftGearTurn = (b: Bot, day: number) => {
+    for (const p of b.professions) {
+      if (!gearProfessions.has(p)) continue;
+      const L = lvl(b.state, p);
+      const tier = curveTier(combat.rules, L) ?? 1;
+      const pool = craftableModels(p, content).filter((m) => m.tier === tier && (m.rarity === 'rare' || m.rarity === 'epic'));
+      if (!pool.length) continue;
+      for (let k = 0; k < 2; k++) {
+        const mine = pool.filter((m) => m.classes.includes(b.state.classId ?? ''));
+        const list = mine.length && b.rand() < 0.5 ? mine : pool;
+        const m = list[Math.floor(b.rand() * list.length)]!;
+        const r = gearRecipe(m.id, content)!;
+        // Acheter ce qui manque, si c'est raisonnable.
+        for (const i of r.inputs) {
+          const need = i.qty - (b.state.inventory[i.item] ?? 0);
+          if (need > 0) b.totals.purchases += buy(b, i.item, need, Math.max(2, Math.round(ref(i.item) * 1.5)), false).gold;
+        }
+        if (r.inputs.some((i) => (b.state.inventory[i.item] ?? 0) < i.qty)) break;
+        const out = craftGear(b.state, m.id, content, b.rand, b.name);
+        b.state = out.state;
+        traders.get(b.id)!.state = b.state;
+        const g = { ...out.gear, id: b.nextGearId++ };
+        b.gear.push(g);
+        add(ledger.drops.bySource, 'fabrication', 1);
+        for (const i of r.inputs) add(ledger.delivered, i.item, i.qty);
+        if (b.persona.priceStyle === 'hoarder') continue;
+        const cost = r.inputs.reduce((sum, i) => sum + i.qty * ref(i.item), 0);
+        // Une pièce de sa classe meilleure que celle portée se garde ; le reste part en vitrine.
+        const wornH = Math.max(-1, ...b.gear.filter((x) => x.equipped && content.gearModels[x.model]!.slot === m.slot).map((x) => heuristic(content.gearModels[x.model]!)));
+        if (m.classes.includes(b.state.classId ?? '') && heuristic(m) > wornH) continue;
+        listedIds.add(`${b.id}:${g.id}`);
+        vitrine.push({ seller: b, gear: g, price: Math.max(20, Math.round(cost * (b.persona.priceStyle === 'dumper' ? 1.1 : 1.6))), day });
+      }
+    }
+  };
+  /** Un combattant achète à la vitrine ce qui améliore un emplacement (palier puis rareté), s'il en a les moyens. */
+  const shopVitrine = (b: Bot) => {
+    if (!b.state.classId || b.persona.skill < 0.2) return;
+    let bought = false;
+    const worn = new Map(b.gear.filter((g) => g.equipped).map((g) => [content.gearModels[g.model]!.slot, heuristic(content.gearModels[g.model]!)]));
+    for (const o of [...vitrine].sort((x, y) => x.price - y.price)) {
+      if (o.seller === b) continue;
+      const m = content.gearModels[o.gear.model]!;
+      if (!m.classes.includes(b.state.classId)) continue;
+      if (heuristic(m) <= (worn.get(m.slot) ?? -1)) continue;
+      if (o.price > b.state.gold * 0.35) continue;
+      b.state.gold -= o.price;
+      const net = netProceeds(o.price, content);
+      o.seller.state.gold += net;
+      add(ledger.sink, 'taxe de la vitrine', o.price - net);
+      o.seller.totals.salesNet += net;
+      b.totals.purchases += o.price;
+      o.seller.gear = o.seller.gear.filter((g) => g.id !== o.gear.id);
+      listedIds.delete(`${o.seller.id}:${o.gear.id}`);
+      vitrineSales.push({ day: b.history.gold.length, price: o.price, tier: m.tier, rarity: m.rarity });
+      b.gear.push({ ...o.gear, id: b.nextGearId++, equipped: null });
+      vitrine.splice(vitrine.indexOf(o), 1);
+      add(ledger.drops.bySource, 'vitrine (achat)', 1);
+      worn.set(m.slot, heuristic(m));
+      bought = true;
+    }
+    if (bought) equipBest(b);
   };
 
   // --- Marché ---
@@ -1062,6 +1140,8 @@ export function runServer(content: Content, input: ServerOptions): ServerResult 
       equipBest(b);
       b.lastGearDay = day;
     }
+    craftGearTurn(b, day);
+    shopVitrine(b);
     useGems(b, day);
     supplies(b, day);
     contributeToClan(b, day);
@@ -1185,6 +1265,7 @@ export function runServer(content: Content, input: ServerOptions): ServerResult 
     prices,
     refs,
     fightCache: cache.stats,
+    vitrine: { listed: vitrine.length, sales: vitrineSales },
     runtimeSec: Math.round((performance.now() - t0) / 1000),
   };
 }

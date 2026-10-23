@@ -3,6 +3,7 @@ import type { Content } from './schemas/content.js';
 import type { AdvanceSummary } from './engine/advance.js';
 import type { StateView } from './engine/view.js';
 import type { TideNight } from './combat/tide.js';
+import type { GearItemView } from './engine/equipment.js';
 
 /** Corps de requêtes, validés par le serveur. */
 export const credentialsBody = z.object({
@@ -51,6 +52,9 @@ export const gearIdBody = z.object({ id: z.number().int() });
 /** Développement : mettre des objets dans son sac. */
 export const devItemGrantBody = z.object({ itemId: z.string(), qty: z.number().int().min(1).max(10_000) });
 export const gearSocketBody = z.object({ id: z.number().int(), itemId: z.string().nullable() });
+export const gearCraftBody = z.object({ modelId: z.string() });
+export const gearSellBody = z.object({ id: z.number().int(), price: z.number().int().min(1).max(1_000_000) });
+export const gearMarketQuery = z.object({ slot: z.string().optional(), classId: z.string().optional(), tier: z.coerce.number().int().optional() });
 export const suppliesBody = z.object({ itemId: z.string(), qty: z.number().int().min(1).max(10000) });
 export const tidePrefsBody = z.object({ auto: z.boolean().optional(), channel: z.enum(['combat', 'work']).optional() });
 export const tideBuyBody = z.object({ offer: z.string() });
@@ -280,3 +284,12 @@ export interface TideView {
   last: { day: number; name: string; participants: number; points: number; objective: number; thresholds: number; of: number } | null;
 }
 
+
+/** Une pièce en vitrine au marché (GET /api/market/gear). */
+export interface GearListingView {
+  id: number;
+  price: number;
+  seller: string;
+  mine: boolean;
+  item: GearItemView;
+}

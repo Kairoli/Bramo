@@ -1,12 +1,13 @@
 import { type ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
-import type { MarketItemSummary, MarketOrderView, MyOrderView, RepairRequestView } from '@bramo/shared';
+import type { GearListingView, MarketItemSummary, MarketOrderView, MyOrderView, RepairRequestView } from '@bramo/shared';
+import { GearIcon } from '../components/GearIcon';
 import { api } from '../api';
 import { useGame } from '../game/GameContext';
 import { duration, num } from '../format';
 import { ItemIcon } from '../components/ui';
 import { Scene } from '../components/Scene';
 
-type Tab = 'book' | 'mine' | 'craft' | 'npc';
+type Tab = 'book' | 'gear' | 'mine' | 'craft' | 'npc';
 type Run = (call: () => ReturnType<typeof api.state>) => Promise<boolean>;
 
 /** Rayons du marché : des catégories d'objets regroupées comme sur les étals. */
@@ -98,6 +99,7 @@ export function MarketRoom() {
           {(
             [
               ['book', 'Acheter et vendre', 'M3 9h18l-2 11H5zM8 9V6a4 4 0 0 1 8 0v3'],
+              ['gear', 'Vitrine', 'M12 3l7 4v5c0 4-3 7-7 9-4-2-7-5-7-9V7z'],
               ['mine', `Mes ordres${mine.length ? ` · ${mine.length}` : ''}`, 'M6 3h9l3 3v15H6zM9 9h6M9 13h6M9 17h4'],
               ['craft', 'Artisans', 'M14 6l4 4M12 8l-8 8 2 2 8-8M13 4l7 7-2 2-7-7z'],
               ['npc', `Comptoir · ${doneNpc}/${state.npcOrders.length}`, 'M4 20V10l8-6 8 6v10M9 20v-6h6v6'],
@@ -180,6 +182,8 @@ export function MarketRoom() {
           </div>
         </section>
       )}
+
+      {tab === 'gear' && <GearShowcase />}
 
       {tab === 'craft' && (
         <section className="panel market-page">
@@ -630,5 +634,75 @@ function ArtisansTab({
         )}
       </div>
     </div>
+  );
+}
+
+const RARITY_NAME: Record<string, string> = { common: 'Commun', rare: 'Rare', epic: 'Épique', legendary: 'Légendaire' };
+
+/**
+ * La vitrine : l'équipement que les joueurs vendent (trouvé ou fabriqué), filtré par emplacement et par classe, le moins
+ * cher d'abord. On l'achète tout de suite ; on vend ses pièces depuis leur fiche, dans la salle Personnage.
+ */
+function GearShowcase() {
+  const { content, state, act } = useGame();
+  const [slot, setSlot] = useState('');
+  const [cls, setCls] = useState(state.classId ?? '');
+  const [list, setList] = useState<GearListingView[] | null>(null);
+  const load = useCallback(() => {
+    api
+      .gearMarket({ slot: slot || undefined, classId: cls || undefined })
+      .then(setList)
+      .catch(() => setList([]));
+  }, [slot, cls]);
+  useEffect(load, [load]);
+  return (
+    <section className="panel showcase">
+      <header className="showcase-head">
+        <div>
+          <h2>Vitrine de l’équipement</h2>
+          <p className="muted small">Pièces trouvées ou fabriquées par les autres joueurs. Pour vendre une des vôtres : sa fiche, dans la salle Personnage.</p>
+        </div>
+        <div className="workshop-filters">
+          <select className="input" value={slot} onChange={(e) => setSlot(e.target.value)}>
+            <option value="">Tous les emplacements</option>
+            {Object.values(content.gearSlots).map((s) => (
+              <option key={s.id} value={s.id}>
+                {s.name}
+              </option>
+            ))}
+          </select>
+          <select className="input" value={cls} onChange={(e) => setCls(e.target.value)}>
+            <option value="">Toutes les classes</option>
+            {Object.values(content.classes).map((c) => (
+              <option key={c.id} value={c.id}>
+                {c.name}
+              </option>
+            ))}
+          </select>
+        </div>
+      </header>
+      {!list && <p className="muted">Chargement…</p>}
+      {list && !list.length && <p className="muted small">La vitrine est vide pour ces filtres.</p>}
+      <ul className="showcase-grid scroll">
+        {(list ?? []).map((o) => (
+          <li key={o.id} className={`showcase-card r-${o.item.rarity}`}>
+            <GearIcon slot={o.item.slot} family={o.item.family} tier={o.item.tier} rarity={o.item.rarity} size={52} />
+            <span className="showcase-text">
+              <strong>{o.item.name}</strong>
+              <span className="muted small">
+                {RARITY_NAME[o.item.rarity]} · palier {o.item.tier} · {content.gearSlots[o.item.slot]?.name}
+                {o.item.masterpiece ? ' · chef-d’œuvre' : ''}
+              </span>
+              <span className="muted small">
+                {o.item.lines.map((l) => `${l.name} ${l.value}`).join(' · ') || 'sans bonus'} · vendu par {o.seller}
+              </span>
+            </span>
+            <button className="btn btn-sm btn-primary" disabled={o.mine || state.gold < o.price} onClick={() => void act(() => api.gearBuy(o.id)).then(load)}>
+              {o.mine ? 'Votre offre' : `${num(o.price)} or`}
+            </button>
+          </li>
+        ))}
+      </ul>
+    </section>
   );
 }

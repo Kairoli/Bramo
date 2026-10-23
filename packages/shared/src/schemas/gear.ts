@@ -107,4 +107,22 @@ export interface GearInstance {
   equipped: string | null;
   /** Gemme sertie : l'outil de situation qu'elle donne (data/combat/tools.yaml), ou null. */
   gem: string | null;
+  /** En vitrine au marché à ce prix (ni portée ni sertie tant qu'elle y est), ou absent. */
+  price?: number | null;
 }
+
+/**
+ * Fabrication de l'équipement (data/gear_crafting.yaml) : de quoi calculer la recette de chaque modèle fabricable
+ * (métier, matières, quantités, durée, XP). Première version, à équilibrer.
+ */
+export const gearCraftingSchema = z.object({
+  families: z.record(z.string(), z.string()),
+  secondary: z.record(z.string(), z.object({ profession: z.string(), share: z.number().min(0) })),
+  materials: z.record(z.string(), z.array(z.object({ tier: z.number().int().min(1), item: z.string() })).min(1)),
+  slotQty: z.record(z.string(), z.number().positive()),
+  slotMinutes: z.record(z.string(), z.number().positive()),
+  tierMultiplier: z.array(z.object({ tier: z.number().int().min(1), mul: z.number().positive() })).min(1),
+  rarityMultiplier: z.record(z.string(), z.number().positive()),
+  xp: z.object({ perHourAtLevel1: z.number().positive(), doubling: z.number().positive() }),
+});
+export type GearCrafting = z.infer<typeof gearCraftingSchema>;

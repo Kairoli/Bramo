@@ -147,7 +147,11 @@ export function GearPanel({ gear, onChange }: { gear: GearView | null; onChange:
             })
           }
           actions={
-            selected.equipped ? (
+            selected.price != null ? (
+              <button className="btn" disabled={busy} onClick={() => void call(() => api.gearUnlist(selected.id))}>
+                Retirer de la vitrine ({selected.price} or)
+              </button>
+            ) : selected.equipped ? (
               <button className="btn" disabled={busy} onClick={() => void call(() => api.gearUnequip(selected.id)).then(() => setPick(null))}>
                 Ranger au sac
               </button>
@@ -157,6 +161,7 @@ export function GearPanel({ gear, onChange }: { gear: GearView | null; onChange:
               </button>
             )
           }
+          onSell={selected.bound || selected.price != null ? undefined : (price) => void call(() => api.gearSell(selected.id, price)).then(() => setPick(null))}
         />
       )}
       {state.classId && import.meta.env.DEV && <DevGrant onChange={onChange} />}

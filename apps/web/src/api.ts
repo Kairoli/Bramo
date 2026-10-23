@@ -4,6 +4,7 @@ import type {
   ClanListItem,
   ClanView,
   ContentResponse,
+  GearListingView,
   GearModel,
   GearView,
   JournalEntry,
@@ -113,6 +114,14 @@ export const api = {
   chooseClass: (classId: string) => request<StateResponse>('POST', '/character/class', { classId }),
   setNickname: (profession: string, rank: number) => request<StateResponse>('POST', '/nickname', { profession, rank }),
   completeTrial: (trialId: string) => request<StateResponse>('POST', '/trials/complete', { trialId }),
+  gearRecipes: (profession: string) =>
+    request<{ level: number; models: { id: string; name: string; slot: string; tier: number; rarity: string; orientation: string; classes: string[]; family: string; stats: { stat: string; value: number }[]; recipe: { profession: string; level: number; xp: number; durationSec: number; inputs: { item: string; qty: number }[] } }[] }>('GET', `/gear/recipes?profession=${profession}`),
+  gearCraft: (modelId: string) => request<StateResponse>('POST', '/gear/craft', { modelId }),
+  gearSell: (id: number, price: number) => request<GearView>('POST', '/gear/sell', { id, price }),
+  gearUnlist: (id: number) => request<GearView>('POST', '/gear/unlist', { id }),
+  gearMarket: (q: { slot?: string; classId?: string; tier?: number }) =>
+    request<GearListingView[]>('GET', `/market/gear?${new URLSearchParams(Object.entries(q).filter(([, v]) => v !== undefined && v !== '').map(([k, v]) => [k, String(v)])).toString()}`),
+  gearBuy: (id: number) => request<StateResponse>('POST', '/market/gear/buy', { id }),
   stockSupplies: (itemId: string, qty: number) => request<StateResponse>('POST', '/combat/supplies/stock', { itemId, qty }),
   unstockSupplies: (itemId: string, qty: number) => request<StateResponse>('POST', '/combat/supplies/unstock', { itemId, qty }),
   tide: () => request<TideView | null>('GET', '/tide'),

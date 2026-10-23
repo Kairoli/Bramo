@@ -11,7 +11,7 @@ import {
   trialsFileSchema,
 } from './schemas/content.js';
 import { classesFileSchema, cosmeticsFileSchema } from './schemas/art.js';
-import { gearFileSchema, gearPoolsFileSchema, gearSetsFileSchema, gearSlotsFileSchema } from './schemas/gear.js';
+import { gearCraftingSchema, gearFileSchema, gearPoolsFileSchema, gearSetsFileSchema, gearSlotsFileSchema } from './schemas/gear.js';
 import { buildXpTable } from './formulas/xp.js';
 import { type RawCombat, buildCombatContent } from './combat/content.js';
 
@@ -32,6 +32,7 @@ export interface RawContent {
   gearSlots?: unknown;
   gearPools?: unknown;
   gearSets?: unknown;
+  gearCrafting?: unknown;
   /** Combat automatique : data/combat/ (optionnel pour les propositions du simulateur). */
   combat?: RawCombat;
   /** Un fichier de recettes par entrée : [nom du fichier, contenu]. */
@@ -59,6 +60,7 @@ export function buildContent(raw: RawContent): Content {
   const gearPools = parse(gearPoolsFileSchema.default({ tierScale: {}, pools: {} }), raw.gearPools ?? undefined, 'gear_pools.yaml');
   const gearList = parse(gearFileSchema, raw.gear ?? [], 'gear.yaml');
   const gearSetList = parse(gearSetsFileSchema, raw.gearSets ?? [], 'gear_sets.yaml');
+  const gearCrafting = raw.gearCrafting === undefined ? null : parse(gearCraftingSchema, raw.gearCrafting, 'gear_crafting.yaml');
   const errors: string[] = [];
 
   const unique = <T extends { id: string }>(list: T[], file: string) => {
@@ -201,7 +203,15 @@ export function buildContent(raw: RawContent): Content {
     for (const it of itemList) if (it.gem && !combat?.tools.some((t) => t.id === it.gem && t.rank === 'gem')) errors.push(`items.yaml : ${it.id} : gemme inconnue « ${it.gem} » (combat/tools.yaml, rang gem)`);
     for (const it of itemList) if (it.prep && !combat?.tools.some((t) => t.id === it.prep!.tool && t.rank === 'prep')) errors.push(`items.yaml : ${it.id} : préparation inconnue « ${it.prep.tool} » (combat/tools.yaml, rang prep)`);
   }
+  if (gearCrafting) {
+    for (const [fam, p] of Object.entries(gearCrafting.families)) {
+      if (!professionMap[p]) errors.push(`gear_crafting.yaml : la famille ${fam} est fabriquée par un métier inconnu « ${p} »`);
+      if (!gearCrafting.materials[p]) errors.push(`gear_crafting.yaml : aucune matière pour le métier « ${p} »`);
+    }
+    for (const [fam, s] of Object.entries(gearCrafting.secondary)) if (!gearCrafting.materials[s.profession]) errors.push(`gear_crafting.yaml : ${fam} : matière d'appoint inconnue « ${s.profession} »`);
+    for (const [p, list] of Object.entries(gearCrafting.materials)) for (const m of list) if (!items[m.item]) errors.push(`gear_crafting.yaml : ${p} : objet inconnu « ${m.item} »`);
+  }
   if (errors.length) throw new ContentError(`Données incohérentes :\n- ${errors.join('\n- ')}`);
 
-  return { settings, professions, items, recipes, trials, npcOrders, buildings, ornaments, classes, cosmetics, gearSlots, gearPools, gearModels, gearSets, combat, xpTable: buildXpTable(settings.xp.maxLevel) };
+  return { settings, professions, items, recipes, trials, npcOrders, buildings, ornaments, classes, cosmetics, gearSlots, gearPools, gearModels, gearSets, gearCrafting, combat, xpTable: buildXpTable(settings.xp.maxLevel) };
 }

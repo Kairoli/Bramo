@@ -120,6 +120,13 @@
       "when": 1792713060456,
       "tag": "0016_tide",
       "breakpoints": true
+    },
+    {
+      "idx": 17,
+      "version": "7",
+      "when": 1792715784127,
+      "tag": "0017_vitrine",
+      "breakpoints": true
     }
   ]
 }

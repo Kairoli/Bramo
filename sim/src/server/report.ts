@@ -247,6 +247,7 @@ export function analyze(r: ServerResult, content: Content, tide?: TideStats) {
     market: { index, top: traded.slice(0, 25), crashed: crashed.slice(0, 20), soared: soared.slice(0, 20), lastDay: r.days.at(-1), traders },
     flows: { deadEnds: deadEnds.slice(0, 30), neverMade },
     loot: { perBotDay: r1(perBotDay), total: r.ledger.drops.total, rarity, sets, named, gearOwnedMedian: gearOwned, gems: r.ledger.gemsSocketed, bySource: r.ledger.drops.bySource },
+    vitrine: { listed: r.vitrine.listed, sold: r.vitrine.sales.length, medianPrice: median(r.vitrine.sales.map((x) => x.price)), crafted: r.ledger.drops.bySource['fabrication'] ?? 0 },
     supplies: Object.values(content.items)
       .filter((i) => i.potion || i.prep)
       .map((i) => ({ id: i.id, name: i.name, produced: r.ledger.produced[i.id] ?? 0, bought: r.ledger.delivered[i.id] ?? 0, price: r.prices[i.id]?.weekly.filter((x) => x > 0).at(-1) ?? 0 })),
@@ -304,6 +305,7 @@ export function toMarkdown(a: Analysis): string {
   for (const s of a.loot.sets) L.push(`| ${s.name} | ${s.dropped} | ${s.worn2plus} |`);
   L.push('', `Nommés (tombés / portés) : ${a.loot.named.map((n) => `${n.named} ${n.dropped}/${n.worn}`).join(', ')}.`);
   L.push(`Gemmes serties : ${Object.entries(a.loot.gems).map(([k, v]) => `${k} ${v}`).join(', ') || 'aucune'}.`);
+  L.push(`Atelier et vitrine : ${a.vitrine.crafted} pièces fabriquées, ${a.vitrine.sold} vendues à la vitrine (prix médian ${a.vitrine.medianPrice} or), ${a.vitrine.listed} encore en vente. Sources : ${Object.entries(a.loot.bySource).filter(([k]) => !k.startsWith('z') && !k.startsWith('b')).map(([k, v]) => `${k} ${v}`).join(', ')}.`);
   L.push(`Fournitures (produites / achetées pour la route / dernier prix) : ${a.supplies.map((x) => `${x.name} ${x.produced}/${x.bought}/${x.price}`).join(', ')}.`);
   L.push('', '## Classes et voies', '');
   L.push('| Classe | joueurs | part | route médiane | route (méta) | niveau |', '|---|---|---|---|---|---|');

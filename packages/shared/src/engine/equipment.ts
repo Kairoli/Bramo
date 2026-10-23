@@ -183,6 +183,10 @@ export interface GearItemView {
   /** Peut recevoir une gemme (arme, torse, tête, collier, avec un chaton), et celle qui est sertie (son objet). */
   gemSlot: boolean;
   gem: string | null;
+  /** En vitrine au marché à ce prix, ou null. */
+  price: number | null;
+  /** Fabriquée par le métier (atelier) : sa recette existe. */
+  craftable: boolean;
 }
 
 /** Emplacements des places de talent majeur (docs/design/coherence/build.md §2) : là où une gemme se sertit. */
@@ -256,6 +260,8 @@ export function viewGear(items: GearInstance[], classId: string | null, content:
       bound: !!m.bound,
       gemSlot: canHoldGem(m),
       gem: g.gem ? gemItemOf(g.gem, content) : null,
+      price: g.price ?? null,
+      craftable: m.source.includes('craft') && !m.set && !m.talent && !m.starter,
     });
   }
   return { items: views, totals: gearTotals(items, content) };

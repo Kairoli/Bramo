@@ -75,7 +75,13 @@ import {
   savePreset,
   writePreset,
   buyTideItem,
+  craftableModels,
   deliverTideWork,
+  gearCraftBody,
+  gearMarketQuery,
+  gearRecipe,
+  gearSellBody,
+  skillLevel,
   stockSupplies,
   suppliesBody,
   unstockSupplies,
@@ -86,6 +92,7 @@ import {
 } from '@bramo/shared';
 import type { Db } from './db/index.js';
 import { settleTide, tideView } from './tide.js';
+import { buyGear, craftOwned, gearListings, listGear, unlistGear } from './vitrine.js';
 import { loadCharacterById } from './characters.js';
 import { accounts, characters } from './db/schema.js';
 import {
@@ -195,6 +202,7 @@ export async function buildApp({ db, content, clock = Date.now, secureCookies = 
     gearSlots: content.gearSlots,
     gearPools: content.gearPools,
     gearSets: content.gearSets,
+    gearCrafting: content.gearCrafting,
   };
   app.get('/api/health', async () => ({ ok: true }));
   app.get('/api/content', async () => publicContent);
@@ -646,6 +654,57 @@ export async function buildApp({ db, content, clock = Date.now, secureCookies = 
     const profile = Number.isInteger(id) ? await playerProfile(db, content, id) : null;
     if (!profile) throw new HttpError(404, 'unknown_player', 'Joueur introuvable.');
     return profile;
+  });
+
+  // --- Atelier et vitrine de l'équipement ---
+
+  /** Ce qu'un métier sait fabriquer, jusqu'à 10 paliers au-dessus de son niveau (pour voir venir). */
+  app.get('/api/gear/recipes', async (req) => {
+    const me = await myCharacter(req);
+    const { profession } = (req.query ?? {}) as { profession?: string };
+    if (!profession) throw new HttpError(400, 'profession', 'Métier manquant.');
+    return db.transaction(async (tx) => {
+      const loaded = await loadCharacterById(tx, me.id, content);
+      const level = skillLevel(loaded!.state, profession, content);
+      return {
+        level,
+        models: craftableModels(profession, content)
+          .filter((m) => m.tier <= level + 10)
+          .map((m) => ({ id: m.id, name: m.name, slot: m.slot, tier: m.tier, rarity: m.rarity, orientation: m.orientation, classes: m.classes, family: m.family, stats: m.stats, recipe: gearRecipe(m.id, content)! })),
+      };
+    });
+  });
+  app.post('/api/gear/craft', (req) => {
+    const { modelId } = body(gearCraftBody, req);
+    return playAs(req, async (state, now, ctx) => {
+      const r = await craftOwned(ctx.tx, ctx.characterId, ctx.characterName, state, modelId, content, now);
+      const name = content.gearModels[modelId]?.name ?? modelId;
+      return { state: r.state, log: r.masterpiece ? `Chef-d’œuvre ! Vous fabriquez ${name}, signé de votre nom.` : `Vous fabriquez ${name}.`, logKind: 'finished' };
+    });
+  });
+  app.post('/api/gear/sell', async (req) => {
+    const { id, price } = body(gearSellBody, req);
+    const me = await myCharacter(req);
+    await db.transaction((tx) => listGear(tx, me.id, id, price, content));
+    return loadGear(db, me.id).then((items) => viewGear(items, me.classId, content));
+  });
+  app.post('/api/gear/unlist', async (req) => {
+    const { id } = body(gearIdBody, req);
+    const me = await myCharacter(req);
+    await db.transaction((tx) => unlistGear(tx, me.id, id));
+    return loadGear(db, me.id).then((items) => viewGear(items, me.classId, content));
+  });
+  app.get('/api/market/gear', async (req) => {
+    const me = await myCharacter(req);
+    const q = gearMarketQuery.parse(req.query ?? {});
+    return db.transaction((tx) => gearListings(tx, me.id, q, content));
+  });
+  app.post('/api/market/gear/buy', (req) => {
+    const { id } = body(gearIdBody, req);
+    return playAs(req, async (state, now, ctx) => {
+      const r = await buyGear(ctx.tx, ctx.characterId, state, id, content, now);
+      return { state: r.state, log: `Vitrine : vous achetez ${r.name} pour ${r.price} or.`, logKind: 'info' };
+    });
   });
 
   // --- Fournitures de combat ---

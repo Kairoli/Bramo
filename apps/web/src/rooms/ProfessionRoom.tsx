@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { GearWorkshop } from '../components/GearWorkshop';
 import { maxAffordable, trialsOf, type Recipe } from '@bramo/shared';
 import { api } from '../api';
 import { useGame } from '../game/GameContext';
@@ -26,6 +27,9 @@ export function ProfessionRoom({ id }: { id: string }) {
   // Un chef-d'œuvre disparaît une fois l'épreuve réussie : on revient alors à une recette du métier.
   const selectedId = recipes.some((r) => r.id === chosenId) ? chosenId : fallbackId;
   const selected = content.recipes[selectedId]!;
+  const [workshop, setWorkshop] = useState(false);
+  // Les métiers qui fabriquent de l'équipement de combat ont leur atelier (data/gear_crafting.yaml).
+  const makesGear = Object.values(content.gearCrafting?.families ?? {}).includes(id);
   const span = skill.nextLevelXp ? Math.min(1, (skill.xp - skill.levelXp) / (skill.nextLevelXp - skill.levelXp)) : 1;
 
   return (
@@ -54,6 +58,11 @@ export function ProfessionRoom({ id }: { id: string }) {
               ))}
           </div>
           <Bar value={span} color={skill.gated ? 'var(--clan)' : undefined} />
+          {makesGear && (
+            <button className="btn btn-sm workshop-open" onClick={() => setWorkshop(true)}>
+              Atelier d’équipement
+            </button>
+          )}
           <div className="muted skill-xp">
             {skill.gated
               ? `Niveau bloqué au ${skill.level} · ${num(skill.heldXp)} XP en attente, créditée à la validation`
@@ -62,6 +71,7 @@ export function ProfessionRoom({ id }: { id: string }) {
         </div>
         {profession.master && <MasterPanel professionId={id} onCraft={setSelectedId} />}
       </section>
+      {workshop && <GearWorkshop profession={id} onClose={() => setWorkshop(false)} />}
 
       <div className="profession-bottom">
         <RecipeList recipes={recipes} level={skill.level} selectedId={selectedId} onSelect={setSelectedId} />

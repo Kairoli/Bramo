@@ -1,0 +1,66 @@
+# Fabrication de l'équipement de combat (docs/design/contenu/butin-et-recettes.md §3), première version (23 octobre, nuit).
+# Proposée par Claude pendant la simulation de serveur : les joueurs restaient des semaines devant les gardiens faute
+# d'équipement de leur niveau, et les métiers n'avaient aucun lien avec le combat. Chiffres à équilibrer. # à équilibrer
+#
+# - Chaque modèle d'équipement dont la source contient « craft » (ni ensemble, ni nommé, ni de départ) a sa recette,
+#   calculée à partir de ce fichier : le métier selon la famille du modèle, la matière principale de ce métier à son palier,
+#   une matière d'appoint de bas palier, des quantités selon l'emplacement, le palier et la rareté (§3.2 du document).
+# - Niveau requis = le palier du modèle ; on choisit le modèle (donc la rareté et l'orientation) ; les lignes se tirent à la
+#   fabrication, avec une chance de chef-d'œuvre (settings.gear.masterpiece) qui grandit avec l'avance de l'artisan.
+# - Pour l'instant, la matière principale est la plus haute qui existe pour ce métier (le reste des chaînes viendra) : au-delà,
+#   la même matière, en plus grande quantité.
+
+# Métier qui fabrique chaque famille de modèle.
+families:
+  armor: smithing        # plates du Forgefeu
+  cuirass: smithing      # cuir bouilli et plaques, terminée à la Forge (moitié cuir de la Tannerie)
+  trail: tanning         # cuirs du Traqueur
+  robe: tailoring        # tissus du Runiste
+  jewel: jewelcrafting
+  hammer: smithing
+  sword_shield: smithing
+  axe: smithing
+  daggers: smithing
+  longbow: carpentry
+  crossbow: carpentry
+  staff: carpentry
+  scepter: jewelcrafting
+  grimoire: enchanting
+
+# Matière d'appoint : son métier et sa part de la quantité principale (prise au palier le plus bas de ce métier, au plus 20).
+secondary:
+  armor: { profession: tanning, share: 0.2 }
+  cuirass: { profession: tanning, share: 0.5 }
+  trail: { profession: tailoring, share: 0.25 }
+  robe: { profession: enchanting, share: 0.2 }
+  jewel: { profession: jewelcrafting_beads, share: 0.3 }
+  hammer: { profession: carpentry, share: 0.2 }
+  sword_shield: { profession: carpentry, share: 0.2 }
+  axe: { profession: carpentry, share: 0.2 }
+  daggers: { profession: tanning, share: 0.2 }
+  longbow: { profession: tanning, share: 0.2 }
+  crossbow: { profession: smithing, share: 0.2 }
+  staff: { profession: enchanting, share: 0.2 }
+  scepter: { profession: enchanting, share: 0.2 }
+  grimoire: { profession: tailoring, share: 0.3 }
+
+# Matière principale de chaque métier, par palier (la plus haute au plus égale au palier du modèle).
+materials:
+  smithing: [{ tier: 1, item: bronze_bar }, { tier: 10, item: iron_bar }, { tier: 20, item: steel_bar }]
+  tanning: [{ tier: 1, item: small_leather }, { tier: 15, item: tough_leather }, { tier: 20, item: thick_leather }, { tier: 50, item: heavy_leather }]
+  tailoring: [{ tier: 1, item: linen_cloth }, { tier: 15, item: blue_linen }, { tier: 35, item: cotton_cloth }]
+  carpentry: [{ tier: 1, item: pine_plank }, { tier: 10, item: oak_plank }, { tier: 20, item: bow_stave }]
+  jewelcrafting: [{ tier: 1, item: copper_wire }, { tier: 25, item: silver_bar }, { tier: 50, item: gold_bar }]
+  jewelcrafting_beads: [{ tier: 1, item: glass_bead }]
+  enchanting: [{ tier: 1, item: rune_dust }, { tier: 15, item: ward_rune }, { tier: 35, item: runic_core }]
+
+# Quantité de matière principale au palier 1 (un plastron, c'est beaucoup de métal ; un anneau, peu).
+slotQty: { torso: 18, legs: 14, head: 10, hands: 8, feet: 8, cape: 8, belt: 6, necklace: 6, ring: 4, weapon: 16 }
+# Durée de fabrication au palier 1 (minutes), multipliée comme les quantités.
+slotMinutes: { torso: 8, legs: 6, head: 5, hands: 4, feet: 4, cape: 4, belt: 3, necklace: 4, ring: 3, weapon: 7 }
+# Les quantités et la durée grandissent avec le palier (interpolé entre ces points).
+tierMultiplier: [{ tier: 1, mul: 1 }, { tier: 40, mul: 2 }, { tier: 90, mul: 3.5 }]
+# Et avec la rareté choisie.
+rarityMultiplier: { common: 1, rare: 1.35, epic: 1.8, legendary: 2.6 }
+# XP : comme l'artisanat (sim/src/rules.ts) : 400 × 1,75 XP par heure au niveau 1, doublée tous les 55 niveaux.
+xp: { perHourAtLevel1: 700, doubling: 55 }

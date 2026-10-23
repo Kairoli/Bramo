@@ -99,6 +99,8 @@ export const gearItems = pgTable(
     equipped: text('equipped'),
     /** Gemme sertie (outil de situation, data/combat/tools.yaml), ou null. */
     gem: text('gem'),
+    /** En vitrine au marché à ce prix (ni portée, ni sertie), ou null. */
+    price: integer('price'),
     createdAt: ts('created_at').notNull().defaultNow(),
   },
   (t) => [index('gear_items_character').on(t.characterId)],
@@ -277,4 +279,19 @@ export const tideEntries = pgTable(
     claimed: boolean('claimed').notNull().default(false),
   },
   (t) => [primaryKey({ columns: [t.day, t.characterId] }), index('tide_entries_character').on(t.characterId, t.claimed)],
+);
+
+/** Vitrine : l'or d'une pièce vendue, versé au vendeur à sa prochaine visite. */
+export const gearSales = pgTable(
+  'gear_sales',
+  {
+    id: serial('id').primaryKey(),
+    sellerId: integer('seller_id')
+      .notNull()
+      .references(() => characters.id, { onDelete: 'cascade' }),
+    modelId: text('model_id').notNull(),
+    gold: integer('gold').notNull(),
+    at: ts('at').notNull(),
+  },
+  (t) => [index('gear_sales_seller').on(t.sellerId)],
 );

@@ -459,4 +459,38 @@ describe('API', () => {
     expect(route.state.activity?.recipeId).toBe('mine_copper');
     expect((await f('POST', '/api/combat/stop')).status).toBe(400);
   });
+
+  it('atelier et vitrine : on fabrique une pièce, on la met en vente, un autre l’achète, le vendeur est payé à sa visite', async () => {
+    const smith = player({ value: '' });
+    await smith('POST', '/api/auth/register', { username: 'Forgeronne', password: 'motdepasse' });
+    await smith('POST', '/api/character/class', { classId: 'forgefire' });
+    const list = (await smith('GET', '/api/gear/recipes?profession=smithing')).json as { level: number; models: { id: string; tier: number; slot: string; recipe: { inputs: { item: string; qty: number }[] } }[] };
+    const model = list.models.find((m) => m.tier === 1 && m.slot === 'head')!;
+    expect(model).toBeDefined();
+    expect((await smith('POST', '/api/gear/craft', { modelId: model.id })).status).toBe(400);
+    for (const i of model.recipe.inputs) await smith('POST', '/api/dev/items/grant', { itemId: i.item, qty: i.qty });
+    const crafted = (await smith('POST', '/api/gear/craft', { modelId: model.id })).json as StateResponse;
+    expect(crafted.journal.some((e) => e.text.includes('fabriquez') || e.text.includes('Chef-d'))).toBe(true);
+    const gear = (await smith('GET', '/api/gear')).json as { items: { id: number; model: string; bound: boolean }[] };
+    const piece = gear.items.find((g) => g.model === model.id)!;
+    const starter = gear.items.find((g) => g.bound)!;
+    expect((await smith('POST', '/api/gear/sell', { id: starter.id, price: 10 })).status).toBe(400);
+    expect((await smith('POST', '/api/gear/sell', { id: piece.id, price: 60 })).status).toBe(200);
+    expect((await smith('POST', '/api/gear/equip', { id: piece.id })).status).toBe(400);
+    const buyer = player({ value: '' });
+    await buyer('POST', '/api/auth/register', { username: 'Chineuse', password: 'motdepasse' });
+    await buyer('POST', '/api/character/class', { classId: 'forgefire' });
+    const shelfRes = await buyer('GET', '/api/market/gear');
+    const shelf = shelfRes.json as { id: number; price: number; mine: boolean }[];
+    const offer = shelf.find((o) => o.id === piece.id)!;
+    expect(offer.price).toBe(60);
+    const before = ((await buyer('GET', '/api/state')).json as StateResponse).state.gold;
+    const bought = (await buyer('POST', '/api/market/gear/buy', { id: piece.id })).json as StateResponse;
+    expect(bought.state.gold).toBe(before - 60);
+    expect((await buyer('POST', '/api/market/gear/buy', { id: piece.id })).status).toBe(400);
+    const mine = (await buyer('GET', '/api/gear')).json as { items: { id: number }[] };
+    expect(mine.items.some((g) => g.id === piece.id)).toBe(true);
+    const paid = (await smith('GET', '/api/state')).json as StateResponse;
+    expect(paid.journal.some((e) => e.text.includes('Vitrine'))).toBe(true);
+  });
 });

@@ -5476,3 +5476,151 @@
   color: var(--good);
   margin: 0 0 6px;
 }
+
+/* --- Vitrine (fiche d'une pièce) --- */
+.gear-card-sell {
+  display: grid;
+  gap: 6px;
+  border-top: 1px solid var(--border);
+  padding-top: 10px;
+}
+.gear-sell-row {
+  display: flex;
+  gap: 8px;
+}
+.gear-sell-row .input {
+  width: 120px;
+}
+
+/* --- Atelier d'équipement (components/GearWorkshop.tsx) --- */
+.workshop-open {
+  margin-top: 6px;
+  align-self: flex-start;
+}
+.workshop-modal {
+  width: min(820px, 95vw);
+  max-height: 88vh;
+  display: grid;
+  grid-template-rows: auto auto auto auto minmax(0, 1fr);
+  gap: 10px;
+}
+.workshop-modal h2 {
+  margin: 0;
+}
+.workshop-filters {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.workshop-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 6px;
+  overflow-y: auto;
+  min-height: 0;
+}
+.workshop-row {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr) auto auto;
+  gap: 10px;
+  align-items: center;
+  padding: 6px 8px;
+  border-radius: var(--radius-sm);
+  background: var(--sunken);
+  border-left: 3px solid var(--r-common);
+}
+.workshop-row.r-rare {
+  border-left-color: var(--r-rare);
+}
+.workshop-row.r-epic {
+  border-left-color: var(--r-epic);
+}
+.workshop-row.r-legendary {
+  border-left-color: var(--r-legendary);
+}
+.workshop-row.locked {
+  opacity: 0.55;
+}
+.workshop-name {
+  display: grid;
+  min-width: 0;
+}
+.workshop-name strong,
+.workshop-name span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.workshop-inputs {
+  display: flex;
+  gap: 8px;
+  font-size: 13px;
+}
+.workshop-inputs span {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.workshop-inputs .missing {
+  color: var(--alert);
+}
+@media (max-width: 640px) {
+  .workshop-row {
+    grid-template-columns: 44px minmax(0, 1fr);
+  }
+}
+
+/* --- Vitrine du marché --- */
+.showcase {
+  display: grid;
+  gap: 12px;
+  min-height: 0;
+}
+.showcase-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.showcase-head h2 {
+  margin: 0;
+}
+.showcase-grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 8px;
+  overflow-y: auto;
+}
+.showcase-card {
+  display: grid;
+  grid-template-columns: 52px minmax(0, 1fr) auto;
+  gap: 10px;
+  align-items: center;
+  padding: 8px;
+  border-radius: var(--radius-sm);
+  background: var(--sunken);
+  border-left: 3px solid var(--r-common);
+}
+.showcase-card.r-rare {
+  border-left-color: var(--r-rare);
+}
+.showcase-card.r-epic {
+  border-left-color: var(--r-epic);
+}
+.showcase-card.r-legendary {
+  border-left-color: var(--r-legendary);
+}
+.showcase-text {
+  display: grid;
+  min-width: 0;
+}
+.showcase-text span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

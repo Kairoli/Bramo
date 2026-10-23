@@ -50,6 +50,8 @@ export function readProposalRaw(name: string): RawContent {
   if (existsSync(join(dir, 'combat.yaml'))) raw.combat = patchCombat(raw.combat, read('combat.yaml') as CombatPatch);
   // Une proposition qui remplace les objets ou les rencontres ne connaît pas ceux de la Marée du soir : elle se joue sans.
   if ((existsSync(join(dir, 'items.yaml')) || existsSync(join(dir, 'combat.yaml'))) && raw.combat) delete (raw.combat as { tide?: unknown }).tide;
+  // De même pour la fabrication de l'équipement, qui nomme des matières de data/.
+  if (existsSync(join(dir, 'items.yaml'))) delete raw.gearCrafting;
   if (existsSync(join(dir, 'recipes'))) {
     raw.recipes = readdirSync(join(dir, 'recipes'))
       .filter((f) => f.endsWith('.yaml'))

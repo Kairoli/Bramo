@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 760">
+  <!-- Capuche des Abysses : écailles, corail qui pousse sur la capuche aux pointes qui luisent, rang de perles autour du visage. -->
+  <g id="back">
+    <defs><pattern id="rig-scales" width="12" height="9" patternUnits="userSpaceOnUse"><path d="M0 9 Q6 0 12 9" fill="none" stroke="#000" stroke-opacity=".28" stroke-width="1"/><path d="M-6 4.5 Q0 -4.5 6 4.5 M6 4.5 Q12 -4.5 18 4.5" fill="none" stroke="#FFFFFF" stroke-opacity=".12" stroke-width=".8"/></pattern></defs>
+    <path d="M264 74 Q276 116 262 156 L240 170 Q252 130 250 96 Z" fill="var(--c-coat-dark)"/>
+    <path d="M188 96 Q198 66 216 62 Q238 66 250 96 L248 158 L184 160 Z" fill="var(--c-shadow)"/>
+  </g>
+  <g id="shadow">
+    <path d="M186 92 Q194 66 214 64 Q237 66 248 92 L248 110 Q216 98 188 114 Z" fill="url(#rig-hood)"/>
+  </g>
+  <g id="front">
+    <path d="M214 12 Q258 20 270 70 Q270 86 258 96 Q246 70 216 64 Q194 66 186 96 Q180 126 186 164 L154 172 Q124 128 134 78 Q150 24 214 12 Z" fill="var(--c-coat)"/>
+    <path d="M214 12 Q258 20 270 70 Q270 86 258 96 Q246 70 216 64 Q194 66 186 96 Q180 126 186 164 L154 172 Q124 128 134 78 Q150 24 214 12 Z" fill="url(#rig-weave)"/>
+    <path d="M214 12 Q150 24 134 78 Q124 128 154 172 L186 164 Q180 126 186 96 Q190 80 200 70 Z" fill="url(#rig-shade)"/>
+    <path d="M214 12 Q258 20 270 70 Q270 86 258 96" fill="none" stroke="var(--c-glow)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.5"/>
+    <path d="M186 96 Q194 68 216 64 Q246 70 258 96" fill="none" stroke="var(--c-shadow)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M214 12 Q258 20 270 70 Q270 86 258 96 Q246 70 216 64 Q194 66 186 96 Q180 126 186 164 L154 172 Q124 128 134 78 Q150 24 214 12 Z" fill="url(#rig-scales)"/>
+  </g>
+  <g id="deco">
+    <path d="M196 30 Q190 10 176 2 M190 16 Q178 14 172 6 M216 18 Q216 0 222 -12 M216 4 Q226 -2 232 -8 M236 30 Q246 14 258 8 M248 18 Q256 20 262 14" fill="none" stroke="var(--c-under)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M196 30 Q190 10 176 2 M190 16 Q178 14 172 6 M216 18 Q216 0 222 -12 M216 4 Q226 -2 232 -8 M236 30 Q246 14 258 8 M248 18 Q256 20 262 14" fill="none" stroke="#FFFFFF" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.3"/>
+    <circle cx="176" cy="2" r="3.2" fill="var(--c-trim)" class="fx-pulse" style="animation-delay:0s" filter="url(#rig-glow)"/>
+    <circle cx="172" cy="6" r="3.2" fill="var(--c-trim)" class="fx-pulse" style="animation-delay:-0.35s" filter="url(#rig-glow)"/>
+    <circle cx="222" cy="-12" r="3.2" fill="var(--c-trim)" class="fx-pulse" style="animation-delay:-0.7s" filter="url(#rig-glow)"/>
+    <circle cx="232" cy="-8" r="3.2" fill="var(--c-trim)" class="fx-pulse" style="animation-delay:-1.0499999999999998s" filter="url(#rig-glow)"/>
+    <circle cx="258" cy="8" r="3.2" fill="var(--c-trim)" class="fx-pulse" style="animation-delay:-1.4s" filter="url(#rig-glow)"/>
+    <circle cx="262" cy="14" r="3.2" fill="var(--c-trim)" class="fx-pulse" style="animation-delay:-1.75s" filter="url(#rig-glow)"/>
+    <circle cx="252" cy="96" r="2.8" fill="var(--c-metal)"/><circle cx="251.2" cy="95.2" r=".9" fill="#FFFFFF" opacity=".8"/>
+    <circle cx="247.4" cy="88.3" r="2.8" fill="var(--c-metal)"/><circle cx="246.6" cy="87.5" r=".9" fill="#FFFFFF" opacity=".8"/>
+    <circle cx="242.7" cy="80.6" r="2.8" fill="var(--c-metal)"/><circle cx="241.9" cy="79.8" r=".9" fill="#FFFFFF" opacity=".8"/>
+    <circle cx="236.5" cy="74.7" r="2.8" fill="var(--c-metal)"/><circle cx="235.7" cy="73.9" r=".9" fill="#FFFFFF" opacity=".8"/>
+    <circle cx="228.1" cy="71.7" r="2.8" fill="var(--c-metal)"/><circle cx="227.3" cy="70.9" r=".9" fill="#FFFFFF" opacity=".8"/>
+    <circle cx="219.6" cy="68.6" r="2.8" fill="var(--c-metal)"/><circle cx="218.8" cy="67.8" r=".9" fill="#FFFFFF" opacity=".8"/>
+    <circle cx="211" cy="70.1" r="2.8" fill="var(--c-metal)"/><circle cx="210.2" cy="69.3" r=".9" fill="#FFFFFF" opacity=".8"/>
+    <circle cx="202.4" cy="72.7" r="2.8" fill="var(--c-metal)"/><circle cx="201.6" cy="71.9" r=".9" fill="#FFFFFF" opacity=".8"/>
+    <circle cx="196.5" cy="78.1" r="2.8" fill="var(--c-metal)"/><circle cx="195.7" cy="77.3" r=".9" fill="#FFFFFF" opacity=".8"/>
+    <circle cx="193.4" cy="86.6" r="2.8" fill="var(--c-metal)"/><circle cx="192.6" cy="85.8" r=".9" fill="#FFFFFF" opacity=".8"/>
+    <circle cx="190.3" cy="95" r="2.8" fill="var(--c-metal)"/><circle cx="189.5" cy="94.2" r=".9" fill="#FFFFFF" opacity=".8"/>
+    <circle cx="189.5" cy="104" r="2.8" fill="var(--c-metal)"/><circle cx="188.7" cy="103.2" r=".9" fill="#FFFFFF" opacity=".8"/>
+    <circle cx="188.9" cy="112.9" r="2.8" fill="var(--c-metal)"/><circle cx="188.1" cy="112.1" r=".9" fill="#FFFFFF" opacity=".8"/>
+    <circle cx="188.3" cy="121.9" r="2.8" fill="var(--c-metal)"/><circle cx="187.5" cy="121.1" r=".9" fill="#FFFFFF" opacity=".8"/>
+    <circle cx="188.6" cy="130.9" r="2.8" fill="var(--c-metal)"/><circle cx="187.8" cy="130.1" r=".9" fill="#FFFFFF" opacity=".8"/>
+    <circle cx="189.8" cy="139.8" r="2.8" fill="var(--c-metal)"/><circle cx="189" cy="139" r=".9" fill="#FFFFFF" opacity=".8"/>
+    <circle cx="191" cy="148.7" r="2.8" fill="var(--c-metal)"/><circle cx="190.2" cy="147.9" r=".9" fill="#FFFFFF" opacity=".8"/>
+    <circle cx="192" cy="156" r="2.8" fill="var(--c-metal)"/><circle cx="191.2" cy="155.2" r=".9" fill="#FFFFFF" opacity=".8"/>
+  </g>
+</svg>

@@ -1,0 +1,32 @@
+{
+  "id": "abyss_crown",
+  "slot": "headwear",
+  "name": "Couronne des Abysses",
+  "colorRoles": [
+    "beard",
+    "metal",
+    "under",
+    "trim"
+  ],
+  "anchor": [
+    0,
+    0
+  ],
+  "layers": [
+    {
+      "id": "back",
+      "bone": "head",
+      "z": 52
+    },
+    {
+      "id": "front",
+      "bone": "head",
+      "z": 58
+    },
+    {
+      "id": "crown",
+      "bone": "head",
+      "z": 81
+    }
+  ]
+}

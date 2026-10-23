@@ -1,0 +1,23 @@
+{
+  "id": "halloween_hammer",
+  "slot": "weapon",
+  "name": "Marteau-citrouille",
+  "colorRoles": [
+    "wood",
+    "woodLight",
+    "leather",
+    "metal",
+    "pumpkin"
+  ],
+  "anchor": [
+    0,
+    0
+  ],
+  "layers": [
+    {
+      "id": "hammer",
+      "bone": "hand_far",
+      "z": 47
+    }
+  ]
+}

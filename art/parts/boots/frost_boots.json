@@ -1,0 +1,37 @@
+{
+  "id": "frost_boots",
+  "slot": "boots",
+  "name": "Bottes fourrées du Givre",
+  "colorRoles": [
+    "boots",
+    "mantle",
+    "metal",
+    "leather"
+  ],
+  "anchor": [
+    0,
+    0
+  ],
+  "layers": [
+    {
+      "id": "far",
+      "bone": "shin_far",
+      "z": 16
+    },
+    {
+      "id": "near",
+      "bone": "shin_near",
+      "z": 20
+    },
+    {
+      "id": "cuff_far",
+      "bone": "shin_far",
+      "z": 18
+    },
+    {
+      "id": "cuff_near",
+      "bone": "shin_near",
+      "z": 23
+    }
+  ]
+}

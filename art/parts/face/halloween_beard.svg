@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 760">
+  <!-- Barbe tressée du Forgefeu, prise dans les toiles d’araignée, une araignée qui monte et descend au bout de la tresse. -->
+  <g id="features">
+    <path d="M241 100 L249 112 L241 115" fill="none" stroke="var(--c-skin-dark)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M226 92 Q236 88 246 92" fill="none" stroke="var(--c-beard)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M188 114 Q188 150 212 170 Q238 162 245 124 Q236 132 226 131 Q212 129 202 120 Z" fill="var(--c-beard)"/>
+    <path d="M188 114 Q188 150 212 170 L210 128 Q202 124 198 118 Z" fill="url(#rig-shade)"/>
+    <path d="M218 126 Q230 116 247 120 Q246 127 240 128 Q232 124 226 130 Z" fill="var(--c-beard)"/>
+    <path d="M212 168 L214 190" fill="none" stroke="var(--c-beard)" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+    <rect x="207" y="176" width="13" height="6" rx="2" fill="var(--c-metal)" transform="rotate(4 213 179)"/>
+    <path d="M190 120 L216.3 134.4 M190 120 L212.6 139.8 M190 120 L207.7 144.2 M190 120 L202 147.5 M190 120 L195.7 149.5 M190 120 L189.1 150 M199.2 125 Q197.9 125.4 197.9 126.9 Q196.5 127 196.2 128.5 Q194.9 128.3 194.2 129.6 Q192.9 129.1 192 130.3 Q190.9 129.6 189.7 130.5 M207.1 129.3 Q204.7 130.1 204.7 132.9 Q202.2 133 201.5 135.7 Q199 135.4 197.8 137.9 Q195.4 137 193.7 139.1 Q191.6 137.8 189.4 139.5 M215 133.7 Q211.5 134.7 211.4 138.8 Q207.8 139.1 206.8 143 Q203.2 142.5 201.4 146.1 Q198 144.8 195.4 148 Q192.4 146 189.2 148.5 " fill="none" stroke="#F1F0EC" stroke-width="0.7" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.55"/>
+    <g class="fx-bob"><path d="M214 192 L214 214" fill="none" stroke="#F1F0EC" stroke-width="0.7" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.6"/><ellipse cx="214" cy="218" rx="3.4" ry="4.2" fill="#14181B"/><path d="M211 216 l-5 -3 M211 219 l-6 0 M211 222 l-5 3 M217 216 l5 -3 M217 219 l6 0 M217 222 l5 3" fill="none" stroke="#14181B" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/></g>
+  </g>
+  <g id="eyes">
+    <ellipse cx="220" cy="101" rx="3.2" ry="1.7" fill="#14181B"/><ellipse cx="237" cy="100" rx="2.3" ry="1.4" fill="#14181B"/><circle class="fx-pulse" cx="238" cy="99.6" r="1" fill="var(--c-glow-light)"/>
+  </g>
+</svg>

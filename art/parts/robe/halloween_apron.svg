@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 760">
+  <!-- Tablier calciné : cuir noirci, fissures où couvent des braises spectrales, crâne marqué au fer. -->
+  <g id="bib">
+    <path d="M176 200 L236 194 L248 304 L166 304 Z" fill="var(--c-coat-dark)"/>
+    <path d="M176 200 L166 304 L192 304 L188 198 Z" fill="url(#rig-shade)"/>
+    <path d="M178 202 L196 158 M234 196 L228 160" fill="none" stroke="var(--c-leather)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M200 232 Q200 216 212 216 Q224 216 224 232 Q224 240 218 242 L218 248 L206 248 L206 242 Q200 240 200 232 Z" fill="var(--c-bone, #DCD3BC)" opacity="0.85"/>
+    <circle cx="207" cy="231" r="3" fill="#14181B"/><circle cx="217" cy="231" r="3" fill="#14181B"/>
+    <path d="M209 248 L209 244 M212 248 L212 244 M215 248 L215 244" fill="none" stroke="#14181B" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M184 270 l10 6 l-4 8 l12 6 M232 262 l-6 10 l8 4" fill="none" stroke="var(--c-glow)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="fx-pulse"/>
+    <circle cx="196" cy="280" r="16" fill="url(#rig-halo)"/>
+  </g>
+  <g id="flap_far">
+    <path d="M206 304 L250 298 L262 526 L250 516 L240 534 L228 518 L216 536 L206 520 Z" fill="var(--c-coat-dark)"/>
+    <path d="M222 380 l8 14 l-6 10 l10 16" fill="none" stroke="var(--c-glow)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="fx-pulse"/>
+    <circle cx="228" cy="400" r="18" fill="url(#rig-halo)"/>
+  </g>
+  <g id="flap_near">
+    <path d="M162 300 L208 304 L208 520 L196 534 L186 518 L174 536 L164 520 L156 528 Z" fill="var(--c-coat-dark)"/>
+    <path d="M162 300 L208 304 L208 520 L196 534 L186 518 L174 536 L164 520 L156 528 Z" fill="url(#rig-shade)"/>
+    <path d="M176 420 l-6 12 l8 8 l-4 14" fill="none" stroke="var(--c-glow)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="fx-pulse"/>
+    <circle cx="174" cy="438" r="16" fill="url(#rig-halo)"/>
+  </g>
+</svg>

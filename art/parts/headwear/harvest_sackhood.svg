@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 760">
+  <!-- Capuche de sac des Moissons : toile de jute cousue à gros points, nouée d’une corde, paille qui dépasse. -->
+  <g id="back">
+    
+    <path d="M264 74 Q276 116 262 156 L240 170 Q252 130 250 96 Z" fill="var(--c-coat-dark)"/>
+    <path d="M188 96 Q198 66 216 62 Q238 66 250 96 L248 158 L184 160 Z" fill="var(--c-shadow)"/>
+  </g>
+  <g id="shadow">
+    <path d="M186 92 Q194 66 214 64 Q237 66 248 92 L248 110 Q216 98 188 114 Z" fill="url(#rig-hood)"/>
+  </g>
+  <g id="front">
+    <path d="M214 12 Q258 20 270 70 Q270 86 258 96 Q246 70 216 64 Q194 66 186 96 Q180 126 186 164 L154 172 Q124 128 134 78 Q150 24 214 12 Z" fill="var(--c-mantle)"/>
+    <path d="M214 12 Q258 20 270 70 Q270 86 258 96 Q246 70 216 64 Q194 66 186 96 Q180 126 186 164 L154 172 Q124 128 134 78 Q150 24 214 12 Z" fill="url(#rig-weave)"/>
+    <path d="M214 12 Q150 24 134 78 Q124 128 154 172 L186 164 Q180 126 186 96 Q190 80 200 70 Z" fill="url(#rig-shade)"/>
+    <path d="M214 12 Q258 20 270 70 Q270 86 258 96" fill="none" stroke="var(--c-glow)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.5"/>
+    <path d="M186 96 Q194 68 216 64 Q246 70 258 96" fill="none" stroke="var(--c-shadow)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M214 12 Q186 60 186 96 M150 50 Q170 90 160 150" fill="none" stroke="#000" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.3"/>
+    <path d="M206 22 l10 6 M200 34 l10 6 M194 46 l10 6 M190 58 l10 6 M156 66 l10 -2 M156 84 l10 -2 M154 102 l10 -2 M154 120 l10 -2" fill="none" stroke="var(--c-coat-dark)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M140 96 L162 92 L164 116 L142 120 Z" fill="var(--c-under)" opacity="0.9"/>
+    <path d="M140 96 L162 92 L164 116 L142 120 Z" fill="none" stroke="var(--c-coat-dark)" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="2 3"/>
+  </g>
+  <g id="deco">
+    <path d="M186 160 Q214 172 244 160 L246 170 Q214 184 186 170 Z" fill="var(--c-under)"/>
+    <path d="M206 172 Q198 194 204 210 M214 172 Q220 192 216 208" fill="none" stroke="var(--c-under)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M210 14 l-6 -14 M216 12 l2 -14 M222 14 l8 -12 M152 168 l-12 6 M160 170 l-6 12" fill="none" stroke="var(--c-mantle)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M210 14 l-6 -14 M216 12 l2 -14 M222 14 l8 -12" fill="none" stroke="#000" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.15"/>
+  </g>
+</svg>

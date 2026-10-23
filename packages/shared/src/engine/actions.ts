@@ -1,6 +1,7 @@
 import type { Content } from '../schemas/content.js';
 import { NO_ENERGY, dayKey, energyChargesLeft, energyDurationMs } from '../formulas/rates.js';
 import { type CharacterState, GameError, addStack, cloneState } from './state.js';
+import { outfitParts } from '../schemas/art.js';
 import { startNextFromQueue } from './advance.js';
 import { copiesWear, durabilityMs, isDurable, takeCopy } from './gear.js';
 import { recipeAvailable, skillLevel } from './trials.js';
@@ -193,8 +194,10 @@ export function lookOptions(state: CharacterState, content: Content): Record<str
   const out: Record<string, Set<string>> = {};
   for (const o of content.cosmetics.outfits) {
     if (!unlockedOutfits(state, content).includes(o.id)) continue;
-    for (const [slot, part] of Object.entries(o.parts)) (out[slot] ??= new Set()).add(part);
+    for (const [slot, part] of Object.entries(outfitParts(o, state.classId))) (out[slot] ??= new Set()).add(part);
   }
+  // Pièces à part (coiffes, familiers, armes, auras) de sa classe.
+  for (const p of content.cosmetics.pieces ?? []) if (state.classId && p.classes.includes(state.classId)) (out[p.slot] ??= new Set()).add(p.id);
   return Object.fromEntries(Object.entries(out).map(([slot, ids]) => [slot, [...ids]]));
 }
 

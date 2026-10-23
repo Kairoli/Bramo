@@ -1,0 +1,19 @@
+{
+  "id": "halloween_crow",
+  "slot": "shoulder_near",
+  "name": "Corbeau sur l’épaule",
+  "colorRoles": [
+    "crow"
+  ],
+  "anchor": [
+    0,
+    0
+  ],
+  "layers": [
+    {
+      "id": "crow",
+      "bone": "upperarm_near",
+      "z": 79
+    }
+  ]
+}

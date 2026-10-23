@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 760">
+  <!-- Chapeau de sorcière : grand bord, pointe tordue d’où pend une lune, bandeau à boucle ; mèches longues dans le dos. -->
+  <g id="back">
+    <path d="M190 92 Q170 130 176 196 L192 190 Q190 140 204 104 Z" fill="var(--c-beard)"/>
+    <path d="M138.4 89.9 L138.9 87.9 L140.6 85.8 L143.6 83.6 L147.8 81.4 L153.1 79.2 L159.4 77.1 L166.7 75 L174.9 73.1 L183.6 71.3 L192.9 69.6 L202.6 68.2 L212.4 67.1 L222.3 66.2 L232 65.5 L241.5 65.2 L250.4 65.1 L258.8 65.3 L266.3 65.8 L273 66.6 L278.7 67.7 L283.2 69 L286.6 70.5 L288.7 72.2 L289.6 74.1 Z" fill="var(--c-coat-dark)"/>
+    <path d="M138.4 89.9 L138.9 87.9 L140.6 85.8 L143.6 83.6 L147.8 81.4 L153.1 79.2 L159.4 77.1 L166.7 75 L174.9 73.1 L183.6 71.3 L192.9 69.6 L202.6 68.2 L212.4 67.1 L222.3 66.2 L232 65.5 L241.5 65.2 L250.4 65.1 L258.8 65.3 L266.3 65.8 L273 66.6 L278.7 67.7 L283.2 69 L286.6 70.5 L288.7 72.2 L289.6 74.1 Z" fill="#000" opacity="0.3"/>
+  </g>
+  <g id="shadow">
+    <path d="M184 90 Q214 84 248 90 L248 108 Q214 98 186 112 Z" fill="#000" opacity="0.35"/>
+  </g>
+  <g id="front">
+    <path d="M182 82 Q190 44 204 14 Q214 -8 234 -18 Q254 -24 266 -8 Q248 -12 236 0 Q224 16 228 42 Q234 62 248 80 Q214 90 182 82 Z" fill="var(--c-coat-dark)"/>
+    <path d="M182 82 Q190 44 204 14 Q214 -8 234 -18 Q214 0 206 30 Q198 58 200 86 Z" fill="#000" opacity="0.3"/>
+    <path d="M234 -18 Q254 -24 266 -8 M228 42 Q234 62 248 80" fill="none" stroke="var(--c-glow)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.5"/>
+    <path d="M196 50 Q204 46 212 52 M220 30 l6 4" fill="none" stroke="#000" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.4"/>
+    <path d="M183 72 Q214 80 248 70 L249 82 Q214 92 183 84 Z" fill="var(--c-under)"/>
+    <path d="M206 72 L222 74 L221 88 L205 86 Z" fill="var(--c-metal)"/><path d="M206 72 L222 74 L221 88 L205 86 Z" fill="url(#rig-sheen)"/><path d="M206 72 L222 74 L221 88 L205 86 Z" fill="none" stroke="#000" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.5"/>
+    <path d="M210 76 L218 77 L217 84 L209 83 Z" fill="var(--c-under)"/>
+    <path d="M289.6 74.1 L289.1 76.1 L287.4 78.2 L284.4 80.4 L280.2 82.6 L274.9 84.8 L268.6 86.9 L261.3 89 L253.1 90.9 L244.4 92.7 L235.1 94.4 L225.4 95.8 L215.6 96.9 L205.7 97.8 L196 98.5 L186.5 98.8 L177.6 98.9 L169.2 98.7 L161.7 98.2 L155 97.4 L149.3 96.3 L144.8 95 L141.4 93.5 L139.3 91.8 L138.4 89.9 Z" fill="var(--c-coat-dark)"/>
+    <path d="M289.6 74.1 L289.1 76.1 L287.4 78.2 L284.4 80.4 L280.2 82.6 L274.9 84.8 L268.6 86.9 L261.3 89 L253.1 90.9 L244.4 92.7 L235.1 94.4 L225.4 95.8 L215.6 96.9 L205.7 97.8 L196 98.5 L186.5 98.8 L177.6 98.9 L169.2 98.7 L161.7 98.2 L155 97.4 L149.3 96.3 L144.8 95 L141.4 93.5 L139.3 91.8 L138.4 89.9" fill="none" stroke="#000" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.4"/>
+    <path d="M288.4 77.2 L285.8 79.4 L281.9 81.8 L276.7 84.1 L270.4 86.4 L262.9 88.6 L254.6 90.6 L245.4 92.5 L235.7 94.2" fill="none" stroke="#FFFFFF" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.2"/>
+    <g class="fx-sway" style="--d:-1s"><path d="M266 -8 L268 14" fill="none" stroke="#C9C2B0" stroke-width="0.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M268 14 A8 8 0 1 0 274 28 A6 6 0 1 1 268 14 Z" fill="var(--c-bone, #DCD3BC)"/><circle cx="270" cy="21" r="12" fill="url(#rig-halo)"/></g>
+  </g>
+</svg>

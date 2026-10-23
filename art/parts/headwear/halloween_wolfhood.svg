@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 760">
+  <!-- Capuchon de loup : peau de loup aux oreilles dressées, mâchoire supérieure en visière, crocs. -->
+  <g id="back">
+    <path d="M188 96 Q198 66 218 62 Q240 66 248 92 L246 152 L186 154 Z" fill="var(--c-shadow)"/>
+    <path d="M190 112 Q160 124 150 178 L198 172 Z" fill="var(--c-coat-dark)"/>
+  </g>
+  <g id="shadow">
+    <path d="M186 92 Q194 66 214 64 Q237 66 246 92 L246 104 Q216 95 188 109 Z" fill="url(#rig-hood)"/>
+  </g>
+  <g id="front">
+    <path d="M200 40 L190 8 L218 30 Z" fill="var(--c-wolf, #6E6A72)"/>
+    <path d="M201 34 L195 16 L211 30 Z" fill="#C9A6A0" opacity="0.7"/>
+    <path d="M232 44 L244 12 L254 46 Z" fill="var(--c-wolf, #6E6A72)"/>
+    <path d="M236 40 L243 22 L249 42 Z" fill="#C9A6A0" opacity="0.7"/>
+    <path d="M148 100 Q124 128 118 164 Q138 152 156 146 Z" fill="var(--c-coat-dark)"/>
+    <path d="M222 32 Q258 40 264 78 Q264 90 254 98 Q240 72 216 70 Q196 72 190 98 Q184 126 190 154 L160 174 Q128 134 142 84 Q160 38 222 32 Z" fill="var(--c-wolf, #6E6A72)"/>
+    <path d="M222 32 Q258 40 264 78 Q264 90 254 98 Q240 72 216 70 Q196 72 190 98 Q184 126 190 154 L160 174 Q128 134 142 84 Q160 38 222 32 Z" fill="url(#rig-weave)"/>
+    <path d="M222 32 Q160 38 142 84 Q128 134 160 174 L190 154 Q184 126 190 98 Q194 78 204 70 Z" fill="url(#rig-shade)"/>
+    <path d="M222 32 Q258 40 264 78 Q264 90 254 98" fill="none" stroke="var(--c-glow)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.55"/>
+    <path d="M190 98 Q196 72 216 70 Q240 72 254 98" fill="none" stroke="var(--c-shadow)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M150 60 l-6 -4 M146 90 l-8 -2 M144 120 l-8 0 M150 150 l-8 4" fill="none" stroke="#000" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.3"/>
+    <path d="M214 72 Q240 64 262 76 L296 92 Q298 100 290 102 L262 100 Q240 90 214 86 Z" fill="var(--c-wolf, #6E6A72)"/>
+    <path d="M262 76 L296 92 Q298 100 290 102 L262 100 Z" fill="#FFFFFF" opacity="0.1"/>
+    <path d="M288 88 Q298 90 297 96 Q292 99 286 96 Z" fill="#14181B"/>
+    <path d="M266 100 L270 112 L274 101 Z M280 101 L283 110 L286 101 Z" fill="var(--c-bone, #DCD3BC)"/>
+    <path d="M220 78 Q240 72 258 80" fill="none" stroke="#000" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.35"/>
+    <circle cx="248" cy="78" r="2" fill="var(--c-carved, #FFC24A)"/>
+    <circle cx="248" cy="78" r="6" fill="url(#rig-halo-trim)"/>
+  </g>
+</svg>

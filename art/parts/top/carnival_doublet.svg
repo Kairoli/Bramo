@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 760">
+  <!-- Pourpoint du Carnaval : losanges d’arlequin sur le buste, manches bouffantes fendues qui laissent voir la doublure d’or. -->
+  <g id="sleeve_far_upper">
+    <path d="M240 180 Q262 166 284 178 Q300 220 300 262 Q284 280 268 280 Q250 230 240 180 Z" fill="var(--c-coat)"/>
+    <path d="M252 186 Q266 230 274 276 M266 178 Q282 224 288 272" fill="none" stroke="var(--c-under)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M240 180 Q262 166 284 178 Q300 220 300 262 Q284 280 268 280 Q250 230 240 180 Z" fill="url(#rig-light)"/>
+    <path d="M240 180 Q262 166 284 178 Q300 220 300 262 Q284 280 268 280 Q250 230 240 180 Z" fill="none" stroke="#000" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.4"/>
+    <path d="M266 272 L302 258 L308 280 L274 296 Z" fill="var(--c-coat-dark)"/>
+    <path d="M266 272 L302 258" fill="none" stroke="var(--c-trim)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+  <g id="forearm_far">
+    <path d="M278 292 L306 280 L343 240 L325 225 Z" fill="var(--c-coat)"/>
+    <path d="M286 286 L332 236" fill="none" stroke="var(--c-trim)" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="4 4"/>
+  </g>
+  <g id="torso">
+    <defs><pattern id="rig-doublet" width="24" height="34" patternUnits="userSpaceOnUse"><rect width="24" height="34" fill="var(--c-coat)"/><path d="M12 0 L24 17 L12 34 L0 17 Z" fill="var(--c-mantle)"/><path d="M12 0 L24 17 L12 34 L0 17 Z" fill="none" stroke="var(--c-trim)" stroke-width=".7" stroke-opacity=".6"/></pattern></defs>
+    <path d="M150 176 Q200 156 254 166 Q266 216 258 306 Q206 322 156 306 Q144 240 150 176 Z" fill="url(#rig-doublet)"/>
+    <path d="M150 176 Q200 156 254 166 Q266 216 258 306 Q206 322 156 306 Q144 240 150 176 Z" fill="url(#rig-light)"/>
+    <path d="M150 176 Q144 240 156 306 Q176 312 196 314 Q184 240 190 170 Z" fill="url(#rig-shade)"/>
+    <path d="M254 166 Q266 216 258 306" fill="none" stroke="var(--c-glow)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.5"/>
+    <path d="M156 302 Q206 318 258 302" fill="none" stroke="var(--c-trim)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+  <g id="under">
+    <path d="M198 160 L238 162 L222 206 Z" fill="var(--c-under)"/>
+    <path d="M208 196 L208 300" fill="none" stroke="var(--c-trim)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="208" cy="208" r="2.6" fill="var(--c-trim)"/>
+    <circle cx="208" cy="228" r="2.6" fill="var(--c-trim)"/>
+    <circle cx="208" cy="248" r="2.6" fill="var(--c-trim)"/>
+    <circle cx="208" cy="268" r="2.6" fill="var(--c-trim)"/>
+    <circle cx="208" cy="288" r="2.6" fill="var(--c-trim)"/>
+  </g>
+  <g id="sleeve_near_upper">
+    <path d="M146 176 Q170 166 186 186 Q186 232 178 272 Q156 282 134 272 Q130 220 146 176 Z" fill="var(--c-coat)"/>
+    <path d="M152 184 Q146 230 146 272 M168 180 Q168 228 162 276" fill="none" stroke="var(--c-under)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M146 176 Q170 166 186 186 Q186 232 178 272 Q156 282 134 272 Q130 220 146 176 Z" fill="url(#rig-shade)"/>
+    <path d="M146 176 Q170 166 186 186 Q186 232 178 272 Q156 282 134 272 Q130 220 146 176 Z" fill="none" stroke="#000" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.4"/>
+    <path d="M133 270 L176 276 L175 296 L131 290 Z" fill="var(--c-coat-dark)"/>
+    <path d="M133 270 L176 276" fill="none" stroke="var(--c-trim)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+  <g id="forearm_near">
+    <path d="M136 288 L170 294 L158 370 L127 366 Z" fill="var(--c-coat)"/>
+    <path d="M136 288 L170 294 L158 370 L127 366 Z" fill="url(#rig-shade)"/>
+    <path d="M150 300 L142 362" fill="none" stroke="var(--c-trim)" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="4 4"/>
+  </g>
+</svg>

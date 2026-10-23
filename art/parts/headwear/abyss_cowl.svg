@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 760">
+  <!-- Capuchon des Abysses : écailles, crête de nageoire translucide, perle au bandeau. -->
+  <g id="back">
+    <path d="M188 96 Q198 66 218 62 Q240 66 248 92 L246 152 L186 154 Z" fill="var(--c-shadow)"/>
+    <path d="M190 112 Q160 124 150 178 L198 172 Z" fill="var(--c-coat-dark)"/>
+  </g>
+  <g id="shadow">
+    <path d="M186 92 Q194 66 214 64 Q237 66 246 92 L246 104 Q216 95 188 109 Z" fill="url(#rig-hood)"/>
+  </g>
+  <g id="front">
+    <path d="M226 34 L214 2 L208 30 L196 4 L192 34 L178 12 L178 42 L160 26 L166 56 L150 46 L158 70 Z" fill="var(--c-trim)" opacity="0.45"/>
+    <path d="M214 2 L212 34 M196 4 L198 36 M178 12 L184 42 M160 26 L172 56 M150 46 L164 70" fill="none" stroke="var(--c-coat-dark)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M148 100 Q124 128 118 164 Q138 152 156 146 Z" fill="var(--c-coat-dark)"/>
+    <path d="M222 32 Q258 40 264 78 Q264 90 254 98 Q240 72 216 70 Q196 72 190 98 Q184 126 190 154 L160 174 Q128 134 142 84 Q160 38 222 32 Z" fill="var(--c-coat)"/>
+    <path d="M222 32 Q258 40 264 78 Q264 90 254 98 Q240 72 216 70 Q196 72 190 98 Q184 126 190 154 L160 174 Q128 134 142 84 Q160 38 222 32 Z" fill="url(#rig-weave)"/>
+    <path d="M222 32 Q160 38 142 84 Q128 134 160 174 L190 154 Q184 126 190 98 Q194 78 204 70 Z" fill="url(#rig-shade)"/>
+    <path d="M222 32 Q258 40 264 78 Q264 90 254 98" fill="none" stroke="var(--c-glow)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.55"/>
+    <path d="M190 98 Q196 72 216 70 Q240 72 254 98" fill="none" stroke="var(--c-shadow)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M190 88 Q216 76 252 92 L252 98 Q216 84 191 96 Z" fill="var(--c-coat-dark)"/>
+    <circle cx="212" cy="86" r="4" fill="var(--c-metal)"/><circle cx="212" cy="86" r="1.8" fill="var(--c-trim)" class="fx-pulse" filter="url(#rig-glow)"/>
+  </g>
+</svg>

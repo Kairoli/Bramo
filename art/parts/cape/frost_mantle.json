@@ -1,0 +1,34 @@
+{
+  "id": "frost_mantle",
+  "slot": "cape",
+  "name": "Mantelet du Givre",
+  "colorRoles": [
+    "coat",
+    "coatDark",
+    "mantle",
+    "trim",
+    "metal"
+  ],
+  "anchor": [
+    0,
+    0
+  ],
+  "layers": [
+    {
+      "id": "back",
+      "bone": "cape",
+      "z": 6
+    },
+    {
+      "id": "collar",
+      "bone": "torso",
+      "z": 74
+    },
+    {
+      "id": "snow",
+      "bone": "root",
+      "z": 91,
+      "detail": 2
+    }
+  ]
+}

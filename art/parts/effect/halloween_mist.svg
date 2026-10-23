@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 760">
+  <!-- Brume de la Veillée : une brume qui traîne au sol et deux petits fantômes qui montent. -->
+  <g id="floor">
+    <defs><radialGradient id="rig-mist"><stop offset="0" stop-color="var(--c-ghost, #D6FFE6)" stop-opacity=".55"/><stop offset="1" stop-color="var(--c-ghost, #D6FFE6)" stop-opacity="0"/></radialGradient></defs>
+    <ellipse class="fx-drift" cx="170" cy="690" rx="90" ry="18" fill="url(#rig-mist)"/>
+    <ellipse class="fx-drift" style="--d:-4s" cx="250" cy="696" rx="80" ry="14" fill="url(#rig-mist)"/>
+    <ellipse class="fx-drift" style="--d:-7s" cx="200" cy="704" rx="120" ry="12" fill="url(#rig-mist)"/>
+  </g>
+  <g id="ghosts">
+    <g class="fx-ghost" style="--d:0s"><path d="M100 652 Q98 626 110 624 Q122 626 120 652 Q116 648 113 653 Q110 648 107 653 Q104 648 100 652 Z" fill="var(--c-ghost, #D6FFE6)" opacity="0.85"/><ellipse cx="107" cy="635" rx="1.8" ry="2.6" fill="#1A2420"/><ellipse cx="114" cy="635" rx="1.8" ry="2.6" fill="#1A2420"/></g>
+    <g class="fx-ghost" style="--d:-3s"><path d="M290 612 Q288 586 300 584 Q312 586 310 612 Q306 608 303 613 Q300 608 297 613 Q294 608 290 612 Z" fill="var(--c-ghost, #D6FFE6)" opacity="0.85"/><ellipse cx="297" cy="595" rx="1.8" ry="2.6" fill="#1A2420"/><ellipse cx="304" cy="595" rx="1.8" ry="2.6" fill="#1A2420"/></g>
+  </g>
+</svg>

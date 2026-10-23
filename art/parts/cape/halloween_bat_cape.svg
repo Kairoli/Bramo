@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 760">
+  <!-- Cape chauve-souris : deux ailes à nervures qui battent doucement, haut col dressé doublé de rouge. -->
+  <g id="wings">
+    <g class="fx-flap-l"><path d="M204 172 Q160 168 118 196 Q92 214 70 262 Q90 254 102 268 Q104 300 120 330 Q132 312 148 316 Q154 352 176 380 Q186 356 204 356 Z" fill="var(--c-coat-dark)"/><path d="M204 172 Q160 168 118 196 Q92 214 70 262 Q90 254 102 268 Q104 300 120 330 Q132 312 148 316 Q154 352 176 380 Q186 356 204 356 Z" fill="var(--c-under)" opacity="0.45"/><path d="M204 172 Q160 168 118 196 Q92 214 70 262 Q90 254 102 268 Q104 300 120 330 Q132 312 148 316 Q154 352 176 380 Q186 356 204 356 Z" fill="url(#rig-shade)"/><path d="M118 196 L70 262 M118 196 L102 268 M118 196 L120 330 M140 188 L148 316 M160 182 L176 380" fill="none" stroke="#F1F0EC" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.35"/><path d="M204 172 Q160 168 118 196 Q92 214 70 262" fill="none" stroke="#FFFFFF" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.18"/></g>
+    <g class="fx-flap-r"><path d="M208 172 Q252 166 290 192 Q316 210 330 254 Q312 248 300 262 Q298 296 284 322 Q272 304 258 308 Q252 344 232 372 Q222 350 208 352 Z" fill="var(--c-coat-dark)"/><path d="M208 172 Q252 166 290 192 Q316 210 330 254 Q312 248 300 262 Q298 296 284 322 Q272 304 258 308 Q252 344 232 372 Q222 350 208 352 Z" fill="var(--c-under)" opacity="0.45"/><path d="M290 192 L330 254 M290 192 L300 262 M290 192 L284 322 M266 184 L258 308 M246 178 L232 372" fill="none" stroke="#F1F0EC" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.35"/><path d="M208 172 Q252 166 290 192 Q316 210 330 254" fill="none" stroke="var(--c-glow)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.45"/></g>
+  </g>
+  <g id="collar">
+    <path d="M178 178 Q156 150 150 110 Q170 126 192 140 Z" fill="var(--c-coat-dark)"/>
+    <path d="M180 172 Q164 150 160 124 Q174 136 190 146 Z" fill="var(--c-under)"/>
+    <path d="M236 172 Q258 146 266 106 Q246 124 226 138 Z" fill="var(--c-coat-dark)"/>
+    <path d="M234 166 Q250 146 256 122 Q242 134 228 144 Z" fill="var(--c-under)"/>
+    <path d="M150 110 Q156 150 178 178 M266 106 Q258 146 236 172" fill="none" stroke="#000" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.4"/>
+  </g>
+</svg>

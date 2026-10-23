@@ -1,0 +1,22 @@
+{
+  "id": "halloween_staff",
+  "slot": "weapon",
+  "name": "Bâton à lanterne",
+  "colorRoles": [
+    "wood",
+    "woodLight",
+    "metal",
+    "glow"
+  ],
+  "anchor": [
+    0,
+    0
+  ],
+  "layers": [
+    {
+      "id": "staff",
+      "bone": "hand_near",
+      "z": 64
+    }
+  ]
+}

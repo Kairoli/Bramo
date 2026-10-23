@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 760">
+  <!-- Ceinture de filet des Abysses : corde, filet drapé, coquillages et étoile de mer à la boucle. -->
+  <g id="belt">
+    <path d="M150 298 Q206 312 262 298" fill="none" stroke="var(--c-coat-dark)" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M150 298 Q206 312 262 298" fill="none" stroke="var(--c-mantle)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="6 4"/>
+  </g>
+  <g id="gear">
+    <path d="M162.7 306 L160.2 315.3 M171.3 308 L166.5 326.7 M180 310 L172.7 338 M188.7 312 L178.9 349.3 M197.3 314 L185.2 360.7 M159.7 315.3 L203 325.3 M165.3 326.7 L200 334.7 M171 338 L197 344 M176.7 349.3 L194 353.3 M182.3 360.7 L191 362.7 M154 304 L206 316 L188 372 Z" fill="none" stroke="var(--c-metal)" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.75"/>
+    <path d="M212 295 L214.7 302.3 L222.5 302.6 L216.4 307.4 L218.5 314.9 L212 310.6 L205.5 314.9 L207.6 307.4 L201.5 302.6 L209.3 302.3 Z" fill="var(--c-under)"/>
+    <path d="M212 295 L214.7 302.3 L222.5 302.6 L216.4 307.4 L218.5 314.9 L212 310.6 L205.5 314.9 L207.6 307.4 L201.5 302.6 L209.3 302.3 Z" fill="url(#rig-shade)"/>
+    <circle cx="212" cy="306" r="2.4" fill="var(--c-trim)" class="fx-pulse" filter="url(#rig-glow)"/>
+    <path d="M168 340 Q176 328 184 340 Q176 346 168 340 Z" fill="var(--c-metal)"/><path d="M176 344 L171 334 M176 344 L176 331 M176 344 L181 334" fill="none" stroke="#000" stroke-width="0.8" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.3"/>
+    <path d="M238 318 Q246 306 254 318 Q246 324 238 318 Z" fill="var(--c-metal)"/><path d="M246 322 L241 312 M246 322 L246 309 M246 322 L251 312" fill="none" stroke="#000" stroke-width="0.8" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.3"/>
+  </g>
+</svg>

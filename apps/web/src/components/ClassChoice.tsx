@@ -82,7 +82,7 @@ export function OutfitModal({ onClose }: { onClose: () => void }) {
       </div>
       <p className="muted">La tenue est un cosmétique : elle ne change ni vos statistiques ni votre classe. Elle se limite aux styles de votre classe ; pièce par pièce, c’est le mode Apparence du personnage.</p>
       <div className="class-cards">
-        {content.cosmetics.outfits.filter((o) => !o.id.startsWith('sketch_') && (!look || o.classes.includes(look.classId))).map((o) => {
+        {content.cosmetics.outfits.filter((o) => (!o.id.startsWith('sketch_') || (import.meta.env.DEV && o.id.startsWith('sketch_season_'))) && (!look || o.classes.includes(look.classId))).map((o) => {
           const ok = unlocked.has(o.id);
           const current = look?.outfit === o.id;
           return (

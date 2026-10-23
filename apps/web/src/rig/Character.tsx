@@ -1,5 +1,6 @@
 import { useEffect, useId, useMemo, useRef, type CSSProperties } from 'react';
 import type { Appearance, ContentResponse, Lod, Pose, Slot } from '@bramo/shared';
+import { outfitPalette, outfitParts } from '@bramo/shared';
 import { useContent } from '../game/ContentContext';
 import { type LoadedPart, animations, parts, poses, rig } from './assets';
 import { type Matrix, orderedBones, toSvg, worldMatrices } from './skeleton';
@@ -29,7 +30,7 @@ export function resolveParts(content: ContentResponse, appearance: Appearance): 
   const cls = content.classes[appearance.classId];
   const chosen: Partial<Record<Slot, string | null>> = {
     body: poseFor(content, appearance)?.body ?? 'base',
-    ...outfit.parts,
+    ...outfitParts(outfit, appearance.classId),
     weapon: cls?.weapon ?? null,
     effect: cls?.effect ?? null,
     ...appearance.overrides,
@@ -40,10 +41,11 @@ export function resolveParts(content: ContentResponse, appearance: Appearance): 
 /** Variables CSS de couleur : palette de la tenue, couleurs du gabarit, couleur d'affinité de la classe. */
 export function colorVars(content: ContentResponse, appearance: Appearance): CSSProperties {
   const outfit = content.cosmetics.outfits.find((o) => o.id === appearance.outfit) ?? content.cosmetics.outfits[0]!;
-  const glow = content.classes[appearance.classId]?.affinityColor ?? '#B39DF5';
+  const palette = outfitPalette(outfit, appearance.classId);
+  const glow = palette.glow ?? content.classes[appearance.classId]?.affinityColor ?? '#B39DF5';
   const kebab = (s: string) => s.replace(/[A-Z]/g, (c) => `-${c.toLowerCase()}`);
   const vars: Record<string, string> = {};
-  for (const [role, color] of Object.entries({ ...rig.colors, ...outfit.palette })) vars[`--c-${kebab(role)}`] = color;
+  for (const [role, color] of Object.entries({ ...rig.colors, ...palette })) if (color) vars[`--c-${kebab(role)}`] = color;
   vars['--c-glow'] = glow;
   vars['--c-glow-light'] = `color-mix(in srgb, ${glow} 45%, white)`;
   return vars as CSSProperties;
@@ -71,6 +73,11 @@ export interface CharacterProps {
    */
   centered?: boolean;
   className?: string;
+  /**
+   * Foule (bourg, place du clan) : sans lueurs ni matières, et repos animé à 20 images par seconde au lieu de 60 (mesure
+   * du 23 octobre, art/perf.mjs : la moitié du coût d'affichage, invisible à la taille d'un doigt).
+   */
+  crowd?: boolean;
   title?: string;
 }
 
@@ -129,6 +136,17 @@ export function RigDefs({ uid }: { uid: string }) {
         <path d="M0 3.6Q3 -.4 6 3.6" fill="none" stroke="#000" strokeOpacity=".32" strokeWidth=".9" />
         <path d="M0 1.4Q3 -2.6 6 1.4" fill="none" stroke="#fff" strokeOpacity=".12" strokeWidth=".7" />
       </pattern>
+      {/* Fausses lueurs (halo sans flou, 23 octobre) : le flou de rig-glow est ce qui coûte le plus à l'affichage. */}
+      <radialGradient id={`${uid}-rig-halo`}>
+        <stop offset="0" stopColor="var(--c-glow)" stopOpacity=".8" />
+        <stop offset=".45" stopColor="var(--c-glow)" stopOpacity=".3" />
+        <stop offset="1" stopColor="var(--c-glow)" stopOpacity="0" />
+      </radialGradient>
+      <radialGradient id={`${uid}-rig-halo-trim`}>
+        <stop offset="0" stopColor="var(--c-trim)" stopOpacity=".85" />
+        <stop offset=".45" stopColor="var(--c-trim)" stopOpacity=".3" />
+        <stop offset="1" stopColor="var(--c-trim)" stopOpacity="0" />
+      </radialGradient>
       <linearGradient id={`${uid}-rig-hood`} x1="0" y1="0" x2="0" y2="1">
         <stop offset="0" stopColor="#0B0D10" stopOpacity=".92" />
         <stop offset=".75" stopColor="#0B0D10" stopOpacity=".75" />
@@ -153,6 +171,7 @@ export function Character({
   centered,
   className,
   title,
+  crowd,
 }: CharacterProps) {
   const content = useContent();
   const look = useLook(appearance);
@@ -171,7 +190,7 @@ export function Character({
           slot,
           bone: l.bone,
           z: l.z,
-          markup: part.markup[l.id]!.replaceAll('#rig-', `#${uid}-rig-`),
+          markup: part.markup[l.id]!.replaceAll('#rig-', `#${uid}-rig-`).replaceAll('id="rig-', `id="${uid}-rig-`),
           anchor: part.anchor,
         });
       }
@@ -191,16 +210,22 @@ export function Character({
   // Boucle d'animation : on écrit directement les attributs transform, sans re-rendu React.
   useEffect(() => {
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    // « Réduire les animations » : on garde une respiration de repos très douce (moitié d'amplitude),
-    // sans les effets secondaires (CSS) ; c'est le seul mouvement du personnage.
+    // « Réduire les animations » : respiration de repos plus douce (40 % d'amplitude) ; les effets des pièces (CSS)
+    // continuent, plus lents (rig.css).
     const anim = animate ? (animations[pose?.animation ?? 'idle'] ?? null) : null;
     const gain = reduced ? 0.4 : 1;
     const offsets = pose?.bones ?? {};
     const zs = layers.map((l) => l.z);
     const zMid = (Math.min(...zs) + Math.max(...zs)) / 2;
     let frame = 0;
+    let last = -Infinity;
 
     const draw = (now: number) => {
+      if (crowd && now - last < 48) {
+        frame = requestAnimationFrame(draw);
+        return;
+      }
+      last = now;
       const target = explode ? 1 : 0;
       explodeAmount.current += (target - explodeAmount.current) * (reduced ? 1 : 0.12);
       const act = actionRef.current;
@@ -221,14 +246,14 @@ export function Character({
     };
     frame = requestAnimationFrame(draw);
     return () => cancelAnimationFrame(frame);
-  }, [layers, animate, explode, pose]);
+  }, [layers, animate, explode, pose, crowd]);
 
   const [x0, y, w, h] = level.viewBox;
   const axis = rig.bones.find((b) => b.id === 'root')?.pivot[0];
   const x = centered && axis !== undefined ? axis - w / 2 : x0;
   return (
     <svg
-      className={`rig rig-${lod}${animate ? '' : ' rig-still'}${className ? ` ${className}` : ''}`}
+      className={`rig rig-${lod}${animate ? '' : ' rig-still'}${crowd ? ' rig-crowd' : ''}${className ? ` ${className}` : ''}`}
       viewBox={`${x} ${y} ${w} ${h}`}
       preserveAspectRatio={lod === 'portrait' ? 'xMidYMid slice' : 'xMidYMax meet'}
       style={colorVars(content, look)}

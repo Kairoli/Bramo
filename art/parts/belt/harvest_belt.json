@@ -1,0 +1,28 @@
+{
+  "id": "harvest_belt",
+  "slot": "belt",
+  "name": "Ceinture des Moissons",
+  "colorRoles": [
+    "mantle",
+    "under",
+    "trim",
+    "metal",
+    "wood"
+  ],
+  "anchor": [
+    0,
+    0
+  ],
+  "layers": [
+    {
+      "id": "belt",
+      "bone": "pelvis",
+      "z": 40
+    },
+    {
+      "id": "gear",
+      "bone": "pelvis",
+      "z": 41
+    }
+  ]
+}

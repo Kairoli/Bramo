@@ -1,0 +1,34 @@
+{
+  "id": "carnival_tricorn",
+  "slot": "headwear",
+  "name": "Tricorne du Carnaval",
+  "colorRoles": [
+    "coat",
+    "coatDark",
+    "mantle",
+    "trim",
+    "under",
+    "beard"
+  ],
+  "anchor": [
+    0,
+    0
+  ],
+  "layers": [
+    {
+      "id": "back",
+      "bone": "head",
+      "z": 52
+    },
+    {
+      "id": "front",
+      "bone": "head",
+      "z": 80
+    },
+    {
+      "id": "plume",
+      "bone": "head",
+      "z": 81
+    }
+  ]
+}

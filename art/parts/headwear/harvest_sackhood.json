@@ -1,0 +1,38 @@
+{
+  "id": "harvest_sackhood",
+  "slot": "headwear",
+  "name": "Capuche de sac des Moissons",
+  "colorRoles": [
+    "coat",
+    "coatDark",
+    "mantle",
+    "under",
+    "trim"
+  ],
+  "anchor": [
+    0,
+    0
+  ],
+  "layers": [
+    {
+      "id": "back",
+      "bone": "head",
+      "z": 52
+    },
+    {
+      "id": "shadow",
+      "bone": "head",
+      "z": 57
+    },
+    {
+      "id": "front",
+      "bone": "head",
+      "z": 80
+    },
+    {
+      "id": "deco",
+      "bone": "head",
+      "z": 81
+    }
+  ]
+}

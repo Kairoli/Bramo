@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 760">
+  <!-- Robe du Carnaval : losanges d’arlequin, galon d’or, grelots à l’ourlet. -->
+  <g id="back">
+    <defs><pattern id="rig-harlequin-robe" width="28" height="40" patternUnits="userSpaceOnUse"><rect width="28" height="40" fill="var(--c-coat)"/><path d="M14 0 L28 20 L14 40 L0 20 Z" fill="var(--c-mantle)"/><path d="M14 0 L28 20 L14 40 L0 20 Z" fill="none" stroke="var(--c-trim)" stroke-width=".8" stroke-opacity=".7"/></pattern></defs>
+    <path d="M150 316 L258 316 L310 634 Q206 652 102 634 Z" fill="var(--c-coat-dark)"/>
+  </g>
+  <g id="flap_far">
+    <path d="M250 298 L210 310 L234 622 Q282 636 324 612 Q294 450 250 298 Z" fill="url(#rig-harlequin-robe)"/>
+    <path d="M250 298 L210 310 L234 622 Q282 636 324 612 Q294 450 250 298 Z" fill="url(#rig-fold)"/>
+    <path d="M250 298 L210 310 L234 622 Q282 636 324 612 Q294 450 250 298 Z" fill="url(#rig-light)"/>
+    <path d="M210 310 L234 622 Q282 636 324 612" fill="none" stroke="var(--c-trim)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M322 608 Q294 450 252 304" fill="none" stroke="var(--c-glow)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.6"/>
+    <circle cx="240" cy="630" r="5" fill="var(--c-trim)"/><circle cx="238.5" cy="628.5" r="1.6" fill="#FFFFFF" opacity=".7"/>
+    <circle cx="266" cy="638" r="5" fill="var(--c-trim)"/><circle cx="264.5" cy="636.5" r="1.6" fill="#FFFFFF" opacity=".7"/>
+    <circle cx="292" cy="632" r="5" fill="var(--c-trim)"/><circle cx="290.5" cy="630.5" r="1.6" fill="#FFFFFF" opacity=".7"/>
+    <circle cx="318" cy="620" r="5" fill="var(--c-trim)"/><circle cx="316.5" cy="618.5" r="1.6" fill="#FFFFFF" opacity=".7"/>
+  </g>
+  <g id="flap_near">
+    <path d="M160 298 L202 310 L182 626 Q140 634 100 618 Q120 450 160 298 Z" fill="url(#rig-harlequin-robe)"/>
+    <path d="M160 298 L202 310 L182 626 Q140 634 100 618 Q120 450 160 298 Z" fill="url(#rig-fold)"/>
+    <path d="M160 298 L202 310 L182 626 Q140 634 100 618 Q120 450 160 298 Z" fill="url(#rig-shade)"/>
+    <path d="M202 310 L182 626 Q140 634 100 618" fill="none" stroke="var(--c-trim)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="106" cy="626" r="5" fill="var(--c-trim)"/><circle cx="104.5" cy="624.5" r="1.6" fill="#FFFFFF" opacity=".7"/>
+    <circle cx="132" cy="634" r="5" fill="var(--c-trim)"/><circle cx="130.5" cy="632.5" r="1.6" fill="#FFFFFF" opacity=".7"/>
+    <circle cx="158" cy="636" r="5" fill="var(--c-trim)"/><circle cx="156.5" cy="634.5" r="1.6" fill="#FFFFFF" opacity=".7"/>
+    <circle cx="182" cy="632" r="5" fill="var(--c-trim)"/><circle cx="180.5" cy="630.5" r="1.6" fill="#FFFFFF" opacity=".7"/>
+  </g>
+</svg>

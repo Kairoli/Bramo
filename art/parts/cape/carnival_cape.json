@@ -1,0 +1,33 @@
+{
+  "id": "carnival_cape",
+  "slot": "cape",
+  "name": "Cape du Carnaval",
+  "colorRoles": [
+    "coat",
+    "mantle",
+    "trim",
+    "under"
+  ],
+  "anchor": [
+    0,
+    0
+  ],
+  "layers": [
+    {
+      "id": "back",
+      "bone": "cape",
+      "z": 6
+    },
+    {
+      "id": "ruff",
+      "bone": "torso",
+      "z": 74
+    },
+    {
+      "id": "confetti",
+      "bone": "root",
+      "z": 91,
+      "detail": 2
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 760">
+  <!-- Robe des Moissons : pièces rapiécées, ourlet effiloché de paille, épis brodés. -->
+  <g id="back">
+    
+    <path d="M150 316 L258 316 L310 634 Q206 652 102 634 Z" fill="var(--c-coat-dark)"/>
+  </g>
+  <g id="flap_far">
+    <path d="M250 298 L210 310 L234 622 Q282 636 324 612 Q294 450 250 298 Z" fill="var(--c-coat)"/>
+    <path d="M250 298 L210 310 L234 622 Q282 636 324 612 Q294 450 250 298 Z" fill="url(#rig-fold)"/>
+    <path d="M250 298 L210 310 L234 622 Q282 636 324 612 Q294 450 250 298 Z" fill="url(#rig-light)"/>
+    <path d="M252 380 L282 376 L288 412 L258 418 Z" fill="var(--c-under)"/>
+    <path d="M252 380 L282 376 L288 412 L258 418 Z" fill="none" stroke="var(--c-trim)" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="3 3"/>
+    <path d="M270 560 L284 500" fill="none" stroke="var(--c-mantle)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><ellipse cx="273.5" cy="536.1" rx="3.4" ry="1.7" transform="rotate(-115.5 273.5 536.1)" fill="var(--c-trim)"/><ellipse cx="277.4" cy="537" rx="3.4" ry="1.7" transform="rotate(-38.2 277.4 537)" fill="var(--c-trim)"/><ellipse cx="274.9" cy="530.1" rx="3.4" ry="1.7" transform="rotate(-115.5 274.9 530.1)" fill="var(--c-trim)"/><ellipse cx="278.8" cy="531" rx="3.4" ry="1.7" transform="rotate(-38.2 278.8 531)" fill="var(--c-trim)"/><ellipse cx="276.3" cy="524.1" rx="3.4" ry="1.7" transform="rotate(-115.5 276.3 524.1)" fill="var(--c-trim)"/><ellipse cx="280.2" cy="525" rx="3.4" ry="1.7" transform="rotate(-38.2 280.2 525)" fill="var(--c-trim)"/><ellipse cx="277.7" cy="518.1" rx="3.4" ry="1.7" transform="rotate(-115.5 277.7 518.1)" fill="var(--c-trim)"/><ellipse cx="281.6" cy="519" rx="3.4" ry="1.7" transform="rotate(-38.2 281.6 519)" fill="var(--c-trim)"/><ellipse cx="279.1" cy="512.1" rx="3.4" ry="1.7" transform="rotate(-115.5 279.1 512.1)" fill="var(--c-trim)"/><ellipse cx="283" cy="513" rx="3.4" ry="1.7" transform="rotate(-38.2 283 513)" fill="var(--c-trim)"/><ellipse cx="280.5" cy="506.1" rx="3.4" ry="1.7" transform="rotate(-115.5 280.5 506.1)" fill="var(--c-trim)"/><ellipse cx="284.4" cy="507" rx="3.4" ry="1.7" transform="rotate(-38.2 284.4 507)" fill="var(--c-trim)"/><path d="M284 500 l2 -8.8" fill="none" stroke="var(--c-trim)" stroke-width="0.8" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M280 570 L300 516" fill="none" stroke="var(--c-mantle)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><ellipse cx="286" cy="548.1" rx="3.4" ry="1.7" transform="rotate(-108.3 286 548.1)" fill="var(--c-trim)"/><ellipse cx="289.7" cy="549.5" rx="3.4" ry="1.7" transform="rotate(-31 289.7 549.5)" fill="var(--c-trim)"/><ellipse cx="288.4" cy="541.6" rx="3.4" ry="1.7" transform="rotate(-108.3 288.4 541.6)" fill="var(--c-trim)"/><ellipse cx="292.1" cy="543" rx="3.4" ry="1.7" transform="rotate(-31 292.1 543)" fill="var(--c-trim)"/><ellipse cx="290.8" cy="535.1" rx="3.4" ry="1.7" transform="rotate(-108.3 290.8 535.1)" fill="var(--c-trim)"/><ellipse cx="294.5" cy="536.5" rx="3.4" ry="1.7" transform="rotate(-31 294.5 536.5)" fill="var(--c-trim)"/><ellipse cx="293.2" cy="528.6" rx="3.4" ry="1.7" transform="rotate(-108.3 293.2 528.6)" fill="var(--c-trim)"/><ellipse cx="296.9" cy="530" rx="3.4" ry="1.7" transform="rotate(-31 296.9 530)" fill="var(--c-trim)"/><ellipse cx="295.6" cy="522.1" rx="3.4" ry="1.7" transform="rotate(-108.3 295.6 522.1)" fill="var(--c-trim)"/><ellipse cx="299.3" cy="523.5" rx="3.4" ry="1.7" transform="rotate(-31 299.3 523.5)" fill="var(--c-trim)"/><path d="M300 516 l3.1 -8.4" fill="none" stroke="var(--c-trim)" stroke-width="0.8" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M210 310 L234 622 Q282 636 324 612" fill="none" stroke="var(--c-trim)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M322 608 Q294 450 252 304" fill="none" stroke="var(--c-glow)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.6"/>
+    <path d="M240 622 l-2 16 M254 628 l1 18 M268 632 l-1 14 M282 632 l2 16 M296 628 l-1 14 M310 620 l3 14" fill="none" stroke="var(--c-mantle)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+  <g id="flap_near">
+    <path d="M160 298 L202 310 L182 626 Q140 634 100 618 Q120 450 160 298 Z" fill="var(--c-coat)"/>
+    <path d="M160 298 L202 310 L182 626 Q140 634 100 618 Q120 450 160 298 Z" fill="url(#rig-fold)"/>
+    <path d="M160 298 L202 310 L182 626 Q140 634 100 618 Q120 450 160 298 Z" fill="url(#rig-shade)"/>
+    <path d="M128 430 L162 428 L160 470 L126 470 Z" fill="var(--c-mantle)"/>
+    <path d="M128 430 L162 428 L160 470 L126 470 Z" fill="url(#rig-weave)"/>
+    <path d="M128 430 L162 428 L160 470 L126 470 Z" fill="none" stroke="var(--c-coat-dark)" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="3 3"/>
+    <path d="M146 520 L176 524 L172 548 L144 544 Z" fill="var(--c-under)"/>
+    <path d="M202 310 L182 626 Q140 634 100 618" fill="none" stroke="var(--c-trim)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M106 620 l-2 14 M120 626 l1 16 M134 630 l-1 14 M148 630 l2 15 M162 628 l-1 13 M176 626 l2 14" fill="none" stroke="var(--c-mantle)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+</svg>

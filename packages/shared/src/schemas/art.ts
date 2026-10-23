@@ -38,6 +38,13 @@ export const paletteSchema = z.object({
   trim: hex,
   metal: hex,
   beard: hex,
+  /** Facultatif : une tenue peut aussi teinter les jambes, les bottes et le cuir (sinon, les couleurs du gabarit). */
+  legs: hex.optional(),
+  legsDark: hex.optional(),
+  boots: hex.optional(),
+  leather: hex.optional(),
+  /** Facultatif : couleur des sorts et des lueurs de classe avec cette tenue (sinon, la couleur d'affinité de la classe). */
+  glow: hex.optional(),
 });
 export type Palette = z.infer<typeof paletteSchema>;
 
@@ -137,13 +144,52 @@ export const outfitSchema = z.object({
   locked: z.string().optional(),
   palette: paletteSchema,
   parts: z.partialRecord(slotSchema.exclude(['body', 'weapon', 'effect']), id),
+  /**
+   * Version d'une classe [demande de Louis, 23 octobre : « reconnaître les classes hors pose »] : les pièces qui changent
+   * pour garder la signature de la classe (barbe et avant-bras nus du Forgefeu, capuche et robe longue du Runiste,
+   * capuchon, carquois et cape courte du Traqueur ; null retire une pièce), et des couleurs qui changent.
+   */
+  byClass: z
+    .record(
+      id,
+      z.object({
+        parts: z.partialRecord(slotSchema.exclude(['body', 'weapon', 'effect']), id.nullable()).default({}),
+        palette: paletteSchema.partial().default({}),
+      }),
+    )
+    .optional(),
 });
 export type Outfit = z.infer<typeof outfitSchema>;
 
+/** Pièces d'une tenue pour une classe (sa version propre si elle en a une). */
+export function outfitParts(outfit: Outfit, classId: string | null | undefined): Partial<Record<Slot, string>> {
+  const own = classId ? outfit.byClass?.[classId]?.parts : undefined;
+  const merged: Partial<Record<Slot, string | null>> = { ...outfit.parts, ...own };
+  return Object.fromEntries(Object.entries(merged).filter(([, v]) => v)) as Partial<Record<Slot, string>>;
+}
+
+/** Couleurs d'une tenue pour une classe. */
+export function outfitPalette(outfit: Outfit, classId: string | null | undefined): Palette {
+  return { ...outfit.palette, ...(classId ? outfit.byClass?.[classId]?.palette : undefined) };
+}
+
 export const classesFileSchema = z.array(classSchema);
+/**
+ * Pièce d'apparence à part (hors tenue) : posable emplacement par emplacement par les classes indiquées, y compris l'arme
+ * et l'aura (effet). `test` : essai (23 octobre), pas une pièce à vendre.
+ */
+export const cosmeticPieceSchema = z.object({
+  slot: slotSchema.exclude(['body']),
+  id,
+  classes: z.array(id).min(1),
+  test: z.boolean().optional(),
+});
+export type CosmeticPiece = z.infer<typeof cosmeticPieceSchema>;
+
 export const cosmeticsFileSchema = z.object({
   default: z.object({ outfit: id, class: id }),
   outfits: z.array(outfitSchema).min(1),
+  pieces: z.array(cosmeticPieceSchema).default([]),
 });
 export type Cosmetics = z.infer<typeof cosmeticsFileSchema>;
 

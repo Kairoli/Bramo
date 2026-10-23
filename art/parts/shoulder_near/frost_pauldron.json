@@ -1,0 +1,21 @@
+{
+  "id": "frost_pauldron",
+  "slot": "shoulder_near",
+  "name": "Épaulière de givre",
+  "colorRoles": [
+    "metal",
+    "mantle",
+    "trim"
+  ],
+  "anchor": [
+    0,
+    0
+  ],
+  "layers": [
+    {
+      "id": "pauldron",
+      "bone": "upperarm_near",
+      "z": 76
+    }
+  ]
+}

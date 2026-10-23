@@ -135,6 +135,14 @@ function checkArtReferences(content: Content, art: ArtBundle): void {
     for (const [slot, id] of Object.entries(o.parts)) {
       if (!has(slot, id)) errors.push(`tenue ${o.id} : pièce introuvable art/parts/${slot}/${id}`);
     }
+    for (const [cls, v] of Object.entries(o.byClass ?? {})) {
+      if (!content.classes[cls]) errors.push(`tenue ${o.id} : classe inconnue « ${cls} »`);
+      for (const [slot, id] of Object.entries(v.parts)) if (id && !has(slot, id)) errors.push(`tenue ${o.id} (${cls}) : pièce introuvable art/parts/${slot}/${id}`);
+    }
+  }
+  for (const p of content.cosmetics.pieces ?? []) {
+    if (!has(p.slot, p.id)) errors.push(`pièce d’apparence : introuvable art/parts/${p.slot}/${p.id}`);
+    for (const cls of p.classes) if (!content.classes[cls]) errors.push(`pièce d’apparence ${p.id} : classe inconnue « ${cls} »`);
   }
   for (const c of Object.values(content.classes)) {
     if (c.weapon && !has('weapon', c.weapon)) errors.push(`classe ${c.id} : arme introuvable « ${c.weapon} »`);

@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 760">
+  <!-- Masque du Carnaval porté sur la barbe tressée du Forgefeu : le masque couvre le haut du visage, la barbe et sa bague restent visibles. -->
+  <g id="ribbon">
+    <path d="M196 96 Q180 98 172 108 Q164 130 156 156 L166 158 Q172 132 182 114 Q188 106 198 104 Z" fill="var(--c-mantle)"/>
+  </g>
+  <g id="features">
+    <path d="M188 114 Q188 150 212 170 Q238 162 245 124 Q236 132 226 131 Q212 129 202 120 Z" fill="var(--c-beard)"/>
+    <path d="M188 114 Q188 150 212 170 L210 128 Q202 124 198 118 Z" fill="url(#rig-shade)"/>
+    <path d="M218 126 Q230 116 247 120 Q246 127 240 128 Q232 124 226 130 Z" fill="var(--c-beard)"/>
+    <path d="M212 168 L214 190" fill="none" stroke="var(--c-beard)" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+    <rect x="207" y="176" width="13" height="6" rx="2" fill="var(--c-metal)" transform="rotate(4 213 179)"/>
+  </g>
+  <g id="mask">
+    <path d="M194 88 Q210 74 238 78 Q254 84 252 98 L302 124 Q306 132 298 136 L250 122 Q240 126 222 122 Q204 118 196 110 Q190 100 194 88 Z" fill="var(--c-under)"/>
+    <path d="M194 88 Q210 74 238 78 Q254 84 252 98 L302 124 Q306 132 298 136 L250 122 Q240 126 222 122 Q204 118 196 110 Q190 100 194 88 Z" fill="url(#rig-sheen)"/>
+    <path d="M226 82 l5 -6 l5 6 l-5 6 Z M212 84 l4 -5 l4 5 l-4 5 Z M240 86 l4 -4 l4 4 l-4 4 Z" fill="var(--c-mantle)"/>
+    <path d="M198 108 Q206 116 222 118 Q238 118 246 110 M254 104 Q276 114 298 128" fill="none" stroke="var(--c-trim)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+    <ellipse cx="219" cy="101" rx="7" ry="4.6" fill="#0B0D10"/><ellipse cx="237" cy="100" rx="4.6" ry="3.8" fill="#0B0D10"/>
+    <path d="M231 72 l4 -7 l4 7 l-4 5 Z" fill="var(--c-trim)" class="fx-pulse" filter="url(#rig-glow)"/>
+  </g>
+  <g id="eyes">
+    <ellipse cx="219" cy="101" rx="3" ry="1.5" fill="var(--c-glow-light)" class="fx-pulse" filter="url(#rig-glow)"/><ellipse cx="237" cy="100" rx="2.2" ry="1.3" fill="var(--c-glow-light)" class="fx-pulse" filter="url(#rig-glow)"/>
+  </g>
+</svg>

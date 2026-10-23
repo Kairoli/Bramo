@@ -1,0 +1,27 @@
+{
+  "id": "halloween_mist",
+  "slot": "effect",
+  "name": "Brume de la Veillée",
+  "colorRoles": [
+    "ghost",
+    "glow"
+  ],
+  "anchor": [
+    0,
+    0
+  ],
+  "layers": [
+    {
+      "id": "floor",
+      "bone": "root",
+      "z": 1,
+      "detail": 2
+    },
+    {
+      "id": "ghosts",
+      "bone": "root",
+      "z": 91,
+      "detail": 2
+    }
+  ]
+}

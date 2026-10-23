@@ -1,0 +1,33 @@
+{
+  "id": "harvest_robe",
+  "slot": "robe",
+  "name": "Robe des Moissons",
+  "colorRoles": [
+    "coat",
+    "coatDark",
+    "trim",
+    "mantle",
+    "under"
+  ],
+  "anchor": [
+    0,
+    0
+  ],
+  "layers": [
+    {
+      "id": "back",
+      "bone": "cloth_back",
+      "z": 10
+    },
+    {
+      "id": "flap_far",
+      "bone": "cloth_far",
+      "z": 30
+    },
+    {
+      "id": "flap_near",
+      "bone": "cloth_near",
+      "z": 32
+    }
+  ]
+}

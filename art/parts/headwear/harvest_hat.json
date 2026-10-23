@@ -1,0 +1,33 @@
+{
+  "id": "harvest_hat",
+  "slot": "headwear",
+  "name": "Chapeau des Moissons",
+  "colorRoles": [
+    "mantle",
+    "under",
+    "trim",
+    "coatDark",
+    "beard"
+  ],
+  "anchor": [
+    0,
+    0
+  ],
+  "layers": [
+    {
+      "id": "back",
+      "bone": "head",
+      "z": 52
+    },
+    {
+      "id": "shadow",
+      "bone": "head",
+      "z": 57
+    },
+    {
+      "id": "front",
+      "bone": "head",
+      "z": 80
+    }
+  ]
+}

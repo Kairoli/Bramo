@@ -53,7 +53,7 @@ function Walker({ p, slot, onOpen }: { p: TownPlayer; slot: number; onOpen: () =
         </span>
         <span className="muted">{p.doing ?? 'se promène'}</span>
       </div>
-      <Character appearance={{ classId: p.classId, outfit: p.outfit }} lod="scene" title={p.name} />
+      <Character appearance={{ classId: p.classId, outfit: p.outfit }} lod="scene" title={p.name} crowd />
       <span className="walker-name">{p.name}</span>
     </div>
   );
@@ -158,7 +158,7 @@ function VillagerFigure({ v }: { v: Villager }) {
         <strong>{v.name}</strong>
         <span className="muted">Habitant du bourg</span>
       </div>
-      <Character appearance={{ classId: v.classId, outfit: v.outfit }} lod="scene" title={v.name} />
+      <Character appearance={{ classId: v.classId, outfit: v.outfit }} lod="scene" title={v.name} crowd />
       <span className="walker-name">{v.name}</span>
     </div>
   );

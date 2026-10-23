@@ -1,0 +1,25 @@
+{
+  "id": "halloween_wolfpelt",
+  "slot": "cape",
+  "name": "Peau de loup",
+  "colorRoles": [
+    "wolf",
+    "bone"
+  ],
+  "anchor": [
+    0,
+    0
+  ],
+  "layers": [
+    {
+      "id": "back",
+      "bone": "cape",
+      "z": 6
+    },
+    {
+      "id": "paws",
+      "bone": "torso",
+      "z": 74
+    }
+  ]
+}

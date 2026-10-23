@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 760">
+  <!-- Ceinture des Moissons : corde tressée nouée, faucille côté proche, lanterne-courge sculptée qui luit côté éloigné. -->
+  <g id="belt">
+    <path d="M150 296 Q206 310 262 296" fill="none" stroke="var(--c-mantle)" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M150 296 Q206 310 262 296" fill="none" stroke="#000" stroke-width="11" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.12" stroke-dasharray="2 5"/>
+    <path d="M156 298 l6 -6 M168 301 l6 -6 M180 303 l6 -6 M192 304 l6 -6 M204 305 l6 -6 M216 305 l6 -6 M228 304 l6 -6 M240 302 l6 -6 M252 299 l6 -6" fill="none" stroke="#000" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.3"/>
+    <circle cx="172" cy="304" r="8" fill="var(--c-mantle)"/>
+    <path d="M168 308 Q162 330 170 352 M176 308 Q182 326 178 344" fill="none" stroke="var(--c-mantle)" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M168 308 Q162 330 170 352 M176 308 Q182 326 178 344" fill="none" stroke="#000" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.15"/>
+  </g>
+  <g id="gear">
+    <path d="M150 304 L146 344" fill="none" stroke="var(--c-wood)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M146 344 Q122 350 118 376 Q132 360 150 354 Z" fill="var(--c-metal)"/>
+    <path d="M146 344 Q122 350 118 376 Q132 360 150 354 Z" fill="url(#rig-sheen)"/>
+    <path d="M250 304 L254 326" fill="none" stroke="#2B2320" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M236 334 Q236 324 254 324 Q272 324 272 336 Q274 352 254 354 Q234 352 236 334 Z" fill="var(--c-under)"/>
+    <path d="M236 334 Q236 324 254 324 Q272 324 272 336 Q274 352 254 354 Q234 352 236 334 Z" fill="url(#rig-shade)"/>
+    <path d="M248 325 Q244 340 248 353 M260 325 Q264 340 260 353" fill="none" stroke="#000" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.25"/>
+    <path d="M251 320 L257 320 L256 326 L252 326 Z" fill="#4A5A2A"/>
+    <g class="fx-pulse"><path d="M244 334 l5 -4 l2 5 Z M258 330 l5 4 l-6 2 Z M244 344 Q254 350 264 343 L262 347 Q254 352 246 347 Z" fill="var(--c-trim)" filter="url(#rig-glow)"/></g>
+  </g>
+</svg>

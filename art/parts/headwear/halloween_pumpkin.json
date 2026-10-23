@@ -1,0 +1,20 @@
+{
+  "id": "halloween_pumpkin",
+  "slot": "headwear",
+  "name": "Tête de citrouille",
+  "colorRoles": [
+    "pumpkin",
+    "carved"
+  ],
+  "anchor": [
+    0,
+    0
+  ],
+  "layers": [
+    {
+      "id": "head",
+      "bone": "head",
+      "z": 82
+    }
+  ]
+}

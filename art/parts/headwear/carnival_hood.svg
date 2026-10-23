@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 760">
+  <!-- Capuche du Carnaval : capuche d’arlequin dont la pointe retombe avec un grelot ; le masque luit dans l’ombre. -->
+  <g id="back">
+    <defs><pattern id="rig-harlequin-hood" width="22" height="30" patternUnits="userSpaceOnUse"><rect width="22" height="30" fill="var(--c-coat)"/><path d="M11 0 L22 15 L11 30 L0 15 Z" fill="var(--c-mantle)"/></pattern></defs>
+    <path d="M264 74 Q276 116 262 156 L240 170 Q252 130 250 96 Z" fill="var(--c-coat-dark)"/>
+    <path d="M188 96 Q198 66 216 62 Q238 66 250 96 L248 158 L184 160 Z" fill="var(--c-shadow)"/>
+    <defs><pattern id="rig-harlequin-hood" width="22" height="30" patternUnits="userSpaceOnUse"><rect width="22" height="30" fill="var(--c-coat)"/><path d="M11 0 L22 15 L11 30 L0 15 Z" fill="var(--c-mantle)"/></pattern></defs>
+  </g>
+  <g id="shadow">
+    <path d="M186 92 Q194 66 214 64 Q237 66 248 92 L248 110 Q216 98 188 114 Z" fill="url(#rig-hood)"/>
+  </g>
+  <g id="front">
+    <path d="M214 12 Q258 20 270 70 Q270 86 258 96 Q246 70 216 64 Q194 66 186 96 Q180 126 186 164 L154 172 Q124 128 134 78 Q150 24 214 12 Z" fill="url(#rig-harlequin-hood)"/>
+    <path d="M214 12 Q258 20 270 70 Q270 86 258 96 Q246 70 216 64 Q194 66 186 96 Q180 126 186 164 L154 172 Q124 128 134 78 Q150 24 214 12 Z" fill="url(#rig-weave)"/>
+    <path d="M214 12 Q150 24 134 78 Q124 128 154 172 L186 164 Q180 126 186 96 Q190 80 200 70 Z" fill="url(#rig-shade)"/>
+    <path d="M214 12 Q258 20 270 70 Q270 86 258 96" fill="none" stroke="var(--c-glow)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.5"/>
+    <path d="M186 96 Q194 68 216 64 Q246 70 258 96" fill="none" stroke="var(--c-shadow)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M214 12 Q258 20 270 70 Q270 86 258 96" fill="none" stroke="var(--c-trim)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M186 96 Q194 68 216 64 Q246 70 258 96" fill="none" stroke="var(--c-trim)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+  <g id="deco">
+    <g class="fx-sway" style="--d:-0.8s"><path d="M150 40 Q118 46 108 82 Q104 100 112 114 Q118 92 132 74 Q144 60 160 54 Z" fill="var(--c-mantle)"/><path d="M150 40 Q118 46 108 82 Q104 100 112 114" fill="none" stroke="var(--c-trim)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="112" cy="120" r="6" fill="var(--c-trim)"/><circle cx="110" cy="118" r="1.8" fill="#FFFFFF" opacity=".7"/></g>
+  </g>
+</svg>

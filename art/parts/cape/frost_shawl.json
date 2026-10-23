@@ -1,0 +1,27 @@
+{
+  "id": "frost_shawl",
+  "slot": "cape",
+  "name": "Col de fourrure du Givre",
+  "colorRoles": [
+    "mantle",
+    "metal",
+    "trim"
+  ],
+  "anchor": [
+    0,
+    0
+  ],
+  "layers": [
+    {
+      "id": "collar",
+      "bone": "torso",
+      "z": 74
+    },
+    {
+      "id": "snow",
+      "bone": "root",
+      "z": 91,
+      "detail": 2
+    }
+  ]
+}

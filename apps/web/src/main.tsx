@@ -23,6 +23,8 @@ import { Arena } from './rooms/Arena';
 import { SpellSheet } from './rooms/SpellSheet';
 import { GearIcons } from './rooms/GearIcons';
 import { BestiaryPage } from './rooms/Bestiary';
+import { SeasonBoard } from './rooms/SeasonBoard';
+import { PerfBench } from './rooms/PerfBench';
 import { ContentContext } from './game/ContentContext';
 import './styles/global.css';
 import './styles/rooms.css';
@@ -98,6 +100,10 @@ function App() {
         <SpellSheet />
       ) : hash === '#bestiaire' && import.meta.env.DEV ? (
         <BestiaryPage />
+      ) : hash === '#perf' && import.meta.env.DEV ? (
+        <PerfBench />
+      ) : hash === '#saisons' && import.meta.env.DEV ? (
+        <SeasonBoard />
       ) : hash === '#icones' && import.meta.env.DEV ? (
         <GearIcons />
       ) : !session ? (

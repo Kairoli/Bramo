@@ -1,0 +1,32 @@
+{
+  "id": "harvest_sheaf",
+  "slot": "cape",
+  "name": "Gerbe des Moissons",
+  "colorRoles": [
+    "mantle",
+    "under",
+    "trim"
+  ],
+  "anchor": [
+    0,
+    0
+  ],
+  "layers": [
+    {
+      "id": "sheaf",
+      "bone": "torso",
+      "z": 5
+    },
+    {
+      "id": "scarf",
+      "bone": "torso",
+      "z": 74
+    },
+    {
+      "id": "leaves",
+      "bone": "root",
+      "z": 91,
+      "detail": 2
+    }
+  ]
+}

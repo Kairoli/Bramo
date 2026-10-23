@@ -1,0 +1,27 @@
+{
+  "id": "halloween_bow",
+  "slot": "weapon",
+  "name": "Arc d’os",
+  "colorRoles": [
+    "bone",
+    "leather",
+    "metal",
+    "glow"
+  ],
+  "anchor": [
+    0,
+    0
+  ],
+  "layers": [
+    {
+      "id": "bow",
+      "bone": "hand_far",
+      "z": 26
+    },
+    {
+      "id": "string",
+      "bone": "hand_far",
+      "z": 69
+    }
+  ]
+}

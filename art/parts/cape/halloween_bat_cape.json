@@ -1,0 +1,26 @@
+{
+  "id": "halloween_bat_cape",
+  "slot": "cape",
+  "name": "Cape chauve-souris",
+  "colorRoles": [
+    "coatDark",
+    "under",
+    "metal"
+  ],
+  "anchor": [
+    0,
+    0
+  ],
+  "layers": [
+    {
+      "id": "wings",
+      "bone": "cape",
+      "z": 6
+    },
+    {
+      "id": "collar",
+      "bone": "torso",
+      "z": 50
+    }
+  ]
+}

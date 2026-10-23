@@ -394,3 +394,180 @@ outfits:
       gloves: adept_wraps
       boots: adept_shoes
       cape: adept_mantle
+
+  # --- Essais d'apparences de saison (23 octobre, demande de Louis) : jamais proposés au joueur (préfixe sketch_).
+  # Pièces générées par art/make_seasons.mjs ; planche de développement : /#saisons.
+  # Une version par classe [Louis : « reconnaître les classes hors pose »] : le Forgefeu garde son visage, sa barbe tressée
+  # et ses avant-bras nus ; le Runiste sa capuche profonde et sa robe longue ; le Traqueur son capuchon, son carquois et
+  # sa cape courte. `parts` = la version du Runiste ; `byClass` donne celles des deux autres classes.
+  - id: sketch_season_frost
+    name: Sentinelle du Givre
+    subtitle: Essai de saison (Givre)
+    classes: [runist, forgefire, tracker]
+    palette:
+      coat: "#33506A"
+      coatDark: "#213649"
+      mantle: "#E2E6E3"
+      under: "#6F8FA8"
+      trim: "#A8E6FF"
+      metal: "#C3CFD6"
+      beard: "#6B5444"
+      legs: "#27323B"
+      legsDark: "#1E272E"
+      boots: "#3B3532"
+    parts:
+      headwear: frost_hood
+      face: bearded
+      top: robe_top
+      belt: rune_belt
+      robe: frost_robe
+      gloves: wraps
+      boots: frost_boots
+      cape: frost_mantle
+      shoulder_near: frost_pauldron
+    byClass:
+      forgefire:
+        palette: { beard: "#9A5A3A" }
+        parts: { headwear: frost_cap, face: forge_beard, top: forge_tunic, belt: forge_belt, robe: null, legs: trail_trousers, gloves: forge_gauntlets, cape: frost_shawl, shoulder_far: forge_pauldron }
+      tracker:
+        parts: { headwear: frost_cowl, face: ranger_stubble, top: ranger_jerkin, belt: ranger_belt, robe: null, legs: trail_trousers, gloves: ranger_bracers, cape: frost_capelet, shoulder_near: null }
+
+  - id: sketch_season_harvest
+    name: Gardien des Moissons
+    subtitle: Essai de saison (Moissons)
+    classes: [runist, forgefire, tracker]
+    palette:
+      coat: "#7B5A34"
+      coatDark: "#563C22"
+      mantle: "#D8B45A"
+      under: "#B0502C"
+      trim: "#F2C14E"
+      metal: "#9A8E78"
+      beard: "#7A4A2A"
+      legs: "#4A3A2A"
+      legsDark: "#3A2D20"
+      boots: "#3A2A1E"
+    parts:
+      headwear: harvest_sackhood
+      face: bearded
+      top: robe_top
+      belt: harvest_belt
+      robe: harvest_robe
+      gloves: wraps
+      boots: travel_boots
+      cape: harvest_sheaf
+    byClass:
+      forgefire:
+        parts: { headwear: harvest_hat, face: forge_beard, top: forge_tunic, robe: null, legs: trail_trousers, gloves: forge_gauntlets, boots: forge_boots, shoulder_far: forge_pauldron }
+      tracker:
+        parts: { headwear: harvest_cowl, face: ranger_stubble, top: ranger_jerkin, robe: null, legs: trail_trousers, gloves: ranger_bracers, boots: ranger_boots, cape: ranger_cloak }
+
+  - id: sketch_season_carnival
+    name: Masque du Carnaval
+    subtitle: Essai de saison (Carnaval des Masques)
+    classes: [runist, forgefire, tracker]
+    palette:
+      coat: "#4A1F4F"
+      coatDark: "#2E1233"
+      mantle: "#9A2234"
+      under: "#EDE2C6"
+      trim: "#F2C25A"
+      metal: "#D9B45A"
+      beard: "#2B1E1A"
+      legs: "#2A1A2E"
+      legsDark: "#1E1222"
+      boots: "#231820"
+    parts:
+      headwear: carnival_hood
+      face: carnival_mask
+      top: carnival_doublet
+      belt: rune_belt
+      robe: carnival_robe
+      gloves: wraps
+      boots: travel_boots
+      cape: carnival_cape
+    byClass:
+      forgefire:
+        palette: { beard: "#6B321F" }
+        parts: { headwear: carnival_tricorn, face: carnival_mask_beard, top: forge_tunic, belt: forge_belt, robe: forge_apron, gloves: forge_gauntlets, boots: forge_boots, shoulder_far: forge_pauldron }
+      tracker:
+        parts: { headwear: carnival_tricorn, top: ranger_jerkin, belt: ranger_belt, robe: null, legs: trail_trousers, gloves: ranger_bracers, boots: ranger_boots }
+
+  - id: sketch_season_abyss
+    name: Héritier des Abysses
+    subtitle: Essai de saison (Marée des Abysses)
+    classes: [runist, forgefire, tracker]
+    palette:
+      coat: "#1D4A50"
+      coatDark: "#123236"
+      mantle: "#2E6B52"
+      under: "#D9705E"
+      trim: "#7FF5E0"
+      metal: "#E2D6C2"
+      beard: "#22312F"
+      legs: "#1E2E30"
+      legsDark: "#162224"
+      boots: "#2A2E2C"
+    parts:
+      headwear: abyss_hood
+      face: bearded
+      top: robe_top
+      belt: abyss_net
+      robe: abyss_robe
+      gloves: wraps
+      boots: travel_boots
+      cape: abyss_kelp
+      shoulder_near: abyss_shell
+    byClass:
+      forgefire:
+        palette: { beard: "#3A4A44" }
+        parts: { headwear: abyss_crown, face: forge_beard, top: forge_tunic, robe: forge_apron, gloves: forge_gauntlets, boots: forge_boots }
+      tracker:
+        palette: { under: "#3E7C78" }
+        parts: { headwear: abyss_cowl, face: ranger_stubble, top: ranger_jerkin, robe: null, legs: trail_trousers, gloves: ranger_bracers, boots: ranger_boots, cape: abyss_kelp_short, shoulder_near: null }
+
+  # Halloween, « La Veillée des Courges » (essai du 23 octobre, pas à mettre en boutique pour l'instant) : glow change la
+  # couleur des sorts (vert spectral). Les armes d'apparence (halloween_staff, _hammer, _bow) sont posées par la planche.
+  - id: sketch_season_halloween
+    name: La Veillée des Courges
+    subtitle: Essai de saison (Halloween)
+    classes: [runist, forgefire, tracker]
+    palette:
+      coat: "#2E2838"
+      coatDark: "#1C1824"
+      mantle: "#3E3550"
+      under: "#7A2E3A"
+      trim: "#F28C28"
+      metal: "#B8C0C8"
+      beard: "#2A2422"
+      legs: "#221E28"
+      legsDark: "#1A161F"
+      boots: "#1C1820"
+      glow: "#7CFFA8"
+    parts:
+      headwear: halloween_tatter_hood
+      face: bearded
+      top: robe_top
+      belt: rune_belt
+      robe: halloween_robe
+      gloves: wraps
+      boots: travel_boots
+      cape: halloween_souls
+    byClass:
+      forgefire:
+        palette: { beard: "#3A2A22" }
+        parts: { headwear: forge_band, face: halloween_beard, top: forge_tunic, belt: forge_belt, robe: halloween_apron, gloves: forge_gauntlets, boots: forge_boots, cape: null, shoulder_near: halloween_crow, shoulder_far: forge_pauldron }
+      tracker:
+        parts: { headwear: halloween_wolfhood, face: ranger_stubble, top: ranger_jerkin, belt: ranger_belt, robe: null, legs: trail_trousers, gloves: ranger_bracers, boots: ranger_boots, cape: halloween_wolfpelt }
+
+# Pièces d'apparence à part (hors tenue), posables emplacement par emplacement (mode Apparence de la salle Personnage).
+# Essais d'Halloween (23 octobre) : test, pas à vendre ; demande de Louis : « rends tout dispo, que je voie en jeu ».
+pieces:
+  - { slot: headwear, id: halloween_pumpkin, classes: [runist, forgefire, tracker], test: true }
+  - { slot: headwear, id: halloween_witch_hat, classes: [runist, forgefire, tracker], test: true }
+  - { slot: shoulder_near, id: halloween_crow, classes: [runist, forgefire, tracker], test: true }
+  - { slot: cape, id: halloween_bat_cape, classes: [runist, forgefire, tracker], test: true }
+  - { slot: effect, id: halloween_mist, classes: [runist, forgefire, tracker], test: true }
+  - { slot: weapon, id: halloween_staff, classes: [runist], test: true }
+  - { slot: weapon, id: halloween_hammer, classes: [forgefire], test: true }
+  - { slot: weapon, id: halloween_bow, classes: [tracker], test: true }

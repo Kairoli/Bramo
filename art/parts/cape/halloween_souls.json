@@ -1,0 +1,27 @@
+{
+  "id": "halloween_souls",
+  "slot": "cape",
+  "name": "Mantelet aux lanternes d’âmes",
+  "colorRoles": [
+    "mantle",
+    "metal",
+    "glow"
+  ],
+  "anchor": [
+    0,
+    0
+  ],
+  "layers": [
+    {
+      "id": "back",
+      "bone": "cape",
+      "z": 6
+    },
+    {
+      "id": "souls",
+      "bone": "root",
+      "z": 90,
+      "detail": 2
+    }
+  ]
+}

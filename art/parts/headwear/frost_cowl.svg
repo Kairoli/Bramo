@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 760">
+  <!-- Capuchon du Givre : capuchon de pisteur bordé de fourrure, plume blanche et petit éclat de glace. -->
+  <g id="back">
+    <path d="M188 96 Q198 66 218 62 Q240 66 248 92 L246 152 L186 154 Z" fill="var(--c-shadow)"/>
+    <path d="M190 112 Q160 124 150 178 L198 172 Z" fill="var(--c-coat-dark)"/>
+  </g>
+  <g id="shadow">
+    <path d="M186 92 Q194 66 214 64 Q237 66 246 92 L246 104 Q216 95 188 109 Z" fill="url(#rig-hood)"/>
+  </g>
+  <g id="front">
+    <path d="M148 100 Q124 128 118 164 Q138 152 156 146 Z" fill="var(--c-coat-dark)"/>
+    <path d="M222 32 Q258 40 264 78 Q264 90 254 98 Q240 72 216 70 Q196 72 190 98 Q184 126 190 154 L160 174 Q128 134 142 84 Q160 38 222 32 Z" fill="var(--c-coat)"/>
+    <path d="M222 32 Q258 40 264 78 Q264 90 254 98 Q240 72 216 70 Q196 72 190 98 Q184 126 190 154 L160 174 Q128 134 142 84 Q160 38 222 32 Z" fill="url(#rig-weave)"/>
+    <path d="M222 32 Q160 38 142 84 Q128 134 160 174 L190 154 Q184 126 190 98 Q194 78 204 70 Z" fill="url(#rig-shade)"/>
+    <path d="M222 32 Q258 40 264 78 Q264 90 254 98" fill="none" stroke="var(--c-glow)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.55"/>
+    <path d="M190 98 Q196 72 216 70 Q240 72 254 98" fill="none" stroke="var(--c-shadow)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M259.3 97.1 Q259.4 90.2 253.5 86.6 Q253 77.2 246.5 74.5 Q241.1 69 233.7 68.9 Q227.5 62.9 220.7 64.8 Q213.4 63.6 207.2 67 Q197.9 67.3 193.5 72.5 Q186.5 77.8 188 86 Q183.2 91.6 184 98.2 Q179.6 104.3 183.1 110.9 Q180.2 117.1 182.2 123.4 Q179.4 130 183.4 135.9 Q179.8 142.5 185.1 147.9 Q182.7 151.8 186.1 154.8 L197.9 153.2 Q200.8 149.2 196.9 146.2 Q200.5 139.8 195.3 134.5 Q197.6 128.8 194.2 123.2 Q198.5 117.8 195 111.7 Q197.7 106.6 195.8 100.5 Q200.8 96.3 199.3 90 Q203.8 88.6 202 80.9 Q206.9 82.6 210.3 78.6 Q214.7 81.5 219.8 76.7 Q223.8 80.7 229.6 80.2 Q231.8 84.3 238.5 83.4 Q236.9 90 243 92.3 Q243.3 99 248.7 102.9 Z" fill="var(--c-mantle)"/><path d="M247.1 90.1 Q252.4 89.3 252.8 87 M229.4 80.5 Q232.8 77.9 231.7 74.4 M209.7 76.5 Q210.8 73.8 208.1 70.2 M194.9 88.4 Q193.3 88.2 188.7 86.3 M195.4 111.8 Q193.5 112.5 188.9 111.3 M193.1 134.7 Q191.3 136.2 186.6 135.5 M193.3 153.8 Q191.5 155.4 186.9 154.7 " fill="none" stroke="#000" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.16"/><path d="M248.4 103 Q253.8 102.2 254.2 99.9 M239.9 81.8 Q244.5 79.9 244.3 76.9 M220.1 72.1 Q222.4 69.3 220.6 65.6 M202.2 81.2 Q201.5 79.5 197.6 76.6 M193.7 100.1 Q191.9 100.3 187.3 98.8 M189.5 123.3 Q187.7 124.3 183 123.3 M197.3 146.2 Q195.5 147.7 190.8 147.1 " fill="none" stroke="#FFFFFF" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.4"/><path d="M259.3 97.1 Q259.4 90.2 253.5 86.6 Q253 77.2 246.5 74.5 Q241.1 69 233.7 68.9 Q227.5 62.9 220.7 64.8 Q213.4 63.6 207.2 67 Q197.9 67.3 193.5 72.5 Q186.5 77.8 188 86 Q183.2 91.6 184 98.2 Q179.6 104.3 183.1 110.9 Q180.2 117.1 182.2 123.4 Q179.4 130 183.4 135.9 Q179.8 142.5 185.1 147.9 Q182.7 151.8 186.1 154.8 L197.9 153.2 Q200.8 149.2 196.9 146.2 Q200.5 139.8 195.3 134.5 Q197.6 128.8 194.2 123.2 Q198.5 117.8 195 111.7 Q197.7 106.6 195.8 100.5 Q200.8 96.3 199.3 90 Q203.8 88.6 202 80.9 Q206.9 82.6 210.3 78.6 Q214.7 81.5 219.8 76.7 Q223.8 80.7 229.6 80.2 Q231.8 84.3 238.5 83.4 Q236.9 90 243 92.3 Q243.3 99 248.7 102.9 Z" fill="none" stroke="#000" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.28"/>
+    <path d="M200 92 Q162 78 122 42 Q140 36 152 44 Q150 54 162 58 Q164 68 178 72 Q184 82 204 84 Z" fill="var(--c-mantle)"/>
+    <path d="M200 90 Q160 76 124 44" fill="none" stroke="#000" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.25"/>
+    <g transform="rotate(-50 206 82)"><path d="M202 82 L203.2 70.84 L206 64 L209.36 71.56 L210 82 Z" fill="var(--c-trim)" opacity="0.92"/><path d="M206 64 L209.36 71.56 L210 82 L206.4 82 Z" fill="#FFFFFF" opacity="0.32"/><path d="M202 82 L203.2 70.84 L206 64 L209.36 71.56 L210 82 Z" fill="url(#rig-shade)"/><path d="M206 64 L206.4 82" fill="none" stroke="#FFFFFF" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.75"/><path d="M202 82 L203.2 70.84 L206 64 L209.36 71.56 L210 82 Z" fill="none" stroke="#000" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.35"/></g>
+  </g>
+</svg>

@@ -6038,3 +6038,184 @@
   padding: 0 4px;
   border-radius: 4px;
 }
+
+/* --- Retaille et démontage chez l'Affineur (docs/design/eclats.md) --- */
+.reroll-choices {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 8px;
+  width: 100%;
+}
+.reroll-choice {
+  display: grid;
+  gap: 6px;
+  text-align: left;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--sunken);
+  color: var(--text);
+  cursor: pointer;
+  transition: border-color 0.15s, transform 0.15s;
+}
+.reroll-choice:hover {
+  border-color: var(--magic);
+  transform: translateY(-1px);
+}
+.reroll-choice.current {
+  border-style: dashed;
+}
+.reroll-choice .small:last-child {
+  color: var(--magic);
+}
+.salvage-block {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.salvage-confirm {
+  display: inline-flex;
+  gap: 6px;
+}
+.salvage-modal {
+  width: min(640px, 95vw);
+  max-height: 86vh;
+  display: grid;
+  grid-template-rows: auto auto auto minmax(0, 1fr) auto;
+  gap: 10px;
+}
+.salvage-modal h2 {
+  margin: 0;
+}
+.salvage-rarities {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.salvage-rarities .chip.on {
+  border-color: var(--rc);
+  color: var(--rc);
+}
+.salvage-preview {
+  overflow-y: auto;
+  min-height: 60px;
+}
+.salvage-foot > span:first-child,
+.salvage-block > span:first-child {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+}
+.salvage-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+/* --- Essais d'apparences de saison (page de développement #saisons) --- */
+.season-board {
+  min-height: 100vh;
+  overflow-y: auto;
+  padding: 20px 28px 60px;
+  display: grid;
+  gap: 18px;
+  align-content: start;
+  background: var(--bg);
+}
+.season-board-head {
+  display: grid;
+  gap: 6px;
+}
+.season-board-head h1 {
+  margin: 0;
+}
+.season-board-tools {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.season-board-tools .chip {
+  cursor: pointer;
+}
+.season-board-tools .chip.on {
+  border-color: var(--action);
+  color: var(--action);
+}
+.season-row {
+  display: grid;
+  grid-template-columns: 220px minmax(0, 1fr);
+  gap: 10px 20px;
+  padding: 16px 20px;
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  background: radial-gradient(ellipse at 60% 110%, var(--sky-b), var(--sky-a) 70%);
+}
+.season-row-title h2 {
+  margin: 4px 0;
+}
+.season-stage {
+  display: flex;
+  gap: 8px;
+  justify-content: space-around;
+  align-items: flex-end;
+}
+.season-stage figure {
+  margin: 0;
+  display: grid;
+  justify-items: center;
+  gap: 2px;
+}
+.season-stage .rig {
+  width: 260px;
+  height: 480px;
+}
+.season-stage.small {
+  flex-wrap: wrap;
+  justify-content: flex-start;
+}
+.season-stage.small .rig {
+  width: calc(130px * var(--pzoom, 1));
+  height: calc(250px * var(--pzoom, 1));
+}
+.season-pieces {
+  grid-column: 2;
+  display: grid;
+  gap: 4px;
+}
+.season-board.big .season-stage:not(.small) .rig {
+  width: calc(420px * var(--zoom, 1));
+  height: calc(780px * var(--zoom, 1));
+}
+
+/* Banc de mesure (#perf) : des personnages à la taille du bourg. */
+.perf-bench {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: 8px;
+  background: var(--bg);
+  min-height: 100vh;
+}
+.perf-bench .rig {
+  width: 100px;
+  height: 190px;
+}
+.perf-bench.nofx [filter] {
+  filter: none;
+}
+.perf-bench.nopat [fill*="weave"],
+.perf-bench.nopat [fill*="grain"],
+.perf-bench.nopat [fill*="mail"],
+.perf-bench.nopat [fill*="fold"],
+.perf-bench.nopat [fill*="sheen"],
+.perf-bench.nopat [fill*="scales"] {
+  fill: none;
+}
+.perf-bench.noanim .rig * {
+  animation: none !important;
+}

@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 760">
+  <!-- Capuchon des Moissons : toile de jute, bandeau de corde et longue plume de faisan rayée. -->
+  <g id="back">
+    <path d="M188 96 Q198 66 218 62 Q240 66 248 92 L246 152 L186 154 Z" fill="var(--c-shadow)"/>
+    <path d="M190 112 Q160 124 150 178 L198 172 Z" fill="var(--c-coat-dark)"/>
+  </g>
+  <g id="shadow">
+    <path d="M186 92 Q194 66 214 64 Q237 66 246 92 L246 104 Q216 95 188 109 Z" fill="url(#rig-hood)"/>
+  </g>
+  <g id="front">
+    <path d="M148 100 Q124 128 118 164 Q138 152 156 146 Z" fill="var(--c-coat-dark)"/>
+    <path d="M222 32 Q258 40 264 78 Q264 90 254 98 Q240 72 216 70 Q196 72 190 98 Q184 126 190 154 L160 174 Q128 134 142 84 Q160 38 222 32 Z" fill="var(--c-coat)"/>
+    <path d="M222 32 Q258 40 264 78 Q264 90 254 98 Q240 72 216 70 Q196 72 190 98 Q184 126 190 154 L160 174 Q128 134 142 84 Q160 38 222 32 Z" fill="url(#rig-weave)"/>
+    <path d="M222 32 Q160 38 142 84 Q128 134 160 174 L190 154 Q184 126 190 98 Q194 78 204 70 Z" fill="url(#rig-shade)"/>
+    <path d="M222 32 Q258 40 264 78 Q264 90 254 98" fill="none" stroke="var(--c-glow)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.55"/>
+    <path d="M190 98 Q196 72 216 70 Q240 72 254 98" fill="none" stroke="var(--c-shadow)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M190 88 Q216 76 252 92 L252 98 Q216 84 191 96 Z" fill="var(--c-mantle)"/>
+    <path d="M194 88 l4 6 M204 85 l4 6 M214 83 l4 6 M224 83 l4 6 M234 84 l4 6 M244 87 l4 6" fill="none" stroke="#000" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.3"/>
+    <path d="M200 90 Q150 70 104 30 Q118 30 132 40 Q150 58 204 84 Z" fill="var(--c-under)"/>
+    <path d="M190 84 l-6 6 M176 76 l-6 6 M162 68 l-6 6 M148 58 l-6 6 M134 48 l-6 6 M120 38 l-6 6" fill="none" stroke="var(--c-coat-dark)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M200 88 Q150 68 106 32" fill="none" stroke="#FFFFFF" stroke-width="0.9" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.5"/>
+  </g>
+</svg>

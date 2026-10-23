@@ -105,7 +105,7 @@ Pièges : pas de `--` dans un commentaire XML (le fichier entier serait refusé)
 
 ### Animations secondaires
 
-Classes CSS utilisables dans les pièces : `fx-pulse` (lueur), `fx-hover` (flotte), `fx-spin`, `fx-spin-back`, `fx-orbit` (rotation sur soi ; pour une orbite, inclure un cercle invisible centré), `fx-rise` (particule qui monte). Elles se coupent avec « réduire les animations ». Les animations de repos (en images clés) continuent, à 40 % d'amplitude, avec ce réglage : une page web ne peut pas réactiver les effets d'animation de Windows, et un personnage totalement figé fait un jeu mort.
+Classes CSS utilisables dans les pièces : `fx-pulse` (lueur), `fx-hover` (flotte), `fx-spin`, `fx-spin-back`, `fx-orbit` (rotation sur soi ; pour une orbite, inclure un cercle invisible centré), `fx-rise` (particule qui monte). Avec « réduire les animations », elles continuent 2,2 fois plus lentes [Décidé par Louis, 23 octobre : un joueur doit voir ce qu'il porte] (`--rig-slow` dans `rig.css`). Les animations de repos (en images clés) continuent, à 40 % d'amplitude, avec ce réglage : une page web ne peut pas réactiver les effets d'animation de Windows, et un personnage totalement figé fait un jeu mort.
 
 ## Jeux de base des trois classes (deuxième passe, 21 octobre)
 
@@ -114,6 +114,19 @@ Classes CSS utilisables dans les pièces : `fx-pulse` (lueur), `fx-hover` (flott
 ## Esquisses d'équipement (famille Armure)
 
 `art/make_plate.mjs` génère les pièces de l'Armure (heaume, plastron, gantelets, jambières, solerets, tabard, ceinturon, épaulière) ; les fichiers générés se retouchent à la main ensuite. Elles introduisent l'emplacement **`legs`** (cuissots et grèves, os `thigh_*` et `shin_*`, z 16-22) pour les jambières. Trois tenues d'essai `sketch_armor_1/10/20` (bronze, fer, acier) dans `data/cosmetics.yaml` : seule la palette change avec le palier. Elles ne sont pas proposées au joueur (le choix de tenue masque les ids en `sketch_`). Planche : `docs/design/catalogue/esquisses.html`.
+
+## Essais de saison (23 octobre)
+
+`art/make_seasons.mjs` génère les pièces de quatre tenues d'essai (`sketch_season_*`) : fourrure festonnée (`fur`), éclats de glace (`shard`), flocons, épis de blé, plumes, lanières d'algues, spirale de nautile. Planche : `/#saisons` (développement).
+
+- Une palette peut aussi donner `legs`, `legsDark`, `boots`, `leather` (sinon, les couleurs du gabarit).
+- Une tenue peut avoir une version par classe (`byClass` : pièces, `null` retire une pièce, couleurs) pour garder la signature de chaque classe : barbe tressée et avant-bras nus du Forgefeu, capuche profonde et robe longue du Runiste, capuchon, carquois et cape courte du Traqueur.
+- Une pièce peut définir ses propres motifs ou dégradés dans un calque (`<defs><pattern id="rig-…">`) : le moteur rend l'id unique par personnage, comme les `url(#rig-…)`.
+- `fx-fall` (particule qui tombe ; `--d` retard, `--dx` dérive) et `fx-sway` (balancement autour du haut de l'élément : plumes, algues).
+
+## Budget d'affichage (23 octobre)
+
+`node art/perf.mjs [client] [tenue:classe[:option]] …` mesure les images par seconde de 20 personnages (page `/#perf`) ; options `nofx`, `nopat`, `noanim`, `still`, `crowd`, `drop=cape,robe`. Ce qui coûte : les lueurs floues (`url(#rig-glow)`), les matières en motif sur de grandes surfaces, les bords très découpés. Préférer les fausses lueurs `url(#rig-halo)` / `url(#rig-halo-trim)` ; au plus 3 vraies lueurs par personnage. Dans le bourg et la place du clan, `<Character crowd>` coupe lueurs et matières et anime le repos à 20 images par seconde. Règles complètes : `docs/design/eclats.md` §8. Une pièce emblématique peut garder sa couleur avec une variable propre et sa valeur par défaut (`var(--c-pumpkin, #E8761E)`). Animations de pièce ajoutées pour Halloween : `fx-flicker`, `fx-tilt`, `fx-blink`, `fx-flap-l`/`-r`, `fx-ghost`, `fx-circle` (autour du personnage), `fx-bob`, `fx-drift`.
 
 ## Ajouter une tenue ou une pièce
 

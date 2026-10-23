@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 760">
+  <!-- Robe du Veilleur des Âmes : ourlet en lambeaux, déchirures, runes spectrales, toile d’araignée. -->
+  <g id="back">
+    
+    <path d="M150 316 L258 316 L310 634 Q206 652 102 634 Z" fill="var(--c-coat-dark)"/>
+  </g>
+  <g id="flap_far">
+    <path d="M250 298 L210 310 L234 622 Q282 636 324 612 Q294 450 250 298 Z" fill="var(--c-coat)"/>
+    <path d="M250 298 L210 310 L234 622 Q282 636 324 612 Q294 450 250 298 Z" fill="url(#rig-fold)"/>
+    <path d="M250 298 L210 310 L234 622 Q282 636 324 612 Q294 450 250 298 Z" fill="url(#rig-light)"/>
+    <path d="M262 420 l10 -12 l4 14 l10 -12 M276 520 l8 -10 l4 12" fill="none" stroke="var(--c-glow)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="fx-pulse"/>
+    <circle cx="272" cy="418" r="18" fill="url(#rig-halo)"/>
+    <circle cx="282" cy="518" r="14" fill="url(#rig-halo)"/>
+    <path d="M268 470 L276 476 L270 500 Z" fill="#000" opacity="0.45"/>
+    <path d="M210 310 L234 622 Q282 636 324 612" fill="none" stroke="var(--c-trim)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M322 608 Q294 450 252 304" fill="none" stroke="var(--c-glow)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.6"/>
+    <path d="M234 620 L240 646 L250 626 L258 652 L268 630 L278 656 L288 630 L300 650 L306 624 L318 640 L324 612 Z" fill="var(--c-coat-dark)"/>
+  </g>
+  <g id="flap_near">
+    <path d="M160 298 L202 310 L182 626 Q140 634 100 618 Q120 450 160 298 Z" fill="var(--c-coat)"/>
+    <path d="M160 298 L202 310 L182 626 Q140 634 100 618 Q120 450 160 298 Z" fill="url(#rig-fold)"/>
+    <path d="M160 298 L202 310 L182 626 Q140 634 100 618 Q120 450 160 298 Z" fill="url(#rig-shade)"/>
+    <path d="M162 312 L160.7 358 M162 312 L148.9 356.1 M162 312 L138 351.2 M162 312 L128.7 343.7 M162 312 L121.7 334.1 M162 312 L117.3 323 M161.5 328.1 Q159.8 326.5 157.4 327.4 Q156.2 325.5 153.6 325.7 Q152.9 323.5 150.3 323.1 Q150.2 320.8 147.9 319.7 Q148.4 317.5 146.4 315.9 M161.1 341.9 Q158 339 153.5 340.7 Q151.2 337 146.4 337.5 Q145.1 333.4 140.4 332.6 Q140.2 328.4 135.8 326.4 Q136.7 322.2 133 319.2 M160.7 355.7 Q156.1 351.4 149.5 353.9 Q146.2 348.6 139.2 349.3 Q137.3 343.3 130.4 342.2 Q130.1 335.9 123.7 333 Q125 326.9 119.6 322.5 " fill="none" stroke="#F1F0EC" stroke-width="0.7" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.55"/>
+    <path d="M136 480 l10 -10 l2 12 l10 -10" fill="none" stroke="var(--c-glow)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="fx-pulse"/>
+    <circle cx="146" cy="478" r="16" fill="url(#rig-halo)"/>
+    <path d="M150 540 L156 544 L150 566 Z" fill="#000" opacity="0.45"/>
+    <path d="M202 310 L182 626 Q140 634 100 618" fill="none" stroke="var(--c-trim)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M100 618 L104 642 L114 624 L122 650 L132 628 L142 654 L152 630 L162 652 L170 628 L180 646 L182 626 Z" fill="var(--c-coat-dark)"/>
+  </g>
+</svg>

@@ -1,0 +1,33 @@
+{
+  "id": "harvest_cowl",
+  "slot": "headwear",
+  "name": "Capuchon des Moissons",
+  "colorRoles": [
+    "coat",
+    "coatDark",
+    "mantle",
+    "leather",
+    "trim"
+  ],
+  "anchor": [
+    0,
+    0
+  ],
+  "layers": [
+    {
+      "id": "back",
+      "bone": "head",
+      "z": 52
+    },
+    {
+      "id": "shadow",
+      "bone": "head",
+      "z": 57
+    },
+    {
+      "id": "front",
+      "bone": "head",
+      "z": 78
+    }
+  ]
+}

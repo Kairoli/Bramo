@@ -1,0 +1,32 @@
+{
+  "id": "halloween_witch_hat",
+  "slot": "headwear",
+  "name": "Chapeau de sorcière",
+  "colorRoles": [
+    "coatDark",
+    "under",
+    "metal",
+    "beard"
+  ],
+  "anchor": [
+    0,
+    0
+  ],
+  "layers": [
+    {
+      "id": "back",
+      "bone": "head",
+      "z": 52
+    },
+    {
+      "id": "shadow",
+      "bone": "head",
+      "z": 57
+    },
+    {
+      "id": "front",
+      "bone": "head",
+      "z": 80
+    }
+  ]
+}

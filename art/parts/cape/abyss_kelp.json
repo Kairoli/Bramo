@@ -1,0 +1,33 @@
+{
+  "id": "abyss_kelp",
+  "slot": "cape",
+  "name": "Cape d’algues des Abysses",
+  "colorRoles": [
+    "mantle",
+    "coatDark",
+    "metal",
+    "trim"
+  ],
+  "anchor": [
+    0,
+    0
+  ],
+  "layers": [
+    {
+      "id": "back",
+      "bone": "cape",
+      "z": 6
+    },
+    {
+      "id": "drape",
+      "bone": "torso",
+      "z": 75
+    },
+    {
+      "id": "bubbles",
+      "bone": "root",
+      "z": 91,
+      "detail": 2
+    }
+  ]
+}

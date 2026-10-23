@@ -15,28 +15,41 @@
 }
 
 .rig .fx-spin {
-  animation: fx-spin 14s linear infinite;
+  animation: fx-spin calc(14s * var(--rig-slow, 1)) linear infinite;
   transform-box: fill-box;
   transform-origin: center;
 }
 .rig .fx-spin-back {
-  animation: fx-spin 9s linear infinite reverse;
+  animation: fx-spin calc(9s * var(--rig-slow, 1)) linear infinite reverse;
   transform-box: fill-box;
   transform-origin: center;
 }
 .rig .fx-orbit {
-  animation: fx-spin 5s linear infinite;
+  animation: fx-spin calc(5s * var(--rig-slow, 1)) linear infinite;
   transform-box: fill-box;
   transform-origin: center;
 }
 .rig .fx-hover {
-  animation: fx-hover 3.2s ease-in-out infinite;
+  animation: fx-hover calc(3.2s * var(--rig-slow, 1)) ease-in-out infinite;
 }
 .rig .fx-pulse {
-  animation: fx-pulse 2.4s ease-in-out infinite;
+  animation: fx-pulse calc(2.4s * var(--rig-slow, 1)) ease-in-out infinite;
 }
 .rig .fx-rise {
-  animation: fx-rise 3.6s ease-out infinite;
+  animation: fx-rise calc(3.6s * var(--rig-slow, 1)) ease-out infinite;
+}
+/* Particules qui tombent (neige, feuilles, confettis) ; --d décale chaque particule, --dx la fait dériver. */
+.rig .fx-fall {
+  animation: rig-fall calc(5.2s * var(--rig-slow, 1)) linear infinite;
+  animation-delay: var(--d, 0s);
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.rig .fx-sway {
+  animation: rig-sway calc(3.8s * var(--rig-slow, 1)) ease-in-out infinite;
+  animation-delay: var(--d, 0s);
+  transform-box: fill-box;
+  transform-origin: top center;
 }
 
 @keyframes fx-spin {
@@ -51,6 +64,117 @@
   }
   50% {
     transform: translateY(-6px);
+  }
+}
+/* Halloween (essais, 23 octobre) : flamme qui vacille, tête qui penche, œil qui cligne, ailes qui battent, petit fantôme
+   qui monte, objet qui tourne autour du personnage (ellipse couchée : plus petit et pâle quand il passe derrière). */
+.rig .fx-flicker {
+  animation: rig-flicker calc(1.3s * var(--rig-slow, 1)) steps(1, end) infinite;
+}
+.rig .fx-tilt {
+  animation: rig-tilt calc(5.5s * var(--rig-slow, 1)) ease-in-out infinite;
+  transform-box: fill-box;
+  transform-origin: 30% 90%;
+}
+.rig .fx-blink {
+  animation: rig-blink calc(4.2s * var(--rig-slow, 1)) linear infinite;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.rig .fx-flap-l,
+.rig .fx-flap-r {
+  animation: rig-flap calc(2.8s * var(--rig-slow, 1)) ease-in-out infinite;
+  transform-box: fill-box;
+}
+.rig .fx-flap-l {
+  transform-origin: right top;
+}
+.rig .fx-flap-r {
+  transform-origin: left top;
+}
+.rig .fx-ghost {
+  animation: rig-ghost calc(6s * var(--rig-slow, 1)) ease-in-out infinite;
+  animation-delay: var(--d, 0s);
+}
+.rig .fx-circle {
+  animation: rig-circle calc(7s * var(--rig-slow, 1)) linear infinite;
+  animation-delay: var(--d, 0s);
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.rig .fx-bob {
+  animation: rig-bob calc(3s * var(--rig-slow, 1)) ease-in-out infinite;
+}
+.rig .fx-drift {
+  animation: rig-drift calc(9s * var(--rig-slow, 1)) ease-in-out infinite alternate;
+  animation-delay: var(--d, 0s);
+}
+
+@keyframes rig-flicker {
+  0%, 100% { opacity: 1; }
+  23% { opacity: 0.72; }
+  41% { opacity: 0.95; }
+  63% { opacity: 0.6; }
+  81% { opacity: 0.9; }
+}
+@keyframes rig-tilt {
+  0%, 30%, 100% { transform: rotate(0deg); }
+  40%, 55% { transform: rotate(-14deg); }
+  65%, 80% { transform: rotate(7deg); }
+}
+@keyframes rig-blink {
+  0%, 46%, 54%, 100% { transform: scaleY(1); }
+  50% { transform: scaleY(0.1); }
+}
+@keyframes rig-flap {
+  0%, 100% { transform: scaleX(1) rotate(0deg); }
+  50% { transform: scaleX(0.82) rotate(-2deg); }
+}
+@keyframes rig-ghost {
+  0% { transform: translate(0, 0); opacity: 0; }
+  20% { opacity: 0.75; }
+  50% { transform: translate(10px, -40px); }
+  80% { opacity: 0.6; }
+  100% { transform: translate(-6px, -90px); opacity: 0; }
+}
+@keyframes rig-circle {
+  0% { transform: translate(-120px, 0) scale(0.9); opacity: 0.95; }
+  25% { transform: translate(0, 14px) scale(1.1); opacity: 1; }
+  50% { transform: translate(120px, 0) scale(0.9); opacity: 0.95; }
+  75% { transform: translate(0, -14px) scale(0.65); opacity: 0.35; }
+  100% { transform: translate(-120px, 0) scale(0.9); opacity: 0.95; }
+}
+@keyframes rig-bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(9px); }
+}
+@keyframes rig-drift {
+  from { transform: translateX(-18px); opacity: 0.45; }
+  to { transform: translateX(18px); opacity: 0.8; }
+}
+@keyframes rig-fall {
+  0% {
+    transform: translate(0, -20px) rotate(0deg);
+    opacity: 0;
+  }
+  12% {
+    opacity: 0.9;
+  }
+  85% {
+    opacity: 0.8;
+  }
+  100% {
+    transform: translate(var(--dx, 18px), 230px) rotate(220deg);
+    opacity: 0;
+  }
+}
+@keyframes rig-sway {
+  0%,
+  100% {
+    transform: rotate(-3deg);
+  }
+  50% {
+    transform: rotate(3deg);
   }
 }
 @keyframes fx-pulse {
@@ -76,12 +200,33 @@
   }
 }
 
+/*
+ * Foule (bourg, place du clan : des personnages de la taille d'un doigt, jusqu'à une trentaine à la fois). Mesure du
+ * 23 octobre (art/perf.mjs, 20 personnages) : les lueurs floues et les matières (tissage, grain, mailles) coûtent la
+ * moitié des images par seconde et ne se voient pas à cette taille. On les coupe ; les couleurs et les formes restent.
+ */
+.rig-crowd [filter] {
+  filter: none;
+}
+.rig-crowd [fill*="rig-weave"],
+.rig-crowd [fill*="rig-grain"],
+.rig-crowd [fill*="rig-mail"],
+.rig-crowd [fill*="rig-fold"],
+.rig-crowd [fill*="rig-sheen"],
+.rig-crowd [fill*="rig-scales"] {
+  display: none;
+}
+
 .rig-still * {
   animation: none !important;
 }
+/*
+ * « Réduire les animations » [Décidé par Louis, 23 octobre : « ralentis »] : les effets des pièces continuent, deux fois
+ * plus lents (un joueur doit voir ce qu'il porte et ce qu'il achète), comme les particules des décors.
+ */
 @media (prefers-reduced-motion: reduce) {
-  .rig * {
-    animation: none !important;
+  .rig {
+    --rig-slow: 2.2;
   }
 }
 

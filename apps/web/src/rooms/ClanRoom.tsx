@@ -297,7 +297,7 @@ function ClanYard({ clan, onOpen }: { clan: ClanView; onOpen: (id: number) => vo
               </span>
               <span className="muted">{m.active ? 'actif' : `absent depuis ${daysSince(m.lastSeenAt)} j`}</span>
             </div>
-            <Character appearance={lookOf(m, content.classes)} lod="scene" title={m.name} />
+            <Character appearance={lookOf(m, content.classes)} lod="scene" title={m.name} crowd />
             <span className={`clan-tag rank-${m.rank}`}>
               {m.rank === 'leader' && <Crown />}
               {m.name}

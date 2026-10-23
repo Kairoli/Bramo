@@ -1,0 +1,26 @@
+{
+  "id": "halloween_beard",
+  "slot": "face",
+  "name": "Barbe aux toiles",
+  "colorRoles": [
+    "beard",
+    "skinDark",
+    "metal"
+  ],
+  "anchor": [
+    0,
+    0
+  ],
+  "layers": [
+    {
+      "id": "features",
+      "bone": "head",
+      "z": 56
+    },
+    {
+      "id": "eyes",
+      "bone": "head",
+      "z": 59
+    }
+  ]
+}

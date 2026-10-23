@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 760">
+  <!-- Mantelet aux lanternes d’âmes : mantelet en lambeaux, trois lanternes d’âmes qui tournent autour du Veilleur. -->
+  <g id="back">
+    <path d="M170 160 Q132 260 124 360 L136 382 L148 362 L158 396 L172 368 L186 404 L198 372 L212 398 L224 368 L238 394 L250 364 L262 384 L270 356 Q272 260 252 164 Z" fill="var(--c-mantle)"/>
+    <path d="M170 160 Q132 260 124 360 L136 382 L148 362 L158 396 L172 368 L186 404 L198 372 L200 160 Z" fill="url(#rig-shade)"/>
+    <path d="M252 164 Q272 260 270 356" fill="none" stroke="var(--c-glow)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.45"/>
+  </g>
+  <g id="souls">
+    <g class="fx-circle" style="--d:0s;transform:translate(-120px, 0) scale(0.9)"><circle cx="206" cy="303" r="30" fill="url(#rig-halo)"/><path d="M195.5 286.5 L216.5 286.5 L213.5 315 L198.5 315 Z" fill="#0E1A14" opacity="0.55"/><path class="fx-flicker" d="M206 309 Q198.5 300 206 291 Q213.5 300 206 309 Z" fill="var(--c-glow)"/><path d="M195.5 286.5 L216.5 286.5 L213.5 315 L198.5 315 Z M206 286.5 L206 315 M206 286.5 Q206 276 212 276" fill="none" stroke="var(--c-metal)" stroke-width="2.4000000000000004" stroke-linecap="round" stroke-linejoin="round"/></g>
+    <g class="fx-circle" style="--d:-2.33s;transform:translate(80px, -10px) scale(0.75)"><circle cx="206" cy="303" r="30" fill="url(#rig-halo)"/><path d="M195.5 286.5 L216.5 286.5 L213.5 315 L198.5 315 Z" fill="#0E1A14" opacity="0.55"/><path class="fx-flicker" d="M206 309 Q198.5 300 206 291 Q213.5 300 206 309 Z" fill="var(--c-glow)"/><path d="M195.5 286.5 L216.5 286.5 L213.5 315 L198.5 315 Z M206 286.5 L206 315 M206 286.5 Q206 276 212 276" fill="none" stroke="var(--c-metal)" stroke-width="2.4000000000000004" stroke-linecap="round" stroke-linejoin="round"/></g>
+    <g class="fx-circle" style="--d:-4.66s;transform:translate(40px, 12px) scale(1.05)"><circle cx="206" cy="303" r="30" fill="url(#rig-halo)"/><path d="M195.5 286.5 L216.5 286.5 L213.5 315 L198.5 315 Z" fill="#0E1A14" opacity="0.55"/><path class="fx-flicker" d="M206 309 Q198.5 300 206 291 Q213.5 300 206 309 Z" fill="var(--c-glow)"/><path d="M195.5 286.5 L216.5 286.5 L213.5 315 L198.5 315 Z M206 286.5 L206 315 M206 286.5 Q206 276 212 276" fill="none" stroke="var(--c-metal)" stroke-width="2.4000000000000004" stroke-linecap="round" stroke-linejoin="round"/></g>
+  </g>
+</svg>

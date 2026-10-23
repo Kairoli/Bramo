@@ -6,9 +6,10 @@ import { parts } from '../rig/assets';
 import { resolveParts } from '../rig/Character';
 import { PartThumb } from './equipment';
 
-/** Emplacements d'apparence, dans l'ordre d'affichage. L'arme et l'effet restent ceux de la classe. */
+/** Emplacements d'apparence, dans l'ordre d'affichage (l'arme et l'aura : celles de la classe, ou une pièce à part). */
 const SLOTS: { slot: Slot; label: string }[] = [
   { slot: 'headwear', label: 'Coiffe' },
+  { slot: 'face', label: 'Visage' },
   { slot: 'shoulder_far', label: 'Épaule (côté sort)' },
   { slot: 'shoulder_near', label: 'Épaule (côté proche)' },
   { slot: 'top', label: 'Torse' },
@@ -18,6 +19,8 @@ const SLOTS: { slot: Slot; label: string }[] = [
   { slot: 'robe', label: 'Bas de robe' },
   { slot: 'boots', label: 'Bottes' },
   { slot: 'cape', label: 'Cape' },
+  { slot: 'weapon', label: 'Arme (apparence)' },
+  { slot: 'effect', label: 'Aura' },
 ];
 
 /**
@@ -29,7 +32,8 @@ export function AppearancePicker() {
   const [open, setOpen] = useState<Slot | null>(null);
   if (!look) return null;
   const worn = resolveParts(content, look);
-  const rows = SLOTS.filter((s) => (state.lookOptions[s.slot]?.length ?? 0) > 0 || worn[s.slot]);
+  // L'arme et l'aura ne s'affichent que s'il y a une autre apparence que celle de la classe.
+  const rows = SLOTS.filter((s) => (state.lookOptions[s.slot]?.length ?? 0) > 0 || (worn[s.slot] && s.slot !== 'weapon' && s.slot !== 'effect'));
 
   return (
     <div className="look-picker">

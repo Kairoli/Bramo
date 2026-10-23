@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 760">
+  <!-- Bâton à lanterne : le bâton du Runiste, une lanterne d’âme pendue à sa crosse. -->
+  <g id="staff">
+    <path d="M147 104 L122 696" fill="none" stroke="var(--c-wood)" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M145 112 L121 690" fill="none" stroke="var(--c-wood-light)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.7"/>
+    <path d="M147 108 Q140 70 142 46 Q138 18 118 14 Q100 14 100 30" fill="none" stroke="var(--c-wood)" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M100 30 L100 42" fill="none" stroke="var(--c-metal)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+    <g class="fx-sway" style="--d:-0.5s"><circle cx="100" cy="65" r="30" fill="url(#rig-halo)"/><path d="M89.5 48.5 L110.5 48.5 L107.5 77 L92.5 77 Z" fill="#0E1A14" opacity="0.55"/><path class="fx-flicker" d="M100 71 Q92.5 62 100 53 Q107.5 62 100 71 Z" fill="var(--c-glow)"/><path d="M89.5 48.5 L110.5 48.5 L107.5 77 L92.5 77 Z M100 48.5 L100 77 M100 48.5 Q100 38 106 38" fill="none" stroke="var(--c-metal)" stroke-width="2.4000000000000004" stroke-linecap="round" stroke-linejoin="round"/></g>
+    <path d="M147 108 L131.6 98.7 M147 108 L134.7 94.8 M147 108 L138.9 91.9 M147 108 L143.6 90.3 M147 108 L148.6 90.1 M147 108 L153.5 91.2 M141.6 104.8 Q142.5 104.4 142.7 103.4 Q143.7 103.3 144.2 102.4 Q145.1 102.6 145.8 101.8 Q146.6 102.3 147.6 101.7 Q148.2 102.4 149.3 102.1 M137 102 Q138.6 101.4 139 99.4 Q140.8 99.3 141.7 97.6 Q143.4 98 144.8 96.5 Q146.3 97.4 148.1 96.3 Q149.3 97.6 151.2 97.1 M132.3 99.2 Q134.8 98.3 135.4 95.5 Q137.9 95.3 139.3 92.7 Q141.8 93.3 143.8 91.2 Q146 92.5 148.6 91 Q150.4 92.8 153.2 92.1 " fill="none" stroke="#F1F0EC" stroke-width="0.7" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.55"/>
+  </g>
+</svg>

@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 760">
+  <!-- Marteau-citrouille : le marteau du Forgefeu dont la masse est une citrouille sculptée qui flambe (même tenue en main que forge_hammer). -->
+  <g id="hammer">
+    <defs><radialGradient id="rig-carved"><stop offset="0" stop-color="var(--c-carved, #FFC24A)" stop-opacity=".9"/><stop offset=".5" stop-color="var(--c-carved, #FFC24A)" stop-opacity=".35"/><stop offset="1" stop-color="var(--c-carved, #FFC24A)" stop-opacity="0"/></radialGradient></defs>
+    <g transform="matrix(0.9848 0.1736 -0.1736 0.9848 57.3613 -46.4738)"><g transform="translate(138 86) rotate(133.5) scale(0.7) translate(-374 -673)">
+    <path d="M308 306 L370 648" fill="none" stroke="var(--c-wood)" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M305 314 L366 646" fill="none" stroke="var(--c-wood-light)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.55"/>
+    <g transform="rotate(-10.2 316 346)"><rect x="309" y="322" width="14" height="48" rx="2" fill="var(--c-leather)"/></g>
+    <path d="M374 642 C422.4 642 422.4 718 374 718 C325.6 718 325.6 642 374 642 Z" fill="var(--c-pumpkin, #E8761E)"/>
+    <path d="M374 642 C325.6 642 325.6 718 374 718 C352 702.8 352 657.2 374 642 Z" fill="var(--c-pumpkin-dark, #A8480E)" opacity="0.55"/>
+    <path d="M360.4 643.5 Q339.9 680 360.4 716.5 M368.5 643.5 Q360.3 680 368.5 716.5 M378 643.5 Q383.9 680 378 716.5 M386.1 643.5 Q404.3 680 386.1 716.5" fill="none" stroke="var(--c-pumpkin-dark, #A8480E)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.8"/>
+    <path d="M389.4 649.6 Q411.4 664.8 409.2 683.8" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.3"/>
+    <path d="M371.8 678.4 L379.3 665.7 L386.8 678.4 Z M394.2 676.1 L399.5 667.1 L404.8 676.1 Z M389 687 L392.5 681 L396 687 Z M371.8 693.7 L379.3 699 L385.4 694.4 L392.5 700.5 L399.5 693.7 L405.7 696 Q391.6 709.6 371.8 693.7 Z" fill="#1A0E06"/>
+    <g class="fx-flicker"><path d="M371.8 678.4 L379.3 665.7 L386.8 678.4 Z M394.2 676.1 L399.5 667.1 L404.8 676.1 Z M389 687 L392.5 681 L396 687 Z M371.8 693.7 L379.3 699 L385.4 694.4 L392.5 700.5 L399.5 693.7 L405.7 696 Q391.6 709.6 371.8 693.7 Z" fill="var(--c-carved, #FFC24A)" opacity="0.92"/><circle cx="389.4" cy="683.8" r="41.8" fill="url(#rig-carved)"/></g>
+    <path d="M364 640 L380 640 L378 648 L366 648 Z" fill="var(--c-metal)"/>
+    </g></g>
+  </g>
+</svg>

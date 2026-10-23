@@ -1,0 +1,37 @@
+{
+  "id": "carnival_mask",
+  "slot": "face",
+  "name": "Masque du Carnaval",
+  "colorRoles": [
+    "under",
+    "mantle",
+    "trim",
+    "skinDark"
+  ],
+  "anchor": [
+    0,
+    0
+  ],
+  "layers": [
+    {
+      "id": "ribbon",
+      "bone": "head",
+      "z": 52
+    },
+    {
+      "id": "features",
+      "bone": "head",
+      "z": 56
+    },
+    {
+      "id": "mask",
+      "bone": "head",
+      "z": 58
+    },
+    {
+      "id": "eyes",
+      "bone": "head",
+      "z": 59
+    }
+  ]
+}

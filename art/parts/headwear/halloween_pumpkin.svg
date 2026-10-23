@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 760">
+  <!-- Tête de citrouille : elle remplace la tête ; visage sculpté qui flambe, tige et vrille. -->
+  <g id="head">
+    <defs><radialGradient id="rig-carved"><stop offset="0" stop-color="var(--c-carved, #FFC24A)" stop-opacity=".9"/><stop offset=".5" stop-color="var(--c-carved, #FFC24A)" stop-opacity=".35"/><stop offset="1" stop-color="var(--c-carved, #FFC24A)" stop-opacity="0"/></radialGradient></defs>
+    <path d="M216 60 C271 60 271 152 216 152 C161 152 161 60 216 60 Z" fill="var(--c-pumpkin, #E8761E)"/>
+    <path d="M216 60 C161 60 161 152 216 152 C191 133.6 191 78.4 216 60 Z" fill="var(--c-pumpkin-dark, #A8480E)" opacity="0.55"/>
+    <path d="M200.5 61.8 Q177.3 106 200.5 150.2 M209.8 61.8 Q200.4 106 209.8 150.2 M220.5 61.8 Q227.3 106 220.5 150.2 M229.8 61.8 Q250.4 106 229.8 150.2" fill="none" stroke="var(--c-pumpkin-dark, #A8480E)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.8"/>
+    <path d="M233.5 69.2 Q258.5 87.6 256 110.6" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.3"/>
+    <path d="M213.5 103.7 L222 89.2 L230.5 103.7 Z M239 101 L245 90.8 L251 101 Z M233 114.3 L237 107.5 L241 114.3 Z M213.5 122.6 L222 129 L229 123.5 L237 130.8 L245 122.6 L252 125.3 Q236 141.9 213.5 122.6 Z" fill="#1A0E06"/>
+    <g class="fx-flicker"><path d="M213.5 103.7 L222 89.2 L230.5 103.7 Z M239 101 L245 90.8 L251 101 Z M233 114.3 L237 107.5 L241 114.3 Z M213.5 122.6 L222 129 L229 123.5 L237 130.8 L245 122.6 L252 125.3 Q236 141.9 213.5 122.6 Z" fill="var(--c-carved, #FFC24A)" opacity="0.92"/><circle cx="233.5" cy="110.6" r="47.5" fill="url(#rig-carved)"/></g>
+    <path d="M212 62 Q210 48 220 38 Q228 34 230 40 Q222 46 222 62 Z" fill="var(--c-stem, #4E5A2A)"/>
+    <path d="M222 44 Q238 34 236 22 Q230 16 226 24" fill="none" stroke="var(--c-stem, #4E5A2A)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M226 52 Q246 40 254 52 Q240 60 226 56 Z" fill="var(--c-stem, #5E6E30)"/>
+  </g>
+</svg>

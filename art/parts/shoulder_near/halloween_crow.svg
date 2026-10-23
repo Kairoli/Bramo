@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 760">
+  <!-- Corbeau sur l’épaule : il penche la tête, cligne de l’œil et lisse ses plumes. -->
+  <g id="crow">
+    <g transform="translate(148 178) scale(1.35) translate(-148 -178)">
+    <path d="M144 168 L140 178 M152 168 L152 178" fill="none" stroke="#2A2016" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M130 150 Q126 172 108 190 Q122 186 132 176 Q130 186 118 198 Q138 188 146 164 Z" fill="var(--c-crow, #1D1F2A)"/>
+    <path d="M130 150 Q140 136 158 142 Q166 154 156 166 Q140 172 130 162 Z" fill="var(--c-crow, #1D1F2A)"/>
+    <g class="fx-flap-r" style="animation-duration:6s"><path d="M134 150 Q150 144 160 156 Q148 168 128 168 Z" fill="var(--c-crow, #1D1F2A)"/><path d="M138 156 Q148 152 156 158 M134 162 Q146 160 152 164" fill="none" stroke="#4A5A8A" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.6"/></g>
+    <path d="M132 150 Q142 140 156 144 M130 160 Q120 176 110 188" fill="none" stroke="#7F95C8" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.7"/>
+    <g class="fx-tilt"><path d="M150 140 Q152 124 166 124 Q176 128 174 140 Q166 148 152 146 Z" fill="var(--c-crow, #1D1F2A)"/><path d="M172 130 L190 136 L172 140 Z" fill="#3A3226"/><path d="M172 135 L186 136" fill="none" stroke="#000" stroke-width="0.8" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.5"/><g class="fx-blink"><circle cx="166" cy="131" r="7" fill="url(#rig-halo-trim)"/><circle cx="166" cy="131" r="2.2" fill="var(--c-carved, #FFC24A)"/></g><path d="M152 128 Q160 122 170 124" fill="none" stroke="#7F95C8" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.7"/></g>
+    </g>
+  </g>
+</svg>

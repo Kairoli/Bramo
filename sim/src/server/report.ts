@@ -2,7 +2,7 @@
  * Lecture d'une simulation de serveur : les chiffres qui disent si le jeu tient (progression, buts, or, marché, butin,
  * ensembles, classes et voies, contenu PvE, clans). Rend un objet (JSON) et un texte Markdown.
  */
-import { type Content, routeStages } from '@bramo/shared';
+import { type Content, renownRank, routeStages } from '@bramo/shared';
 import type { Bot, ServerResult } from './world.js';
 import type { TideStats } from './tideHook.js';
 
@@ -220,7 +220,7 @@ export function analyze(r: ServerResult, content: Content, tide?: TideStats) {
     .filter((g) => g.reached > 0);
 
   // --- Clans ---
-  const clans = r.clans.map((c) => ({ id: c.id, members: c.members.filter((m) => m.started).length, levels: Object.values(c.levels).reduce((s, l) => s + l, 0), detail: c.levels }));
+  const clans = r.clans.map((c) => ({ id: c.id, members: c.members.filter((m) => m.started).length, levels: Object.values(c.levels).reduce((s, l) => s + l, 0), detail: c.levels, renown: c.renown, rank: renownRank(c.renown, content).rank }));
   const maxLevels = Object.values(content.buildings).reduce((s, b) => s + b.maxLevel, 0);
 
   // --- Commandes du maître ---
@@ -320,6 +320,7 @@ export function toMarkdown(a: Analysis): string {
   for (const g of a.guardians) L.push(`| ${g.stage} | ${g.name} | ${g.reached} | ${g.passed} | ${g.medianDays} | ${g.p90Days} |`);
   L.push('', '## Clans', '');
   L.push(`${a.clans.list.length} clans ; niveaux de bâtiments construits (sur ${a.clans.maxLevels} possibles) : ${a.clans.list.map((c) => `${c.levels} (${c.members} m.)`).join(', ')}.`);
+  L.push(`Renom : ${a.clans.list.map((c) => `${c.renown} (${c.rank}, ${c.members} m.)`).join(', ')}.`);
   if (a.tide) {
     const t = a.tide;
     L.push('', '## Marée du soir', '');

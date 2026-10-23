@@ -83,6 +83,16 @@ clan:
   townGuildBonus: 0.03    # Guilde du bourg : bonus de toute production, pour tout le monde (les bâtiments du clan s'y ajoutent)
   logSize: 30
   activeDays: 14
+  # Renom (docs/design/contenu/le-monde.md §7.1, Louis : « j'adore ») : il ne baisse jamais, les rangs ne donnent que du
+  # prestige. Branché le 23 octobre (nuit) : bâtiments, Marée du soir, premier gardien battu. Les Routes franches et le
+  # Concours des Maîtres en donneront quand ils existeront.
+  renown:
+    ranks: [{ name: Hameau, at: 0 }, { name: Village, at: 500 }, { name: Bourg franc, at: 2000 }, { name: Comptoir, at: 6000 }, { name: Cité franche, at: 15000 }, { name: Ville-lanterne, at: 40000 }]
+    buildingLevel: 10       # × le niveau construit
+    tideMember: 1           # par membre qui fait au moins tideMinPoints un soir
+    tideMinPoints: 30
+    tideMaxPerNight: 20
+    guardian: 5             # un membre qui vainc un gardien pour la première fois
 
 # Bourg (accueil) : qui on voit passer, ce que le fil du serveur annonce.
 town:

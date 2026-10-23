@@ -85,6 +85,17 @@ export const settingsSchema = z.object({
     townGuildBonus: ratio,
     logSize: z.number().int().min(1),
     activeDays: z.number().int().min(1),
+    /** Renom (le-monde.md §7.1) : il ne baisse jamais ; les rangs ne donnent que du prestige. */
+    renown: z
+      .object({
+        ranks: z.array(z.object({ name: z.string(), at: z.number().int().min(0) })).min(1),
+        buildingLevel: z.number().int().min(0),
+        tideMember: z.number().int().min(0),
+        tideMinPoints: z.number().int().min(0),
+        tideMaxPerNight: z.number().int().min(0),
+        guardian: z.number().int().min(0),
+      })
+      .optional(),
   }),
   /** Bourg (accueil) : joueurs récemment actifs montrés dans la scène, fil du serveur. */
   town: z.object({

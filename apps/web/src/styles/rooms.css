@@ -5624,3 +5624,11 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
+/* Renom du clan (rang de prestige) */
+.clan-renown {
+  display: inline-block;
+  font-size: 13px;
+  color: var(--clan);
+  letter-spacing: 0.02em;
+}

@@ -174,6 +174,8 @@ export interface ClanView {
   buildings: ClanBuildingView[];
   activeMembers: number;
   log: { id: number; at: number; text: string }[];
+  /** Renom et rang de prestige (jamais de puissance) ; le prochain rang, s'il y en a un. */
+  renown: { value: number; rank: string; next: { name: string; at: number } | null };
 }
 
 /** Un joueur vu dans la scène du bourg (informations publiques seulement). */

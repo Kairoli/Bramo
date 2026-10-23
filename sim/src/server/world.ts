@@ -114,8 +114,10 @@ export interface Ledger {
   notes: { day: number; text: string }[];
 }
 
-interface SimClan {
+export interface SimClan {
   id: number;
+  /** Renom (settings.clan.renown) : bâtiments, Marée, gardiens vaincus. */
+  renown: number;
   members: Bot[];
   levels: Record<string, number>;
   progress: Record<string, Record<string, number>>;
@@ -299,7 +301,7 @@ export function runServer(content: Content, input: ServerOptions): ServerResult 
     let next = 0;
     while (next < willing.length) {
       const size = Math.min(willing.length - next, 5 + Math.floor(rand() * 11));
-      const clan: SimClan = { id: clans.length + 1, members: willing.slice(next, next + size), levels: {}, progress: {} };
+      const clan: SimClan = { id: clans.length + 1, renown: 0, members: willing.slice(next, next + size), levels: {}, progress: {} };
       for (const m of clan.members) m.clan = clan;
       clans.push(clan);
       next += size;
@@ -844,6 +846,7 @@ export function runServer(content: Content, input: ServerOptions): ServerResult 
       if ((prog.gold ?? 0) >= needs.gold && needs.items.every((i) => (prog[i.item] ?? 0) >= i.qty)) {
         clan.levels[id] = level + 1;
         clan.progress[id] = {};
+        clan.renown += (content.settings.clan.renown?.buildingLevel ?? 0) * (level + 1);
         for (const m of clan.members) if (m.started) m.state.clanBonuses = memberBonuses(clan.levels, content);
         note(day, `Clan ${clan.id} : ${def.name} niveau ${level + 1}`);
       }
@@ -1206,6 +1209,7 @@ export function runServer(content: Content, input: ServerOptions): ServerResult 
     }
     for (const b of active) {
       const best = b.state.combat.route.best;
+      if (best > b.lastBest && b.clan) b.clan.renown += stages.filter((st) => st.guardian && st.index >= b.lastBest && st.index < best).length * (content.settings.clan.renown?.guardian ?? 0);
       if (best > b.lastBest) {
         b.lastBest = best;
         b.lastRouteDay = day;

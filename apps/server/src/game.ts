@@ -6,6 +6,7 @@ import {
   type StateResponse,
   advance,
   resumeRoute,
+  routeStages,
   stream,
   viewState,
 } from '@bramo/shared';
@@ -15,6 +16,7 @@ import { claimOrders } from './market.js';
 import { claimRepairs } from './repairs.js';
 import { claimTide } from './tide.js';
 import { claimGearSales } from './vitrine.js';
+import { addRenown, clanOf } from './clans.js';
 import { type NewServerEvent, eventsFromSummary, recordEvents } from './town.js';
 import { loadCharacterForUpdate, saveCharacter } from './characters.js';
 import { entriesFromSummary, insertEntries } from './journal.js';
@@ -38,6 +40,12 @@ export interface ActionContext {
 export type Action = (state: CharacterState, now: number, ctx: ActionContext) => ActionResult | Promise<ActionResult>;
 
 export class NoCharacterError extends Error {}
+
+/** Gardiens franchis pour la première fois entre deux étapes atteintes (route.best avant et après). */
+function guardiansCrossed(before: number, after: number, content: Content): number {
+  if (after <= before || !content.combat) return 0;
+  return routeStages(content.combat).filter((s) => s.guardian && s.index >= before && s.index < after).length;
+}
 
 const RARITY_NAME: Record<string, string> = { common: 'Commun', rare: 'Rare', epic: 'Épique', legendary: 'Légendaire' };
 
@@ -95,6 +103,13 @@ export async function play(db: Db, content: Content, accountId: number, now: num
 
     const announce = await eventsFromSummary(tx, loaded.name, summary, content);
     announce.push(...loot.events);
+    // Renom : un membre qui vainc un gardien pour la première fois en rapporte à son clan.
+    const guardians = guardiansCrossed(loaded.state.combat.route.best, advanced.combat.route.best, content);
+    if (guardians && content.settings.clan.renown) {
+      const clanId = await clanOf(tx, loaded.id);
+      const ev = clanId ? await addRenown(tx, clanId, guardians * content.settings.clan.renown.guardian, now, content, `${loaded.name} a vaincu un gardien`) : null;
+      if (ev) announce.push(ev);
+    }
 
     let state = repaired.state;
     if (action) {

@@ -15,6 +15,7 @@ import {
   cloneState,
   levelForXp,
   memberBonuses,
+  renownRank,
 } from '@bramo/shared';
 import type { Db, Tx } from './db/index.js';
 import { characters, clanBuildings, clanLog, clanMembers, clanProgress, clans } from './db/schema.js';
@@ -254,10 +255,11 @@ export async function contribute(
   await tx.delete(clanProgress).where(and(eq(clanProgress.clanId, clan.id), eq(clanProgress.buildingId, p.buildingId)));
   await logLine(tx, clan.id, now, `${building.name} passe au niveau ${level + 1} : +${Math.round(building.boost.perLevel * 100)} % de production${building.boost.professions.includes('all') ? '' : ' dans ses métiers'}.`, content.settings.clan.logSize);
   state.clanBonuses = memberBonuses(await buildingLevels(tx, clan.id), content);
+  const rank = await addRenown(tx, clan.id, (content.settings.clan.renown?.buildingLevel ?? 0) * (level + 1), now, content, `${building.name} niveau ${level + 1}`);
   return {
     state,
     log: `Apport au clan : ${label}. ${building.name} passe au niveau ${level + 1} !`,
-    serverEvents: [{ kind: 'clan', text: `Le clan « ${clan.name} » achève ${building.name}, niveau ${level + 1}.` }],
+    serverEvents: [{ kind: 'clan', text: `Le clan « ${clan.name} » achève ${building.name}, niveau ${level + 1}.` }, ...(rank ? [rank] : [])],
   };
 }
 
@@ -336,5 +338,29 @@ export async function myClanView(db: Db, content: Content, characterId: number, 
     buildings,
     activeMembers: active,
     log: log.map((l) => ({ id: l.id, at: l.at.getTime(), text: l.text })),
+    renown: { value: clan.renown, ...renownRank(clan.renown, content) },
   };
+}
+
+/**
+ * Renom : ajouté au clan, jamais retiré. Un rang franchi s'écrit au journal du clan et s'annonce au fil du serveur.
+ * Renvoie l'annonce éventuelle (le fil s'écrit avec les autres annonces de la requête).
+ */
+export async function addRenown(tx: Tx, clanId: number, amount: number, now: number, content: Content, why: string): Promise<NewServerEvent | null> {
+  if (amount <= 0 || !content.settings.clan.renown) return null;
+  const [clan] = await tx.select().from(clans).where(eq(clans.id, clanId)).for('update');
+  if (!clan) return null;
+  const before = renownRank(clan.renown, content).rank;
+  const value = clan.renown + amount;
+  await tx.update(clans).set({ renown: value }).where(eq(clans.id, clanId));
+  const after = renownRank(value, content).rank;
+  if (after === before) return null;
+  await logLine(tx, clanId, now, `Le clan devient « ${after} » (${value} de Renom, ${why}).`, content.settings.clan.logSize);
+  return { kind: 'clan', text: `Le clan « ${clan.name} » devient ${after}.` };
+}
+
+/** Le clan d'un personnage, ou null. */
+export async function clanOf(tx: Tx, characterId: number): Promise<number | null> {
+  const [m] = await tx.select().from(clanMembers).where(eq(clanMembers.characterId, characterId));
+  return m?.clanId ?? null;
 }

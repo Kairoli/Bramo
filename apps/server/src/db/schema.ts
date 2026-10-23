@@ -183,6 +183,8 @@ export const clans = pgTable('clans', {
   /** Nom en minuscules, unique : « Les Braises » et « les braises » sont le même clan. */
   nameKey: text('name_key').notNull().unique(),
   description: text('description').notNull().default(''),
+  /** Renom : l'histoire du clan, qui ne baisse jamais (rangs de prestige). */
+  renown: integer('renown').notNull().default(0),
   createdAt: ts('created_at').notNull().defaultNow(),
 });
 

@@ -86,6 +86,13 @@ export function tideHook(stats: TideStats): ServerHook {
           stats.outfits++;
         }
       }
+      // Renom : un peu par membre qui a vraiment tenu la digue.
+      const rn = ctx.content.settings.clan.renown;
+      if (rn) {
+        const byClan = new Map<object, number>();
+        for (const x of scored) if (x.b.clan && x.points >= rn.tideMinPoints) byClan.set(x.b.clan, (byClan.get(x.b.clan) ?? 0) + 1);
+        for (const [clan, n] of byClan) (clan as { renown: number }).renown += Math.min(rn.tideMaxPerNight, n) * rn.tideMember;
+      }
       stats.nights.push({ day: simDay, tide: def.id, participants: scored.length, live: scored.filter((x) => x.live).length, work: scored.filter((x) => x.channel === 'work').length, points: total, thresholds });
     },
   };

@@ -405,6 +405,8 @@ describe('API', () => {
     expect(after.bonuses.mining).toBeCloseTo(0.02);
     expect(after.bonuses.smithing).toBeCloseTo(0.02); // la forge sert aussi les forgerons
     expect(after.log.some((l) => l.text.includes('Forge passe au niveau 1'))).toBe(true);
+    // Renom : un niveau de bâtiment en rapporte (10 × le niveau), il ne baisse jamais.
+    expect(after.renown).toMatchObject({ value: 10, rank: 'Hameau', next: { name: 'Village', at: 500 } });
     // Le bonus s'applique à la production des membres : +2 % mineur, en plus des 3 % de la Guilde du bourg.
     await recrue('POST', '/api/activity/start', { recipeId: 'mine_copper', quantity: 50, mode: 'replace' });
     const rate = ((await recrue('GET', '/api/state')).json as StateResponse).state.activity!.rate;

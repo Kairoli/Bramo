@@ -129,3 +129,11 @@ export function buildingNeeds(
   const factor = (level * Math.max(ref, activeMembers)) / ref;
   return { gold: Math.ceil(b.base.gold * factor), items: b.base.items.map((s) => ({ item: s.item, qty: Math.ceil(s.qty * factor) })) };
 }
+
+/** Rang de prestige d'un clan selon son Renom (settings.clan.renown), et le rang suivant. */
+export function renownRank(renown: number, content: Pick<Content, 'settings'>): { rank: string; next: { name: string; at: number } | null } {
+  const ranks = [...(content.settings.clan.renown?.ranks ?? [{ name: 'Hameau', at: 0 }])].sort((a, b) => a.at - b.at);
+  const reached = [...ranks].reverse().find((r) => renown >= r.at) ?? ranks[0]!;
+  const next = ranks.find((r) => r.at > renown) ?? null;
+  return { rank: reached.name, next: next ? { name: next.name, at: next.at } : null };
+}

@@ -127,6 +127,13 @@
       "when": 1792715784127,
       "tag": "0017_vitrine",
       "breakpoints": true
+    },
+    {
+      "idx": 18,
+      "version": "7",
+      "when": 1792716839109,
+      "tag": "0018_renom",
+      "breakpoints": true
     }
   ]
 }

@@ -27,7 +27,8 @@ import {
   tideWindow,
 } from '@bramo/shared';
 import type { Db, Tx } from './db/index.js';
-import { characters, tideDays, tideEntries } from './db/schema.js';
+import { characters, clanMembers, tideDays, tideEntries } from './db/schema.js';
+import { addRenown } from './clans.js';
 import { loadCharacterById } from './characters.js';
 import { grantGear } from './gear.js';
 import { recordEvents } from './town.js';
@@ -71,6 +72,19 @@ export async function settleTide(db: Db, content: Content, now: number): Promise
     }
     for (let i = 0; i < entries.length; i += 200) await tx.insert(tideEntries).values(entries.slice(i, i + 200)).onConflictDoNothing();
     await tx.update(tideDays).set({ participants: entries.length, points, thresholds }).where(eq(tideDays.day, day));
+    // Renom : chaque clan gagne un peu par membre qui a vraiment tenu la digue.
+    const renown = content.settings.clan.renown;
+    const events: { kind: 'clan'; text: string }[] = [];
+    if (renown && entries.length) {
+      const ids = new Set(entries.filter((e) => e.points >= renown.tideMinPoints).map((e) => e.characterId));
+      const byClan = new Map<number, number>();
+      for (const m of await tx.select().from(clanMembers)) if (ids.has(m.characterId)) byClan.set(m.clanId, (byClan.get(m.clanId) ?? 0) + 1);
+      for (const [clanId, n] of byClan) {
+        const ev = await addRenown(tx, clanId, Math.min(renown.tideMaxPerNight, n) * renown.tideMember, now, content, 'la Marée du soir');
+        if (ev) events.push(ev as { kind: 'clan'; text: string });
+      }
+    }
+    if (events.length) await recordEvents(tx, now, events);
     // Le fil du serveur raconte le soir : combien sont venus, combien de lanternes la digue a allumées.
     if (entries.length) {
       const def = tideOf(day, rules);

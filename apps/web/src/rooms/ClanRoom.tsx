@@ -192,6 +192,10 @@ function ClanHall({ clan, run }: { clan: ClanView; run: Run }) {
           <div className="clan-id-text">
             <span className="eyebrow">Clan · vous êtes {RANK_NAME[clan.myRank].toLowerCase()}</span>
             <h1>{clan.name}</h1>
+            <span className="clan-renown" title="Le Renom ne baisse jamais : bâtiments, Marée du soir, gardiens vaincus par les membres. Il ne donne que du prestige.">
+              {clan.renown.rank} · {clan.renown.value} de Renom
+              {clan.renown.next ? ` · ${clan.renown.next.name} à ${clan.renown.next.at}` : ''}
+            </span>
             {clan.description && <p>{clan.description}</p>}
           </div>
         </div>

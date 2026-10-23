@@ -1,0 +1,1 @@
+ALTER TABLE "clans" ADD COLUMN "renown" integer DEFAULT 0 NOT NULL;

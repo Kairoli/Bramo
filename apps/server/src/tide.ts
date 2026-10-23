@@ -145,6 +145,8 @@ export async function tideView(tx: Tx, state: CharacterState, content: Content, 
   const def = tideOf(day, rules);
   const w = tideWindow(day, rules);
   const t = readTide(state.combat.tide);
+  // Inscrit avant que la liste des inscrits existe (ou par un autre chemin) : on l'y rattrape, pour la scène en direct.
+  if (t.registered === day && state.seed) await recordSignup(tx, day, state.seed);
   const delivered = t.work?.day === day ? t.work.items : {};
   const [last] = await tx.select().from(tideDays).where(eq(tideDays.day, lastFinishedTide(now, rules)));
   const week = t.nights.filter((n) => tideWeek(n.day) === tideWeek(day)).sort((a, b) => b.points - a.points).slice(0, rules.weekly.bestNights);
@@ -168,6 +170,16 @@ export async function tideView(tx: Tx, state: CharacterState, content: Content, 
     week: { points: week.reduce((s, n) => s + n.points, 0), nights: week.length, bestNights: rules.weekly.bestNights, bonusAbove: rules.weekly.bonusAbove },
     shop: rules.shop.map((o) => ({ ...o, owned: t.unlocked.includes(o.outfit), forClass: !!state.classId && !!content.cosmetics.outfits.find((x) => x.id === o.outfit)?.classes.includes(state.classId) })),
     titles: tideTitles(state, content),
+    rules: {
+      fullPoints: rules.points.perMinute * rules.durationMin,
+      minRatio: rules.points.minRatio,
+      maxRatio: rules.points.maxRatio,
+      workMultiplier: rules.points.workMultiplier,
+      liveBonus: rules.points.liveBonus,
+      perPoint: rules.shards.perPoint,
+      thresholds: rules.shards.thresholds.map((x) => ({ share: x.share, bonus: x.bonus })),
+      bestNights: rules.weekly.bestNights,
+    },
     counts: t.counts,
     patron: await patronView(tx, state, content, now),
     last: last

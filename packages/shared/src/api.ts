@@ -339,6 +339,20 @@ export interface TideView {
   week: { points: number; nights: number; bestNights: number; bonusAbove: number };
   shop: { id: string; name: string; outfit: string; cost: number; owned: boolean; forClass: boolean }[];
   titles: string[];
+  /** Les règles de la Marée, pour les expliquer avec les vrais chiffres (data/combat/tide.yaml). */
+  rules: {
+    /** Points d'un build moyen de son niveau sur toute la Marée. */
+    fullPoints: number;
+    minRatio: number;
+    maxRatio: number;
+    workMultiplier: number;
+    liveBonus: number;
+    /** Éclats par point. */
+    perPoint: number;
+    /** Seuils du serveur (part de l'objectif) et éclats en plus pour chaque participant. */
+    thresholds: { share: number; bonus: number }[];
+    bestNights: number;
+  };
   counts: Record<string, number>;
   last: { day: number; name: string; participants: number; points: number; objective: number; thresholds: number; of: number } | null;
   /**

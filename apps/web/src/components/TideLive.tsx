@@ -145,9 +145,10 @@ export function TideLive({ view }: { view: TideLiveView }) {
           {num(total)} à la digue{total > shown ? ` · ${shown} ici` : ''}
         </span>
       </div>
+      {view.phase === 'idle' && <div className="tide-live-banner">Inscriptions ce soir à {clock(view.registrationStart)} · la Marée monte à {clock(view.start)}</div>}
       {view.phase === 'gathering' && <div className="tide-live-banner">La Marée monte dans {Math.max(1, Math.round((view.start - now) / 60_000))} min</div>}
-      {view.phase === 'done' && <div className="tide-live-banner">La digue a tenu : {pr.lit} lanterne{pr.lit > 1 ? 's' : ''} allumée{pr.lit > 1 ? 's' : ''}</div>}
-      {total === 0 && view.phase !== 'idle' && <div className="tide-live-banner">Personne n’est encore inscrit ce soir.</div>}
+      {view.phase === 'done' && total > 0 && <div className="tide-live-banner">La digue a tenu : {pr.lit} lanterne{pr.lit > 1 ? 's' : ''} allumée{pr.lit > 1 ? 's' : ''}</div>}
+      {total === 0 && view.phase !== 'idle' && <div className="tide-live-banner">{view.phase === 'done' ? 'Personne ne s’était inscrit ce soir.' : 'Personne n’est encore inscrit ce soir.'}</div>}
     </div>
   );
 }

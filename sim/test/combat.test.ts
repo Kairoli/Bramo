@@ -41,5 +41,6 @@ describe('combat : propositions', () => {
     expect(after.paths.red_temper!.params.hits).toBe(before.paths.red_temper!.params.hits);
     expect(after.paths.fulgurant).toEqual(before.paths.fulgurant);
     expect(Object.keys(after.plans).length).toBe(Object.keys(before.plans).length + 1);
-  });
+    // Il construit le contenu deux fois (plus de 4 000 modèles) : plus long que le délai par défaut sur une machine chargée.
+  }, 30_000);
 });

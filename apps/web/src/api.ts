@@ -14,6 +14,7 @@ import type {
   PlayerProfile,
   RepairRequestView,
   StateResponse,
+  TideView,
   TownView,
 } from '@bramo/shared';
 
@@ -112,4 +113,11 @@ export const api = {
   chooseClass: (classId: string) => request<StateResponse>('POST', '/character/class', { classId }),
   setNickname: (profession: string, rank: number) => request<StateResponse>('POST', '/nickname', { profession, rank }),
   completeTrial: (trialId: string) => request<StateResponse>('POST', '/trials/complete', { trialId }),
+  stockSupplies: (itemId: string, qty: number) => request<StateResponse>('POST', '/combat/supplies/stock', { itemId, qty }),
+  unstockSupplies: (itemId: string, qty: number) => request<StateResponse>('POST', '/combat/supplies/unstock', { itemId, qty }),
+  tide: () => request<TideView | null>('GET', '/tide'),
+  tidePrefs: (prefs: { auto?: boolean; channel?: 'combat' | 'work' }) => request<StateResponse>('POST', '/tide/prefs', prefs),
+  tideJoin: () => request<StateResponse>('POST', '/tide/join'),
+  tideDeliver: () => request<StateResponse>('POST', '/tide/deliver'),
+  tideBuy: (offer: string) => request<StateResponse>('POST', '/tide/buy', { offer }),
 };

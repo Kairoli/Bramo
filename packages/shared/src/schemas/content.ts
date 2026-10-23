@@ -142,6 +142,10 @@ export const itemSchema = z.object({
   meal: z.object({ bonus: ratio, durationMin: z.number().positive() }).optional(),
   /** Gemme à sertir : l'outil de situation (rang `gem`, data/combat/tools.yaml) qu'elle donne une fois sertie. */
   gem: id.optional(),
+  /** Potion de secours (fournitures de combat) : bue toute seule sous `below` des PV, rend `heal` des PV maximum. */
+  potion: z.object({ heal: z.number().positive().max(1), below: z.number().positive().max(1), cooldown: z.number().positive() }).optional(),
+  /** Préparation (fournitures de combat) : l'outil de situation de rang `prep` pendant `minutes` de combat. */
+  prep: z.object({ tool: id, minutes: z.number().positive() }).optional(),
 });
 
 const stackSchema = z.object({ item: id, qty: z.number().int().min(1) });

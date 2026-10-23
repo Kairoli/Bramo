@@ -11,7 +11,7 @@ import { SpellIcon } from '../components/SpellIcon';
 
 const ROLE = { damage: 'Dégâts', control: 'Contrôle', support: 'Soutien' } as const;
 
-type Sheet = 'prep' | 'class' | 'patrol' | 'log';
+type Sheet = 'prep' | 'class' | 'patrol' | 'log' | 'supplies';
 
 /**
  * Salle Combat, comme un écran de jeu : en haut le combat en direct (étape, barre de sorts avec leurs recharges) ; en
@@ -62,6 +62,11 @@ export function CombatRoom() {
           <h2>Patrouilles</h2>
           <p className="muted small">Choisissez une zone à farmer en boucle, au palier de votre choix : la route, elle, avance toute seule.</p>
           <WorldPicker view={view} />
+        </Modal>
+      )}
+      {sheet === 'supplies' && (
+        <Modal onClose={() => setSheet(null)} className="combat-sheet">
+          <SuppliesSheet view={view} />
         </Modal>
       )}
       {sheet === 'log' && (
@@ -250,6 +255,13 @@ function ModeGrid({ view, open }: { view: CombatView; open: (s: Sheet) => void }
       <ModeTile tone="var(--magic)" icon={<ClassIcon />} title="Classe et voie" sub={`Niveau ${view.level} · palier ${view.classTier}`} onClick={() => open('class')} />
       <ModeTile tone="var(--alert)" icon={<PatrolIcon />} title="Patrouilles" sub={patrol ? `En cours : ${a.name}` : 'Farmer une zone'} onClick={() => open('patrol')} />
       <ModeTile tone="var(--text-muted)" icon={<LogIcon />} title="Dernier combat" sub={view.lastFight ? `${view.lastFight.win ? 'Victoire' : 'Défaite'} · ${decimal(view.lastFight.time)} s` : 'Rien encore'} onClick={() => open('log')} />
+      <ModeTile
+        tone="var(--good)"
+        icon={<SupplyIcon />}
+        title="Fournitures"
+        sub={view.supplies.active ? `${view.supplies.active.tool} · ${view.supplies.active.minutesLeft} min` : `${view.supplies.potions.reduce((n, p) => n + p.qty, 0)} potions · ${view.supplies.preps.reduce((n, p) => n + p.qty, 0)} préparations`}
+        onClick={() => open('supplies')}
+      />
       <ModeTile tone="var(--event)" icon={<DungeonIcon />} title="Profondeurs" sub="Donjons à salles" soon />
       <ModeTile tone="var(--good)" icon={<ScoutIcon />} title="Éclaireurs" sub="Envoyer en expédition" soon />
     </section>
@@ -280,6 +292,7 @@ const ClassIcon = () => ico('M12 3l7 4v5c0 4-3 7-7 9-4-2-7-5-7-9V7z M12 8v6 M9 1
 const PatrolIcon = () => ico('M3 20l5-14 4 8 3-5 6 11z M8 6l1-3');
 const LogIcon = () => ico('M6 3h9l3 3v15H6z M9 9h6 M9 13h6 M9 17h4');
 const DungeonIcon = () => ico('M4 21V10l8-6 8 6v11 M9 21v-6h6v6 M12 4v3');
+const SupplyIcon = () => ico('M9 3h6v3l3 4v10H6V10l3-4z M9 13h6 M12 10v6');
 const ScoutIcon = () => ico('M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18z M15 9l-2 5-4 1 2-5z');
 
 // --- Fenêtres ----------------------------------------------------------------------------------------------------------
@@ -454,6 +467,74 @@ function Stat({ label, value }: { label: string; value: string }) {
       <span className="muted">{label}</span>
       <strong>{value}</strong>
     </div>
+  );
+}
+
+/**
+ * Fournitures : ce que le personnage emporte sur la route. Les potions se boivent toutes seules quand les PV baissent
+ * (au plus quelques-unes par rencontre) ; une préparation donne son avantage de situation pendant une heure de combat,
+ * puis la suivante prend le relais.
+ */
+function SuppliesSheet({ view }: { view: CombatView }) {
+  const { act } = useGame();
+  const s = view.supplies;
+  return (
+    <>
+      <h2>Fournitures</h2>
+      <p className="muted small">
+        Les potions se boivent toutes seules quand vos PV baissent (au plus {s.potionsPerFight} par rencontre). Une préparation donne son avantage pendant une heure de combat, puis la
+        suivante prend le relais. Elles se fabriquent (Alchimie, Artificerie, Tannerie, Cuisine, Menuiserie) ou s’achètent au marché.
+      </p>
+      <div className="supplies-grid">
+        <section>
+          <h3>Emportées</h3>
+          {s.active && (
+            <p className="supply-active">
+              En cours : <strong>{s.active.name}</strong> ({s.active.tool}), encore {s.active.minutesLeft} min
+            </p>
+          )}
+          {!s.potions.length && !s.preps.length && <p className="muted small">Rien pour le moment.</p>}
+          <ul className="supply-list">
+            {s.potions.map((p) => (
+              <li key={p.item}>
+                <span>
+                  {p.name} × {num(p.qty)} <span className="muted small">(rend {Math.round(p.heal * 100)} % des PV)</span>
+                </span>
+                <button className="btn btn-ghost btn-sm" onClick={() => void act(() => api.unstockSupplies(p.item, p.qty))}>
+                  Reprendre
+                </button>
+              </li>
+            ))}
+            {s.preps.map((p) => (
+              <li key={p.item}>
+                <span>
+                  {p.name} × {num(p.qty)} <span className="muted small">({p.tool}, {p.minutes} min chacune)</span>
+                </span>
+                <button className="btn btn-ghost btn-sm" onClick={() => void act(() => api.unstockSupplies(p.item, p.qty))}>
+                  Reprendre
+                </button>
+              </li>
+            ))}
+          </ul>
+        </section>
+        <section>
+          <h3>Dans le sac</h3>
+          {!s.inBag.length && <p className="muted small">Aucune potion ni préparation dans le sac : le marché en vend.</p>}
+          <ul className="supply-list">
+            {s.inBag.map((b) => (
+              <li key={b.item}>
+                <span>
+                  {b.name} × {num(b.qty)} <span className="muted small">{b.text}</span>
+                </span>
+                <button className="btn btn-sm" onClick={() => void act(() => api.stockSupplies(b.item, b.qty))}>
+                  Emporter
+                </button>
+              </li>
+            ))}
+          </ul>
+        </section>
+      </div>
+    </>
   );
 }
 

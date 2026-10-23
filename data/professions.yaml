@@ -112,6 +112,7 @@
   categories:
     - { id: tanning, name: Tannage }
     - { id: leather_goods, name: Cuir ouvré }
+    - { id: preparations, name: Préparations de combat }
 
 - id: tailoring
   name: Couture
@@ -135,6 +136,7 @@
   master: { name: Maître Bertin, line: "« Un bon repas, et la journée file deux fois plus vite. Bon, presque. »" }
   categories:
     - { id: dishes, name: Plats }
+    - { id: preparations, name: Préparations de combat }
 
 - id: alchemy
   name: Alchimie
@@ -148,6 +150,7 @@
     - { id: glass, name: Verrerie }
     - { id: potions, name: Potions }
     - { id: reagents, name: Réactifs }
+    - { id: preparations, name: Préparations de combat }
 
 - id: jewelcrafting
   name: Joaillerie

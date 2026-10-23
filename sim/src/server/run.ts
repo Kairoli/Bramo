@@ -8,6 +8,7 @@ import { fileURLToPath } from 'node:url';
 import { loadContent } from '@bramo/shared/node';
 import { analyze, toMarkdown } from './report.js';
 import { runServer } from './world.js';
+import { type TideStats, tideHook } from './tideHook.js';
 
 const root = fileURLToPath(new URL('../../../', import.meta.url));
 const content = loadContent(join(root, 'data'));
@@ -19,8 +20,10 @@ for (const [path, value] of Object.entries(JSON.parse(process.env.PATCH ?? '{}')
   o[keys.at(-1)!] = value;
 }
 const [players = '20', days = '10', mix = 'real', seed = '1', name] = process.argv.slice(2);
-const r = runServer(content, { players: Number(players), days: Number(days), mix, seed: Number(seed) });
-const a = analyze(r, content);
+const tide: TideStats = { nights: [], rows: [], outfits: 0, chests: { caches: 0, total: 0 } };
+const hooks = process.env.TIDE === '0' ? [] : [tideHook(tide)];
+const r = runServer(content, { players: Number(players), days: Number(days), mix, seed: Number(seed), hooks });
+const a = analyze(r, content, tide);
 const out = join(root, 'sim/reports/serveur');
 mkdirSync(out, { recursive: true });
 const file = name ?? `${mix}-${players}x${days}-s${seed}`;

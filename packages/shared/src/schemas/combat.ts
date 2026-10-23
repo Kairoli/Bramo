@@ -118,6 +118,13 @@ export const combatRulesSchema = z.object({
   /** Conversion des statistiques d'équipement en statistiques de combat (étape 5a) ; absente : `referenceStats` pour tous. */
   gearStats: gearStatsSchema.optional(),
   /**
+   * Au-delà des Lointains : après les douze chapitres, `beyondChapters` chapitres de plus qui reprennent les régions hautes
+   * au-delà du palier 90 (les ennemis continuent la courbe ; le butin reste au palier 90). Un but sans fin pour qui a tout fini.
+   */
+  route: z.object({ beyondChapters: z.number().int().min(0) }).optional(),
+  /** Fournitures de combat (potions de secours, préparations) : potions bues au plus par rencontre. */
+  supplies: z.object({ potionsPerFight: z.number().int().min(0) }).optional(),
+  /**
    * Butin d'une victoire (docs/design/contenu/butin-et-recettes.md §2), compté en unités : une unité = `unitSeconds` de combat.
    * Par unité : `vestiges` vestiges de la région, `classic` chance d'un objet classique du palier (rareté tirée dans `rarity`),
    * `setPiece` chance d'une pièce d'ensemble (palier 40 et plus, Légendaire à `setLegendary`), `named` chance par objet nommé
@@ -584,8 +591,9 @@ export const encounterSchema = z.object({
  * les meilleurs soirs.
  */
 export const tideSchema = z.object({
-  /** Heure de début (UTC) et durée. */
-  startHourUtc: z.number().int().min(0).max(23),
+  /** Heure de début dans le fuseau du serveur (`timeZone`, ex. Europe/Paris : 20 h été comme hiver) et durée. */
+  startHour: z.number().int().min(0).max(23),
+  timeZone: z.string(),
   durationMin: z.number().int().min(1),
   /** Ordre des Marées, un soir chacune, puis on recommence. */
   rotation: z.array(id).min(1),
@@ -611,6 +619,10 @@ export const tideSchema = z.object({
     maxRatio: z.number().positive(),
     /** Joueur connecté pendant la Marée : ce bonus de points (petit, ~15 %). */
     liveBonus: z.number().min(0),
+    /** Le build moyen d'un niveau : cette part d'un équipement Rare complet de ce niveau (un joueur réel n'a pas tout en Rare). */
+    referenceShare: z.number().positive().max(1),
+    /** Soins, protections et atténuations comptent autant de fois plus que les dégâts quand la Marée compte l'escorte. */
+    supportWeight: z.number().min(0),
     /** Rencontres jouées pour mesurer la contribution (graines différentes). */
     fights: z.number().int().min(1),
   }),

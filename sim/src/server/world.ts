@@ -39,6 +39,8 @@ import {
   skillLevel,
   socketGem,
   startActivity,
+  stockSupplies,
+  readSupplies,
   stockPantry,
   tierFactorAt,
   wallIndex,
@@ -389,10 +391,10 @@ export function runServer(content: Content, input: ServerOptions): ServerResult 
     for (const [slot, list] of bySlot) {
       const cap = content.gearSlots[slot]?.capacity ?? 1;
       const ranked = [...list].sort((a, c) => heuristic(content.gearModels[c.model]!) - heuristic(content.gearModels[a.model]!) || c.lines.length - a.lines.length);
-      if (!b.persona.gearByFight) {
-        gear = setSlot(gear, slot, ranked.slice(0, cap).map((g) => g.id));
-        continue;
-      }
+      // D'abord la meilleure pièce à l'œil (palier, rareté) : sous le plancher, une pièce seule ne change rien au calcul,
+      // et un joueur qui ne garderait que ce qui « se voit » finirait sans rien porter.
+      gear = setSlot(gear, slot, ranked.slice(0, cap).map((g) => g.id));
+      if (!b.persona.gearByFight || process.env.FIGHTGEAR === '0') continue;
       // Calcul : les 4 meilleures à l'œil, essayées une à une contre le mur.
       const current = gear.filter((g) => g.equipped === slot).map((g) => g.id);
       let best = { ids: current, score: scoreOf(b, gear) };
@@ -468,6 +470,59 @@ export function runServer(content: Content, input: ServerOptions): ServerResult 
         syncEquipment(b);
         note(day, `${b.name} sertit ${content.items[item]!.name} devant ${combat.encounters[st.encounter]!.name}`);
         return;
+      }
+    }
+  };
+
+  /**
+   * Fournitures devant un mur : la préparation de la mécanique du mur (achetée ou fabriquée), et des potions. Les joueurs
+   * qui en ont dans le sac les emportent.
+   */
+  const supplies = (b: Bot, day: number) => {
+    if (b.persona.skill < 0.5 || !b.state.classId) return;
+    // Ce qu'il a déjà dans le sac part sur la route (une réserve raisonnable : le reste se vend).
+    const cur = readSupplies(b.state.combat.supplies);
+    for (const [id, n] of Object.entries(b.state.inventory)) {
+      const it = content.items[id];
+      if (n <= 0 || (!it?.potion && !it?.prep)) continue;
+      const held = (it.potion ? cur.potions[id] : cur.preps[id]) ?? 0;
+      const take = Math.min(n, Math.max(0, (it.potion ? 40 : 16) - held));
+      if (take > 0) b.state = stockSupplies(b.state, id, take, content);
+    }
+    if (!b.persona.gems || day - b.lastRouteDay < 1) return;
+    const sup = readSupplies(b.state.combat.supplies);
+    const st = wallStage(b);
+    const fams = relevantFamilies(combat.encounters[st.encounter]!);
+    const tools = combat.tools.filter((t) => t.rank === 'prep' && fams.includes(t.family)).map((t) => t.id);
+    const have = Object.entries(sup.preps).filter(([id]) => tools.includes(content.items[id]?.prep?.tool ?? '')).reduce((n, [, q]) => n + q, 0);
+    const budget = b.state.gold * 0.3;
+    if (have < 8) {
+      for (const it of Object.values(content.items).filter((x) => x.prep && tools.includes(x.prep.tool))) {
+        const ask = lowestAsk(it.id, b.id);
+        if (ask === undefined || ask * 8 > budget) continue;
+        const r = buy(b, it.id, 16 - have, Math.ceil(ask * 1.2), false);
+        b.totals.purchases += r.gold;
+        if (r.qty) {
+          b.state = stockSupplies(b.state, it.id, r.qty, content);
+          add(ledger.delivered, it.id, r.qty);
+          break;
+        }
+      }
+    }
+    const potions = Object.values(sup.potions).reduce((n, q) => n + q, 0);
+    if (potions < 20) {
+      const best = Object.values(content.items)
+        .filter((x) => x.potion)
+        .map((x) => ({ x, ask: lowestAsk(x.id, b.id) }))
+        .filter((p) => p.ask !== undefined && p.ask * 20 <= budget)
+        .sort((a, c) => c.x.potion!.heal - a.x.potion!.heal)[0];
+      if (best) {
+        const r = buy(b, best.x.id, 40 - potions, Math.ceil(best.ask! * 1.2), false);
+        b.totals.purchases += r.gold;
+        if (r.qty) {
+          b.state = stockSupplies(b.state, best.x.id, r.qty, content);
+          add(ledger.delivered, best.x.id, r.qty);
+        }
       }
     }
   };
@@ -1008,6 +1063,7 @@ export function runServer(content: Content, input: ServerOptions): ServerResult 
       b.lastGearDay = day;
     }
     useGems(b, day);
+    supplies(b, day);
     contributeToClan(b, day);
     meals(b);
     chaseProfit(b, day);

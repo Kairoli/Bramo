@@ -148,11 +148,11 @@
 
 # --- Alchimie ---
 - {id: vial, name: Fioles, category: vial, value: 1}
-- {id: minor_healing_potion, name: Potion de soin mineure, category: potion, value: 2}
-- {id: miner_elixir, name: Élixir du mineur, category: potion, value: 4}
+- {id: minor_healing_potion, name: Potion de soin mineure, category: potion, value: 2, potion: {heal: 0.2, below: 0.4, cooldown: 20}}
+- {id: miner_elixir, name: Élixir du mineur, category: potion, value: 4, potion: {heal: 0.28, below: 0.4, cooldown: 20}}
 - {id: rune_ink, name: Encre runique, category: reagent, value: 1}
-- {id: frost_tonic, name: Tonique de givre, category: potion, value: 3}
-- {id: lantern_draught, name: Philtre des lanternes, category: potion, value: 3}
+- {id: frost_tonic, name: Tonique de givre, category: potion, value: 3, potion: {heal: 0.35, below: 0.4, cooldown: 20}}
+- {id: lantern_draught, name: Philtre des lanternes, category: potion, value: 3, potion: {heal: 0.45, below: 0.4, cooldown: 20}}
 
 # --- Joaillerie ---
 - {id: copper_wire, name: Fil de cuivre, category: bar, value: 1}
@@ -237,3 +237,14 @@
 
 # --- La Marée du soir (combat/tide.yaml) : les éclats de marée s'échangent contre des apparences, jamais de la puissance. ---
 - {id: tide_shard, name: Éclat de marée, category: currency, value: 5}
+
+# --- Fournitures de combat (23 octobre, nuit) : préparations emportées sur la route. Chacune donne son outil de situation
+#     (combat/tools.yaml, rang prep) pendant une heure de combat. Elles donnent un usage aux restes de la Chasse, de la
+#     Menuiserie et de l'Artificerie (viande, hampes, pointes, plumes, ressorts). ---
+- {id: drive_oil, name: Huile de battue, category: preparation, value: 1, prep: {tool: drive_oil, minutes: 60}}
+- {id: fletched_volley, name: Volée de flèches empennées, category: preparation, value: 2, prep: {tool: drive_oil, minutes: 60}}
+- {id: clear_rinse, name: Rinçage clair, category: preparation, value: 1, prep: {tool: clear_rinse, minutes: 60}}
+- {id: parry_balm, name: Baume de parade, category: preparation, value: 1, prep: {tool: parry_balm, minutes: 60}}
+- {id: wedge_powder, name: Poudre de coin, category: preparation, value: 1, prep: {tool: wedge_powder, minutes: 60}}
+- {id: synchrony_tonic, name: Tonique de synchronie, category: preparation, value: 1, prep: {tool: synchrony_tonic, minutes: 60}}
+- {id: recovery_infusion, name: Infusion de reprise, category: preparation, value: 1, prep: {tool: recovery_infusion, minutes: 60}}

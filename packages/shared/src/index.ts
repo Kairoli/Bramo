@@ -9,6 +9,7 @@ export * from './combat/progress.js';
 export * from './combat/view.js';
 export * from './combat/presets.js';
 export * from './combat/tide.js';
+export * from './combat/supplies.js';
 export * from './content.js';
 export * from './formulas/xp.js';
 export * from './formulas/rates.js';

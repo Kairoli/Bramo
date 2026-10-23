@@ -6,6 +6,7 @@ import { spellSlots } from './content.js';
 import type { CombatStats, Contributions } from './engine.js';
 import type { CombatContent } from '../schemas/combat.js';
 import { MAX_PRESETS } from './presets.js';
+import { activePrep, readSupplies } from './supplies.js';
 import { activePath, advisedPlan, availableSpells, classLevel, classTier, classXpPerHour, currentPlan, encounterTiers, replayFight, routeStages, wornGear } from './progress.js';
 
 export interface SpellView {
@@ -92,6 +93,14 @@ export interface CombatView {
   floored: boolean;
   /** Réponses de situation actives (gemmes serties, ensembles de situation) : leur nom. */
   situation: string[];
+  /** Fournitures de combat : potions et préparations emportées, celle en cours, et ce que le sac pourrait y mettre. */
+  supplies: {
+    potions: { item: string; name: string; qty: number; heal: number }[];
+    preps: { item: string; name: string; qty: number; tool: string; minutes: number }[];
+    active: { item: string; name: string; tool: string; minutesLeft: number } | null;
+    inBag: { item: string; name: string; qty: number; kind: 'potion' | 'prep'; text: string }[];
+    potionsPerFight: number;
+  };
   training: { xpShare: number; maxLevel: number };
   activity: {
     encounter: string | null;
@@ -356,7 +365,30 @@ export function viewCombat(state: CharacterState, content: Content): CombatView 
     classTier: tier,
     stats: pick(worn?.stats ?? combat.rules.referenceStats),
     floored: !!worn?.floored,
-    situation: (worn?.tools ?? []).map((t) => t.name),
+    situation: [...(worn?.tools ?? []).map((t) => t.name), ...(() => {
+      const prep = activePrep(state, content);
+      const tool = prep && combat.tools.find((t) => t.id === prep);
+      return tool ? [`${tool.name} (préparation)`] : [];
+    })()],
+    supplies: (() => {
+      const s = readSupplies(state.combat.supplies);
+      const toolName = (id: string) => combat.tools.find((t) => t.id === id)?.name ?? id;
+      const active = s.active && s.active.leftMs > 0 ? s.active : null;
+      return {
+        potions: Object.entries(s.potions).map(([item, qty]) => ({ item, name: content.items[item]?.name ?? item, qty, heal: content.items[item]?.potion?.heal ?? 0 })),
+        preps: Object.entries(s.preps).map(([item, qty]) => ({ item, name: content.items[item]?.name ?? item, qty, tool: toolName(content.items[item]?.prep?.tool ?? ''), minutes: content.items[item]?.prep?.minutes ?? 0 })),
+        active: active ? { item: active.item, name: content.items[active.item]?.name ?? active.item, tool: toolName(content.items[active.item]?.prep?.tool ?? ''), minutesLeft: Math.ceil(active.leftMs / 60_000) } : null,
+        inBag: Object.entries(state.inventory)
+          .filter(([id, n]) => n > 0 && (content.items[id]?.potion || content.items[id]?.prep))
+          .map(([item, qty]) => {
+            const it = content.items[item]!;
+            return it.potion
+              ? { item, name: it.name, qty, kind: 'potion' as const, text: `rend ${Math.round(it.potion.heal * 100)} % des PV sous ${Math.round(it.potion.below * 100)} %` }
+              : { item, name: it.name, qty, kind: 'prep' as const, text: `${toolName(it.prep!.tool)} pendant ${it.prep!.minutes} min de combat` };
+          }),
+        potionsPerFight: combat.rules.supplies?.potionsPerFight ?? 0,
+      };
+    })(),
     training: { xpShare: combat.rules.progression.training.xpShare, maxLevel: combat.rules.progression.training.maxLevel },
     activity: a
       ? {

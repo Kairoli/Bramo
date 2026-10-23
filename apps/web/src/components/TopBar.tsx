@@ -1,7 +1,9 @@
 import { type Room, useGame } from '../game/GameContext';
 import { num } from '../format';
 import { EnergyButton } from './EnergyButton';
+import { useState } from 'react';
 import { Banners } from './Banners';
+import { TideBanner, TideModal, useTide } from './Tide';
 
 const TABS: { room: Room; label: string }[] = [
   { room: 'home', label: 'Accueil' },
@@ -14,6 +16,8 @@ const TABS: { room: Room; label: string }[] = [
 
 export function TopBar() {
   const { room, go, state, logout } = useGame();
+  const tide = useTide();
+  const [tideOpen, setTideOpen] = useState(false);
   return (
     <header className="topbar">
       <div className="logo">Bramo</div>
@@ -24,7 +28,8 @@ export function TopBar() {
           </button>
         ))}
       </nav>
-      <Banners />
+      <Banners events={[<TideBanner key="tide" view={tide.view} onOpen={() => setTideOpen(true)} />]} />
+      {tideOpen && tide.view && <TideModal view={tide.view} refresh={tide.refresh} onClose={() => setTideOpen(false)} />}
       <div className="topbar-right">
         <div className="status-box">
           <span className="gold">{num(state.gold)} or</span>

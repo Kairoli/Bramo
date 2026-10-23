@@ -106,6 +106,16 @@ loot:
   named: 0.001            # chance par objet nommé de la rencontre, par unité
   namedGuarantee: 1000    # garanti après 1 000 unités sans l'avoir eu (~6 jours sur la même rencontre)
 
+# Au-delà des Lointains (23 octobre, nuit) : la simulation de serveur montrait qu'une fois la route finie, il n'y avait plus
+# rien à faire en combat. Six chapitres de plus reprennent les régions hautes au-delà du palier 90 (les ennemis continuent la
+# courbe, le butin reste au palier 90) : un but sans fin, le classement de la route.
+route:
+  beyondChapters: 6
+
+# Fournitures de combat (23 octobre, nuit) : potions de secours bues au plus par rencontre (la préparation, elle, dure une heure).
+supplies:
+  potionsPerFight: 2
+
 # Progression de classe et activité de combat (étape 4). [Décidé par Louis : XP de classe au combat seulement ;
 # Terrain d'entraînement validé.] Chiffres proposés par Claude, à équilibrer.
 progression:

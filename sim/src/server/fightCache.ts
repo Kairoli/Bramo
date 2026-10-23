@@ -42,7 +42,7 @@ export function installFightCache(): { stats: FightCacheStats; clear: () => void
     const r = fight(combat, [setup], encounter, { ...options, seed, trace: false });
     stats.ms += performance.now() - t0;
     // Le résultat gardé est réduit à ce que `runCombat` lit.
-    const slim = { win: r.win, time: r.time, cause: r.cause, killedBy: r.killedBy, enemyHpLeft: r.enemyHpLeft, team: [] } as FightResult;
+    const slim = { win: r.win, time: r.time, cause: r.cause, killedBy: r.killedBy, enemyHpLeft: r.enemyHpLeft, team: [{ metrics: { potions: r.team[0]?.metrics.potions ?? 0 } }] } as unknown as FightResult;
     if (cache.size > 2_000_000) cache.clear();
     cache.set(key, slim);
     return slim;

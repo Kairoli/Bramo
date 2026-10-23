@@ -6,7 +6,8 @@
 # - Les absents participent tout seuls (case « Rejoindre la Marée chaque soir », cochée par défaut) : jamais punis.
 # - Le joueur connecté pendant la Marée marque un peu plus (+15 %), jamais de quoi faire plus de 2 à 2,5 fois un casu.
 # - Les éclats de marée ne donnent que des apparences ; le coffre de la semaine, des matières et une chance de cache.
-startHourUtc: 19          # 20 h à Paris (heure d'hiver)
+startHour: 20             # 20 h à Paris, heure d'été comme d'hiver
+timeZone: Europe/Paris
 durationMin: 60
 rotation: [debacle, lanterns, giants]
 tides:
@@ -36,6 +37,8 @@ points:
   minRatio: 0.4           # un débutant marque au moins 40 % d'un build moyen : personne ne repart les mains vides
   maxRatio: 2
   liveBonus: 0.15
+  referenceShare: 0.75    # le build moyen : 75 % d'un équipement Rare complet de son niveau (mesuré au simulateur)
+  supportWeight: 2        # Nuit des Lanternes : soigner, protéger, affaiblir comptent double
   fights: 3
 shards:
   item: tide_shard

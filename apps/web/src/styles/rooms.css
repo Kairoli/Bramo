@@ -5322,3 +5322,157 @@
   color: #9fe8e0;
   border-color: color-mix(in srgb, #9fe8e0 50%, var(--border));
 }
+
+/* --- La Marée du soir (components/Tide.tsx) --- */
+.tide-banner.is-open {
+  animation: tide-pulse 2.4s ease-in-out infinite;
+}
+@keyframes tide-pulse {
+  50% {
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--event) 35%, transparent);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .tide-banner.is-open {
+    animation: none;
+  }
+}
+.tide-modal {
+  width: min(640px, 94vw);
+  max-height: 88vh;
+  overflow-y: auto;
+  display: grid;
+  gap: 14px;
+}
+.tide-head {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  color: var(--event);
+}
+.tide-head h2 {
+  color: var(--text);
+  margin: 2px 0 4px;
+}
+.tide-head p {
+  margin: 0 0 4px;
+}
+.tide-modal section {
+  border-top: 1px solid var(--border);
+  padding-top: 12px;
+  display: grid;
+  gap: 8px;
+}
+.tide-modal h3 {
+  margin: 0;
+  font-size: 15px;
+}
+.tide-ok {
+  color: var(--event);
+  margin: 0;
+}
+.tide-toggle {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  font-size: 14px;
+}
+.tide-channels {
+  display: flex;
+  gap: 8px;
+}
+.tide-channels .chip,
+.tide-shop .chip {
+  cursor: pointer;
+  background: none;
+  color: var(--text);
+  font: inherit;
+}
+.tide-channels .chip.on,
+.tide-shop .chip.on {
+  border-color: var(--event);
+  color: var(--event);
+}
+.tide-modal ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 4px;
+}
+.tide-modal li {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  align-items: center;
+}
+.tide-dike {
+  display: grid;
+  gap: 6px;
+}
+.tide-dike-bar {
+  height: 10px;
+  border-radius: 6px;
+  background: var(--sunken);
+  overflow: hidden;
+}
+.tide-dike-bar span {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, color-mix(in srgb, var(--event) 55%, var(--panel)), var(--event));
+}
+.tide-lanterns {
+  display: flex;
+  justify-content: space-around;
+}
+.tide-lanterns span {
+  width: 14px;
+  height: 18px;
+  border-radius: 5px 5px 7px 7px;
+  border: 2px solid var(--border);
+  background: var(--sunken);
+}
+.tide-lanterns span.lit {
+  border-color: var(--clan);
+  background: radial-gradient(circle at 50% 60%, #fff3c4, var(--clan));
+  box-shadow: 0 0 10px color-mix(in srgb, var(--clan) 70%, transparent);
+}
+.tide-me {
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+}
+.tide-stat {
+  display: grid;
+  gap: 2px;
+}
+.tide-stat strong {
+  font-size: 18px;
+  color: var(--event);
+}
+
+/* --- Fournitures de combat (salle Combat) --- */
+.supplies-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+}
+.supplies-grid h3 {
+  margin: 0 0 6px;
+  font-size: 15px;
+}
+.supply-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 6px;
+}
+.supply-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+.supply-active {
+  color: var(--good);
+  margin: 0 0 6px;
+}

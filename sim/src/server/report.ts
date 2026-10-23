@@ -4,6 +4,7 @@
  */
 import { type Content, routeStages } from '@bramo/shared';
 import type { Bot, ServerResult } from './world.js';
+import type { TideStats } from './tideHook.js';
 
 const median = (xs: number[]) => {
   if (!xs.length) return 0;
@@ -27,7 +28,35 @@ const dayReach = (b: Bot, key: keyof Bot['history'], v: number) => {
   return null;
 };
 
-export function analyze(r: ServerResult, content: Content) {
+/** Marée du soir : qui marque quoi (moyennes par façon de jouer, classe, voie, Marée), éclats, tenues. */
+function tideSummary(t: TideStats | undefined, r: ServerResult) {
+  if (!t || !t.rows.length) return null;
+  const mean = (xs: number[]) => (xs.length ? Math.round((xs.reduce((a, b) => a + b, 0) / xs.length) * 10) / 10 : 0);
+  const group = (key: (x: TideStats['rows'][number]) => string) => {
+    const m = new Map<string, number[]>();
+    for (const x of t.rows) m.set(key(x), [...(m.get(key(x)) ?? []), x.points]);
+    return Object.fromEntries([...m].map(([k, v]) => [k, mean(v)]));
+  };
+  const days = r.options.days;
+  const shards = r.ledger.produced.tide_shard ?? 0;
+  return {
+    nights: t.nights.length,
+    participation: mean(t.nights.map((n) => n.participants)),
+    liveShare: mean(t.nights.map((n) => n.live / Math.max(1, n.participants))),
+    workShare: mean(t.nights.map((n) => n.work / Math.max(1, n.participants))),
+    thresholds: mean(t.nights.map((n) => n.thresholds)),
+    byPersona: group((x) => x.persona),
+    byClass: group((x) => x.classId),
+    byPath: group((x) => `${x.classId}/${x.path ?? 'avant voie'}`),
+    byTidePath: group((x) => `${x.tide}:${x.path ?? x.classId}`),
+    live: group((x) => (x.live ? 'en direct' : 'absent')),
+    shardsPerPlayerWeek: Math.round((shards / Math.max(1, r.bots.filter((b) => b.started).length) / days) * 7),
+    outfits: t.outfits,
+    chests: t.chests,
+  };
+}
+
+export function analyze(r: ServerResult, content: Content, tide?: TideStats) {
   const combat = content.combat!;
   const stages = routeStages(combat);
   const days = r.options.days;
@@ -57,7 +86,7 @@ export function analyze(r: ServerResult, content: Content) {
     const g = bots.filter((b) => b.persona.id === p);
     return {
       persona: p,
-      route: Object.fromEntries([10, 30, 60, 90, 120].map((s) => [`étape ${s}`, milestone('best', s, g)])),
+      route: Object.fromEntries([10, 30, 60, 90, 120, 150].map((s) => [`étape ${s}`, milestone('best', s, g)])),
       classe: Object.fromEntries([30, 50, 75, 90].map((l) => [`niv ${l}`, milestone('classLevel', l, g)])),
       metier: Object.fromEntries([40, 60, 80, 99].map((l) => [`niv ${l}`, milestone('topLevel', l, g)])),
     };
@@ -207,10 +236,14 @@ export function analyze(r: ServerResult, content: Content) {
     market: { index, top: traded.slice(0, 25), crashed: crashed.slice(0, 20), soared: soared.slice(0, 20), lastDay: r.days.at(-1), traders },
     flows: { deadEnds: deadEnds.slice(0, 30), neverMade },
     loot: { perBotDay: r1(perBotDay), total: r.ledger.drops.total, rarity, sets, named, gearOwnedMedian: gearOwned, gems: r.ledger.gemsSocketed, bySource: r.ledger.drops.bySource },
+    supplies: Object.values(content.items)
+      .filter((i) => i.potion || i.prep)
+      .map((i) => ({ id: i.id, name: i.name, produced: r.ledger.produced[i.id] ?? 0, bought: r.ledger.delivered[i.id] ?? 0, price: r.prices[i.id]?.weekly.filter((x) => x > 0).at(-1) ?? 0 })),
     classes: { byClass, byPath, classFair },
     walls,
     clans: { list: clans, maxLevels },
     trials,
+    tide: tideSummary(tide, r),
     notes: r.ledger.notes.slice(0, 60),
   };
 }
@@ -259,6 +292,7 @@ export function toMarkdown(a: Analysis): string {
   for (const s of a.loot.sets) L.push(`| ${s.name} | ${s.dropped} | ${s.worn2plus} |`);
   L.push('', `Nommés (tombés / portés) : ${a.loot.named.map((n) => `${n.named} ${n.dropped}/${n.worn}`).join(', ')}.`);
   L.push(`Gemmes serties : ${Object.entries(a.loot.gems).map(([k, v]) => `${k} ${v}`).join(', ') || 'aucune'}.`);
+  L.push(`Fournitures (produites / achetées pour la route / dernier prix) : ${a.supplies.map((x) => `${x.name} ${x.produced}/${x.bought}/${x.price}`).join(', ')}.`);
   L.push('', '## Classes et voies', '');
   L.push('| Classe | joueurs | part | route médiane | route (méta) | niveau |', '|---|---|---|---|---|---|');
   for (const c of a.classes.byClass) L.push(`| ${c.classId} | ${c.n} | ${pct(c.share)} | ${c.routeMedian} | ${c.metaRouteMedian} | ${c.levelMedian} |`);
@@ -269,6 +303,15 @@ export function toMarkdown(a: Analysis): string {
   for (const w of a.walls) L.push(`- ${w.done ? 'route finie' : `${w.stage} ${w.encounter}`} : ${w.botDays}`);
   L.push('', '## Clans', '');
   L.push(`${a.clans.list.length} clans ; niveaux de bâtiments construits (sur ${a.clans.maxLevels} possibles) : ${a.clans.list.map((c) => `${c.levels} (${c.members} m.)`).join(', ')}.`);
+  if (a.tide) {
+    const t = a.tide;
+    L.push('', '## Marée du soir', '');
+    L.push(`${t.nights} soirs, ${t.participation} participants en moyenne (${Math.round(t.liveShare * 100)} % en direct, ${Math.round(t.workShare * 100)} % au travail), ${t.thresholds} seuils du serveur franchis en moyenne.`);
+    L.push(`Points moyens — en direct / absent : ${Object.entries(t.live).map(([k, v]) => `${k} ${v}`).join(', ')} ; par façon de jouer : ${Object.entries(t.byPersona).map(([k, v]) => `${k} ${v}`).join(', ')}.`);
+    L.push(`Par classe : ${Object.entries(t.byClass).map(([k, v]) => `${k} ${v}`).join(', ')} ; par voie : ${Object.entries(t.byPath).map(([k, v]) => `${k} ${v}`).join(', ')}.`);
+    L.push(`Par Marée et voie : ${Object.entries(t.byTidePath).sort().map(([k, v]) => `${k} ${v}`).join(', ')}.`);
+    L.push(`Éclats : ${t.shardsPerPlayerWeek} par joueur et par semaine ; ${t.outfits} tenues Marée haute achetées ; ${t.chests.total} coffres de la semaine, ${t.chests.caches} caches d’équipement.`);
+  }
   L.push('', `## Commandes du maître réussies par rang : ${Object.entries(a.trials).map(([k, v]) => `${k} : ${v}`).join(', ') || 'aucune'}.`);
   return L.join('\n');
 }

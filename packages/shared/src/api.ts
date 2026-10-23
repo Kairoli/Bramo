@@ -51,6 +51,7 @@ export const gearIdBody = z.object({ id: z.number().int() });
 /** Développement : mettre des objets dans son sac. */
 export const devItemGrantBody = z.object({ itemId: z.string(), qty: z.number().int().min(1).max(10_000) });
 export const gearSocketBody = z.object({ id: z.number().int(), itemId: z.string().nullable() });
+export const suppliesBody = z.object({ itemId: z.string(), qty: z.number().int().min(1).max(10000) });
 export const tidePrefsBody = z.object({ auto: z.boolean().optional(), channel: z.enum(['combat', 'work']).optional() });
 export const tideBuyBody = z.object({ offer: z.string() });
 export const gearGrantBody = z.object({ modelId: z.string(), masterpiece: z.boolean().optional(), count: z.number().int().min(1).max(20).optional() });

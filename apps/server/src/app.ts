@@ -76,6 +76,9 @@ import {
   writePreset,
   buyTideItem,
   deliverTideWork,
+  stockSupplies,
+  suppliesBody,
+  unstockSupplies,
   joinTideLive,
   setTidePrefs,
   tideBuyBody,
@@ -643,6 +646,17 @@ export async function buildApp({ db, content, clock = Date.now, secureCookies = 
     const profile = Number.isInteger(id) ? await playerProfile(db, content, id) : null;
     if (!profile) throw new HttpError(404, 'unknown_player', 'Joueur introuvable.');
     return profile;
+  });
+
+  // --- Fournitures de combat ---
+
+  app.post('/api/combat/supplies/stock', (req) => {
+    const { itemId, qty } = body(suppliesBody, req);
+    return playAs(req, (state) => ({ state: stockSupplies(state, itemId, qty, content), log: `Emporté sur la route : ${qty} × ${itemName(itemId)}.`, logKind: 'combat' }));
+  });
+  app.post('/api/combat/supplies/unstock', (req) => {
+    const { itemId, qty } = body(suppliesBody, req);
+    return playAs(req, (state) => ({ state: unstockSupplies(state, itemId, qty) }));
   });
 
   // --- La Marée du soir ---

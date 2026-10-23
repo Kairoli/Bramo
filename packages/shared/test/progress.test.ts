@@ -10,6 +10,7 @@ import { applyPreset, deletePreset, renamePreset, savePreset } from '../src/comb
 import { chooseClass } from '../src/engine/actions.js';
 import { HOUR, T0, makeState } from './fixture.js';
 import { canHoldGem, socketGem } from '../src/engine/equipment.js';
+import { tierFactorAt } from '../src/combat/loadout.js';
 
 // Le combat se teste sur data/ : on vérifie des règles (déterminisme, XP, pauses), pas des chiffres d'équilibrage.
 const content = loadContent(fileURLToPath(new URL('../../../data', import.meta.url)));
@@ -206,8 +207,10 @@ describe('la route (PvE solo)', () => {
   const runist = (level: number) => makeState({ classId: 'runist', combat: { ...emptyCombat(), xp: { runist: content.xpTable[level]! } }, equipment: [] });
 
   it('douze zones de dix étapes : neuf dans la zone, la dixième contre le gardien de la région ; le palier monte de 1 à 90', () => {
-    const stages = routeStages(content.combat!);
-    expect(stages).toHaveLength(120);
+    const all = routeStages(content.combat!);
+    const beyond = (content.combat!.rules.route?.beyondChapters ?? 0) * 10;
+    expect(all).toHaveLength(120 + beyond);
+    const stages = all.slice(0, 120);
     expect(stages[0]).toMatchObject({ label: '1-1', encounter: 'z01_lantern_road', tier: 1, guardian: false });
     expect(stages[8]).toMatchObject({ label: '1-9', encounter: 'z01_lantern_road', guardian: false });
     expect(stages[9]).toMatchObject({ label: '1-10', encounter: 'b1_lavandiere', guardian: true });
@@ -215,6 +218,14 @@ describe('la route (PvE solo)', () => {
     for (const s of stages) expect(s.guardian).toBe(s.index % 10 === 9);
     for (let j = 1; j < stages.length; j++) expect(stages[j]!.tier).toBeGreaterThanOrEqual(stages[j - 1]!.tier);
     expect(stages.at(-1)).toMatchObject({ tier: 90, encounter: 'b6_regent' });
+    // Au-delà des Lointains : les régions hautes reviennent au-delà du palier 90, les ennemis continuent la courbe.
+    if (beyond) {
+      const b = all.slice(120);
+      expect(b[0]!.chapterName.startsWith('Au-delà')).toBe(true);
+      expect(b[0]!.tier).toBeGreaterThan(90);
+      for (const s of b) expect(s.guardian).toBe(s.index % 10 === 9);
+      expect(tierFactorAt(content.combat!.rules, b.at(-1)!.tier)).toBeGreaterThan(tierFactorAt(content.combat!.rules, 90));
+    }
   });
 
   it('une victoire mène à l’étape suivante ; trois défaites de suite font reculer d’une étape ; jamais d’arrêt', () => {

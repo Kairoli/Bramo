@@ -1,7 +1,7 @@
 /**
  * La Marée du soir (docs/design/contenu/le-monde.md §5 ; data/combat/tide.yaml).
  *
- * - Tous les soirs, de `startHourUtc` pendant `durationMin`, une Marée (la rotation tourne d'un soir à l'autre).
+ * - Tous les soirs, à `startHour` dans le fuseau du serveur (20 h à Paris) pendant `durationMin`, une Marée (la rotation tourne d'un soir à l'autre).
  * - Chaque participant marque des points : en combat, sa contribution face à la Marée, ramenée à celle d'un build moyen de
  *   son niveau (60 points un soir pour un build moyen) ; en travail, la part de ce que la digue demande qu'il a livrée.
  * - Le serveur additionne les points : à chaque seuil de son objectif, tout le monde reçoit un bonus d'éclats.
@@ -71,8 +71,21 @@ export function tideOf(day: number, rules: TideRules) {
   return rules.tides.find((t) => t.id === id)!;
 }
 
+/** Décalage (ms) du fuseau à un instant : heure locale − heure UTC. */
+function zoneOffset(t: number, timeZone: string): number {
+  const parts = Object.fromEntries(
+    new Intl.DateTimeFormat('en-GB', { timeZone, hourCycle: 'h23', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' })
+      .formatToParts(new Date(t))
+      .map((p) => [p.type, p.value]),
+  );
+  const local = Date.UTC(Number(parts.year), Number(parts.month) - 1, Number(parts.day), Number(parts.hour), Number(parts.minute), Number(parts.second));
+  return local - Math.floor(t / 1000) * 1000;
+}
+
+/** La Marée du jour `day` : à `startHour` dans le fuseau du serveur (20 h à Paris, heure d'été ou d'hiver). */
 export function tideWindow(day: number, rules: TideRules): { start: number; end: number } {
-  const start = day * DAY + rules.startHourUtc * 3_600_000;
+  const naive = day * DAY + rules.startHour * 3_600_000;
+  const start = naive - zoneOffset(naive, rules.timeZone);
   return { start, end: start + rules.durationMin * 60_000 };
 }
 
@@ -91,13 +104,13 @@ export const tideOpen = (t: number, rules: TideRules) => {
 function contribution(combat: CombatContent, setup: CombatantSetup, encounterId: string, scale: number, scoring: 'damage' | 'support', seed: number) {
   const r = fight(combat, [setup], combat.encounters[encounterId]!, { seed, enemyDamageScale: scale, enemyHpScale: scale });
   const c = r.team[0]!.contributions;
-  return scoring === 'damage' ? c.damage : c.damage + c.healing + c.absorbed + c.mitigated;
+  return scoring === 'damage' ? c.damage : c.damage + combat.tide!.points.supportWeight * (c.healing + c.absorbed + c.mitigated);
 }
 
 const references = new WeakMap<CombatContent, Map<string, number>>();
 /**
  * Contribution d'un build moyen d'un niveau : la moyenne des trois classes, voie de dégâts et plan conseillé, avec
- * l'équipement de référence de ce niveau (Rare complet).
+ * `referenceShare` de l'équipement de référence de ce niveau (Rare complet).
  */
 export function tideReference(combat: CombatContent, tideId: string, level: number): number {
   let memo = references.get(combat);
@@ -108,7 +121,8 @@ export function tideReference(combat: CombatContent, tideId: string, level: numb
   const rules = combat.tide!;
   const def = rules.tides.find((t) => t.id === tideId)!;
   const f = tierFactorAt(combat.rules, level);
-  const stats = { ...combat.rules.referenceStats, power: combat.rules.referenceStats.power * f, maxHp: combat.rules.referenceStats.maxHp * f };
+  const k = f * rules.points.referenceShare;
+  const stats = { ...combat.rules.referenceStats, power: combat.rules.referenceStats.power * k, maxHp: combat.rules.referenceStats.maxHp * k };
   let total = 0;
   let n = 0;
   for (const [classId, kit] of Object.entries(combat.kits)) {

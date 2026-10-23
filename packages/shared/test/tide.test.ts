@@ -48,6 +48,13 @@ describe('la Marée du soir', () => {
     expect(tideDay(w.start)).toBe(day);
   });
 
+  it('20 h à Paris, en heure d’hiver comme d’été', () => {
+    const winter = tideWindow(Math.floor(Date.UTC(2026, 0, 15) / DAY), tide).start;
+    const summer = tideWindow(Math.floor(Date.UTC(2026, 6, 15) / DAY), tide).start;
+    expect(new Date(winter).getUTCHours()).toBe(19);
+    expect(new Date(summer).getUTCHours()).toBe(18);
+  });
+
   it('un build moyen marque environ 60 points, jamais moins que le plancher, un peu plus quand on est là', () => {
     for (const classId of ['forgefire', 'tracker', 'runist']) {
       const s = fighter(classId, 30);

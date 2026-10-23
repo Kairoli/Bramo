@@ -82,6 +82,11 @@ export function tierFactorAt(rules: CombatRules, tier: number): number {
   const lo = [...keys].reverse().find((k) => k <= tier) ?? keys[0]!;
   const hi = keys.find((k) => k > lo);
   const f = (k: number) => tiers[String(k)]!.factor;
+  // Au-delà du dernier palier de la courbe (Au-delà des Lointains, niveaux 91 à 99) : la même pente que le dernier écart.
+  if (hi === undefined && keys.length >= 2 && tier > lo) {
+    const prev = keys[keys.length - 2]!;
+    return f(lo) * (f(lo) / f(prev)) ** ((tier - lo) / (lo - prev));
+  }
   if (hi === undefined || tier <= lo) return f(lo);
   return f(lo) * (f(hi) / f(lo)) ** ((tier - lo) / (hi - lo));
 }

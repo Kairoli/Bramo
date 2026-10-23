@@ -199,6 +199,7 @@ export function buildContent(raw: RawContent): Content {
     }
     for (const m of gearList) if (m.talent && !combat?.talents?.named.some((n) => n.id === m.talent)) errors.push(`gear.yaml : ${m.id} : talent nommé inconnu « ${m.talent} »`);
     for (const it of itemList) if (it.gem && !combat?.tools.some((t) => t.id === it.gem && t.rank === 'gem')) errors.push(`items.yaml : ${it.id} : gemme inconnue « ${it.gem} » (combat/tools.yaml, rang gem)`);
+    for (const it of itemList) if (it.prep && !combat?.tools.some((t) => t.id === it.prep!.tool && t.rank === 'prep')) errors.push(`items.yaml : ${it.id} : préparation inconnue « ${it.prep.tool} » (combat/tools.yaml, rang prep)`);
   }
   if (errors.length) throw new ContentError(`Données incohérentes :\n- ${errors.join('\n- ')}`);
 

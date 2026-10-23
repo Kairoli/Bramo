@@ -21,6 +21,7 @@ import { curveTier, tierFactorAt, wornLoadout } from './loadout.js';
 import { hash32, stream } from './rng.js';
 import type { Preset } from './presets.js';
 import type { TideState } from './tide.js';
+import { type Supplies, activePrep, potionsFor, useSupplies } from './supplies.js';
 
 /** Rencontre en cours ou dernière rencontre jouée : le build figé et son issue (déjà calculée). */
 export interface FightRecord {
@@ -32,6 +33,9 @@ export interface FightRecord {
   win: boolean;
   /** Durée de la rencontre (ms de combat). */
   ms: number;
+  /** Potion emportée pour cette rencontre et nombre bu (fournitures de combat). */
+  potion?: string;
+  potions?: number;
 }
 
 export interface CombatActivity {
@@ -90,6 +94,8 @@ export interface CombatState {
   activePreset: number | null;
   /** La Marée du soir : préférences, soirs réglés, tenues achetées (absent avant la Marée : valeurs par défaut). */
   tide?: TideState;
+  /** Fournitures de combat : potions et préparations emportées (absent : rien). */
+  supplies?: Supplies;
 }
 
 export const emptyCombat = (): CombatState => ({
@@ -137,6 +143,20 @@ export function routeStages(combat: CombatContent): RouteStage[] {
       out.push({ index, label: `${ci + 1}-${si + 1}`, chapter: ci + 1, chapterName: z.name, region: z.region!, encounter: e.id, tier: tierAt(index), guardian: e.kind === 'gardien' });
     }
   });
+  // Au-delà des Lointains : les chapitres des régions hautes reviennent, au-delà du palier 90, au même rythme.
+  const beyond = combat.rules.route?.beyondChapters ?? 0;
+  const high = zones.filter((z) => z.circles);
+  const step = total > 1 ? (last - first) / (total - 1) : 1;
+  for (let k = 0; k < beyond && high.length; k++) {
+    const z = high[k % high.length]!;
+    const boss = guardianOf(z.region!);
+    const ci = zones.length + k;
+    for (let si = 0; si < ROUTE_CHAPTER; si++) {
+      const e = si === ROUTE_CHAPTER - 1 && boss ? boss : z;
+      const index = out.length;
+      out.push({ index, label: `${ci + 1}-${si + 1}`, chapter: ci + 1, chapterName: `Au-delà · ${z.name}`, region: z.region!, encounter: e.id, tier: Math.round(last + (index - total + 1) * step), guardian: e.kind === 'gardien' });
+    }
+  }
   stagesCache.set(combat, out);
   return out;
 }
@@ -344,7 +364,14 @@ export function combatantOf(state: CharacterState, content: Content): CombatantS
   if (!classId || !combat.kits[classId]) throw new GameError('no_class', 'Choisissez d’abord une classe.');
   const kit = combat.kits[classId]!;
   const weapon = state.weaponFamily && kit.weapons.includes(state.weaponFamily) ? state.weaponFamily : kit.weapons[0]!;
-  return { id: 'p1', classId, pathId: activePath(state, classId, content), plan: currentPlan(state, content).plan, weapon, ...equipmentSetup(state, content) };
+  const setup: CombatantSetup = { id: 'p1', classId, pathId: activePath(state, classId, content), plan: currentPlan(state, content).plan, weapon, ...equipmentSetup(state, content) };
+  // Fournitures : la potion la plus forte emportée, et la préparation en cours (son outil de situation).
+  const potion = potionsFor(state, content);
+  if (potion) setup.potions = { count: potion.count, heal: potion.heal, below: potion.below, cooldown: potion.cooldown };
+  const prep = activePrep(state, content);
+  const tool = prep && combat.tools.find((t) => t.id === prep && t.rank === 'prep');
+  if (tool) setup.tools = [...(setup.tools ?? []), tool];
+  return setup;
 }
 
 /**
@@ -389,7 +416,9 @@ function startFight(state: CharacterState, a: CombatActivity, content: Content):
   // Un profil d'essai (sans palier) se joue au palier de la classe : il ne donne pas de butin.
   const tier = a.tier ?? combat.encounters[a.encounter!]!.tier ?? classTier(state, setup.classId, content);
   const r = resolver(combat, [setup], combat.encounters[a.encounter!]!, { seed: fightSeed(state, index), ...fightOptions(combat, tier) });
-  return { index, encounter: a.encounter!, ...(tier ? { tier } : {}), setup, win: r.win, ms: Math.round(r.time * 1000) };
+  const potion = setup.potions ? potionsFor(state, content)?.item : undefined;
+  const drunk = r.team[0]?.metrics.potions ?? 0;
+  return { index, encounter: a.encounter!, ...(tier ? { tier } : {}), setup, win: r.win, ms: Math.round(r.time * 1000), ...(potion ? { potion, potions: drunk } : {}) };
 }
 
 /**
@@ -547,6 +576,8 @@ export function runCombat(state: CharacterState, t: number, end: number, rate: n
       gainXp(state, fighter, perMs * f.ms * p.lossXpShare, content, summary);
     }
     state.combat.last = f;
+    // Fournitures : les potions bues, le temps de la préparation en cours.
+    useSupplies(state, f.ms, f.potion ?? null, f.potions ?? 0, content);
     a.current = null;
     a.progress = 0;
     // La route : une victoire ouvre l'étape suivante, une défaite fait rejouer la même, sans jamais s'arrêter. Après

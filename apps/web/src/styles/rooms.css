@@ -10045,6 +10045,14 @@ div.tide-role {
 .ord-col {
   padding: 12px 14px;
 }
+.ord-col-hint {
+  margin: 0 0 8px;
+}
+@media (max-width: 1100px) {
+  .ord-panel {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
 /* Commandes ouvertes : où l'afficher, et la pastille du panneau. */
 .ord-open-badge {
   display: grid;

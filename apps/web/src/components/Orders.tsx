@@ -257,7 +257,7 @@ const STATUS: Record<OrderView['status'], { label: string; tone: string }> = {
 
 /** Une commande en carte, avec ce qu'on peut en faire. */
 export function OrderCard({ o, onDone }: { o: OrderView; onDone: () => void }) {
-  const { content, act, flash, openRecipe, go } = useGame();
+  const { content, state, act, flash, openRecipe, go } = useGame();
   const other = o.mine ? o.artisan : o.client;
   const where = o.scope === 'clan' ? 'le panneau du clan' : 'le panneau du serveur';
   const prof = content.professions.find((p) => p.id === o.profession)?.name ?? o.profession;
@@ -291,7 +291,7 @@ export function OrderCard({ o, onDone }: { o: OrderView; onDone: () => void }) {
             ) : (
               `pour vous, sur ${where}`
             )}
-            {!o.mine && o.status === 'open' && <span className="ord-scope-chip">{o.scope === 'clan' ? 'Clan' : 'Serveur'}</span>}
+            {!o.mine && o.status === 'open' && <span className="ord-scope-chip">{o.scope === 'clan' ? 'Mon clan' : 'Tout le serveur'}</span>}
           </span>
         </span>
         {!(o.status === 'open' && !o.mine) && <span className="ord-status">{late ? 'En retard' : STATUS[o.status].label}</span>}
@@ -338,11 +338,17 @@ export function OrderCard({ o, onDone }: { o: OrderView; onDone: () => void }) {
             )}
           </>
         )}
-        {!o.mine && o.status === 'open' && (
-          <button className="btn btn-sm btn-primary" disabled={!o.canTake} onClick={() => void run(() => api.orderTake(o.id))} title={o.canTake ? 'Elle devient la vôtre : le délai part maintenant' : `Il faut ${prof}${level ? ` niveau ${level}` : ''}`}>
-            {o.canTake ? 'Prendre' : `${prof}${level ? ` niv. ${level}` : ''} requis`}
-          </button>
-        )}
+        {!o.mine && o.status === 'open' &&
+          (o.canTake ? (
+            <button className="btn btn-sm btn-primary" onClick={() => void run(() => api.orderTake(o.id))} title="Elle devient la vôtre : le délai part maintenant">
+              Prendre
+            </button>
+          ) : (
+            // Pas un bouton grisé : on dit ce qui manque, en clair.
+            <span className="small muted">
+              Pas encore à votre portée : votre {prof} est niveau {state?.skills[o.profession]?.level ?? 1}.
+            </span>
+          ))}
         {o.mine && (o.status === 'proposed' || o.status === 'open' || late) && (
           <button className="btn btn-sm" onClick={() => void run(() => api.orderCancel(o.id))}>
             Annuler {late ? '(rembourse l’or)' : ''}
@@ -381,6 +387,7 @@ export function OrdersPanel() {
             <input type="checkbox" checked={onlyMine} onChange={(e) => setOnlyMine(e.target.checked)} />À mon niveau
           </label>
         </div>
+        <p className="small muted ord-col-hint">Des commandes sans artisan choisi : le premier qui la prend la fabrique et touche le prix.</p>
         <div className="ord-list scroll">
           {board.length === 0 && (
             <p className="muted small">

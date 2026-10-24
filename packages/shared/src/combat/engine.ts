@@ -49,6 +49,16 @@ export interface CombatStats {
   penetration?: number;
   elementDamage?: Partial<Record<Element, number>>;
   startShield?: { share: number; duration: number };
+  /**
+   * Statistiques spéciales (le moteur de Puissance, docs/design/puissance.md ; facultatives, 0 par défaut, et sans aucun tirage
+   * quand elles valent 0 : les combats existants ne changent pas). En part (0,1 = 10 %) :
+   * combo : une attaque de base frappe une seconde fois, aussitôt ; counter : riposte d'une attaque de base quand une attaque
+   * ordinaire touche ; evasion : une attaque ordinaire (ni lourde, ni chargée) manque ; regen : PV maximum rendus par seconde.
+   */
+  combo?: number;
+  counter?: number;
+  evasion?: number;
+  regen?: number;
 }
 
 export interface CombatantSetup {
@@ -319,6 +329,8 @@ interface Combatant {
   minHp: number;
   lastHitBy: FightResult['killedBy'];
   rand: () => number;
+  /** Tirages des statistiques spéciales (flux à part : les critiques ne bougent pas). */
+  special: () => number;
   plan: PlanSlot[];
   gcdAt: number;
   basicNext: number;
@@ -367,7 +379,7 @@ const RUNE_LABEL = { trait: 'Trait', circle: 'Cercle', seal: 'Sceau' } as const;
 export function fight(combat: CombatContent, setups: CombatantSetup[], encounter: Encounter, options: FightOptions): FightResult {
   const R = combat.rules;
   const tick = ms(R.tick);
-  const limit = ms(R.fightLimit);
+  const limit = ms(encounter.timeLimit ?? R.fightLimit);
   const opening = options.opening ?? R.opening;
   const enemyScale = options.enemyDamageScale ?? 1;
   const enemyRand = stream(options.seed, 'enemy');
@@ -437,6 +449,7 @@ export function fight(combat: CombatContent, setups: CombatantSetup[], encounter
       minHp: Math.min(stats.maxHp, s.startHp ?? stats.maxHp),
       lastHitBy: null,
       rand: stream(options.seed, `crit:${s.id}`),
+      special: stream(options.seed, `special:${s.id}`),
       plan,
       gcdAt: 0,
       basicNext: ms(R.firstBasicAt),
@@ -828,6 +841,8 @@ export function fight(combat: CombatContent, setups: CombatantSetup[], encounter
     if (sp && e.skill && !e.skill.some((k) => skillIs(sp, k))) return false;
     if (e.heatAtLeast !== undefined && (ev.heat ?? 0) < e.heatAtLeast) return false;
     if (e.noSkillFor !== undefined && t - c.lastSkillAt < ms(e.noSkillFor)) return false;
+    if (e.before !== undefined && t >= ms(e.before)) return false;
+    if (e.after !== undefined && t < ms(e.after)) return false;
     if (e.hpBelow !== undefined && c.hp >= e.hpBelow * c.stats.maxHp) return false;
     if (e.selfShielded && !c.shields.some((s) => s.amount > 0)) return false;
     if (e.rune && ev.rune !== e.rune) return false;
@@ -1270,6 +1285,12 @@ export function fight(combat: CombatContent, setups: CombatantSetup[], encounter
   const incoming = (e: Enemy, raw: number, source: 'attack' | 'charge', heavy = false) => {
     const c = targetOf(e);
     if (!c) return;
+    // Esquive : une attaque ordinaire peut manquer (jamais un coup lourd ni une attaque chargée).
+    if (source === 'attack' && !heavy && c.stats.evasion && c.special() < c.stats.evasion) {
+      inc(c, 'dodges');
+      log(null, 'dodge', `esquive de ${c.setup.id}`);
+      return;
+    }
     raw *= threat();
     // Garde menaçante : tant qu'elle tient, son porteur frappe plus fort.
     if (encounter.guard?.empower && e.guard > 0) {
@@ -1345,6 +1366,11 @@ export function fight(combat: CombatContent, setups: CombatantSetup[], encounter
         emit(c, { kind: 'hp_below', target: e });
       }
     }
+    // Contre-attaque : une attaque ordinaire qui touche peut être rendue par une attaque de base.
+    if (source === 'attack' && c.hp > 0 && c.stats.counter && c.special() < c.stats.counter) {
+      inc(c, 'counters');
+      cast(c, null);
+    }
     for (const [owner, trap] of e.countertraps) {
       if (trap.until > t) {
         damage(owner, e, trap.amount, 'class', 'physical');
@@ -1364,6 +1390,12 @@ export function fight(combat: CombatContent, setups: CombatantSetup[], encounter
   }
   while (t <= limit && aliveTeam().length && chiefsAlive()) {
     for (const c of team) {
+      // Régénération : une part des PV maximum par seconde.
+      if (c.stats.regen && c.hp > 0 && c.hp < c.stats.maxHp) {
+        const h = Math.min(c.stats.maxHp - c.hp, (c.stats.regen * c.stats.maxHp * tick) / 1000);
+        c.hp += h;
+        inc(c, 'regen', h);
+      }
       // Un bouclier de compétence qui arrive à son terme avec un reste : expiration naturelle (pas un remplacement).
       if (anyFx) for (const s of c.shields) if (s.end <= t && s.primary && s.amount > 1e-8) emit(s.owner, { kind: 'shield_expired', amount: s.amount });
       c.shields = c.shields.filter((s) => s.end > t);
@@ -1391,6 +1423,11 @@ export function fight(combat: CombatContent, setups: CombatantSetup[], encounter
       if (t >= c.basicNext) {
         cast(c, null);
         c.basicNext = t + c.basicPeriod;
+        // Combo : l'attaque de base frappe une seconde fois, aussitôt (une seule fois).
+        if (c.stats.combo && c.special() < c.stats.combo) {
+          inc(c, 'combos');
+          cast(c, null);
+        }
       }
       if (aliveEnemies().length && t >= c.gcdAt) {
         const openingDone = c.plan.every((p) => p.opened);

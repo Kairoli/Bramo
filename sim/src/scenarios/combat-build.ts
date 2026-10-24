@@ -33,7 +33,7 @@ export interface BuildSpec {
 }
 
 /** Lignes préférées par archétype (la chasse au bon jet : celles qu'on garde quand elles tombent). */
-const PREFERRED: Record<string, string[]> = {
+export const PREFERRED: Record<string, string[]> = {
   tisons: ['Tisons au plafond', 'Dégâts des afflictions', 'Durée des afflictions', 'Dépenses de réserve', 'Compétences', 'Puissance'],
   entailles: ['Entailles au plafond', 'Critique', 'Dégâts critiques', 'Dépenses de réserve', 'Puissance', 'Compétences'],
   frimas: ['Frimas au plafond', 'Durée des ralentissements', 'Pression', 'Dépenses de réserve', 'Puissance des boucliers', 'Puissance'],

@@ -48,6 +48,14 @@ export function readProposalRaw(name: string): RawContent {
   if (existsSync(join(dir, 'gear_pools.yaml'))) raw.gearPools = read('gear_pools.yaml');
   if (existsSync(join(dir, 'gear_sets.yaml'))) raw.gearSets = read('gear_sets.yaml');
   if (existsSync(join(dir, 'combat.yaml'))) raw.combat = patchCombat(raw.combat, read('combat.yaml') as CombatPatch);
+  // Moteur de Puissance : un dossier power/ (config.yaml et un fichier par système) remplace celui de data/.
+  if (existsSync(join(dir, 'power'))) {
+    const files = readdirSync(join(dir, 'power')).filter((f) => f.endsWith('.yaml')).sort();
+    raw.power = {
+      ...(files.includes('config.yaml') ? { config: read(join('power', 'config.yaml')) } : {}),
+      systems: files.filter((f) => f !== 'config.yaml').map((f): [string, unknown] => [f, read(join('power', f))]),
+    };
+  }
   // Une proposition qui remplace les objets ou les rencontres ne connaît pas ceux de la Marée du soir : elle se joue sans.
   if ((existsSync(join(dir, 'items.yaml')) || existsSync(join(dir, 'combat.yaml'))) && raw.combat) delete (raw.combat as { tide?: unknown }).tide;
   // De même pour la fabrication de l'équipement, qui nomme des matières de data/.

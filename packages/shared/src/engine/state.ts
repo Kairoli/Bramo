@@ -78,6 +78,8 @@ export interface CharacterState {
    * le clan, jamais enregistré.
    */
   banquet?: { from: number; until: number; bonus: number } | null;
+  /** Moteur de Puissance (power/power.ts) : par système, le niveau de chaque nœud et les recherches en cours. */
+  power?: Record<string, { levels: Record<string, number>; pending: { node: string; until: number }[] }>;
 }
 
 /** Multiplicateur d'XP à l'instant t (Banquet du clan). */

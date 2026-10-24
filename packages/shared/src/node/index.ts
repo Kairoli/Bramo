@@ -38,6 +38,18 @@ export function readRawContent(dataDir: string): RawContent {
     gearPools: existsSync(join(dataDir, 'gear_pools.yaml')) ? read('gear_pools.yaml') : undefined,
     gearSets: existsSync(join(dataDir, 'gear_sets.yaml')) ? read('gear_sets.yaml') : [],
     ...(existsSync(join(dataDir, 'gear_crafting.yaml')) ? { gearCrafting: read('gear_crafting.yaml') } : {}),
+    // Moteur de Puissance : data/power/config.yaml (réglages) et un fichier par système.
+    ...(existsSync(join(dataDir, 'power'))
+      ? {
+          power: {
+            ...(existsSync(join(dataDir, 'power', 'config.yaml')) ? { config: read('power/config.yaml') } : {}),
+            systems: readdirSync(join(dataDir, 'power'))
+              .filter((f) => f.endsWith('.yaml') && f !== 'config.yaml')
+              .sort()
+              .map((f): [string, unknown] => [f, read(`power/${f}`)]),
+          },
+        }
+      : {}),
     combat: existsSync(join(dataDir, 'combat', 'rules.yaml'))
       ? {
           rules: read('combat/rules.yaml'),

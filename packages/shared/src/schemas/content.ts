@@ -2,6 +2,7 @@ import { z } from 'zod';
 import type { CharacterClass, Cosmetics } from './art.js';
 import type { GearCrafting, GearModel, GearPools, GearSet, GearSlot } from './gear.js';
 import type { CombatContent } from './combat.js';
+import type { PowerContent } from './power.js';
 
 /** Identifiants techniques : anglais, snake_case. */
 const id = z.string().regex(/^[a-z][a-z0-9_]*$/, 'identifiant attendu en snake_case (ex. bronze_ingot)');
@@ -372,6 +373,8 @@ export interface Content {
   gearCrafting: GearCrafting | null;
   /** Combat automatique (null si data/combat/ est absent). */
   combat: CombatContent | null;
+  /** Le moteur de Puissance : recherches, reliques, lanterne… (data/power/ ; null s'il est absent). */
+  power: PowerContent | null;
   /** xpTable[L] = XP totale pour atteindre le niveau L (index 0 inutilisé). */
   xpTable: number[];
 }

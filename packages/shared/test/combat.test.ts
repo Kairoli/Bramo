@@ -511,3 +511,37 @@ describe('talents : gemmes, nommés, ensembles (schéma commun)', () => {
     expect(resolveLoadout(cat, tools, { sets: { s: 4, impact: 4, x: 2 } }, rules).errors).toEqual(['10 pièces d’ensemble pour 8 emplacements'.replace('’', "'"), 'ensemble inconnu « x »']);
   });
 });
+
+describe('rythme et builds (essais du 24 octobre, inactifs par défaut)', () => {
+  const talent = (effects: Record<string, unknown>[]): Talent => talentSchema.parse({ id: 'x', name: 'x', effects });
+  const frappe = solo('forgefire', [['frappe', 0]]);
+
+  it('limite de temps propre à une rencontre : perdue au temps, plus tôt que la limite des règles', () => {
+    const r = fight(combat, [frappe], dummy({ timeLimit: 20 }), { seed: 1 });
+    expect(r.win).toBe(false);
+    expect(r.cause).toBe('timeout');
+    expect(r.time).toBeLessThan(21);
+    expect(fight(combat, [frappe], dummy(), { seed: 1 }).time).toBeGreaterThan(21);
+  });
+
+  it('avant / après N secondes : les deux moitiés font le tout', () => {
+    const count = (fx: Record<string, unknown>) => fight(combat, [{ ...frappe, talents: [talent([{ when: 'direct', do: { damage: 0.1 }, ...fx }])] }], dummy({ timeLimit: 30 }), { seed: 1 }).team[0]!.metrics['talent:x:0'] ?? 0;
+    const all = count({});
+    expect(count({ before: 10 })).toBeGreaterThan(0);
+    expect(count({ before: 10 }) + count({ after: 10 })).toBe(all);
+  });
+
+  it('raccourcir les recharges : plus de compétences lancées', () => {
+    // « c » : 20 s de recharge ; chaque attaque de base en retire 2 s.
+    const slow = solo('forgefire', [['c', 0]]);
+    const base = fight(combat, [slow], dummy({ timeLimit: 30 }), { seed: 1 }).team[0]!.metrics.skillCasts!;
+    const cut = fight(combat, [{ ...slow, talents: [talent([{ when: 'basic', do: { cooldownCut: 2 } }])] }], dummy({ timeLimit: 30 }), { seed: 1 }).team[0]!.metrics.skillCasts!;
+    expect(base).toBe(2);
+    expect(cut).toBeGreaterThan(base);
+  });
+
+  it('réserves au début de la rencontre : elles partent de là, plafonnées', () => {
+    const r = fight(combat, [{ ...frappe, pools: { mesure: 10 }, startPools: { mesure: 4, tisons: 3 } }], dummy({ timeLimit: 5 }), { seed: 1 }).team[0]!;
+    expect(r.pools).toEqual({ mesure: 4 });
+  });
+});

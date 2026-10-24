@@ -393,6 +393,9 @@ export const talentEffectSchema = z.object({
   skill: z.array(z.enum(skillKinds)).optional(),
   /** Trempe : Braises dépensées au moins. */
   heatAtLeast: z.number().int().min(1).optional(),
+  /** Moment du combat : avant `before` s, ou à partir de `after` s (ouverture, fin de combat ; essai du 24 octobre). */
+  before: seconds.optional(),
+  after: seconds.optional(),
   /** Aucune compétence lancée depuis ce délai (s). */
   noSkillFor: seconds.optional(),
   /** PV du porteur sous cette part. */
@@ -591,6 +594,8 @@ export const encounterSchema = z.object({
   windows: phase.extend({ open: z.number().positive(), closedReduction: z.number().min(0).max(0.95) }).optional(),
   /** Fureur : passé `after` secondes, les dégâts ennemis augmentent de `perSecond` par seconde (un combat ne peut pas durer indéfiniment). */
   enrage: z.object({ after: z.number().positive(), perSecond: z.number().positive() }).optional(),
+  /** Limite de temps propre à la rencontre (s) : au-delà, elle est perdue (par défaut `rules.fightLimit`). */
+  timeLimit: z.number().positive().optional(),
 });
 
 /**

@@ -2,6 +2,8 @@ export * from './schemas/content.js';
 export * from './schemas/art.js';
 export * from './schemas/gear.js';
 export * from './schemas/combat.js';
+export * from './schemas/power.js';
+export * from './power/power.js';
 export * from './combat/content.js';
 export * from './combat/engine.js';
 export * from './combat/rng.js';

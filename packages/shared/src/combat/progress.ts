@@ -10,6 +10,8 @@
  * - Une défaite ne coûte rien ; après `maxConsecutiveLosses` défaites de suite, une patrouille s'arrête et la route
  *   reprend. Sur la route, une défaite fait rejouer l'étape ; trois de suite la font reculer d'une étape.
  */
+import { type PowerContext, powerConfigSchema } from '../schemas/power.js';
+import { applyPower, forceOf, powerTotals } from '../power/power.js';
 import type { Content } from '../schemas/content.js';
 import type { CombatContent, Encounter, PlanEntry, Spell } from '../schemas/combat.js';
 import type { Rarity } from '../schemas/gear.js';
@@ -388,8 +390,11 @@ export function wornPieces(equipment: NonNullable<CharacterState['equipment']>, 
   });
 }
 
-/** Le combattant tel qu'il entre dans une rencontre (build figé). */
-export function combatantOf(state: CharacterState, content: Content): CombatantSetup {
+/**
+ * Le combattant tel qu'il entre dans une rencontre (build figé) : classe, plan, équipement, fournitures, puis les systèmes du
+ * moteur de Puissance (`power/power.ts` : recherches, reliques, lanterne…) pour le contenu joué (`context`).
+ */
+export function combatantOf(state: CharacterState, content: Content, context: PowerContext = 'route'): CombatantSetup {
   const combat = need(content);
   const classId = state.classId;
   if (!classId || !combat.kits[classId]) throw new GameError('no_class', 'Choisissez d’abord une classe.');
@@ -402,7 +407,31 @@ export function combatantOf(state: CharacterState, content: Content): CombatantS
   const prep = activePrep(state, content);
   const tool = prep && combat.tools.find((t) => t.id === prep && t.rank === 'prep');
   if (tool) setup.tools = [...(setup.tools ?? []), tool];
+  const pw = powerTotals(state, content, context);
+  if (pw.parts.length && content.power) {
+    setup.stats = applyPower({ ...combat.rules.referenceStats, ...setup.stats }, pw, content.power.config, combat.rules);
+    if (pw.talents.length) {
+      setup.talents = [...(setup.talents ?? []), ...pw.talents];
+      // Les réserves que ces talents remplissent (copie : celles de l'équipement sont gardées en mémoire).
+      const pools: Record<string, number> = { ...(setup.pools ?? Object.fromEntries((combat.talents?.pools ?? []).map((p) => [p.id, p.max]))) };
+      for (const t of pw.talents) for (const [k, v] of Object.entries(t.pools ?? {})) if (k in pools) pools[k] = pools[k]! + v;
+      setup.pools = pools;
+      const convert = [...(setup.convert ?? []), ...pw.talents.flatMap((t) => t.convert ?? [])];
+      if (convert.length) setup.convert = convert;
+    }
+  }
   return setup;
+}
+
+/** La Force de combat du personnage (power/power.ts `forceOf`) : classe, équipement, build et systèmes de Puissance. */
+export function characterForce(state: CharacterState, content: Content, context: PowerContext = 'route'): number {
+  const combat = need(content);
+  const setup = combatantOf(state, content, context);
+  const config = content.power?.config ?? powerConfigSchema.parse({});
+  const pw = powerTotals(state, content, context);
+  // Les talents de l'équipement ne se voient pas dans les statistiques : chacun compte pour `talentValue` palier.
+  const gearTalents = (setup.talents?.length ?? 0) - pw.talents.length;
+  return forceOf({ ...combat.rules.referenceStats, ...setup.stats }, config, combat.rules.referenceStats, pw.force + gearTalents * config.force.talentValue);
 }
 
 /**

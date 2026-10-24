@@ -1,0 +1,180 @@
+# Proposition build-v3 (24 octobre 2026, soir) : trois archétypes de plus, sans toucher aux huit réserves.
+# Louis : « éviter les combats longs et boring, vraiment varier les builds ; notre base est bonne, ne change pas tout, ajoute au
+# besoin ; Legend of Mushroom a une limite à 30 s par combat, ce qui pousse à utiliser les timers pour faire un max de dégâts
+# sans mourir vite ». Lu par sim/src/tempo/bench.ts (TALENTS_ADD) : ajouté au catalogue de data/combat/talents.yaml.
+#
+# - Ouverture : tout donner dans les premières secondes. C'est là que les minuteurs du plan comptent (mettre ses grosses
+#   compétences au début, aligner la vulnérabilité). Fort en zone (combats courts), faible contre un gardien.
+# - Endurance : monter en puissance quand le combat dure. Fort contre les gardiens, faible en zone.
+# - Cadence : la vitesse d'attaque. Plus d'actions, donc plus de déclenchements ; ses gemmes raccourcissent les recharges.
+# `feeds` (lu par le banc, retiré avant validation) : l'archétype qu'un ensemble nourrit.
+
+rules:
+  # gcdHaste (la Cadence raccourcit aussi le délai entre deux compétences) : essayé, trop fort avec le plafond relevé
+  # (la Cadence en tête des trois voies du Forgefeu, les Échos gonflés) ; écarté.
+  gearStats:
+    haste: {cap: 0.5}       # plafond de la Cadence : 23 % -> 50 %
+
+gems:
+  # --- Ouverture ---------------------------------------------------------------------------------------------------
+  - id: coup_d_envoi
+    name: Le Coup d'envoi
+    archetype: ouverture
+    role: amplifier
+    text: "Pendant les 4 premières secondes du combat, tes compétences frappent 12 % plus fort."
+    effects:
+      - {when: skill, before: 4, do: {amplify: 0.12}}
+  - id: meche_courte
+    name: La Mèche courte
+    archetype: ouverture
+    role: payoff
+    text: "Une compétence de 12 s de recharge ou plus, lancée dans les 3 premières secondes, frappe une seconde fois (0,45 P)."
+    effects:
+      - {when: skill, minCooldown: 12, before: 3, do: {damage: 0.45}}
+  - id: premier_sang
+    name: Le Premier Sang
+    archetype: ouverture
+    role: producer
+    text: "Ta première action marque la cible et la rend vulnérable (+5 % de dégâts subis, 6 s)."
+    effects:
+      - {when: direct, before: 2, cooldown: 999, do: {mark: 8, vuln: {amount: 0.05, duration: 6}}}
+  - id: pare_balles
+    name: Le Pare-balles
+    archetype: ouverture
+    role: utility
+    text: "Au début du combat, un bouclier de 0,6 P pendant 6 s : de quoi tout donner sans tomber."
+    effects:
+      - {when: fight_start, do: {shield: {coef: 0.6, duration: 6}}}
+  # --- Endurance ---------------------------------------------------------------------------------------------------
+  - id: second_souffle
+    name: Le Second Souffle
+    archetype: endurance
+    role: amplifier
+    text: "Passé 10 s de combat, tes attaques de base et tes compétences frappent 20 % plus fort."
+    effects:
+      - {when: direct, after: 10, do: {amplify: 0.2}}
+  - id: longue_haleine
+    name: La Longue Haleine
+    archetype: endurance
+    role: producer
+    text: "Passé 5 s, toutes les 3 s : une Mesure et une Ferveur. Le temps travaille pour toi."
+    effects:
+      - {when: every, period: 3, after: 5, do: {gain: {pool: mesure, n: 1}}}
+      - {when: every, period: 3, after: 5, do: {gain: {pool: ferveur, n: 1}}}
+  - id: l_usure
+    name: L'Usure
+    archetype: endurance
+    role: payoff
+    text: "Passé 12 s, une compétence de 12 s de recharge ou plus frappe une seconde fois (0,75 P)."
+    effects:
+      - {when: skill, minCooldown: 12, after: 12, do: {damage: 0.75}}
+  - id: peau_dure
+    name: La Peau dure
+    archetype: endurance
+    role: utility
+    text: "Passé 8 s, toutes les 3 s : soin de 0,08 P."
+    effects:
+      - {when: every, period: 3, after: 8, do: {heal: {coef: 0.08}}}
+  # --- Cadence -----------------------------------------------------------------------------------------------------
+  - id: la_trotteuse
+    name: La Trotteuse
+    archetype: cadence
+    role: producer
+    text: "Chaque attaque de base raccourcit de 0,1 s la recharge de tes compétences."
+    effects:
+      - {when: basic, do: {cooldownCut: 0.1}}
+  - id: coup_double
+    name: Le Coup double
+    archetype: cadence
+    role: payoff
+    text: "Une attaque de base sur quatre frappe deux fois (0,3 P)."
+    effects:
+      - {when: basic, every: 4, do: {damage: 0.3}}
+  - id: l_aiguille
+    name: L'Aiguille
+    archetype: cadence
+    role: amplifier
+    text: "Ta Cadence compte 10 % de plus. Tes attaques de base +5 %."
+    mods: {hasteScore: 0.1, basicDamage: 0.05}
+  - id: pas_de_course
+    name: Le Pas de course
+    archetype: cadence
+    role: bridge
+    text: "Une attaque de base sur quatre donne une Mesure et une Entaille."
+    effects:
+      - {when: basic, every: 4, do: {gain: {pool: mesure, n: 1}}}
+      - {when: basic, every: 4, do: {gain: {pool: entailles, n: 1}}}
+
+  # --- Retouches de gemmes existantes (même identifiant : elles remplacent celles de data/) -----------------------------
+  # En combat court, la Ferveur et la Mesure n'atteignaient presque jamais leur seuil (une ou deux dépenses par combat).
+  - id: main_tendue
+    name: La Main tendue
+    archetype: ferveur
+    role: producer
+    text: "Un soin ou un bouclier de compétence donne 2 Ferveur, et te protège de 0,14 P (délai 10 s). Une attaque de base en donne 1 toutes les 5 s : la ferveur vient aussi en tapant."
+    effects:
+      - {when: [heal_done, protect_done], do: {gain: {pool: ferveur, n: 2}}}
+      - {when: [heal_done, protect_done], cooldown: 10, do: {shield: {coef: 0.14, duration: 6}}}
+      - {when: basic, cooldown: 5, do: {gain: {pool: ferveur, n: 1}}}
+  - id: grace_oblique
+    name: La Grâce oblique
+    archetype: ferveur
+    role: payoff
+    text: "À 4 Ferveur ou plus, ta prochaine action directe la libère en lumière : 0,30 P par Ferveur (délai 6 s)."
+    effects:
+      - {when: direct, poolAtLeast: {pool: ferveur, n: 4}, cooldown: 6, do: {spendPool: {pool: ferveur, perStack: 0.3}}}
+  - id: aureole_de_travers
+    name: L'Auréole de travers
+    archetype: ferveur
+    role: payoff
+    text: "Toutes les 8 s, ta Ferveur soigne l'allié le plus mal en point : 0,06 P par Ferveur."
+    effects:
+      - {when: every, period: 8, poolAtLeast: {pool: ferveur, n: 3}, do: {spendPool: {pool: ferveur, perStack: 0.06, as: heal}}}
+  - id: grand_accord
+    name: Le Grand Accord
+    archetype: mesure
+    role: payoff
+    text: "Une compétence de cooldown de 12 s ou plus joue toute ta Mesure : 0,16 P chacune (4 Mesures au moins)."
+    effects:
+      - {when: skill, minCooldown: 12, poolAtLeast: {pool: mesure, n: 4}, do: {spendPool: {pool: mesure, perStack: 0.16}}}
+
+  # Les Entailles menaient presque partout en combat court (l'achèvement sous 40 % arrive vite) : un cran de moins.
+  - id: coup_de_grace
+    name: Le Coup de grâce
+    archetype: entailles
+    role: payoff
+    text: "Contre une cible sous 40 % de ses PV, ta compétence dépense tes Entailles : 0,15 P chacune (délai 5 s)."
+    effects:
+      - {when: skill, targetHpBelow: 0.4, poolAtLeast: {pool: entailles, n: 2}, cooldown: 5, do: {spendPool: {pool: entailles, perStack: 0.15}}}
+
+sets:
+  - id: meche_et_briquet
+    name: La Mèche et le Briquet
+    family: beat
+    feeds: ouverture
+    items: [Bonnet de l'artificier, Veste à mèches, Gants du briquet, Ceinture à poudre]
+    text: ["2 : tes compétences des 4 premières secondes +6 %.", "3 : ta première action rend la cible vulnérable (+4 %, 6 s).", "4 : Battue."]
+    pieces:
+      "2": {effects: [{when: skill, before: 4, do: {amplify: 0.06}}]}
+      "3": {effects: [{when: direct, before: 2, cooldown: 999, do: {vuln: {amount: 0.04, duration: 6}}}]}
+      "4": {tool: beat_set4}
+  - id: souffle_long
+    name: Le Souffle long
+    family: breath
+    feeds: endurance
+    items: [Casque du coureur de fond, Plastron du dernier tour, Gants de l'endurant, Bottes « encore un peu »]
+    text: ["2 : passé 10 s, +8 % de dégâts.", "3 : passé 8 s, soin de 0,05 P toutes les 3 s.", "4 : Reprise."]
+    pieces:
+      "2": {effects: [{when: direct, after: 10, do: {amplify: 0.08}}]}
+      "3": {effects: [{when: every, period: 3, after: 8, do: {heal: {coef: 0.05}}}]}
+      "4": {tool: breath_set4}
+  - id: aiguilles_du_beffroi
+    name: Les Aiguilles du beffroi
+    family: interstice
+    feeds: cadence
+    items: [Chapeau du sonneur, Tunique du carillon, Gants du remontoir, Bottes du pendule]
+    text: ["2 : ta Cadence compte 10 % de plus.", "3 : chaque attaque de base raccourcit de 0,1 s la recharge de tes compétences.", "4 : Interstice."]
+    pieces:
+      "2": {mods: {hasteScore: 0.1}}
+      "3": {effects: [{when: basic, do: {cooldownCut: 0.1}}]}
+      "4": {tool: interstice_set4}

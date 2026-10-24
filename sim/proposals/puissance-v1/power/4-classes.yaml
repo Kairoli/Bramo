@@ -1,0 +1,13 @@
+# Les points forts des classes (« chaque classe a une mécanique et est meilleure dans certains contenus », Louis) : actifs
+# d'office, rien à payer. Le Traqueur est l'homme du PvE (route, patrouilles), le Forgefeu celui de la Lice et des donjons,
+# le Runiste celui de la Marée. Petits (+8 %) : ils orientent, ils n'imposent pas.
+id: classes
+name: Les points forts des classes
+kind: innate
+nodes:
+  - {id: traqueur_chasse, name: Chasseur né, text: "Traqueur : +8 % de Puissance sur la route et en patrouille.", classes: [tracker],
+     perLevel: [{stat: power, pct: 0.08, in: [route, patrol]}]}
+  - {id: forgefeu_tenace, name: Tête de fer, text: "Forgefeu : +8 % de PV dans la Lice et en donjon.", classes: [forgefire],
+     perLevel: [{stat: maxHp, pct: 0.08, in: [arena, dungeon]}]}
+  - {id: runiste_maree, name: Lecteur de marées, text: "Runiste : +8 % de Puissance en Marée du soir.", classes: [runist],
+     perLevel: [{stat: power, pct: 0.08, in: [tide]}]}

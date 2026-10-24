@@ -15,6 +15,7 @@ import { classesFileSchema, cosmeticsFileSchema } from './schemas/art.js';
 import { gearCraftingSchema, gearFileSchema, gearPoolsFileSchema, gearSetsFileSchema, gearSlotsFileSchema } from './schemas/gear.js';
 import { buildXpTable } from './formulas/xp.js';
 import { type RawCombat, buildCombatContent } from './combat/content.js';
+import { type PowerContent, powerConfigSchema, powerSystemSchema } from './schemas/power.js';
 
 export class ContentError extends Error {}
 
@@ -37,6 +38,8 @@ export interface RawContent {
   gearCrafting?: unknown;
   /** Combat automatique : data/combat/ (optionnel pour les propositions du simulateur). */
   combat?: RawCombat;
+  /** Moteur de Puissance : data/power/config.yaml et un fichier par système (optionnel). */
+  power?: { config?: unknown; systems: [string, unknown][] };
   /** Un fichier de recettes par entrée : [nom du fichier, contenu]. */
   recipes: [string, unknown][];
 }
@@ -219,7 +222,25 @@ export function buildContent(raw: RawContent): Content {
     if (salvage && !items[salvage.item]) errors.push(`gear_crafting.yaml : refine.salvage : objet inconnu « ${salvage.item} »`);
     if (gearCrafting.refine?.reroll && !salvage) errors.push('gear_crafting.yaml : refine.reroll demande refine.salvage (la poussière qu’elle coûte)');
   }
+  // Moteur de Puissance : chaque système, ses nœuds, leurs prérequis, leurs coûts.
+  let power: PowerContent | null = null;
+  if (raw.power) {
+    const systems = raw.power.systems.map(([file, data]) => parse(powerSystemSchema, data, `power/${file}`));
+    power = { config: parse(powerConfigSchema, raw.power.config ?? {}, 'power/config.yaml'), systems };
+    const seen = new Set<string>();
+    for (const sys of systems) {
+      if (seen.has(sys.id)) errors.push(`power : système en double « ${sys.id} »`);
+      seen.add(sys.id);
+      const nodes = new Set(sys.nodes.map((n) => n.id));
+      for (const n of sys.nodes) {
+        for (const r of n.requires) if (!nodes.has(r.node)) errors.push(`power/${sys.id} : ${n.id} demande un nœud inconnu « ${r.node} »`);
+        for (const c of n.cost.items) if (!items[c.item]) errors.push(`power/${sys.id} : ${n.id} coûte un objet inconnu « ${c.item} »`);
+        for (const c of n.classes ?? []) if (!classList.some((k) => k.id === c)) errors.push(`power/${sys.id} : ${n.id} : classe inconnue « ${c} »`);
+        for (const t of n.talents) if (t.level > n.maxLevel) errors.push(`power/${sys.id} : ${n.id} : talent au niveau ${t.level}, au-delà du maximum ${n.maxLevel}`);
+      }
+    }
+  }
   if (errors.length) throw new ContentError(`Données incohérentes :\n- ${errors.join('\n- ')}`);
 
-  return { settings, professions, items, recipes, trials, npcOrders, buildings, clanWorks, ornaments, classes, cosmetics, gearSlots, gearPools, gearModels, gearSets, gearCrafting, combat, xpTable: buildXpTable(settings.xp.maxLevel) };
+  return { settings, professions, items, recipes, trials, npcOrders, buildings, clanWorks, ornaments, classes, cosmetics, gearSlots, gearPools, gearModels, gearSets, gearCrafting, combat, power, xpTable: buildXpTable(settings.xp.maxLevel) };
 }

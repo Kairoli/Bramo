@@ -87,6 +87,8 @@ la durée y perdent : la Mesure, la Ferveur, les Trophées. Deux réponses test�
 
 ### 2.4 Des builds de vitesse : oui, avec deux changements
 
+> **Mis à jour le même soir** ([`build-v3.md`](build-v3.md)) : au banc complet des builds, le plafond relevé **et** `gcdHaste` ensemble rendaient la Cadence trop forte (en tête des trois voies du Forgefeu) ; la v3 garde le plafond à 50 % et écarte `gcdHaste`.
+
 À budget égal (la Cadence prise sur la Puissance, mêmes dégâts par seconde sur le papier) :
 
 | Build | Aujourd'hui | Avec la Cadence sur le délai entre sorts | + gemme « chaque attaque de base raccourcit les recharges de 0,4 s » |

@@ -228,6 +228,7 @@ export async function buildApp({ db, content, clock = Date.now, secureCookies = 
 
   const publicContent: ContentResponse = {
     settings: content.settings,
+    power: content.power,
     professions: content.professions,
     items: content.items,
     npcOrders: content.npcOrders,

@@ -74,6 +74,21 @@ pour chaque session :
 
 ## 5. État du projet (à jour au 24 octobre 2026)
 
+### En cours — l'audit des systèmes : phases 1 à 3 faites, point d'étape (24 octobre, nuit ; rien changé au jeu)
+
+- **Commande** : [`docs/audit/PROMPT.md`](docs/audit/PROMPT.md) ; avancement [`docs/audit/AVANCEMENT.md`](docs/audit/AVANCEMENT.md) ;
+  point d'étape pour Louis [`docs/audit/00-point-etape.md`](docs/audit/00-point-etape.md) (attend sa réponse avant la phase 4).
+- **Puissance remesurée après le recalage** (`docs/design/puissance.md` §8) : casu à l'étape 158 au 89e jour (visé ~150),
+  tryhard 173, systèmes +1,0 à +1,3 palier de Force, or créé / détruit 1,12 (0,9 sur les 30 derniers jours) ; tryhard
+  seulement 1,2 à 1,6 fois plus rapide que le casu.
+- **Défauts trouvés, pas corrigés** (audit) : la Marée appelle `combatantOf` sans contexte (bonus de route : Runiste +8 % et
+  « Savoir de la Marée » sans effet, Traqueur +8 % appliqué) ; le point fort du Forgefeu (Lice, donjon) ne s'applique nulle
+  part ; `gamePoolLinks` ignore les gemmes (la bulle des jauges dit que rien ne dépense les réserves).
+- **Outils** : `sim/src/server/fightCache.ts` arrondissait régénération, combo, contre-attaque au centième (option
+  `CACHE_PARTS=4`) ; `needed.ts`, `tune.ts`, `wall.ts`, `rythme.ts` jouent un personnage sans voie ; le banc ignore les points
+  forts de classe ; `tempo/force.ts` lit `puissance-v1` ; `sim combat-build|coherence|tools|weapons` lisent d'anciennes
+  propositions. Nouveaux : `sim/src/audit/` (`verifier.ts`, `carte.ts`, `comparer-puissance.ts`), preuves dans `sim/reports/audit/`.
+
 ### Fait — le nouveau combat et le moteur de Puissance dans le jeu (24 octobre, nuit ; Louis absent, « validation pour tout »)
 
 - **Demande de Louis** : « attention à une croissance proportionnelle de la puissance, à éviter ; je te fais confiance pour tout le reste ; en rentrant, j'aimerais jouer à un jeu équilibré avec un vrai bon système ; tu as validation pour tout, tu peux commit et push ».

@@ -1,5 +1,5 @@
 # La Lanterne de dos (l'accessoire de dos et ses talents dans Legend of Mushroom) : chacun porte une lanterne contre la Marée.
-# Elle monte de niveau en deux temps (la Mèche : écorce et perles de verre ; la Grande Flamme : lys-lanterne et perles) ; trois
+# Elle monte de niveau en deux temps (la Mèche : écorce et sable ; la Grande Flamme : lys-lanterne et perles) ; trois
 # choix entre deux talents de lanterne en chemin. Son apparence est un emplacement cosmétique (une boutique possible : apparence
 # seulement, jamais de niveau). Ouverte au niveau 10.
 id: lanterne
@@ -9,7 +9,7 @@ text: "Une lanterne au dos : elle éclaire, elle réchauffe, et elle apprend en 
 unlock: {classLevel: 10}
 nodes:
   - {id: meche, name: La Mèche, text: "+0,2 % de Puissance et de PV par niveau.", maxLevel: 25,
-     cost: {gold: {base: 60, growth: 1.12}, items: [{item: bark, base: 6, growth: 1.1}, {item: glass_bead, base: 2, growth: 1.1}]},
+     cost: {gold: {base: 60, growth: 1.12}, items: [{item: bark, base: 6, growth: 1.1}, {item: sand, base: 3, growth: 1.1}]},
      perLevel: [{stat: power, pct: 0.002}, {stat: maxHp, pct: 0.002}]}
   - {id: flamme, name: La Grande Flamme, text: "+0,2 % de Puissance et de PV par niveau.", maxLevel: 25, requires: [{node: meche, level: 25}],
      cost: {gold: {base: 600, growth: 1.1}, items: [{item: lantern_lily, base: 3, growth: 1.08}, {item: glass_bead, base: 4, growth: 1.08}]},

@@ -39,7 +39,7 @@ nodes:
      durationSec: {base: 7200, growth: 1.35}, perLevel: [{stat: regen, flat: 0.0003}]}
   # --- La lanterne (savoirs) ------------------------------------------------------------------------------------
   - {id: savoir_maree, group: Le savoir, name: Le Savoir de la Marée, text: "+0,5 % de Puissance et de PV par niveau, en Marée du soir seulement.", maxLevel: 20,
-     cost: {gold: {base: 120, growth: 1.25}, items: [{item: rune_dust, base: 3, growth: 1.15}, {item: mint, base: 8, growth: 1.15}]},
+     cost: {gold: {base: 120, growth: 1.25}, items: [{item: mint, base: 8, growth: 1.15}, {item: sand, base: 6, growth: 1.15}]},
      durationSec: {base: 1800, growth: 1.3}, perLevel: [{stat: power, pct: 0.005, in: [tide]}, {stat: maxHp, pct: 0.005, in: [tide]}]}
   - {id: cadence_savante, group: Le savoir, name: La Cadence savante, text: "+0,3 point de Cadence par niveau.", maxLevel: 10, requires: [{node: savoir_maree, level: 5}],
      cost: {gold: {base: 450, growth: 1.3}, items: [{item: bronze_gears, base: 2, growth: 1.25}]},

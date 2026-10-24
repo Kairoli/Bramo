@@ -74,7 +74,7 @@ export function analyze(r: ServerResult, content: Content, tide?: TideStats) {
     const row: Record<string, unknown> = { persona: p, label: group[0]!.persona.label, n: group.length };
     for (const d of marks) {
       const vals = (k: keyof Bot['history']) => group.map((b) => at(b, k, d)).filter((x): x is number => x !== null);
-      row[`j${d}`] = { classe: median(vals('classLevel')), route: median(vals('best')), metier: median(vals('topLevel')), niveaux: median(vals('totalLevels')), or: Math.round(median(vals('gold'))), equipement: r1(median(vals('gearScore'))) };
+      row[`j${d}`] = { classe: median(vals('classLevel')), route: median(vals('best')), metier: median(vals('topLevel')), niveaux: median(vals('totalLevels')), or: Math.round(median(vals('gold'))), equipement: r1(median(vals('gearScore'))), force: Math.round(median(vals('force'))) };
     }
     return row;
   });
@@ -323,6 +323,15 @@ export function toMarkdown(a: Analysis): string {
   L.push(`|---|---|${marks.map(() => '---').join('|')}|`);
   for (const p of a.progression) {
     L.push(`| ${p.label} | ${p.n} | ${marks.map((m) => { const x = p[m] as Record<string, number>; return `${x.classe} · ${x.route} · ${x.metier} · ${x.or}`; }).join(' | ')} |`);
+
+  }
+  // La Force (moteur de Puissance), médiane par façon de jouer.
+  const force = (n: number) => (!n ? '—' : n >= 1e6 ? `${(n / 1e6).toFixed(1).replace('.', ',')} M` : `${Math.round(n / 1000)} k`);
+  L.push('', '**La Force** (moteur de Puissance), médiane :', '');
+  L.push(`| Façon de jouer | n | ${marks.map((m) => `${m} : Force`).join(' | ')} |`);
+  L.push(`|---|---|${marks.map(() => '---').join('|')}|`);
+  for (const p of a.progression) {
+    L.push(`| ${p.label} | ${p.n} | ${marks.map((m) => force((p[m] as Record<string, number>).force ?? 0)).join(' | ')} |`);
   }
   L.push('', '## Jalons (jour médian depuis l’arrivée ; part des joueurs qui y arrivent)', '');
   for (const m of a.milestones) {

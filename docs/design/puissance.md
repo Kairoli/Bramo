@@ -7,10 +7,10 @@
 > dessus » ; puis « dans les gros chiffres : Legend of Mushroom se compte en millions, un compte de 6 mois est facilement à
 > 70-80 M ».
 >
-> **Le socle est codé dans le moteur partagé** (`packages/shared/src/power/power.ts`, `schemas/power.ts`, statistiques
-> spéciales dans `combat/engine.ts`, 8 tests dans `test/power.test.ts`). **Rien n'est encore dans le jeu** : `data/power/`
-> n'existe pas (le jeu est inchangé), le serveur ne garde pas encore l'avancée des systèmes et l'écran n'existe pas. Les systèmes
-> d'exemple sont une proposition : `sim/proposals/puissance-v1/power/`. Mesures : `sim/src/tempo/force.ts`.
+> **Dans le jeu depuis le 24 octobre au soir** [Louis : « tu as validation pour tout »] : le moteur (`packages/shared/src/power/`),
+> les systèmes (`data/power/`, copie de `sim/proposals/puissance-v1/power/`), le serveur (colonne `characters.power`,
+> `POST /api/power/upgrade`, recherches terminées à chaque passage) et l'écran (salle **Puissance**, Force dans la barre du
+> haut). Mesures : `sim/src/tempo/force.ts` ; simulation de serveur avec des joueurs qui montent leurs systèmes (§8).
 
 ## 1. Le principe
 
@@ -124,16 +124,21 @@ est un emplacement cosmétique : une **boutique d'apparences de lanterne** est p
 **Les points forts des classes** (d'office) : Traqueur +8 % de Puissance sur la route et en patrouille (« l'archer meilleur en
 PvE »), Forgefeu +8 % de PV dans la Lice et en donjon, Runiste +8 % de Puissance en Marée.
 
-## 6. Ce qu'il reste à faire pour le voir en jeu
+## 6. Ce qui est fait, et ce qu'il reste
 
-1. **Serveur** : garder l'avancée (`characters.power`, une migration), terminer les recherches à chaque passage (`settlePower`
-   dans `play()`), une route `POST /api/power/upgrade`, la vue des systèmes et la Force dans `/api/state`.
-2. **Écran** : la Force en gros dans la barre du haut et sur la page profil (avec sa flèche quand elle monte) ; une salle ou un
-   onglet **Puissance** avec un onglet par système (l'arbre des recherches avec son minuteur, la vitrine des reliques, la
-   lanterne et ses choix) ; « +12 400 de Force » à chaque amélioration.
-3. **Contenu** : les reliques englouties dans le butin des gardiens et de la Marée, les lignes de combo, contre-attaque, esquive
+**Fait** : le serveur (avancée gardée, recherches terminées à chaque passage et écrites au journal, route d'amélioration, vue
+des systèmes et de la Force) et l'écran (salle Puissance : la Force et ce qu'y ajoutent les systèmes, un onglet par système, les
+recherches en trois branches, les reliques, la lanterne et ses choix par paire, les points forts de la classe ; la Force à côté
+de l'or). **Coûts revus à l'intégration** : l'or divisé par six à sept (un joueur moyen gagne ~2 000 or par jour), la Lanterne en
+deux temps (la Mèche à l'écorce et aux perles de verre, puis la Grande Flamme au lys-lanterne), chaque Relique liée à une région
+(ses vestiges, des pièces anciennes de l'Exploration).
+
+**Reste** :
+
+1. La Force sur la page profil et au classement ; « +12 400 de Force » à chaque amélioration.
+2. **Contenu** : les reliques englouties dans le butin des gardiens et de la Marée, les lignes de combo, contre-attaque, esquive
    et régénération dans les lignes d'équipement, le classement de la Force.
-4. **Équilibrage** : les systèmes dans la simulation de serveur (or et matières dépensés, écart casu / tryhard sur six mois).
+3. **Équilibrage** : voir §8.
 
 ## 7. À trancher par Louis
 

@@ -5,7 +5,8 @@
 > pas tout, mais n'hésite pas à ajouter au besoin ; inspire-toi de ce qui existe ; Legend of Mushroom a une limite à 30 s par
 > combat, ce qui pousse à utiliser les timers pour faire un max de dégâts sans mourir vite ». Suite de [`rythme.md`](rythme.md).
 >
-> **Rien n'est adopté : `data/` est inchangé.** Proposition : [`sim/proposals/build-v3/talents_add.yaml`](../../../sim/proposals/build-v3/talents_add.yaml)
+> **Adopté dans le jeu le 24 octobre au soir** [Louis : « tu as validation pour tout »], par
+> `docs/design/coherence/adopter-v3.mjs` (voir aussi §8 : ce qui a changé à l'adoption). Proposition d'origine : [`sim/proposals/build-v3/talents_add.yaml`](../../../sim/proposals/build-v3/talents_add.yaml)
 > (ajouts au catalogue de talents, quelques retouches, un réglage). Mesures : `sim/src/tempo/bench.ts` (banc des builds) et
 > `sim/src/tempo/timers.ts` (les minuteurs), rapports dans `sim/reports/combat/tempo/`. Moteur : la limite de temps par
 > rencontre (`encounter.timeLimit`) et les conditions de talent « avant / après N secondes » (`before`, `after`), inactives par
@@ -159,6 +160,19 @@ Vitesse contre le témoin, moyenne des 9 voies :
 - **Avant d'adopter** : rejouer tout le banc sur le contenu adopté (murs de la route `wall.ts`, réponses de situation, simulation
   de serveur sur 60 jours, butin et XP à l'heure avec le repos raccourci), écrire les objets des nouvelles gemmes et des trois
   ensembles (Joaillerie, butin), leurs icônes et leurs noms définitifs.
+
+## 8. À l'adoption (24 octobre, soir)
+
+- **La limite de temps est propre à chaque rencontre**, pas 20 s / 35 s pour toutes : le banc mesurait des personnages de
+  niveau 80 avec tous leurs sorts ; au niveau 1, la Chaussée des lanternes (des fenêtres) durait 45 s et personne ne gagnait.
+  Chaque rencontre a sa limite : 1,4 fois sa durée la plus longue à son niveau avec un équipement Rare de son niveau (de 25 à
+  55 s ; `sim/src/rythme.ts NOLIMIT=1`). Les cinq rencontres les plus longues ont perdu des PV pour rester sous 22 s en zone
+  et 38 s contre un gardien.
+- **Le danger est recalé rencontre par rencontre** (`sim/src/tempo/tune.ts`) : le multiplicateur des dégâts ennemis qui
+  redonne le niveau de classe requis d'avant, plus un niveau (« pas trop simple ») ; à la main pour la Chaussée (la première
+  zone reste facile), Mère Grise et la Chambre aux deux sceaux (limite 40 s). Le niveau requis étape par étape
+  (`sim/src/tempo/needed.ts`, set de départ) reste celui d'avant à quelques niveaux près.
+- Repos entre deux rencontres 2 s, une potion par rencontre, Cadence plafonnée à 50 %.
 
 ## 7. À trancher par Louis
 

@@ -54,6 +54,11 @@ import {
   salvageGear,
   rankUp,
   worksNeeds,
+  characterForce,
+  nodeCost,
+  settlePower,
+  upgradeBlocker,
+  upgradeNode,
 } from '@bramo/shared';
 import { SIM_START } from '../bot.js';
 import { unitCost, workSec } from '../chains.js';
@@ -158,7 +163,7 @@ export interface Bot extends Trader {
   /** Jours bloqué au même endroit de la route, par étape. */
   stuck: Record<number, number>;
   /** Suivi quotidien. */
-  history: { gold: number[]; best: number[]; classLevel: number[]; topLevel: number[]; gearScore: number[]; totalLevels: number[] };
+  history: { gold: number[]; best: number[]; classLevel: number[]; topLevel: number[]; gearScore: number[]; totalLevels: number[]; force: number[] };
   totals: { npcGold: number; trialGold: number; salesNet: number; purchases: number; clanGold: number; stall: number; repairs: number };
   /** Spéculateur : stock acheté et prix payé. */
   spec: Map<string, { qty: number; paid: number }>;
@@ -312,7 +317,7 @@ export function runServer(content: Content, input: ServerOptions): ServerResult 
       lastGearDay: 0,
       lastGearScore: 0,
       stuck: {},
-      history: { gold: [], best: [], classLevel: [], topLevel: [], gearScore: [], totalLevels: [] },
+      history: { gold: [], best: [], classLevel: [], topLevel: [], gearScore: [], totalLevels: [], force: [] },
       totals: { npcGold: 0, trialGold: 0, salesNet: 0, purchases: 0, clanGold: 0, stall: 0, repairs: 0 },
       spec: new Map(),
       classSwitches: 0,
@@ -1109,6 +1114,64 @@ export function runServer(content: Content, input: ServerOptions): ServerResult 
    * L'Affineur : un joueur qui calcule et qui a de l'or en trop monte ses belles pièces portées, la moins chère d'abord,
    * en achetant la matière au marché (au plus deux fois sa référence). Une part de son or au-dessus d'une réserve.
    */
+  /**
+   * Moteur de Puissance (data/power/) : à chaque visite, les recherches finies comptent, une recherche part dès que le cabinet
+   * est libre, et une part de l'or au-dessus d'une petite réserve monte la lanterne et les reliques (le moins cher d'abord ; les
+   * matières qui manquent s'achètent au marché). La part dépend du joueur : un joueur qui optimise y met plus.
+   */
+  const powerUp = (b: Bot, t: number) => {
+    if (!content.power) return;
+    b.state = settlePower(b.state, t);
+    let budget = Math.max(0, b.state.gold - 3_000) * (0.2 + 0.4 * b.persona.skill);
+    // Les nœuds dont il n'a pas trouvé les matières : il passe au suivant (et ses ordres d'achat restent au marché).
+    const skip = new Set<string>();
+    for (let n = 0; n < 12 && budget > 0; n++) {
+      const cands: { sys: string; node: string; cost: ReturnType<typeof nodeCost>; total: number; research: boolean }[] = [];
+      for (const sys of content.power.systems) {
+        if (sys.kind === 'innate') continue;
+        for (const node of sys.nodes) {
+          const level = b.state.power?.[sys.id]?.levels[node.id] ?? 0;
+          if (level >= node.maxLevel || skip.has(`${sys.id}/${node.id}`)) continue;
+          const why = upgradeBlocker(b.state, content, sys.id, node.id, t);
+          // Seul le prix peut manquer : le reste (prérequis, choix pris, cabinet occupé) écarte le nœud.
+          if (why && !why.startsWith('Il faut')) continue;
+          const cost = nodeCost(node, level + 1);
+          const items = cost.items.reduce((a, c) => a + Math.max(0, c.qty - (b.state.inventory[c.item] ?? 0)) * Math.max(2, ref(c.item) * 1.5), 0);
+          cands.push({ sys: sys.id, node: node.id, cost, total: cost.gold + items, research: cost.seconds > 0 });
+        }
+      }
+      if (process.env.DEBUG_POWER && n === 0) console.log(`[puissance] ${b.persona.id} or=${Math.round(b.state.gold)} budget=${Math.round(budget)} candidats=${cands.length} moins cher=${cands.length ? Math.round(Math.min(...cands.map((x) => x.total))) : 0}`);
+      if (!cands.length) return;
+      // Une recherche d'abord (le cabinet ne doit pas rester vide), puis le moins cher.
+      cands.sort((x, y) => Number(y.research) - Number(x.research) || x.total - y.total);
+      const c = cands[0]!;
+      if (c.total > budget) return;
+      for (const i of c.cost.items) {
+        const need = i.qty - (b.state.inventory[i.item] ?? 0);
+        if (need > 0) {
+          const bought = buy(b, i.item, need, Math.max(2, Math.round(ref(i.item) * 2)), true);
+          b.totals.purchases += bought.gold;
+          budget -= bought.gold;
+        }
+      }
+      if (c.cost.items.some((i) => (b.state.inventory[i.item] ?? 0) < i.qty)) {
+        skip.add(`${c.sys}/${c.node}`);
+        continue;
+      }
+      try {
+        b.state = upgradeNode(b.state, content, c.sys, c.node, t);
+        traders.get(b.id)!.state = b.state;
+        budget -= c.cost.gold;
+        add(ledger.sink, 'Puissance (systèmes)', c.cost.gold);
+        for (const i of c.cost.items) add(ledger.delivered, i.item, i.qty);
+      } catch (e) {
+        if (!(e instanceof GameError)) throw e;
+        if (process.env.DEBUG_POWER) console.log(`[puissance] échec ${c.sys}/${c.node} : ${(e as Error).message}`);
+        return;
+      }
+    }
+  };
+
   const refine = (b: Bot) => {
     if (!content.gearCrafting?.refine || b.persona.skill < 0.5 || b.state.gold < 50_000) return;
     let budget = (b.state.gold - 30_000) * 0.3;
@@ -1482,6 +1545,7 @@ export function runServer(content: Content, input: ServerOptions): ServerResult 
     supplies(b, day);
     contributeToClan(b, day, t);
     refine(b);
+    powerUp(b, t);
     meals(b);
     chaseProfit(b, day);
     for (const h of opts.hooks) h.onVisit?.(ctx, b, t, day);
@@ -1569,6 +1633,7 @@ export function runServer(content: Content, input: ServerOptions): ServerResult 
       b.history.topLevel.push(Math.max(...b.professions.map((p) => lvl(b.state, p))));
       b.history.gearScore.push(Math.round(score * 10) / 10);
       b.history.totalLevels.push(levels.reduce((s, l) => s + l, 0));
+      b.history.force.push(content.power ? characterForce(b.state, content) : 0);
     }
     for (const [item, list] of exchange.prices) {
       const g = list.reduce((s, [x]) => s + x, 0);

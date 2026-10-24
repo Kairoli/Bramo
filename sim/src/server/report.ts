@@ -74,7 +74,7 @@ export function analyze(r: ServerResult, content: Content, tide?: TideStats) {
     const row: Record<string, unknown> = { persona: p, label: group[0]!.persona.label, n: group.length };
     for (const d of marks) {
       const vals = (k: keyof Bot['history']) => group.map((b) => at(b, k, d)).filter((x): x is number => x !== null);
-      row[`j${d}`] = { classe: median(vals('classLevel')), route: median(vals('best')), metier: median(vals('topLevel')), niveaux: median(vals('totalLevels')), or: Math.round(median(vals('gold'))), equipement: r1(median(vals('gearScore'))), force: Math.round(median(vals('force'))) };
+      row[`j${d}`] = { classe: median(vals('classLevel')), route: median(vals('best')), metier: median(vals('topLevel')), niveaux: median(vals('totalLevels')), or: Math.round(median(vals('gold'))), equipement: r1(median(vals('gearScore'))), force: Math.round(median(vals('force'))), systemes: r1(median(group.map((b) => { const f = at(b, 'force', d), g = at(b, 'forceBase', d); return f && g ? Math.log(f / g) / Math.log(1.9) : null; }).filter((x): x is number => x !== null))) };
     }
     return row;
   });
@@ -327,11 +327,11 @@ export function toMarkdown(a: Analysis): string {
   }
   // La Force (moteur de Puissance), médiane par façon de jouer.
   const force = (n: number) => (!n ? '—' : n >= 1e6 ? `${(n / 1e6).toFixed(1).replace('.', ',')} M` : `${Math.round(n / 1000)} k`);
-  L.push('', '**La Force** (moteur de Puissance), médiane :', '');
-  L.push(`| Façon de jouer | n | ${marks.map((m) => `${m} : Force`).join(' | ')} |`);
+  L.push('', '**La Force** (moteur de Puissance), médiane ; « dont systèmes » : ce qu’ajoutent recherches, reliques et lanterne, en paliers de force (×1,9 de Force chacun) :', '');
+  L.push(`| Façon de jouer | n | ${marks.map((m) => `${m} : Force · dont systèmes`).join(' | ')} |`);
   L.push(`|---|---|${marks.map(() => '---').join('|')}|`);
   for (const p of a.progression) {
-    L.push(`| ${p.label} | ${p.n} | ${marks.map((m) => force((p[m] as Record<string, number>).force ?? 0)).join(' | ')} |`);
+    L.push(`| ${p.label} | ${p.n} | ${marks.map((m) => { const x = p[m] as Record<string, number>; return `${force(x.force ?? 0)} · ${(x.systemes ?? 0).toFixed(1).replace('.', ',')} palier`; }).join(' | ')} |`);
   }
   L.push('', '## Jalons (jour médian depuis l’arrivée ; part des joueurs qui y arrivent)', '');
   for (const m of a.milestones) {

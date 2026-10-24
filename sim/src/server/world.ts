@@ -163,7 +163,7 @@ export interface Bot extends Trader {
   /** Jours bloqué au même endroit de la route, par étape. */
   stuck: Record<number, number>;
   /** Suivi quotidien. */
-  history: { gold: number[]; best: number[]; classLevel: number[]; topLevel: number[]; gearScore: number[]; totalLevels: number[]; force: number[] };
+  history: { gold: number[]; best: number[]; classLevel: number[]; topLevel: number[]; gearScore: number[]; totalLevels: number[]; force: number[]; forceBase: number[] };
   totals: { npcGold: number; trialGold: number; salesNet: number; purchases: number; clanGold: number; stall: number; repairs: number };
   /** Spéculateur : stock acheté et prix payé. */
   spec: Map<string, { qty: number; paid: number }>;
@@ -317,7 +317,7 @@ export function runServer(content: Content, input: ServerOptions): ServerResult 
       lastGearDay: 0,
       lastGearScore: 0,
       stuck: {},
-      history: { gold: [], best: [], classLevel: [], topLevel: [], gearScore: [], totalLevels: [], force: [] },
+      history: { gold: [], best: [], classLevel: [], topLevel: [], gearScore: [], totalLevels: [], force: [], forceBase: [] },
       totals: { npcGold: 0, trialGold: 0, salesNet: 0, purchases: 0, clanGold: 0, stall: 0, repairs: 0 },
       spec: new Map(),
       classSwitches: 0,
@@ -1122,7 +1122,8 @@ export function runServer(content: Content, input: ServerOptions): ServerResult 
   const powerUp = (b: Bot, t: number) => {
     if (!content.power) return;
     b.state = settlePower(b.state, t);
-    let budget = Math.max(0, b.state.gold - 3_000) * (0.2 + 0.4 * b.persona.skill);
+    // Un joueur qui optimise garde moins d'or de côté et en met plus dans ses systèmes (la méta de la Force).
+    let budget = Math.max(0, b.state.gold - 3_000 * (1 - 0.7 * b.persona.skill)) * (0.2 + 0.5 * b.persona.skill);
     // Les nœuds dont il n'a pas trouvé les matières : il passe au suivant (et ses ordres d'achat restent au marché).
     const skip = new Set<string>();
     for (let n = 0; n < 12 && budget > 0; n++) {
@@ -1634,6 +1635,8 @@ export function runServer(content: Content, input: ServerOptions): ServerResult 
       b.history.gearScore.push(Math.round(score * 10) / 10);
       b.history.totalLevels.push(levels.reduce((s, l) => s + l, 0));
       b.history.force.push(content.power ? characterForce(b.state, content) : 0);
+      // La même Force sans les systèmes : ce qu'ils ajoutent, en paliers, dans le rapport.
+      b.history.forceBase.push(content.power ? characterForce({ ...b.state, power: {} }, content) : 0);
     }
     for (const [item, list] of exchange.prices) {
       const g = list.reduce((s, [x]) => s + x, 0);

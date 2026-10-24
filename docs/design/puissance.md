@@ -147,3 +147,22 @@ deux temps (la Mèche à l'écorce et aux perles de verre, puis la Grande Flamme
    liste et l'esprit ?
 3. Les **recherches à minuteur** (elles tournent pendant qu'on est absent, comme tout dans Bramo), ou instantanées ?
 4. On passe au serveur et à l'écran (§6) ?
+
+## 8. Mesuré en simulation de serveur (24 octobre, nuit)
+
+Simulation `sim/reports/serveur/v3-puissance.md` (120 joueurs, 90 jours, graine 11), avec les coûts d'intégration :
+
+- **Les joueurs dépensent** : 7,1 M d'or dans les systèmes (le premier puits du jeu, devant les bâtiments de clan) ; or créé /
+  détruit 1,2 sur les 30 derniers jours (1,7 sans les systèmes).
+- **Mais trop vite** : Force médiane au 89e jour de 4 à 58 M selon la façon de jouer (casu 28 M, visé ~12 M à trois mois) ;
+  la route devient trop simple (casu à l'étape 170 au lieu de 146) et **le tryhard n'a plus d'avance** (171) : il garde peu
+  d'or au-dessus de la réserve fixe de 3 000 du simulateur, quand le casu récolteur en accumule.
+- **Croissance proportionnelle** [Louis : « à éviter »] : chaque niveau coûte plus cher pour le même gain (rendements
+  décroissants), les recherches sont bornées par le temps (le même pour tous), chaque nœud a un niveau maximal, et la difficulté
+  de la route ne suit pas le joueur. La Force ralentit d'elle-même (casu : ×15 du 30e au 60e jour, ×3 du 60e au 89e).
+
+**Recalé ensuite (pas encore remesuré)** : durées des recherches × 2,5 (l'arbre entier ~130 jours de cabinet, les « 4 à 6 mois »
+voulus), or des recherches et des reliques × 2, or de la lanterne × 3 (le plus gros bonus et sans minuteur). Le simulateur :
+un joueur qui optimise garde moins d'or de côté et en met plus dans ses systèmes ; le rapport donne aussi ce qu'ajoutent les
+systèmes, en paliers (« dont systèmes »). **À faire** : relancer `pnpm --filter @bramo/sim exec tsx src/server/run.ts 120 90 real 11 v3-puissance`
+(~21 min) et vérifier : systèmes ~1,5 palier à trois mois, route du casu proche de 150, tryhard devant.

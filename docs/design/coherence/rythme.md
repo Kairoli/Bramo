@@ -7,7 +7,11 @@
 > Améliorer au max la compréhension. Je trouve les combats un peu longs, ce qui réduit l'utilité des timers sur ses sorts.
 > Essaie de voir si des solutions sont possibles, et teste-les. »
 >
-> **Rien n'est adopté : `data/` est inchangé.** Les essais se font avec `sim/src/rythme.ts` (variantes par variables
+> **Adopté dans le jeu le 24 octobre au soir** ([`build-v3.md`](build-v3.md) §8) : le rythme vif, les recharges et délais des talents
+> × 0,7, le repos à 2 s, une potion par rencontre, le plafond de Cadence à 50 %, une limite de temps propre à chaque rencontre.
+> **Pas adoptés** : les chiffres × 10 (la Force du moteur de Puissance donne déjà les gros chiffres ; le × 10 toucherait la Marée,
+> l'or des dégâts affichés et tous les textes), `gcdHaste` (trop fort), le report des réserves d'une rencontre à l'autre (gain
+> faible pour une règle de plus). Les essais se font avec `sim/src/rythme.ts` (variantes par variables
 > d'environnement, voir son en-tête). Trois petits ajouts au moteur, **inactifs par défaut** (les 201 tests passent, les
 > combats existants sont identiques) : `rules.gcdHaste` (la Cadence raccourcit aussi le délai entre deux sorts), l'action de
 > talent `cooldownCut` (raccourcir la recharge des sorts), `CombatantSetup.startPools` et `CombatantResult.pools` (réserves

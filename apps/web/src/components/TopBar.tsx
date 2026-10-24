@@ -1,5 +1,5 @@
 import { type Room, useGame } from '../game/GameContext';
-import { num } from '../format';
+import { bigNum, num } from '../format';
 import { EnergyButton } from './EnergyButton';
 import { useEffect, useState } from 'react';
 import { Banners } from './Banners';
@@ -14,6 +14,7 @@ const TABS: { room: Room; label: string }[] = [
   { room: 'clan', label: 'Clan' },
   { room: 'market', label: 'Marché' },
   { room: 'combat', label: 'Combat' },
+  { room: 'power', label: 'Puissance' },
 ];
 
 export function TopBar() {
@@ -55,6 +56,11 @@ export function TopBar() {
       {tideOpen && tide.view && <TideModal view={tide.view} refresh={tide.refresh} onClose={() => setTideOpen(false)} />}
       <div className="topbar-right">
         <div className="status-box">
+          {state.power?.force != null && (
+            <button className="force-chip" onClick={() => go('power')} title="Force : tout ce qui te rend plus fort, en un seul nombre">
+              <span aria-hidden>✦</span> {bigNum(state.power.force)}
+            </button>
+          )}
           <span className="gold">{num(state.gold)} or</span>
           <EnergyButton />
         </div>

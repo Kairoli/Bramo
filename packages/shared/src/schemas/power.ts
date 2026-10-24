@@ -38,6 +38,8 @@ export const powerNodeSchema = z.object({
   name: z.string(),
   text: z.string().optional(),
   icon: z.string().optional(),
+  /** Une branche de l'arbre, pour l'écran (« Le fer », « Le cuir »…). */
+  group: z.string().optional(),
   maxLevel: z.number().int().min(1).default(1),
   /** Nœuds à avoir avant (arbre de recherche, talents de la lanterne). */
   requires: z.array(z.object({ node: id, level: z.number().int().min(1).default(1) })).default([]),

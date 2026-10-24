@@ -167,6 +167,7 @@ export interface PowerNodeView {
   name: string;
   text: string | null;
   icon: string | null;
+  group: string | null;
   level: number;
   maxLevel: number;
   /** Recherche en cours sur ce nœud : sa fin (ms epoch). */
@@ -217,6 +218,7 @@ export function powerView(state: CharacterState, content: Content, now: number):
             name: n.name,
             text: n.text ?? null,
             icon: n.icon ?? null,
+            group: n.group ?? null,
             level,
             maxLevel: n.maxLevel,
             pendingUntil: pend?.until ?? null,

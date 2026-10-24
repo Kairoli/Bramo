@@ -3,7 +3,7 @@ import type { AdvanceSummary, Appearance, ContentResponse, JournalEntry, StateRe
 import { api, RequestError } from '../api';
 import { msUntilActivityEnds } from './useLive';
 
-export type Room = 'home' | 'professions' | 'character' | 'clan' | 'market' | 'combat';
+export type Room = 'home' | 'professions' | 'character' | 'clan' | 'market' | 'combat' | 'power';
 
 interface Game {
   content: ContentResponse;

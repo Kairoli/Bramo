@@ -135,6 +135,8 @@ export const api = {
   chooseOrnament: (ornamentId: string | null) => request<StateResponse>('POST', '/character/ornament', { ornamentId }),
   setLook: (slot: string, partId: string | null) => request<StateResponse>('POST', '/character/look', { slot, partId }),
   chooseClass: (classId: string) => request<StateResponse>('POST', '/character/class', { classId }),
+  /** Moteur de Puissance : monter d'un niveau un nœud d'un système. */
+  powerUpgrade: (system: string, node: string) => request<StateResponse>('POST', '/power/upgrade', { system, node }),
   setNickname: (profession: string, rank: number) => request<StateResponse>('POST', '/nickname', { profession, rank }),
   completeTrial: (trialId: string) => request<StateResponse>('POST', '/trials/complete', { trialId }),
   gearRecipes: (profession: string) =>

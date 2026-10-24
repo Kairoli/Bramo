@@ -17,6 +17,7 @@ import { Professions } from './rooms/Professions';
 import { ProfessionRoom } from './rooms/ProfessionRoom';
 import { CharacterRoom } from './rooms/CharacterRoom';
 import { CombatRoom } from './rooms/CombatRoom';
+import { PowerRoom } from './rooms/PowerRoom';
 import { Atelier } from './rooms/Atelier';
 import { OrnamentGallery } from './rooms/OrnamentGallery';
 import { Arena } from './rooms/Arena';
@@ -52,6 +53,7 @@ function Shell() {
       {room === 'clan' && <ClanRoom />}
       {room === 'market' && <MarketRoom />}
       {room === 'combat' && <CombatRoom />}
+      {room === 'power' && <PowerRoom />}
       {absence && <AbsenceModal summary={absence} />}
       {!state.tourDone && !absence && <GuidedTour />}
       <Notifier />

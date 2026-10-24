@@ -12,35 +12,35 @@ unlock: {classLevel: 5}
 slots: 1
 nodes:
   # --- Le fer (attaque) -----------------------------------------------------------------------------------------
-  - {id: fil_de_lame, name: Le Fil de la lame, text: "+0,5 % de Puissance par niveau.", maxLevel: 20,
+  - {id: fil_de_lame, group: Le fer, name: Le Fil de la lame, text: "+0,5 % de Puissance par niveau.", maxLevel: 20,
      cost: {gold: {base: 80, growth: 1.25}, items: [{item: bronze_bar, base: 6, growth: 1.15}]},
      durationSec: {base: 1200, growth: 1.3}, perLevel: [{stat: power, pct: 0.005}]}
-  - {id: coup_franc, name: Le Coup franc, text: "+0,3 point de critique par niveau.", maxLevel: 10, requires: [{node: fil_de_lame, level: 3}],
+  - {id: coup_franc, group: Le fer, name: Le Coup franc, text: "+0,3 point de critique par niveau.", maxLevel: 10, requires: [{node: fil_de_lame, level: 3}],
      cost: {gold: {base: 250, growth: 1.3}, items: [{item: iron_bar, base: 4, growth: 1.2}]},
      durationSec: {base: 3600, growth: 1.35}, perLevel: [{stat: critChance, flat: 0.003}]}
-  - {id: elan, name: L'Élan, text: "+0,4 point de combo par niveau (une attaque de base qui frappe deux fois).", maxLevel: 10, requires: [{node: fil_de_lame, level: 5}],
+  - {id: elan, group: Le fer, name: L'Élan, text: "+0,4 point de combo par niveau (une attaque de base qui frappe deux fois).", maxLevel: 10, requires: [{node: fil_de_lame, level: 5}],
      cost: {gold: {base: 300, growth: 1.3}, items: [{item: copper_wire, base: 8, growth: 1.2}]},
      durationSec: {base: 3600, growth: 1.35}, perLevel: [{stat: combo, flat: 0.004}]}
-  - {id: tranchant, name: Le Tranchant, text: "+2 % de dégâts critiques par niveau.", maxLevel: 10, requires: [{node: coup_franc, level: 5}],
+  - {id: tranchant, group: Le fer, name: Le Tranchant, text: "+2 % de dégâts critiques par niveau.", maxLevel: 10, requires: [{node: coup_franc, level: 5}],
      cost: {gold: {base: 600, growth: 1.3}, items: [{item: steel_bar, base: 3, growth: 1.25}]},
      durationSec: {base: 7200, growth: 1.35}, perLevel: [{stat: critMultiplier, flat: 0.02}]}
   # --- Le cuir (défense) ----------------------------------------------------------------------------------------
-  - {id: cuir_epais, name: Le Cuir épais, text: "+0,5 % de PV par niveau.", maxLevel: 20,
+  - {id: cuir_epais, group: Le cuir, name: Le Cuir épais, text: "+0,5 % de PV par niveau.", maxLevel: 20,
      cost: {gold: {base: 80, growth: 1.25}, items: [{item: small_leather, base: 4, growth: 1.15}, {item: pine_plank, base: 4, growth: 1.15}]},
      durationSec: {base: 1200, growth: 1.3}, perLevel: [{stat: maxHp, pct: 0.005}]}
-  - {id: riposte, name: La Riposte, text: "+0,4 point de contre-attaque par niveau.", maxLevel: 10, requires: [{node: cuir_epais, level: 5}],
+  - {id: riposte, group: Le cuir, name: La Riposte, text: "+0,4 point de contre-attaque par niveau.", maxLevel: 10, requires: [{node: cuir_epais, level: 5}],
      cost: {gold: {base: 300, growth: 1.3}, items: [{item: thick_leather, base: 3, growth: 1.25}, {item: rivets, base: 6, growth: 1.2}]},
      durationSec: {base: 3600, growth: 1.35}, perLevel: [{stat: counter, flat: 0.004}]}
-  - {id: pas_de_cote, name: Le Pas de côté, text: "+0,3 point d'esquive par niveau.", maxLevel: 10, requires: [{node: cuir_epais, level: 5}],
+  - {id: pas_de_cote, group: Le cuir, name: Le Pas de côté, text: "+0,3 point d'esquive par niveau.", maxLevel: 10, requires: [{node: cuir_epais, level: 5}],
      cost: {gold: {base: 300, growth: 1.3}, items: [{item: linen_cloth, base: 6, growth: 1.2}]},
      durationSec: {base: 3600, growth: 1.35}, perLevel: [{stat: evasion, flat: 0.003}]}
-  - {id: bonne_mine, name: La Bonne Mine, text: "+0,03 % des PV rendus par seconde, par niveau.", maxLevel: 10, requires: [{node: cuir_epais, level: 10}],
+  - {id: bonne_mine, group: Le cuir, name: La Bonne Mine, text: "+0,03 % des PV rendus par seconde, par niveau.", maxLevel: 10, requires: [{node: cuir_epais, level: 10}],
      cost: {gold: {base: 600, growth: 1.3}, items: [{item: hunter_stew, base: 3, growth: 1.2}, {item: sage, base: 10, growth: 1.15}]},
      durationSec: {base: 7200, growth: 1.35}, perLevel: [{stat: regen, flat: 0.0003}]}
   # --- La lanterne (savoirs) ------------------------------------------------------------------------------------
-  - {id: savoir_maree, name: Le Savoir de la Marée, text: "+0,5 % de Puissance et de PV par niveau, en Marée du soir seulement.", maxLevel: 20,
+  - {id: savoir_maree, group: Le savoir, name: Le Savoir de la Marée, text: "+0,5 % de Puissance et de PV par niveau, en Marée du soir seulement.", maxLevel: 20,
      cost: {gold: {base: 120, growth: 1.25}, items: [{item: rune_dust, base: 3, growth: 1.15}, {item: mint, base: 8, growth: 1.15}]},
      durationSec: {base: 1800, growth: 1.3}, perLevel: [{stat: power, pct: 0.005, in: [tide]}, {stat: maxHp, pct: 0.005, in: [tide]}]}
-  - {id: cadence_savante, name: La Cadence savante, text: "+0,3 point de Cadence par niveau.", maxLevel: 10, requires: [{node: savoir_maree, level: 5}],
+  - {id: cadence_savante, group: Le savoir, name: La Cadence savante, text: "+0,3 point de Cadence par niveau.", maxLevel: 10, requires: [{node: savoir_maree, level: 5}],
      cost: {gold: {base: 450, growth: 1.3}, items: [{item: bronze_gears, base: 2, growth: 1.25}]},
      durationSec: {base: 7200, growth: 1.35}, perLevel: [{stat: haste, flat: 0.003}]}

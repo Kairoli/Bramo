@@ -10390,3 +10390,14 @@ div.tide-role {
   padding-left: 18px;
   font-size: 13px;
 }
+
+/* Accueil, la route : le dernier combat perdu en une phrase. */
+.route-defeat {
+  display: block;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 11px;
+  color: var(--alert);
+}

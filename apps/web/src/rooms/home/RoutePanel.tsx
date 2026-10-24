@@ -59,6 +59,12 @@ export function RoutePanel() {
               </span>
             ))}
           </div>
+          {/* Le dernier combat perdu, en une phrase (le détail est dans la salle Combat, « Dernier combat »). */}
+          {view.lastFight && !view.lastFight.win && (
+            <span className="route-defeat" title={[view.lastFight.breakdown.verdict, ...view.lastFight.breakdown.answers].join(' · ')}>
+              Défaite : {view.lastFight.breakdown.verdict}
+            </span>
+          )}
         </div>
         {other ? (
           <button className="btn btn-primary btn-sm" onClick={() => void act(api.combatStop)}>

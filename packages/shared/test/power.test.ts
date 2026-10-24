@@ -72,7 +72,7 @@ describe('moteur de Puissance : ce que ça donne au combat', () => {
 
   it('sans système, rien ne change ; avec, les bonus s’additionnent par niveau et selon le contenu', () => {
     const plain = hero({ combat: strong.combat });
-    expect(combatantOf(plain, content)).toEqual(combatantOf(plain, base));
+    expect(combatantOf(plain, content)).toEqual(combatantOf(plain, { ...base, power: null }));
     const t = powerTotals(strong, content);
     expect(t.pct.power).toBeCloseTo(0.1, 9);
     expect(t.flat.maxHp).toBe(300);

@@ -408,7 +408,8 @@ export function combatantOf(state: CharacterState, content: Content, context: Po
   const tool = prep && combat.tools.find((t) => t.id === prep && t.rank === 'prep');
   if (tool) setup.tools = [...(setup.tools ?? []), tool];
   const pw = powerTotals(state, content, context);
-  if (pw.parts.length && content.power) {
+  // Rien à appliquer pour ce contenu (un point fort de classe qui vaut ailleurs, par exemple) : le combattant ne change pas.
+  if (content.power && (Object.keys(pw.flat).length || Object.keys(pw.pct).length || pw.talents.length)) {
     setup.stats = applyPower({ ...combat.rules.referenceStats, ...setup.stats }, pw, content.power.config, combat.rules);
     if (pw.talents.length) {
       setup.talents = [...(setup.talents ?? []), ...pw.talents];

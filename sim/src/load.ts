@@ -48,7 +48,9 @@ export function readProposalRaw(name: string): RawContent {
   if (existsSync(join(dir, 'gear_pools.yaml'))) raw.gearPools = read('gear_pools.yaml');
   if (existsSync(join(dir, 'gear_sets.yaml'))) raw.gearSets = read('gear_sets.yaml');
   if (existsSync(join(dir, 'combat.yaml'))) raw.combat = patchCombat(raw.combat, read('combat.yaml') as CombatPatch);
-  // Moteur de Puissance : un dossier power/ (config.yaml et un fichier par système) remplace celui de data/.
+  // Moteur de Puissance : un dossier power/ (config.yaml et un fichier par système) remplace celui de data/ ; une proposition
+  // qui remplace les objets sans en avoir se joue sans (ses coûts nomment des objets de data/).
+  if (existsSync(join(dir, 'items.yaml')) && !existsSync(join(dir, 'power'))) delete raw.power;
   if (existsSync(join(dir, 'power'))) {
     const files = readdirSync(join(dir, 'power')).filter((f) => f.endsWith('.yaml')).sort();
     raw.power = {

@@ -206,6 +206,8 @@ export interface CombatSummary {
   vestiges: Record<string, number>;
   /** Le butin qui compte (rempli par le serveur, pour le résumé d'absence) : trophées, nommés, ensembles, Épiques, Légendaires. */
   notable?: NotableLoot[];
+  /** Gemmes de talent tombées (déjà dans l'inventaire), avec leur rencontre. */
+  talentGems?: { item: string; encounter: string }[];
 }
 
 /** Une trouvaille à montrer en tête du résumé d'absence [Louis, 24 octobre : « j'ai failli le rater »]. */
@@ -216,12 +218,14 @@ export interface NotableLoot {
   slot: string;
   family: string;
   /** Pourquoi elle compte : trophée de gardien, objet nommé, pièce d'ensemble, ou sa rareté seule. */
-  why: 'trophy' | 'named' | 'set' | 'rarity';
+  why: 'trophy' | 'named' | 'set' | 'rarity' | 'gem';
   /** Où elle est tombée (nom de la rencontre). */
   where: string;
   /** Talent d'un objet nommé, nom de l'ensemble. */
   effect: string | null;
   set: string | null;
+  /** Une gemme de talent : son objet (pour son icône). */
+  item?: string;
 }
 
 export const emptyCombatSummary = (): CombatSummary => ({ fights: 0, wins: 0, losses: 0, xp: {}, levelUps: [], stopped: null, loot: [], vestiges: {} });
@@ -538,6 +542,43 @@ function rollLoot(state: CharacterState, f: FightRecord, content: Content, summa
       state.combat.pity[n] = 0;
     } else state.combat.pity[n] = pity;
   }
+  rollTalentGem(state, f, content, summary, units);
+}
+
+/** Gemmes de talent par vestige : celles qui se taillent dans le vestige d'une région (la recette de Joaillerie). */
+const gemsByVestige = new WeakMap<object, Map<string, string[]>>();
+function talentGemsOf(content: Content, vestige: string): string[] {
+  let map = gemsByVestige.get(content.recipes);
+  if (!map) {
+    map = new Map();
+    const talents = new Set((content.combat?.talents?.gems ?? []).map((g) => g.id));
+    for (const r of Object.values(content.recipes))
+      for (const o of r.outputs) {
+        const gem = content.items[o.item]?.gem;
+        if (!gem || !talents.has(gem)) continue;
+        for (const i of r.inputs) if (content.items[i.item]?.category === 'vestige') map.set(i.item, [...(map.get(i.item) ?? []), o.item]);
+      }
+    gemsByVestige.set(content.recipes, map);
+  }
+  return map.get(vestige) ?? [];
+}
+
+/**
+ * Gemme de talent trouvée en combat [Louis, 24 octobre : taillées en Joaillerie, achetables, trouvables] : rare, une de
+ * celles qui se taillent dans le vestige de la région. Tirage à part (son propre flux) : le reste du butin ne change pas.
+ */
+function rollTalentGem(state: CharacterState, f: FightRecord, content: Content, summary: CombatSummary, units: number): void {
+  const combat = need(content);
+  const chance = combat.rules.loot?.talentGem;
+  const e = combat.encounters[f.encounter];
+  if (!chance || !e?.loot?.vestige) return;
+  const rand = stream(state.seed, `talent-gem:${f.index}`);
+  if (rand() >= chance * units) return;
+  const pool = talentGemsOf(content, e.loot.vestige);
+  if (!pool.length) return;
+  const item = pool[Math.floor(rand() * pool.length)]!;
+  addStack(state.inventory, item, 1);
+  (summary.talentGems ??= []).push({ item, encounter: e.id });
 }
 
 /**

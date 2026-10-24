@@ -86,10 +86,11 @@ const TONE: Record<Tone, string> = {
 const RARITY: Record<string, string> = { Commun: 'common', Rare: 'rare', Épique: 'epic', Légendaire: 'legendary' };
 
 /** Titres que le serveur donne au butin qui compte (game.ts, grantLoot). */
-const NOTABLE_TITLES = ['Trophée', 'Objet nommé', 'Ensemble'];
+const NOTABLE_TITLES = ['Trophée', 'Objet nommé', 'Ensemble', 'Gemme de talent'];
 /** La rareté d'un butin qui doit ressortir [Louis, 24 octobre : « j'ai failli le rater »], sinon rien. */
 function notableOf(title: string | null, text: string): string | undefined {
   const r = /\((Commun|Rare|Épique|Légendaire), palier \d+\)/.exec(text)?.[1];
+  if (title === 'Gemme de talent') return 'epic';
   if (!r || !title) return undefined;
   if (NOTABLE_TITLES.includes(title) || (title === 'Butin' && (r === 'Épique' || r === 'Légendaire'))) return RARITY[r];
   return undefined;

@@ -231,7 +231,15 @@ export function GearCard({
                 <span className="gem-text">
                   <strong>{content.items[g.gem]?.name}</strong>
                   <span className="muted small">
-                    Contre {GEM_TEXT[g.gem]?.against} : {GEM_TEXT[g.gem]?.text}
+                    {content.talentGems?.[g.gem] ? (
+                      <>
+                        Talent : <PoolText text={content.talentGems[g.gem]!.text ?? ''} />
+                      </>
+                    ) : (
+                      <>
+                        Contre {GEM_TEXT[g.gem]?.against} : {GEM_TEXT[g.gem]?.text}
+                      </>
+                    )}
                   </span>
                 </span>
                 {onSocket && (
@@ -248,7 +256,7 @@ export function GearCard({
                 {gemsInBag
                   .filter(([id]) => id !== g.gem)
                   .map(([id, n]) => (
-                    <button key={id} className="gem-choice" onClick={() => onSocket(id)} title={`${content.items[id]?.name} · contre ${GEM_TEXT[id]?.against}`}>
+                    <button key={id} className="gem-choice" onClick={() => onSocket(id)} title={content.talentGems?.[id] ? `${content.items[id]?.name} · talent : ${content.talentGems[id]!.text ?? ''}` : `${content.items[id]?.name} · contre ${GEM_TEXT[id]?.against}`}>
                       <ItemIcon item={content.items[id]} small />
                       <span>
                         {g.gem ? 'Remplacer par' : 'Sertir'} {content.items[id]?.name} <span className="muted">×{n}</span>

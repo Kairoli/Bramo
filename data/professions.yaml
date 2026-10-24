@@ -164,6 +164,7 @@
     - { id: refining, name: Affinage }
     - { id: cutting, name: Taille }
     - { id: jewelry, name: Bijoux }
+    - { id: talents, name: Talents }
 
 - id: enchanting
   name: Enchantement

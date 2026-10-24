@@ -5,6 +5,7 @@ import { useContent } from '../game/ContentContext';
 import { num } from '../format';
 import { FAMILY_COLOR } from './ui';
 import { TipFoot, TipHead, TipLine } from './Tip';
+import { PoolText } from './PoolGauges';
 
 /**
  * D'où vient un objet et à quoi il sert [demande de Louis, 23 octobre : « si on a besoin de quelque chose pour une
@@ -50,7 +51,12 @@ export function ItemTipContent({ item }: { item: Item }) {
   if (item.meal) lines.push(<TipLine key="meal" color="var(--clan)" mark="✚">Repas : +{Math.round(item.meal.bonus * 100)} % de vitesse aux métiers pendant {item.meal.durationMin >= 60 ? `${Math.round(item.meal.durationMin / 60)} h` : `${item.meal.durationMin} min`}</TipLine>);
   if (item.tool) lines.push(<TipLine key="tool" color="var(--clan)" mark="⚒">Outil de {profOf(content, item.tool.profession)?.name ?? item.tool.profession} : +{Math.round(item.tool.bonus * 100)} % de vitesse{item.tool.durabilityHours ? `, ${item.tool.durabilityHours} h de travail avant réparation` : ''}</TipLine>);
   if (item.potion) lines.push(<TipLine key="potion" color="var(--good)" mark="✚">Potion de combat : rend {Math.round(item.potion.heal * 100)} % des PV, bue sous {Math.round(item.potion.below * 100)} %</TipLine>);
-  if (item.gem) lines.push(<TipLine key="gem" color="var(--magic)" mark="◆">Gemme : se sertit dans l’arme, le torse, la tête ou le collier ; elle répond à une mécanique de combat</TipLine>);
+  const talent = content.talentGems?.[item.id];
+  if (talent) {
+    // Gemme de talent : son talent, ses réserves soulignées (expliquées au survol).
+    lines.push(<TipLine key="talent" color="var(--r-legendary)" mark="★">Talent : {talent.text ? <PoolText text={talent.text} /> : item.name}</TipLine>);
+    lines.push(<TipLine key="gem" color="var(--magic)" mark="◆">Gemme de talent : se sertit dans l’arme, le torse, la tête ou le collier ; elle prend une des quatre places de talent, comme un objet nommé</TipLine>);
+  } else if (item.gem) lines.push(<TipLine key="gem" color="var(--magic)" mark="◆">Gemme : se sertit dans l’arme, le torse, la tête ou le collier ; elle répond à une mécanique de combat</TipLine>);
   return (
     <>
       <TipHead title={item.name} sub={`Valeur de référence ${num(item.value)} or`} />

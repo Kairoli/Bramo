@@ -358,6 +358,8 @@ export type ContentResponse = Omit<Content, 'xpTable' | 'gearModels' | 'combat'>
   drops: Record<string, { region: string; encounters: string[] }[]>;
   /** Les réserves du build (Tisons, Ferveur…), pour les expliquer au survol dans les fiches et les talents. */
   pools: { id: string; name: string; max: number; text?: string }[];
+  /** Gemmes de talent, par objet : le talent qu'elles donnent une fois serties (fiches, bulles, sertissage). */
+  talentGems: Record<string, { talent: string; text: string | null; pool: string | null; role: string | null }>;
 };
 
 export interface ApiError {

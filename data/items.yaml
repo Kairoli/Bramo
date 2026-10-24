@@ -276,3 +276,40 @@
 - {id: shadowwood_plank, name: Planche de bois d'ombre, category: plank, value: 7}
 - {id: dawnwood_plank, name: Planche de bois d'aurore, category: plank, value: 8}
 - {id: elk_leather, name: Cuir d'élan, category: leather, value: 26}
+
+# --- Gemmes de talent (générées par docs/design/gemmes/generer.mjs : ne pas modifier à la main) ---
+- {id: talent_allume_feu, name: "L'Allume-Feu", category: gem, value: 220, gem: allume_feu}
+- {id: talent_feu_aux_poudres, name: Le Feu aux poudres, category: gem, value: 700, gem: feu_aux_poudres}
+- {id: talent_petit_bois, name: Le Petit Bois, category: gem, value: 400, gem: petit_bois}
+- {id: talent_cendres_tiedes, name: Les Cendres tièdes, category: gem, value: 400, gem: cendres_tiedes}
+- {id: talent_fil_du_rasoir, name: Le Fil du rasoir, category: gem, value: 280, gem: fil_du_rasoir}
+- {id: talent_coup_de_grace, name: Le Coup de grâce, category: gem, value: 840, gem: coup_de_grace}
+- {id: talent_rouge_vif, name: Rouge vif, category: gem, value: 500, gem: rouge_vif}
+- {id: talent_le_barbier, name: Le Barbier, category: gem, value: 500, gem: le_barbier}
+- {id: talent_souffle_polaire, name: Le Souffle polaire, category: gem, value: 220, gem: souffle_polaire}
+- {id: talent_degel_brutal, name: Le Dégel brutal, category: gem, value: 700, gem: degel_brutal}
+- {id: talent_coeur_de_glace, name: Cœur de glace, category: gem, value: 700, gem: coeur_de_glace}
+- {id: talent_engelures, name: Les Engelures, category: gem, value: 400, gem: engelures}
+- {id: talent_rancune_tenace, name: La Rancune tenace, category: gem, value: 280, gem: rancune_tenace}
+- {id: talent_retour_envoyeur, name: "Retour à l'envoyeur", category: gem, value: 840, gem: retour_envoyeur}
+- {id: talent_vieux_cuir, name: La Peau de vieux cuir, category: gem, value: 500, gem: vieux_cuir}
+- {id: talent_mauvais_perdant, name: Le Mauvais Perdant, category: gem, value: 500, gem: mauvais_perdant}
+- {id: talent_main_tendue, name: La Main tendue, category: gem, value: 280, gem: main_tendue}
+- {id: talent_grace_oblique, name: La Grâce oblique, category: gem, value: 840, gem: grace_oblique}
+- {id: talent_aureole_de_travers, name: "L'Auréole de travers", category: gem, value: 840, gem: aureole_de_travers}
+- {id: talent_bonne_conscience, name: La Bonne Conscience, category: gem, value: 500, gem: bonne_conscience}
+- {id: talent_metronome, name: Le Métronome, category: gem, value: 220, gem: metronome}
+- {id: talent_grand_accord, name: Le Grand Accord, category: gem, value: 700, gem: grand_accord}
+- {id: talent_rythme_cardiaque, name: Le Rythme cardiaque, category: gem, value: 400, gem: rythme_cardiaque}
+- {id: talent_pas_de_deux, name: Le Pas de deux, category: gem, value: 400, gem: pas_de_deux}
+- {id: talent_ricochet, name: Le Ricochet, category: gem, value: 280, gem: ricochet}
+- {id: talent_point_d_orgue, name: "Le Point d'orgue", category: gem, value: 840, gem: point_d_orgue}
+- {id: talent_perroquet, name: Le Perroquet, category: gem, value: 280, gem: perroquet}
+- {id: talent_cacophonie, name: La Cacophonie, category: gem, value: 500, gem: cacophonie}
+- {id: talent_collectionneur, name: Le Collectionneur, category: gem, value: 280, gem: collectionneur}
+- {id: talent_la_vitrine, name: La Vitrine, category: gem, value: 840, gem: la_vitrine}
+- {id: talent_taxidermiste, name: Le Taxidermiste, category: gem, value: 840, gem: taxidermiste}
+- {id: talent_bastion_operette, name: "Le Bastion d'opérette", category: gem, value: 400, gem: bastion_operette}
+- {id: talent_derniere_etincelle, name: La Dernière Étincelle, category: gem, value: 400, gem: derniere_etincelle}
+- {id: talent_oeil_du_chasseur, name: "L'Œil du chasseur", category: gem, value: 400, gem: oeil_du_chasseur}
+# --- Fin des gemmes de talent ---

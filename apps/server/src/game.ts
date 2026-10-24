@@ -79,6 +79,14 @@ async function grantLoot(tx: Tx, characterId: number, name: string, summary: Adv
     }
     if (m.named) events.push({ kind: 'loot', text: `${name} trouve ${m.name}${m.conditional?.startsWith('«') ? ` ${m.conditional.split(' — ')[0]}` : ''} (${where}).` });
   }
+  // Gemmes de talent trouvées en combat (rares) : déjà dans l'inventaire.
+  for (const g of c.talentGems ?? []) {
+    const item = content.items[g.item];
+    const where = content.combat?.encounters[g.encounter]?.name ?? g.encounter;
+    const talent = content.combat?.talents?.gems.find((x) => x.id === item?.gem);
+    entries.push({ at: now, kind: 'combat', text: `Gemme de talent : ${item?.name ?? g.item}, ${where}.` });
+    notable.push({ name: item?.name ?? g.item, rarity: 'epic', tier: 0, slot: 'gem', family: 'gem', why: 'gem', where, effect: talent?.text ?? null, set: null, item: g.item });
+  }
   if (notable.length) c.notable = [...(c.notable ?? []), ...notable];
   return { entries, events };
 }

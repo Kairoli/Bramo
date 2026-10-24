@@ -4,27 +4,28 @@ import { useGame } from '../game/GameContext';
 import { duration, num, pct } from '../format';
 import { GearIcon } from './GearIcon';
 import { SLOT } from './GearCard';
-import { Modal } from './ui';
+import { ItemIcon, Modal } from './ui';
 
 const RARITY_NAMES: Record<string, string> = { common: 'Commun', rare: 'Rare', epic: 'Épique', legendary: 'Légendaire' };
-const WHY: Record<NotableLoot['why'], string> = { trophy: 'Trophée', named: 'Objet nommé', set: 'Pièce d’ensemble', rarity: 'Trouvaille' };
+const WHY: Record<NotableLoot['why'], string> = { trophy: 'Trophée', named: 'Objet nommé', set: 'Pièce d’ensemble', rarity: 'Trouvaille', gem: 'Gemme de talent' };
 
 /** Le butin qui compte, en tête du résumé [Louis, 24 octobre : « le résumé d'absence doit montrer les loots importants »]. */
 function NotableList({ loot }: { loot: NotableLoot[] }) {
+  const { content } = useGame();
   // Les plus belles d'abord : trophées et nommés, puis ensembles, puis par rareté et palier.
-  const order = { trophy: 0, named: 1, set: 2, rarity: 3 };
+  const order = { trophy: 0, named: 1, gem: 2, set: 3, rarity: 4 };
   const rank = { legendary: 0, epic: 1, rare: 2, common: 3 };
   const sorted = [...loot].sort((a, b) => order[a.why] - order[b.why] || rank[a.rarity] - rank[b.rarity] || b.tier - a.tier);
   return (
     <div className="absence-loot">
       {sorted.slice(0, 4).map((l, i) => (
         <div key={i} className={`absence-loot-card why-${l.why}`} style={{ '--rc': `var(--r-${l.rarity})` } as CSSProperties}>
-          <GearIcon slot={l.slot} family={l.family} tier={l.tier} rarity={l.rarity} size={48} />
+          {l.item ? <ItemIcon item={content.items[l.item]} /> : <GearIcon slot={l.slot} family={l.family} tier={l.tier} rarity={l.rarity} size={48} />}
           <span className="absence-loot-text">
             <span className="absence-loot-why">{WHY[l.why]}</span>
             <strong>{l.name}</strong>
             <span className="muted small">
-              {RARITY_NAMES[l.rarity]} · palier {l.tier} · {SLOT[l.slot] ?? l.slot} · {l.why === 'trophy' ? `trophée de ${l.where}` : l.where}
+              {l.item ? `à sertir · ${l.where}` : <>{RARITY_NAMES[l.rarity]} · palier {l.tier} · {SLOT[l.slot] ?? l.slot} · {l.why === 'trophy' ? `trophée de ${l.where}` : l.where}</>}
             </span>
             {(l.effect || l.set) && <span className="absence-loot-effect small">{l.effect ?? `Ensemble : ${l.set}`}</span>}
           </span>

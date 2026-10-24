@@ -141,6 +141,8 @@ export const combatRulesSchema = z.object({
       setLegendary: ratio,
       named: ratio,
       namedGuarantee: z.number().positive(),
+      /** Chance par unité d'une gemme de talent taillée dans le vestige de la région (docs/design/gemmes/gemmes-de-talent.md). */
+      talentGem: ratio.optional(),
     })
     .optional(),
   progression: z.object({

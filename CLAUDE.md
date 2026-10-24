@@ -65,6 +65,14 @@ Bramo est un **idle-RPG multijoueur jouable dans le navigateur**, dans l'esprit 
 - **Bible corrigée** : six gardiens, six pages (pas douze) ; le modèle d'une saison parle d'une monnaie de saison et de mutateurs à 10 % au plus.
 - **À faire le moment venu** (§9 de la fiche) : la machine des saisons une fois pour toutes (`data/seasons.yaml`, moteur, serveur, bandeau et fenêtre Saison), le Registre et le Carnet, la tenue du Copiste et les trois armes, l'ornement de saison (GPT), les mesures au simulateur (§8).
 
+### Fait — les gemmes de talent obtenables (24 octobre)
+
+- **Demande de Louis** : rendre les 34 gemmes de talent obtenables, « pas trop dur, pas trop facile ». Fiche : [`docs/design/gemmes/gemmes-de-talent.md`](docs/design/gemmes/gemmes-de-talent.md).
+- **Objets et recettes** générés par `docs/design/gemmes/generer.mjs` (relançable, bloc entre marqueurs) : `talent_<gemme>` dans `data/items.yaml` (`gem` = l'identifiant du talent), recettes de Joaillerie (nouvel onglet « Talents ») à trois paliers selon le rôle : remplir 20, amplifier/relier/utilitaire 30, dépenser 40 ; vestige de la région de la réserve, poussière de Lointain (démontage) 4/8/15, valeur = 40 % des ingrédients.
+- **Trouvées en combat** : `rules.loot.talentGem` (0,0005 par unité, ~1 tous les 8 jours), une gemme qui se taille dans le vestige de la région, tirée sur son propre flux (le reste du butin ne change pas) ; `CombatSummary.talentGems`, ligne « Gemme de talent » au journal (mise en avant), carte en tête du résumé d'absence.
+- **Sertissage** : la validation accepte un talent du catalogue (`content.ts`) ; `wornLoadout` les passait déjà à `resolveLoadout`. La bulle d'un objet et l'emplacement de gemme d'une pièce montrent le talent (`ContentResponse.talentGems`, réserves soulignées). Vérifié en jeu : Retour à l'envoyeur sertie apparaît dans « ce qui dépense » la Rancœur.
+- Simulation de serveur (60 joueurs, 30 jours) : rien ne casse ; les bots ne savent pas encore utiliser les gemmes de talent (à faire pour mesurer le rythme).
+
 ### Fait — les huit réserves visibles en combat (24 octobre)
 
 - **Louis** : « on ne les voit même pas en combat ? je les afficherais toutes, c'est le cœur de notre système de combat ». Le moteur note les réserves du personnage à chaque instant du déroulé rejoué (`TraceEntry.pools`, `TimelineEvent.pools` : les non vides, au dixième) ; `CombatView.activity.pools` (`PoolView` : les huit, avec leur plafond pour le build de la rencontre en cours).

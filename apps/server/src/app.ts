@@ -230,6 +230,12 @@ export async function buildApp({ db, content, clock = Date.now, secureCookies = 
     gearCrafting: content.gearCrafting,
     drops: dropsOf(content),
     pools: content.combat?.talents?.pools ?? [],
+    talentGems: Object.fromEntries(
+      Object.values(content.items).flatMap((i) => {
+        const g = i.gem ? content.combat?.talents?.gems.find((x) => x.id === i.gem) : undefined;
+        return g ? [[i.id, { talent: g.id, text: g.text ?? null, pool: g.archetype ?? null, role: g.role ?? null }]] : [];
+      }),
+    ),
   };
   app.get('/api/health', async () => ({ ok: true }));
   app.get('/api/content', async () => publicContent);

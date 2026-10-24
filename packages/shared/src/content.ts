@@ -204,7 +204,8 @@ export function buildContent(raw: RawContent): Content {
       if (e.loot?.vestige && !items[e.loot.vestige]) errors.push(`combat/encounters.yaml : ${e.id} : vestige inconnu « ${e.loot.vestige} » (items.yaml)`);
     }
     for (const m of gearList) if (m.talent && !combat?.talents?.named.some((n) => n.id === m.talent)) errors.push(`gear.yaml : ${m.id} : talent nommé inconnu « ${m.talent} »`);
-    for (const it of itemList) if (it.gem && !combat?.tools.some((t) => t.id === it.gem && t.rank === 'gem')) errors.push(`items.yaml : ${it.id} : gemme inconnue « ${it.gem} » (combat/tools.yaml, rang gem)`);
+    // Une gemme donne un outil de situation (combat/tools.yaml, rang gem) ou un talent du catalogue (combat/talents.yaml, gemmes).
+    for (const it of itemList) if (it.gem && !combat?.tools.some((t) => t.id === it.gem && t.rank === 'gem') && !combat?.talents?.gems.some((g) => g.id === it.gem)) errors.push(`items.yaml : ${it.id} : gemme inconnue « ${it.gem} » (combat/tools.yaml, rang gem, ou combat/talents.yaml)`);
     for (const it of itemList) if (it.prep && !combat?.tools.some((t) => t.id === it.prep!.tool && t.rank === 'prep')) errors.push(`items.yaml : ${it.id} : préparation inconnue « ${it.prep.tool} » (combat/tools.yaml, rang prep)`);
   }
   if (gearCrafting) {

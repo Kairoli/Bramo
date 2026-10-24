@@ -45,10 +45,12 @@ describe('data/', () => {
     for (const o of content.cosmetics.outfits) for (const cl of o.classes) expect(content.classes[cl], `${o.id} → ${cl}`).toBeDefined();
   });
 
-  it('chaque ingrédient et chaque objet d’épreuve peut être obtenu (recette, ou butin de combat pour les vestiges)', () => {
+  it('chaque ingrédient et chaque objet d’épreuve peut être obtenu (recette, butin de combat pour les vestiges, démontage pour la poussière)', () => {
     const produced = new Set(Object.values(content.recipes).flatMap((r) => r.outputs.map((o) => o.item)));
     const looted = new Set(Object.values(content.combat?.encounters ?? {}).flatMap((e) => (e.loot?.vestige ? [e.loot.vestige] : [])));
-    const obtainable = (item: string) => produced.has(item) || looted.has(item);
+    // La poussière de Lointain vient du démontage chez l’Affineur (gear_crafting.yaml, refine.salvage).
+    const salvaged = content.gearCrafting?.refine?.salvage?.item;
+    const obtainable = (item: string) => produced.has(item) || looted.has(item) || item === salvaged;
     for (const r of Object.values(content.recipes)) {
       for (const i of r.inputs) expect(obtainable(i.item), `${r.id} → ${i.item}`).toBe(true);
     }

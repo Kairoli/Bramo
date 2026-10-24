@@ -9,7 +9,7 @@
 import { and, desc, eq, sql } from 'drizzle-orm';
 import { type ChatMessageView, type ChatView, type Content, GameError } from '@bramo/shared';
 import type { Db, Tx } from './db/index.js';
-import { accounts, characters, chatMessages, chatReports, clanMembers } from './db/schema.js';
+import { accounts, blocks, characters, chatMessages, chatReports, clanMembers } from './db/schema.js';
 import { avatarsOf } from './avatar.js';
 
 const LINK = /(https?:\/\/|www\.|\b[a-z0-9-]+\.(com|fr|net|org|io|gg|ru|xyz|ly|me)\b)/i;
@@ -37,12 +37,15 @@ export async function readChat(db: Db, characterId: number, channel: 'server' | 
   const me = await accountOf(db, characterId);
   const moderator = me?.role === 'moderator';
   if (!key) return { channel, messages: [], canWrite: false, reason: 'Rejoignez un clan pour discuter avec ses membres.', moderator };
-  const rows = await db
+  const all = await db
     .select()
     .from(chatMessages)
     .where(and(eq(chatMessages.channel, key), eq(chatMessages.hidden, false)))
     .orderBy(desc(chatMessages.id))
     .limit(content.settings.chat.history);
+  // Les joueurs qu'il a bloqués : leurs messages ne s'affichent plus pour lui (docs/design/social.md).
+  const blocked = new Set((await db.select({ id: blocks.blockedId }).from(blocks).where(eq(blocks.blockerId, characterId))).map((r) => r.id));
+  const rows = all.filter((r) => r.characterId === null || !blocked.has(r.characterId));
   // La photo de profil de chaque auteur (et sa classe, pour son portrait par défaut).
   const authors = await avatarsOf(db, rows.map((r) => r.characterId ?? 0));
   const messages: ChatMessageView[] = rows.reverse().map((r) => ({ id: r.id, at: r.at.getTime(), name: r.name, characterId: r.characterId, text: r.text, mine: r.characterId === characterId, avatar: authors.get(r.characterId ?? 0)?.avatar ?? null, classId: authors.get(r.characterId ?? 0)?.classId ?? null }));
@@ -50,7 +53,11 @@ export async function readChat(db: Db, characterId: number, channel: 'server' | 
   return { channel, messages, canWrite: !muted, reason: muted ? `Vous êtes muet dans la discussion jusqu’au ${me!.mutedUntil!.toLocaleString('fr-FR')}.` : null, moderator };
 }
 
-export async function postChat(tx: Tx, characterId: number, name: string, channel: 'server' | 'clan', raw: string, now: number, content: Content): Promise<void> {
+/**
+ * Les règles d'un message, public ou privé : longueur, liens, joueur muet, cadence (les envois publics et privés comptent
+ * ensemble). Rend le texte nettoyé.
+ */
+export async function checkMessage(tx: Tx, characterId: number, raw: string, now: number, content: Content): Promise<string> {
   const rules = content.settings.chat;
   const text = raw.replace(/\s+/g, ' ').trim();
   if (!text) throw new GameError('empty', 'Le message est vide.');
@@ -58,12 +65,17 @@ export async function postChat(tx: Tx, characterId: number, name: string, channe
   if (rules.blockLinks && LINK.test(text)) throw new GameError('link', 'Les liens ne sont pas autorisés dans la discussion.');
   const me = await accountOf(tx, characterId);
   if (me?.mutedUntil && me.mutedUntil.getTime() > now) throw new GameError('muted', 'Vous êtes muet dans la discussion pour le moment.');
-  const key = await channelOf(tx, characterId, channel);
-  if (!key) throw new GameError('no_clan', 'Rejoignez un clan pour discuter avec ses membres.');
   const sent = (recent.get(characterId) ?? []).filter((t) => t > now - 60_000);
   if (sent.length && now - sent.at(-1)! < rules.minIntervalSec * 1000) throw new GameError('too_fast', 'Doucement : un message à la fois.');
   if (sent.length >= rules.perMinute) throw new GameError('too_many', 'Trop de messages d’un coup : patientez un peu.');
   recent.set(characterId, [...sent, now]);
+  return text;
+}
+
+export async function postChat(tx: Tx, characterId: number, name: string, channel: 'server' | 'clan', raw: string, now: number, content: Content): Promise<void> {
+  const key = await channelOf(tx, characterId, channel);
+  if (!key) throw new GameError('no_clan', 'Rejoignez un clan pour discuter avec ses membres.');
+  const text = await checkMessage(tx, characterId, raw, now, content);
   await tx.insert(chatMessages).values({ channel: key, characterId, name, text, at: new Date(now) });
 }
 

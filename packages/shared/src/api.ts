@@ -79,6 +79,12 @@ export const placeOrderBody = z.object({
 export const chatPostBody = z.object({ channel: z.enum(['server', 'clan']), text: z.string() });
 export const chatReportBody = z.object({ messageId: z.number().int() });
 export const chatModerateBody = z.object({ messageId: z.number().int(), action: z.enum(['delete', 'mute']), hours: z.number().min(1).max(24 * 365).optional() });
+// Amis, blocage, messages privés (apps/server/src/social.ts).
+export const socialTargetBody = z.object({ characterId: z.number().int() });
+export const friendRespondBody = z.object({ characterId: z.number().int(), accept: z.boolean() });
+export const blockBody = z.object({ characterId: z.number().int(), block: z.boolean() });
+export const privateMessageBody = z.object({ to: z.number().int(), text: z.string() });
+export const dmPolicyBody = z.object({ policy: z.enum(['all', 'friends_clan']) });
 
 /** Un message de la discussion (GET /api/chat). */
 export interface ChatMessageView {
@@ -361,6 +367,65 @@ export type ContentResponse = Omit<Content, 'xpTable' | 'gearModels' | 'combat'>
   /** Gemmes de talent, par objet : le talent qu'elles donnent une fois serties (fiches, bulles, sertissage). */
   talentGems: Record<string, { talent: string; text: string | null; pool: string | null; role: string | null }>;
 };
+
+/** Un joueur vu depuis le social (amis, messages) : de quoi le reconnaître et savoir s'il est là. */
+export interface SocialPerson {
+  id: number;
+  name: string;
+  avatar: number | null;
+  classId: string | null;
+  online: boolean;
+  lastSeenAt: number;
+  /** Ce qu'il fait (la recette en cours), s'il travaille. */
+  doing: string | null;
+}
+
+/** Le lien entre deux joueurs, vu par le premier. */
+export interface RelationView {
+  friend: 'none' | 'friends' | 'sent' | 'received';
+  blocked: boolean;
+  /** Il peut lui écrire (ni blocage, ni réglage qui l'en empêche). */
+  canMessage: boolean;
+}
+
+export interface FriendsView {
+  friends: SocialPerson[];
+  incoming: SocialPerson[];
+  outgoing: SocialPerson[];
+  blocked: { id: number; name: string }[];
+  max: number;
+}
+
+export interface ConversationView {
+  with: SocialPerson;
+  last: { text: string; at: number; mine: boolean };
+  unread: number;
+}
+
+/** Les messages privés : les conversations (la plus récente d'abord), et ce qui attend. */
+export interface MessagesView {
+  conversations: ConversationView[];
+  unread: number;
+  /** Demandes d'ami reçues, en attente. */
+  requests: number;
+  /** Qui peut lui écrire : tout le monde (par défaut), ou ses amis et son clan. */
+  dmPolicy: 'all' | 'friends_clan';
+}
+
+export interface PrivateMessageView {
+  id: number;
+  at: number;
+  text: string;
+  mine: boolean;
+}
+
+export interface ThreadView {
+  with: SocialPerson;
+  messages: PrivateMessageView[];
+  relation: RelationView;
+  canWrite: boolean;
+  reason: string | null;
+}
 
 export interface ApiError {
   code: string;

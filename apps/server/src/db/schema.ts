@@ -80,6 +80,8 @@ export const characters = pgTable('characters', {
   combat: jsonb('combat').$type<Partial<CombatState>>().notNull().default({}),
   lastTickAt: ts('last_tick_at').notNull(),
   lastSeenAt: ts('last_seen_at').notNull(),
+  /** Qui peut lui écrire en privé : tout le monde (par défaut) ou ses amis et son clan. */
+  dmPolicy: text('dm_policy').notNull().default('all'),
   createdAt: ts('created_at').notNull().defaultNow(),
 });
 
@@ -353,6 +355,57 @@ export const chatReports = pgTable(
     at: ts('at').notNull(),
   },
   (t) => [primaryKey({ columns: [t.messageId, t.characterId] })],
+);
+
+/** Amis (docs/design/social.md) : une demande (status « pending ») de requester à addressee, puis acceptée (« accepted »). */
+export const friendships = pgTable(
+  'friendships',
+  {
+    requesterId: integer('requester_id')
+      .notNull()
+      .references(() => characters.id, { onDelete: 'cascade' }),
+    addresseeId: integer('addressee_id')
+      .notNull()
+      .references(() => characters.id, { onDelete: 'cascade' }),
+    status: text('status').notNull(),
+    createdAt: ts('created_at').notNull(),
+    acceptedAt: ts('accepted_at'),
+  },
+  (t) => [primaryKey({ columns: [t.requesterId, t.addresseeId] }), index('friendships_addressee').on(t.addresseeId)],
+);
+
+/** Blocages : le bloqué ne peut plus écrire, demander en ami ni passer commande ; ses messages publics sont masqués. */
+export const blocks = pgTable(
+  'blocks',
+  {
+    blockerId: integer('blocker_id')
+      .notNull()
+      .references(() => characters.id, { onDelete: 'cascade' }),
+    blockedId: integer('blocked_id')
+      .notNull()
+      .references(() => characters.id, { onDelete: 'cascade' }),
+    at: ts('at').notNull(),
+  },
+  (t) => [primaryKey({ columns: [t.blockerId, t.blockedId] })],
+);
+
+/** Messages privés : gardés settings.social.historyDays jours ; un modérateur ne voit qu'un message signalé. */
+export const privateMessages = pgTable(
+  'private_messages',
+  {
+    id: serial('id').primaryKey(),
+    fromId: integer('from_id')
+      .notNull()
+      .references(() => characters.id, { onDelete: 'cascade' }),
+    toId: integer('to_id')
+      .notNull()
+      .references(() => characters.id, { onDelete: 'cascade' }),
+    text: text('text').notNull(),
+    at: ts('at').notNull(),
+    readAt: ts('read_at'),
+    reported: boolean('reported').notNull().default(false),
+  },
+  (t) => [index('private_messages_to').on(t.toId, t.id), index('private_messages_from').on(t.fromId, t.id)],
 );
 
 /**

@@ -1,5 +1,9 @@
 import type {
   ChatView,
+  FriendsView,
+  MessagesView,
+  RelationView,
+  ThreadView,
   RefineService,
   MyTradeView,
   PriceHistoryView,
@@ -160,6 +164,18 @@ export const api = {
   chatPost: (channel: 'server' | 'clan', text: string) => request<ChatView>('POST', '/chat', { channel, text }),
   chatReport: (messageId: number) => request<{ ok: true }>('POST', '/chat/report', { messageId }),
   chatModerate: (messageId: number, action: 'delete' | 'mute', hours?: number) => request<{ ok: true; message: string }>('POST', '/chat/moderate', { messageId, action, ...(hours ? { hours } : {}) }),
+  // Amis, blocage, messages privés (docs/design/social.md).
+  friends: () => request<FriendsView>('GET', '/friends'),
+  relation: (id: number) => request<RelationView>('GET', `/social/relation/${id}`),
+  friendRequest: (characterId: number) => request<{ message: string; friends: FriendsView }>('POST', '/friends/request', { characterId }),
+  friendRespond: (characterId: number, accept: boolean) => request<{ message: string; friends: FriendsView }>('POST', '/friends/respond', { characterId, accept }),
+  friendRemove: (characterId: number) => request<{ message: string; friends: FriendsView }>('POST', '/friends/remove', { characterId }),
+  block: (characterId: number, block: boolean) => request<{ message: string; friends: FriendsView }>('POST', '/blocks', { characterId, block }),
+  messages: () => request<MessagesView>('GET', '/messages'),
+  thread: (id: number) => request<ThreadView>('GET', `/messages/${id}`),
+  sendPrivate: (to: number, text: string) => request<ThreadView>('POST', '/messages/send', { to, text }),
+  reportPrivate: (messageId: number) => request<{ ok: true }>('POST', '/messages/report', { messageId }),
+  dmPolicy: (policy: 'all' | 'friends_clan') => request<MessagesView>('POST', '/messages/policy', { policy }),
   accountPassword: (current: string, next: string) => request<{ ok: true }>('POST', '/account/password', { current, next }),
   accountDelete: (password: string, confirm: string) => request<{ ok: true }>('POST', '/account/delete', { password, confirm }),
 };

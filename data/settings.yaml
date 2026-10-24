@@ -32,6 +32,13 @@ chat:
   blockLinks: true
   history: 60             # messages renvoyés par canal
 
+# Amis et messages privés (24 octobre, docs/design/social.md ; décidé par Louis : messages privés ouverts à tous par défaut).
+social:
+  maxFriends: 100
+  historyDays: 90         # messages privés gardés
+  thread: 100             # messages renvoyés par conversation
+  onlineMin: 15           # « en ligne » : vu dans les 15 dernières minutes
+
 # Photo de profil (23 octobre, demande de Louis : « pouvoir être qui on veut » ; apps/server/src/avatar.ts). Le jeu recadre
 # l'image en carré de 256 px ; WebP, PNG ou JPEG seulement ; masquée après 3 signalements de joueurs différents.
 avatar:

@@ -3,6 +3,7 @@ import type { ChatMessageView, ChatView, JournalEntry, TownEvent } from '@bramo/
 import { Avatar } from '../../components/Avatar';
 import { PlayerName } from '../../components/ProfileLink';
 import { FirstSteps } from './FirstSteps';
+import { SocialPanel, useSocialBadge } from '../../components/Social';
 import { api } from '../../api';
 import { useGame } from '../../game/GameContext';
 import { hhmm } from '../../format';
@@ -15,17 +16,8 @@ import { hhmm } from '../../format';
  * supprimer ou rendre muet.
  */
 
-/** Joueurs masqués par ce joueur (dans ce navigateur). */
-const IGNORED = 'bramo.ignored';
-function readIgnored(): number[] {
-  try {
-    return JSON.parse(localStorage.getItem(IGNORED) ?? '[]') as number[];
-  } catch {
-    return [];
-  }
-}
 
-type Tab = 'all' | 'combat' | 'crafts' | 'clan' | 'server';
+type Tab = 'all' | 'combat' | 'crafts' | 'clan' | 'server' | 'social';
 type Tone = 'event' | 'good' | 'action' | 'clan' | 'alert' | 'magic' | 'muted';
 
 interface Line {
@@ -149,7 +141,7 @@ export function JournalPanel() {
   const [tab, setTab] = useState<Tab>('all');
   const [chat, setChat] = useState<ChatView | null>(null);
   const [draft, setDraft] = useState('');
-  const [ignored, setIgnored] = useState<number[]>(readIgnored);
+  const social = useSocialBadge();
   const [clanLog, setClanLog] = useState<Line[] | null>(null);
   const [feed, setFeed] = useState<Line[] | null>(null);
   const listRef = useRef<HTMLDivElement>(null);
@@ -203,7 +195,7 @@ export function JournalPanel() {
 
   const lines = merge(tab === 'clan' ? (clanLog ?? []) : tab === 'server' ? (feed ?? []) : mine);
   const talk = tab === 'clan' || tab === 'server';
-  const messages = talk && chat?.channel === tab ? chat.messages.filter((m) => m.characterId === null || !ignored.includes(m.characterId)) : [];
+  const messages = talk && chat?.channel === tab ? chat.messages : [];
   // Événements et messages, dans l'ordre du temps.
   const items: ({ kind: 'line'; at: number; line: Line } | { kind: 'chat'; at: number; msg: ChatMessageView })[] = [
     ...lines.map((line) => ({ kind: 'line' as const, at: line.at, line })),
@@ -224,15 +216,15 @@ export function JournalPanel() {
       flash(err instanceof Error ? err.message : 'Message refusé.');
     }
   };
-  const hide = (id: number) => {
-    const next = [...new Set([...ignored, id])];
-    setIgnored(next);
-    try {
-      localStorage.setItem(IGNORED, JSON.stringify(next));
-    } catch {
-      // Stockage indisponible : le joueur reste masqué jusqu'au rechargement.
-    }
-  };
+  // Bloquer un joueur (sur le serveur) : ses messages publics disparaissent, il ne peut plus vous écrire ni vous demander en ami.
+  const hide = (id: number) =>
+    api
+      .block(id, true)
+      .then((r) => {
+        flash(r.message);
+        return api.chat(tab as 'server' | 'clan').then(setChat);
+      })
+      .catch((err) => flash(err instanceof Error ? err.message : 'Action refusée.'));
   const report = (id: number) =>
     api
       .chatReport(id)
@@ -261,13 +253,19 @@ export function JournalPanel() {
             ['crafts', 'Métiers'],
             ['clan', 'Clan'],
             ['server', 'Serveur'],
+            ['social', 'Amis'],
           ] as [Tab, string][]
         ).map(([id, label]) => (
           <button key={id} role="tab" aria-selected={tab === id} onClick={() => setTab(id)}>
             {label}
+            {id === 'social' && social.unread + social.requests > 0 && <span className="soc-badge">{social.unread + social.requests}</span>}
           </button>
         ))}
       </div>
+      {tab === 'social' ? (
+        <SocialPanel onChange={social.refresh} />
+      ) : (
+      <>
       <div className="journal-list scroll" ref={listRef}>
         {items.length === 0 && <p className="muted small">{empty}</p>}
         {items.map((it, i) => {
@@ -286,8 +284,8 @@ export function JournalPanel() {
                     <button className="link small" onClick={() => void report(m.id)}>
                       Signaler
                     </button>
-                    <button className="link small" onClick={() => hide(m.characterId!)}>
-                      Masquer ce joueur
+                    <button className="link small" onClick={() => void hide(m.characterId!)}>
+                      Bloquer
                     </button>
                     {chat?.moderator && (
                       <>
@@ -358,6 +356,8 @@ export function JournalPanel() {
           Envoyer
         </button>
       </form>
+      </>
+      )}
     </section>
   );
 }

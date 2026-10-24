@@ -623,6 +623,57 @@ describe('API', () => {
     expect(((await p1!('GET', '/api/chat?channel=server')).json as Chat).canWrite).toBe(false);
   });
 
+  it('amis, messages privés, blocage (docs/design/social.md)', async () => {
+    const [a, b, c] = [player({ value: '' }), player({ value: '' }), player({ value: '' })];
+    const names = ['Aimable', 'Bienvenue', 'Casse-pieds'];
+    for (const [i, p] of [a, b, c].entries()) await p!('POST', '/api/auth/register', { username: names[i]!, password: 'motdepasse' });
+    type S = import('@bramo/shared').StateResponse;
+    type F = import('@bramo/shared').FriendsView;
+    type M = import('@bramo/shared').MessagesView;
+    type T = import('@bramo/shared').ThreadView;
+    const idOf = async (p: typeof a) => ((await p!('GET', '/api/state')).json as S).characterId;
+    const [ia, ib, ic] = [await idOf(a), await idOf(b), await idOf(c)];
+    // Une demande d'ami, vue des deux côtés, puis acceptée.
+    expect((await a!('POST', '/api/friends/request', { characterId: ib })).status).toBe(200);
+    expect(((await a!('GET', '/api/friends')).json as F).outgoing.map((p) => p.id)).toEqual([ib]);
+    expect(((await b!('GET', '/api/friends')).json as F).incoming.map((p) => p.id)).toEqual([ia]);
+    expect(((await b!('GET', '/api/messages')).json as M).requests).toBe(1);
+    await b!('POST', '/api/friends/respond', { characterId: ia, accept: true });
+    expect(((await a!('GET', '/api/friends')).json as F).friends.map((p) => p.id)).toEqual([ib]);
+    // Un message privé : envoyé, non lu chez le destinataire, lu en ouvrant la conversation.
+    const sent = (await a!('POST', '/api/messages/send', { to: ib, text: '  Salut   toi ' })).json as T;
+    expect(sent.messages.at(-1)).toMatchObject({ text: 'Salut toi', mine: true });
+    expect(((await b!('GET', '/api/messages')).json as M).unread).toBe(1);
+    const thread = (await b!('GET', `/api/messages/${ia}`)).json as T;
+    expect(thread.messages.at(-1)).toMatchObject({ text: 'Salut toi', mine: false });
+    expect(((await b!('GET', '/api/messages')).json as M).unread).toBe(0);
+    // Ouverts à tous par défaut (décidé par Louis) : un inconnu peut écrire…
+    now += 5_000;
+    expect((await c!('POST', '/api/messages/send', { to: ib, text: 'Bonjour, tu fais des lingots ?' })).status).toBe(200);
+    // … sauf si le destinataire limite à ses amis et son clan.
+    await b!('POST', '/api/messages/policy', { policy: 'friends_clan' });
+    now += 5_000;
+    expect((await c!('POST', '/api/messages/send', { to: ib, text: 'Et maintenant ?' })).status).toBe(400);
+    expect((await a!('POST', '/api/messages/send', { to: ib, text: 'Moi je peux.' })).status).toBe(200);
+    await b!('POST', '/api/messages/policy', { policy: 'all' });
+    // Bloquer : plus de message, plus de demande d'ami, et ses messages publics disparaissent pour celui qui bloque.
+    now += 5_000;
+    await c!('POST', '/api/chat', { channel: 'server', text: 'Je spamme le bourg' });
+    await b!('POST', '/api/blocks', { characterId: ic, block: true });
+    now += 5_000;
+    expect((await c!('POST', '/api/messages/send', { to: ib, text: 'Encore moi' })).status).toBe(400);
+    expect((await c!('POST', '/api/friends/request', { characterId: ib })).status).toBe(400);
+    type Chat = import('@bramo/shared').ChatView;
+    expect(((await b!('GET', '/api/chat?channel=server')).json as Chat).messages.some((m) => m.text === 'Je spamme le bourg')).toBe(false);
+    expect(((await a!('GET', '/api/chat?channel=server')).json as Chat).messages.some((m) => m.text === 'Je spamme le bourg')).toBe(true);
+    // Bloquer un ami coupe l'amitié.
+    await a!('POST', '/api/blocks', { characterId: ib, block: true });
+    expect(((await b!('GET', '/api/friends')).json as F).friends).toEqual([]);
+    // L'export des données du compte contient les messages privés.
+    const exported = (await b!('GET', '/api/account/export')).json as { privateMessages: { text: string }[] };
+    expect(exported.privateMessages.some((m) => m.text === 'Salut toi')).toBe(true);
+  });
+
   it('Marée du soir : inscription de 19 h à 20 h ; un inscrit combat même déconnecté, un non-inscrit ne marque rien', async () => {
     const { tideDay, tideWindow, registrationWindow } = await import('@bramo/shared');
     const rules = content.combat!.tide!;

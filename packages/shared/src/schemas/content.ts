@@ -38,6 +38,17 @@ export const settingsSchema = z.object({
       history: z.number().int().min(1),
     })
     .default({ maxLength: 300, perMinute: 10, minIntervalSec: 2, reportsToHide: 3, blockLinks: true, history: 60 }),
+  /** Amis et messages privés (apps/server/src/social.ts, docs/design/social.md). */
+  social: z
+    .object({
+      maxFriends: z.number().int().min(1),
+      /** Messages privés gardés (jours) et renvoyés par conversation. */
+      historyDays: z.number().int().min(1),
+      thread: z.number().int().min(1),
+      /** En ligne : vu dans les dernières minutes. */
+      onlineMin: z.number().int().min(1),
+    })
+    .default({ maxFriends: 100, historyDays: 90, thread: 100, onlineMin: 15 }),
   /** Photo de profil (apps/server/src/avatar.ts) : taille maximale, délai entre deux changements, signalements avant masquage. */
   avatar: z
     .object({

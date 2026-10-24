@@ -8,6 +8,7 @@ import { Crest } from './Crest';
 import { GearIcon } from './GearIcon';
 import { OrnamentPlate, ornamentTitle } from './Ornament';
 import { Modal } from './ui';
+import { FriendActions } from './Social';
 
 /**
  * Page profil d'un joueur [demande de Louis, 23 octobre : « quand on clique sur une photo de profil ou un nom, ça ouvre
@@ -82,6 +83,7 @@ export function PlayerCard({ id, onClose }: { id: number; onClose: () => void })
               Modifier ma page
             </button>
           )}
+          {!mine && !editing && <FriendActions id={p.id} />}
           {!mine && p.avatar && (
             <button className="link small" onClick={() => void api.reportAvatar(p.id).then(() => flash('Photo signalée. Merci.'))}>
               Signaler la photo

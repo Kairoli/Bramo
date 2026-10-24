@@ -39,6 +39,11 @@ import {
   passwordChangeBody,
   chatPostBody,
   chatReportBody,
+  socialTargetBody,
+  friendRespondBody,
+  blockBody,
+  privateMessageBody,
+  dmPolicyBody,
   chatModerateBody,
   accountDeleteBody,
   clanWorksBody,
@@ -112,6 +117,7 @@ import { AccountGuard, GuardError } from './guard.js';
 import { moderateAvatar, myAvatar, readAvatar, removeAvatar, reportAvatar, setAvatar } from './avatar.js';
 import { deleteAccount, exportAccount } from './account.js';
 import { moderateChat, postChat, readChat, reportChat } from './chat.js';
+import { friendsView, messagesView, relation, removeFriend, reportPrivate, requestFriend, respondFriend, sendPrivate, setBlock, setDmPolicy, threadView } from './social.js';
 import { buyGear, craftOwned, gearListings, listGear, unlistGear } from './vitrine.js';
 import { loadCharacterById } from './characters.js';
 import { accounts, characters, sessions } from './db/schema.js';
@@ -714,6 +720,67 @@ export async function buildApp({ db, content, clock = Date.now, secureCookies = 
     const me = await myCharacter(req);
     const message = await db.transaction((tx) => moderateChat(tx, me.id, messageId, action, hours, clock()));
     return { ok: true, message };
+  });
+
+  // --- Amis, blocage, messages privés (apps/server/src/social.ts) ---
+
+  app.get('/api/friends', async (req) => {
+    const me = await myCharacter(req);
+    return friendsView(db, me.id, clock(), content);
+  });
+  app.get('/api/social/relation/:id', async (req) => {
+    const me = await myCharacter(req);
+    return relation(db, me.id, Number((req.params as { id: string }).id));
+  });
+  app.post('/api/friends/request', async (req) => {
+    const { characterId } = body(socialTargetBody, req);
+    const me = await myCharacter(req);
+    const message = await db.transaction((tx) => requestFriend(tx, me.id, me.name, characterId, clock(), content));
+    return { message, friends: await friendsView(db, me.id, clock(), content) };
+  });
+  app.post('/api/friends/respond', async (req) => {
+    const { characterId, accept } = body(friendRespondBody, req);
+    const me = await myCharacter(req);
+    const message = await db.transaction((tx) => respondFriend(tx, me.id, me.name, characterId, accept, clock()));
+    return { message, friends: await friendsView(db, me.id, clock(), content) };
+  });
+  app.post('/api/friends/remove', async (req) => {
+    const { characterId } = body(socialTargetBody, req);
+    const me = await myCharacter(req);
+    const message = await db.transaction((tx) => removeFriend(tx, me.id, characterId));
+    return { message, friends: await friendsView(db, me.id, clock(), content) };
+  });
+  app.post('/api/blocks', async (req) => {
+    const { characterId, block } = body(blockBody, req);
+    const me = await myCharacter(req);
+    const message = await db.transaction((tx) => setBlock(tx, me.id, characterId, block, clock()));
+    return { message, friends: await friendsView(db, me.id, clock(), content) };
+  });
+  app.get('/api/messages', async (req) => {
+    const me = await myCharacter(req);
+    return messagesView(db, me.id, clock(), content);
+  });
+  app.get('/api/messages/:id', async (req) => {
+    const me = await myCharacter(req);
+    return threadView(db, me.id, Number((req.params as { id: string }).id), clock(), content);
+  });
+  app.post('/api/messages/send', async (req) => {
+    const { to, text } = body(privateMessageBody, req);
+    const me = await myCharacter(req);
+    await db.transaction((tx) => sendPrivate(tx, me.id, to, text, clock(), content));
+    return threadView(db, me.id, to, clock(), content);
+  });
+  app.post('/api/messages/report', async (req) => {
+    const { messageId } = body(chatReportBody, req);
+    const me = await myCharacter(req);
+    await db.transaction((tx) => reportPrivate(tx, me.id, messageId));
+    return { ok: true };
+  });
+  app.post('/api/messages/policy', async (req) => {
+    const { policy } = body(dmPolicyBody, req);
+    const me = await myCharacter(req);
+    await db.transaction((tx) => setDmPolicy(tx, me.id, policy));
+    return messagesView(db, me.id, clock(), content);
   });
 
   // --- Photo de profil (apps/server/src/avatar.ts) ---

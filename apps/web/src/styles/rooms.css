@@ -9615,3 +9615,217 @@ div.tide-role {
 .stats-pool strong {
   color: var(--pc);
 }
+
+/* Le social (24 octobre) : onglet Amis du journal, conversations, boutons de la page profil. */
+.soc-badge {
+  display: inline-grid;
+  place-items: center;
+  min-width: 17px;
+  height: 17px;
+  margin-left: 5px;
+  padding: 0 4px;
+  border-radius: 9px;
+  font-size: 10.5px;
+  font-weight: 800;
+  color: #111;
+  background: var(--action);
+}
+.soc-panel,
+.soc-thread {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 0;
+  flex: 1 1 0;
+}
+.soc-tabs {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr;
+}
+.soc-list,
+.soc-messages {
+  flex: 1 1 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.soc-head {
+  margin-top: 8px;
+}
+.soc-row {
+  display: grid;
+  grid-template-columns: 40px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 9px;
+  padding: 5px 6px;
+  border-radius: 10px;
+}
+.soc-row.clickable,
+.soc-conv {
+  cursor: pointer;
+}
+.soc-row:hover,
+.soc-conv:hover {
+  background: rgb(255 255 255 / 0.04);
+}
+.soc-avatar {
+  position: relative;
+  width: 38px;
+  height: 38px;
+}
+.soc-dot {
+  position: absolute;
+  right: -2px;
+  bottom: -2px;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  border: 2px solid var(--panel);
+  background: var(--text-muted);
+}
+.soc-dot.on {
+  background: var(--good);
+}
+.soc-text {
+  display: grid;
+  min-width: 0;
+  line-height: 1.25;
+}
+.soc-text .muted {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.soc-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.soc-conv {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas: 'who time' 'last last';
+  gap: 0 8px;
+  padding: 4px 6px 8px;
+  border-radius: 10px;
+  border-bottom: 1px solid rgb(255 255 255 / 0.04);
+}
+.soc-conv .soc-row {
+  grid-area: who;
+  padding: 0;
+}
+.soc-conv .soc-row:hover {
+  background: none;
+}
+.soc-last {
+  grid-area: last;
+  padding-left: 49px;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.soc-conv.unread .soc-last {
+  color: var(--text);
+  font-weight: 600;
+}
+.soc-time {
+  grid-area: time;
+  align-self: center;
+  color: var(--text-muted);
+}
+.soc-policy {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 10px;
+  padding-top: 8px;
+  border-top: 1px solid var(--border);
+  color: var(--text-muted);
+}
+.soc-thread-head {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 8px;
+}
+.soc-thread-head .soc-row {
+  padding: 0;
+}
+.soc-msg {
+  display: grid;
+  justify-items: start;
+  gap: 2px;
+  max-width: 85%;
+}
+.soc-msg.mine {
+  justify-items: end;
+  align-self: flex-end;
+}
+.soc-bubble {
+  padding: 7px 11px;
+  border-radius: 14px 14px 14px 4px;
+  background: var(--sunken);
+  font-size: 13.5px;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+.soc-msg.mine .soc-bubble {
+  border-radius: 14px 14px 4px 14px;
+  background: color-mix(in srgb, var(--action) 24%, var(--sunken));
+}
+.soc-msg-foot {
+  display: flex;
+  gap: 8px;
+  font-size: 11px;
+  color: var(--text-muted);
+}
+.soc-modal {
+  width: min(460px, 94vw);
+  height: min(560px, 86vh);
+  display: flex;
+  flex-direction: column;
+}
+.soc-profile-actions {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+.soc-friend {
+  color: var(--good);
+}
+.soc-confirm {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+.journal-tabs button {
+  white-space: nowrap;
+}
+.journal-tabs .soc-badge {
+  min-width: 15px;
+  height: 15px;
+  margin-left: 4px;
+  font-size: 9.5px;
+  vertical-align: 1px;
+}
+.soc-tabs button[aria-pressed='true'] .soc-badge {
+  color: var(--action);
+  background: #1a1f22;
+}
+.soc-text .player-link {
+  justify-self: start;
+  text-align: left;
+}
+.soc-policy select {
+  padding: 3px 8px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  color: var(--text);
+  background: var(--sunken);
+  font: inherit;
+}

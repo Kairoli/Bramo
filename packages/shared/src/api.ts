@@ -356,6 +356,8 @@ export interface StateResponse {
 export type ContentResponse = Omit<Content, 'xpTable' | 'gearModels' | 'combat'> & {
   /** Où tombe chaque objet de combat (vestiges) : région et rencontres (infobulles, « où l'obtenir »). */
   drops: Record<string, { region: string; encounters: string[] }[]>;
+  /** Les réserves du build (Tisons, Ferveur…), pour les expliquer au survol dans les fiches et les talents. */
+  pools: { id: string; name: string; max: number; text?: string }[];
 };
 
 export interface ApiError {

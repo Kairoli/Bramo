@@ -139,6 +139,11 @@ export interface TraceEntry {
   dmg?: number;
   /** PV du combattant après l'action ou le coup reçu, en part de son maximum. */
   self?: number;
+  /** Réserves du premier combattant à cet instant (les non vides, au dixième) : pour les jauges à l'écran. */
+  pools?: Record<string, number>;
+  /** Charges d'érosion sur le premier combattant, et garde levée sur un ennemi principal : les mécaniques à l'écran. */
+  erosion?: number;
+  guard?: boolean;
 }
 
 export interface FightResult {
@@ -365,8 +370,21 @@ export function fight(combat: CombatContent, setups: CombatantSetup[], encounter
   const trace: TraceEntry[] | undefined = options.trace ? [] : undefined;
   let t = 0;
 
+  // Le premier combattant (le personnage), pour noter ses réserves dans le journal rejoué à l'écran.
+  let hero: Combatant | null = null;
+  const heroPools = () => {
+    const out: Record<string, number> = {};
+    for (const [k, p] of hero?.pools ?? []) if (p.n > 0) out[k] = Math.round(p.n * 10) / 10;
+    return out;
+  };
+  // Les ennemis (remplis plus bas), pour noter la garde levée.
+  let foes: { add: boolean; hp: number; guard: number; guardUntil: number }[] = [];
   const log = (who: Combatant | null, kind: string, text: string, extra?: Pick<TraceEntry, 'ref' | 'hp' | 'dmg' | 'self'>) => {
-    if (trace) trace.push({ t: t / 1000, who: who?.setup.id ?? 'ennemi', kind, text, ...extra });
+    if (!trace) return;
+    const state = hero
+      ? { pools: heroPools(), ...(hero.erosion > 0 ? { erosion: hero.erosion } : {}), ...(foes.some((e) => !e.add && e.hp > 0 && e.guard > 0 && e.guardUntil > t) ? { guard: true } : {}) }
+      : {};
+    trace.push({ t: t / 1000, who: who?.setup.id ?? 'ennemi', kind, text, ...extra, ...state });
   };
   const inc = (c: Combatant, key: string, n = 1) => {
     c.m[key] = (c.m[key] ?? 0) + n;
@@ -451,6 +469,7 @@ export function fight(combat: CombatContent, setups: CombatantSetup[], encounter
       pools: new Map(Object.entries(s.pools ?? {}).map(([k, max]) => [k, { n: 0, max }])),
     };
   });
+  hero = team[0] ?? null;
   const hpScale = options.enemyHpScale ?? 1;
   const rateScale = options.enemyAttackRateScale ?? 1;
   const targeting = options.targeting ?? 'front';
@@ -490,6 +509,7 @@ export function fight(combat: CombatContent, setups: CombatantSetup[], encounter
   /** Ennemis présents et debout (un renfort n'est là qu'à son heure d'arrivée). */
   const aliveEnemies = () => enemies.filter((e) => e.hp > 0 && e.arriveAt <= t);
   /** La rencontre se gagne quand le groupe principal est vaincu : un renfort ne rend jamais le chef invulnérable. */
+  foes = enemies;
   const chiefsAlive = () => enemies.some((e) => !e.add && e.hp > 0);
   const hpSum = () => enemies.reduce((a, e) => a + Math.max(0, e.hp), 0);
   const hpLeft = () => hpSum() / enemies.reduce((a, e) => a + e.maxHp, 0);

@@ -7,6 +7,8 @@ import { decimal, num } from '../format';
 import { Bar, Modal } from '../components/ui';
 import { Scene } from '../components/Scene';
 import { LiveFight } from '../components/LiveFight';
+import { PoolGauges } from '../components/PoolGauges';
+import { LiveMechanics, MechanicChips } from '../components/Mechanics';
 import { SpellIcon } from '../components/SpellIcon';
 import { SpellTipContent } from '../components/SpellTip';
 import { Tip, TipFoot, TipHead, TipLine } from '../components/Tip';
@@ -45,6 +47,10 @@ export function CombatRoom() {
         <LiveFight view={view} insetTop={54} insetBottom={70} />
         <ArenaHud view={view} />
         <SpellBar view={view} onEdit={() => setSheet('prep')} />
+        <PoolGauges view={view} />
+        <div className="hud-mechanics">
+          <LiveMechanics view={view} />
+        </div>
       </section>
       <div className="combat-hub">
         <RouteMap view={view} />
@@ -332,7 +338,7 @@ function RouteMap({ view }: { view: CombatView }) {
               {DANGER[danger].label}
             </span>
           </div>
-          {e && <p className="small muted rmap-mech">{e.text}</p>}
+          {e && (e.mechanics.length ? <MechanicChips mechanics={e.mechanics} /> : <p className="small muted rmap-mech">{e.text}</p>)}
         </div>
         <div className="route-detail-actions">
           {playing ? (
@@ -750,7 +756,7 @@ function WorldPicker({ view }: { view: CombatView }) {
                 </span>
                 {e.tier !== null && <span className={`chip${hard ? ' chip-hard' : ''}`}>{e.circles ? `Cercles ${e.tier}+` : `Palier ${e.tier}`}</span>}
               </button>
-              <div className="muted small">{e.text}</div>
+              {e.mechanics.length ? <MechanicChips mechanics={e.mechanics} /> : <div className="muted small">{e.text}</div>}
               {expanded && (
                 <div className="combat-encounter-more">
                   {e.blurb && <p className="small combat-blurb">{e.blurb}</p>}

@@ -30,6 +30,11 @@ ws.addEventListener('message', (e) => {
 const send = (method, params = {}) => new Promise((r) => (pending.set(++seq, r), ws.send(JSON.stringify({ id: seq, method, params }))));
 await send('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-reduced-motion', value: 'no-preference' }] });
 await send('Emulation.setDeviceMetricsOverride', { width: Number(width), height: Number(height), deviceScaleFactor: 1, mobile: false });
+// COOKIE=bramo_session=… : capturer le jeu connecté avec un compte de test (session prise par l'API de connexion).
+if (process.env.COOKIE) {
+  const [name, ...value] = process.env.COOKIE.split('=');
+  await send('Network.setCookie', { name, value: value.join('='), url });
+}
 await send('Page.navigate', { url });
 await sleep(Number(wait));
 const shot = await send('Page.captureScreenshot', { format: 'png' });

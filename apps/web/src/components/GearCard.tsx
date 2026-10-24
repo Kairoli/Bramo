@@ -3,6 +3,7 @@ import type { GearItemView, RefineService } from '@bramo/shared';
 import { useGame } from '../game/GameContext';
 import { GearIcon } from './GearIcon';
 import { ItemIcon, Modal } from './ui';
+import { PoolText } from './PoolGauges';
 
 /**
  * Fiche d'une pièce d'équipement, façon jeu de rôle (demande de Louis du 23 octobre) : la pièce en grand dans le cadre de
@@ -190,7 +191,7 @@ export function GearCard({
                 <div key={n} className={`gear-line-row${line?.bonus ? ' bonus' : ''}${v ? '' : ' absent'}`}>
                   <span>
                     {v ? `+${fmt(v)} % ` : ''}
-                    {n}
+                    <PoolText text={n} />
                     {line?.bonus ? (
                       <span className="muted small"> · chef-d’œuvre</span>
                     ) : line && line.max > line.min ? (
@@ -263,7 +264,7 @@ export function GearCard({
           <section className="gear-card-block special">
             {g.conditional && (
               <p>
-                <strong>{g.named ? 'Talent' : 'Effet'}</strong> · {g.conditional}
+                <strong>{g.named ? 'Talent' : 'Effet'}</strong> · <PoolText text={g.conditional} />
               </p>
             )}
             {set && (
@@ -273,7 +274,7 @@ export function GearCard({
                 <ul>
                   {set.bonuses.map((b, i) => (
                     <li key={i}>
-                      <span className="gear-set-n">{i + 2} p.</span> {b}
+                      <span className="gear-set-n">{i + 2} p.</span> <PoolText text={b} />
                     </li>
                   ))}
                 </ul>

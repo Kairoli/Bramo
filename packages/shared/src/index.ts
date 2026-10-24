@@ -7,6 +7,7 @@ export * from './combat/engine.js';
 export * from './combat/rng.js';
 export * from './combat/progress.js';
 export * from './combat/view.js';
+export * from './combat/guide.js';
 export * from './combat/presets.js';
 export * from './combat/tide.js';
 export * from './combat/supplies.js';

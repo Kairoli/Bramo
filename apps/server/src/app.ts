@@ -229,6 +229,7 @@ export async function buildApp({ db, content, clock = Date.now, secureCookies = 
     gearSets: content.gearSets,
     gearCrafting: content.gearCrafting,
     drops: dropsOf(content),
+    pools: content.combat?.talents?.pools ?? [],
   };
   app.get('/api/health', async () => ({ ok: true }));
   app.get('/api/content', async () => publicContent);

@@ -6,6 +6,7 @@ import { spellSlots } from './content.js';
 import type { CombatStats, Contributions } from './engine.js';
 import type { CombatContent } from '../schemas/combat.js';
 import { MAX_PRESETS } from './presets.js';
+import { type MechanicView, type PoolLinks, buildPoolLinks, encounterMechanics, gamePoolLinks } from './guide.js';
 import { activePrep, readSupplies } from './supplies.js';
 import { activePath, advisedPlan, availableSpells, classLevel, classTier, classXpPerHour, currentPlan, encounterTiers, replayFight, routeStage, routeStages, wornGear } from './progress.js';
 
@@ -124,6 +125,10 @@ export interface CombatView {
     /** Durée du combat lui-même (s), sans le repos ; la victoire ou la défaite tombe à cet instant. */
     fightTime: number | null;
     win: boolean | null;
+    /** Les huit réserves, toujours toutes (vides si le build ne les remplit pas), avec leur plafond pour ce build. */
+    pools: PoolView[];
+    /** Les mécaniques de la rencontre en cours, expliquées, et de quoi les suivre en direct. */
+    mechanics: MechanicView[];
   } | null;
   stopped: 'losses' | 'training_cap' | 'unavailable' | null;
   lastFight: { encounter: string; name: string; win: boolean; time: number; lines: { t: number; text: string }[]; contributions: Contributions } | null;
@@ -197,6 +202,24 @@ export interface TimelineEvent {
   dmg?: number;
   /** PV du personnage après l'instant, en part de son maximum. */
   self?: number;
+  /** Ses réserves après l'instant (les non vides). */
+  pools?: Record<string, number>;
+  /** Charges d'érosion sur lui, garde levée chez l'ennemi, après l'instant. */
+  erosion?: number;
+  guard?: boolean;
+}
+
+/** Une réserve du build (Tisons, Ferveur…) : sa jauge en combat et son explication [Louis, 24 octobre : « le cœur du combat »]. */
+export interface PoolView {
+  id: string;
+  name: string;
+  /** Plafond pour ce build (le catalogue, plus ce que donnent l'équipement et les talents). */
+  max: number;
+  text: string | null;
+  /** Dans le build de la rencontre en cours : ce qui la remplit, la dépense, s'en sert sans la vider. */
+  build: PoolLinks;
+  /** Dans le jeu (objets nommés, ensembles) : pour monter un build autour d'elle. */
+  game: PoolLinks;
 }
 
 const SHOWN = new Set(['basic', 'cast', 'attack', 'charge', 'kill', 'break']);
@@ -213,6 +236,8 @@ export interface EncounterView {
   /** Région haute : d'autres cercles s'ouvriront avec le palier de la classe. */
   circles: boolean;
   blurb: string | null;
+  /** Ses mécaniques, expliquées, avec leurs réponses (gemme, préparation, ensembles). */
+  mechanics: MechanicView[];
   enemies: number;
   /** Mécaniques lisibles : ce qu'il faut savoir pour préparer son plan. */
   text: string;
@@ -305,6 +330,9 @@ export function viewCombat(state: CharacterState, content: Content): CombatView 
           ...(x.dmg !== undefined ? { dmg: x.dmg } : {}),
           ...(x.self !== undefined ? { self: Math.round(x.self * 1000) / 1000 } : {}),
           ...(x.text.includes('critique') ? { crit: true } : {}),
+          ...(x.pools ? { pools: x.pools } : {}),
+          ...(x.erosion ? { erosion: x.erosion } : {}),
+          ...(x.guard ? { guard: true } : {}),
         }))
     : null;
   if (last && r) {
@@ -351,6 +379,7 @@ export function viewCombat(state: CharacterState, content: Content): CombatView 
       blurb: e.blurb ?? null,
       enemies: e.enemies,
       text: mechanics(e),
+      mechanics: encounterMechanics(combat, e),
       loot: e.loot
         ? {
             vestige: e.loot.vestige ? (content.items[e.loot.vestige]?.name ?? e.loot.vestige) : null,
@@ -408,6 +437,15 @@ export function viewCombat(state: CharacterState, content: Content): CombatView 
           timeline,
           fightTime: now ? now.time : null,
           win: now ? now.win : null,
+          pools: (combat.talents?.pools ?? []).map((p) => ({
+            id: p.id,
+            name: p.name,
+            max: a.current?.setup.pools?.[p.id] ?? p.max,
+            text: p.text ?? null,
+            build: buildPoolLinks(combat, a.current?.setup.talents ?? [], p.id),
+            game: gamePoolLinks(combat, p.id),
+          })),
+          mechanics: a.encounter !== null && combat.encounters[a.encounter] ? encounterMechanics(combat, combat.encounters[a.encounter]!) : [],
         }
       : null,
     stopped: state.combat.stopped,

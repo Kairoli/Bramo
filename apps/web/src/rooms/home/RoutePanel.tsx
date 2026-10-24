@@ -3,6 +3,8 @@ import { useGame } from '../../game/GameContext';
 import { num } from '../../format';
 import { Scene } from '../../components/Scene';
 import { LiveFight } from '../../components/LiveFight';
+import { PoolGauges } from '../../components/PoolGauges';
+import { LiveMechanics } from '../../components/Mechanics';
 
 /**
  * Accueil, à droite : la route (PvE solo) qui tourne tout le temps, même pendant un métier. On la voit se battre ; un
@@ -32,6 +34,10 @@ export function RoutePanel() {
       <button className="route-stage-view band" onClick={() => go('combat')} title="Ouvrir le combat en grand">
         <Scene ids={['combat']} />
         <LiveFight view={view} insetTop={40} />
+        <PoolGauges view={view} compact />
+        <span className="route-mechanics">
+          <LiveMechanics view={view} compact />
+        </span>
         <span className="route-hud">
           <span className="route-chip">{a?.route ? `Étape ${a.stageLabel}` : other ? (a.encounter === null ? 'Entraînement' : 'Patrouille') : `Étape ${current.label}`}</span>
           <span className="route-name">{a ? a.name : current.name}</span>

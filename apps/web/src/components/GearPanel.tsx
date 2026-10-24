@@ -6,6 +6,7 @@ import { GearCard, SLOT, STATS } from './GearCard';
 import { Tip, TipFoot, TipHead, TipLine } from './Tip';
 import { ItemIcon, Modal } from './ui';
 import { useGame } from '../game/GameContext';
+import { PoolText } from './PoolGauges';
 
 export const STAT_NAMES: Record<string, string> = {
   vitality: 'Vitalité',
@@ -68,7 +69,7 @@ function GearTipContent({ g }: { g: GearItemView }) {
         {g.lines.length > 0 && <div className="tip-section rolled">Attributs · tirés au hasard</div>}
         {g.lines.map((l, i) => (
           <TipLine key={i} color="#9fd2ff" mark="+">
-            {Math.round(l.value * 10) / 10} % {l.name}
+            {Math.round(l.value * 10) / 10} % <PoolText text={l.name} />
             {l.bonus ? <span className="muted"> · chef-d’œuvre</span> : l.max > l.min ? <span className="muted"> {l.value >= l.max - 1e-9 ? '· max' : `· max ${Math.round(l.max * 10) / 10} %`}</span> : null}
           </TipLine>
         ))}
@@ -76,7 +77,7 @@ function GearTipContent({ g }: { g: GearItemView }) {
           <>
             <div className="tip-section talent">Talent</div>
             <TipLine color="var(--r-legendary)" mark="★">
-              {g.conditional}
+              <PoolText text={g.conditional} />
             </TipLine>
           </>
         )}

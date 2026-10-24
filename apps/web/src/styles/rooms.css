@@ -9829,3 +9829,219 @@ div.tide-role {
   background: var(--sunken);
   font: inherit;
 }
+
+/* Commandes entre joueurs (24 octobre) : passer une commande, l'onglet Commandes du Marché, la salle du métier. */
+.ord-modal {
+  width: min(620px, 95vw);
+  max-height: min(760px, 90vh);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.ord-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.ord-head h2 {
+  margin: 0;
+}
+.ord-targets {
+  display: grid;
+  gap: 4px;
+  max-height: 52vh;
+  overflow-y: auto;
+}
+.ord-target {
+  display: grid;
+  grid-template-columns: 36px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 8px;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  background: var(--sunken);
+  color: var(--text);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.ord-target:hover {
+  border-color: var(--action);
+}
+.ord-target-text {
+  display: grid;
+  min-width: 0;
+  line-height: 1.25;
+}
+.ord-form {
+  display: grid;
+  gap: 10px;
+  overflow-y: auto;
+}
+.ord-picked {
+  display: grid;
+  grid-template-columns: 36px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: 12px;
+  background: var(--sunken);
+}
+.ord-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+.ord-qty,
+.ord-price {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.ord-qty .input {
+  width: 90px;
+  text-align: center;
+}
+.ord-price .input {
+  width: 120px;
+}
+.ord-check {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  cursor: pointer;
+}
+.ord-mats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+.ord-delays {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+}
+.ord-delay {
+  display: grid;
+  gap: 2px;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--sunken);
+  color: var(--text);
+  font: inherit;
+  font-size: 13px;
+  text-align: left;
+  cursor: pointer;
+}
+.ord-delay.on {
+  border-color: var(--action);
+  background: color-mix(in srgb, var(--action) 12%, var(--sunken));
+}
+.ord-advised {
+  margin-top: 2px;
+  font-weight: 700;
+  color: var(--action);
+}
+.ord-summary {
+  padding: 9px 11px;
+  border-radius: 10px;
+  background: rgb(255 255 255 / 0.04);
+  line-height: 1.45;
+}
+.ord-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+.ord-panel {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  min-height: 0;
+}
+.ord-col {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 0;
+}
+.ord-open {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--text-muted);
+}
+.ord-list {
+  display: grid;
+  align-content: start;
+  gap: 8px;
+  min-height: 0;
+  overflow-y: auto;
+}
+.ord-past {
+  margin-top: 6px;
+}
+.ord-card {
+  display: grid;
+  gap: 6px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border-left: 3px solid var(--st);
+  background: var(--sunken);
+}
+.ord-card.late {
+  border-left-color: var(--alert);
+}
+.ord-card-head {
+  display: grid;
+  grid-template-columns: 36px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+}
+.ord-status {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--st);
+}
+.ord-card.late .ord-status {
+  color: var(--alert);
+}
+.ord-card-body {
+  display: grid;
+  gap: 2px;
+}
+.ord-message {
+  font-style: italic;
+  color: var(--text-muted);
+}
+.ord-card-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.ord-card-actions:empty {
+  display: none;
+}
+.ord-room-chip {
+  position: absolute;
+  z-index: 2;
+  left: 50%;
+  bottom: 12px;
+  transform: translateX(-50%);
+  display: grid;
+  gap: 1px;
+  padding: 7px 14px;
+  border: 1px solid var(--action);
+  border-radius: 12px;
+  color: var(--text);
+  font: inherit;
+  text-align: center;
+  cursor: pointer;
+}
+.ord-col {
+  padding: 12px 14px;
+}

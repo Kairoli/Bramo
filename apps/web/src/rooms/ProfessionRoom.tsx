@@ -10,6 +10,7 @@ import { SourceChips } from '../components/ItemTip';
 import { Character } from '../rig/Character';
 import { QueueChips } from '../components/QueueChips';
 import { Scene } from '../components/Scene';
+import { ProfessionOrders } from '../components/Orders';
 
 const PAGE = 6;
 
@@ -48,6 +49,7 @@ export function ProfessionRoom({ id }: { id: string }) {
       <section className="panel band">
         <Scene ids={[id]} />
         <Character appearance={look} className="band-figure profession-figure" />
+        <ProfessionOrders profession={id} />
         <div className="sunken skill-card">
           <button className="btn btn-sm" onClick={() => go('professions')}>
             ← Tous les métiers

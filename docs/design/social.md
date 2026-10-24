@@ -5,7 +5,7 @@ chat. Le but final : un système de commandes. Je veux aider un membre de mon cl
 niveau, et lui passer une commande avec un prix et un délai (« tu as 2 jours »). Il accepte ou refuse, et livre quand il a
 fini. Adapter le choix du délai au temps que prendrait la commande. »
 
-**Étape 1 codée le 24 octobre** (amis, blocage, messages privés, §2) ; les commandes (§3) restent à faire. Proposé par Claude ; Louis a tranché les quatre questions le 24 octobre (§4).
+**Étapes 1 et 2 codées le 24 octobre** (amis, blocage, messages privés, §2 ; commandes entre joueurs, §3) ; la réputation affichée (commandes livrées, à temps) est faite, les commandes ouvertes (§4.4) restent à faire. Proposé par Claude ; Louis a tranché les quatre questions le 24 octobre (§4).
 
 **Ce qui change par rapport au 21 octobre** : Louis avait tranché « pas de commandes artisanales à matériaux fournis, ni de
 caution ou de délai » (`marche.md` §7), pour le marché. Les **commandes entre joueurs** qu'il demande maintenant ont un

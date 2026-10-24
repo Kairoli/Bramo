@@ -10,6 +10,7 @@ export const settings = {
   presence: { activeTimeoutSec: 120, heartbeatSec: 30 },
   chat: { maxLength: 300, perMinute: 10, minIntervalSec: 2, reportsToHide: 3, blockLinks: true, history: 60 },
   social: { maxFriends: 100, historyDays: 90, thread: 100, onlineMin: 15 },
+  orders: { taxShare: 0.05, capFactor: 3, maxPendingPerClient: 5, maxAcceptedPerArtisan: 10, answerHours: 24, maxQty: 10000, delays: { rush: { factor: 1.5, minHours: 4, price: 1.3 }, normal: { factor: 3, minHours: 24, price: 1 }, relaxed: { factor: 3, minHours: 168, price: 0.9 } } },
   avatar: { maxBytes: 300_000, cooldownSec: 60, hideAfterReports: 3 },
   security: { loginFailures: { max: 5, windowMin: 15 }, registrationsPerIpPerDay: 5 },
   rates: { active: 1, offline: 0.25, offlineCapHours: 12 },

@@ -103,6 +103,34 @@ export const settingsSchema = z.object({
     primeShare: ratio,
     primeUnitsPerDay: z.number().int().min(0),
   }),
+  /**
+   * Commandes entre joueurs (docs/design/social.md §3 ; décidé par Louis le 24 octobre : prix et délai, matériaux fournis
+   * possibles, taxe de 5 % et plafond). Délais proposés : `factor` × le temps de fabrication, au moins `minHours` ; le prix
+   * conseillé est multiplié par `price`.
+   */
+  orders: z
+    .object({
+      taxShare: ratio,
+      capFactor: z.number().min(1),
+      maxPendingPerClient: z.number().int().min(1),
+      maxAcceptedPerArtisan: z.number().int().min(1),
+      answerHours: z.number().positive(),
+      maxQty: z.number().int().min(1),
+      delays: z.object({
+        rush: z.object({ factor: z.number().positive(), minHours: z.number().positive(), price: z.number().positive() }),
+        normal: z.object({ factor: z.number().positive(), minHours: z.number().positive(), price: z.number().positive() }),
+        relaxed: z.object({ factor: z.number().positive(), minHours: z.number().positive(), price: z.number().positive() }),
+      }),
+    })
+    .default({
+      taxShare: 0.05,
+      capFactor: 3,
+      maxPendingPerClient: 5,
+      maxAcceptedPerArtisan: 10,
+      answerHours: 24,
+      maxQty: 10000,
+      delays: { rush: { factor: 1.5, minHours: 4, price: 1.3 }, normal: { factor: 3, minHours: 24, price: 1 }, relaxed: { factor: 3, minHours: 168, price: 0.9 } },
+    }),
   /** Marché entre joueurs : ordres d'achat et de vente, taxe sur les ventes (puits d'or). */
   market: z.object({
     taxShare: z.number().min(0).max(1),

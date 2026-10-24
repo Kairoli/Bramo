@@ -1,5 +1,8 @@
 import type {
   ChatView,
+  OrderCatalogView,
+  OrdersView,
+  OrderQuote,
   FriendsView,
   MessagesView,
   RelationView,
@@ -176,6 +179,15 @@ export const api = {
   sendPrivate: (to: number, text: string) => request<ThreadView>('POST', '/messages/send', { to, text }),
   reportPrivate: (messageId: number) => request<{ ok: true }>('POST', '/messages/report', { messageId }),
   dmPolicy: (policy: 'all' | 'friends_clan') => request<MessagesView>('POST', '/messages/policy', { policy }),
+  // Commandes entre joueurs (docs/design/social.md §3).
+  orderCatalog: (artisanId: number) => request<OrderCatalogView>('GET', `/orders/catalog/${artisanId}`),
+  orderQuote: (b: { artisanId: number; kind: 'item' | 'gear'; target: string; qty: number; supply: boolean }) => request<OrderQuote & { supplied: { item: string; qty: number }[] }>('POST', '/orders/quote', b),
+  orderCreate: (b: { artisanId: number; kind: 'item' | 'gear'; target: string; qty: number; supply: boolean; price: number; delay: 'rush' | 'normal' | 'relaxed'; message?: string }) => request<StateResponse>('POST', '/orders/create', b),
+  orders: () => request<OrdersView>('GET', '/orders'),
+  orderAnswer: (id: number, accept: boolean) => request<StateResponse>('POST', '/orders/answer', { id, accept }),
+  orderDeliver: (id: number) => request<StateResponse>('POST', '/orders/deliver', { id }),
+  orderCancel: (id: number) => request<StateResponse>('POST', '/orders/cancel', { id }),
+  ordersOpen: (open: boolean) => request<OrdersView>('POST', '/orders/open', { open }),
   accountPassword: (current: string, next: string) => request<{ ok: true }>('POST', '/account/password', { current, next }),
   accountDelete: (password: string, confirm: string) => request<{ ok: true }>('POST', '/account/delete', { password, confirm }),
 };

@@ -5,14 +5,14 @@
  */
 import { and, asc, eq, ne, or } from 'drizzle-orm';
 import type { Db, Tx } from './db/index.js';
-import { accounts, characterItems, characterSkills, characters, chatMessages, clanLog, clanMembers, clans, gearItems, journal, marketOrders, marketTrades, tideEntries, characterAvatars, friendships, blocks, privateMessages } from './db/schema.js';
+import { accounts, characterItems, characterSkills, characters, chatMessages, clanLog, clanMembers, clans, gearItems, journal, marketOrders, marketTrades, tideEntries, characterAvatars, friendships, blocks, privateMessages, artisanOrders } from './db/schema.js';
 
 export async function exportAccount(db: Db, accountId: number) {
   const [account] = await db.select({ username: accounts.displayName, createdAt: accounts.createdAt }).from(accounts).where(eq(accounts.id, accountId));
   const [character] = await db.select().from(characters).where(eq(characters.accountId, accountId));
   if (!account || !character) return { account: account ?? null, character: null };
   const id = character.id;
-  const [skills, items, gear, orders, trades, entries, notes, member, messages, photo, friends, blocked, privates] = await Promise.all([
+  const [skills, items, gear, orders, trades, entries, notes, member, messages, photo, friends, blocked, privates, commissions] = await Promise.all([
     db.select().from(characterSkills).where(eq(characterSkills.characterId, id)),
     db.select().from(characterItems).where(eq(characterItems.characterId, id)),
     db.select().from(gearItems).where(eq(gearItems.characterId, id)),
@@ -26,6 +26,7 @@ export async function exportAccount(db: Db, accountId: number) {
     db.select().from(friendships).where(or(eq(friendships.requesterId, id), eq(friendships.addresseeId, id))),
     db.select().from(blocks).where(eq(blocks.blockerId, id)),
     db.select().from(privateMessages).where(or(eq(privateMessages.fromId, id), eq(privateMessages.toId, id))),
+    db.select().from(artisanOrders).where(or(eq(artisanOrders.clientId, id), eq(artisanOrders.artisanId, id))),
   ]);
   return {
     exportedAt: new Date().toISOString(),
@@ -43,6 +44,8 @@ export async function exportAccount(db: Db, accountId: number) {
     // Amis, blocages, messages privés (envoyés et reçus).
     friendships: friends,
     blocks: blocked,
+    // Commandes entre joueurs (passées et reçues).
+    artisanOrders: commissions,
     privateMessages: privates.map((m) => ({ at: m.at, text: m.text, direction: m.fromId === id ? 'envoyé' : 'reçu', withCharacterId: m.fromId === id ? m.toId : m.fromId })),
     // La photo de profil, telle qu'enregistrée (data URL).
     avatar: photo[0] ? { dataUrl: `data:${photo[0].mime};base64,${photo[0].data}`, version: photo[0].version, hidden: photo[0].hidden, updatedAt: photo[0].updatedAt } : null,

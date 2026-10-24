@@ -7,8 +7,9 @@ import { duration, num } from '../format';
 import { ItemIcon } from '../components/ui';
 import { Scene } from '../components/Scene';
 import { PriceChart, PriceChartModal, usePriceHistory } from '../components/PriceChart';
+import { OrdersPanel } from '../components/Orders';
 
-type Tab = 'book' | 'gear' | 'mine' | 'craft' | 'npc';
+type Tab = 'book' | 'gear' | 'mine' | 'craft' | 'npc' | 'orders';
 type Run = (call: () => ReturnType<typeof api.state>) => Promise<boolean>;
 
 /** Rayons du marché : des catégories d'objets regroupées comme sur les étals. */
@@ -107,6 +108,7 @@ export function MarketRoom() {
               ['mine', `Mes ordres${mine.length ? ` · ${mine.length}` : ''}`, 'M6 3h9l3 3v15H6zM9 9h6M9 13h6M9 17h4'],
               ['craft', 'Artisans', 'M14 6l4 4M12 8l-8 8 2 2 8-8M13 4l7 7-2 2-7-7z'],
               ['npc', `Comptoir · ${doneNpc}/${state.npcOrders.length}`, 'M4 20V10l8-6 8 6v10M9 20v-6h6v6'],
+              ['orders', 'Commandes', 'M7 4h10v4H7zM5 8h14v12H5zM9 12h6M9 16h4'],
             ] as [Tab, string, string][]
           ).map(([id, label, d]) => (
             <button key={id} role="tab" aria-selected={tab === id} onClick={() => setTab(id)}>
@@ -247,6 +249,7 @@ export function MarketRoom() {
         </section>
       )}
 
+      {tab === 'orders' && <OrdersPanel />}
       {tab === 'npc' && (
         <section className="panel market-page scroll">
           <h2>Comptoir de la guilde</h2>

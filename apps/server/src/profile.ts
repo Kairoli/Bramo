@@ -2,6 +2,7 @@ import { and, eq } from 'drizzle-orm';
 import { type CharacterState, type Content, GameError, type PlayerProfile, effectiveLevel, levelForXp, readTide, shownNickname, tideTitles } from '@bramo/shared';
 import type { Db, Tx } from './db/index.js';
 import { characterSkills, characters, clanMembers, clans, gearItems } from './db/schema.js';
+import { artisanReputation } from './orders.js';
 
 /**
  * Fiche publique d'un joueur (demande de Louis du 23 octobre) : son apparence, sa classe et son niveau, ce qu'il porte, ses
@@ -62,6 +63,7 @@ export async function playerProfile(db: Db, content: Content, id: number): Promi
     totalLevel: playable.reduce((sum, p) => sum + (levels.find((s) => s.profession === p.id)?.level ?? 1), 0),
     doing: recipe?.name ?? null,
     lastSeenAt: r.lastSeenAt.getTime(),
+    orders: await artisanReputation(db, id),
   };
 }
 

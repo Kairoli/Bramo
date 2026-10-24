@@ -6,6 +6,7 @@ import { hhmm } from '../format';
 import { Avatar } from './Avatar';
 import { PlayerName, useOpenProfile } from './ProfileLink';
 import { Modal } from './ui';
+import { OrderModal } from './Orders';
 
 /**
  * Le social : amis, demandes, blocage, messages privés (docs/design/social.md ; demande de Louis du 24 octobre ; décidé :
@@ -292,6 +293,7 @@ export function FriendActions({ id }: { id: number }) {
   const { flash } = useGame();
   const [rel, setRel] = useState<RelationView | null>(null);
   const [talk, setTalk] = useState(false);
+  const [order, setOrder] = useState(false);
   const [confirmBlock, setConfirmBlock] = useState(false);
   const reload = useCallback(() => {
     api.relation(id).then(setRel).catch(() => {});
@@ -334,6 +336,11 @@ export function FriendActions({ id }: { id: number }) {
               Message
             </button>
           )}
+          {rel.canMessage && (
+            <button className="btn btn-sm" onClick={() => setOrder(true)} title="Lui commander des objets, avec un prix et un délai">
+              Passer une commande
+            </button>
+          )}
           {confirmBlock ? (
             <span className="soc-confirm small">
               Bloquer ? Il ne pourra plus vous écrire ni vous demander en ami.
@@ -352,6 +359,7 @@ export function FriendActions({ id }: { id: number }) {
         </>
       )}
       {talk && <ThreadModal id={id} onClose={() => setTalk(false)} />}
+      {order && <OrderModal artisanId={id} onClose={() => setOrder(false)} />}
     </span>
   );
 }

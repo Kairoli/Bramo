@@ -44,6 +44,12 @@ import {
   blockBody,
   privateMessageBody,
   dmPolicyBody,
+  orderQuoteBody,
+  orderCreateBody,
+  artisanOrderIdBody,
+  orderAnswerBody,
+  ordersOpenBody,
+  orderCatalog,
   chatModerateBody,
   accountDeleteBody,
   clanWorksBody,
@@ -117,7 +123,8 @@ import { AccountGuard, GuardError } from './guard.js';
 import { moderateAvatar, myAvatar, readAvatar, removeAvatar, reportAvatar, setAvatar } from './avatar.js';
 import { deleteAccount, exportAccount } from './account.js';
 import { moderateChat, postChat, readChat, reportChat } from './chat.js';
-import { friendsView, messagesView, relation, removeFriend, reportPrivate, requestFriend, respondFriend, sendPrivate, setBlock, setDmPolicy, threadView } from './social.js';
+import { friendsView, messagesView, people, relation, removeFriend, reportPrivate, requestFriend, respondFriend, sendPrivate, setBlock, setDmPolicy, threadView } from './social.js';
+import { answerOrder, cancelOrder as cancelArtisanOrder, createOrder, deliverOrder, ordersView, quote, setOrdersOpen } from './orders.js';
 import { buyGear, craftOwned, gearListings, listGear, unlistGear } from './vitrine.js';
 import { loadCharacterById } from './characters.js';
 import { accounts, characters, sessions } from './db/schema.js';
@@ -781,6 +788,68 @@ export async function buildApp({ db, content, clock = Date.now, secureCookies = 
     const me = await myCharacter(req);
     await db.transaction((tx) => setDmPolicy(tx, me.id, policy));
     return messagesView(db, me.id, clock(), content);
+  });
+
+  // --- Commandes entre joueurs (apps/server/src/orders.ts) ---
+
+  /** Ce qu'on peut commander à un artisan (à ses niveaux), et s'il en prend. */
+  app.get('/api/orders/catalog/:id', async (req) => {
+    await myCharacter(req);
+    const id = Number((req.params as { id: string }).id);
+    return db.transaction(async (tx) => {
+      const loaded = await loadCharacterById(tx, id, content);
+      if (!loaded) throw new HttpError(404, 'no_player', 'Ce joueur est introuvable.');
+      const [row] = await tx.select({ open: characters.ordersOpen }).from(characters).where(eq(characters.id, id));
+      const artisan = (await people(tx, [id], clock(), content)).get(id)!;
+      return { artisan, open: row?.open ?? true, targets: orderCatalog(loaded.state, content) };
+    });
+  });
+  app.post('/api/orders/quote', async (req) => {
+    const b = body(orderQuoteBody, req);
+    const me = await myCharacter(req);
+    return db.transaction(async (tx) => {
+      const loaded = await loadCharacterById(tx, me.id, content);
+      return quote(tx, loaded!.state, b.artisanId, b.kind, b.target, b.qty, b.supply, content);
+    });
+  });
+  app.post('/api/orders/create', (req) => {
+    const b = body(orderCreateBody, req);
+    return playAs(req, async (state, now, ctx) => {
+      const r = await createOrder(ctx.tx, ctx.characterId, ctx.characterName, state, b, now, content);
+      return { state: r.state, log: r.log };
+    });
+  });
+  app.get('/api/orders', async (req) => {
+    const me = await myCharacter(req);
+    const loaded = await db.transaction((tx) => loadCharacterById(tx, me.id, content));
+    return ordersView(db, me.id, loaded?.state ?? null, clock(), content);
+  });
+  app.post('/api/orders/answer', (req) => {
+    const { id, accept } = body(orderAnswerBody, req);
+    return playAs(req, async (state, now, ctx) => {
+      const r = await answerOrder(ctx.tx, ctx.characterId, ctx.characterName, state, id, accept, now, content);
+      return { state: r.state, log: r.log };
+    });
+  });
+  app.post('/api/orders/deliver', (req) => {
+    const { id } = body(artisanOrderIdBody, req);
+    return playAs(req, async (state, now, ctx) => {
+      const r = await deliverOrder(ctx.tx, ctx.characterId, ctx.characterName, state, id, now, content);
+      return { state: r.state, log: r.log, logKind: 'finished' };
+    });
+  });
+  app.post('/api/orders/cancel', (req) => {
+    const { id } = body(artisanOrderIdBody, req);
+    return playAs(req, async (state, now, ctx) => {
+      const r = await cancelArtisanOrder(ctx.tx, ctx.characterId, state, id, now, content);
+      return { state: r.state, log: r.log };
+    });
+  });
+  app.post('/api/orders/open', async (req) => {
+    const { open } = body(ordersOpenBody, req);
+    const me = await myCharacter(req);
+    await db.transaction((tx) => setOrdersOpen(tx, me.id, open));
+    return ordersView(db, me.id, null, clock(), content);
   });
 
   // --- Photo de profil (apps/server/src/avatar.ts) ---

@@ -102,6 +102,7 @@ export function PlayerCard({ id, onClose }: { id: number; onClose: () => void })
               <Stat value={p.tide.nights} label={p.tide.nights > 1 ? 'Soirs de Marée' : 'Soir de Marée'} />
               <Stat value={p.tide.best} label="Meilleur soir récent (points)" />
               <Stat value={joined(p.joinedAt)} label="Arrivé à Bramo" small />
+              {p.orders.delivered > 0 && <Stat value={p.orders.delivered} label={`Commandes livrées · ${Math.round((p.orders.onTime / p.orders.delivered) * 100)} % à temps`} />}
             </div>
 
             <div className="pp-body">

@@ -82,6 +82,8 @@ export const characters = pgTable('characters', {
   lastSeenAt: ts('last_seen_at').notNull(),
   /** Qui peut lui écrire en privé : tout le monde (par défaut) ou ses amis et son clan. */
   dmPolicy: text('dm_policy').notNull().default('all'),
+  /** Il accepte qu'on lui passe des commandes (docs/design/social.md §3). */
+  ordersOpen: boolean('orders_open').notNull().default(true),
   createdAt: ts('created_at').notNull().defaultNow(),
 });
 
@@ -406,6 +408,40 @@ export const privateMessages = pgTable(
     reported: boolean('reported').notNull().default(false),
   },
   (t) => [index('private_messages_to').on(t.toId, t.id), index('private_messages_from').on(t.fromId, t.id)],
+);
+
+/**
+ * Commandes entre joueurs (docs/design/social.md §3) : l'or du client (et ses matériaux) mis de côté à la commande ;
+ * proposée, acceptée (les matériaux passent à l'artisan, la date limite part), livrée (l'artisan est payé, moins la taxe),
+ * refusée, annulée ou expirée. clientSettled : le client a reçu ce qui lui revient (objets livrés ou remboursement).
+ */
+export const artisanOrders = pgTable(
+  'artisan_orders',
+  {
+    id: serial('id').primaryKey(),
+    clientId: integer('client_id')
+      .notNull()
+      .references(() => characters.id, { onDelete: 'cascade' }),
+    artisanId: integer('artisan_id')
+      .notNull()
+      .references(() => characters.id, { onDelete: 'cascade' }),
+    kind: text('kind').notNull(),
+    target: text('target').notNull(),
+    qty: integer('qty').notNull(),
+    price: integer('price').notNull(),
+    materials: jsonb('materials').$type<{ item: string; qty: number }[]>().notNull(),
+    delay: text('delay').notNull(),
+    delayHours: integer('delay_hours').notNull(),
+    message: text('message'),
+    status: text('status').notNull(),
+    createdAt: ts('created_at').notNull(),
+    acceptedAt: ts('accepted_at'),
+    deadline: ts('deadline'),
+    closedAt: ts('closed_at'),
+    onTime: boolean('on_time'),
+    clientSettled: boolean('client_settled').notNull().default(false),
+  },
+  (t) => [index('artisan_orders_client').on(t.clientId, t.status), index('artisan_orders_artisan').on(t.artisanId, t.status)],
 );
 
 /**

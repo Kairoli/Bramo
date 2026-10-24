@@ -85,6 +85,12 @@ export const friendRespondBody = z.object({ characterId: z.number().int(), accep
 export const blockBody = z.object({ characterId: z.number().int(), block: z.boolean() });
 export const privateMessageBody = z.object({ to: z.number().int(), text: z.string() });
 export const dmPolicyBody = z.object({ policy: z.enum(['all', 'friends_clan']) });
+// Commandes entre joueurs (apps/server/src/orders.ts).
+export const orderQuoteBody = z.object({ artisanId: z.number().int(), kind: z.enum(['item', 'gear']), target: z.string(), qty: z.number().int().min(1), supply: z.boolean() });
+export const orderCreateBody = orderQuoteBody.extend({ price: z.number().int().min(0), delay: z.enum(['rush', 'normal', 'relaxed']), message: z.string().max(200).optional() });
+export const artisanOrderIdBody = z.object({ id: z.number().int() });
+export const orderAnswerBody = z.object({ id: z.number().int(), accept: z.boolean() });
+export const ordersOpenBody = z.object({ open: z.boolean() });
 
 /** Un message de la discussion (GET /api/chat). */
 export interface ChatMessageView {
@@ -295,6 +301,8 @@ export interface PlayerProfile {
   totalLevel: number;
   doing: string | null;
   lastSeenAt: number;
+  /** Artisan : commandes livrées, et à temps (docs/design/social.md §3). */
+  orders: { delivered: number; onTime: number };
 }
 
 export interface TownEvent {
@@ -425,6 +433,50 @@ export interface ThreadView {
   relation: RelationView;
   canWrite: boolean;
   reason: string | null;
+}
+
+/** Une commande entre joueurs, vue par le client ou par l'artisan. */
+export interface OrderView {
+  id: number;
+  /** Je suis le client (sinon l'artisan). */
+  mine: boolean;
+  client: SocialPerson;
+  artisan: SocialPerson;
+  kind: 'item' | 'gear';
+  target: string;
+  name: string;
+  profession: string;
+  gear: { slot: string; family: string; tier: number; rarity: string } | null;
+  qty: number;
+  price: number;
+  /** Ce que l'artisan touche à la livraison (prix moins la taxe). */
+  net: number;
+  materials: { item: string; qty: number }[];
+  delay: 'rush' | 'normal' | 'relaxed';
+  delayHours: number;
+  message: string | null;
+  status: 'proposed' | 'accepted' | 'delivered' | 'refused' | 'cancelled' | 'expired';
+  createdAt: number;
+  /** Proposée : elle expire à cet instant sans réponse. Acceptée : la date limite. */
+  dueAt: number;
+  closedAt: number | null;
+  onTime: boolean | null;
+  /** L'artisan a de quoi livrer (vu par l'artisan). */
+  ready: boolean;
+}
+
+export interface OrdersView {
+  asClient: OrderView[];
+  asArtisan: OrderView[];
+  /** Il accepte qu'on lui passe des commandes. */
+  open: boolean;
+}
+
+/** Ce qu'on peut commander à un artisan, et son devis. */
+export interface OrderCatalogView {
+  artisan: SocialPerson;
+  open: boolean;
+  targets: import('./engine/orders.js').OrderTarget[];
 }
 
 export interface ApiError {

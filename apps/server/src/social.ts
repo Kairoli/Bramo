@@ -18,7 +18,7 @@ import { insertEntries } from './journal.js';
 type Conn = Tx | Db;
 
 /** Les fiches sociales de quelques joueurs : nom, photo, classe, en ligne, ce qu'il fait. */
-async function people(db: Conn, ids: number[], now: number, content: Content): Promise<Map<number, SocialPerson>> {
+export async function people(db: Conn, ids: number[], now: number, content: Content): Promise<Map<number, SocialPerson>> {
   const unique = [...new Set(ids)];
   if (!unique.length) return new Map();
   const rows = await db

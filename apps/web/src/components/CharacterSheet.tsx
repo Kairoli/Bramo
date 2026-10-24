@@ -164,7 +164,7 @@ function Places({ sheet }: { sheet: SheetView }) {
       />
       <div className="build-places">
         {items.map((p) => (
-          <div key={p.name} className={`build-place ${p.kind}${p.active ? '' : ' off'}`}>
+          <div key={p.name} className={`build-place ${p.kind}${p.active && !p.idle ? '' : ' off'}`}>
             <span className="build-place-kind">{p.kind === 'named' ? 'Objet nommé' : 'Gemme'}</span>
             <strong>{p.name}</strong>
             {p.text && (
@@ -173,6 +173,7 @@ function Places({ sheet }: { sheet: SheetView }) {
               </span>
             )}
             {!p.active && <span className="small" style={{ color: 'var(--alert)' }}>En trop : n’agit pas.</span>}
+            {p.idle && <span className="small" style={{ color: 'var(--alert)' }}>{p.idle}</span>}
           </div>
         ))}
         {Array.from({ length: free }, (_, i) => (
@@ -217,7 +218,7 @@ function Reserves({ view }: { view: CombatView }) {
                   </svg>
                 </span>
                 <span>{p.name}</span>
-                <span className="build-reserve-state">{state === 'ok' ? 'active' : state === 'idle' ? 'sans emploi' : '—'}</span>
+                <span className="build-reserve-state">{state === 'ok' ? 'active' : state === 'idle' ? 'rien ne la dépense' : 'rien ne la remplit'}</span>
               </span>
             </Tip>
           );

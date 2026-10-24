@@ -88,7 +88,7 @@ export const dmPolicyBody = z.object({ policy: z.enum(['all', 'friends_clan']) }
 // Commandes entre joueurs (apps/server/src/orders.ts).
 // Sans artisan : une commande ouverte, sur le panneau du clan ou de tout le serveur (`scope`).
 export const orderQuoteBody = z.object({ artisanId: z.number().int().optional(), scope: z.enum(['clan', 'server']).optional(), kind: z.enum(['item', 'gear']), target: z.string(), qty: z.number().int().min(1), supply: z.boolean() });
-export const orderCreateBody = orderQuoteBody.extend({ price: z.number().int().min(0), delay: z.enum(['rush', 'normal', 'relaxed']), message: z.string().max(200).optional() });
+export const orderCreateBody = orderQuoteBody.extend({ price: z.number().int().min(0), delayHours: z.number().int().min(1), message: z.string().max(200).optional() });
 export const artisanOrderIdBody = z.object({ id: z.number().int() });
 export const orderAnswerBody = z.object({ id: z.number().int(), accept: z.boolean() });
 export const ordersOpenBody = z.object({ open: z.boolean() });
@@ -460,7 +460,6 @@ export interface OrderView {
   /** Ce que l'artisan touche à la livraison (prix moins la taxe). */
   net: number;
   materials: { item: string; qty: number }[];
-  delay: 'rush' | 'normal' | 'relaxed';
   delayHours: number;
   message: string | null;
   status: 'open' | 'proposed' | 'accepted' | 'delivered' | 'refused' | 'cancelled' | 'expired';

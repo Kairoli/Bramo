@@ -184,7 +184,7 @@ export const api = {
   orderCatalog: (artisanId: number) => request<OrderCatalogView>('GET', `/orders/catalog/${artisanId}`),
   orderSearch: (q: string) => request<{ targets: OrderTarget[] }>('GET', `/orders/search?q=${encodeURIComponent(q)}`),
   orderQuote: (b: { artisanId?: number; scope?: 'clan' | 'server'; kind: 'item' | 'gear'; target: string; qty: number; supply: boolean }) => request<OrderQuote & { supplied: { item: string; qty: number }[] }>('POST', '/orders/quote', b),
-  orderCreate: (b: { artisanId?: number; scope?: 'clan' | 'server'; kind: 'item' | 'gear'; target: string; qty: number; supply: boolean; price: number; delay: 'rush' | 'normal' | 'relaxed'; message?: string }) => request<StateResponse>('POST', '/orders/create', b),
+  orderCreate: (b: { artisanId?: number; scope?: 'clan' | 'server'; kind: 'item' | 'gear'; target: string; qty: number; supply: boolean; price: number; delayHours: number; message?: string }) => request<StateResponse>('POST', '/orders/create', b),
   orders: () => request<OrdersView>('GET', '/orders'),
   orderAnswer: (id: number, accept: boolean) => request<StateResponse>('POST', '/orders/answer', { id, accept }),
   orderTake: (id: number) => request<StateResponse>('POST', '/orders/take', { id }),

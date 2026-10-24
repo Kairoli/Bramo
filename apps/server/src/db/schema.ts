@@ -433,7 +433,6 @@ export const artisanOrders = pgTable(
     qty: integer('qty').notNull(),
     price: integer('price').notNull(),
     materials: jsonb('materials').$type<{ item: string; qty: number }[]>().notNull(),
-    delay: text('delay').notNull(),
     delayHours: integer('delay_hours').notNull(),
     message: text('message'),
     status: text('status').notNull(),

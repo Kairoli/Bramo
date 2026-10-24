@@ -58,28 +58,26 @@ sont autorisés pour ces commandes (§4).
 7. **En retard** : passé le délai, le client peut **annuler** (son or revient en entier) ou **laisser courir** ; l'artisan
    peut encore livrer tant que la commande n'est pas annulée.
 
-### Le délai, adapté à la commande
+### Le délai, choisi par le client
 
-Le jeu calcule le **temps de fabrication** : la durée de la recette × la quantité, au rendement de l'artisan (ses outils,
-ses repas, son clan), plus la fabrication des intermédiaires qu'il n'a pas en stock (comme « Il manque des matières »).
-Il propose alors trois délais, jamais en dessous de ce qui est faisable :
+**Changé le 24 octobre** [Louis : « pour le délai, c'est aussi au joueur de choisir. Il faut juste un minimum (plus que le
+temps de production des items + un petit delta). C'est à l'artisan de décider si c'est convenable pour le prix »]. Plus de
+trois délais proposés (Pressé, Normal, Tranquille) : le client tape un délai en heures ou en jours.
 
-| Choix | Délai proposé | Pour quoi |
-|---|---|---|
-| **Pressé** | 1,5 × le temps de fabrication, au moins 4 h | le client est pressé ; il le paie (prix conseillé plus haut) |
-| **Normal** | 3 × le temps de fabrication, au moins 24 h | l'artisan le glisse entre ses activités |
-| **Tranquille** | 7 jours | sans urgence |
+- Le jeu calcule le **temps de fabrication** : la durée de la recette × la quantité, plus la fabrication des
+  intermédiaires qui manquent (moins ce que le client fournit et, pour une commande à un artisan, son stock).
+- **Au moins** ce temps plus une demi-heure (`settings.orders.marginHours`), arrondi à l'heure ; **au plus deux
+  semaines** (`maxDelayHours`). C'est l'artisan qui juge si le délai et le prix lui conviennent (il accepte ou refuse ;
+  une commande ouverte, il la prend ou non).
 
-Le calcul tient compte du jeu idle : l'artisan ne travaille que pendant son autonomie (16 h après sa dernière visite) ; un
-délai ne descend donc jamais sous 4 h, même pour trois lingots.
+### Le prix, libre
 
-### Le prix
-
-- Un **prix conseillé** à côté du champ : la valeur des matières (prix du marché, sinon référence) plus le temps de
-  l'artisan (la règle de l'or par heure de travail, `sim/src/rules.ts`), plus une prime selon le délai.
+- **Plus de prix conseillé** [Louis, 24 octobre : « pas besoin d'or conseillé, c'est les joueurs qui décident de
+  l'économie et des prix »] : le client tape son prix ; la valeur de référence n'apparaît plus dans la recherche.
 - **Une taxe de 5 %** sur le prix, détruite, comme au marché (un puits d'or, et un frein au passage d'or entre comptes).
-- **Un plafond** : au plus 3 fois le prix conseillé. Sans lui, une commande serait un moyen de donner de l'or à un second
-  compte (`rapport-23-octobre` : multi-comptes).
+- **Un plafond** : au plus 3 fois la valeur de référence de ce qu'on commande (moins les matériaux fournis). Sans lui, une
+  commande serait un moyen de donner de l'or à un second compte (`rapport-23-octobre` : multi-comptes). Il ne s'affiche
+  que si on le dépasse.
 - La **prime de commande** (+20 % de l'XP de la recette) s'applique à la livraison : un artisan gagne plus à faire une
   commande qu'à fabriquer pour lui.
 
@@ -109,7 +107,7 @@ délai ne descend donc jamais sous 4 h, même pour trois lingots.
    - le **plafond** empêche une commande de servir de cadeau d'or déguisé : sans lui, un joueur commande trois lingots à
      son second compte pour 100 000 or, et l'or change de main sans rien en échange (multi-comptes, et vente d'or contre de
      l'argent réel). Avec les matériaux fournis, le plafond porte sur le prix payé en or.
-   5 % de taxe et un plafond de 3 fois le prix conseillé.
+   5 % de taxe et un plafond de 3 fois la valeur de référence (le prix conseillé a disparu le même jour, voir §3).
 4. **Commandes ouvertes** **[Décidé : oui, « comme tu le sens »]** : une commande sans artisan désigné, au clan ou à tout le
    serveur, sur un « Panneau des commandes » ; le premier artisan qui l'accepte la prend. En troisième étape.
    **Codé le 24 octobre** (choix de Claude) : le client choisit « Mon clan » ou « Tout le serveur » et cherche parmi
@@ -121,6 +119,10 @@ délai ne descend donc jamais sous 4 h, même pour trois lingots.
    autre artisan vient de la prendre ») ; elle devient une commande acceptée : matériaux reçus, le délai part à cet
    instant. Le panneau montre d'abord celles qu'on peut prendre (« À mon niveau » pour ne voir qu'elles), et la salle du
    métier signale celles qu'on peut prendre dans ce métier.
+5. **Un seul onglet Commandes** [Louis, 24 octobre : « je trouve l'onglet Artisans et Commandes en double »] : l'onglet
+   Artisans du Marché disparaît. Les **réparations demandées** passent sur le panneau (« Réparer »), « Confier un outil »
+   devient « **+ Réparation** » dans Mes commandes ; les objets que des joueurs cherchent au marché (avec la prime d'XP
+   pour l'artisan qui les livre) deviennent le rayon « **Recherchés** » d'Acheter et vendre.
 
 ## 5. L'ordre de travail proposé
 

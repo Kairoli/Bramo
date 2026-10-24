@@ -36,7 +36,35 @@ function talentText(catalog: TalentCatalog, t: Talent): string | null {
   return line ? line.slice(line.indexOf(':') + 1).trim() : null;
 }
 
-function linksOf(pool: string, entries: { name: string; talent: Talent; text: string | null }[]): PoolLinks {
+/**
+ * Les réserves que ces talents remplissent vraiment : un gain direct, ou une conversion depuis une réserve elle-même
+ * remplie [Louis, 24 octobre : « mon talent dit que la Rancœur donne de la Ferveur, mais rien ne remplit la Rancœur »].
+ */
+export function filledPools(talents: Talent[]): Set<string> {
+  const out = new Set<string>();
+  for (const t of talents) for (const e of t.effects ?? []) for (const a of actions(e)) if (a.gain) out.add(a.gain.pool);
+  for (let more = true; more; ) {
+    more = false;
+    for (const t of talents) for (const c of t.convert ?? []) if (out.has(c.from) && !out.has(c.to)) (out.add(c.to), (more = true));
+  }
+  return out;
+}
+
+/** Les réserves dont un talent a besoin (qu'il convertit, dépense ou attend) et que rien ne remplit. */
+export function missingPools(talent: Talent, filled: Set<string>): string[] {
+  const need = new Set<string>((talent.convert ?? []).map((c) => c.from));
+  for (const e of talent.effects ?? []) {
+    if (e.poolAtLeast) need.add(e.poolAtLeast.pool);
+    for (const a of actions(e)) {
+      if (a.spendPool) need.add(a.spendPool.pool);
+      if (a.scaleBy) need.add(a.scaleBy);
+    }
+  }
+  return [...need].filter((p) => !filled.has(p));
+}
+
+/** `filled` : dans un build, une conversion ne remplit que si sa réserve d'origine est remplie. */
+function linksOf(pool: string, entries: { name: string; talent: Talent; text: string | null }[], filled?: Set<string>): PoolLinks {
   const links: PoolLinks = { fill: [], spend: [], use: [] };
   for (const { name, talent, text } of entries) {
     let fill = false;
@@ -50,7 +78,7 @@ function linksOf(pool: string, entries: { name: string; talent: Talent; text: st
         if (a.scaleBy === pool) use = true;
       }
     }
-    const from = (talent.convert ?? []).find((c) => c.to === pool);
+    const from = (talent.convert ?? []).find((c) => c.to === pool && (!filled || filled.has(c.from)));
     const how = text ?? '';
     if (fill) links.fill.push({ name, how });
     else if (from) links.fill.push({ name, how: how || `chaque charge de ${from.from} en donne aussi` });
@@ -72,6 +100,7 @@ export function buildPoolLinks(combat: CombatContent, talents: Talent[], pool: s
       const set = m ? catalog.sets.find((s) => s.id === m[1]) : undefined;
       return { name: set ? `${set.name} (${m![2]} pièces)` : t.name, talent: t, text: talentText(catalog, t) };
     }),
+    filledPools(talents),
   );
 }
 

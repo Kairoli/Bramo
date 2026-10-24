@@ -105,10 +105,10 @@ orders:
   answerHours: 24
   openHours: 72           # commande ouverte (panneau du clan ou du serveur) : expire sans preneur
   maxQty: 10000
-  delays:
-    rush: {factor: 1.5, minHours: 4, price: 1.3}       # pressé
-    normal: {factor: 3, minHours: 24, price: 1}
-    relaxed: {factor: 3, minHours: 168, price: 0.9}    # tranquille (une semaine)
+  # Le client choisit son délai [Louis, 24 octobre : « c'est au joueur de choisir ; juste un minimum »] :
+  # au moins le temps de fabrication + marginHours, au plus maxDelayHours. Le prix aussi est libre (plafond anti-cadeau).
+  marginHours: 0.5
+  maxDelayHours: 336      # deux semaines
 
 # Marché entre joueurs (décision du 21 octobre : pas de PNJ qui rachète ; le PNJ ne passe que des commandes).
 market:

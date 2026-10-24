@@ -1,5 +1,6 @@
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
+import { buildPoolLinks, filledPools, missingPools } from '../src/combat/guide.js';
 import { gearEffects, statRows } from '../src/combat/sheet.js';
 import { newInstance } from '../src/engine/equipment.js';
 import type { GearInstance } from '../src/schemas/gear.js';
@@ -29,5 +30,17 @@ describe('fiche du personnage', () => {
     const fx = gearEffects(items, content);
     expect(fx[1]!.find((e) => e.stat === 'crit')!.text).toMatch(/^≈ \+\d+(,\d)? % de chance de critique$/);
     expect(fx[2]!.find((e) => e.stat === 'defense')!.text).toMatch(/% de dégâts reçus en moins/);
+  });
+
+  it('une conversion ne remplit une réserve que si rien ne manque en amont (Le Petit Arrangement sans Rancœur)', () => {
+    const named = content.combat!.talents!.named;
+    const arrangement = named.find((n) => n.id === 'petit_arrangement')!;
+    const marteau = named.find((n) => n.effects?.some((e) => e.do?.gain?.pool === 'rancoeur'))!;
+    // Seul : rien ne donne de Rancœur, donc pas de Ferveur, et le talent le dit.
+    expect(buildPoolLinks(content.combat!, [arrangement], 'ferveur').fill).toEqual([]);
+    expect(missingPools(arrangement, filledPools([arrangement]))).toEqual(['rancoeur']);
+    // Avec une pièce qui donne de la Rancœur : la Ferveur se remplit.
+    expect(buildPoolLinks(content.combat!, [arrangement, marteau], 'ferveur').fill.map((f) => f.name)).toEqual([arrangement.name]);
+    expect(missingPools(arrangement, filledPools([arrangement, marteau]))).toEqual([]);
   });
 });

@@ -1,5 +1,5 @@
 import { type ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
-import type { GearListingView, MarketItemSummary, MarketOrderView, MyOrderView, MyTradeView, RepairRequestView } from '@bramo/shared';
+import type { GearListingView, MarketItemSummary, MarketOrderView, MyOrderView, MyTradeView } from '@bramo/shared';
 import { GearIcon } from '../components/GearIcon';
 import { api } from '../api';
 import { useGame } from '../game/GameContext';
@@ -9,13 +9,14 @@ import { Scene } from '../components/Scene';
 import { PriceChart, PriceChartModal, usePriceHistory } from '../components/PriceChart';
 import { OrdersPanel } from '../components/Orders';
 
-type Tab = 'book' | 'gear' | 'mine' | 'craft' | 'npc' | 'orders';
+type Tab = 'book' | 'gear' | 'mine' | 'npc' | 'orders';
 type Run = (call: () => ReturnType<typeof api.state>) => Promise<boolean>;
 
 /** Rayons du marché : des catégories d'objets regroupées comme sur les étals. */
 const SHELVES: { id: string; name: string; cats: string[] }[] = [
   { id: 'all', name: 'Tout', cats: [] },
   { id: 'mine', name: 'Mon sac', cats: [] },
+  { id: 'wanted', name: 'Recherchés', cats: [] },
   { id: 'ores', name: 'Minerais et métaux', cats: ['ore', 'stone', 'gem', 'bar'] },
   { id: 'wood', name: 'Bois', cats: ['log', 'plank', 'handle', 'archery'] },
   { id: 'nature', name: 'Herbes, poissons, cultures', cats: ['herb', 'fish', 'crop', 'grain', 'fiber', 'dye'] },
@@ -76,7 +77,13 @@ export function MarketRoom() {
     const q = query.trim().toLowerCase();
     const sh = SHELVES.find((s) => s.id === shelf)!;
     return Object.values(content.items)
-      .filter((it) => (sh.id === 'mine' ? (state.inventory[it.id] ?? 0) > 0 : sh.id === 'all' || sh.cats.includes(it.category)))
+      .filter((it) =>
+        sh.id === 'mine'
+          ? (state.inventory[it.id] ?? 0) > 0
+          : sh.id === 'wanted'
+            ? summary.some((x) => x.itemId === it.id && x.bestBuy !== null)
+            : sh.id === 'all' || sh.cats.includes(it.category),
+      )
       .filter((it) => !q || it.name.toLowerCase().includes(q))
       .map((item) => ({ item, s: summary.find((x) => x.itemId === item.id) }))
       .sort((a, b) => Number(!!b.s) - Number(!!a.s) || a.item.name.localeCompare(b.item.name));
@@ -106,7 +113,6 @@ export function MarketRoom() {
               ['book', 'Acheter et vendre', 'M3 9h18l-2 11H5zM8 9V6a4 4 0 0 1 8 0v3'],
               ['gear', 'Vitrine', 'M12 3l7 4v5c0 4-3 7-7 9-4-2-7-5-7-9V7z'],
               ['mine', `Mes ordres${mine.length ? ` · ${mine.length}` : ''}`, 'M6 3h9l3 3v15H6zM9 9h6M9 13h6M9 17h4'],
-              ['craft', 'Artisans', 'M14 6l4 4M12 8l-8 8 2 2 8-8M13 4l7 7-2 2-7-7z'],
               ['npc', `Comptoir · ${doneNpc}/${state.npcOrders.length}`, 'M4 20V10l8-6 8 6v10M9 20v-6h6v6'],
               ['orders', 'Commandes', 'M7 4h10v4H7zM5 8h14v12H5zM9 12h6M9 16h4'],
             ] as [Tab, string, string][]
@@ -134,6 +140,12 @@ export function MarketRoom() {
                 </button>
               ))}
             </div>
+            {shelf === 'wanted' && (
+              <p className="muted small">
+                Des joueurs cherchent ces objets. En livrer un que vous savez fabriquer rapporte aussi +{Math.round(settings.commissions.primeShare * 100)} % de l’XP de la recette
+                (jusqu’à {settings.commissions.primeUnitsPerDay} par jour).
+              </p>
+            )}
             <div className="market-cards scroll">
               {cards.length === 0 && <p className="muted small">Rien sur ce rayon pour le moment.</p>}
               {cards.map(({ item, s }) => (
@@ -236,18 +248,6 @@ export function MarketRoom() {
 
       {tab === 'gear' && <GearShowcase />}
 
-      {tab === 'craft' && (
-        <section className="panel market-page">
-          <ArtisansTab
-            summary={summary}
-            run={run}
-            openItem={(id) => {
-              setSelected(id);
-              setTab('book');
-            }}
-          />
-        </section>
-      )}
 
       {tab === 'orders' && <OrdersPanel />}
       {tab === 'npc' && (
@@ -574,153 +574,6 @@ function BookList({ title, orders, tone, wearLabel }: { title: string; orders: M
   );
 }
 
-
-/** Artisans : commandes à servir (ordres d'achat d'objets fabriqués, avec une prime d'XP) et réparations d'outils. */
-function ArtisansTab({
-  summary,
-  run,
-  openItem,
-}: {
-  summary: MarketItemSummary[];
-  run: (call: () => ReturnType<typeof api.state>) => Promise<boolean>;
-  openItem: (itemId: string) => void;
-}) {
-  const { content, state } = useGame();
-  const [requests, setRequests] = useState<RepairRequestView[]>([]);
-  const [tick, setTick] = useState(0);
-  useEffect(() => {
-    api.openRepairs().then(setRequests).catch(() => {});
-  }, [tick, state.gold, state.serverTime]);
-  const act = async (call: () => ReturnType<typeof api.state>) => {
-    await run(call);
-    setTick((t) => t + 1);
-  };
-
-  const { commissions } = content.settings;
-  const craftable = (id: string) =>
-    Object.values(content.recipes).some((r) => !r.trial && r.inputs.length > 0 && r.outputs.length === 1 && r.outputs[0]!.item === id);
-  const orders = summary.filter((s) => s.bestBuy !== null && craftable(s.itemId));
-  // Outils réparables par un artisan dont au moins un exemplaire est entamé.
-  const mineTools = Object.entries(state.durability).filter(([id, d]) => content.items[id]?.repair && d.copies.some((left) => left < d.totalMs));
-  const [toolId, setToolId] = useState('');
-  const [copy, setCopy] = useState(0);
-  const [fee, setFee] = useState(30);
-  const tool = mineTools.find(([id]) => id === toolId) ?? mineTools[0];
-
-  return (
-    <div className="market-craft scroll">
-      <div>
-        <span className="eyebrow">Commandes à servir</span>
-        <p className="muted small">
-          Des joueurs cherchent ces objets fabriqués. Livrer un ordre d’achat d’un objet que vous savez fabriquer rapporte une prime : +
-          {Math.round(commissions.primeShare * 100)} % de l’XP de la recette, jusqu’à {commissions.primeUnitsPerDay} unités par jour.
-        </p>
-        {orders.length === 0 && <p className="muted small">Aucune commande pour le moment.</p>}
-        {orders.map((s) => (
-          <div key={s.itemId} className="market-row">
-            <ItemIcon item={content.items[s.itemId]} small />
-            <span className="bag-name">{content.items[s.itemId]?.name}</span>
-            <span>
-              jusqu’à {num(s.bestBuy!)} or · ×{num(s.buyQty)}
-            </span>
-            <button className="btn btn-sm" onClick={() => openItem(s.itemId)}>
-              Voir
-            </button>
-          </div>
-        ))}
-      </div>
-
-      <div>
-        <span className="eyebrow">Réparations demandées</span>
-        <p className="muted small">
-          Réparez l’outil d’un autre joueur avec vos matériaux : vous touchez sa rémunération (moins la taxe) et un peu d’XP.
-        </p>
-        {requests.length === 0 && <p className="muted small">Aucune demande ouverte.</p>}
-        {requests.map((r) => {
-          const item = content.items[r.itemId];
-          const mats = item?.repair?.materials.map((m) => `${m.qty} × ${content.items[m.item]?.name ?? m.item}`).join(', ');
-          return (
-            <div key={r.id} className="market-row">
-              <ItemIcon item={item} small />
-              <span className="bag-name">
-                {item?.name} <span className="muted small">· usé de {duration(r.wear)}</span>
-              </span>
-              <span>
-                {num(r.fee)} or <span className="muted small">· matériaux : {mats}</span>
-              </span>
-              {r.mine ? (
-                <button className="btn btn-sm" onClick={() => act(() => api.cancelRepair(r.id))}>
-                  Reprendre
-                </button>
-              ) : (
-                <button className="btn btn-sm" onClick={() => act(() => api.takeRepair(r.id))}>
-                  Réparer
-                </button>
-              )}
-            </div>
-          );
-        })}
-      </div>
-
-      <div className="market-form sunken">
-        <span className="eyebrow" style={{ width: '100%' }}>
-          Confier un outil à un artisan
-        </span>
-        {mineTools.length === 0 ? (
-          <span className="muted small">Aucun de vos outils n’est usé.</span>
-        ) : (
-          <>
-            <label className="field">
-              <span className="muted small">Outil</span>
-              <select
-                className="input"
-                value={tool?.[0]}
-                onChange={(e) => {
-                  setToolId(e.target.value);
-                  setCopy(0);
-                }}
-              >
-                {mineTools.map(([id]) => (
-                  <option key={id} value={id}>
-                    {content.items[id]?.name}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <label className="field">
-              <span className="muted small">Exemplaire</span>
-              <select className="input" value={copy} onChange={(e) => setCopy(Number(e.target.value))}>
-                {(tool?.[1].copies ?? []).map((left, i) =>
-                  left < (tool?.[1].totalMs ?? 0) ? (
-                    <option key={i} value={i}>
-                      {left > 0 ? `reste ${duration(left)}` : 'usé'}
-                    </option>
-                  ) : null,
-                )}
-              </select>
-            </label>
-            <label className="field">
-              <span className="muted small">Rémunération (or)</span>
-              <input
-                className="input"
-                type="number"
-                min={1}
-                value={fee}
-                onChange={(e) => setFee(Math.max(1, Math.floor(Number(e.target.value)) || 1))}
-              />
-            </label>
-            <button className="btn btn-primary" disabled={!tool || state.gold < fee} onClick={() => tool && act(() => api.requestRepair(tool[0], copy, fee))}>
-              Demander
-            </button>
-            <p className="muted small" style={{ width: '100%' }}>
-              L’outil et l’or sont mis de côté ; réparé, il vous revient comme neuf à votre prochain passage. Le PNJ répare aussi, contre de l’or, depuis votre sac.
-            </p>
-          </>
-        )}
-      </div>
-    </div>
-  );
-}
 
 const RARITY_NAME: Record<string, string> = { common: 'Commun', rare: 'Rare', epic: 'Épique', legendary: 'Légendaire' };
 

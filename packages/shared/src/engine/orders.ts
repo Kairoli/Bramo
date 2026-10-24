@@ -1,12 +1,14 @@
 /**
  * Commandes entre joueurs (docs/design/social.md §3 ; décidé par Louis le 24 octobre). Ce qui se calcule sans la base : ce
- * qu'on peut commander à un artisan, le temps que ça lui prendra, les trois délais proposés et le prix conseillé.
+ * qu'on peut commander à un artisan, le temps que ça lui prendra, le délai le plus court possible et le plafond de prix.
+ * Le prix et le délai sont libres [Louis, 24 octobre : « c'est les joueurs qui décident de l'économie et des prix » ;
+ * « c'est à l'artisan de décider si c'est convenable »] : pas de prix conseillé.
  *
  * - Un objet d'une recette de métier (en unités d'objet), ou une pièce d'équipement de l'atelier.
  * - Le temps : la recette × le nombre de fabrications, plus les intermédiaires qui lui manquent et qu'il sait faire (un
  *   niveau), moins ce que le client fournit.
- * - Le prix conseillé : la valeur de référence de ce qu'on commande (matières et temps compris), moins celle des matériaux
- *   fournis (au moins le cinquième : le temps de l'artisan reste à payer), × le facteur du délai.
+ * - Le plafond (anti-cadeau d'or entre comptes) : `capFactor` × la valeur de référence de ce qu'on commande, moins celle
+ *   des matériaux fournis (au moins le cinquième). Il ne s'affiche que si on le dépasse.
  */
 import type { Content, Recipe } from '../schemas/content.js';
 import { type GearRecipe, craftableModels, gearRecipe } from './gearCraft.js';
@@ -14,7 +16,6 @@ import { skillLevel } from './trials.js';
 import type { CharacterState } from './state.js';
 
 export type OrderKind = 'item' | 'gear';
-export type OrderDelay = 'rush' | 'normal' | 'relaxed';
 
 /** Ce qu'on peut commander : une recette de métier (son objet) ou un modèle d'équipement. */
 export interface OrderTarget {
@@ -81,8 +82,11 @@ export function orderMaterials(t: OrderTarget, qty: number): { item: string; qty
 export interface OrderQuote {
   /** Temps de fabrication estimé (secondes). */
   workSec: number;
-  /** Les trois délais : heures, prix conseillé, plafond. */
-  delays: { id: OrderDelay; hours: number; advised: number; cap: number }[];
+  /** Le délai le plus court (le temps de fabrication plus une marge) et le plus long qu'on peut choisir, en heures. */
+  minHours: number;
+  maxHours: number;
+  /** Le prix le plus haut accepté (or). */
+  cap: number;
 }
 
 /**
@@ -106,13 +110,8 @@ export function quoteOrder(t: OrderTarget, qty: number, supplied: { item: string
   }
   const full = t.value * qty;
   const base = Math.max(Math.round(full / 5), full - suppliedValue);
-  const hours = workSec / 3600;
-  const delays = (['rush', 'normal', 'relaxed'] as const).map((id) => {
-    const d = rules.delays[id];
-    const advised = Math.max(0, Math.round(base * d.price));
-    return { id, hours: Math.ceil(Math.max(d.minHours, d.factor * hours)), advised, cap: Math.max(1, Math.round(advised * rules.capFactor)) };
-  });
-  return { workSec, delays };
+  const minHours = Math.max(1, Math.ceil(workSec / 3600 + rules.marginHours));
+  return { workSec, minHours, maxHours: Math.max(minHours, rules.maxDelayHours), cap: Math.max(1, Math.round(base * rules.capFactor)) };
 }
 
 /**

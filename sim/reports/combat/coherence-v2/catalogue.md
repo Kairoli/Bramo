@@ -133,7 +133,7 @@ Légendaires, non fabricables (butin, garantie, marché). Un nommé occupe une p
 | **Le Dernier Avertissement** | « Le Rabâcheur » | runist | Le Témoin sous l'eau (Archives englouties) | La même compétence deux fois en 14 s : 3 Échos, et ton prochain sort rejoue la rune qu'il lit (délai 10 s). |
 | **Le Sceau qui tient** | « La Nounou » | runist | L'Intendant de verre (Bastion des longues veilles) | Un bouclier de compétence qui expire avec un reste donne 3 Ferveur et soigne de 0,20 P. |
 | **Le Bénéfice du doute** | « Peut-être » | collier, toutes classes | Le Chantre muet (Archives englouties) | Un contrôle donne 2 Frimas et te protège de 0,25 P (délai 8 s). |
-| **Le Petit Arrangement** | « Entre nous » | collier, toutes classes | Le Collecteur du bourbier (Abords du bourg) | Toute Rancœur gagnée devient aussi de la Ferveur. Ce qu'on te fait, tu le rends en bien. |
+| **Le Petit Arrangement** | « Entre nous » | collier, toutes classes | Le Collecteur du bourbier (Abords du bourg) | Chaque fois que tu gagnes de la Rancœur, tu gagnes autant de Ferveur. Il en faut une autre source : ce collier n'en crée pas. |
 | **Le Mauvais Présage** | « Le Corbeau » | collier, toutes classes | La Sentinelle fendue (Cicatrice des trois vents) | Une Rupture que tu provoques donne 4 Entailles et 4 Frimas. |
 | **Le Sac sans fond** | « Le Grenier » | collier, toutes classes | Le Régent des courants (Cicatrice des trois vents) | +4 au plafond de toutes tes réserves (+2 Trophées). On ne jette rien, ça peut servir. |
 | **Les Heures supplémentaires** | « L'Insomniaque » | collier, toutes classes | Le Héraut des trois vents (Cicatrice des trois vents) | Tes dépenses ne vident que la moitié de la réserve. Le reste, c'est pour demain… enfin, pour le coup d'après. |

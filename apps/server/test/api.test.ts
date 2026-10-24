@@ -688,15 +688,17 @@ describe('API', () => {
     expect(catRes.json, JSON.stringify(catRes.json)).toHaveProperty('targets');
     const cat = catRes.json as { targets: { kind: string; id: string }[] };
     expect(cat.targets.some((t) => t.kind === 'item' && t.id === 'bronze_bar')).toBe(true);
-    const q = (await cl!('POST', '/api/orders/quote', { artisanId: arId, kind: 'item', target: 'bronze_bar', qty: 10, supply: false })).json as { delays: { id: string; hours: number; advised: number; cap: number }[] };
-    const normal = q.delays.find((d) => d.id === 'normal')!;
-    expect(q.delays.find((d) => d.id === 'rush')!.hours).toBeGreaterThanOrEqual(4);
-    expect(normal.hours).toBeGreaterThanOrEqual(24);
-    // Le plafond : pas plus de trois fois le prix conseillé.
-    expect((await cl!('POST', '/api/orders/create', { artisanId: arId, kind: 'item', target: 'bronze_bar', qty: 10, supply: false, price: normal.cap + 1, delay: 'normal' })).status).toBe(400);
+    const q = (await cl!('POST', '/api/orders/quote', { artisanId: arId, kind: 'item', target: 'bronze_bar', qty: 10, supply: false })).json as { workSec: number; minHours: number; maxHours: number; cap: number };
+    // Délai libre (Louis, 24 octobre), mais au moins le temps de fabrication plus une marge, et au plus deux semaines.
+    expect(q.minHours).toBe(Math.max(1, Math.ceil(q.workSec / 3600 + content.settings.orders.marginHours)));
+    const base = { artisanId: arId, kind: 'item', target: 'bronze_bar', qty: 10, supply: false };
+    expect((await cl!('POST', '/api/orders/create', { ...base, price: 10, delayHours: q.minHours - 1 })).status).toBe(400);
+    expect((await cl!('POST', '/api/orders/create', { ...base, price: 10, delayHours: q.maxHours + 1 })).status).toBe(400);
+    // Le prix est libre, sous un plafond qui empêche de donner de l'or.
+    expect((await cl!('POST', '/api/orders/create', { ...base, price: q.cap + 1, delayHours: 24 })).status).toBe(400);
     const gold0 = (await st(cl)).state.gold;
-    const price = Math.max(1, normal.advised);
-    expect((await cl!('POST', '/api/orders/create', { artisanId: arId, kind: 'item', target: 'bronze_bar', qty: 10, supply: false, price, delay: 'normal', message: 'Pour le clan' })).status).toBe(200);
+    const price = 40;
+    expect((await cl!('POST', '/api/orders/create', { ...base, price, delayHours: 24, message: 'Pour le clan' })).status).toBe(200);
     expect((await st(cl)).state.gold).toBe(gold0 - price);
     // L'artisan la voit, l'accepte, ne peut pas livrer sans les lingots, puis livre.
     const id = ((await ar!('GET', '/api/orders')).json as O).asArtisan[0]!.id;
@@ -712,7 +714,7 @@ describe('API', () => {
     expect(after.state.inventory['bronze_bar']).toBe(10);
     expect(((await cl!('GET', '/api/orders')).json as O).asClient[0]).toMatchObject({ status: 'delivered', onTime: true });
     // Refusée : l'or revient au client.
-    await cl!('POST', '/api/orders/create', { artisanId: arId, kind: 'item', target: 'bronze_bar', qty: 5, supply: false, price: 3, delay: 'rush' });
+    await cl!('POST', '/api/orders/create', { artisanId: arId, kind: 'item', target: 'bronze_bar', qty: 5, supply: false, price: 3, delayHours: 6 });
     const id2 = ((await ar!('GET', '/api/orders')).json as O).asArtisan.find((o) => o.status === 'proposed')!.id;
     const before = (await st(cl)).state.gold;
     await ar!('POST', '/api/orders/answer', { id: id2, accept: false });
@@ -720,13 +722,13 @@ describe('API', () => {
     // Matériaux fournis (décidé par Louis) : ils sont mis de côté, puis passent à l'artisan quand il accepte.
     await cl!('POST', '/api/dev/items/grant', { itemId: 'copper_ore', qty: 4 });
     await cl!('POST', '/api/dev/items/grant', { itemId: 'tin_ore', qty: 4 });
-    await cl!('POST', '/api/orders/create', { artisanId: arId, kind: 'item', target: 'bronze_bar', qty: 4, supply: true, price: 0, delay: 'relaxed' });
+    await cl!('POST', '/api/orders/create', { artisanId: arId, kind: 'item', target: 'bronze_bar', qty: 4, supply: true, price: 0, delayHours: 168 });
     expect((await st(cl)).state.inventory['copper_ore'] ?? 0).toBe(0);
     const id3 = ((await ar!('GET', '/api/orders')).json as O).asArtisan.find((o) => o.status === 'proposed')!.id;
     await ar!('POST', '/api/orders/answer', { id: id3, accept: true });
     expect((await st(ar)).state.inventory['copper_ore']).toBe(4);
     // Sans réponse en 24 h, une commande expire et le client est remboursé.
-    await cl!('POST', '/api/orders/create', { artisanId: arId, kind: 'item', target: 'bronze_bar', qty: 2, supply: false, price: 2, delay: 'normal' });
+    await cl!('POST', '/api/orders/create', { artisanId: arId, kind: 'item', target: 'bronze_bar', qty: 2, supply: false, price: 2, delayHours: 24 });
     const g = (await st(cl)).state.gold;
     now += 25 * 3_600_000;
     expect((await st(cl)).state.gold).toBe(g + 2);
@@ -745,13 +747,14 @@ describe('API', () => {
     // Chercher ce qu'on peut commander, et le devis sans artisan.
     const found = (await cl!('GET', '/api/orders/search?q=lingot')).json as { targets: { id: string }[] };
     expect(found.targets.some((t) => t.id === 'bronze_bar')).toBe(true);
-    const q = (await cl!('POST', '/api/orders/quote', order)).json as { delays: { id: string; advised: number }[] };
-    const price = Math.max(1, q.delays.find((d) => d.id === 'normal')!.advised);
+    const q = (await cl!('POST', '/api/orders/quote', order)).json as { minHours: number };
+    expect(q.minHours).toBeGreaterThanOrEqual(1);
+    const price = 30;
     // Pas de clan : pas de commande réservée au clan ; sans dire où, refusé.
-    expect((await cl!('POST', '/api/orders/create', { ...order, scope: 'clan', price, delay: 'normal' })).status).toBe(400);
-    expect((await cl!('POST', '/api/orders/create', { ...order, price, delay: 'normal' })).status).toBe(400);
+    expect((await cl!('POST', '/api/orders/create', { ...order, scope: 'clan', price, delayHours: 24 })).status).toBe(400);
+    expect((await cl!('POST', '/api/orders/create', { ...order, price, delayHours: 24 })).status).toBe(400);
     const gold0 = (await st(cl)).state.gold;
-    expect((await cl!('POST', '/api/orders/create', { ...order, scope: 'server', price, delay: 'normal' })).status).toBe(200);
+    expect((await cl!('POST', '/api/orders/create', { ...order, scope: 'server', price, delayHours: 24 })).status).toBe(200);
     expect((await st(cl)).state.gold).toBe(gold0 - price);
     const mine = ((await cl!('GET', '/api/orders')).json as O).asClient[0]!;
     expect(mine).toMatchObject({ status: 'open', artisan: null, scope: 'server' });
@@ -774,7 +777,7 @@ describe('API', () => {
     await cl!('POST', '/api/clan/create', { name: 'Les Annonces' });
     const clanId = ((await mb!('GET', '/api/clans')).json as import('@bramo/shared').ClanListItem[]).find((c) => c.name === 'Les Annonces')!.id;
     await mb!('POST', '/api/clan/join', { clanId });
-    expect((await cl!('POST', '/api/orders/create', { ...order, qty: 5, scope: 'clan', price: 5, delay: 'rush' })).status).toBe(200);
+    expect((await cl!('POST', '/api/orders/create', { ...order, qty: 5, scope: 'clan', price: 5, delayHours: 12 })).status).toBe(200);
     const clanOrder = (await board(mb)).find((o) => o.scope === 'clan')!;
     expect(clanOrder).toBeDefined();
     expect((await board(ar)).some((o) => o.id === clanOrder.id)).toBe(false);
@@ -784,7 +787,7 @@ describe('API', () => {
     expect((await cl!('POST', '/api/orders/cancel', { id: clanOrder.id })).status).toBe(200);
     expect((await st(cl)).state.gold).toBe(g1 + 5);
     // Personne ne la prend : elle expire, l'or revient.
-    await cl!('POST', '/api/orders/create', { ...order, qty: 2, scope: 'server', price: 2, delay: 'normal' });
+    await cl!('POST', '/api/orders/create', { ...order, qty: 2, scope: 'server', price: 2, delayHours: 24 });
     const g2 = (await st(cl)).state.gold;
     now += (content.settings.orders.openHours + 1) * 3_600_000;
     expect((await st(cl)).state.gold).toBe(g2 + 2);

@@ -65,6 +65,14 @@ Bramo est un **idle-RPG multijoueur jouable dans le navigateur**, dans l'esprit 
 - **Bible corrigée** : six gardiens, six pages (pas douze) ; le modèle d'une saison parle d'une monnaie de saison et de mutateurs à 10 % au plus.
 - **À faire le moment venu** (§9 de la fiche) : la machine des saisons une fois pour toutes (`data/seasons.yaml`, moteur, serveur, bandeau et fenêtre Saison), le Registre et le Carnet, la tenue du Copiste et les trois armes, l'ornement de saison (GPT), les mesures au simulateur (§8).
 
+### Fait — retours sur les commandes et la fiche (24 octobre, soir)
+
+- **Demandes de Louis** : « l'onglet Artisans et Commandes en double » ; « trop d'infos, pas besoin d'or conseillé : c'est les joueurs qui décident des prix » ; « le délai, c'est au joueur de choisir, juste un minimum (le temps de production + un petit delta) ; c'est à l'artisan de décider si c'est convenable » ; « mon talent dit que la Rancœur donne de la Ferveur, mais rien ne remplit la Rancœur » ; « on ne peut toujours pas faire défiler » (onglet Build).
+- **Délai et prix libres** : `quoteOrder` rend `minHours` (temps de fabrication + `settings.orders.marginHours` 0,5 h, arrondi à l'heure), `maxHours` (`maxDelayHours` 336) et `cap` (3 × la valeur de référence, anti-cadeau d'or) ; plus de `delays` ni de prix conseillé. `orderCreateBody.delayHours` remplace `delay` ; migration `0033_delai_libre` (colonne `delay` supprimée). Fenêtre : un champ Délai (heures ou jours, vide = au plus tôt) et un champ Prix vide ; le plafond ne s'affiche que s'il est dépassé ; plus de valeur dans la recherche.
+- **Un seul onglet Commandes** : l'onglet Artisans du Marché est supprimé. Réparations demandées sur le panneau (`components/Repairs.tsx` : `RepairCard`, `RepairModal`), « + Réparation » dans Mes commandes ; rayon « Recherchés » (ordres d'achat ouverts, prime d'XP rappelée) dans Acheter et vendre.
+- **Fiche, réserves** : `filledPools` / `missingPools` (`combat/guide.ts`) : une conversion (Le Petit Arrangement) ne remplit une réserve que si sa réserve d'origine est remplie ; un talent qui attend une réserve que rien ne remplit porte « Sans effet pour l'instant : rien dans votre build ne donne de Rancœur » (`SheetView.places[].idle`). Réserves : « active », « rien ne la dépense », « rien ne la remplit ».
+- **Défilement** : l'onglet Build (et Stats) défile dans le panneau Personnage (`.char-equipment > .build-panel` peut rétrécir).
+
 ### Fait — commandes ouvertes (24 octobre)
 
 - **Demande de Louis** : « code les commandes ouvertes » (étape 3 de [`docs/design/social.md`](docs/design/social.md) §4.4 : une commande sans artisan désigné, au clan ou à tout le serveur ; le premier qui la prend la fait).

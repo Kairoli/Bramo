@@ -8,6 +8,7 @@ import type { GearInstance } from '../schemas/gear.js';
 import type { TalentMods } from '../schemas/combat.js';
 import type { CharacterState } from '../engine/state.js';
 import type { CombatStats } from './engine.js';
+import { filledPools, missingPools } from './guide.js';
 import { wornLoadout } from './loadout.js';
 import { wornGear, wornPieces } from './progress.js';
 import { activePrep } from './supplies.js';
@@ -32,7 +33,7 @@ export interface SheetView {
   floored: boolean;
   gear: { power: number; maxHp: number } | null;
   /** Les quatre places de talent : objets nommés d'abord, puis gemmes serties ; au-delà de quatre, rien n'agit. */
-  places: { max: number; items: { kind: 'named' | 'gem'; name: string; text: string | null; active: boolean }[] };
+  places: { max: number; items: { kind: 'named' | 'gem'; name: string; text: string | null; active: boolean; idle: string | null }[] };
   /** Ensembles portés : pièces, et chaque bonus, actif ou non. */
   sets: { name: string; count: number; bonuses: { pieces: number; text: string; active: boolean }[] }[];
   /** Réponses de situation actives (gemmes, ensembles à 4 pièces, préparation) : contre quelle mécanique. */
@@ -105,17 +106,24 @@ export function characterSheet(state: CharacterState, content: Content): SheetVi
     if (t && !named.includes(t)) named.push(t);
     if (p.gem && !gems.includes(p.gem)) gems.push(p.gem);
   }
+  // Un talent qui convertit, dépense ou attend une réserve que rien dans le build ne remplit n'agit pas : on le dit.
+  const filled = filledPools(w.talents);
+  const poolName = (id: string) => catalog?.pools.find((p) => p.id === id)?.name ?? id;
+  const idle = (t: Parameters<typeof missingPools>[0] | undefined) => {
+    const missing = t ? missingPools(t, filled) : [];
+    return missing.length ? `Sans effet pour l’instant : rien dans votre build ne donne de ${missing.map(poolName).join(' ni de ')}.` : null;
+  };
   const places: SheetView['places']['items'] = [
     ...named.map((id) => {
       const n = catalog?.named.find((x) => x.id === id);
-      return { kind: 'named' as const, name: n?.name ?? id, text: n?.text ?? null };
+      return { kind: 'named' as const, name: n?.name ?? id, text: n?.text ?? null, idle: idle(n) };
     }),
     ...gems.map((id) => {
       const g = catalog?.gems.find((x) => x.id === id);
       const tool = combat.tools.find((x) => x.id === id);
-      return { kind: 'gem' as const, name: g?.name ?? tool?.name ?? id, text: g?.text ?? (tool ? `Contre ${AGAINST[tool.family] ?? tool.family}.` : null) };
+      return { kind: 'gem' as const, name: g?.name ?? tool?.name ?? id, text: g?.text ?? (tool ? `Contre ${AGAINST[tool.family] ?? tool.family}.` : null), idle: idle(g) };
     }),
-  ].map((x, i) => ({ ...x, active: i < 4 }));
+  ].map((x, i) => ({ ...x, active: i < 4, idle: i < 4 ? x.idle : null }));
   // Ensembles portés et leurs bonus.
   const counts: Record<string, number> = {};
   for (const p of equipment) {

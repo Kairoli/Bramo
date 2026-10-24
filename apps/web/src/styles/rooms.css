@@ -2937,6 +2937,12 @@
 .char-equipment > * {
   flex-shrink: 0;
 }
+/* Build et Stats défilent dans le panneau au lieu d'être coupés en bas. */
+.char-equipment > .build-panel,
+.char-equipment > .stats-panel {
+  flex: 1 1 auto;
+  min-height: 0;
+}
 
 .equip-slot.equip-gear[style] {
   border-color: var(--rc);
@@ -9918,32 +9924,13 @@ div.tide-role {
   flex-wrap: wrap;
   gap: 5px;
 }
-.ord-delays {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 6px;
+.ord-price .ord-unit {
+  width: auto;
 }
-.ord-delay {
-  display: grid;
-  gap: 2px;
-  padding: 8px 10px;
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  background: var(--sunken);
-  color: var(--text);
-  font: inherit;
-  font-size: 13px;
-  text-align: left;
-  cursor: pointer;
-}
-.ord-delay.on {
-  border-color: var(--action);
-  background: color-mix(in srgb, var(--action) 12%, var(--sunken));
-}
-.ord-advised {
-  margin-top: 2px;
-  font-weight: 700;
-  color: var(--action);
+/* Délai trop court, ou prix au-dessus du plafond. */
+.ord-warn {
+  margin: 0;
+  color: var(--alert);
 }
 .ord-summary {
   padding: 9px 11px;
@@ -10047,6 +10034,12 @@ div.tide-role {
 }
 .ord-col-hint {
   margin: 0 0 8px;
+}
+.ord-new {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 8px;
 }
 @media (max-width: 1100px) {
   .ord-panel {

@@ -1,0 +1,1 @@
+ALTER TABLE "artisan_orders" DROP COLUMN "delay";

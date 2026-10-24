@@ -19,7 +19,6 @@ import {
   type CharacterState,
   type Content,
   GameError,
-  type OrderDelay,
   type OrderKind,
   type OrderView,
   type OrdersView,
@@ -42,8 +41,6 @@ import { people, relation } from './social.js';
 type Conn = Tx | Db;
 type Row = typeof artisanOrders.$inferSelect;
 
-const DELAY_NAME: Record<OrderDelay, string> = { rush: 'pressé', normal: 'normal', relaxed: 'tranquille' };
-
 /** Ce que le client fournit : ses matériaux pour la commande, autant qu'il en a, sans dépasser le besoin. */
 function suppliedBy(state: CharacterState, kind: OrderKind, target: string, qty: number, content: Content) {
   const t = orderTarget(kind, target, content);
@@ -59,7 +56,7 @@ async function artisanState(db: Conn, artisanId: number, content: Content) {
   return loaded;
 }
 
-/** Le devis d'une commande (délais et prix conseillés), avec ce que le client fournirait. */
+/** Le devis d'une commande (délai le plus court, plafond de prix), avec ce que le client fournirait. */
 export async function quote(db: Conn, client: CharacterState, artisanId: number | undefined, kind: OrderKind, target: string, qty: number, supply: boolean, content: Content) {
   const t = orderTarget(kind, target, content);
   if (!t) throw new GameError('unknown', 'On ne peut pas commander cet objet.');
@@ -91,7 +88,7 @@ export async function createOrder(
   clientId: number,
   clientName: string,
   input: CharacterState,
-  req: { artisanId?: number; scope?: 'clan' | 'server'; kind: OrderKind; target: string; qty: number; supply: boolean; price: number; delay: OrderDelay; message?: string },
+  req: { artisanId?: number; scope?: 'clan' | 'server'; kind: OrderKind; target: string; qty: number; supply: boolean; price: number; delayHours: number; message?: string },
   now: number,
   content: Content,
 ): Promise<{ state: CharacterState; log: string }> {
@@ -130,9 +127,11 @@ export async function createOrder(
   const state = cloneState(input);
   const supplied = req.supply ? suppliedBy(state, req.kind, req.target, req.qty, content) : [];
   const q = quoteOrder(t, req.qty, supplied, artisan?.state.inventory ?? {}, artisan?.state ?? null, content);
-  const d = q.delays.find((x) => x.id === req.delay)!;
+  // Le délai est libre, mais faisable : au moins le temps de fabrication plus une marge.
+  if (req.delayHours < q.minHours) throw new GameError('delay', `Au moins ${q.minHours} h : le temps de le fabriquer.`);
+  if (req.delayHours > q.maxHours) throw new GameError('delay', `Au plus ${Math.round(q.maxHours / 24)} jours.`);
   // Le plafond : une commande ne doit pas servir à donner de l'or (multi-comptes, vente d'or).
-  if (req.price > d.cap) throw new GameError('cap', `Au plus ${d.cap} or pour cette commande (trois fois le prix conseillé).`);
+  if (req.price > q.cap) throw new GameError('cap', `Au plus ${q.cap} or pour cette commande : une commande ne peut pas servir à donner de l’or.`);
   if (req.price > state.gold) throw new GameError('gold', 'Pas assez d’or.');
   if (req.price === 0 && !supplied.length) throw new GameError('free', 'Proposez un prix, ou fournissez les matériaux.');
   state.gold -= req.price;
@@ -147,8 +146,7 @@ export async function createOrder(
     qty: req.qty,
     price: req.price,
     materials: supplied,
-    delay: req.delay,
-    delayHours: d.hours,
+    delayHours: req.delayHours,
     message: req.message?.trim() || null,
     status: open ? 'open' : 'proposed',
     createdAt: new Date(now),
@@ -348,7 +346,6 @@ function view(r: Row, me: number, persons: Map<number, import('@bramo/shared').S
     price: r.price,
     net: r.price - tax,
     materials: r.materials,
-    delay: r.delay as OrderDelay,
     delayHours: r.delayHours,
     message: r.message,
     status: r.status as OrderView['status'],
@@ -422,4 +419,3 @@ export async function artisanReputation(db: Conn, id: number): Promise<{ deliver
   return { delivered: r?.delivered ?? 0, onTime: r?.onTime ?? 0 };
 }
 
-export { DELAY_NAME };

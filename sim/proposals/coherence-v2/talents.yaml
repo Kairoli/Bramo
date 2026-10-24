@@ -373,7 +373,7 @@ named:
     nickname: « Entre nous »
     slot: necklace
     source: Le Collecteur du bourbier (Abords du bourg)
-    text: "Toute Rancœur gagnée devient aussi de la Ferveur. Ce qu'on te fait, tu le rends en bien."
+    text: "Chaque fois que tu gagnes de la Rancœur, tu gagnes autant de Ferveur. Il en faut une autre source : ce collier n'en crée pas."
     convert: [{from: rancoeur, to: ferveur, share: 1}]
   - id: mauvais_presage
     name: Le Mauvais Présage

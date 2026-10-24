@@ -1,11 +1,12 @@
 import { type CSSProperties, useEffect, useMemo, useState } from 'react';
-import type { OrderCatalogView, OrderQuote, OrdersView, OrderTarget, OrderView } from '@bramo/shared';
+import type { OrderCatalogView, OrderQuote, OrdersView, OrderTarget, OrderView, RepairRequestView } from '@bramo/shared';
 import { api } from '../api';
 import { useGame } from '../game/GameContext';
 import { duration, num } from '../format';
 import { Avatar } from './Avatar';
 import { GearIcon } from './GearIcon';
 import { PlayerName } from './ProfileLink';
+import { RepairCard, RepairModal } from './Repairs';
 import { ItemIcon, Modal } from './ui';
 
 /**
@@ -16,12 +17,7 @@ import { ItemIcon, Modal } from './ui';
  * artisan qui sait la faire la prend.
  */
 
-const DELAY: Record<'rush' | 'normal' | 'relaxed', { name: string; hint: string }> = {
-  rush: { name: 'Pressé', hint: 'au plus vite : un prix plus haut' },
-  normal: { name: 'Normal', hint: 'il le glisse entre ses activités' },
-  relaxed: { name: 'Tranquille', hint: 'sans urgence' },
-};
-const hoursText = (h: number) => (h < 48 ? `${h} h` : `${Math.round(h / 24)} jours`);
+const hoursText = (h: number) => (h < 48 ? `${h} h` : h % 24 ? `${Math.floor(h / 24)} jours ${h % 24} h` : `${h / 24} jours`);
 
 function TargetIcon({ t }: { t: Pick<OrderTarget, 'kind' | 'id' | 'gear'> }) {
   const { content } = useGame();
@@ -31,7 +27,8 @@ function TargetIcon({ t }: { t: Pick<OrderTarget, 'kind' | 'id' | 'gear'> }) {
 
 /**
  * Passer une commande à un artisan : quoi, combien, matériaux fournis ou non, délai, prix. Sans `artisanId` : une commande
- * ouverte, affichée pour son clan ou tout le serveur.
+ * ouverte, affichée pour son clan ou tout le serveur. Prix et délai libres [Louis, 24 octobre : « c'est les joueurs qui
+ * décident des prix » ; « c'est à l'artisan de décider si c'est convenable »] : seulement un délai minimum.
  */
 export function OrderModal({ artisanId, inClan = false, onClose }: { artisanId?: number; inClan?: boolean; onClose: () => void }) {
   const { content, state, act, flash } = useGame();
@@ -44,7 +41,9 @@ export function OrderModal({ artisanId, inClan = false, onClose }: { artisanId?:
   const [qty, setQty] = useState(1);
   const [supply, setSupply] = useState(false);
   const [quote, setQuote] = useState<(OrderQuote & { supplied: { item: string; qty: number }[] }) | null>(null);
-  const [delay, setDelay] = useState<'rush' | 'normal' | 'relaxed'>('normal');
+  // Le délai, dans l'unité choisie ; vide : au plus tôt.
+  const [delayN, setDelayN] = useState<number | null>(null);
+  const [unit, setUnit] = useState<'h' | 'd'>('h');
   const [price, setPrice] = useState<number | null>(null);
   const [message, setMessage] = useState('');
   useEffect(() => {
@@ -67,10 +66,7 @@ export function OrderModal({ artisanId, inClan = false, onClose }: { artisanId?:
     const id = window.setTimeout(() => {
       api
         .orderQuote({ ...(openMode ? {} : { artisanId }), kind: pick.kind, target: pick.id, qty, supply })
-        .then((q) => {
-          setQuote(q);
-          setPrice(null);
-        })
+        .then(setQuote)
         .catch(() => setQuote(null));
     }, 250);
     return () => window.clearTimeout(id);
@@ -82,13 +78,16 @@ export function OrderModal({ artisanId, inClan = false, onClose }: { artisanId?:
     return (cat?.targets ?? []).filter((t) => !q || t.name.toLowerCase().includes(q) || prof(t.profession).toLowerCase().includes(q)).slice(0, 80);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cat, found, openMode, query]);
-  const d = quote?.delays.find((x) => x.id === delay);
-  const value = price ?? d?.advised ?? 0;
+  const minHours = quote?.minHours ?? 1;
+  const hours = delayN === null ? minHours : unit === 'd' ? delayN * 24 : delayN;
+  const delayBad = !!quote && (hours < quote.minHours || hours > quote.maxHours);
+  const value = price ?? 0;
+  const overCap = !!quote && value > quote.cap;
   const tax = Math.round(value * content.settings.orders.taxShare);
   const send = async () => {
-    if (!pick || !d) return;
+    if (!pick || !quote) return;
     const who = openMode ? { scope } : { artisanId };
-    const ok = await act(() => api.orderCreate({ ...who, kind: pick.kind, target: pick.id, qty, supply, price: value, delay, message: message.trim() || undefined }));
+    const ok = await act(() => api.orderCreate({ ...who, kind: pick.kind, target: pick.id, qty, supply, price: value, delayHours: hours, message: message.trim() || undefined }));
     if (ok) {
       flash(openMode ? `Commande affichée ${scope === 'clan' ? 'pour votre clan' : 'pour tout le serveur'}.` : `Commande envoyée à ${cat?.artisan.name}.`);
       onClose();
@@ -156,7 +155,6 @@ export function OrderModal({ artisanId, inClan = false, onClose }: { artisanId?:
                     {t.kind === 'gear' ? ' · équipement' : ''}
                   </span>
                 </span>
-                <span className="muted small">{num(t.value)} or</span>
               </button>
             ))}
           </div>
@@ -205,37 +203,56 @@ export function OrderModal({ artisanId, inClan = false, onClose }: { artisanId?:
               )}
             </div>
           )}
-          <div className="ord-delays">
-            {(quote?.delays ?? []).map((x) => (
-              <button key={x.id} className={`ord-delay${delay === x.id ? ' on' : ''}`} onClick={() => (setDelay(x.id), setPrice(null))}>
-                <strong>{DELAY[x.id].name}</strong>
-                <span>à livrer en {hoursText(x.hours)}</span>
-                <span className="muted small">{DELAY[x.id].hint}</span>
-                <span className="ord-advised">conseillé {num(x.advised)} or</span>
-              </button>
-            ))}
-            {!quote && <p className="muted small">Calcul du délai…</p>}
-          </div>
-          {quote && <p className="muted small">Temps de fabrication estimé : {duration(quote.workSec * 1000)} de travail pour {openMode ? 'l’artisan' : 'lui'}.</p>}
+          <label className="ord-row">
+            <span>Délai</span>
+            <span className="ord-price">
+              <input
+                className="input"
+                type="number"
+                min={1}
+                placeholder={unit === 'd' ? String(Math.ceil(minHours / 24)) : String(minHours)}
+                value={delayN ?? ''}
+                onChange={(e) => setDelayN(e.target.value === '' ? null : Math.max(1, Math.floor(Number(e.target.value) || 1)))}
+              />
+              <select className="input ord-unit" value={unit} onChange={(e) => setUnit(e.target.value as 'h' | 'd')}>
+                <option value="h">heures</option>
+                <option value="d">jours</option>
+              </select>
+            </span>
+          </label>
+          <p className={`small ${delayBad ? 'ord-warn' : 'muted'}`}>
+            {quote
+              ? hours > quote.maxHours
+                ? `Au plus ${hoursText(quote.maxHours)}.`
+                : `Au moins ${hoursText(quote.minHours)} : le temps de le fabriquer (${duration(quote.workSec * 1000)}), plus une marge.`
+              : 'Calcul du temps de fabrication…'}
+          </p>
           <label className="ord-row">
             <span>Prix</span>
             <span className="ord-price">
-              <input className="input" type="number" min={0} max={d?.cap} value={value} onChange={(e) => setPrice(Math.max(0, Math.floor(Number(e.target.value) || 0)))} />
-              <span className="muted small">or · {d ? `au plus ${num(d.cap)}` : ''}</span>
+              <input className="input" type="number" min={0} placeholder="votre prix" value={price ?? ''} onChange={(e) => setPrice(e.target.value === '' ? null : Math.max(0, Math.floor(Number(e.target.value) || 0)))} />
+              <span className="muted small">or</span>
             </span>
           </label>
+          {overCap && <p className="small ord-warn">Au plus {num(quote!.cap)} or pour cette commande : une commande ne peut pas servir à donner de l’or.</p>}
           <input className="input" placeholder="Un mot pour l’artisan (facultatif)" maxLength={200} value={message} onChange={(e) => setMessage(e.target.value)} />
           <div className="ord-summary small">
             <span>
-              <strong>{num(value)} or</strong> mis de côté maintenant (il vous en reste {num(state.gold - value)}). {supply && quote?.supplied.length ? 'Vos matériaux aussi. ' : ''}
-              {openMode ? 'L’artisan' : 'Il'} touchera <strong>{num(value - tax)} or</strong> à la livraison (taxe {Math.round(content.settings.orders.taxShare * 100)} %).{' '}
+              L’or{supply && quote?.supplied.length ? ' et vos matériaux' : ''} est mis de côté
+              {value > 0 ? (
+                <>
+                  {' '}
+                  ; {openMode ? 'l’artisan' : 'il'} touchera <strong>{num(value - tax)} or</strong> (taxe {Math.round(content.settings.orders.taxShare * 100)} %)
+                </>
+              ) : null}
+              .{' '}
               {openMode
-                ? `Le délai part quand un artisan la prend. Si personne ne la prend en ${hoursText(content.settings.orders.openHours)}, tout vous revient.`
-                : `S’il refuse ou ne répond pas en ${content.settings.orders.answerHours} h, tout vous revient.`}
+                ? `Le délai part quand un artisan la prend ; sans preneur en ${hoursText(content.settings.orders.openHours)}, tout vous revient.`
+                : 'S’il refuse, tout vous revient.'}
             </span>
           </div>
           <div className="ord-actions">
-            <button className="btn btn-primary" disabled={!d || value > (d?.cap ?? 0) || value > state.gold || (value === 0 && !(supply && quote?.supplied.length))} onClick={() => void send()}>
+            <button className="btn btn-primary" disabled={!quote || delayBad || overCap || value > state.gold || (value === 0 && !(supply && quote?.supplied.length))} onClick={() => void send()}>
               {openMode ? 'Afficher la commande' : 'Envoyer la commande'}
             </button>
           </div>
@@ -309,7 +326,7 @@ export function OrderCard({ o, onDone }: { o: OrderView; onDone: () => void }) {
         )}
         {(o.status === 'proposed' || o.status === 'accepted') && (
           <span className="muted">
-            {o.status === 'proposed' ? `réponse attendue sous ${duration(Math.max(0, left))}` : late ? `en retard de ${duration(-left)}` : `à livrer dans ${duration(left)}`} · délai {DELAY[o.delay].name.toLowerCase()} ({hoursText(o.delayHours)})
+            {o.status === 'proposed' ? `réponse attendue sous ${duration(Math.max(0, left))}` : late ? `en retard de ${duration(-left)}` : `à livrer dans ${duration(left)}`} · délai de {hoursText(o.delayHours)}
           </span>
         )}
         {o.status === 'delivered' && <span className="muted">{o.onTime ? 'Livrée à temps.' : 'Livrée en retard.'}</span>}
@@ -359,14 +376,19 @@ export function OrderCard({ o, onDone }: { o: OrderView; onDone: () => void }) {
   );
 }
 
-/** L'onglet Commandes du Marché : le panneau des commandes ouvertes, celles qu'on me passe, celles que j'ai passées. */
+/**
+ * L'onglet Commandes du Marché : le panneau (commandes ouvertes et réparations demandées), celles qu'on me passe, celles
+ * que j'ai passées. Les réparations y sont depuis que l'onglet Artisans a disparu (Louis, 24 octobre : « en double »).
+ */
 export function OrdersPanel() {
   const { flash } = useGame();
   const [v, setV] = useState<OrdersView | null>(null);
-  const [posting, setPosting] = useState(false);
+  const [repairs, setRepairs] = useState<RepairRequestView[]>([]);
+  const [posting, setPosting] = useState<'order' | 'repair' | null>(null);
   const [onlyMine, setOnlyMine] = useState(false);
   const load = () => {
     api.orders().then(setV).catch(() => {});
+    api.openRepairs().then(setRepairs).catch(() => {});
   };
   useEffect(() => {
     load();
@@ -378,6 +400,8 @@ export function OrdersPanel() {
   const active = (xs: OrderView[]) => xs.filter(live);
   const past = (xs: OrderView[]) => xs.filter((o) => !live(o));
   const board = onlyMine ? v.board.filter((o) => o.canTake) : v.board;
+  const toRepair = repairs.filter((r) => !r.mine);
+  const myRepairs = repairs.filter((r) => r.mine);
   return (
     <div className="ord-panel">
       <section className="panel ord-col">
@@ -389,13 +413,14 @@ export function OrdersPanel() {
         </div>
         <p className="small muted ord-col-hint">Des commandes sans artisan choisi : le premier qui la prend la fabrique et touche le prix.</p>
         <div className="ord-list scroll">
-          {board.length === 0 && (
-            <p className="muted small">
-              {v.board.length ? 'Aucune à votre niveau pour le moment.' : 'Aucune commande ouverte. Quand un joueur cherche un artisan sans savoir qui, sa commande arrive ici : le premier qui la prend la fait.'}
-            </p>
+          {board.length === 0 && toRepair.length === 0 && (
+            <p className="muted small">{v.board.length ? 'Aucune à votre niveau pour le moment.' : 'Rien sur le panneau pour le moment.'}</p>
           )}
           {board.map((o) => (
             <OrderCard key={o.id} o={o} onDone={load} />
+          ))}
+          {toRepair.map((r) => (
+            <RepairCard key={`r${r.id}`} r={r} onDone={load} />
           ))}
         </div>
       </section>
@@ -430,16 +455,22 @@ export function OrdersPanel() {
       <section className="panel ord-col">
         <div className="card-head">
           <span className="eyebrow">Mes commandes</span>
-          <button className="btn btn-sm" onClick={() => setPosting(true)}>
+        </div>
+        <div className="ord-new">
+          <button className="btn btn-sm" onClick={() => setPosting('order')}>
             + Commande ouverte
+          </button>
+          <button className="btn btn-sm" onClick={() => setPosting('repair')}>
+            + Réparation
           </button>
         </div>
         <div className="ord-list scroll">
-          {active(v.asClient).length === 0 && (
-            <p className="muted small">
-              Pour commander à quelqu’un, ouvrez sa page profil (cliquez sur son nom : dans le clan, la discussion, le bourg) et « Passer une commande ». Sans savoir à qui : « + Commande ouverte », pour votre clan ou tout le serveur.
-            </p>
+          {active(v.asClient).length === 0 && myRepairs.length === 0 && (
+            <p className="muted small">Pour commander à un artisan précis : son nom, puis « Passer une commande ».</p>
           )}
+          {myRepairs.map((r) => (
+            <RepairCard key={`r${r.id}`} r={r} onDone={load} />
+          ))}
           {active(v.asClient).map((o) => (
             <OrderCard key={o.id} o={o} onDone={load} />
           ))}
@@ -449,11 +480,19 @@ export function OrdersPanel() {
           ))}
         </div>
       </section>
-      {posting && (
+      {posting === 'order' && (
         <OrderModal
           inClan={v.inClan}
           onClose={() => {
-            setPosting(false);
+            setPosting(null);
+            load();
+          }}
+        />
+      )}
+      {posting === 'repair' && (
+        <RepairModal
+          onClose={() => {
+            setPosting(null);
             load();
           }}
         />

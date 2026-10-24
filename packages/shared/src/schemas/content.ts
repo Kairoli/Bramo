@@ -105,8 +105,8 @@ export const settingsSchema = z.object({
   }),
   /**
    * Commandes entre joueurs (docs/design/social.md §3 ; décidé par Louis le 24 octobre : prix et délai, matériaux fournis
-   * possibles, taxe de 5 % et plafond). Délais proposés : `factor` × le temps de fabrication, au moins `minHours` ; le prix
-   * conseillé est multiplié par `price`.
+   * possibles, taxe de 5 % et plafond). Prix et délai libres, choisis par le client ; l'artisan juge s'ils lui conviennent.
+   * Le plafond (`capFactor` × la valeur de référence) empêche seulement une commande de servir de cadeau d'or.
    */
   orders: z
     .object({
@@ -118,11 +118,9 @@ export const settingsSchema = z.object({
       /** Une commande ouverte (panneau du clan ou du serveur) attend un artisan au plus ce temps. */
       openHours: z.number().positive(),
       maxQty: z.number().int().min(1),
-      delays: z.object({
-        rush: z.object({ factor: z.number().positive(), minHours: z.number().positive(), price: z.number().positive() }),
-        normal: z.object({ factor: z.number().positive(), minHours: z.number().positive(), price: z.number().positive() }),
-        relaxed: z.object({ factor: z.number().positive(), minHours: z.number().positive(), price: z.number().positive() }),
-      }),
+      /** Délai libre : au moins le temps de fabrication plus `marginHours`, au plus `maxDelayHours`. */
+      marginHours: z.number().min(0),
+      maxDelayHours: z.number().positive(),
     })
     .default({
       taxShare: 0.05,
@@ -132,7 +130,8 @@ export const settingsSchema = z.object({
       answerHours: 24,
       openHours: 72,
       maxQty: 10000,
-      delays: { rush: { factor: 1.5, minHours: 4, price: 1.3 }, normal: { factor: 3, minHours: 24, price: 1 }, relaxed: { factor: 3, minHours: 168, price: 0.9 } },
+      marginHours: 0.5,
+      maxDelayHours: 336,
     }),
   /** Marché entre joueurs : ordres d'achat et de vente, taxe sur les ventes (puits d'or). */
   market: z.object({

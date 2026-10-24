@@ -7,3 +7,6 @@ coverage/
 
 # Production (deploy/)
 deploy/backups/
+
+# Vidéos de promotion (tools/promo/record.mjs) : trop lourdes pour le dépôt.
+promo/*.mp4

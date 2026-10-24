@@ -8786,3 +8786,266 @@ div.tide-role {
 .title-chip.default {
   justify-self: center;
 }
+
+/* --- Vidéo de promotion (rooms/Promo.tsx, /#promo) : un cadre 9:16 de 540 × 960, filmé en 1080 × 1920. --- */
+.promo-stage {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  background: #000;
+}
+.promo-frame {
+  position: relative;
+  width: 540px;
+  height: 960px;
+  overflow: hidden;
+  background: radial-gradient(ellipse at 50% 30%, #1a2a38, #070b10 70%);
+  color: #f6f1e6;
+  font-family: inherit;
+}
+.promo-layer {
+  position: absolute;
+  inset: 0;
+}
+.promo-town {
+  position: absolute;
+  inset: -10% -40%;
+  background: url(/scenes/town.webp) center / cover no-repeat;
+  transform-origin: 50% 60%;
+}
+.promo-night {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgb(4 8 16 / 0.85), rgb(4 8 16 / 0.35) 45%, rgb(4 8 16 / 0.9)),
+    radial-gradient(ellipse at 50% 45%, transparent 30%, rgb(0 0 0 / 0.6));
+}
+.promo-fog {
+  position: absolute;
+  inset: 45% -20% -10%;
+  background:
+    radial-gradient(ellipse at 30% 60%, rgb(200 220 230 / 0.55), transparent 55%),
+    radial-gradient(ellipse at 75% 50%, rgb(200 220 230 / 0.45), transparent 50%),
+    radial-gradient(ellipse at 50% 90%, rgb(220 235 240 / 0.6), transparent 60%);
+  filter: blur(18px);
+}
+.promo-clock {
+  position: absolute;
+  left: 50%;
+  top: 46%;
+  width: 0;
+  height: 0;
+  display: grid;
+  place-items: center;
+}
+.promo-clock span {
+  position: absolute;
+  font-size: 112px;
+  font-weight: 900;
+  letter-spacing: 0.02em;
+  color: #e9e2d3;
+  text-shadow: 0 6px 30px rgb(0 0 0 / 0.8);
+  white-space: nowrap;
+}
+.promo-clock span.on {
+  color: #ffd27a;
+  text-shadow: 0 0 40px rgb(255 190 90 / 0.8), 0 6px 30px rgb(0 0 0 / 0.8);
+}
+.promo-ring {
+  position: absolute;
+  width: 220px;
+  height: 220px;
+  border-radius: 50%;
+  border: 3px solid rgb(255 210 122 / 0.8);
+}
+.promo-caption {
+  position: absolute;
+  left: 24px;
+  right: 24px;
+  text-align: center;
+  font-size: 46px;
+  font-weight: 900;
+  line-height: 1.08;
+  text-shadow: 0 4px 24px rgb(0 0 0 / 0.9), 0 0 2px rgb(0 0 0 / 0.9);
+  text-wrap: balance;
+}
+.promo-caption.top {
+  top: 120px;
+}
+.promo-caption.bottom {
+  bottom: 120px;
+}
+.promo-caption b {
+  color: #ffd27a;
+}
+.promo-caption b.tide {
+  color: #6fe3ee;
+}
+.promo-sea {
+  background: linear-gradient(180deg, #050a12, #0b1a26 40%, #0b1a26 60%, #050a12);
+}
+.promo-tide {
+  position: absolute;
+  top: 330px;
+  left: 0;
+  border-radius: 0;
+  overflow: hidden;
+  box-shadow: 0 0 80px rgb(76 201 214 / 0.25);
+}
+.promo-tide .tide-live {
+  width: 1000px;
+  height: 420px;
+}
+.promo-count {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 150px;
+  text-align: center;
+  font-size: 24px;
+  font-weight: 700;
+  color: #cfe9ee;
+}
+.promo-count strong {
+  font-size: 34px;
+  color: #ffd27a;
+}
+.promo-classes {
+  background: radial-gradient(ellipse at 50% 55%, #22201d, #08090b 70%);
+}
+.promo-glow {
+  position: absolute;
+  inset: 25% -10% 20%;
+  background: radial-gradient(ellipse at 50% 60%, rgb(240 138 75 / 0.25), transparent 60%);
+}
+.promo-glow.end {
+  background: radial-gradient(ellipse at 50% 45%, rgb(255 190 110 / 0.3), transparent 55%);
+}
+.promo-trio {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 190px;
+  height: 520px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+}
+.promo-hero {
+  position: relative;
+  display: grid;
+  grid-template-rows: 1fr auto;
+  justify-items: center;
+}
+.promo-hero .rig {
+  width: 260px;
+  height: 440px;
+  margin: 0 -40px;
+  filter: drop-shadow(0 0 22px color-mix(in srgb, var(--cc) 45%, transparent));
+}
+.promo-hero-name {
+  font-size: 24px;
+  font-weight: 900;
+  color: var(--cc);
+  text-shadow: 0 2px 12px rgb(0 0 0 / 0.9);
+}
+.promo-end {
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 18px;
+  background: radial-gradient(ellipse at 50% 45%, #1c1712, #050608 70%);
+  text-align: center;
+}
+.promo-logo {
+  margin: 0;
+  font-size: 118px;
+  font-weight: 900;
+  color: #f08a4b;
+  text-shadow: 0 0 40px rgb(240 138 75 / 0.55), 0 8px 30px rgb(0 0 0 / 0.9);
+}
+.promo-tag {
+  margin: 0;
+  font-size: 30px;
+  font-weight: 800;
+  line-height: 1.2;
+}
+.promo-soon {
+  font-size: 20px;
+  font-weight: 700;
+  color: #6fe3ee;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+/* Retouches de la vidéo : la scène de la Marée sans son bandeau (coupé par le cadrage), quatre lanternes à la place ;
+   les trois classes en diagonale, sans se chevaucher. */
+.promo-tide .tide-live-hud {
+  display: none;
+}
+.promo-lanterns {
+  position: absolute;
+  top: 262px;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  gap: 26px;
+}
+.promo-lanterns i {
+  width: 30px;
+  height: 40px;
+  border-radius: 9px 9px 13px 13px;
+  border: 3px solid #3b4a55;
+  background: #10181f;
+  transition: none;
+}
+.promo-lanterns i.lit {
+  border-color: #ffd27a;
+  background: radial-gradient(circle at 50% 60%, #fff3c4, #f0a640);
+  box-shadow: 0 0 22px rgb(255 200 110 / 0.85), 0 0 60px rgb(255 170 80 / 0.45);
+}
+.promo-count {
+  bottom: 70px;
+}
+.promo-trio {
+  display: block;
+  top: 170px;
+}
+.promo-hero {
+  position: absolute;
+  top: 0;
+  width: 210px;
+  height: 520px;
+}
+.promo-hero:nth-child(1) {
+  left: -6px;
+  top: 40px;
+}
+.promo-hero:nth-child(2) {
+  left: 150px;
+  top: 0;
+  z-index: 2;
+}
+.promo-hero:nth-child(3) {
+  left: 300px;
+  top: 40px;
+}
+.promo-hero .rig {
+  width: 210px;
+  height: 420px;
+  margin: 0;
+}
+.promo-hero:nth-child(1) {
+  left: -16px;
+  top: 0;
+}
+.promo-hero:nth-child(2) {
+  left: 150px;
+  transform-origin: 50% 80%;
+}
+.promo-hero:nth-child(3) {
+  left: 318px;
+  top: 0;
+}
+.promo-hero .rig {
+  width: 200px;
+}

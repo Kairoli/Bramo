@@ -25,6 +25,7 @@ import { GearIcons } from './rooms/GearIcons';
 import { BestiaryPage } from './rooms/Bestiary';
 import { SeasonBoard } from './rooms/SeasonBoard';
 import { PerfBench } from './rooms/PerfBench';
+import { Promo } from './rooms/Promo';
 import { ContentContext } from './game/ContentContext';
 import { ProfileOpener } from './components/ProfileLink';
 import './styles/global.css';
@@ -107,6 +108,8 @@ function App() {
         <PerfBench />
       ) : hash === '#saisons' && import.meta.env.DEV ? (
         <SeasonBoard />
+      ) : hash === '#promo' && import.meta.env.DEV ? (
+        <Promo />
       ) : hash === '#icones' && import.meta.env.DEV ? (
         <GearIcons />
       ) : !session ? (

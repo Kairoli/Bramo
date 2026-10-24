@@ -11,11 +11,19 @@ const STEP = Math.log(1.02);
 
 const geo = (x: number) => Math.exp(Math.round(Math.log(Math.max(1e-6, x)) / STEP) * STEP);
 const cent = (x: number) => Math.round(x * 100) / 100;
+/**
+ * Audit du 24 octobre (sim/reports/audit/verifier.md §2) : au centième, les petites statistiques du moteur de Puissance
+ * disparaissent (régénération 0,27 %/s → 0, contre-attaque 1,2 % → 1 %) et un build au mur passe de 50 % à 7-27 % de victoires.
+ * `CACHE_PARTS=4` garde quatre décimales pour ces parts (par défaut deux, comme les rapports d'avant l'audit).
+ */
+const PARTS = Number(process.env.CACHE_PARTS ?? 2);
+const SMALL = new Set(['regen', 'combo', 'counter', 'evasion']);
+const part = (x: number) => Math.round(x * 10 ** PARTS) / 10 ** PARTS;
 
 function canonical(s: CombatantSetup): CombatantSetup {
   const st = s.stats ?? {};
   const stats: Record<string, number> = {};
-  for (const [k, v] of Object.entries(st)) if (typeof v === 'number') stats[k] = k === 'power' || k === 'maxHp' ? geo(v) : cent(v);
+  for (const [k, v] of Object.entries(st)) if (typeof v === 'number') stats[k] = k === 'power' || k === 'maxHp' ? geo(v) : SMALL.has(k) ? part(v) : cent(v);
   return { ...s, id: 'p1', stats };
 }
 

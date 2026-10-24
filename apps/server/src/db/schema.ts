@@ -10,7 +10,7 @@ import {
   text,
   timestamp,
 } from 'drizzle-orm/pg-core';
-import type { Activity, AdvanceSummary, CombatState, EnergyState, MealBuff, QueuedAction, RolledLine, TideAward, TideStats } from '@bramo/shared';
+import type { Activity, AdvanceSummary, CharacterState, CombatState, EnergyState, MealBuff, QueuedAction, RolledLine, TideAward, TideStats } from '@bramo/shared';
 
 /** Postgres standard uniquement : le schéma doit rester compatible Supabase. */
 
@@ -78,6 +78,8 @@ export const characters = pgTable('characters', {
   tourDone: boolean('tour_done').notNull().default(false),
   /** Combat : XP par classe, voies, plans, activité de combat (CombatState de @bramo/shared). */
   combat: jsonb('combat').$type<Partial<CombatState>>().notNull().default({}),
+  /** Moteur de Puissance (recherches, reliques, lanterne…) : par système, le niveau de chaque nœud et les recherches en cours. */
+  power: jsonb('power').$type<NonNullable<CharacterState['power']>>().notNull().default({}),
   lastTickAt: ts('last_tick_at').notNull(),
   lastSeenAt: ts('last_seen_at').notNull(),
   /** Qui peut lui écrire en privé : tout le monde (par défaut) ou ses amis et son clan. */

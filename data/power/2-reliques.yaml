@@ -1,0 +1,57 @@
+# Les Reliques (les reliques de Legend of Mushroom) : ce que la Marée a pris au monde et rend de travers. Chacune est liée
+# à une région : on la restaure avec les vestiges de cette région (son butin de combat) et des pièces anciennes (l'Exploration). Chacune donne une
+# statistique, et au niveau 5 un talent dans le langage des gemmes : de quoi nourrir un build. Ouvertes au niveau 15.
+id: reliques
+name: Les Reliques
+kind: collection
+text: "Des objets que la Marée a gardés trop longtemps. Restaurés, ils se souviennent de ce qu'ils savaient faire."
+unlock: {classLevel: 15}
+nodes:
+  - id: cloche_du_puits
+    name: La Cloche du puits
+    text: "+0,3 point de contre-attaque par niveau. Niveau 5 : un coup encaissé donne 2 Rancœur (toutes les 2 s au plus)."
+    maxLevel: 10
+    cost: {gold: {base: 200, growth: 1.35}, items: [{item: galets_du_puits, base: 8, growth: 1.25}, {item: old_coin, base: 4, growth: 1.2}]}
+    perLevel: [{stat: counter, flat: 0.003}]
+    talents: [{level: 5, talent: {id: relique_cloche, name: La Cloche du puits, effects: [{when: hit_taken, cooldown: 2, do: {gain: {pool: rancoeur, n: 2}}}]}}]
+    force: 0.01
+  - id: boussole_noyee
+    name: La Boussole noyée
+    text: "+0,5 % de Puissance par niveau. Niveau 5 : ta première compétence de chaque combat frappe 30 % plus fort."
+    maxLevel: 10
+    cost: {gold: {base: 200, growth: 1.35}, items: [{item: encre_fossile, base: 8, growth: 1.25}, {item: old_coin, base: 4, growth: 1.2}]}
+    perLevel: [{stat: power, pct: 0.005}]
+    talents: [{level: 5, talent: {id: relique_boussole, name: La Boussole noyée, effects: [{when: skill, before: 3, cooldown: 999, do: {amplify: 0.3}}]}}]
+    force: 0.01
+  - id: horloge_arretee
+    name: L'Horloge arrêtée
+    text: "+0,3 point de Cadence par niveau. Niveau 5 : chaque attaque de base raccourcit de 0,1 s la recharge de tes compétences."
+    maxLevel: 10
+    cost: {gold: {base: 200, growth: 1.35}, items: [{item: scorie_de_memoire, base: 8, growth: 1.25}, {item: old_coin, base: 4, growth: 1.2}]}
+    perLevel: [{stat: haste, flat: 0.003}]
+    talents: [{level: 5, talent: {id: relique_horloge, name: L'Horloge arrêtée, effects: [{when: basic, do: {cooldownCut: 0.1}}]}}]
+    force: 0.01
+  - id: miroir_de_vase
+    name: Le Miroir de vase
+    text: "+0,25 point d'esquive par niveau. Niveau 5 : un bouclier de 0,3 P pendant les 8 premières secondes du combat."
+    maxLevel: 10
+    cost: {gold: {base: 200, growth: 1.35}, items: [{item: eclat_de_serment, base: 8, growth: 1.25}, {item: old_coin, base: 4, growth: 1.2}]}
+    perLevel: [{stat: evasion, flat: 0.0025}]
+    talents: [{level: 5, talent: {id: relique_miroir, name: Le Miroir de vase, effects: [{when: fight_start, do: {shield: {coef: 0.3, duration: 8}}}]}}]
+    force: 0.01
+  - id: lanterne_du_passeur
+    name: La Lanterne du passeur
+    text: "+0,5 % de PV par niveau. Niveau 5 : passé 10 s de combat, +10 % de dégâts."
+    maxLevel: 10
+    cost: {gold: {base: 200, growth: 1.35}, items: [{item: ambre_de_veille, base: 8, growth: 1.25}, {item: old_coin, base: 4, growth: 1.2}]}
+    perLevel: [{stat: maxHp, pct: 0.005}]
+    talents: [{level: 5, talent: {id: relique_passeur, name: La Lanterne du passeur, effects: [{when: direct, after: 10, do: {amplify: 0.1}}]}}]
+    force: 0.01
+  - id: sceau_brise
+    name: Le Sceau brisé
+    text: "+0,25 point de combo par niveau. Niveau 5 : chaque attaque de base (combos compris) donne une Mesure ; +2 Mesures au plafond."
+    maxLevel: 10
+    cost: {gold: {base: 200, growth: 1.35}, items: [{item: quartz_de_faille, base: 8, growth: 1.25}, {item: old_coin, base: 4, growth: 1.2}]}
+    perLevel: [{stat: combo, flat: 0.0025}]
+    talents: [{level: 5, talent: {id: relique_sceau, name: Le Sceau brisé, effects: [{when: basic, do: {gain: {pool: mesure, n: 1}}}], pools: {mesure: 2}}}]
+    force: 0.01

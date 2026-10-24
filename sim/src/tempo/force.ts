@@ -36,10 +36,10 @@ const levelAfter = (hours: number) => {
 type Snap = { label: string; days: number; gearTalents: number; levels: Record<string, Record<string, number>> };
 const SNAPS: Snap[] = [
   { label: 'Premier jour', days: 1, gearTalents: 0, levels: {} },
-  { label: 'Une semaine', days: 7, gearTalents: 1, levels: { recherches: { fil_de_lame: 5, cuir_epais: 5 }, lanterne: { flamme: 8 } } },
-  { label: 'Un mois', days: 30, gearTalents: 4, levels: { recherches: { fil_de_lame: 10, cuir_epais: 10, coup_franc: 3, elan: 2, savoir_maree: 5 }, lanterne: { flamme: 18, flamme_vive: 1 }, reliques: { boussole_noyee: 3, cloche_du_puits: 2 } } },
-  { label: 'Trois mois', days: 90, gearTalents: 8, levels: { recherches: { fil_de_lame: 16, cuir_epais: 16, coup_franc: 7, elan: 6, riposte: 5, pas_de_cote: 4, tranchant: 3, bonne_mine: 2, savoir_maree: 12, cadence_savante: 3 }, lanterne: { flamme: 34, flamme_vive: 1, halo: 1, fanal: 1 }, reliques: { boussole_noyee: 6, cloche_du_puits: 5, horloge_arretee: 5, lanterne_du_passeur: 4 } } },
-  { label: 'Six mois', days: 180, gearTalents: 11, levels: { recherches: { fil_de_lame: 20, cuir_epais: 20, coup_franc: 10, elan: 10, riposte: 10, pas_de_cote: 10, tranchant: 8, bonne_mine: 6, savoir_maree: 20, cadence_savante: 8 }, lanterne: { flamme: 50, flamme_vive: 1, halo: 1, fanal: 1 }, reliques: { boussole_noyee: 10, cloche_du_puits: 9, horloge_arretee: 8, lanterne_du_passeur: 8, miroir_de_vase: 6, sceau_brise: 6 } } },
+  { label: 'Une semaine', days: 7, gearTalents: 1, levels: { recherches: { fil_de_lame: 5, cuir_epais: 5 }, lanterne: { meche: 8 } } },
+  { label: 'Un mois', days: 30, gearTalents: 4, levels: { recherches: { fil_de_lame: 10, cuir_epais: 10, coup_franc: 3, elan: 2, savoir_maree: 5 }, lanterne: { meche: 18, flamme_vive: 1 }, reliques: { boussole_noyee: 3, cloche_du_puits: 2 } } },
+  { label: 'Trois mois', days: 90, gearTalents: 8, levels: { recherches: { fil_de_lame: 16, cuir_epais: 16, coup_franc: 7, elan: 6, riposte: 5, pas_de_cote: 4, tranchant: 3, bonne_mine: 2, savoir_maree: 12, cadence_savante: 3 }, lanterne: { meche: 25, flamme: 9, flamme_vive: 1, halo: 1, fanal: 1 }, reliques: { boussole_noyee: 6, cloche_du_puits: 5, horloge_arretee: 5, lanterne_du_passeur: 4 } } },
+  { label: 'Six mois', days: 180, gearTalents: 11, levels: { recherches: { fil_de_lame: 20, cuir_epais: 20, coup_franc: 10, elan: 10, riposte: 10, pas_de_cote: 10, tranchant: 8, bonne_mine: 6, savoir_maree: 20, cadence_savante: 8 }, lanterne: { meche: 25, flamme: 25, flamme_vive: 1, halo: 1, fanal: 1 }, reliques: { boussole_noyee: 10, cloche_du_puits: 9, horloge_arretee: 8, lanterne_du_passeur: 8, miroir_de_vase: 6, sceau_brise: 6 } } },
 ];
 const researchHours = (lv: Record<string, number>) => {
   const sys = power.systems.find((s) => s.id === 'recherches')!;

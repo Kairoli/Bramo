@@ -239,6 +239,13 @@
       "when": 1792855139126,
       "tag": "0033_delai_libre",
       "breakpoints": true
+    },
+    {
+      "idx": 34,
+      "version": "7",
+      "when": 1792871588400,
+      "tag": "0034_puissance",
+      "breakpoints": true
     }
   ]
 }

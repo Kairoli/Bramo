@@ -1019,4 +1019,33 @@ describe('API', () => {
     expect(done.rerollOffer).toBeNull();
     expect(done.rerollable).toEqual([0]);
   });
+
+  it('moteur de Puissance : une recherche se paie, tourne, finit et augmente la Force', async () => {
+    const c = { value: '' };
+    const p = player(c);
+    await p('POST', '/api/auth/register', { username: 'Savante', password: 'motdepasse' });
+    await p('POST', '/api/character/class', { classId: 'forgefire' });
+    const fresh = (await p('GET', '/api/state')).json as StateResponse;
+    expect(fresh.state.power!.systems.find((x) => x.id === 'recherches')!.open).toBe(false);
+    // Quelques heures de route : le niveau 5 de classe ouvre les recherches.
+    now += 3 * 3_600_000;
+    await p('GET', '/api/state');
+    await p('POST', '/api/dev/items/grant', { itemId: 'gold', qty: 10 });
+    await p('POST', '/api/dev/items/grant', { itemId: 'bronze_bar', qty: 20 });
+    const before = (await p('GET', '/api/state')).json as StateResponse;
+    const node = () => (before.state.power!.systems.find((x) => x.id === 'recherches')!.nodes.find((n) => n.id === 'fil_de_lame'))!;
+    expect(node().blocker).toBeNull();
+    const started = await p('POST', '/api/power/upgrade', { system: 'recherches', node: 'fil_de_lame' });
+    expect(started.status).toBe(200);
+    const running = (started.json as StateResponse).state.power!.systems.find((x) => x.id === 'recherches')!.nodes.find((n) => n.id === 'fil_de_lame')!;
+    expect(running.pendingUntil).toBeGreaterThan(now);
+    expect(running.level).toBe(0);
+    expect((started.json as StateResponse).state.gold).toBe(before.state.gold - node().next!.gold);
+    expect((await p('POST', '/api/power/upgrade', { system: 'recherches', node: 'cuir_epais' })).status).toBe(400);
+    now += node().next!.seconds * 1000;
+    const after = (await p('GET', '/api/state')).json as StateResponse;
+    expect(after.state.power!.systems.find((x) => x.id === 'recherches')!.nodes.find((n) => n.id === 'fil_de_lame')!.level).toBe(1);
+    expect(after.journal.some((e) => e.text.startsWith('Recherche terminée'))).toBe(true);
+    expect(after.state.power!.force!).toBeGreaterThan(after.state.power!.withoutSystems!);
+  });
 });

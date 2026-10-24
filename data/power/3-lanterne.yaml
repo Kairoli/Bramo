@@ -1,0 +1,43 @@
+# La Lanterne de dos (l'accessoire de dos et ses talents dans Legend of Mushroom) : chacun porte une lanterne contre la Marée.
+# Elle monte de niveau en deux temps (la Mèche : écorce et perles de verre ; la Grande Flamme : lys-lanterne et perles) ; trois
+# choix entre deux talents de lanterne en chemin. Son apparence est un emplacement cosmétique (une boutique possible : apparence
+# seulement, jamais de niveau). Ouverte au niveau 10.
+id: lanterne
+name: La Lanterne
+kind: companion
+text: "Une lanterne au dos : elle éclaire, elle réchauffe, et elle apprend en même temps que toi."
+unlock: {classLevel: 10}
+nodes:
+  - {id: meche, name: La Mèche, text: "+0,2 % de Puissance et de PV par niveau.", maxLevel: 25,
+     cost: {gold: {base: 60, growth: 1.12}, items: [{item: bark, base: 6, growth: 1.1}, {item: glass_bead, base: 2, growth: 1.1}]},
+     perLevel: [{stat: power, pct: 0.002}, {stat: maxHp, pct: 0.002}]}
+  - {id: flamme, name: La Grande Flamme, text: "+0,2 % de Puissance et de PV par niveau.", maxLevel: 25, requires: [{node: meche, level: 25}],
+     cost: {gold: {base: 600, growth: 1.1}, items: [{item: lantern_lily, base: 3, growth: 1.08}, {item: glass_bead, base: 4, growth: 1.08}]},
+     perLevel: [{stat: power, pct: 0.002}, {stat: maxHp, pct: 0.002}]}
+  # Mèche niveau 10 : un choix.
+  - {id: meche_longue, name: Mèche longue, text: "Régénération : 0,15 % des PV par seconde.", choice: lanterne_10, requires: [{node: meche, level: 10}],
+     cost: {gold: {base: 1500}}, perLevel: [{stat: regen, flat: 0.0015}]}
+  - {id: flamme_vive, name: Flamme vive, text: "+3 points de combo.", choice: lanterne_10, requires: [{node: meche, level: 10}],
+     cost: {gold: {base: 1500}}, perLevel: [{stat: combo, flat: 0.03}]}
+  # Mèche niveau 20 : un choix.
+  - {id: verre_epais, name: Verre épais, text: "+3 points d'esquive.", choice: lanterne_20, requires: [{node: meche, level: 20}],
+     cost: {gold: {base: 4000}}, perLevel: [{stat: evasion, flat: 0.03}]}
+  - {id: halo, name: Le Halo, text: "+3 points de critique.", choice: lanterne_20, requires: [{node: meche, level: 20}],
+     cost: {gold: {base: 4000}}, perLevel: [{stat: critChance, flat: 0.03}]}
+  # Grande Flamme niveau 5 : un choix qui donne un talent.
+  - id: fanal
+    name: Le Fanal
+    text: "Toutes les 8 s, ta lanterne frappe la cible (0,6 P)."
+    choice: lanterne_30
+    requires: [{node: flamme, level: 5}]
+    cost: {gold: {base: 10000}, items: [{item: artificer_lantern, base: 2}]}
+    talents: [{level: 1, talent: {id: lanterne_fanal, name: Le Fanal, effects: [{when: every, period: 8, do: {damage: 0.6}}]}}]
+    force: 0.15
+  - id: veilleuse
+    name: La Veilleuse
+    text: "Sous 40 % de tes PV, une fois par combat : soin de 0,8 P."
+    choice: lanterne_30
+    requires: [{node: flamme, level: 5}]
+    cost: {gold: {base: 10000}, items: [{item: artificer_lantern, base: 2}]}
+    talents: [{level: 1, talent: {id: lanterne_veilleuse, name: La Veilleuse, effects: [{when: hp_below, hpBelow: 0.4, cooldown: 999, do: {heal: {coef: 0.8}}}]}}]
+    force: 0.15

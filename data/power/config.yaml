@@ -1,0 +1,6 @@
+# Moteur de Puissance, proposition puissance-v1 (24 octobre 2026) : réglages communs. Voir docs/design/puissance.md.
+# Plafonds, toutes sources confondues (équipement, systèmes) : à équilibrer.
+caps: {combo: 0.35, counter: 0.3, evasion: 0.25, regen: 0.02}
+# Force = 10 000 à l'équipement de référence (Rare, palier 20), ×1,9 par palier de vraie force (exposant 7) ; un compte
+# actif de six mois vers 70 à 80 millions (Louis : « Legend of Mushroom se compte en millions »). Poids réglés sur le mur.
+force: {scale: 10000, exponent: 7, comboValue: 0.4, counterValue: 0.3, evasionValue: 0.6, regenValue: 10, talentValue: 0.15}

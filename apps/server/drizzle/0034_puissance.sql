@@ -1,0 +1,1 @@
+ALTER TABLE "characters" ADD COLUMN "power" jsonb DEFAULT '{}'::jsonb NOT NULL;

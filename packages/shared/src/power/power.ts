@@ -160,3 +160,87 @@ export function upgradeNode(state: CharacterState, content: Content, sysId: stri
     : { levels: { ...p.levels, [nodeId]: (p.levels[nodeId] ?? 0) + 1 }, pending: [...p.pending] };
   return { ...s, gold: s.gold - cost.gold, inventory, power: { ...s.power, [sysId]: next } };
 }
+
+/** Un nœud tel que le joueur le voit : son niveau, ce que coûte le suivant, ce qui l'en empêche. */
+export interface PowerNodeView {
+  id: string;
+  name: string;
+  text: string | null;
+  icon: string | null;
+  level: number;
+  maxLevel: number;
+  /** Recherche en cours sur ce nœud : sa fin (ms epoch). */
+  pendingUntil: number | null;
+  /** Le niveau suivant : or, objets (avec ce qu'on en a), temps. Null au maximum. */
+  next: { gold: number; items: { item: string; name: string; qty: number; have: number }[]; seconds: number } | null;
+  /** Pourquoi on ne peut pas le monter maintenant (null : on peut). */
+  blocker: string | null;
+  requires: { node: string; name: string; level: number }[];
+  choice: string | null;
+  /** Talents débloqués et à quel niveau. */
+  talents: { level: number; name: string }[];
+}
+export interface PowerSystemView {
+  id: string;
+  name: string;
+  kind: PowerSystem['kind'];
+  text: string | null;
+  open: boolean;
+  unlockLevel: number;
+  slots: number;
+  nodes: PowerNodeView[];
+}
+
+/** Les systèmes de Puissance pour l'écran (null sans data/power/). */
+export function powerView(state: CharacterState, content: Content, now: number): PowerSystemView[] | null {
+  if (!content.power) return null;
+  const s = settlePower(state, now);
+  return content.power.systems.map((sys) => {
+    const p = s.power?.[sys.id] ?? { levels: {}, pending: [] };
+    const innate = sys.kind === 'innate';
+    return {
+      id: sys.id,
+      name: sys.name,
+      kind: sys.kind,
+      text: sys.text ?? null,
+      open: systemOpen(sys, s, content),
+      unlockLevel: sys.unlock.classLevel ?? 1,
+      slots: sys.slots,
+      nodes: sys.nodes
+        .filter((n) => !innate || !n.classes || (s.classId && n.classes.includes(s.classId)))
+        .map((n) => {
+          const level = innate ? 1 : (p.levels[n.id] ?? 0);
+          const pend = p.pending.find((x) => x.node === n.id) ?? null;
+          const cost = !innate && level < n.maxLevel ? nodeCost(n, level + 1) : null;
+          return {
+            id: n.id,
+            name: n.name,
+            text: n.text ?? null,
+            icon: n.icon ?? null,
+            level,
+            maxLevel: n.maxLevel,
+            pendingUntil: pend?.until ?? null,
+            next: cost ? { gold: cost.gold, items: cost.items.map((c) => ({ ...c, name: content.items[c.item]?.name ?? c.item, have: s.inventory[c.item] ?? 0 })), seconds: cost.seconds } : null,
+            blocker: innate ? null : upgradeBlocker(s, content, sys.id, n.id, now),
+            requires: n.requires.map((r) => ({ node: r.node, name: sys.nodes.find((x) => x.id === r.node)?.name ?? r.node, level: r.level })),
+            choice: n.choice ?? null,
+            talents: n.talents.map((t) => ({ level: t.level, name: t.talent.name })),
+          };
+        }),
+    };
+  });
+}
+
+/** Les recherches qui viennent de finir (pour le journal) : système, nœud, nouveau niveau. */
+export function finishedResearch(before: CharacterState, after: CharacterState, content: Content): string[] {
+  const out: string[] = [];
+  for (const [sys, p] of Object.entries(after.power ?? {})) {
+    const def = content.power?.systems.find((x) => x.id === sys);
+    for (const [node, level] of Object.entries(p.levels)) {
+      if ((before.power?.[sys]?.levels[node] ?? 0) < level && (before.power?.[sys]?.pending ?? []).some((x) => x.node === node)) {
+        out.push(`${def?.nodes.find((n) => n.id === node)?.name ?? node} : niveau ${level} (${def?.name ?? sys}).`);
+      }
+    }
+  }
+  return out;
+}

@@ -11,6 +11,8 @@ import { lookOptions, recycleYield, repairCost, unlockedOutfits } from './action
 import { repairProblem } from './commission.js';
 import { npcDoneToday, npcOrdersOfDay } from './npc.js';
 import { type CombatView, viewCombat } from '../combat/view.js';
+import { characterForce } from '../combat/progress.js';
+import { type PowerSystemView, powerView, settlePower } from '../power/power.js';
 import {
   type RankName,
   type TrialStatus,
@@ -94,6 +96,11 @@ export interface StateView {
   trials: Record<string, TrialStatus>;
   /** Combat de la classe actuelle (null sans classe ou sans data/combat/). */
   combat: CombatView | null;
+  /**
+   * Moteur de Puissance : la Force (avec tout, et sans les systèmes de progression) et les systèmes (null sans data/power/ ;
+   * force null sans classe).
+   */
+  power: { force: number | null; withoutSystems: number | null; systems: PowerSystemView[] } | null;
 }
 
 export function viewSkill(
@@ -214,5 +221,19 @@ export function viewState(state: CharacterState, now: number, content: Content):
     unlockedOrnaments: unlockedOrnaments(state, content),
     trials,
     combat: viewCombat(state, content),
+    power: viewPower(state, now, content),
+  };
+}
+
+/** La Force et les systèmes de Puissance (power/power.ts). */
+function viewPower(state: CharacterState, now: number, content: Content): StateView['power'] {
+  const systems = powerView(state, content, now);
+  if (!systems) return null;
+  const ready = state.classId && content.combat?.kits[state.classId];
+  const settled = settlePower(state, now);
+  return {
+    force: ready ? characterForce(settled, content) : null,
+    withoutSystems: ready ? characterForce({ ...settled, power: {} }, content) : null,
+    systems,
   };
 }

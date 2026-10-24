@@ -117,6 +117,8 @@ import {
   avatarBody,
   avatarTargetBody,
   profileDetailsBody,
+  powerUpgradeBody,
+  upgradeNode,
 } from '@bramo/shared';
 import type { Db } from './db/index.js';
 import { offerPatron, settleTide, tideView, recordSignup, tideLive, tideLiveDemo, tideRankingDemo, tideRankingView } from './tide.js';
@@ -591,6 +593,19 @@ export async function buildApp({ db, content, clock = Date.now, secureCookies = 
   app.post('/api/combat/plan', (req) => {
     const { plan } = body(combatPlanBody, req);
     return playAs(req, (state) => ({ state: setPlan(state, plan, content), log: plan ? 'Plan de combat enregistré.' : 'Retour au plan conseillé.' }));
+  });
+
+  // Moteur de Puissance : monter un nœud (recherche de la Guilde, relique, lanterne…).
+  app.post('/api/power/upgrade', (req) => {
+    const { system, node } = body(powerUpgradeBody, req);
+    return playAs(req, (state, now) => {
+      const next = upgradeNode(state, content, system, node, now);
+      const sys = content.power!.systems.find((x) => x.id === system)!;
+      const n = sys.nodes.find((x) => x.id === node)!;
+      const started = (next.power?.[system]?.pending.length ?? 0) > (state.power?.[system]?.pending.length ?? 0);
+      const level = next.power?.[system]?.levels[node] ?? 0;
+      return { state: next, log: started ? `Recherche lancée : ${n.name} (${sys.name}).` : `${n.name} : niveau ${level} (${sys.name}).` };
+    });
   });
 
   app.post('/api/character/class', (req) => {

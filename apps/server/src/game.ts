@@ -10,6 +10,8 @@ import {
   routeStage,
   stream,
   viewState,
+  finishedResearch,
+  settlePower,
 } from '@bramo/shared';
 import type { Db, Tx } from './db/index.js';
 import { grantGear } from './gear.js';
@@ -134,9 +136,11 @@ export async function play(db: Db, content: Content, accountId: number, now: num
       if (ev) announce.push(ev);
     }
 
-    let state = repaired.state;
+    // Moteur de Puissance : les recherches arrivées au bout passent au niveau suivant.
+    let state = settlePower(repaired.state, now);
+    for (const text of finishedResearch(repaired.state, state, content)) entries.push({ at: now, kind: 'info', text: `Recherche terminée — ${text}` });
     if (action) {
-      const result = await action(repaired.state, now, { tx, characterId: loaded.id, characterName: loaded.name });
+      const result = await action(state, now, { tx, characterId: loaded.id, characterName: loaded.name });
       state = result.state;
       announce.push(...(result.serverEvents ?? []));
       if (result.log) entries.push({ at: now, kind: result.logKind ?? 'info', text: result.log });

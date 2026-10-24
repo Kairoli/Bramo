@@ -26,6 +26,8 @@ export const cancelBody = z.object({ index: z.number().int().min(-1) });
 export const itemBody = z.object({ itemId: z.string() });
 export const tradeBody = z.object({ itemId: z.string(), qty: z.number().int().min(1) });
 export const classBody = z.object({ classId: z.string() });
+/** Moteur de Puissance : monter d'un niveau un nœud d'un système (recherche, relique, lanterne…). */
+export const powerUpgradeBody = z.object({ system: z.string(), node: z.string() });
 /** Combat : une rencontre en boucle, ou null pour le Terrain d'entraînement. */
 /** `tier` : le cercle choisi dans une région haute (palier 40 à 90). */
 export const combatStartBody = z.object({ encounter: z.string().nullable(), tier: z.number().int().min(1).optional() });

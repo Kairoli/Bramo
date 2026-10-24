@@ -685,6 +685,21 @@ pour chaque session :
 
 ## 6. À faire
 
+### À corriger plus tard (relevé par l'audit, 24 octobre ; Louis : « à noter, qu'on s'en souvienne »)
+
+- **Marée** : elle applique les bonus de la route. Le +8 % du Runiste en Marée et la recherche « Savoir de la Marée » n'y
+  servent à rien, alors que le +8 % du Traqueur (route) s'y applique (contexte `tide` pas passé à `combatantOf`).
+- **Point fort du Forgefeu** (Lice, donjon) : sans effet, ces contenus n'existent pas. À déplacer sur un contenu qui existe,
+  ou à garder pour le PvP.
+- **Bulle des jauges** : elle dit que rien ne dépense une réserve alors que des gemmes serties le font.
+- **Outils de mesure** : `tempo/force.ts` lit encore `puissance-v1` ; les scénarios `sim combat-build|coherence|tools|weapons`
+  lisent d'anciennes propositions ; le banc des builds ignore les points forts de classe. Détail : `docs/audit/00-point-etape.md`.
+
+### Ordre décidé par Louis (25 octobre)
+
+Audit des systèmes (en cours) → corrections → console admin (en cours) → bots (`docs/design/bots.md` §0) ; **le PvP par un
+agent à part, après l'audit, les corrections et la console**.
+
 ### Prochaines étapes (ordre proposé)
 
 - **Ornements de métier — intégration à reprendre** : lire [`ornement/README_CLAUDE.md`](ornement/README_CLAUDE.md), utiliser les assets et le manifeste livrés ; conserver les déblocages existants et réserver le 90.

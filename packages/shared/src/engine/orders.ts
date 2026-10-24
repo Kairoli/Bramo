@@ -89,7 +89,7 @@ export interface OrderQuote {
  * Le devis d'une commande : `supplied` = ce que le client fournit (déduit du temps et du prix) ; `stock` = ce que l'artisan
  * a déjà (seulement pour le temps : on ne le montre pas au client).
  */
-export function quoteOrder(t: OrderTarget, qty: number, supplied: { item: string; qty: number }[], stock: Record<string, number>, artisan: CharacterState, content: Content): OrderQuote {
+export function quoteOrder(t: OrderTarget, qty: number, supplied: { item: string; qty: number }[], stock: Record<string, number>, artisan: CharacterState | null, content: Content): OrderQuote {
   const rules = content.settings.orders;
   const crafts = Math.ceil(qty / t.perCraft);
   let workSec = t.durationSec * crafts;
@@ -101,7 +101,8 @@ export function quoteOrder(t: OrderTarget, qty: number, supplied: { item: string
     if (missing <= 0) continue;
     // Un intermédiaire qu'il sait faire (ou récolter) : son temps s'ajoute ; sinon il l'achètera.
     const r = recipeOf(need.item, content);
-    if (r && skillLevel(artisan, r.profession, content) >= r.level) workSec += r.durationSec * Math.ceil(missing / r.outputs.find((o) => o.item === need.item)!.qty);
+    // (Commande ouverte : on ne sait pas encore qui la fera ; on compte le temps de l'intermédiaire s'il a une recette.)
+    if (r && (!artisan || skillLevel(artisan, r.profession, content) >= r.level)) workSec += r.durationSec * Math.ceil(missing / r.outputs.find((o) => o.item === need.item)!.qty);
   }
   const full = t.value * qty;
   const base = Math.max(Math.round(full / 5), full - suppliedValue);
@@ -112,4 +113,33 @@ export function quoteOrder(t: OrderTarget, qty: number, supplied: { item: string
     return { id, hours: Math.ceil(Math.max(d.minHours, d.factor * hours)), advised, cap: Math.max(1, Math.round(advised * rules.capFactor)) };
   });
   return { workSec, delays };
+}
+
+/**
+ * Chercher ce qu'on peut commander, tous niveaux confondus (commande ouverte : n'importe quel artisan la prendra) : les
+ * objets des recettes de métier et les pièces de l'atelier dont le nom ou le métier contient `query`.
+ */
+export function searchOrderTargets(query: string, content: Content, limit = 60): OrderTarget[] {
+  const q = query.trim().toLowerCase();
+  if (q.length < 2) return [];
+  const prof = (id: string) => content.professions.find((p) => p.id === id);
+  const out: OrderTarget[] = [];
+  const seen = new Set<string>();
+  for (const r of Object.values(content.recipes)) {
+    if (r.category === 'masterwork' || prof(r.profession)?.status !== 'playable') continue;
+    for (const o of r.outputs) {
+      const name = content.items[o.item]?.name.toLowerCase() ?? '';
+      if (seen.has(o.item) || !(name.includes(q) || (prof(r.profession)?.name.toLowerCase() ?? '').includes(q))) continue;
+      const t = orderTarget('item', o.item, content);
+      if (t) (seen.add(o.item), out.push(t));
+    }
+  }
+  for (const p of new Set(Object.values(content.gearCrafting?.families ?? {})))
+    for (const m of craftableModels(p, content)) {
+      if (out.length >= limit * 3) break;
+      if (!m.name.toLowerCase().includes(q)) continue;
+      const t = orderTarget('gear', m.id, content);
+      if (t) out.push(t);
+    }
+  return out.sort((a, b) => a.level - b.level || a.name.localeCompare(b.name)).slice(0, limit);
 }

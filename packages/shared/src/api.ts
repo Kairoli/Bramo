@@ -86,7 +86,8 @@ export const blockBody = z.object({ characterId: z.number().int(), block: z.bool
 export const privateMessageBody = z.object({ to: z.number().int(), text: z.string() });
 export const dmPolicyBody = z.object({ policy: z.enum(['all', 'friends_clan']) });
 // Commandes entre joueurs (apps/server/src/orders.ts).
-export const orderQuoteBody = z.object({ artisanId: z.number().int(), kind: z.enum(['item', 'gear']), target: z.string(), qty: z.number().int().min(1), supply: z.boolean() });
+// Sans artisan : une commande ouverte, sur le panneau du clan ou de tout le serveur (`scope`).
+export const orderQuoteBody = z.object({ artisanId: z.number().int().optional(), scope: z.enum(['clan', 'server']).optional(), kind: z.enum(['item', 'gear']), target: z.string(), qty: z.number().int().min(1), supply: z.boolean() });
 export const orderCreateBody = orderQuoteBody.extend({ price: z.number().int().min(0), delay: z.enum(['rush', 'normal', 'relaxed']), message: z.string().max(200).optional() });
 export const artisanOrderIdBody = z.object({ id: z.number().int() });
 export const orderAnswerBody = z.object({ id: z.number().int(), accept: z.boolean() });
@@ -441,11 +442,18 @@ export interface OrderView {
   /** Je suis le client (sinon l'artisan). */
   mine: boolean;
   client: SocialPerson;
-  artisan: SocialPerson;
+  /** null : commande ouverte, pas encore prise. */
+  artisan: SocialPerson | null;
+  /** Un artisan désigné, le clan du client, ou tout le serveur (panneau des commandes). */
+  scope: 'direct' | 'clan' | 'server';
+  /** Panneau : je peux la prendre (le niveau, la place). */
+  canTake: boolean;
   kind: 'item' | 'gear';
   target: string;
   name: string;
   profession: string;
+  /** Le niveau de métier qu'il faut pour la fabriquer. */
+  level: number;
   gear: { slot: string; family: string; tier: number; rarity: string } | null;
   qty: number;
   price: number;
@@ -455,7 +463,7 @@ export interface OrderView {
   delay: 'rush' | 'normal' | 'relaxed';
   delayHours: number;
   message: string | null;
-  status: 'proposed' | 'accepted' | 'delivered' | 'refused' | 'cancelled' | 'expired';
+  status: 'open' | 'proposed' | 'accepted' | 'delivered' | 'refused' | 'cancelled' | 'expired';
   createdAt: number;
   /** Proposée : elle expire à cet instant sans réponse. Acceptée : la date limite. */
   dueAt: number;
@@ -468,6 +476,10 @@ export interface OrderView {
 export interface OrdersView {
   asClient: OrderView[];
   asArtisan: OrderView[];
+  /** Le panneau des commandes : celles qui attendent un artisan (mon clan, tout le serveur), sauf les miennes. */
+  board: OrderView[];
+  /** J'ai un clan (une commande ouverte peut lui être réservée). */
+  inClan: boolean;
   /** Il accepte qu'on lui passe des commandes. */
   open: boolean;
 }

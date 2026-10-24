@@ -65,6 +65,14 @@ Bramo est un **idle-RPG multijoueur jouable dans le navigateur**, dans l'esprit 
 - **Bible corrigée** : six gardiens, six pages (pas douze) ; le modèle d'une saison parle d'une monnaie de saison et de mutateurs à 10 % au plus.
 - **À faire le moment venu** (§9 de la fiche) : la machine des saisons une fois pour toutes (`data/seasons.yaml`, moteur, serveur, bandeau et fenêtre Saison), le Registre et le Carnet, la tenue du Copiste et les trois armes, l'ornement de saison (GPT), les mesures au simulateur (§8).
 
+### Fait — commandes ouvertes (24 octobre)
+
+- **Demande de Louis** : « code les commandes ouvertes » (étape 3 de [`docs/design/social.md`](docs/design/social.md) §4.4 : une commande sans artisan désigné, au clan ou à tout le serveur ; le premier qui la prend la fait).
+- **Serveur** (`apps/server/src/orders.ts`, migration `0032_commandes_ouvertes` : `artisan_orders.artisan_id` facultatif, colonnes `scope` (`direct`, `clan`, `server`) et `clan_id`) : passer une commande sans artisan (`scope` obligatoire, « clan » seulement avec un clan ; ligne au journal du clan) ; statut `open` ; compte dans les 5 commandes en attente ; **expire après `settings.orders.openHours` (72 h)** sans preneur ; annulable tant qu'elle est ouverte ; **`takeOrder`** (niveau du métier, place, pas de blocage, membre du clan pour une commande du clan ; mise à jour conditionnelle : le premier l'a) : elle devient acceptée, matériaux reçus, délai lancé, journal du client. `OrdersView.board` (ouvertes de mon clan et du serveur, sauf les miennes et celles d'un joueur bloqué, celles que je peux prendre d'abord), `inClan` ; `OrderView.scope`, `canTake`, `level`, `artisan` nul tant qu'elle n'est pas prise. Routes `GET /api/orders/search?q=` (`searchOrderTargets` du moteur partagé : tout ce qui se fabrique, tous niveaux) et `POST /api/orders/take` ; devis et création acceptent l'absence d'`artisanId` (`quoteOrder(…, null)`).
+- **Client** (`components/Orders.tsx`) : onglet Commandes du Marché en trois colonnes : **Le panneau** (cartes avec Clan / Serveur, le métier et le niveau, « Prendre » ou « Forge niv. 24 requis » ; « À mon niveau »), On me commande, Mes commandes (« **+ Commande ouverte** » : la même fenêtre que pour un artisan, avec « Mon clan / Tout le serveur » et la recherche côté serveur). La salle d'un métier signale aussi les commandes ouvertes qu'on peut y prendre.
+- Test d'API « commandes ouvertes » (recherche, devis sans artisan, refus sans clan, panneau, la première qui la prend, livraison, commande du clan invisible hors du clan, annulation, expiration) ; vérifié à l'écran avec deux comptes.
+- Tests : 200 dans packages/shared, 38 d'API, 21 du simulateur.
+
 ### Fait — commandes entre joueurs (24 octobre)
 
 - **Demande de Louis** : « code les commandes entre joueurs » (étape 2 de [`docs/design/social.md`](docs/design/social.md) §3).

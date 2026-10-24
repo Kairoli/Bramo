@@ -36,7 +36,7 @@ async function membership(tx: Tx, characterId: number) {
   return row;
 }
 
-async function logLine(tx: Tx, clanId: number, at: number, text: string, keep: number) {
+export async function logLine(tx: Tx, clanId: number, at: number, text: string, keep: number) {
   await tx.insert(clanLog).values({ clanId, at: new Date(at), text });
   // On ne garde que les dernières lignes.
   const old = await tx.select({ id: clanLog.id }).from(clanLog).where(eq(clanLog.clanId, clanId)).orderBy(desc(clanLog.id)).offset(keep);

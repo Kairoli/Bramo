@@ -50,6 +50,7 @@ import {
   orderAnswerBody,
   ordersOpenBody,
   orderCatalog,
+  searchOrderTargets,
   chatModerateBody,
   accountDeleteBody,
   clanWorksBody,
@@ -124,7 +125,7 @@ import { moderateAvatar, myAvatar, readAvatar, removeAvatar, reportAvatar, setAv
 import { deleteAccount, exportAccount } from './account.js';
 import { moderateChat, postChat, readChat, reportChat } from './chat.js';
 import { friendsView, messagesView, people, relation, removeFriend, reportPrivate, requestFriend, respondFriend, sendPrivate, setBlock, setDmPolicy, threadView } from './social.js';
-import { answerOrder, cancelOrder as cancelArtisanOrder, createOrder, deliverOrder, ordersView, quote, setOrdersOpen } from './orders.js';
+import { answerOrder, cancelOrder as cancelArtisanOrder, createOrder, deliverOrder, ordersView, quote, setOrdersOpen, takeOrder } from './orders.js';
 import { buyGear, craftOwned, gearListings, listGear, unlistGear } from './vitrine.js';
 import { loadCharacterById } from './characters.js';
 import { accounts, characters, sessions } from './db/schema.js';
@@ -804,6 +805,12 @@ export async function buildApp({ db, content, clock = Date.now, secureCookies = 
       return { artisan, open: row?.open ?? true, targets: orderCatalog(loaded.state, content) };
     });
   });
+  /** Commande ouverte : chercher ce qu'on peut commander, tous niveaux confondus. */
+  app.get('/api/orders/search', async (req) => {
+    await myCharacter(req);
+    const q = String((req.query as { q?: string }).q ?? '').slice(0, 40);
+    return { targets: searchOrderTargets(q, content) };
+  });
   app.post('/api/orders/quote', async (req) => {
     const b = body(orderQuoteBody, req);
     const me = await myCharacter(req);
@@ -828,6 +835,14 @@ export async function buildApp({ db, content, clock = Date.now, secureCookies = 
     const { id, accept } = body(orderAnswerBody, req);
     return playAs(req, async (state, now, ctx) => {
       const r = await answerOrder(ctx.tx, ctx.characterId, ctx.characterName, state, id, accept, now, content);
+      return { state: r.state, log: r.log };
+    });
+  });
+  /** Prendre une commande ouverte du panneau. */
+  app.post('/api/orders/take', (req) => {
+    const { id } = body(artisanOrderIdBody, req);
+    return playAs(req, async (state, now, ctx) => {
+      const r = await takeOrder(ctx.tx, ctx.characterId, ctx.characterName, state, id, now, content);
       return { state: r.state, log: r.log };
     });
   });

@@ -115,6 +115,8 @@ export const settingsSchema = z.object({
       maxPendingPerClient: z.number().int().min(1),
       maxAcceptedPerArtisan: z.number().int().min(1),
       answerHours: z.number().positive(),
+      /** Une commande ouverte (panneau du clan ou du serveur) attend un artisan au plus ce temps. */
+      openHours: z.number().positive(),
       maxQty: z.number().int().min(1),
       delays: z.object({
         rush: z.object({ factor: z.number().positive(), minHours: z.number().positive(), price: z.number().positive() }),
@@ -128,6 +130,7 @@ export const settingsSchema = z.object({
       maxPendingPerClient: 5,
       maxAcceptedPerArtisan: 10,
       answerHours: 24,
+      openHours: 72,
       maxQty: 10000,
       delays: { rush: { factor: 1.5, minHours: 4, price: 1.3 }, normal: { factor: 3, minHours: 24, price: 1 }, relaxed: { factor: 3, minHours: 168, price: 0.9 } },
     }),

@@ -5,7 +5,7 @@ chat. Le but final : un système de commandes. Je veux aider un membre de mon cl
 niveau, et lui passer une commande avec un prix et un délai (« tu as 2 jours »). Il accepte ou refuse, et livre quand il a
 fini. Adapter le choix du délai au temps que prendrait la commande. »
 
-**Étapes 1 et 2 codées le 24 octobre** (amis, blocage, messages privés, §2 ; commandes entre joueurs, §3) ; la réputation affichée (commandes livrées, à temps) est faite, les commandes ouvertes (§4.4) restent à faire. Proposé par Claude ; Louis a tranché les quatre questions le 24 octobre (§4).
+**Les trois étapes codées le 24 octobre** (amis, blocage, messages privés, §2 ; commandes entre joueurs, §3 ; réputation et commandes ouvertes, §4.4). Proposé par Claude ; Louis a tranché les quatre questions le 24 octobre (§4).
 
 **Ce qui change par rapport au 21 octobre** : Louis avait tranché « pas de commandes artisanales à matériaux fournis, ni de
 caution ou de délai » (`marche.md` §7), pour le marché. Les **commandes entre joueurs** qu'il demande maintenant ont un
@@ -112,6 +112,15 @@ délai ne descend donc jamais sous 4 h, même pour trois lingots.
    5 % de taxe et un plafond de 3 fois le prix conseillé.
 4. **Commandes ouvertes** **[Décidé : oui, « comme tu le sens »]** : une commande sans artisan désigné, au clan ou à tout le
    serveur, sur un « Panneau des commandes » ; le premier artisan qui l'accepte la prend. En troisième étape.
+   **Codé le 24 octobre** (choix de Claude) : le client choisit « Mon clan » ou « Tout le serveur » et cherche parmi
+   tout ce qui se fabrique (tous niveaux) ; le devis ne connaît pas l'artisan (temps des intermédiaires compté). Or et
+   matériaux mis de côté comme une commande ordinaire ; une ligne au journal du clan pour une commande du clan. Elle reste
+   **72 h** sur le panneau (`settings.orders.openHours`), puis expire (tout revient au client) ; le client l'annule tant
+   que personne ne l'a prise. **Prendre** : il faut le niveau du métier et une place (10 commandes acceptées au plus) ;
+   ni un joueur bloqué, ni hors du clan pour une commande du clan ; la première qui la prend l'a (l'autre reçoit « un
+   autre artisan vient de la prendre ») ; elle devient une commande acceptée : matériaux reçus, le délai part à cet
+   instant. Le panneau montre d'abord celles qu'on peut prendre (« À mon niveau » pour ne voir qu'elles), et la salle du
+   métier signale celles qu'on peut prendre dans ce métier.
 
 ## 5. L'ordre de travail proposé
 
@@ -121,4 +130,4 @@ délai ne descend donc jamais sous 4 h, même pour trois lingots.
    statut, dates ; or et matériaux mis de côté ; calcul du délai et du prix conseillé dans `packages/shared` ; onglet
    « Commandes » du Marché, encart dans la salle du métier, bouton de la page profil ; simulateur : des clients et des
    artisans parmi les bots, pour mesurer les prix et les délais).
-3. **Réputation et commandes ouvertes.**
+3. **Réputation et commandes ouvertes.** Faites le 24 octobre.

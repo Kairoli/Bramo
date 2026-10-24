@@ -413,7 +413,8 @@ export const privateMessages = pgTable(
 /**
  * Commandes entre joueurs (docs/design/social.md §3) : l'or du client (et ses matériaux) mis de côté à la commande ;
  * proposée, acceptée (les matériaux passent à l'artisan, la date limite part), livrée (l'artisan est payé, moins la taxe),
- * refusée, annulée ou expirée. clientSettled : le client a reçu ce qui lui revient (objets livrés ou remboursement).
+ * refusée, annulée ou expirée. Une commande ouverte (« open », sans artisan) attend sur le panneau des commandes, au clan ou à
+ * tout le serveur, que le premier artisan qui sait la faire la prenne. clientSettled : le client a reçu ce qui lui revient (objets livrés ou remboursement).
  */
 export const artisanOrders = pgTable(
   'artisan_orders',
@@ -422,9 +423,11 @@ export const artisanOrders = pgTable(
     clientId: integer('client_id')
       .notNull()
       .references(() => characters.id, { onDelete: 'cascade' }),
-    artisanId: integer('artisan_id')
-      .notNull()
-      .references(() => characters.id, { onDelete: 'cascade' }),
+    /** null : commande ouverte, pas encore prise (docs/design/social.md §4.4). */
+    artisanId: integer('artisan_id').references(() => characters.id, { onDelete: 'cascade' }),
+    /** À qui elle s'adresse : un artisan désigné, le clan du client, ou tout le serveur. */
+    scope: text('scope').notNull().default('direct'),
+    clanId: integer('clan_id').references(() => clans.id, { onDelete: 'set null' }),
     kind: text('kind').notNull(),
     target: text('target').notNull(),
     qty: integer('qty').notNull(),

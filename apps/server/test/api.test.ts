@@ -732,6 +732,64 @@ describe('API', () => {
     expect((await st(cl)).state.gold).toBe(g + 2);
   });
 
+  it('commandes ouvertes : panneau du serveur et du clan, le premier qui la prend, annuler, expirer', async () => {
+    const [cl, ar, mb] = [player({ value: '' }), player({ value: '' }), player({ value: '' })];
+    await cl!('POST', '/api/auth/register', { username: 'Annonceuse', password: 'motdepasse' });
+    await ar!('POST', '/api/auth/register', { username: 'Passante', password: 'motdepasse' });
+    await mb!('POST', '/api/auth/register', { username: 'Compagne', password: 'motdepasse' });
+    type S = import('@bramo/shared').StateResponse;
+    type O = import('@bramo/shared').OrdersView;
+    const st = async (p: typeof cl) => (await p!('GET', '/api/state')).json as S;
+    const board = async (p: typeof cl) => ((await p!('GET', '/api/orders')).json as O).board;
+    const order = { kind: 'item', target: 'bronze_bar', qty: 10, supply: false };
+    // Chercher ce qu'on peut commander, et le devis sans artisan.
+    const found = (await cl!('GET', '/api/orders/search?q=lingot')).json as { targets: { id: string }[] };
+    expect(found.targets.some((t) => t.id === 'bronze_bar')).toBe(true);
+    const q = (await cl!('POST', '/api/orders/quote', order)).json as { delays: { id: string; advised: number }[] };
+    const price = Math.max(1, q.delays.find((d) => d.id === 'normal')!.advised);
+    // Pas de clan : pas de commande réservée au clan ; sans dire où, refusé.
+    expect((await cl!('POST', '/api/orders/create', { ...order, scope: 'clan', price, delay: 'normal' })).status).toBe(400);
+    expect((await cl!('POST', '/api/orders/create', { ...order, price, delay: 'normal' })).status).toBe(400);
+    const gold0 = (await st(cl)).state.gold;
+    expect((await cl!('POST', '/api/orders/create', { ...order, scope: 'server', price, delay: 'normal' })).status).toBe(200);
+    expect((await st(cl)).state.gold).toBe(gold0 - price);
+    const mine = ((await cl!('GET', '/api/orders')).json as O).asClient[0]!;
+    expect(mine).toMatchObject({ status: 'open', artisan: null, scope: 'server' });
+    expect(await board(cl)).toHaveLength(0); // pas la sienne sur son panneau
+    // Sur le panneau des autres : la première qui la prend la fait ; la seconde arrive trop tard.
+    const seen = (await board(ar))[0]!;
+    expect(seen).toMatchObject({ id: mine.id, canTake: true, status: 'open' });
+    expect((await ar!('POST', '/api/orders/take', { id: mine.id })).status).toBe(200);
+    expect((await mb!('POST', '/api/orders/take', { id: mine.id })).status).toBe(400);
+    expect(await board(mb)).toHaveLength(0);
+    const taken = ((await cl!('GET', '/api/orders')).json as O).asClient[0]!;
+    expect(taken.status).toBe('accepted');
+    expect(taken.artisan?.name).toBe('Passante');
+    // Elle livre comme une commande ordinaire.
+    await ar!('POST', '/api/dev/items/grant', { itemId: 'bronze_bar', qty: 10 });
+    expect((await ar!('POST', '/api/orders/deliver', { id: mine.id })).status).toBe(200);
+    expect((await st(cl)).state.inventory['bronze_bar']).toBe(10);
+    // Réservée au clan : seuls ses membres la voient et la prennent.
+    await grant('Annonceuse', 30000, {});
+    await cl!('POST', '/api/clan/create', { name: 'Les Annonces' });
+    const clanId = ((await mb!('GET', '/api/clans')).json as import('@bramo/shared').ClanListItem[]).find((c) => c.name === 'Les Annonces')!.id;
+    await mb!('POST', '/api/clan/join', { clanId });
+    expect((await cl!('POST', '/api/orders/create', { ...order, qty: 5, scope: 'clan', price: 5, delay: 'rush' })).status).toBe(200);
+    const clanOrder = (await board(mb)).find((o) => o.scope === 'clan')!;
+    expect(clanOrder).toBeDefined();
+    expect((await board(ar)).some((o) => o.id === clanOrder.id)).toBe(false);
+    expect((await ar!('POST', '/api/orders/take', { id: clanOrder.id })).status).toBe(400);
+    // Annuler avant qu'on la prenne : tout revient.
+    const g1 = (await st(cl)).state.gold;
+    expect((await cl!('POST', '/api/orders/cancel', { id: clanOrder.id })).status).toBe(200);
+    expect((await st(cl)).state.gold).toBe(g1 + 5);
+    // Personne ne la prend : elle expire, l'or revient.
+    await cl!('POST', '/api/orders/create', { ...order, qty: 2, scope: 'server', price: 2, delay: 'normal' });
+    const g2 = (await st(cl)).state.gold;
+    now += (content.settings.orders.openHours + 1) * 3_600_000;
+    expect((await st(cl)).state.gold).toBe(g2 + 2);
+  });
+
   it('Marée du soir : inscription de 19 h à 20 h ; un inscrit combat même déconnecté, un non-inscrit ne marque rien', async () => {
     const { tideDay, tideWindow, registrationWindow } = await import('@bramo/shared');
     const rules = content.combat!.tide!;

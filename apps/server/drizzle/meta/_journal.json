@@ -225,6 +225,13 @@
       "when": 1792844338948,
       "tag": "0031_commandes",
       "breakpoints": true
+    },
+    {
+      "idx": 32,
+      "version": "7",
+      "when": 1792848504014,
+      "tag": "0032_commandes_ouvertes",
+      "breakpoints": true
     }
   ]
 }

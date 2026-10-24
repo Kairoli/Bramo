@@ -4,6 +4,7 @@
  * chaque mécanique d'une rencontre, avec ses réponses. Tout vient des données (talents, outils, rencontres).
  */
 import type { CombatContent, Encounter, Talent, TalentAction, TalentCatalog, TalentEffect } from '../schemas/combat.js';
+import type { FightResult } from './engine.js';
 
 /** Une pièce (talent) qui touche une réserve, et comment. */
 export interface PoolUse {
@@ -184,4 +185,68 @@ export function encounterMechanics(combat: CombatContent, e: Encounter): Mechani
   if (e.enemies > 1) add('group', 'Groupe', `${e.enemies} ennemis à la fois : les coups qui touchent plusieurs cibles valent double.`);
   if (e.enrage) add('enrage', 'Fureur', `Après ${s(e.enrage.after)} s, il frappe de plus en plus fort : il faut finir avant.`);
   return out;
+}
+
+/**
+ * Le détail d'un combat, pour le joueur (« pourquoi j'ai gagné vite, pourquoi j'ai perdu ») : une phrase de verdict, ce qu'il a
+ * fait (par source : attaques de base, chaque sort, afflictions, mécanique de classe, talents), ce qu'il a reçu (coups, attaques
+ * chargées, aura, érosion), et, après une défaite, ce qui répond à ce qui l'a battu (les réponses de la rencontre).
+ */
+export interface FightBreakdown {
+  verdict: string;
+  dps: number;
+  dealt: { label: string; amount: number; kind: 'basic' | 'spell' | 'dot' | 'class' | 'talent' }[];
+  taken: { label: string; amount: number }[];
+  answers: string[];
+}
+
+export function fightBreakdown(combat: CombatContent, e: Encounter, r: FightResult, heroId = 'p1'): FightBreakdown {
+  const me = r.team.find((x) => x.id === heroId) ?? r.team[0]!;
+  const m = me.metrics;
+  const dealt: FightBreakdown['dealt'] = [];
+  // Les sorts : la part de chacun dans les dégâts des compétences, d'après le déroulé (chaque lancer et ce qu'il a retiré).
+  const bySpell = new Map<string, number>();
+  for (const x of r.trace ?? []) if (x.who === heroId && x.kind === 'cast' && x.ref && x.dmg) bySpell.set(x.ref, (bySpell.get(x.ref) ?? 0) + x.dmg);
+  const castTotal = [...bySpell.values()].reduce((a, b) => a + b, 0);
+  const skill = m['damage:skill'] ?? 0;
+  for (const [id, v] of bySpell) dealt.push({ label: combat.spells[id]?.name ?? id, amount: Math.round(castTotal ? (skill * v) / castTotal : 0), kind: 'spell' });
+  if (!castTotal && skill) dealt.push({ label: 'Sorts', amount: Math.round(skill), kind: 'spell' });
+  const other: [string, string, FightBreakdown['dealt'][number]['kind']][] = [
+    ['damage:basic', 'Attaques de base', 'basic'],
+    ['damage:dot', 'Brûlures et saignements', 'dot'],
+    ['damage:class', 'Mécanique de classe et voie', 'class'],
+    ['damage:gear', 'Talents (gemmes, ensembles, objets nommés)', 'talent'],
+    ['damage:gear_dot', 'Afflictions des talents', 'talent'],
+  ];
+  for (const [k, label, kind] of other) if (m[k]) dealt.push({ label, amount: Math.round(m[k]!), kind });
+  dealt.sort((a, b) => b.amount - a.amount);
+  const taken = [
+    { label: 'Coups ordinaires', amount: m['taken:attack'] ?? 0 },
+    { label: 'Attaques chargées', amount: m['taken:charge'] ?? 0 },
+    { label: 'Aura', amount: m.auraDamage ?? 0 },
+    { label: 'Érosion', amount: m.erosionDamage ?? 0 },
+  ]
+    .filter((x) => x.amount > 0)
+    .map((x) => ({ ...x, amount: Math.round(x.amount) }))
+    .sort((a, b) => b.amount - a.amount);
+  const total = dealt.reduce((a, x) => a + x.amount, 0);
+  const dps = Math.round(total / Math.max(1, r.time));
+  const mech = encounterMechanics(combat, e);
+  const answersOf = (ids: MechanicId[]) => mech.filter((x) => ids.includes(x.id)).flatMap((x) => x.answers);
+  const limit = e.timeLimit ?? combat.rules.fightLimit;
+  const sec = (n: number) => String(Math.round(n * 10) / 10).replace('.', ',');
+  let verdict: string;
+  let answers: string[] = [];
+  if (r.win) verdict = `Victoire en ${sec(r.time)} s, à ${dps} dégâts par seconde.`;
+  else if (r.cause === 'timeout') {
+    verdict = `Temps écoulé (${sec(limit)} s) : il lui restait ${Math.round(r.enemyHpLeft * 100)} % de ses PV. Il fallait plus de dégâts.`;
+    answers = [...answersOf(['windows', 'guard', 'adds', 'regen']), 'Régler ses minuteurs : les grosses compétences au bon moment', 'Un build d’Ouverture, plus de Puissance (Recherches, Lanterne)'];
+  } else {
+    const top = taken[0];
+    const share = top ? Math.round((100 * top.amount) / Math.max(1, taken.reduce((a, x) => a + x.amount, 0))) : 0;
+    verdict = `Tombé à ${sec(r.time)} s${top ? ` : ${top.label.toLowerCase()}, ${share} % des dégâts reçus` : ''} ; il lui restait ${Math.round(r.enemyHpLeft * 100)} % de ses PV.`;
+    const ids: MechanicId[] = top?.label === 'Attaques chargées' ? ['charge', 'heavy'] : top?.label === 'Aura' ? ['aura'] : top?.label === 'Érosion' ? ['erosion'] : ['heavy', 'adds', 'guard'];
+    answers = [...answersOf(ids), 'Plus de PV ou de Défense (équipement, Le Cuir épais, la Lanterne)'];
+  }
+  return { verdict, dps, dealt, taken, answers: [...new Set(answers)].slice(0, 4) };
 }

@@ -1354,6 +1354,7 @@ export function fight(combat: CombatContent, setups: CombatantSetup[], encounter
       c.hp -= amount;
       c.lastHitBy = source;
       inc(c, 'hpLost', amount);
+      inc(c, `taken:${source}`, amount);
     }
     // Pour l'écran : ce que le coup a vraiment retiré (après boucliers) et les PV restants.
     const entry = trace?.[traced];

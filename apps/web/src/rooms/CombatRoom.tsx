@@ -677,6 +677,57 @@ function SuppliesSheet({ view }: { view: CombatView }) {
   );
 }
 
+/**
+ * Le détail d'un combat (le « compteur » des MMO) : le verdict en une phrase, ce qu'on a fait par source, ce qu'on a reçu, et
+ * après une défaite ce qui répond à ce qui a battu (docs/design/coherence/rythme.md §4).
+ */
+function FightDetail({ b }: { b: NonNullable<CombatView['lastFight']>['breakdown'] }) {
+  const dealt = b.dealt.reduce((a, x) => a + x.amount, 0) || 1;
+  const taken = b.taken.reduce((a, x) => a + x.amount, 0) || 1;
+  const COLOR: Record<string, string> = { basic: 'var(--text-muted)', spell: 'var(--action)', dot: 'var(--alert)', class: 'var(--clan)', talent: 'var(--magic)' };
+  return (
+    <div className="fight-detail">
+      <p className="fd-verdict">{b.verdict}</p>
+      <div className="fd-cols">
+        <div>
+          <h3 className="fd-title">Ce que tu as fait · {num(b.dps)} par seconde</h3>
+          {b.dealt.slice(0, 8).map((x) => (
+            <div key={x.label} className="fd-row">
+              <span className="fd-label">{x.label}</span>
+              <span className="fd-bar"><span style={{ width: `${(100 * x.amount) / dealt}%`, background: COLOR[x.kind] }} /></span>
+              <span className="fd-num">{Math.round((100 * x.amount) / dealt)} %</span>
+            </div>
+          ))}
+        </div>
+        <div>
+          <h3 className="fd-title">Ce que tu as reçu</h3>
+          {b.taken.length ? (
+            b.taken.map((x) => (
+              <div key={x.label} className="fd-row">
+                <span className="fd-label">{x.label}</span>
+                <span className="fd-bar"><span style={{ width: `${(100 * x.amount) / taken}%`, background: 'var(--alert)' }} /></span>
+                <span className="fd-num">{num(x.amount)}</span>
+              </div>
+            ))
+          ) : (
+            <p className="muted">Rien.</p>
+          )}
+        </div>
+      </div>
+      {b.answers.length > 0 && (
+        <div className="fd-answers">
+          <h3 className="fd-title">Ce qui y répond</h3>
+          <ul>
+            {b.answers.map((x) => (
+              <li key={x}>{x}</li>
+            ))}
+          </ul>
+        </div>
+      )}
+    </div>
+  );
+}
+
 function LogSheet({ view }: { view: CombatView }) {
   const f = view.lastFight;
   return (
@@ -687,6 +738,8 @@ function LogSheet({ view }: { view: CombatView }) {
           <p>
             <strong style={{ color: f.win ? 'var(--good)' : 'var(--alert)' }}>{f.win ? 'Victoire' : 'Défaite'}</strong> · {f.name} · {decimal(f.time)} s
           </p>
+          <FightDetail b={f.breakdown} />
+          <h3 className="fd-title">Le déroulé</h3>
           <div className="combat-log scroll">
             {f.lines.map((l, i) => (
               <div key={i} className="combat-line small">

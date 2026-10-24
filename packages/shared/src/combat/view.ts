@@ -6,7 +6,7 @@ import { spellSlots } from './content.js';
 import type { CombatStats, Contributions } from './engine.js';
 import type { CombatContent } from '../schemas/combat.js';
 import { MAX_PRESETS } from './presets.js';
-import { type MechanicView, type PoolLinks, buildPoolLinks, encounterMechanics, gamePoolLinks } from './guide.js';
+import { type MechanicView, type PoolLinks, buildPoolLinks, encounterMechanics, gamePoolLinks, type FightBreakdown, fightBreakdown } from './guide.js';
 import { type SheetView, characterSheet } from './sheet.js';
 import { activePrep, readSupplies } from './supplies.js';
 import { activePath, advisedPlan, availableSpells, classLevel, classTier, classXpPerHour, currentPlan, encounterTiers, replayFight, routeStage, routeStages, wornGear } from './progress.js';
@@ -134,7 +134,7 @@ export interface CombatView {
     mechanics: MechanicView[];
   } | null;
   stopped: 'losses' | 'training_cap' | 'unavailable' | null;
-  lastFight: { encounter: string; name: string; win: boolean; time: number; lines: { t: number; text: string }[]; contributions: Contributions } | null;
+  lastFight: { encounter: string; name: string; win: boolean; time: number; lines: { t: number; text: string }[]; contributions: Contributions; breakdown: FightBreakdown } | null;
   /** Niveau de chaque classe du personnage. */
   classLevels: Record<string, number>;
   /** La route (PvE solo) : étape atteinte, étapes franchies, et toutes les étapes par chapitre. */
@@ -347,6 +347,7 @@ export function viewCombat(state: CharacterState, content: Content): CombatView 
       // Le journal lisible : sorts, Ruptures, attaques chargées, ennemis vaincus (pas chaque coup reçu).
       lines: (r.trace ?? []).filter((x) => x.kind !== 'attack' && x.kind !== 'guard' && x.kind !== 'basic').slice(0, 60).map((x) => ({ t: x.t, text: x.text })),
       contributions: r.team[0]!.contributions,
+      breakdown: fightBreakdown(combat, combat.encounters[last.encounter]!, r),
     };
   }
   return {

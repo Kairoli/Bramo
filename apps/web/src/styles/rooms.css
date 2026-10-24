@@ -10331,3 +10331,62 @@ div.tide-role {
 .force-chip span {
   color: var(--magic);
 }
+
+/* ---------- Détail du dernier combat (CombatRoom, FightDetail) ---------- */
+
+.fight-detail {
+  display: grid;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.fd-verdict {
+  margin: 0;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  background: var(--sunken);
+  font-weight: 600;
+}
+.fd-cols {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 14px;
+}
+.fd-title {
+  margin: 0 0 6px;
+  font-size: 13px;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+.fd-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr) 44px;
+  gap: 8px;
+  align-items: center;
+  font-size: 12px;
+  margin-bottom: 4px;
+}
+.fd-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.fd-bar {
+  height: 7px;
+  border-radius: 4px;
+  background: var(--sunken);
+  overflow: hidden;
+}
+.fd-bar span {
+  display: block;
+  height: 100%;
+}
+.fd-num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-muted);
+}
+.fd-answers ul {
+  margin: 0;
+  padding-left: 18px;
+  font-size: 13px;
+}

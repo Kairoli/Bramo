@@ -94,7 +94,7 @@ début, on aligne la vulnérabilité.
 
 | Gemme | Effet |
 |---|---|
-| La Trotteuse | chaque attaque de base raccourcit de 0,15 s la recharge de tes compétences |
+| La Trotteuse | chaque attaque de base raccourcit de 0,1 s la recharge de tes compétences |
 | Le Coup double | une attaque de base sur quatre frappe deux fois (0,3 P) |
 | L'Aiguille | Cadence comptée 10 % de plus, attaques de base +5 % |
 | Le Pas de course | une attaque de base sur quatre : une Mesure et une Entaille |

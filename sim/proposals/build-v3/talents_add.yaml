@@ -162,7 +162,7 @@ sets:
     name: Le Souffle long
     family: breath
     feeds: endurance
-    items: [Casque du coureur de fond, Plastron du dernier tour, Gants de l'endurant, Bottes « encore un peu »]
+    items: [Casque du coureur de fond, Plastron du dernier tour, Gants de l'endurant, Ceinture « encore un peu »]
     text: ["2 : passé 10 s, +8 % de dégâts.", "3 : passé 8 s, soin de 0,05 P toutes les 3 s.", "4 : Reprise."]
     pieces:
       "2": {effects: [{when: direct, after: 10, do: {amplify: 0.08}}]}
@@ -172,7 +172,7 @@ sets:
     name: Les Aiguilles du beffroi
     family: interstice
     feeds: cadence
-    items: [Chapeau du sonneur, Tunique du carillon, Gants du remontoir, Bottes du pendule]
+    items: [Chapeau du sonneur, Tunique du carillon, Gants du remontoir, Ceinture du pendule]
     text: ["2 : ta Cadence compte 10 % de plus.", "3 : chaque attaque de base raccourcit de 0,1 s la recharge de tes compétences.", "4 : Interstice."]
     pieces:
       "2": {mods: {hasteScore: 0.1}}

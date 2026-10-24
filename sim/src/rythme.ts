@@ -30,6 +30,8 @@ if (process.env.PATCH) {
  * M : mécaniques ennemies M fois plus fréquentes (fenêtres, charges, gardes, érosion, renforts, fureur) ;
  * C : recharge des sorts × C.
  */
+// NOLIMIT=1 : sans les limites de temps des rencontres (mesurer leur durée naturelle). JSON=<fichier> : les lignes en JSON.
+if (process.env.NOLIMIT) for (const e of Object.values(combat.encounters) as any[]) delete e.timeLimit;
 const V = (k: string) => Number(process.env[k] ?? 1);
 const [X, K, M, C, D] = [V('X'), V('K'), V('M'), V('C'), V('D')];
 {
@@ -79,7 +81,7 @@ const SEEDS = Number(process.env.SEEDS ?? 6);
 const GEMS = (process.env.GEMS ?? '').split(',').filter(Boolean);
 const MAJOR = ['weapon', 'torso', 'head'];
 const stages = (process.env.STAGES ?? Array.from({ length: 12 }, (_, c) => [c * 10 + 4, c * 10 + 9]).flat().join(',')).split(',').map(Number);
-type Row = { low: number; procs: number; spends: number; stage: string; name: string; tier: number; cls: string; win: number; time: number; casts: number; basics: number; share: Record<string, number>; hit: number; bigHit: number; P: number; hp: number };
+type Row = { enc: string; low: number; procs: number; spends: number; stage: string; name: string; tier: number; cls: string; win: number; time: number; casts: number; basics: number; share: Record<string, number>; hit: number; bigHit: number; P: number; hp: number };
 const rows: Row[] = [];
 let engineMs = 0, simulatedS = 0;
 for (const classId of Object.keys(combat.kits)) {
@@ -127,7 +129,7 @@ for (const classId of Object.keys(combat.kits)) {
     const total = Object.values(share).reduce((a, b) => a + b, 0) || 1;
     rows.push({
       low: low / SEEDS, procs: procs / SEEDS, spends: spends / SEEDS,
-      stage: st.label, name: enc.name, tier: st.tier, cls: classId, win: win / SEEDS, time: time / SEEDS, casts: casts / SEEDS, basics: basics / SEEDS,
+      stage: st.label, enc: enc.id, name: enc.name, tier: st.tier, cls: classId, win: win / SEEDS, time: time / SEEDS, casts: casts / SEEDS, basics: basics / SEEDS,
       share: Object.fromEntries(Object.entries(share).map(([k, v]) => [k, Math.round((100 * v) / total)])),
       hit: hits ? hitSum / hits : 0, bigHit: big, P: Math.round(setup.stats?.power ?? 0), hp: Math.round((enc.hp ?? 0) * s * (enc.enemies ?? 1)),
     });
@@ -137,6 +139,7 @@ const f = (x: number, d = 0) => x.toFixed(d);
 console.log('étape | rencontre | palier | classe | victoires | durée (s) | sorts | attaques de base | coup moyen | plus gros | P | PV ennemis | procs de talent | dépenses de réserve | part des dégâts');
 if (!process.env.QUIET) for (const r of rows) console.log([r.stage, r.name.slice(0, 26), r.tier, r.cls, `${f(r.win * 100)} %`, f(r.time), f(r.casts, 1), f(r.basics, 1), f(r.hit), f(r.bigHit), r.P, r.hp, f(r.procs, 1), f(r.spends, 1), Object.entries(r.share).map(([k, v]) => `${k} ${v}`).join(' ')].join(' | '));
 const avg = (xs: number[]) => xs.reduce((a, b) => a + b, 0) / (xs.length || 1);
+if (process.env.JSON) (await import('node:fs')).writeFileSync(process.env.JSON, JSON.stringify(rows));
 console.log(`\nMoyenne : durée ${f(avg(rows.map((r) => r.time)))} s (zones ${f(avg(rows.filter((r) => !r.stage.endsWith('-10')).map((r) => r.time)))} s, gardiens ${f(avg(rows.filter((r) => r.stage.endsWith('-10')).map((r) => r.time)))} s) · ${f(avg(rows.map((r) => r.casts)), 1)} sorts par combat · coup moyen ${f(avg(rows.map((r) => r.hit)))} · victoires ${f(avg(rows.map((r) => r.win)) * 100)} % · procs ${f(avg(rows.map((r) => r.procs)), 1)} · dépenses ${f(avg(rows.map((r) => r.spends)), 1)}`);
 
 for (const kind of ['zones', 'gardiens']) {

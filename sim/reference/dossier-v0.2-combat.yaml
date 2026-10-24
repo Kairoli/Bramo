@@ -1,5 +1,6 @@
 # Règles du dossier « Le cœur du jeu » v0.2 (banc Python), à appliquer à data/combat/ pour comparer le moteur au banc.
 # Même format qu'un combat.yaml de proposition. Remet les valeurs d'avant l'équilibrage du 22 octobre.
+# Les recharges des sorts d'avant le rythme vif du 24 octobre (× 0,7 depuis dans data/) sont remises aussi.
 # Le Traqueur réparé le 22 octobre (affût, purification, dissipation, sorts relevés) est aussi remis comme au dossier.
 rules:
   stability:
@@ -16,8 +17,69 @@ paths:
   trapper: {params: {damage: 0.35, weaken: 0.25, weakenAll: 0, slowAmount: 0, slowDuration: 1}}
   sigilbinder: {params: {weaken: 0.30, weakenAll: 0, slowAmount: 0, slowDuration: 1}}
 spells:
-  tr_retreat: {cleanse: false}
-  tr_stare: {dispel: false}
-  tr_seam: {damage: 1.75}
-  tr_sidestep: {damage: 1.9}
-  tr_harass: {damage: 1.1}
+  tr_retreat: {cleanse: false, cooldown: 16}
+  tr_stare: {dispel: false, cooldown: 18}
+  tr_seam: {damage: 1.75, cooldown: 14}
+  tr_sidestep: {damage: 1.9, cooldown: 20}
+  tr_harass: {damage: 1.1, cooldown: 12}
+  fg_workshop: {cooldown: 6}
+  fg_quench: {cooldown: 10}
+  fg_furnace: {cooldown: 12}
+  fg_guard: {cooldown: 14}
+  fg_crosscut: {cooldown: 12}
+  fg_cooling: {cooldown: 16}
+  fg_punch: {cooldown: 10}
+  fg_return: {cooldown: 14}
+  fg_bellows: {cooldown: 18}
+  fg_rivet: {cooldown: 18}
+  fg_scour: {cooldown: 20}
+  fg_counterweight: {cooldown: 22}
+  fg_slag: {cooldown: 16}
+  fg_second_strike: {cooldown: 12}
+  fg_red_reprise: {cooldown: 20}
+  fg_ring_anvil: {cooldown: 16}
+  fg_wedges: {cooldown: 14}
+  fg_sealing: {cooldown: 22}
+  fg_lay_rivets: {cooldown: 14}
+  fg_shared_anneal: {cooldown: 18}
+  fg_masterplate: {cooldown: 22}
+  fg_great_temper: {cooldown: 60}
+  tr_read: {cooldown: 8}
+  tr_pursuit: {cooldown: 8}
+  tr_snare: {cooldown: 12}
+  tr_whistle: {cooldown: 14}
+  tr_broadside: {cooldown: 12}
+  tr_barbed: {cooldown: 12}
+  tr_resin: {cooldown: 18}
+  tr_packbeat: {cooldown: 16}
+  tr_net: {cooldown: 20}
+  tr_cover: {cooldown: 20}
+  tr_crossbite: {cooldown: 16}
+  tr_iron_teeth: {cooldown: 16}
+  tr_leftbehind: {cooldown: 22}
+  tr_packguard: {cooldown: 14}
+  tr_share: {cooldown: 16}
+  tr_packreturn: {cooldown: 22}
+  tr_grand_hunt: {cooldown: 60}
+  rn_ember: {cooldown: 8}
+  rn_frost_circle: {cooldown: 10}
+  rn_guard: {cooldown: 12}
+  rn_lightning: {cooldown: 10}
+  rn_ash_ring: {cooldown: 14}
+  rn_respite: {cooldown: 16}
+  rn_frost_line: {cooldown: 12}
+  rn_reveal: {cooldown: 14}
+  rn_hearth: {cooldown: 18}
+  rn_divide: {cooldown: 16}
+  rn_silence: {cooldown: 20}
+  rn_continuity: {cooldown: 22}
+  rn_ardent_erasure: {cooldown: 16}
+  rn_shards: {cooldown: 14}
+  rn_burst_circle: {cooldown: 22}
+  rn_stop: {cooldown: 16}
+  rn_bind: {cooldown: 14}
+  rn_interdict: {cooldown: 22}
+  rn_resonant_guard: {cooldown: 14}
+  rn_refuge: {cooldown: 18}
+  rn_relay: {cooldown: 22}
+  rn_sovereign: {cooldown: 60}

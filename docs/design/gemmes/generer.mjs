@@ -31,6 +31,11 @@ const VESTIGE = {
   trophees: 'ambre_de_veille', // Lisière : la chasse
   echos: 'encre_fossile', // Archives englouties : la salle des échos
   entailles: 'encre_fossile', // Archives : l'encre qui ronge, les pages qui coupent
+  // Build v3 (24 octobre au soir) : l'Ouverture aux Abords (le coup d'envoi du débutant), la Cadence aux Forges (le marteau-pilon),
+  // l'Endurance à la Lisière (les longues veilles).
+  ouverture: 'galets_du_puits',
+  cadence: 'scorie_de_memoire',
+  endurance: 'ambre_de_veille',
 };
 
 /**

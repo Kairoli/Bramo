@@ -62,7 +62,7 @@ gearStats:
   floorShare: 0.75
   floorRampLevel: 40
   defense: {cap: 0.45, k: {"1": 212}}
-  haste: {cap: 0.23, base: 0.12, k: {"1": 200}}
+  haste: {cap: 0.5, base: 0.12, k: {"1": 200}}   # plafond 0,23 -> 0,5 le 24 octobre (archétype Cadence)
   crit: {cap: 0.3, base: 0.05, k: {"1": 172}}
   critMultiplier: 1.6
   startShieldDuration: 8
@@ -115,7 +115,7 @@ route:
 
 # Fournitures de combat (23 octobre, nuit) : potions de secours bues au plus par rencontre (la préparation, elle, dure une heure).
 supplies:
-  potionsPerFight: 2
+  potionsPerFight: 1      # 2 avant le rythme vif : 2,5 fois plus de rencontres par heure
 
 # Progression de classe et activité de combat (étape 4). [Décidé par Louis : XP de classe au combat seulement ;
 # Terrain d'entraînement validé.] Chiffres proposés par Claude, à équilibrer.
@@ -124,7 +124,7 @@ progression:
   xpDoubling: 55
   catchUpBonus: 0.5       # +50 % pour une classe sous 80 % du niveau de la meilleure classe du personnage
   catchUpBelow: 0.8
-  rest: 5                 # repos fixe entre deux rencontres (s), non crédité
+  rest: 2                 # repos fixe entre deux rencontres (s), non crédité (5 avant le rythme vif du 24 octobre)
   lossXpShare: 0.5        # une défaite crédite la moitié de son temps
   maxConsecutiveLosses: 3 # puis l'activité se met en pause (rien n'est perdu)
   training:               # Terrain d'entraînement : sans butin ni risque

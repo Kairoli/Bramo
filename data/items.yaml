@@ -312,4 +312,17 @@
 - {id: talent_bastion_operette, name: "Le Bastion d'opérette", category: gem, value: 360, gem: bastion_operette}
 - {id: talent_derniere_etincelle, name: La Dernière Étincelle, category: gem, value: 360, gem: derniere_etincelle}
 - {id: talent_oeil_du_chasseur, name: "L'Œil du chasseur", category: gem, value: 360, gem: oeil_du_chasseur}
+- {id: talent_coup_d_envoi, name: "Le Coup d'envoi", category: gem, value: 360, gem: coup_d_envoi}
+- {id: talent_meche_courte, name: La Mèche courte, category: gem, value: 560, gem: meche_courte}
+- {id: talent_premier_sang, name: Le Premier Sang, category: gem, value: 220, gem: premier_sang}
+- {id: talent_pare_balles, name: Le Pare-balles, category: gem, value: 360, gem: pare_balles}
+- {id: talent_second_souffle, name: Le Second Souffle, category: gem, value: 440, gem: second_souffle}
+- {id: talent_longue_haleine, name: La Longue Haleine, category: gem, value: 280, gem: longue_haleine}
+- {id: talent_l_usure, name: "L'Usure", category: gem, value: 680, gem: l_usure}
+- {id: talent_peau_dure, name: La Peau dure, category: gem, value: 440, gem: peau_dure}
+- {id: talent_la_trotteuse, name: La Trotteuse, category: gem, value: 220, gem: la_trotteuse}
+- {id: talent_coup_double, name: Le Coup double, category: gem, value: 560, gem: coup_double}
+- {id: talent_l_aiguille, name: "L'Aiguille", category: gem, value: 360, gem: l_aiguille}
+- {id: talent_pas_de_course, name: Le Pas de course, category: gem, value: 360, gem: pas_de_course}
+
 # --- Fin des gemmes de talent ---

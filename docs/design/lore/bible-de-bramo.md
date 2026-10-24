@@ -155,7 +155,7 @@ Les classes de métier déjà prévues (Artificier, Alchimiste) et les suivantes
 
 Le joueur d'un jeu idle ne lit pas de longs textes ; il faut que l'histoire **vienne à lui, par petits morceaux, en jouant**.
 
-1. **Le Registre du Notaire, un fil rouge.** Le Notaire des marées tient le registre de tout ce que la Marée a pris. **Chaque gardien vaincu pour la première fois rend une page** (douze zones, douze pages ; une de plus par saison). Une page = trois ou quatre phrases, une trouvaille, un nom. Réunies, elles racontent la Grande Marée. Un **Carnet** dans la salle Personnage les garde.
+1. **Le Registre du Notaire, un fil rouge.** Le Notaire des marées tient le registre de tout ce que la Marée a pris. **Chaque gardien vaincu pour la première fois rend une page** (six gardiens, six pages ; une de plus par saison ; le « douze » d'avant était une erreur, corrigée le 24 octobre). Une page = trois ou quatre phrases, une trouvaille, un nom. Réunies, elles racontent la Grande Marée. Un **Carnet** dans la salle Personnage les garde.
 2. **Le Panneau raconte le monde.** Des annonces courtes mêlées au fil du serveur : « On a revu Mère Grise au lavoir », « La Vigie a fait un pas cette nuit ». Une ligne, jamais plus.
 3. **Les maîtres font le lien.** Leurs commandes du 90 parlent déjà de la Grande Marée ; un maître peut citer une page du Registre que le joueur vient de trouver.
 4. **Les saisons font avancer l'histoire.** Chaque saison, la Marée change d'humeur et fait remonter une page, une créature, un lieu (§13.3) ; la Grande Marée de fin de saison en est le point d'orgue.
@@ -263,7 +263,7 @@ Le monde de Bramo doit accueillir, pendant des années, des classes, des saisons
 | **Ce que fait la Marée** | son humeur de la saison, en une phrase : ce qu'elle prend, ou rend, autrement |
 | **L'histoire en actes** | trois ou quatre temps sur la saison : une rumeur au Panneau, une découverte, un sommet, un dénouement ; chaque acte s'ouvre à une date, pour tout le serveur |
 | **En jeu** | une mutation (une règle de combat qui tord une réserve) ; un quatrième visage de la Marée du soir pour la saison ; un gardien ou un géant de saison ; une route ou une zone de saison ; des commandes et des contrats à thème |
-| **Ce qu'on gagne** | la boutique d'éclats à thème (apparences, décorations de halle), des titres de saison, un classement de saison (sans perte pour personne) |
+| **Ce qu'on gagne** | une **monnaie de saison** (pas les éclats, qui restent à la Marée du soir), sa boutique à thème (une tenue par classe vendue pièce par pièce, une arme d'apparence par classe), des titres de saison, un classement de saison (sans perte pour personne) |
 | **Le final** | une Grande Marée de fin de saison, que tout le serveur vit ensemble |
 | **Ce qui reste après** | **obligatoire** : la page du Registre ; et au moins une chose permanente (la zone de saison rejoint les Lointains, un nouveau PNJ s'installe au bourg, un lieu change) |
 | **La question laissée ouverte** | ce que la saison suivante pourra reprendre |
@@ -273,8 +273,8 @@ Le monde de Bramo doit accueillir, pendant des années, des classes, des saisons
 | Une saison, c'est au minimum | En plus, seulement si on a le temps |
 |---|---|
 | un thème et une page du Registre | un gardien ou un géant de saison |
-| une mutation (une règle qui change, dans les données) | une zone de saison |
-| une boutique d'éclats à thème (une tenue par classe, deux pièces) | un quatrième visage de la Marée du soir |
+| deux ou trois mutateurs (des règles qui changent, dans les données ; aucun au-delà de 10 %) | une zone de saison |
+| une monnaie et une boutique de saison (une tenue par classe à la pièce, une arme d'apparence par classe) | un quatrième visage de la Marée du soir |
 | trois annonces au Panneau (les actes de l'histoire) | un événement court |
 | une chose qui reste après (un PNJ, un lieu, un titre) | des commandes et contrats à thème |
 
@@ -292,7 +292,7 @@ Pour tenir ce rythme : des saisons **longues** (deux à trois mois plutôt que s
 
 | Saison | Le thème | Ce que fait la Marée | L'histoire, en bref | Ce qui reste | Apparence |
 |---|---|---|---|---|---|
-| **1. La Marée haute** | le commencement | elle monte plus haut que jamais depuis la Grande Marée | la digue tient de justesse ; le Notaire des marées laisse tomber une page de son registre sur la digue ; le bourg découvre que la Marée **tient des comptes** | le Registre et le Carnet (le fil rouge, §9) ; la digue rehaussée | Marée haute |
+| **1. Les Pages du Notaire** (fiche complète : `../saisons/saison-1.md`) | le commencement | elle monte plus haut que jamais depuis la Grande Marée et arrache des pages au registre du Notaire | des feuillets s'échouent partout ; Odile la copiste en fait sécher un, qui porte un nom du bourg ; le bourg découvre que la Marée **tient des comptes** | le Registre et le Carnet (le fil rouge, §9) ; Odile et son pupitre sous la halle | le Copiste |
 | **2. Le Givre qui écrit** | le froid qui se souvient | elle gèle et dépose sur les vitres des mots oubliés | chaque matin, le bourg recopie le givre ; un nom revient, que personne ne reconnaît, sauf le plus vieux de la Taupinière | une famille du bourg retrouve son nom ; une zone gelée de la Lisière | Sentinelle du Givre |
 | **3. Le Carnaval des Masques** | l'identité | une nuit par semaine, elle **ne reconnaît plus personne** : qui porte un masque passe à travers elle | des masqués franchissent la digue et ramènent des choses de l'autre côté ; l'un d'eux ne revient pas sans son masque | le Bal des masques au bourg ; un masque sans visage au Registre | Masque du Carnaval |
 | **4. Les Abysses** | ce qui dort au fond | elle touche la mer profonde et remonte avec ce qui y dormait | Naël sort la nuit sans rien dire ; un héritier venu du fond réclame quelque chose au bourg | la jetée prolongée ; une zone sous la mer | Héritier des Abysses |

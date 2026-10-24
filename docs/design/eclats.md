@@ -77,6 +77,8 @@ Les premières retailles sont abordables ; chercher la ligne parfaite devient vi
 
 ### A. La boutique de saison (le gros puits)
 
+> **[Remplacé le 24 octobre]** Louis : la saison n'est pas la Marée du soir. Une saison a **sa propre monnaie** (Saison 1 : les feuillets, invendables) et sa boutique ; les éclats restent la monnaie de la Marée et de sa boutique (Marée haute, cadres de titre). Fiche de la Saison 1 : [`saisons/saison-1.md`](saisons/saison-1.md). Ce qui suit est l'ancienne proposition.
+
 La boutique de la Marée change **à chaque saison** : des saisons numérotées (Saison 1, 2, 3…), chacune un thème et une histoire, qui ne reviennent pas [Décidé par Louis le 24 octobre ; `lore/bible-de-bramo.md` §13.3]. Chaque saison :
 
 | Quoi | Prix |

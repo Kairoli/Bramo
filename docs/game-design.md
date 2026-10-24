@@ -130,6 +130,7 @@ Marché entre joueurs : ordres d'achat et de vente, **taxe de 5 %**, commandes a
 ### 8.3 Saisons (P5)
 - [Décidé] Progression permanente conservée ; contenus qui reviennent en rerun ; pas d'exclusivité définitive.
 - [Décidé par Louis le 24 octobre] **Des saisons numérotées qui ne reviennent jamais** (Saison 1, Saison 2…), comme dans les jeux en ligne, mais **chacune un thème et une histoire** : un chapitre de l'histoire de Bramo, qui laisse le monde changé. Ce ne sont pas les saisons de l'année. Modèle et première suite proposée : [`design/lore/bible-de-bramo.md`](design/lore/bible-de-bramo.md) §13.3.
+- [Décidé par Louis le 24 octobre] **Saison 1 : Les Pages du Notaire** ([`design/saisons/saison-1.md`](design/saisons/saison-1.md)), pas encore codée, ouverte avec la sortie publique : une monnaie de saison (feuillets, invendables) distincte des éclats de la Marée, trois mutateurs (métiers, combat, marché ; 10 % au plus), quatre quêtes par semaine, une tenue par classe vendue pièce par pièce et une arme d'apparence par classe, titres au total trouvé, environ 10 semaines.
 - [Recommandé, à reprendre dans ce cadre] Ressources et recettes thématiques, rencontres asynchrones, ensembles **latéraux** jamais indispensables, jetons conservés d'une saison à l'autre ([`design/monde.md`](design/monde.md) §2). [Remplacé] Quatre événements par an (Givre, Marées, Moisson, Braises) qui reviennent chaque année.
 - [Prototype du v1.0, abandonné] Saisons de 6 semaines avec remise à zéro du classement, de la monnaie et des bâtiments de saison.
 

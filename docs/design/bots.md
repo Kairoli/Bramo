@@ -6,6 +6,23 @@
 > marché, leur métier, le PvE… Ça implique un reset total, et de me mettre dans la peau d'un nouveau joueur ».
 > **Rien n'est codé, rien n'est remis à zéro.** Tout ce qui suit est **proposé par Claude**.
 
+## 0. Précisions de Louis (24 octobre, nuit) : elles priment sur la suite
+
+- **« Humanisés au maximum. »**
+- **« Ils ne jouent pas autour de moi, mais autour du jeu. »** Si Louis ne se connecte pas pendant deux jours, le monde
+  continue : la discussion, le marché, les clans, la Marée. Les bots jouent entre eux ; **Louis n'est que le 21ᵉ joueur**.
+  Plus de mesure « par rapport à Louis » (§2) ni de correction d'un bot « trop rapide par rapport à Louis » (§5) : la
+  référence est la simulation de serveur et le principe du casu (un tryhard progresse 2 à 2,5 fois plus vite qu'un casu).
+- **« Full random sur tout »**, unique pour chaque bot : heures de connexion, temps resté en ligne, nombre d'actions,
+  métiers, décisions. Pas deux bots ni deux jours pareils. Le hasard est tiré par bot et par jour à partir d'une graine
+  enregistrée, pour pouvoir rejouer et comprendre un comportement.
+- **L'agent IA observe et garde des traces** : il note ce qui ne va pas (bot coincé, économie qui dérape, comportement peu
+  humain, bug du jeu) dans un journal, et écrit **un rapport par jour** pour Louis.
+- **La discussion vit entre les bots** (voir §5) : c'est la seule part du jeu qu'un programme sans IA ne sait pas rendre
+  humaine. Choix du superviseur : une passe « voix » d'IA espacée au hasard (une à deux heures, pas tous les bots à chaque
+  fois), qui fait parler les bots entre eux et répond à Louis quand il écrit, distincte du rapport quotidien. À mesurer la
+  première semaine (usage de l'abonnement).
+
 ## 1. Le principe : un cerveau sans IA, une voix avec
 
 Faire décider **toutes** les actions de vingt joueurs par une IA, toutes les heures, coûte cher et ne joue pas mieux : la

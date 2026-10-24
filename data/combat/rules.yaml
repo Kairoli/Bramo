@@ -105,7 +105,7 @@ loot:
   setLegendary: 0.10
   named: 0.001            # chance par objet nommé de la rencontre, par unité
   namedGuarantee: 1000    # garanti après 1 000 unités sans l'avoir eu (~6 jours sur la même rencontre)
-  talentGem: 0.0005       # gemme de talent de la région (son vestige), par unité : ~1 tous les 8 jours de combat ; à équilibrer
+  talentGem: 0.001        # gemme de talent de la région (son vestige), par unité : ~1 tous les 4 jours de combat ; à équilibrer
 
 # [Décidé par Louis le 23 octobre : « personne ne termine jamais le PvE solo »] Les douze chapitres bouclent : au cycle 2,
 # le chapitre 13 reprend la zone du chapitre 1, et ainsi de suite, sans fin. Le palier continue de monter, une fois et demie

@@ -51,6 +51,7 @@ import {
   wallIndex,
   wornGear,
   rankCost,
+  salvageGear,
   rankUp,
   worksNeeds,
 } from '@bramo/shared';
@@ -113,6 +114,8 @@ export interface Ledger {
   /** Équipement tombé : par source, rareté, palier ; ensembles et nommés. */
   drops: { classic: Record<string, number>; sets: Record<string, number>; named: Record<string, number>; total: number; bySource: Record<string, number> };
   gemsSocketed: Record<string, number>;
+  /** Gemmes de talent (24 octobre) : taillées, achetées, trouvées, serties ; premier jour de chaque joueur ; poussière. */
+  talent: { crafted: number; bought: number; dropped: number; socketed: number; firstDays: number[]; pairDays: number[]; refused: number; dust: { made: number; used: number }; salvaged: number };
   trials: { id: string; day: number; bot: number }[];
   notes: { day: number; text: string }[];
   /** Puits d'or voulus (23 octobre) : soirs offerts, ouvrages achevés, banquets lancés, rangs d'affinage achetés. */
@@ -160,6 +163,11 @@ export interface Bot extends Trader {
   /** Spéculateur : stock acheté et prix payé. */
   spec: Map<string, { qty: number; paid: number }>;
   classSwitches: number;
+  /** Gemmes de talent : la réserve autour de laquelle il monte son build (choisie une fois), le jour de sa première gemme. */
+  archetype: string | null;
+  talentDay: number | null;
+  /** Jour où il a eu en main sa paire (avant de la sertir). */
+  pairDay: number | null;
 }
 
 export interface ServerResult {
@@ -224,6 +232,7 @@ export function runServer(content: Content, input: ServerOptions): ServerResult 
     delivered: {},
     drops: { classic: {}, sets: {}, named: {}, total: 0, bySource: {} },
     gemsSocketed: {},
+    talent: { crafted: 0, bought: 0, dropped: 0, socketed: 0, firstDays: [], pairDays: [], refused: 0, dust: { made: 0, used: 0 }, salvaged: 0 },
     trials: [],
     notes: [],
     sinks: { patrons: 0, works: 0, banquets: 0, ranks: 0, maxRank: 0 },
@@ -307,6 +316,9 @@ export function runServer(content: Content, input: ServerOptions): ServerResult 
       totals: { npcGold: 0, trialGold: 0, salesNet: 0, purchases: 0, clanGold: 0, stall: 0, repairs: 0 },
       spec: new Map(),
       classSwitches: 0,
+      archetype: null,
+      talentDay: null,
+      pairDay: null,
     });
   }
   // Clans : les joueurs qui veulent un clan, par groupes de 5 à 15.
@@ -459,6 +471,165 @@ export function runServer(content: Content, input: ServerOptions): ServerResult 
     }
     b.gear = gear;
     syncEquipment(b);
+  };
+
+  /**
+   * Démontage (l'Affineur) : un joueur qui joue un peu au calcul démonte ce qu'il ne porte pas et ne vend pas, sauf ce que le
+   * jeu garde (chefs-d'œuvre, ensembles, nommées, pièces travaillées) ; il garde les quatre plus récentes au cas où.
+   */
+  const salvage = (b: Bot) => {
+    if (b.persona.skill < 0.3 || !content.gearCrafting?.refine?.salvage) return;
+    const spare = b.gear
+      .filter((g) => !g.equipped && g.price == null && !listedIds.has(String(g.id)) && !g.masterpiece && !(g.rank ?? 0))
+      .filter((g) => {
+        const m = content.gearModels[g.model];
+        return m && !m.set && !m.talent && !m.named && !m.starter;
+      })
+      .sort((a, c) => c.id - a.id)
+      .slice(4);
+    if (!spare.length) return;
+    try {
+      const r = salvageGear(b.state, spare, content);
+      b.state = r.state;
+      traders.get(b.id)!.state = b.state;
+      const gone = new Set(spare.map((g) => g.id));
+      b.gear = b.gear.filter((g) => !gone.has(g.id));
+      ledger.talent.dust.made += r.qty;
+      ledger.talent.salvaged += spare.length;
+      add(ledger.produced, r.item, r.qty);
+    } catch (e) {
+      if (!(e instanceof GameError)) throw e;
+    }
+  };
+
+  /** Réserve par défaut d'une classe (son style), quand rien de ce qu'il porte n'en remplit une. */
+  const CLASS_POOL: Record<string, string> = { forgefire: 'tisons', tracker: 'entailles', runist: 'echos' };
+  /** Gemmes de talent par réserve et rôle (objets du jeu). */
+  const talentItems = (() => {
+    const out: Record<string, Record<string, string[]>> = {};
+    for (const it of Object.values(content.items)) {
+      const g = it.gem ? combat.talents?.gems.find((x) => x.id === it.gem) : undefined;
+      if (!g?.archetype) continue;
+      ((out[g.archetype] ??= {})[g.role ?? 'utility'] ??= []).push(it.id);
+    }
+    return out;
+  })();
+  /**
+   * Gemmes de talent [Louis, 24 octobre : obtenables, « pas trop dur, pas trop facile »] : un joueur qui sertit des gemmes
+   * choisit une réserve (celle que ses pièces nommées et ses ensembles remplissent, sinon celle de sa classe), puis cherche
+   * de quoi la remplir et de quoi la dépenser : dans son sac, au marché ; il les sertit dans une place libre si son
+   * combat contre son mur ne s'en trouve pas plus mal (une gemme qui remplit attend celle qui dépense).
+   */
+  const useTalentGems = (b: Bot, day: number) => {
+    if (!b.persona.gems || !b.state.classId || !combat.talents || process.env.TALENT === '0') return;
+    if (!b.archetype) {
+      const w = wornGear(b.state, content);
+      const fed: Record<string, number> = {};
+      for (const t of w?.talents ?? []) for (const e of t.effects ?? []) if (e.do?.gain?.pool) fed[e.do.gain.pool] = (fed[e.do.gain.pool] ?? 0) + 1;
+      b.archetype = Object.entries(fed).sort((x, y) => y[1] - x[1])[0]?.[0] ?? CLASS_POOL[b.state.classId] ?? 'tisons';
+    }
+    const kinds = talentItems[b.archetype] ?? {};
+    // D'abord la paire (de quoi remplir, de quoi dépenser), puis un amplificateur : une gemme qui remplit seule ne sert à rien.
+    const pair = [kinds.producer?.[0], kinds.payoff?.[0]].filter((x): x is string => !!x);
+    const worn = b.gear.filter((g) => g.equipped && canHoldGem(content.gearModels[g.model]!));
+    const has = (item: string) => worn.some((g) => g.gem === content.items[item]!.gem);
+    const want = pair.every(has) ? (kinds.amplifier ?? []).slice(0, 1).filter((x) => !has(x)) : pair.filter((x) => !has(x));
+    if (!want.length) return;
+    // Se procurer ce qui manque : son sac, la taille s'il a la Joaillerie, sinon le marché à un prix raisonnable, sinon une
+    // demande laissée au marché.
+    for (const item of want) {
+      if (b.state.inventory[item] ?? 0) continue;
+      if (cutGem(b, item)) continue;
+      const ask = exchange.asks(item, b.id)[0];
+      // Une pièce de son build : il y met jusqu'au tiers de son or (cinq fois la référence au plus), comme un joueur.
+      const limit = Math.min(b.state.gold * 0.35, ref(item) * 5);
+      if (!ask || ask.price > limit) {
+        if (b.state.gold > ref(item) * 2) buy(b, item, 1, Math.round(Math.min(limit, ref(item) * 2)), true);
+        return;
+      }
+      const r = buy(b, item, 1, ask.price, false);
+      if (!r.qty) return;
+      b.totals.purchases += r.gold;
+      ledger.talent.bought++;
+    }
+    if (b.pairDay === null && pair.every((x) => (b.state.inventory[x] ?? 0) > 0 || has(x))) {
+      b.pairDay = day;
+      ledger.talent.pairDays.push(day - b.joinDay);
+    }
+    // Sertir sur les places libres, sinon à la place d'une gemme de situation, et garder seulement si le combat contre son mur
+    // s'en trouve vraiment meilleur.
+    const named = b.gear.filter((g) => g.equipped && content.gearModels[g.model]?.talent).length;
+    const talentGems = new Set((combat.talents?.gems ?? []).map((g) => g.id));
+    const hosts = worn.filter((g) => !g.gem || !talentGems.has(g.gem)).sort((x, y) => Number(!!x.gem) - Number(!!y.gem));
+    if (hosts.length < want.length || named + worn.filter((g) => g.gem && talentGems.has(g.gem)).length + want.length > 4) return;
+    const before = scoreOf(b, b.gear);
+    let trial = b.gear;
+    const moves: { take: string; give: string | null }[] = [];
+    want.forEach((item, i) => {
+      const res = socketGem(trial, hosts[i]!.id, item, content);
+      trial = res.items;
+      moves.push({ take: res.take, give: res.give });
+    });
+    const after = scoreOf(b, trial);
+    if (after <= before + 1e-3) {
+      ledger.talent.refused++;
+      return;
+    }
+    b.gear = trial;
+    for (const m of moves) {
+      addStack(b.state.inventory, m.take, -1);
+      if (m.give) addStack(b.state.inventory, m.give, 1);
+    }
+    for (const item of want) {
+      add(ledger.gemsSocketed, content.items[item]!.gem!, 1);
+      add(ledger.delivered, item, 1);
+      ledger.talent.socketed++;
+    }
+    if (b.talentDay === null) {
+      b.talentDay = day;
+      ledger.talent.firstDays.push(day - b.joinDay);
+    }
+    syncEquipment(b);
+    note(day, `${b.name} sertit ${want.map((x) => content.items[x]!.name).join(' et ')} (${b.archetype})`);
+  };
+
+  /**
+   * Tailler une gemme de talent tout de suite (trois minutes au plus : on ne simule pas la file), en achetant au marché ce
+   * qui manque. Faux si son niveau de Joaillerie ne suffit pas ou si une matière introuvable manque.
+   */
+  const cutGem = (b: Bot, item: string): boolean => {
+    const r = recipes.find((x) => x.outputs.some((o) => o.item === item));
+    if (!r || lvl(b.state, r.profession) < r.level) return false;
+    for (const i of r.inputs) {
+      const need = i.qty - (b.state.inventory[i.item] ?? 0);
+      if (need <= 0) continue;
+      const got = buy(b, i.item, need, Math.max(2, Math.round(ref(i.item) * 2.5)), false);
+      b.totals.purchases += got.gold;
+      if ((b.state.inventory[i.item] ?? 0) < i.qty) return false;
+    }
+    for (const i of r.inputs) addStack(b.state.inventory, i.item, -i.qty);
+    for (const o of r.outputs) {
+      addStack(b.state.inventory, o.item, o.qty);
+      add(ledger.produced, o.item, o.qty);
+    }
+    ledger.talent.dust.used += r.inputs.find((i) => i.item === content.gearCrafting?.refine?.salvage?.item)?.qty ?? 0;
+    return true;
+  };
+
+  /** Un joaillier répond aux demandes de gemmes de talent du marché (au moins leur référence) : il taille et vend. */
+  const answerGemBids = (b: Bot) => {
+    if (!b.professions.includes('jewelcrafting')) return;
+    let n = 0;
+    for (const items of Object.values(talentItems))
+      for (const list of Object.values(items))
+        for (const item of list) {
+          if (n >= 3) return;
+          const bid = exchange.bids(item, b.id)[0];
+          if (!bid || bid.price < ref(item)) continue;
+          if (!(b.state.inventory[item] ?? 0) && !cutGem(b, item)) continue;
+          const r = exchange.sell(b, item, 1, bid.price, 0);
+          if (r.qty) n++;
+        }
   };
 
   /** Gemme de situation devant un mur : celle de sa mécanique, achetée ou dans le sac, sertie si elle aide. */
@@ -1244,6 +1415,10 @@ export function runServer(content: Content, input: ServerOptions): ServerResult 
     for (const [k, v] of Object.entries(summary.consumed)) add(ledger.consumed, k, v);
     for (const [k, v] of Object.entries(summary.combat.vestiges)) add(ledger.produced, k, v);
     for (const l of summary.combat.loot) grantGear(b, l.model, l.encounter);
+    for (const g of summary.combat.talentGems ?? []) {
+      ledger.talent.dropped++;
+      add(ledger.produced, g.item, 1);
+    }
   };
 
   const start = (b: Bot, t: number) => {
@@ -1301,6 +1476,9 @@ export function runServer(content: Content, input: ServerOptions): ServerResult 
     craftGearTurn(b, day);
     shopVitrine(b);
     useGems(b, day);
+    salvage(b);
+    useTalentGems(b, day);
+    answerGemBids(b);
     supplies(b, day);
     contributeToClan(b, day, t);
     refine(b);

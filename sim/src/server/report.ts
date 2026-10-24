@@ -283,6 +283,19 @@ export function analyze(r: ServerResult, content: Content, tide?: TideStats) {
     market: { activity, index, top: traded.slice(0, 25), crashed: crashed.slice(0, 20), soared: soared.slice(0, 20), lastDay: r.days.at(-1), traders },
     flows: { rawBalance, deadEnds: deadEnds.slice(0, 30), neverMade },
     loot: { perBotDay: r1(perBotDay), total: r.ledger.drops.total, rarity, sets, named, gearOwnedMedian: gearOwned, gems: r.ledger.gemsSocketed, bySource: r.ledger.drops.bySource },
+    // Gemmes de talent (24 octobre) : production, achats, butin, sertissage, rythme, prix au marché.
+    talent: (() => {
+      const items = Object.values(content.items).filter((i) => i.gem && content.combat?.talents?.gems.some((g) => g.id === i.gem));
+      const produced = items.reduce((n, i) => n + (r.ledger.produced[i.id] ?? 0), 0);
+      const prices = items
+        .map((i) => ({ name: i.name, price: r.prices[i.id]?.weekly.filter((x) => x > 0).at(-1) ?? 0, ref: i.value }))
+        .filter((x) => x.price > 0)
+        .sort((x, y) => y.price - x.price);
+      const days = [...r.ledger.talent.firstDays].sort((x, y) => x - y);
+      const users = r.bots.filter((b) => b.persona.gems).length;
+      const pd = [...r.ledger.talent.pairDays].sort((x, y) => x - y);
+      return { ...r.ledger.talent, pairDayMedian: median(pd), pairDayP25: pd[Math.floor(pd.length / 4)] ?? null, crafted: produced - r.ledger.talent.dropped, users, withGem: days.length, firstDayMedian: median(days), firstDayP25: days[Math.floor(days.length / 4)] ?? null, prices: prices.slice(0, 12) };
+    })(),
     vitrine: { listed: r.vitrine.listed, sold: r.vitrine.sales.length, medianPrice: median(r.vitrine.sales.map((x) => x.price)), crafted: r.ledger.drops.bySource['fabrication'] ?? 0 },
     supplies: Object.values(content.items)
       .filter((i) => i.potion || i.prep)
@@ -346,6 +359,8 @@ export function toMarkdown(a: Analysis): string {
   for (const s of a.loot.sets) L.push(`| ${s.name} | ${s.dropped} | ${s.worn2plus} |`);
   L.push('', `Nommés (tombés / portés) : ${a.loot.named.map((n) => `${n.named} ${n.dropped}/${n.worn}`).join(', ')}.`);
   L.push(`Gemmes serties : ${Object.entries(a.loot.gems).map(([k, v]) => `${k} ${v}`).join(', ') || 'aucune'}.`);
+  const tg = a.talent;
+  L.push(`Gemmes de talent : ${tg.crafted} taillées, ${tg.dropped} trouvées en combat, ${tg.bought} achetées, ${tg.socketed} serties ; ${tg.withGem} joueurs sur ${tg.users} qui sertissent ont une gemme de talent (première : ${tg.firstDayP25 ?? '—'} j pour le premier quart, ${tg.firstDayMedian ?? '—'} j en médiane). Démontage : ${tg.salvaged} pièces, ${tg.dust.made} poussières. Prix (dernier / référence) : ${tg.prices.map((x) => `${x.name} ${x.price}/${x.ref}`).join(', ') || 'aucun échange'}.`);
   L.push(`Atelier et vitrine : ${a.vitrine.crafted} pièces fabriquées, ${a.vitrine.sold} vendues à la vitrine (prix médian ${a.vitrine.medianPrice} or), ${a.vitrine.listed} encore en vente. Sources : ${Object.entries(a.loot.bySource).filter(([k]) => !k.startsWith('z') && !k.startsWith('b')).map(([k, v]) => `${k} ${v}`).join(', ')}.`);
   L.push(`Fournitures (produites / achetées pour la route / dernier prix) : ${a.supplies.map((x) => `${x.name} ${x.produced}/${x.bought}/${x.price}`).join(', ')}.`);
   L.push('', '## Classes et voies', '');

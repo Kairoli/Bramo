@@ -16,26 +16,35 @@ const catalog = parse(readFileSync(join(root, 'data/combat/talents.yaml'), 'utf8
 // poussière de Lointain (sans recette) ; une gemme vaut 40 % de ses ingrédients, comme les gemmes de situation.
 const VALUE = Object.fromEntries([...readFileSync(join(root, 'data/items.yaml'), 'utf8').matchAll(/^- \{id: ([a-z0-9_]+),.*?value: (\d+)/gm)].map((m) => [m[1], Number(m[2])]));
 
-/** La région (son vestige) de chaque réserve : là où elle se taille, et là où elle tombe parfois en combat. */
+/**
+ * La région (son vestige) de chaque réserve : là où elle se taille, et là où elle tombe parfois en combat. Seulement les
+ * quatre premières régions (atteintes vers le 20e jour) : avec le Bastion et la Cicatrice, les Entailles et la Rancœur ne se
+ * taillaient qu'après un mois (simulation de serveur du 24 octobre).
+ */
 const VESTIGE = {
+  frimas: 'galets_du_puits', // Abords : l'eau froide du lavoir
+  utility: 'galets_du_puits',
   tisons: 'scorie_de_memoire', // Forges éteintes : le feu
   mesure: 'scorie_de_memoire', // Forges éteintes : le rythme du marteau-pilon
-  frimas: 'galets_du_puits', // Abords : l'eau froide du lavoir
-  entailles: 'quartz_de_faille', // Cicatrice : les éclats qui coupent
-  rancoeur: 'eclat_de_serment', // Bastion : les coups encaissés derrière la garde
+  rancoeur: 'scorie_de_memoire', // Forges éteintes : le Contremaître et ses coups de presse
   ferveur: 'ambre_de_veille', // Lisière des veilleurs : veiller sur les autres
   trophees: 'ambre_de_veille', // Lisière : la chasse
   echos: 'encre_fossile', // Archives englouties : la salle des échos
-  utility: 'galets_du_puits',
+  entailles: 'encre_fossile', // Archives : l'encre qui ronge, les pages qui coupent
 };
 
-/** Trois paliers de taille selon le rôle : remplir tôt, relier ensuite, dépenser (la récompense) plus tard. */
+/**
+ * Trois paliers de taille selon le rôle : remplir tôt, relier ensuite, dépenser (la récompense) un peu plus tard.
+ * Équilibrage du 24 octobre (simulation de serveur, 120 joueurs, 90 jours) : avec les gemmes qui dépensent au niveau 40 (puis
+ * 35, avec une améthyste), seul un joueur sur trois réunissait une paire, au 45e jour en médiane, et elles se vendaient 4 à 7
+ * fois leur référence. Niveaux 15, 25, 30 et matières de la Joaillerie seulement.
+ */
 const TIER = {
-  producer: { level: 20, sec: 60, inputs: [['glass_bead', 4], ['rune_dust', 2]], vestiges: 15, dust: 4 },
-  amplifier: { level: 30, sec: 120, inputs: [['silver_bar', 2], ['rune_dust', 3]], vestiges: 25, dust: 8 },
-  bridge: { level: 30, sec: 120, inputs: [['silver_bar', 2], ['rune_dust', 3]], vestiges: 25, dust: 8 },
-  utility: { level: 30, sec: 120, inputs: [['silver_bar', 2], ['rune_dust', 3]], vestiges: 25, dust: 8 },
-  payoff: { level: 40, sec: 180, inputs: [['amethyst', 1], ['runic_core', 1]], vestiges: 35, dust: 15 },
+  producer: { level: 15, sec: 60, inputs: [['glass_bead', 4], ['rune_dust', 2]], vestiges: 15, dust: 4 },
+  amplifier: { level: 25, sec: 120, inputs: [['silver_bar', 2], ['rune_dust', 3]], vestiges: 20, dust: 8 },
+  bridge: { level: 25, sec: 120, inputs: [['silver_bar', 2], ['rune_dust', 3]], vestiges: 20, dust: 8 },
+  utility: { level: 25, sec: 120, inputs: [['silver_bar', 2], ['rune_dust', 3]], vestiges: 20, dust: 8 },
+  payoff: { level: 25, sec: 180, inputs: [['silver_bar', 4], ['glass_bead', 6]], vestiges: 30, dust: 12 },
 };
 // XP de la recette : la règle du simulateur (sim/src/rules.ts), artisanat ×1,75 ; recalculée par `sim calibrate`.
 const xp = (level, sec) => Math.round(400 * 2 ** ((level - 1) / 55) * 1.75 * (sec / 3600) * 10) / 10;

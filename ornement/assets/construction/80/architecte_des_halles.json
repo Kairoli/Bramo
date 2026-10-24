@@ -1,0 +1,13 @@
+{
+  "id": "architecte_des_halles",
+  "title": "Architecte des halles",
+  "palette": [
+    "#A6A69A",
+    "#B79261",
+    "#6E8587"
+  ],
+  "motifs": [
+    "halle",
+    "piliers"
+  ]
+}

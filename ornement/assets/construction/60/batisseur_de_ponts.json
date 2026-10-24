@@ -1,0 +1,13 @@
+{
+  "id": "batisseur_de_ponts",
+  "title": "Bâtisseur de ponts",
+  "palette": [
+    "#A6A69A",
+    "#B79261",
+    "#6E8587"
+  ],
+  "motifs": [
+    "pont couvert",
+    "voussoirs"
+  ]
+}

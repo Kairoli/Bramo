@@ -1,0 +1,13 @@
+{
+  "id": "garde_du_tresor",
+  "title": "Garde du trésor",
+  "palette": [
+    "#B99758",
+    "#8C739D",
+    "#D8CEB3"
+  ],
+  "motifs": [
+    "écrin",
+    "facettes"
+  ]
+}

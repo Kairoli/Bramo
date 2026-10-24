@@ -1,0 +1,13 @@
+{
+  "id": "maitre_d_oeuvre",
+  "title": "Maître d'œuvre",
+  "palette": [
+    "#A6A69A",
+    "#B79261",
+    "#6E8587"
+  ],
+  "motifs": [
+    "clé de voûte",
+    "équerre"
+  ]
+}

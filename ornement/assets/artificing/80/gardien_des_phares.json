@@ -1,0 +1,13 @@
+{
+  "id": "gardien_des_phares",
+  "title": "Gardien des phares",
+  "palette": [
+    "#B98A55",
+    "#647D89",
+    "#D2B971"
+  ],
+  "motifs": [
+    "lentille de phare",
+    "volets"
+  ]
+}

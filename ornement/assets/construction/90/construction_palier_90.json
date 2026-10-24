@@ -1,0 +1,13 @@
+{
+  "id": "construction_palier_90",
+  "title": "Construction — palier 90",
+  "palette": [
+    "#A6A69A",
+    "#B79261",
+    "#6E8587"
+  ],
+  "motifs": [
+    "arc-boutant",
+    "corniche"
+  ]
+}

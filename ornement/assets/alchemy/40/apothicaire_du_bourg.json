@@ -1,0 +1,13 @@
+{
+  "id": "apothicaire_du_bourg",
+  "title": "Apothicaire du bourg",
+  "palette": [
+    "#6F9A8B",
+    "#BA8152",
+    "#D9C57D"
+  ],
+  "motifs": [
+    "fioles",
+    "porte-fioles"
+  ]
+}

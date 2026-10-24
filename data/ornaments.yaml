@@ -2,6 +2,78 @@
 # ornement/manifest.json : ne pas modifier à la main. Images : apps/web/public/ornaments/<métier>/<rang>/.
 # trial : la commande du maître qui le débloque (son surnom est le titre affiché).
 # reserved : variante sans déblocage ni titre (palier 90, en réserve) ; visible seulement avec settings.ornaments.unlockAll.
+- id: agriculture_20
+  profession: agriculture
+  rank: 20
+  trial: agriculture_20
+- id: agriculture_40
+  profession: agriculture
+  rank: 40
+  trial: agriculture_40
+- id: agriculture_60
+  profession: agriculture
+  rank: 60
+  trial: agriculture_60
+- id: agriculture_80
+  profession: agriculture
+  rank: 80
+  trial: agriculture_80
+- id: agriculture_90
+  profession: agriculture
+  rank: 90
+  trial: agriculture_90
+- id: agriculture_99
+  profession: agriculture
+  rank: 99
+  trial: agriculture_99
+- id: alchemy_20
+  profession: alchemy
+  rank: 20
+  trial: alchemy_20
+- id: alchemy_40
+  profession: alchemy
+  rank: 40
+  trial: alchemy_40
+- id: alchemy_60
+  profession: alchemy
+  rank: 60
+  trial: alchemy_60
+- id: alchemy_80
+  profession: alchemy
+  rank: 80
+  trial: alchemy_80
+- id: alchemy_90
+  profession: alchemy
+  rank: 90
+  trial: alchemy_90
+- id: alchemy_99
+  profession: alchemy
+  rank: 99
+  trial: alchemy_99
+- id: artificing_20
+  profession: artificing
+  rank: 20
+  trial: artificing_20
+- id: artificing_40
+  profession: artificing
+  rank: 40
+  trial: artificing_40
+- id: artificing_60
+  profession: artificing
+  rank: 60
+  trial: artificing_60
+- id: artificing_80
+  profession: artificing
+  rank: 80
+  trial: artificing_80
+- id: artificing_90
+  profession: artificing
+  rank: 90
+  trial: artificing_90
+- id: artificing_99
+  profession: artificing
+  rank: 99
+  trial: artificing_99
 - id: carpentry_20
   profession: carpentry
   rank: 20
@@ -26,6 +98,30 @@
   profession: carpentry
   rank: 99
   trial: carpentry_99
+- id: construction_20
+  profession: construction
+  rank: 20
+  trial: construction_20
+- id: construction_40
+  profession: construction
+  rank: 40
+  trial: construction_40
+- id: construction_60
+  profession: construction
+  rank: 60
+  trial: construction_60
+- id: construction_80
+  profession: construction
+  rank: 80
+  trial: construction_80
+- id: construction_90
+  profession: construction
+  rank: 90
+  trial: construction_90
+- id: construction_99
+  profession: construction
+  rank: 99
+  trial: construction_99
 - id: cooking_20
   profession: cooking
   rank: 20
@@ -50,6 +146,54 @@
   profession: cooking
   rank: 99
   trial: cooking_99
+- id: enchanting_20
+  profession: enchanting
+  rank: 20
+  trial: enchanting_20
+- id: enchanting_40
+  profession: enchanting
+  rank: 40
+  trial: enchanting_40
+- id: enchanting_60
+  profession: enchanting
+  rank: 60
+  trial: enchanting_60
+- id: enchanting_80
+  profession: enchanting
+  rank: 80
+  trial: enchanting_80
+- id: enchanting_90
+  profession: enchanting
+  rank: 90
+  trial: enchanting_90
+- id: enchanting_99
+  profession: enchanting
+  rank: 99
+  trial: enchanting_99
+- id: exploration_20
+  profession: exploration
+  rank: 20
+  trial: exploration_20
+- id: exploration_40
+  profession: exploration
+  rank: 40
+  trial: exploration_40
+- id: exploration_60
+  profession: exploration
+  rank: 60
+  trial: exploration_60
+- id: exploration_80
+  profession: exploration
+  rank: 80
+  trial: exploration_80
+- id: exploration_90
+  profession: exploration
+  rank: 90
+  trial: exploration_90
+- id: exploration_99
+  profession: exploration
+  rank: 99
+  trial: exploration_99
 - id: fishing_20
   profession: fishing
   rank: 20
@@ -98,6 +242,54 @@
   profession: herbalism
   rank: 99
   trial: herbalism_99
+- id: hunting_20
+  profession: hunting
+  rank: 20
+  trial: hunting_20
+- id: hunting_40
+  profession: hunting
+  rank: 40
+  trial: hunting_40
+- id: hunting_60
+  profession: hunting
+  rank: 60
+  trial: hunting_60
+- id: hunting_80
+  profession: hunting
+  rank: 80
+  trial: hunting_80
+- id: hunting_90
+  profession: hunting
+  rank: 90
+  trial: hunting_90
+- id: hunting_99
+  profession: hunting
+  rank: 99
+  trial: hunting_99
+- id: jewelcrafting_20
+  profession: jewelcrafting
+  rank: 20
+  trial: jewelcrafting_20
+- id: jewelcrafting_40
+  profession: jewelcrafting
+  rank: 40
+  trial: jewelcrafting_40
+- id: jewelcrafting_60
+  profession: jewelcrafting
+  rank: 60
+  trial: jewelcrafting_60
+- id: jewelcrafting_80
+  profession: jewelcrafting
+  rank: 80
+  trial: jewelcrafting_80
+- id: jewelcrafting_90
+  profession: jewelcrafting
+  rank: 90
+  trial: jewelcrafting_90
+- id: jewelcrafting_99
+  profession: jewelcrafting
+  rank: 99
+  trial: jewelcrafting_99
 - id: mining_20
   profession: mining
   rank: 20
@@ -146,6 +338,54 @@
   profession: smithing
   rank: 99
   trial: smithing_99
+- id: tailoring_20
+  profession: tailoring
+  rank: 20
+  trial: tailoring_20
+- id: tailoring_40
+  profession: tailoring
+  rank: 40
+  trial: tailoring_40
+- id: tailoring_60
+  profession: tailoring
+  rank: 60
+  trial: tailoring_60
+- id: tailoring_80
+  profession: tailoring
+  rank: 80
+  trial: tailoring_80
+- id: tailoring_90
+  profession: tailoring
+  rank: 90
+  trial: tailoring_90
+- id: tailoring_99
+  profession: tailoring
+  rank: 99
+  trial: tailoring_99
+- id: tanning_20
+  profession: tanning
+  rank: 20
+  trial: tanning_20
+- id: tanning_40
+  profession: tanning
+  rank: 40
+  trial: tanning_40
+- id: tanning_60
+  profession: tanning
+  rank: 60
+  trial: tanning_60
+- id: tanning_80
+  profession: tanning
+  rank: 80
+  trial: tanning_80
+- id: tanning_90
+  profession: tanning
+  rank: 90
+  trial: tanning_90
+- id: tanning_99
+  profession: tanning
+  rank: 99
+  trial: tanning_99
 - id: woodcutting_20
   profession: woodcutting
   rank: 20

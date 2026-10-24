@@ -1,0 +1,13 @@
+{
+  "id": "eclaireur_des_lointains",
+  "title": "Éclaireur des Lointains",
+  "palette": [
+    "#D0BD91",
+    "#648F91",
+    "#A57555"
+  ],
+  "motifs": [
+    "rose directionnelle",
+    "horizon"
+  ]
+}

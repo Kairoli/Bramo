@@ -1177,6 +1177,1670 @@
         "preview": "assets/cooking/99/gourmet_de_legende_preview.png",
         "metadata": "assets/cooking/99/gourmet_de_legende.json"
       }
+    },
+    "hunting_20": {
+      "id": "traqueur_de_cerfs",
+      "profession": "hunting",
+      "professionName": "Chasse",
+      "rank": 20,
+      "title": "Liseur de traces",
+      "trialId": "hunting_20",
+      "enabled": true,
+      "provisional": false,
+      "palette": [
+        "#D6C6A3",
+        "#617869",
+        "#995B47"
+      ],
+      "motifs": [
+        "ramure de cerf",
+        "trace de chasse"
+      ],
+      "files": {
+        "left": "assets/hunting/20/traqueur_de_cerfs_left.png",
+        "right": "assets/hunting/20/traqueur_de_cerfs_right.png",
+        "center": "assets/hunting/20/traqueur_de_cerfs_center.png",
+        "badge": "assets/hunting/20/traqueur_de_cerfs_badge.png",
+        "preview": "assets/hunting/20/traqueur_de_cerfs_preview.png",
+        "metadata": "assets/hunting/20/traqueur_de_cerfs.json"
+      },
+      "gptTitle": "Traqueur de cerfs"
+    },
+    "hunting_40": {
+      "id": "fleau_des_loups",
+      "profession": "hunting",
+      "professionName": "Chasse",
+      "rank": 40,
+      "title": "Sommeil des bergers",
+      "trialId": "hunting_40",
+      "enabled": true,
+      "provisional": false,
+      "palette": [
+        "#D6C6A3",
+        "#617869",
+        "#995B47"
+      ],
+      "motifs": [
+        "crocs de loup",
+        "oreilles anguleuses"
+      ],
+      "files": {
+        "left": "assets/hunting/40/fleau_des_loups_left.png",
+        "right": "assets/hunting/40/fleau_des_loups_right.png",
+        "center": "assets/hunting/40/fleau_des_loups_center.png",
+        "badge": "assets/hunting/40/fleau_des_loups_badge.png",
+        "preview": "assets/hunting/40/fleau_des_loups_preview.png",
+        "metadata": "assets/hunting/40/fleau_des_loups.json"
+      },
+      "gptTitle": "Fléau des loups"
+    },
+    "hunting_60": {
+      "id": "chasseur_de_l_ours",
+      "profession": "hunting",
+      "professionName": "Chasse",
+      "rank": 60,
+      "title": "Patte-d’Ours",
+      "trialId": "hunting_60",
+      "enabled": true,
+      "provisional": false,
+      "palette": [
+        "#D6C6A3",
+        "#617869",
+        "#995B47"
+      ],
+      "motifs": [
+        "griffes d’ours",
+        "col montagneux"
+      ],
+      "files": {
+        "left": "assets/hunting/60/chasseur_de_l_ours_left.png",
+        "right": "assets/hunting/60/chasseur_de_l_ours_right.png",
+        "center": "assets/hunting/60/chasseur_de_l_ours_center.png",
+        "badge": "assets/hunting/60/chasseur_de_l_ours_badge.png",
+        "preview": "assets/hunting/60/chasseur_de_l_ours_preview.png",
+        "metadata": "assets/hunting/60/chasseur_de_l_ours.json"
+      },
+      "gptTitle": "Chasseur de l’ours"
+    },
+    "hunting_80": {
+      "id": "pisteur_des_neiges",
+      "profession": "hunting",
+      "professionName": "Chasse",
+      "rank": 80,
+      "title": "Pisteur des neiges",
+      "trialId": "hunting_80",
+      "enabled": true,
+      "provisional": false,
+      "palette": [
+        "#D6C6A3",
+        "#617869",
+        "#995B47"
+      ],
+      "motifs": [
+        "ramure d’élan",
+        "crête enneigée"
+      ],
+      "files": {
+        "left": "assets/hunting/80/pisteur_des_neiges_left.png",
+        "right": "assets/hunting/80/pisteur_des_neiges_right.png",
+        "center": "assets/hunting/80/pisteur_des_neiges_center.png",
+        "badge": "assets/hunting/80/pisteur_des_neiges_badge.png",
+        "preview": "assets/hunting/80/pisteur_des_neiges_preview.png",
+        "metadata": "assets/hunting/80/pisteur_des_neiges.json"
+      }
+    },
+    "hunting_90": {
+      "id": "chasse_palier_90",
+      "profession": "hunting",
+      "professionName": "Chasse",
+      "rank": 90,
+      "title": "Lit-dans-la-brume",
+      "trialId": "hunting_90",
+      "enabled": true,
+      "provisional": false,
+      "palette": [
+        "#D6C6A3",
+        "#617869",
+        "#995B47"
+      ],
+      "motifs": [
+        "cor de battue",
+        "bois dressés"
+      ],
+      "files": {
+        "left": "assets/hunting/90/chasse_palier_90_left.png",
+        "right": "assets/hunting/90/chasse_palier_90_right.png",
+        "center": "assets/hunting/90/chasse_palier_90_center.png",
+        "badge": "assets/hunting/90/chasse_palier_90_badge.png",
+        "preview": "assets/hunting/90/chasse_palier_90_preview.png",
+        "metadata": "assets/hunting/90/chasse_palier_90.json"
+      },
+      "gptTitle": "Chasse — palier 90"
+    },
+    "hunting_99": {
+      "id": "seigneur_des_battues",
+      "profession": "hunting",
+      "professionName": "Chasse",
+      "rank": 99,
+      "title": "L’Arc de Brenna",
+      "trialId": "hunting_99",
+      "enabled": true,
+      "provisional": false,
+      "palette": [
+        "#D6C6A3",
+        "#617869",
+        "#995B47"
+      ],
+      "motifs": [
+        "couronne de ramures",
+        "arc de Brenna"
+      ],
+      "files": {
+        "left": "assets/hunting/99/seigneur_des_battues_left.png",
+        "right": "assets/hunting/99/seigneur_des_battues_right.png",
+        "center": "assets/hunting/99/seigneur_des_battues_center.png",
+        "badge": "assets/hunting/99/seigneur_des_battues_badge.png",
+        "preview": "assets/hunting/99/seigneur_des_battues_preview.png",
+        "metadata": "assets/hunting/99/seigneur_des_battues.json"
+      },
+      "gptTitle": "Seigneur des battues"
+    },
+    "agriculture_20": {
+      "id": "semeur_des_terrasses",
+      "profession": "agriculture",
+      "professionName": "Agriculture",
+      "rank": 20,
+      "title": "Semeur des terrasses",
+      "trialId": "agriculture_20",
+      "enabled": true,
+      "provisional": false,
+      "palette": [
+        "#CBA65C",
+        "#6B8361",
+        "#647B9C"
+      ],
+      "motifs": [
+        "terrasses",
+        "graine"
+      ],
+      "files": {
+        "left": "assets/agriculture/20/semeur_des_terrasses_left.png",
+        "right": "assets/agriculture/20/semeur_des_terrasses_right.png",
+        "center": "assets/agriculture/20/semeur_des_terrasses_center.png",
+        "badge": "assets/agriculture/20/semeur_des_terrasses_badge.png",
+        "preview": "assets/agriculture/20/semeur_des_terrasses_preview.png",
+        "metadata": "assets/agriculture/20/semeur_des_terrasses.json"
+      }
+    },
+    "agriculture_40": {
+      "id": "maitre_des_recoltes",
+      "profession": "agriculture",
+      "professionName": "Agriculture",
+      "rank": 40,
+      "title": "Récolteur de nuages",
+      "trialId": "agriculture_40",
+      "enabled": true,
+      "provisional": false,
+      "palette": [
+        "#CBA65C",
+        "#6B8361",
+        "#647B9C"
+      ],
+      "motifs": [
+        "gerbe tressée",
+        "coton"
+      ],
+      "files": {
+        "left": "assets/agriculture/40/maitre_des_recoltes_left.png",
+        "right": "assets/agriculture/40/maitre_des_recoltes_right.png",
+        "center": "assets/agriculture/40/maitre_des_recoltes_center.png",
+        "badge": "assets/agriculture/40/maitre_des_recoltes_badge.png",
+        "preview": "assets/agriculture/40/maitre_des_recoltes_preview.png",
+        "metadata": "assets/agriculture/40/maitre_des_recoltes.json"
+      },
+      "gptTitle": "Maître des récoltes"
+    },
+    "agriculture_60": {
+      "id": "semeur_de_couleurs",
+      "profession": "agriculture",
+      "professionName": "Agriculture",
+      "rank": 60,
+      "title": "Le Bleu du Val",
+      "trialId": "agriculture_60",
+      "enabled": true,
+      "provisional": false,
+      "palette": [
+        "#CBA65C",
+        "#6B8361",
+        "#647B9C"
+      ],
+      "motifs": [
+        "coton",
+        "guède"
+      ],
+      "files": {
+        "left": "assets/agriculture/60/semeur_de_couleurs_left.png",
+        "right": "assets/agriculture/60/semeur_de_couleurs_right.png",
+        "center": "assets/agriculture/60/semeur_de_couleurs_center.png",
+        "badge": "assets/agriculture/60/semeur_de_couleurs_badge.png",
+        "preview": "assets/agriculture/60/semeur_de_couleurs_preview.png",
+        "metadata": "assets/agriculture/60/semeur_de_couleurs.json"
+      },
+      "gptTitle": "Semeur de couleurs"
+    },
+    "agriculture_80": {
+      "id": "maitre_des_moissons",
+      "profession": "agriculture",
+      "professionName": "Agriculture",
+      "rank": 80,
+      "title": "Grenier plein",
+      "trialId": "agriculture_80",
+      "enabled": true,
+      "provisional": false,
+      "palette": [
+        "#CBA65C",
+        "#6B8361",
+        "#647B9C"
+      ],
+      "motifs": [
+        "éventail de blé",
+        "sillons"
+      ],
+      "files": {
+        "left": "assets/agriculture/80/maitre_des_moissons_left.png",
+        "right": "assets/agriculture/80/maitre_des_moissons_right.png",
+        "center": "assets/agriculture/80/maitre_des_moissons_center.png",
+        "badge": "assets/agriculture/80/maitre_des_moissons_badge.png",
+        "preview": "assets/agriculture/80/maitre_des_moissons_preview.png",
+        "metadata": "assets/agriculture/80/maitre_des_moissons.json"
+      },
+      "gptTitle": "Maître des moissons"
+    },
+    "agriculture_90": {
+      "id": "agriculture_palier_90",
+      "profession": "agriculture",
+      "professionName": "Agriculture",
+      "rank": 90,
+      "title": "Blé-sur-sel",
+      "trialId": "agriculture_90",
+      "enabled": true,
+      "provisional": false,
+      "palette": [
+        "#CBA65C",
+        "#6B8361",
+        "#647B9C"
+      ],
+      "motifs": [
+        "terrasses fertiles",
+        "grain courbé"
+      ],
+      "files": {
+        "left": "assets/agriculture/90/agriculture_palier_90_left.png",
+        "right": "assets/agriculture/90/agriculture_palier_90_right.png",
+        "center": "assets/agriculture/90/agriculture_palier_90_center.png",
+        "badge": "assets/agriculture/90/agriculture_palier_90_badge.png",
+        "preview": "assets/agriculture/90/agriculture_palier_90_preview.png",
+        "metadata": "assets/agriculture/90/agriculture_palier_90.json"
+      },
+      "gptTitle": "Agriculture — palier 90"
+    },
+    "agriculture_99": {
+      "id": "voix_des_champs",
+      "profession": "agriculture",
+      "professionName": "Agriculture",
+      "rank": 99,
+      "title": "Voix des champs",
+      "trialId": "agriculture_99",
+      "enabled": true,
+      "provisional": false,
+      "palette": [
+        "#CBA65C",
+        "#6B8361",
+        "#647B9C"
+      ],
+      "motifs": [
+        "champs au vent",
+        "grandes gerbes"
+      ],
+      "files": {
+        "left": "assets/agriculture/99/voix_des_champs_left.png",
+        "right": "assets/agriculture/99/voix_des_champs_right.png",
+        "center": "assets/agriculture/99/voix_des_champs_center.png",
+        "badge": "assets/agriculture/99/voix_des_champs_badge.png",
+        "preview": "assets/agriculture/99/voix_des_champs_preview.png",
+        "metadata": "assets/agriculture/99/voix_des_champs.json"
+      }
+    },
+    "tanning_20": {
+      "id": "tanneur_de_la_fosse",
+      "profession": "tanning",
+      "professionName": "Tannerie",
+      "rank": 20,
+      "title": "Nez bouché",
+      "trialId": "tanning_20",
+      "enabled": true,
+      "provisional": false,
+      "palette": [
+        "#A96D45",
+        "#D0AF7C",
+        "#647580"
+      ],
+      "motifs": [
+        "rabat de sacoche",
+        "boucle carrée"
+      ],
+      "files": {
+        "left": "assets/tanning/20/tanneur_de_la_fosse_left.png",
+        "right": "assets/tanning/20/tanneur_de_la_fosse_right.png",
+        "center": "assets/tanning/20/tanneur_de_la_fosse_center.png",
+        "badge": "assets/tanning/20/tanneur_de_la_fosse_badge.png",
+        "preview": "assets/tanning/20/tanneur_de_la_fosse_preview.png",
+        "metadata": "assets/tanning/20/tanneur_de_la_fosse.json"
+      },
+      "gptTitle": "Tanneur de la fosse"
+    },
+    "tanning_40": {
+      "id": "cuirassier_des_landes",
+      "profession": "tanning",
+      "professionName": "Tannerie",
+      "rank": 40,
+      "title": "Cuir-bouilli",
+      "trialId": "tanning_40",
+      "enabled": true,
+      "provisional": false,
+      "palette": [
+        "#A96D45",
+        "#D0AF7C",
+        "#647580"
+      ],
+      "motifs": [
+        "cuirasse",
+        "rivets"
+      ],
+      "files": {
+        "left": "assets/tanning/40/cuirassier_des_landes_left.png",
+        "right": "assets/tanning/40/cuirassier_des_landes_right.png",
+        "center": "assets/tanning/40/cuirassier_des_landes_center.png",
+        "badge": "assets/tanning/40/cuirassier_des_landes_badge.png",
+        "preview": "assets/tanning/40/cuirassier_des_landes_preview.png",
+        "metadata": "assets/tanning/40/cuirassier_des_landes.json"
+      },
+      "gptTitle": "Cuirassier des landes"
+    },
+    "tanning_60": {
+      "id": "sellier_du_bastion",
+      "profession": "tanning",
+      "professionName": "Tannerie",
+      "rank": 60,
+      "title": "Enfin du sérieux",
+      "trialId": "tanning_60",
+      "enabled": true,
+      "provisional": false,
+      "palette": [
+        "#A96D45",
+        "#D0AF7C",
+        "#647580"
+      ],
+      "motifs": [
+        "pommeau de selle",
+        "étrier"
+      ],
+      "files": {
+        "left": "assets/tanning/60/sellier_du_bastion_left.png",
+        "right": "assets/tanning/60/sellier_du_bastion_right.png",
+        "center": "assets/tanning/60/sellier_du_bastion_center.png",
+        "badge": "assets/tanning/60/sellier_du_bastion_badge.png",
+        "preview": "assets/tanning/60/sellier_du_bastion_preview.png",
+        "metadata": "assets/tanning/60/sellier_du_bastion.json"
+      },
+      "gptTitle": "Sellier du Bastion"
+    },
+    "tanning_80": {
+      "id": "tanneur_des_cimes",
+      "profession": "tanning",
+      "professionName": "Tannerie",
+      "rank": 80,
+      "title": "Increvable",
+      "trialId": "tanning_80",
+      "enabled": true,
+      "provisional": false,
+      "palette": [
+        "#A96D45",
+        "#D0AF7C",
+        "#647580"
+      ],
+      "motifs": [
+        "cuir d’élan",
+        "plis en chevrons"
+      ],
+      "files": {
+        "left": "assets/tanning/80/tanneur_des_cimes_left.png",
+        "right": "assets/tanning/80/tanneur_des_cimes_right.png",
+        "center": "assets/tanning/80/tanneur_des_cimes_center.png",
+        "badge": "assets/tanning/80/tanneur_des_cimes_badge.png",
+        "preview": "assets/tanning/80/tanneur_des_cimes_preview.png",
+        "metadata": "assets/tanning/80/tanneur_des_cimes.json"
+      },
+      "gptTitle": "Tanneur des cimes"
+    },
+    "tanning_90": {
+      "id": "tannerie_palier_90",
+      "profession": "tanning",
+      "professionName": "Tannerie",
+      "rank": 90,
+      "title": "Un an et un jour",
+      "trialId": "tanning_90",
+      "enabled": true,
+      "provisional": false,
+      "palette": [
+        "#A96D45",
+        "#D0AF7C",
+        "#647580"
+      ],
+      "motifs": [
+        "harnais",
+        "boucle de maître"
+      ],
+      "files": {
+        "left": "assets/tanning/90/tannerie_palier_90_left.png",
+        "right": "assets/tanning/90/tannerie_palier_90_right.png",
+        "center": "assets/tanning/90/tannerie_palier_90_center.png",
+        "badge": "assets/tanning/90/tannerie_palier_90_badge.png",
+        "preview": "assets/tanning/90/tannerie_palier_90_preview.png",
+        "metadata": "assets/tanning/90/tannerie_palier_90.json"
+      },
+      "gptTitle": "Tannerie — palier 90"
+    },
+    "tanning_99": {
+      "id": "main_de_cuir",
+      "profession": "tanning",
+      "professionName": "Tannerie",
+      "rank": 99,
+      "title": "Main de cuir",
+      "trialId": "tanning_99",
+      "enabled": true,
+      "provisional": false,
+      "palette": [
+        "#A96D45",
+        "#D0AF7C",
+        "#647580"
+      ],
+      "motifs": [
+        "main de cuir",
+        "harnais de caravane"
+      ],
+      "files": {
+        "left": "assets/tanning/99/main_de_cuir_left.png",
+        "right": "assets/tanning/99/main_de_cuir_right.png",
+        "center": "assets/tanning/99/main_de_cuir_center.png",
+        "badge": "assets/tanning/99/main_de_cuir_badge.png",
+        "preview": "assets/tanning/99/main_de_cuir_preview.png",
+        "metadata": "assets/tanning/99/main_de_cuir.json"
+      }
+    },
+    "tailoring_20": {
+      "id": "couseuse_de_lin",
+      "profession": "tailoring",
+      "professionName": "Couture",
+      "rank": 20,
+      "title": "Ourlet-de-travers",
+      "trialId": "tailoring_20",
+      "enabled": true,
+      "provisional": false,
+      "palette": [
+        "#657FA5",
+        "#D5CBB0",
+        "#C7A268"
+      ],
+      "motifs": [
+        "ourlet de lin",
+        "aiguille"
+      ],
+      "files": {
+        "left": "assets/tailoring/20/couseuse_de_lin_left.png",
+        "right": "assets/tailoring/20/couseuse_de_lin_right.png",
+        "center": "assets/tailoring/20/couseuse_de_lin_center.png",
+        "badge": "assets/tailoring/20/couseuse_de_lin_badge.png",
+        "preview": "assets/tailoring/20/couseuse_de_lin_preview.png",
+        "metadata": "assets/tailoring/20/couseuse_de_lin.json"
+      },
+      "gptTitle": "Couseuse de lin"
+    },
+    "tailoring_40": {
+      "id": "tailleur_des_adeptes",
+      "profession": "tailoring",
+      "professionName": "Couture",
+      "rank": 40,
+      "title": "Doigts de fée",
+      "trialId": "tailoring_40",
+      "enabled": true,
+      "provisional": false,
+      "palette": [
+        "#657FA5",
+        "#D5CBB0",
+        "#C7A268"
+      ],
+      "motifs": [
+        "revers de robe",
+        "doublure de coton"
+      ],
+      "files": {
+        "left": "assets/tailoring/40/tailleur_des_adeptes_left.png",
+        "right": "assets/tailoring/40/tailleur_des_adeptes_right.png",
+        "center": "assets/tailoring/40/tailleur_des_adeptes_center.png",
+        "badge": "assets/tailoring/40/tailleur_des_adeptes_badge.png",
+        "preview": "assets/tailoring/40/tailleur_des_adeptes_preview.png",
+        "metadata": "assets/tailoring/40/tailleur_des_adeptes.json"
+      },
+      "gptTitle": "Tailleur des adeptes"
+    },
+    "tailoring_60": {
+      "id": "brodeuse_du_chapitre",
+      "profession": "tailoring",
+      "professionName": "Couture",
+      "rank": 60,
+      "title": "Aiguille d’argent",
+      "trialId": "tailoring_60",
+      "enabled": true,
+      "provisional": false,
+      "palette": [
+        "#657FA5",
+        "#D5CBB0",
+        "#C7A268"
+      ],
+      "motifs": [
+        "col du chapitre",
+        "broderie"
+      ],
+      "files": {
+        "left": "assets/tailoring/60/brodeuse_du_chapitre_left.png",
+        "right": "assets/tailoring/60/brodeuse_du_chapitre_right.png",
+        "center": "assets/tailoring/60/brodeuse_du_chapitre_center.png",
+        "badge": "assets/tailoring/60/brodeuse_du_chapitre_badge.png",
+        "preview": "assets/tailoring/60/brodeuse_du_chapitre_preview.png",
+        "metadata": "assets/tailoring/60/brodeuse_du_chapitre.json"
+      },
+      "gptTitle": "Brodeuse du chapitre"
+    },
+    "tailoring_80": {
+      "id": "tisseuse_des_voiles",
+      "profession": "tailoring",
+      "professionName": "Couture",
+      "rank": 80,
+      "title": "Voile-Bleue",
+      "trialId": "tailoring_80",
+      "enabled": true,
+      "provisional": false,
+      "palette": [
+        "#657FA5",
+        "#D5CBB0",
+        "#C7A268"
+      ],
+      "motifs": [
+        "voiles bleues",
+        "coutures renforcées"
+      ],
+      "files": {
+        "left": "assets/tailoring/80/tisseuse_des_voiles_left.png",
+        "right": "assets/tailoring/80/tisseuse_des_voiles_right.png",
+        "center": "assets/tailoring/80/tisseuse_des_voiles_center.png",
+        "badge": "assets/tailoring/80/tisseuse_des_voiles_badge.png",
+        "preview": "assets/tailoring/80/tisseuse_des_voiles_preview.png",
+        "metadata": "assets/tailoring/80/tisseuse_des_voiles.json"
+      },
+      "gptTitle": "Tisseuse des voiles"
+    },
+    "tailoring_90": {
+      "id": "couture_palier_90",
+      "profession": "tailoring",
+      "professionName": "Couture",
+      "rank": 90,
+      "title": "Reprise invisible",
+      "trialId": "tailoring_90",
+      "enabled": true,
+      "provisional": false,
+      "palette": [
+        "#657FA5",
+        "#D5CBB0",
+        "#C7A268"
+      ],
+      "motifs": [
+        "drapé cérémoniel",
+        "aiguille dorée"
+      ],
+      "files": {
+        "left": "assets/tailoring/90/couture_palier_90_left.png",
+        "right": "assets/tailoring/90/couture_palier_90_right.png",
+        "center": "assets/tailoring/90/couture_palier_90_center.png",
+        "badge": "assets/tailoring/90/couture_palier_90_badge.png",
+        "preview": "assets/tailoring/90/couture_palier_90_preview.png",
+        "metadata": "assets/tailoring/90/couture_palier_90.json"
+      },
+      "gptTitle": "Couture — palier 90"
+    },
+    "tailoring_99": {
+      "id": "fil_d_or",
+      "profession": "tailoring",
+      "professionName": "Couture",
+      "rank": 99,
+      "title": "Fil d’or",
+      "trialId": "tailoring_99",
+      "enabled": true,
+      "provisional": false,
+      "palette": [
+        "#657FA5",
+        "#D5CBB0",
+        "#C7A268"
+      ],
+      "motifs": [
+        "manteau sans couture",
+        "fil d’or"
+      ],
+      "files": {
+        "left": "assets/tailoring/99/fil_d_or_left.png",
+        "right": "assets/tailoring/99/fil_d_or_right.png",
+        "center": "assets/tailoring/99/fil_d_or_center.png",
+        "badge": "assets/tailoring/99/fil_d_or_badge.png",
+        "preview": "assets/tailoring/99/fil_d_or_preview.png",
+        "metadata": "assets/tailoring/99/fil_d_or.json"
+      }
+    },
+    "alchemy_20": {
+      "id": "distillateur_d_elixirs",
+      "profession": "alchemy",
+      "professionName": "Alchimie",
+      "rank": 20,
+      "title": "Sourcils roussis",
+      "trialId": "alchemy_20",
+      "enabled": true,
+      "provisional": false,
+      "palette": [
+        "#6F9A8B",
+        "#BA8152",
+        "#D9C57D"
+      ],
+      "motifs": [
+        "cornue",
+        "goutte d’élixir"
+      ],
+      "files": {
+        "left": "assets/alchemy/20/distillateur_d_elixirs_left.png",
+        "right": "assets/alchemy/20/distillateur_d_elixirs_right.png",
+        "center": "assets/alchemy/20/distillateur_d_elixirs_center.png",
+        "badge": "assets/alchemy/20/distillateur_d_elixirs_badge.png",
+        "preview": "assets/alchemy/20/distillateur_d_elixirs_preview.png",
+        "metadata": "assets/alchemy/20/distillateur_d_elixirs.json"
+      },
+      "gptTitle": "Distillateur d'élixirs"
+    },
+    "alchemy_40": {
+      "id": "apothicaire_du_bourg",
+      "profession": "alchemy",
+      "professionName": "Alchimie",
+      "rank": 40,
+      "title": "Apothicaire de garde",
+      "trialId": "alchemy_40",
+      "enabled": true,
+      "provisional": false,
+      "palette": [
+        "#6F9A8B",
+        "#BA8152",
+        "#D9C57D"
+      ],
+      "motifs": [
+        "fioles",
+        "porte-fioles"
+      ],
+      "files": {
+        "left": "assets/alchemy/40/apothicaire_du_bourg_left.png",
+        "right": "assets/alchemy/40/apothicaire_du_bourg_right.png",
+        "center": "assets/alchemy/40/apothicaire_du_bourg_center.png",
+        "badge": "assets/alchemy/40/apothicaire_du_bourg_badge.png",
+        "preview": "assets/alchemy/40/apothicaire_du_bourg_preview.png",
+        "metadata": "assets/alchemy/40/apothicaire_du_bourg.json"
+      },
+      "gptTitle": "Apothicaire du bourg"
+    },
+    "alchemy_60": {
+      "id": "distillateur_de_lumiere",
+      "profession": "alchemy",
+      "professionName": "Alchimie",
+      "rank": 60,
+      "title": "Distillateur de lumière",
+      "trialId": "alchemy_60",
+      "enabled": true,
+      "provisional": false,
+      "palette": [
+        "#6F9A8B",
+        "#BA8152",
+        "#D9C57D"
+      ],
+      "motifs": [
+        "goutte lumineuse",
+        "flacon-lanterne"
+      ],
+      "files": {
+        "left": "assets/alchemy/60/distillateur_de_lumiere_left.png",
+        "right": "assets/alchemy/60/distillateur_de_lumiere_right.png",
+        "center": "assets/alchemy/60/distillateur_de_lumiere_center.png",
+        "badge": "assets/alchemy/60/distillateur_de_lumiere_badge.png",
+        "preview": "assets/alchemy/60/distillateur_de_lumiere_preview.png",
+        "metadata": "assets/alchemy/60/distillateur_de_lumiere.json"
+      }
+    },
+    "alchemy_80": {
+      "id": "gardien_des_fioles",
+      "profession": "alchemy",
+      "professionName": "Alchimie",
+      "rank": 80,
+      "title": "Remède de la digue",
+      "trialId": "alchemy_80",
+      "enabled": true,
+      "provisional": false,
+      "palette": [
+        "#6F9A8B",
+        "#BA8152",
+        "#D9C57D"
+      ],
+      "motifs": [
+        "fioles protégées",
+        "présentoir"
+      ],
+      "files": {
+        "left": "assets/alchemy/80/gardien_des_fioles_left.png",
+        "right": "assets/alchemy/80/gardien_des_fioles_right.png",
+        "center": "assets/alchemy/80/gardien_des_fioles_center.png",
+        "badge": "assets/alchemy/80/gardien_des_fioles_badge.png",
+        "preview": "assets/alchemy/80/gardien_des_fioles_preview.png",
+        "metadata": "assets/alchemy/80/gardien_des_fioles.json"
+      },
+      "gptTitle": "Gardien des fioles"
+    },
+    "alchemy_90": {
+      "id": "alchimie_palier_90",
+      "profession": "alchemy",
+      "professionName": "Alchimie",
+      "rank": 90,
+      "title": "Fume-violet",
+      "trialId": "alchemy_90",
+      "enabled": true,
+      "provisional": false,
+      "palette": [
+        "#6F9A8B",
+        "#BA8152",
+        "#D9C57D"
+      ],
+      "motifs": [
+        "alambics jumelés",
+        "condenseur"
+      ],
+      "files": {
+        "left": "assets/alchemy/90/alchimie_palier_90_left.png",
+        "right": "assets/alchemy/90/alchimie_palier_90_right.png",
+        "center": "assets/alchemy/90/alchimie_palier_90_center.png",
+        "badge": "assets/alchemy/90/alchimie_palier_90_badge.png",
+        "preview": "assets/alchemy/90/alchimie_palier_90_preview.png",
+        "metadata": "assets/alchemy/90/alchimie_palier_90.json"
+      },
+      "gptTitle": "Alchimie — palier 90"
+    },
+    "alchemy_99": {
+      "id": "alchimiste_du_bourg",
+      "profession": "alchemy",
+      "professionName": "Alchimie",
+      "rank": 99,
+      "title": "Panacée",
+      "trialId": "alchemy_99",
+      "enabled": true,
+      "provisional": false,
+      "palette": [
+        "#6F9A8B",
+        "#BA8152",
+        "#D9C57D"
+      ],
+      "motifs": [
+        "grand distillateur",
+        "fiole du souvenir"
+      ],
+      "files": {
+        "left": "assets/alchemy/99/alchimiste_du_bourg_left.png",
+        "right": "assets/alchemy/99/alchimiste_du_bourg_right.png",
+        "center": "assets/alchemy/99/alchimiste_du_bourg_center.png",
+        "badge": "assets/alchemy/99/alchimiste_du_bourg_badge.png",
+        "preview": "assets/alchemy/99/alchimiste_du_bourg_preview.png",
+        "metadata": "assets/alchemy/99/alchimiste_du_bourg.json"
+      },
+      "gptTitle": "Alchimiste du bourg"
+    },
+    "jewelcrafting_20": {
+      "id": "sertisseur_de_perles",
+      "profession": "jewelcrafting",
+      "professionName": "Joaillerie",
+      "rank": 20,
+      "title": "Sertisseur de perles",
+      "trialId": "jewelcrafting_20",
+      "enabled": true,
+      "provisional": false,
+      "palette": [
+        "#B99758",
+        "#8C739D",
+        "#D8CEB3"
+      ],
+      "motifs": [
+        "perle",
+        "serti à griffes"
+      ],
+      "files": {
+        "left": "assets/jewelcrafting/20/sertisseur_de_perles_left.png",
+        "right": "assets/jewelcrafting/20/sertisseur_de_perles_right.png",
+        "center": "assets/jewelcrafting/20/sertisseur_de_perles_center.png",
+        "badge": "assets/jewelcrafting/20/sertisseur_de_perles_badge.png",
+        "preview": "assets/jewelcrafting/20/sertisseur_de_perles_preview.png",
+        "metadata": "assets/jewelcrafting/20/sertisseur_de_perles.json"
+      }
+    },
+    "jewelcrafting_40": {
+      "id": "orfevre_des_amethystes",
+      "profession": "jewelcrafting",
+      "professionName": "Joaillerie",
+      "rank": 40,
+      "title": "Fait-dire-oui",
+      "trialId": "jewelcrafting_40",
+      "enabled": true,
+      "provisional": false,
+      "palette": [
+        "#B99758",
+        "#8C739D",
+        "#D8CEB3"
+      ],
+      "motifs": [
+        "améthyste",
+        "monture de fiançailles"
+      ],
+      "files": {
+        "left": "assets/jewelcrafting/40/orfevre_des_amethystes_left.png",
+        "right": "assets/jewelcrafting/40/orfevre_des_amethystes_right.png",
+        "center": "assets/jewelcrafting/40/orfevre_des_amethystes_center.png",
+        "badge": "assets/jewelcrafting/40/orfevre_des_amethystes_badge.png",
+        "preview": "assets/jewelcrafting/40/orfevre_des_amethystes_preview.png",
+        "metadata": "assets/jewelcrafting/40/orfevre_des_amethystes.json"
+      },
+      "gptTitle": "Orfèvre des améthystes"
+    },
+    "jewelcrafting_60": {
+      "id": "orfevre_du_conseil",
+      "profession": "jewelcrafting",
+      "professionName": "Joaillerie",
+      "rank": 60,
+      "title": "Orfèvre du conseil",
+      "trialId": "jewelcrafting_60",
+      "enabled": true,
+      "provisional": false,
+      "palette": [
+        "#B99758",
+        "#8C739D",
+        "#D8CEB3"
+      ],
+      "motifs": [
+        "chaîne d’or",
+        "médaillon du conseil"
+      ],
+      "files": {
+        "left": "assets/jewelcrafting/60/orfevre_du_conseil_left.png",
+        "right": "assets/jewelcrafting/60/orfevre_du_conseil_right.png",
+        "center": "assets/jewelcrafting/60/orfevre_du_conseil_center.png",
+        "badge": "assets/jewelcrafting/60/orfevre_du_conseil_badge.png",
+        "preview": "assets/jewelcrafting/60/orfevre_du_conseil_preview.png",
+        "metadata": "assets/jewelcrafting/60/orfevre_du_conseil.json"
+      }
+    },
+    "jewelcrafting_80": {
+      "id": "garde_du_tresor",
+      "profession": "jewelcrafting",
+      "professionName": "Joaillerie",
+      "rank": 80,
+      "title": "Brille-trop",
+      "trialId": "jewelcrafting_80",
+      "enabled": true,
+      "provisional": false,
+      "palette": [
+        "#B99758",
+        "#8C739D",
+        "#D8CEB3"
+      ],
+      "motifs": [
+        "écrin",
+        "facettes"
+      ],
+      "files": {
+        "left": "assets/jewelcrafting/80/garde_du_tresor_left.png",
+        "right": "assets/jewelcrafting/80/garde_du_tresor_right.png",
+        "center": "assets/jewelcrafting/80/garde_du_tresor_center.png",
+        "badge": "assets/jewelcrafting/80/garde_du_tresor_badge.png",
+        "preview": "assets/jewelcrafting/80/garde_du_tresor_preview.png",
+        "metadata": "assets/jewelcrafting/80/garde_du_tresor.json"
+      },
+      "gptTitle": "Garde du trésor"
+    },
+    "jewelcrafting_90": {
+      "id": "joaillerie_palier_90",
+      "profession": "jewelcrafting",
+      "professionName": "Joaillerie",
+      "rank": 90,
+      "title": "Nomme-les-pierres",
+      "trialId": "jewelcrafting_90",
+      "enabled": true,
+      "provisional": false,
+      "palette": [
+        "#B99758",
+        "#8C739D",
+        "#D8CEB3"
+      ],
+      "motifs": [
+        "diadème",
+        "améthyste"
+      ],
+      "files": {
+        "left": "assets/jewelcrafting/90/joaillerie_palier_90_left.png",
+        "right": "assets/jewelcrafting/90/joaillerie_palier_90_right.png",
+        "center": "assets/jewelcrafting/90/joaillerie_palier_90_center.png",
+        "badge": "assets/jewelcrafting/90/joaillerie_palier_90_badge.png",
+        "preview": "assets/jewelcrafting/90/joaillerie_palier_90_preview.png",
+        "metadata": "assets/jewelcrafting/90/joaillerie_palier_90.json"
+      },
+      "gptTitle": "Joaillerie — palier 90"
+    },
+    "jewelcrafting_99": {
+      "id": "joyau_du_bourg",
+      "profession": "jewelcrafting",
+      "professionName": "Joaillerie",
+      "rank": 99,
+      "title": "Couronne sans tête",
+      "trialId": "jewelcrafting_99",
+      "enabled": true,
+      "provisional": false,
+      "palette": [
+        "#B99758",
+        "#8C739D",
+        "#D8CEB3"
+      ],
+      "motifs": [
+        "couronne sans roi",
+        "grandes facettes"
+      ],
+      "files": {
+        "left": "assets/jewelcrafting/99/joyau_du_bourg_left.png",
+        "right": "assets/jewelcrafting/99/joyau_du_bourg_right.png",
+        "center": "assets/jewelcrafting/99/joyau_du_bourg_center.png",
+        "badge": "assets/jewelcrafting/99/joyau_du_bourg_badge.png",
+        "preview": "assets/jewelcrafting/99/joyau_du_bourg_preview.png",
+        "metadata": "assets/jewelcrafting/99/joyau_du_bourg.json"
+      },
+      "gptTitle": "Joyau du bourg"
+    },
+    "enchanting_20": {
+      "id": "graveur_de_gardes",
+      "profession": "enchanting",
+      "professionName": "Enchantement",
+      "rank": 20,
+      "title": "Graveur de gardes",
+      "trialId": "enchanting_20",
+      "enabled": true,
+      "provisional": false,
+      "palette": [
+        "#719AAB",
+        "#A89CC4",
+        "#CEB98D"
+      ],
+      "motifs": [
+        "pierre de garde",
+        "croissants ouverts"
+      ],
+      "files": {
+        "left": "assets/enchanting/20/graveur_de_gardes_left.png",
+        "right": "assets/enchanting/20/graveur_de_gardes_right.png",
+        "center": "assets/enchanting/20/graveur_de_gardes_center.png",
+        "badge": "assets/enchanting/20/graveur_de_gardes_badge.png",
+        "preview": "assets/enchanting/20/graveur_de_gardes_preview.png",
+        "metadata": "assets/enchanting/20/graveur_de_gardes.json"
+      }
+    },
+    "enchanting_40": {
+      "id": "lieur_de_noyaux",
+      "profession": "enchanting",
+      "professionName": "Enchantement",
+      "rank": 40,
+      "title": "Ouvre-portes",
+      "trialId": "enchanting_40",
+      "enabled": true,
+      "provisional": false,
+      "palette": [
+        "#719AAB",
+        "#A89CC4",
+        "#CEB98D"
+      ],
+      "motifs": [
+        "noyau",
+        "liens croisés"
+      ],
+      "files": {
+        "left": "assets/enchanting/40/lieur_de_noyaux_left.png",
+        "right": "assets/enchanting/40/lieur_de_noyaux_right.png",
+        "center": "assets/enchanting/40/lieur_de_noyaux_center.png",
+        "badge": "assets/enchanting/40/lieur_de_noyaux_badge.png",
+        "preview": "assets/enchanting/40/lieur_de_noyaux_preview.png",
+        "metadata": "assets/enchanting/40/lieur_de_noyaux.json"
+      },
+      "gptTitle": "Lieur de noyaux"
+    },
+    "enchanting_60": {
+      "id": "lieur_de_memoire",
+      "profession": "enchanting",
+      "professionName": "Enchantement",
+      "rank": 60,
+      "title": "Lieur de mémoire",
+      "trialId": "enchanting_60",
+      "enabled": true,
+      "provisional": false,
+      "palette": [
+        "#719AAB",
+        "#A89CC4",
+        "#CEB98D"
+      ],
+      "motifs": [
+        "noyau de mémoire",
+        "ruban"
+      ],
+      "files": {
+        "left": "assets/enchanting/60/lieur_de_memoire_left.png",
+        "right": "assets/enchanting/60/lieur_de_memoire_right.png",
+        "center": "assets/enchanting/60/lieur_de_memoire_center.png",
+        "badge": "assets/enchanting/60/lieur_de_memoire_badge.png",
+        "preview": "assets/enchanting/60/lieur_de_memoire_preview.png",
+        "metadata": "assets/enchanting/60/lieur_de_memoire.json"
+      }
+    },
+    "enchanting_80": {
+      "id": "veilleur_des_runes",
+      "profession": "enchanting",
+      "professionName": "Enchantement",
+      "rank": 80,
+      "title": "Veilleur des runes",
+      "trialId": "enchanting_80",
+      "enabled": true,
+      "provisional": false,
+      "palette": [
+        "#719AAB",
+        "#A89CC4",
+        "#CEB98D"
+      ],
+      "motifs": [
+        "boucliers ouverts",
+        "flamme de veille"
+      ],
+      "files": {
+        "left": "assets/enchanting/80/veilleur_des_runes_left.png",
+        "right": "assets/enchanting/80/veilleur_des_runes_right.png",
+        "center": "assets/enchanting/80/veilleur_des_runes_center.png",
+        "badge": "assets/enchanting/80/veilleur_des_runes_badge.png",
+        "preview": "assets/enchanting/80/veilleur_des_runes_preview.png",
+        "metadata": "assets/enchanting/80/veilleur_des_runes.json"
+      }
+    },
+    "enchanting_90": {
+      "id": "enchantement_palier_90",
+      "profession": "enchanting",
+      "professionName": "Enchantement",
+      "rank": 90,
+      "title": "L’Encre qui reste",
+      "trialId": "enchanting_90",
+      "enabled": true,
+      "provisional": false,
+      "palette": [
+        "#719AAB",
+        "#A89CC4",
+        "#CEB98D"
+      ],
+      "motifs": [
+        "anneaux décalés",
+        "ruban de mémoire"
+      ],
+      "files": {
+        "left": "assets/enchanting/90/enchantement_palier_90_left.png",
+        "right": "assets/enchanting/90/enchantement_palier_90_right.png",
+        "center": "assets/enchanting/90/enchantement_palier_90_center.png",
+        "badge": "assets/enchanting/90/enchantement_palier_90_badge.png",
+        "preview": "assets/enchanting/90/enchantement_palier_90_preview.png",
+        "metadata": "assets/enchanting/90/enchantement_palier_90.json"
+      },
+      "gptTitle": "Enchantement — palier 90"
+    },
+    "enchanting_99": {
+      "id": "memoire_du_bourg",
+      "profession": "enchanting",
+      "professionName": "Enchantement",
+      "rank": 99,
+      "title": "Souvenance",
+      "trialId": "enchanting_99",
+      "enabled": true,
+      "provisional": false,
+      "palette": [
+        "#719AAB",
+        "#A89CC4",
+        "#CEB98D"
+      ],
+      "motifs": [
+        "cœur de mémoire",
+        "rubans chantants"
+      ],
+      "files": {
+        "left": "assets/enchanting/99/memoire_du_bourg_left.png",
+        "right": "assets/enchanting/99/memoire_du_bourg_right.png",
+        "center": "assets/enchanting/99/memoire_du_bourg_center.png",
+        "badge": "assets/enchanting/99/memoire_du_bourg_badge.png",
+        "preview": "assets/enchanting/99/memoire_du_bourg_preview.png",
+        "metadata": "assets/enchanting/99/memoire_du_bourg.json"
+      },
+      "gptTitle": "Mémoire du bourg"
+    },
+    "artificing_20": {
+      "id": "horloger_du_beffroi",
+      "profession": "artificing",
+      "professionName": "Artificerie",
+      "rank": 20,
+      "title": "Deux minutes d’avance",
+      "trialId": "artificing_20",
+      "enabled": true,
+      "provisional": false,
+      "palette": [
+        "#B98A55",
+        "#647D89",
+        "#D2B971"
+      ],
+      "motifs": [
+        "échappement",
+        "pendule"
+      ],
+      "files": {
+        "left": "assets/artificing/20/horloger_du_beffroi_left.png",
+        "right": "assets/artificing/20/horloger_du_beffroi_right.png",
+        "center": "assets/artificing/20/horloger_du_beffroi_center.png",
+        "badge": "assets/artificing/20/horloger_du_beffroi_badge.png",
+        "preview": "assets/artificing/20/horloger_du_beffroi_preview.png",
+        "metadata": "assets/artificing/20/horloger_du_beffroi.json"
+      },
+      "gptTitle": "Horloger du beffroi"
+    },
+    "artificing_40": {
+      "id": "artificier_de_la_maree",
+      "profession": "artificing",
+      "professionName": "Artificerie",
+      "rank": 40,
+      "title": "Fusée de garde",
+      "trialId": "artificing_40",
+      "enabled": true,
+      "provisional": false,
+      "palette": [
+        "#B98A55",
+        "#647D89",
+        "#D2B971"
+      ],
+      "motifs": [
+        "fusée de signal",
+        "lanterne"
+      ],
+      "files": {
+        "left": "assets/artificing/40/artificier_de_la_maree_left.png",
+        "right": "assets/artificing/40/artificier_de_la_maree_right.png",
+        "center": "assets/artificing/40/artificier_de_la_maree_center.png",
+        "badge": "assets/artificing/40/artificier_de_la_maree_badge.png",
+        "preview": "assets/artificing/40/artificier_de_la_maree_preview.png",
+        "metadata": "assets/artificing/40/artificier_de_la_maree.json"
+      },
+      "gptTitle": "Artificier de la Marée"
+    },
+    "artificing_60": {
+      "id": "pyrotechnicien_du_bourg",
+      "profession": "artificing",
+      "professionName": "Artificerie",
+      "rank": 60,
+      "title": "Bouquet final",
+      "trialId": "artificing_60",
+      "enabled": true,
+      "provisional": false,
+      "palette": [
+        "#B98A55",
+        "#647D89",
+        "#D2B971"
+      ],
+      "motifs": [
+        "fusées",
+        "éventail pyrotechnique"
+      ],
+      "files": {
+        "left": "assets/artificing/60/pyrotechnicien_du_bourg_left.png",
+        "right": "assets/artificing/60/pyrotechnicien_du_bourg_right.png",
+        "center": "assets/artificing/60/pyrotechnicien_du_bourg_center.png",
+        "badge": "assets/artificing/60/pyrotechnicien_du_bourg_badge.png",
+        "preview": "assets/artificing/60/pyrotechnicien_du_bourg_preview.png",
+        "metadata": "assets/artificing/60/pyrotechnicien_du_bourg.json"
+      },
+      "gptTitle": "Pyrotechnicien du bourg"
+    },
+    "artificing_80": {
+      "id": "gardien_des_phares",
+      "profession": "artificing",
+      "professionName": "Artificerie",
+      "rank": 80,
+      "title": "Agace-géants",
+      "trialId": "artificing_80",
+      "enabled": true,
+      "provisional": false,
+      "palette": [
+        "#B98A55",
+        "#647D89",
+        "#D2B971"
+      ],
+      "motifs": [
+        "lentille de phare",
+        "volets"
+      ],
+      "files": {
+        "left": "assets/artificing/80/gardien_des_phares_left.png",
+        "right": "assets/artificing/80/gardien_des_phares_right.png",
+        "center": "assets/artificing/80/gardien_des_phares_center.png",
+        "badge": "assets/artificing/80/gardien_des_phares_badge.png",
+        "preview": "assets/artificing/80/gardien_des_phares_preview.png",
+        "metadata": "assets/artificing/80/gardien_des_phares.json"
+      },
+      "gptTitle": "Gardien des phares"
+    },
+    "artificing_90": {
+      "id": "artificerie_palier_90",
+      "profession": "artificing",
+      "professionName": "Artificerie",
+      "rank": 90,
+      "title": "Apprivoise-outils",
+      "trialId": "artificing_90",
+      "enabled": true,
+      "provisional": false,
+      "palette": [
+        "#B98A55",
+        "#647D89",
+        "#D2B971"
+      ],
+      "motifs": [
+        "mécanisme orbital",
+        "secteurs dentés"
+      ],
+      "files": {
+        "left": "assets/artificing/90/artificerie_palier_90_left.png",
+        "right": "assets/artificing/90/artificerie_palier_90_right.png",
+        "center": "assets/artificing/90/artificerie_palier_90_center.png",
+        "badge": "assets/artificing/90/artificerie_palier_90_badge.png",
+        "preview": "assets/artificing/90/artificerie_palier_90_preview.png",
+        "metadata": "assets/artificing/90/artificerie_palier_90.json"
+      },
+      "gptTitle": "Artificerie — palier 90"
+    },
+    "artificing_99": {
+      "id": "ame_des_rouages",
+      "profession": "artificing",
+      "professionName": "Artificerie",
+      "rank": 99,
+      "title": "Âme des rouages",
+      "trialId": "artificing_99",
+      "enabled": true,
+      "provisional": false,
+      "palette": [
+        "#B98A55",
+        "#647D89",
+        "#D2B971"
+      ],
+      "motifs": [
+        "cœur mécanique",
+        "grands rouages"
+      ],
+      "files": {
+        "left": "assets/artificing/99/ame_des_rouages_left.png",
+        "right": "assets/artificing/99/ame_des_rouages_right.png",
+        "center": "assets/artificing/99/ame_des_rouages_center.png",
+        "badge": "assets/artificing/99/ame_des_rouages_badge.png",
+        "preview": "assets/artificing/99/ame_des_rouages_preview.png",
+        "metadata": "assets/artificing/99/ame_des_rouages.json"
+      }
+    },
+    "construction_20": {
+      "id": "batisseur_du_lavoir",
+      "profession": "construction",
+      "professionName": "Construction",
+      "rank": 20,
+      "title": "Fil-à-plomb",
+      "trialId": "construction_20",
+      "enabled": true,
+      "provisional": false,
+      "palette": [
+        "#A6A69A",
+        "#B79261",
+        "#6E8587"
+      ],
+      "motifs": [
+        "blocs du lavoir",
+        "rigole"
+      ],
+      "files": {
+        "left": "assets/construction/20/batisseur_du_lavoir_left.png",
+        "right": "assets/construction/20/batisseur_du_lavoir_right.png",
+        "center": "assets/construction/20/batisseur_du_lavoir_center.png",
+        "badge": "assets/construction/20/batisseur_du_lavoir_badge.png",
+        "preview": "assets/construction/20/batisseur_du_lavoir_preview.png",
+        "metadata": "assets/construction/20/batisseur_du_lavoir.json"
+      },
+      "gptTitle": "Bâtisseur du lavoir"
+    },
+    "construction_40": {
+      "id": "maitre_d_oeuvre",
+      "profession": "construction",
+      "professionName": "Construction",
+      "rank": 40,
+      "title": "Nom sous l’arche",
+      "trialId": "construction_40",
+      "enabled": true,
+      "provisional": false,
+      "palette": [
+        "#A6A69A",
+        "#B79261",
+        "#6E8587"
+      ],
+      "motifs": [
+        "clé de voûte",
+        "équerre"
+      ],
+      "files": {
+        "left": "assets/construction/40/maitre_d_oeuvre_left.png",
+        "right": "assets/construction/40/maitre_d_oeuvre_right.png",
+        "center": "assets/construction/40/maitre_d_oeuvre_center.png",
+        "badge": "assets/construction/40/maitre_d_oeuvre_badge.png",
+        "preview": "assets/construction/40/maitre_d_oeuvre_preview.png",
+        "metadata": "assets/construction/40/maitre_d_oeuvre.json"
+      },
+      "gptTitle": "Maître d'œuvre"
+    },
+    "construction_60": {
+      "id": "batisseur_de_ponts",
+      "profession": "construction",
+      "professionName": "Construction",
+      "rank": 60,
+      "title": "Bâtisseur de ponts",
+      "trialId": "construction_60",
+      "enabled": true,
+      "provisional": false,
+      "palette": [
+        "#A6A69A",
+        "#B79261",
+        "#6E8587"
+      ],
+      "motifs": [
+        "pont couvert",
+        "voussoirs"
+      ],
+      "files": {
+        "left": "assets/construction/60/batisseur_de_ponts_left.png",
+        "right": "assets/construction/60/batisseur_de_ponts_right.png",
+        "center": "assets/construction/60/batisseur_de_ponts_center.png",
+        "badge": "assets/construction/60/batisseur_de_ponts_badge.png",
+        "preview": "assets/construction/60/batisseur_de_ponts_preview.png",
+        "metadata": "assets/construction/60/batisseur_de_ponts.json"
+      }
+    },
+    "construction_80": {
+      "id": "architecte_des_halles",
+      "profession": "construction",
+      "professionName": "Construction",
+      "rank": 80,
+      "title": "Pierre d’angle",
+      "trialId": "construction_80",
+      "enabled": true,
+      "provisional": false,
+      "palette": [
+        "#A6A69A",
+        "#B79261",
+        "#6E8587"
+      ],
+      "motifs": [
+        "halle",
+        "piliers"
+      ],
+      "files": {
+        "left": "assets/construction/80/architecte_des_halles_left.png",
+        "right": "assets/construction/80/architecte_des_halles_right.png",
+        "center": "assets/construction/80/architecte_des_halles_center.png",
+        "badge": "assets/construction/80/architecte_des_halles_badge.png",
+        "preview": "assets/construction/80/architecte_des_halles_preview.png",
+        "metadata": "assets/construction/80/architecte_des_halles.json"
+      },
+      "gptTitle": "Architecte des halles"
+    },
+    "construction_90": {
+      "id": "construction_palier_90",
+      "profession": "construction",
+      "professionName": "Construction",
+      "rank": 90,
+      "title": "Mur sans histoire",
+      "trialId": "construction_90",
+      "enabled": true,
+      "provisional": false,
+      "palette": [
+        "#A6A69A",
+        "#B79261",
+        "#6E8587"
+      ],
+      "motifs": [
+        "arc-boutant",
+        "corniche"
+      ],
+      "files": {
+        "left": "assets/construction/90/construction_palier_90_left.png",
+        "right": "assets/construction/90/construction_palier_90_right.png",
+        "center": "assets/construction/90/construction_palier_90_center.png",
+        "badge": "assets/construction/90/construction_palier_90_badge.png",
+        "preview": "assets/construction/90/construction_palier_90_preview.png",
+        "metadata": "assets/construction/90/construction_palier_90.json"
+      },
+      "gptTitle": "Construction — palier 90"
+    },
+    "construction_99": {
+      "id": "maitre_de_la_digue",
+      "profession": "construction",
+      "professionName": "Construction",
+      "rank": 99,
+      "title": "Cent Marées",
+      "trialId": "construction_99",
+      "enabled": true,
+      "provisional": false,
+      "palette": [
+        "#A6A69A",
+        "#B79261",
+        "#6E8587"
+      ],
+      "motifs": [
+        "digue",
+        "contreforts"
+      ],
+      "files": {
+        "left": "assets/construction/99/maitre_de_la_digue_left.png",
+        "right": "assets/construction/99/maitre_de_la_digue_right.png",
+        "center": "assets/construction/99/maitre_de_la_digue_center.png",
+        "badge": "assets/construction/99/maitre_de_la_digue_badge.png",
+        "preview": "assets/construction/99/maitre_de_la_digue_preview.png",
+        "metadata": "assets/construction/99/maitre_de_la_digue.json"
+      },
+      "gptTitle": "Maître de la digue"
+    },
+    "exploration_20": {
+      "id": "arpenteur_du_bois",
+      "profession": "exploration",
+      "professionName": "Exploration",
+      "rank": 20,
+      "title": "Arpenteur du bois",
+      "trialId": "exploration_20",
+      "enabled": true,
+      "provisional": false,
+      "palette": [
+        "#D0BD91",
+        "#648F91",
+        "#A57555"
+      ],
+      "motifs": [
+        "carte pliée",
+        "sentier forestier"
+      ],
+      "files": {
+        "left": "assets/exploration/20/arpenteur_du_bois_left.png",
+        "right": "assets/exploration/20/arpenteur_du_bois_right.png",
+        "center": "assets/exploration/20/arpenteur_du_bois_center.png",
+        "badge": "assets/exploration/20/arpenteur_du_bois_badge.png",
+        "preview": "assets/exploration/20/arpenteur_du_bois_preview.png",
+        "metadata": "assets/exploration/20/arpenteur_du_bois.json"
+      }
+    },
+    "exploration_40": {
+      "id": "eclaireur_des_lointains",
+      "profession": "exploration",
+      "professionName": "Exploration",
+      "rank": 40,
+      "title": "Poches pleines",
+      "trialId": "exploration_40",
+      "enabled": true,
+      "provisional": false,
+      "palette": [
+        "#D0BD91",
+        "#648F91",
+        "#A57555"
+      ],
+      "motifs": [
+        "rose directionnelle",
+        "horizon"
+      ],
+      "files": {
+        "left": "assets/exploration/40/eclaireur_des_lointains_left.png",
+        "right": "assets/exploration/40/eclaireur_des_lointains_right.png",
+        "center": "assets/exploration/40/eclaireur_des_lointains_center.png",
+        "badge": "assets/exploration/40/eclaireur_des_lointains_badge.png",
+        "preview": "assets/exploration/40/eclaireur_des_lointains_preview.png",
+        "metadata": "assets/exploration/40/eclaireur_des_lointains.json"
+      },
+      "gptTitle": "Éclaireur des Lointains"
+    },
+    "exploration_60": {
+      "id": "plongeur_des_archives",
+      "profession": "exploration",
+      "professionName": "Exploration",
+      "rank": 60,
+      "title": "Plongeur des archives",
+      "trialId": "exploration_60",
+      "enabled": true,
+      "provisional": false,
+      "palette": [
+        "#D0BD91",
+        "#648F91",
+        "#A57555"
+      ],
+      "motifs": [
+        "carte engloutie",
+        "archive retrouvée"
+      ],
+      "files": {
+        "left": "assets/exploration/60/plongeur_des_archives_left.png",
+        "right": "assets/exploration/60/plongeur_des_archives_right.png",
+        "center": "assets/exploration/60/plongeur_des_archives_center.png",
+        "badge": "assets/exploration/60/plongeur_des_archives_badge.png",
+        "preview": "assets/exploration/60/plongeur_des_archives_preview.png",
+        "metadata": "assets/exploration/60/plongeur_des_archives.json"
+      }
+    },
+    "exploration_80": {
+      "id": "cartographe_des_lointains",
+      "profession": "exploration",
+      "professionName": "Exploration",
+      "rank": 80,
+      "title": "Rose des vents",
+      "trialId": "exploration_80",
+      "enabled": true,
+      "provisional": false,
+      "palette": [
+        "#D0BD91",
+        "#648F91",
+        "#A57555"
+      ],
+      "motifs": [
+        "atlas déployé",
+        "coin blanc"
+      ],
+      "files": {
+        "left": "assets/exploration/80/cartographe_des_lointains_left.png",
+        "right": "assets/exploration/80/cartographe_des_lointains_right.png",
+        "center": "assets/exploration/80/cartographe_des_lointains_center.png",
+        "badge": "assets/exploration/80/cartographe_des_lointains_badge.png",
+        "preview": "assets/exploration/80/cartographe_des_lointains_preview.png",
+        "metadata": "assets/exploration/80/cartographe_des_lointains.json"
+      },
+      "gptTitle": "Cartographe des Lointains"
+    },
+    "exploration_90": {
+      "id": "exploration_palier_90",
+      "profession": "exploration",
+      "professionName": "Exploration",
+      "rank": 90,
+      "title": "Boussole têtue",
+      "trialId": "exploration_90",
+      "enabled": true,
+      "provisional": false,
+      "palette": [
+        "#D0BD91",
+        "#648F91",
+        "#A57555"
+      ],
+      "motifs": [
+        "carte entrouverte",
+        "passage inconnu"
+      ],
+      "files": {
+        "left": "assets/exploration/90/exploration_palier_90_left.png",
+        "right": "assets/exploration/90/exploration_palier_90_right.png",
+        "center": "assets/exploration/90/exploration_palier_90_center.png",
+        "badge": "assets/exploration/90/exploration_palier_90_badge.png",
+        "preview": "assets/exploration/90/exploration_palier_90_preview.png",
+        "metadata": "assets/exploration/90/exploration_palier_90.json"
+      },
+      "gptTitle": "Exploration — palier 90"
+    },
+    "exploration_99": {
+      "id": "pas_perdu_des_lointains",
+      "profession": "exploration",
+      "professionName": "Exploration",
+      "rank": 99,
+      "title": "Pas-perdu des Lointains",
+      "trialId": "exploration_99",
+      "enabled": true,
+      "provisional": false,
+      "palette": [
+        "#D0BD91",
+        "#648F91",
+        "#A57555"
+      ],
+      "motifs": [
+        "atlas impossible",
+        "horizon traversé"
+      ],
+      "files": {
+        "left": "assets/exploration/99/pas_perdu_des_lointains_left.png",
+        "right": "assets/exploration/99/pas_perdu_des_lointains_right.png",
+        "center": "assets/exploration/99/pas_perdu_des_lointains_center.png",
+        "badge": "assets/exploration/99/pas_perdu_des_lointains_badge.png",
+        "preview": "assets/exploration/99/pas_perdu_des_lointains_preview.png",
+        "metadata": "assets/exploration/99/pas_perdu_des_lointains.json"
+      }
     }
   },
   "geometry": {

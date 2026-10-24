@@ -1,0 +1,13 @@
+{
+  "id": "plongeur_des_archives",
+  "title": "Plongeur des archives",
+  "palette": [
+    "#D0BD91",
+    "#648F91",
+    "#A57555"
+  ],
+  "motifs": [
+    "carte engloutie",
+    "archive retrouvée"
+  ]
+}

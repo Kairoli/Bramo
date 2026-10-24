@@ -1,0 +1,13 @@
+{
+  "id": "semeur_des_terrasses",
+  "title": "Semeur des terrasses",
+  "palette": [
+    "#CBA65C",
+    "#6B8361",
+    "#647B9C"
+  ],
+  "motifs": [
+    "terrasses",
+    "graine"
+  ]
+}

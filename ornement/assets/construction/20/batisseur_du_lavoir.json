@@ -1,0 +1,13 @@
+{
+  "id": "batisseur_du_lavoir",
+  "title": "Bâtisseur du lavoir",
+  "palette": [
+    "#A6A69A",
+    "#B79261",
+    "#6E8587"
+  ],
+  "motifs": [
+    "blocs du lavoir",
+    "rigole"
+  ]
+}

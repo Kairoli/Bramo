@@ -7,6 +7,7 @@ import type { CombatStats, Contributions } from './engine.js';
 import type { CombatContent } from '../schemas/combat.js';
 import { MAX_PRESETS } from './presets.js';
 import { type MechanicView, type PoolLinks, buildPoolLinks, encounterMechanics, gamePoolLinks } from './guide.js';
+import { type SheetView, characterSheet } from './sheet.js';
 import { activePrep, readSupplies } from './supplies.js';
 import { activePath, advisedPlan, availableSpells, classLevel, classTier, classXpPerHour, currentPlan, encounterTiers, replayFight, routeStage, routeStages, wornGear } from './progress.js';
 
@@ -90,6 +91,8 @@ export interface CombatView {
   classTier: number;
   /** Statistiques au combat : celles de l'équipement porté, jamais sous le plancher du palier de la classe. */
   stats: { power: number; maxHp: number; damageReduction: number; haste: number; critChance: number; critMultiplier: number };
+  /** La fiche complète du personnage (statistiques lisibles, places de talent, ensembles, réponses, réserves). */
+  sheet: SheetView | null;
   /** Le plancher l'emporte sur l'équipement porté (équipement trop faible ou trop bas). */
   floored: boolean;
   /** Réponses de situation actives (gemmes serties, ensembles de situation) : leur nom. */
@@ -393,6 +396,7 @@ export function viewCombat(state: CharacterState, content: Content): CombatView 
     })),
     classTier: tier,
     stats: pick(worn?.stats ?? combat.rules.referenceStats),
+    sheet: characterSheet(state, content),
     floored: !!worn?.floored,
     situation: [...(worn?.tools ?? []).map((t) => t.name), ...(() => {
       const prep = activePrep(state, content);

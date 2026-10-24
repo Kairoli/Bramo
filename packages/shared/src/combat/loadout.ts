@@ -143,7 +143,7 @@ export function wornLoadout(rules: CombatRules, catalog: TalentCatalog | null, t
   let combatStats: CombatStats = conv ? { ...base, power: base.power * f, maxHp: base.maxHp * f } : base;
   const floored = !!floor && wallIndex(floor) > wallIndex(combatStats);
   if (floored) combatStats = floor!;
-  return { stats: combatStats, floored, talents: r.talents, tools: r.tools, pools: r.pools, convert: r.convert };
+  return { stats: combatStats, floored, talents: r.talents, tools: r.tools, pools: r.pools, convert: r.convert, mods: r.mods };
 }
 
 /** Lignes de build de l'équipement porté : modificateurs de talent (`mod:`) et plafonds de réserve (`pool:`). */

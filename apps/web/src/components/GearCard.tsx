@@ -165,7 +165,7 @@ export function GearCard({
                 </span>
                 <span className="gear-stat-name">
                   <strong>{s.name}</strong>
-                  <span className="muted">{s.hint}</span>
+                  {g.effects.find((x) => x.stat === k) ? <span className="gear-effect">{g.effects.find((x) => x.stat === k)!.text}</span> : <span className="muted">{s.hint}</span>}
                 </span>
                 <strong className="gear-stat-value">{v ? `+${fmt(v)}` : '—'}</strong>
                 {compare && <span className={`gear-delta ${d > 0 ? 'up' : d < 0 ? 'down' : ''}`}>{d ? signed(d) : '='}</span>}

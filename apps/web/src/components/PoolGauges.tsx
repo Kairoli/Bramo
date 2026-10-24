@@ -97,24 +97,46 @@ function Gauge({ pool, n, spent, used, live }: { pool: PoolView; n: number; spen
 }
 
 /**
- * Un texte de talent ou d'ensemble où chaque réserve nommée (« Rancœur », « 2 Tisons »…) s'explique au survol : ce que
- * c'est, comment elle se remplit [Louis, 24 octobre : « Rancœur devient Ferveur, c'est quoi même ? »].
+ * Un texte d'effet (talent, ensemble, sort) rendu parlant :
+ * - chaque réserve nommée (« Rancœur », « 2 Tisons »…) s'explique au survol [Louis, 24 octobre : « Rancœur devient
+ *   Ferveur, c'est quoi même ? »] ;
+ * - chaque coefficient de Puissance (« 0,22 P ») devient un nombre, calculé avec la Puissance du personnage, l'écriture
+ *   d'origine au survol [Louis : « faire du 0,6 × Puissance n'est pas très parlant pour un joueur »].
  */
 export function PoolText({ text }: { text: string }) {
-  const { content } = useGame();
+  const { content, state } = useGame();
   const pools = content.pools ?? [];
-  if (!pools.length) return <>{text}</>;
+  const power = state?.combat?.stats.power ?? null;
   // Le nom, au singulier ou au pluriel (« Tison », « Tisons ») ; jamais un mot courant en minuscules (« mesure »).
   const stem = (n: string) => (n.endsWith('s') && n !== 'Frimas' ? n.slice(0, -1) : n);
   const byStem = new Map(pools.map((p) => [stem(p.name), p]));
-  // Les noms des réserves n'ont que des lettres : pas d'échappement à faire.
-  const re = new RegExp(`(${[...byStem.keys()].join('|')})s?(?![a-zà-ÿ])`, 'g');
+  // Un coefficient (« 0,22 P », « 1 P ») ou un nom de réserve (des lettres seulement : pas d'échappement à faire).
+  const names = [...byStem.keys()];
+  const re = new RegExp(`(\\d+(?:,\\d+)?) ?P(?![\\wà-ÿ])${names.length ? `|(${names.join('|')})s?(?![a-zà-ÿ])` : ''}`, 'g');
   const out: ReactNode[] = [];
   let last = 0;
   for (const m of text.matchAll(re)) {
-    const p = byStem.get(m[1]!)!;
-    const look = POOL_LOOK[p.id] ?? FALLBACK;
     if (m.index! > last) out.push(text.slice(last, m.index));
+    last = m.index! + m[0].length;
+    if (m[1] !== undefined) {
+      const coef = Number(m[1].replace(',', '.'));
+      if (power === null) {
+        out.push(`${m[1]} × Puissance`);
+        continue;
+      }
+      out.push(
+        <Tip
+          key={m.index}
+          className="pool-word-tip"
+          content={<TipHead title={`≈ ${Math.round(coef * power)}`} sub={`${m[1]} × ta Puissance (${Math.round(power)}) : le nombre suit ta Puissance, donc ton équipement et ton niveau.`} />}
+        >
+          <strong className="power-num">≈ {Math.round(coef * power)}</strong>
+        </Tip>,
+      );
+      continue;
+    }
+    const p = byStem.get(m[2]!)!;
+    const look = POOL_LOOK[p.id] ?? FALLBACK;
     out.push(
       <Tip
         key={m.index}
@@ -143,7 +165,6 @@ export function PoolText({ text }: { text: string }) {
         </span>
       </Tip>,
     );
-    last = m.index! + m[0].length;
   }
   if (last < text.length) out.push(text.slice(last));
   return <>{out}</>;

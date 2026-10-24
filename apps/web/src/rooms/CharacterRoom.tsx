@@ -13,6 +13,7 @@ import { OrnamentPlate, ornamentTitle } from '../components/Ornament';
 import { OrnamentModal } from '../components/OrnamentPicker';
 import { PresetsCard } from '../components/Presets';
 import { Tip, TipHead } from '../components/Tip';
+import { BuildPanel, StatsPanel } from '../components/CharacterSheet';
 
 /**
  * Salle Personnage, comme un écran de jeu : à gauche l'inventaire (équipement en tuiles, sac, apparence), au centre le
@@ -28,7 +29,7 @@ export function CharacterRoom() {
   const [mode, setMode] = useState<'gear' | 'look'>('gear');
   // Mode Apparence : l'emplacement dont on choisit l'apparence (touché autour du personnage).
   const [lookSlot, setLookSlot] = useState<Slot>('headwear');
-  const [tab, setTab] = useState<'gear' | 'bag'>('gear');
+  const [tab, setTab] = useState<'build' | 'gear' | 'bag' | 'stats'>('build');
   const [gear, setGear] = useState<GearView | null>(null);
   useEffect(() => {
     api.gear().then(setGear).catch(() => {});
@@ -51,14 +52,20 @@ export function CharacterRoom() {
         ) : (
           <>
             <div className="seg-toggle inv-tabs" role="tablist">
+              <button aria-pressed={tab === 'build'} onClick={() => setTab('build')}>
+                Build
+              </button>
               <button aria-pressed={tab === 'gear'} onClick={() => setTab('gear')}>
                 Équipement
               </button>
               <button aria-pressed={tab === 'bag'} onClick={() => setTab('bag')}>
                 Sac · {bagCount}
               </button>
+              <button aria-pressed={tab === 'stats'} onClick={() => setTab('stats')}>
+                Stats
+              </button>
             </div>
-            {tab === 'gear' ? <GearPanel gear={gear} onChange={setGear} /> : <BagPanel />}
+            {tab === 'build' ? <BuildPanel gear={gear} /> : tab === 'gear' ? <GearPanel gear={gear} onChange={setGear} /> : tab === 'stats' ? <StatsPanel /> : <BagPanel />}
           </>
         )}
       </section>

@@ -373,7 +373,12 @@ function computeWornGear(state: CharacterState, content: Content) {
   const ramp = conv.floorRampLevel ? Math.min(1, (level - 1) / (conv.floorRampLevel - 1)) : 1;
   const share = 1 - (1 - (conv.floorShare ?? 1)) * ramp;
   const floor = { ...rules.referenceStats, power: rules.referenceStats.power * f * share, maxHp: rules.referenceStats.maxHp * f * share };
-  const pieces = state.equipment!.flatMap((p) => {
+  return wornLoadout(rules, combat.talents, combat.tools, wornPieces(state.equipment!, content), floor);
+}
+
+/** L'équipement porté ramené aux pièces du moteur de build (rang d'affinage compris). */
+export function wornPieces(equipment: NonNullable<CharacterState['equipment']>, content: Content) {
+  return equipment.flatMap((p) => {
     const m = content.gearModels[p.model];
     if (!m) return [];
     // Rang d'affinage (l'Affineur du bourg) : les lignes fixes de la pièce, +statPerRank par rang.
@@ -381,7 +386,6 @@ function computeWornGear(state: CharacterState, content: Content) {
     const stats = up === 1 ? m.stats : m.stats.map((x) => ({ ...x, value: x.value * up }));
     return [{ tier: m.tier, weight: content.gearSlots[m.slot]?.weight ?? 1, stats, lines: p.lines, ...(m.set ? { set: m.set } : {}), ...(m.talent ? { talent: m.talent } : {}), ...(p.gem ? { gem: p.gem } : {}) }];
   });
-  return wornLoadout(rules, combat.talents, combat.tools, pieces, floor);
 }
 
 /** Le combattant tel qu'il entre dans une rencontre (build figé). */

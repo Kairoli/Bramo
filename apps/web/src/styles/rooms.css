@@ -2422,7 +2422,7 @@
 .inv-tabs {
   align-self: stretch;
   display: grid !important;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(4, 1fr);
 }
 .gear-panel,
 .bag-panel {
@@ -9362,4 +9362,256 @@ div.tide-role {
   top: 40px;
   left: 8px;
   right: 40px;
+}
+
+/* Un coefficient de Puissance devenu nombre (« ≈ 29 ») : la formule au survol. */
+.power-num {
+  color: var(--text);
+  font-weight: 800;
+  text-decoration: underline dotted rgb(255 255 255 / 0.35);
+  text-underline-offset: 3px;
+  cursor: help;
+}
+
+/* Ce que la statistique change vraiment pour ce personnage (« ≈ +3,1 % de chance de critique »). */
+.gear-effect {
+  font-size: 11.5px;
+  color: var(--good);
+}
+
+/* Salle Personnage : le build d'un coup d'œil et la fiche complète (24 octobre). */
+.build-panel,
+.stats-panel {
+  display: grid;
+  gap: 10px;
+  min-height: 0;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+.build-block {
+  display: grid;
+  gap: 6px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: var(--sunken);
+}
+.build-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px;
+}
+.build-class {
+  border-left: 3px solid var(--cc, var(--action));
+}
+.build-class-head {
+  display: grid;
+  grid-template-columns: 38px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+}
+.build-level {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  font-weight: 800;
+  font-size: 17px;
+  color: #111;
+  background: var(--cc, var(--action));
+}
+.build-class-name {
+  display: grid;
+  line-height: 1.2;
+}
+.build-spells {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.build-spell {
+  display: grid;
+  width: 40px;
+  height: 40px;
+  place-items: center;
+  border-radius: 10px;
+  background: rgb(0 0 0 / 0.25);
+}
+.build-spell.empty {
+  border: 1px dashed var(--border);
+  background: none;
+}
+.build-places {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+.build-place {
+  display: grid;
+  align-content: start;
+  gap: 2px;
+  padding: 8px 9px;
+  border-radius: 10px;
+  border: 1px solid color-mix(in srgb, var(--r-legendary) 45%, transparent);
+  background: color-mix(in srgb, var(--r-legendary) 8%, transparent);
+  font-size: 13px;
+}
+.build-place.gem {
+  border-color: color-mix(in srgb, var(--magic) 50%, transparent);
+  background: color-mix(in srgb, var(--magic) 9%, transparent);
+}
+.build-place.free {
+  border: 1px dashed var(--border);
+  background: none;
+}
+.build-place.off {
+  opacity: 0.55;
+}
+.build-place-kind {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+.build-place-text {
+  color: var(--text-muted);
+  line-height: 1.35;
+}
+.build-set {
+  display: grid;
+  gap: 3px;
+}
+.build-set-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.build-pips {
+  display: flex;
+  gap: 3px;
+}
+.build-pips i {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  border: 1px solid var(--clan);
+}
+.build-pips i.on {
+  background: var(--clan);
+}
+.build-bonus {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr);
+  gap: 6px;
+  font-size: 12.5px;
+  color: var(--text-muted);
+}
+.build-bonus.on {
+  color: var(--text);
+}
+.build-bonus-n {
+  font-weight: 800;
+  color: var(--text-muted);
+}
+.build-bonus.on .build-bonus-n {
+  color: var(--clan);
+}
+.build-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+.build-reserves {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px 10px;
+}
+.build-reserve {
+  display: grid;
+  grid-template-columns: 26px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 6px;
+  font-size: 12.5px;
+}
+.build-reserve .pool-ring {
+  --size: 24px;
+}
+.build-reserve.off {
+  opacity: 0.4;
+}
+.build-reserve-state {
+  font-size: 10.5px;
+  font-weight: 700;
+  color: var(--text-muted);
+}
+.build-reserve.ok .build-reserve-state {
+  color: var(--good);
+}
+.build-reserve.idle .build-reserve-state {
+  color: var(--action);
+}
+.build-worn {
+  display: grid;
+  gap: 4px;
+}
+.build-worn-row {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 8px;
+}
+.build-worn-row .gear-tile {
+  width: 44px;
+  height: 44px;
+}
+.build-worn-text {
+  display: grid;
+  min-width: 0;
+  line-height: 1.2;
+}
+.build-worn-text strong {
+  color: var(--rc, var(--text));
+  font-size: 13px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.build-worn-row.empty {
+  opacity: 0.55;
+}
+.build-gem {
+  color: var(--magic);
+}
+.build-tier {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-muted);
+}
+.stats-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 3px 0;
+  border-bottom: 1px solid rgb(255 255 255 / 0.04);
+  font-size: 13.5px;
+}
+.stats-row strong {
+  font-variant-numeric: tabular-nums;
+}
+.stats-pools {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+.stats-pool {
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 12px;
+  border: 1px solid color-mix(in srgb, var(--pc) 45%, transparent);
+  color: var(--text);
+}
+.stats-pool strong {
+  color: var(--pc);
 }

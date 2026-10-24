@@ -63,7 +63,7 @@ function GearTipContent({ g }: { g: GearItemView }) {
             <strong>
               +{Math.round(s.value)} {STATS[s.stat]?.name ?? s.stat}
             </strong>{' '}
-            <span className="muted">{STATS[s.stat]?.hint}</span>
+            <span className="muted">{g.effects.find((x) => x.stat === s.stat)?.text ?? STATS[s.stat]?.hint}</span>
           </TipLine>
         ))}
         {g.lines.length > 0 && <div className="tip-section rolled">Attributs · tirés au hasard</div>}

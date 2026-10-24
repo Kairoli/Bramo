@@ -2,6 +2,7 @@ import type { ReactElement } from 'react';
 import type { SpellView } from '@bramo/shared';
 import { SpellIcon } from './SpellIcon';
 import { TipFoot, TipHead, TipLine } from './Tip';
+import { PoolText } from './PoolGauges';
 
 /** Ce qu'un sort fait, en bulle : élément, recharge, cibles, effets en mots simples ; même s'il n'est pas encore appris. */
 
@@ -46,7 +47,9 @@ export function SpellTipContent({ s, classId, level, pathName }: { s: SpellView;
         chips={chips}
       />
       <div className="tip-body">
-        <TipLine mark="✦">{s.text.replace(/(\d+(?:,\d+)?) P\b/g, '$1 × Puissance')}</TipLine>
+        <TipLine mark="✦">
+          <PoolText text={s.text} />
+        </TipLine>
         {e.shield !== undefined && <TipLine color="#8fd3ff" mark="◈">Protège pendant {e.shield} s</TipLine>}
         {e.heal && <TipLine color="var(--good)" mark="✚">Soigne</TipLine>}
         {e.dot && <TipLine color="#ff8a4b" mark="♨">{e.dot.type === 'burn' ? 'Brûlure' : 'Saignement'} pendant {e.dot.duration} s</TipLine>}

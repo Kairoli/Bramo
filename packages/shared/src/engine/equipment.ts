@@ -2,6 +2,7 @@ import type { Content } from '../schemas/content.js';
 import type { GearInstance, GearLine, GearModel, Rarity, RolledLine } from '../schemas/gear.js';
 import { GameError } from './state.js';
 import { type RefineCost, honeCost, honeableLines, rankCost, rankedStats, rerollCost, rerollableLines, salvageYield } from './refine.js';
+import { type StatEffect, gearEffects } from '../combat/sheet.js';
 
 /** Tirage aléatoire uniforme dans [0, 1) (injecté : le serveur donne Math.random, les tests une suite fixe). */
 export type Rng = () => number;
@@ -196,6 +197,8 @@ export interface GearItemView {
   honeable: number[];
   /** Objet nommé (talent propre) : gardé au démontage en lot. */
   named: boolean;
+  /** Ce que ses statistiques fixes changent vraiment au combat (« ≈ +3,1 % de chance de critique »), pour ce personnage. */
+  effects: StatEffect[];
   /** Poussière que donnerait son démontage (null : portée, en vitrine, de départ). */
   salvage: { item: string; qty: number } | null;
   /** Retaille : coût de la prochaine (null : impossible), lignes retaillables, propositions en attente du choix. */
@@ -248,6 +251,7 @@ export interface GearView {
 
 export function viewGear(items: GearInstance[], classId: string | null, content: Content): GearView {
   const life = content.settings.gear.lifeHours * 3_600_000;
+  const effects = gearEffects(items, content);
   const views: GearItemView[] = [];
   for (const g of items) {
     const m = content.gearModels[g.model];
@@ -283,6 +287,7 @@ export function viewGear(items: GearInstance[], classId: string | null, content:
       honeCost: honeCost(g, content),
       honeable: honeableLines(g),
       named: !!m.named || !!m.talent,
+      effects: effects[g.id] ?? [],
       salvage: salvageYield(g, content),
       rerollCost: rerollCost(g, content),
       rerollable: rerollableLines(g, content),

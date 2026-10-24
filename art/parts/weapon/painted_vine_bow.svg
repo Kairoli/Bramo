@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 760">
+  <!-- Essai (24 octobre) : arc de lierre à lanterne peint par ChatGPT, détouré par art/cutout.mjs (apps/web/public/weapons/).
+       Même tenue en main que ranger_bow : ses pointes (12 8) et (15 712) sur celles de l'arc dessiné (408 34) et (408 376) ;
+       la corde et la flèche restent dessinées (l'image n'a pas de corde). -->
+  <g id="bow">
+    <g transform="matrix(0.887 -0.4617 0.4617 0.887 -132.0098 245.1001)">
+      <g transform="translate(408 34) scale(0.486) translate(-12 -8)">
+        <image href="/weapons/painted_vine_bow.webp" width="127" height="720"/>
+      </g>
+    </g>
+  </g>
+  <g id="string">
+    <g transform="matrix(0.887 -0.4617 0.4617 0.887 -132.0098 245.1001)">
+    <path d="M408 34 L305 200 L408 376" fill="none" stroke="#E6DFC8" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.9"/>
+    <path d="M305 200 L458 196" fill="none" stroke="var(--c-wood-light)" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M310 200 L322 190 L340 190 L331 199 Z M310 200 L322 210 L340 210 L331 201 Z" fill="#2A2433"/>
+    <circle cx="452" cy="196" r="14" fill="url(#rig-halo)"/>
+    <path d="M441 190 L460 196 L441 202 Z" fill="var(--c-metal)"/>
+    <path d="M441 190 L460 196" fill="none" stroke="var(--c-glow-light)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+    </g>
+  </g>
+</svg>

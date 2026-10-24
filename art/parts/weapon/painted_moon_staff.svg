@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 760">
+  <!-- Essai (24 octobre) : bâton à orbe et croissant de lune peint par ChatGPT, détouré par art/cutout.mjs
+       (apps/web/public/weapons/). Même tenue en main que rune_staff : l'orbe (90 60) sur la sienne (154 64), le pied
+       (90 715) sur le sien (122 696). -->
+  <g id="staff">
+    <g transform="translate(154 64) rotate(2.9) scale(0.966) translate(-90 -60)">
+      <image href="/weapons/painted_moon_staff.webp" width="142" height="720"/>
+    </g>
+  </g>
+</svg>

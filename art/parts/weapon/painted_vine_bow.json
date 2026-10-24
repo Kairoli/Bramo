@@ -1,0 +1,11 @@
+{
+  "id": "painted_vine_bow",
+  "slot": "weapon",
+  "name": "Arc de lierre peint",
+  "colorRoles": ["woodLight", "metal", "glow"],
+  "anchor": [0, 0],
+  "layers": [
+    { "id": "bow", "bone": "hand_far", "z": 26 },
+    { "id": "string", "bone": "hand_far", "z": 69 }
+  ]
+}

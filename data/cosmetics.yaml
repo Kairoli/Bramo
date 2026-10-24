@@ -571,3 +571,7 @@ pieces:
   - { slot: weapon, id: halloween_staff, classes: [runist], test: true }
   - { slot: weapon, id: halloween_hammer, classes: [forgefire], test: true }
   - { slot: weapon, id: halloween_bow, classes: [tracker], test: true }
+# Armes peintes par ChatGPT (24 octobre), détourées par art/cutout.mjs (images dans apps/web/public/weapons/) : essai du rendu.
+  - { slot: weapon, id: painted_moon_staff, classes: [runist], test: true }
+  - { slot: weapon, id: painted_pumpkin_hammer, classes: [forgefire], test: true }
+  - { slot: weapon, id: painted_vine_bow, classes: [tracker], test: true }

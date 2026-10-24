@@ -1,0 +1,8 @@
+{
+  "id": "painted_moon_staff",
+  "slot": "weapon",
+  "name": "Bâton à la lune peint",
+  "colorRoles": [],
+  "anchor": [0, 0],
+  "layers": [{ "id": "staff", "bone": "hand_near", "z": 64 }]
+}

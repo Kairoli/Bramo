@@ -20,7 +20,7 @@ interface Showcase {
   outfit?: string;
 }
 
-const SEASONS: { outfit: string; season: string; mood: string; sky: [string, string]; weapons?: Record<string, string>; showcase?: Showcase[] }[] = [
+const SEASONS: { key?: string; outfit: string; season: string; mood: string; sky: [string, string]; weapons?: Record<string, string>; showcase?: Showcase[] }[] = [
   { outfit: 'sketch_season_frost', season: 'Saison du Givre', mood: 'Hiver : fourrure, cristaux de glace, neige qui tombe.', sky: ['#1B2A36', '#3B5568'] },
   { outfit: 'sketch_season_harvest', season: 'Saison des Moissons', mood: 'Fin d’été : paille, gerbe de blé, lanterne-courge, feuilles qui tombent.', sky: ['#2A2018', '#6A4A26'] },
   { outfit: 'sketch_season_carnival', season: 'Carnaval des Masques', mood: 'Événement surprise : masque à bec, tricorne à plumes, collerette, confettis.', sky: ['#22142A', '#5A2448'] },
@@ -40,6 +40,20 @@ const SEASONS: { outfit: string; season: string; mood: string; sky: [string, str
       { slot: 'headwear', id: 'halloween_pumpkin', classId: 'tracker', outfit: 'sketch_season_halloween' },
     ],
   },
+  {
+    // Armes peintes par ChatGPT (24 octobre), détourées par art/cutout.mjs : une image dans la main au lieu d'un dessin.
+    key: 'painted',
+    outfit: 'sketch_season_halloween',
+    season: 'Armes peintes (essai)',
+    mood: 'Trois armes peintes, posées dans la main comme les armes dessinées : à comparer avec celles d’Halloween.',
+    sky: ['#140F1A', '#3A2440'],
+    weapons: { runist: 'painted_moon_staff', forgefire: 'painted_pumpkin_hammer', tracker: 'painted_vine_bow' },
+    showcase: [
+      { slot: 'weapon', id: 'painted_moon_staff', classId: 'runist' },
+      { slot: 'weapon', id: 'painted_pumpkin_hammer', classId: 'forgefire' },
+      { slot: 'weapon', id: 'painted_vine_bow', classId: 'tracker' },
+    ],
+  },
 ];
 
 export function SeasonBoard() {
@@ -49,7 +63,7 @@ export function SeasonBoard() {
   const [lod, setLod] = useState<Lod>((q.get('lod') as Lod) ?? 'scene');
   const [still, setStill] = useState(q.has('still'));
   const [only, setOnly] = useState<string | null>(q.get('only'));
-  const shown = SEASONS.filter((s) => !only || s.outfit === only);
+  const shown = SEASONS.filter((s) => !only || (s.key ?? s.outfit) === only);
   return (
     <div className={`season-board${only ? " big" : ""}`} style={{ '--zoom': q.get('zoom') ?? 1, '--pzoom': q.get('pzoom') ?? 1 } as CSSProperties}>
       <header className="season-board-head">
@@ -68,7 +82,7 @@ export function SeasonBoard() {
             Toutes
           </button>
           {SEASONS.map((s) => (
-            <button key={s.outfit} className={`chip${only === s.outfit ? ' on' : ''}`} onClick={() => setOnly(s.outfit)}>
+            <button key={s.key ?? s.outfit} className={`chip${only === (s.key ?? s.outfit) ? ' on' : ''}`} onClick={() => setOnly(s.key ?? s.outfit)}>
               {s.season}
             </button>
           ))}
@@ -84,7 +98,7 @@ export function SeasonBoard() {
         const own = [...new Map(all.filter(([, id]) => id?.startsWith(prefix)).map(([slot, id]) => [id, [slot, id]])).values()] as [Slot, string][];
         const shows: Showcase[] = s.showcase ?? own.map(([slot, id], i) => ({ slot, id, classId: CLASSES[i % CLASSES.length]! }));
         return (
-          <section key={s.outfit} className="season-row" style={{ '--sky-a': s.sky[0], '--sky-b': s.sky[1] } as CSSProperties}>
+          <section key={s.key ?? s.outfit} className="season-row" style={{ '--sky-a': s.sky[0], '--sky-b': s.sky[1] } as CSSProperties}>
             <div className="season-row-title">
               <span className="eyebrow">{s.season}</span>
               <h2>{outfit.name}</h2>

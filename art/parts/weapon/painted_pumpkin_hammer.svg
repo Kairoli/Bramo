@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 760">
+  <!-- Essai (24 octobre) : marteau-citrouille peint par ChatGPT, détouré par art/cutout.mjs (apps/web/public/weapons/).
+       Même tenue en main que forge_hammer : la poignée de l'image (138 588) est posée sur celle du marteau dessiné (316 346),
+       la masse du côté de la sienne (374 680). -->
+  <g id="hammer">
+    <g transform="matrix(0.9848 0.1736 -0.1736 0.9848 57.3613 -46.4738)"><g transform="translate(138 86) rotate(133.5) scale(0.7) translate(-374 -673)">
+      <g transform="translate(316 346) rotate(169.95) scale(0.68) translate(-138 -588)">
+        <image href="/weapons/painted_pumpkin_hammer.webp" width="276" height="720"/>
+      </g>
+    </g></g>
+  </g>
+</svg>

@@ -1,0 +1,203 @@
+<title>Mission du 24 octobre</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+/* Mise en page : une colonne de lecture, la palette « anthracite et cuivre » du jeu ; les priorités en pastilles. */
+:root {
+  --bg: #20262a;
+  --panel: #2a3135;
+  --sunken: #1a1f22;
+  --border: #3c464a;
+  --text: #f1f0ec;
+  --muted: #a9b3b5;
+  --copper: #f08a4b;
+  --tide: #4cc9d6;
+  --clan: #e3c770;
+  --good: #7ed6a2;
+  --alert: #ff7c7c;
+  --display: 'Bricolage Grotesque', 'Segoe UI', system-ui, sans-serif;
+  --body: 'IBM Plex Sans', 'Segoe UI', system-ui, sans-serif;
+  --mono: 'IBM Plex Mono', ui-monospace, 'Cascadia Mono', monospace;
+  color-scheme: dark;
+}
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    --bg: #f4f1ec; --panel: #ffffff; --sunken: #ebe6de; --border: #d6cfc4; --text: #22282b; --muted: #5d676a;
+    --copper: #b4581f; --tide: #137f8a; --clan: #8a6d12; --good: #237a4c; --alert: #b3262a; color-scheme: light;
+  }
+}
+:root[data-theme="light"] {
+  --bg: #f4f1ec; --panel: #ffffff; --sunken: #ebe6de; --border: #d6cfc4; --text: #22282b; --muted: #5d676a;
+  --copper: #b4581f; --tide: #137f8a; --clan: #8a6d12; --good: #237a4c; --alert: #b3262a; color-scheme: light;
+}
+body { background: var(--bg); color: var(--text); font-family: var(--body); font-size: 16px; line-height: 1.6; }
+.page { max-width: 860px; margin: 0 auto; padding-block: 40px 72px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: grid; gap: 44px; }
+h1, h2, h3 { font-family: var(--display); text-wrap: balance; line-height: 1.15; margin: 0; }
+h1 { font-size: clamp(30px, 6vw, 46px); font-weight: 800; letter-spacing: -0.01em; }
+h2 { font-size: 26px; font-weight: 800; }
+h3 { font-size: 18px; font-weight: 700; }
+p { margin: 0; max-width: 68ch; }
+a { color: var(--tide); text-underline-offset: 3px; }
+a:focus-visible, summary:focus-visible { outline: 2px solid var(--copper); outline-offset: 3px; border-radius: 4px; }
+.eyebrow { font-family: var(--mono); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--copper); }
+header { display: grid; gap: 14px; }
+header .lead { font-size: 18px; color: var(--muted); }
+section { display: grid; gap: 16px; }
+.muted { color: var(--muted); }
+.table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 12px; background: var(--panel); }
+table { border-collapse: collapse; width: 100%; min-width: 560px; font-size: 15px; }
+th, td { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--border); vertical-align: top; }
+th { font-family: var(--display); font-weight: 700; font-size: 14px; color: var(--muted); background: var(--sunken); }
+tr:last-child td { border-bottom: 0; }
+td.num { font-family: var(--mono); font-variant-numeric: tabular-nums; white-space: nowrap; }
+td.up { color: var(--good); }
+.systems { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; }
+.system { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 16px; display: grid; gap: 6px; align-content: start; }
+.system .tag { font-family: var(--mono); font-size: 12px; color: var(--muted); }
+.system.tide h3 { color: var(--tide); }
+.system.clan h3 { color: var(--clan); }
+.system.copper h3 { color: var(--copper); }
+.list { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
+.item { display: grid; grid-template-columns: auto 1fr; gap: 6px 14px; padding: 14px 16px; background: var(--panel); border: 1px solid var(--border); border-radius: 12px; }
+.item > div { min-width: 0; display: grid; gap: 4px; }
+.pill { align-self: start; font-family: var(--mono); font-size: 12px; padding: 3px 9px; border-radius: 999px; border: 1px solid currentColor; white-space: nowrap; }
+.pill.must { color: var(--alert); }
+.pill.should { color: var(--copper); }
+.pill.later { color: var(--muted); }
+.lessons { display: grid; gap: 12px; }
+.lesson { border-left: 3px solid var(--tide); padding: 2px 0 2px 14px; display: grid; gap: 4px; }
+.questions { counter-reset: q; display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
+.questions li { counter-increment: q; display: grid; grid-template-columns: 2.2em 1fr; gap: 10px; }
+.questions li::before { content: counter(q); font-family: var(--display); font-weight: 800; font-size: 20px; color: var(--copper); }
+.sources { font-size: 14px; color: var(--muted); display: grid; gap: 4px; }
+@media (max-width: 480px) { .item { grid-template-columns: 1fr; } }
+.pill.done { color: var(--good); }
+.big { font-family: var(--display); font-weight: 800; font-size: 30px; line-height: 1; }
+</style>
+
+<div class="page">
+  <header>
+    <span class="eyebrow">Bramo · 24 octobre 2026, soir</span>
+    <h1>La grosse mission : PvP, admin, événements, bots, serveur, combat</h1>
+    <p class="lead">Six chantiers. Le serveur et le combat sont <strong>mesurés</strong> (vrai test de charge, simulateur de combat). Le PvP, la console admin, les événements et les bots sont <strong>conçus</strong>. Rien n'est adopté dans le jeu, rien n'est commité. Il te reste des choix à faire, rassemblés en bas.</p>
+  </header>
+
+  <section>
+    <span class="eyebrow">En bref</span>
+    <h2>Ce qu'il faut retenir</h2>
+    <div class="systems">
+      <div class="system tide"><h3>Serveur</h3><p><span class="big">400</span> joueurs connectés en même temps tiennent à l'aise sur ton mini-PC (≈ 1 000 à 2 000 joueurs par jour). Un seul monde suffit. Gratuit, à quelques conditions.</p><span class="tag">Point faible : le retour en masse à 19 h</span></div>
+      <div class="system copper"><h3>Combat</h3><p>Des combats de <span class="big">20 s</span> au lieu de 65 s, au même danger, et des chiffres ×10 (coups à 1 200, pointes à 10 000). Les synergies tiennent ; un vrai build « vitesse » devient possible.</p><span class="tag">Testé au simulateur, pas adopté</span></div>
+      <div class="system clan"><h3>PvP : la Lice</h3><p>Une arène asynchrone : on affronte le <em>Reflet</em> d'un autre joueur, 5 défis par jour, rangs de Ferraille à Lanterne, récompenses cosmétiques. Classé avec statistiques égalisées.</p><span class="tag">Conçu</span></div>
+      <div class="system"><h3>Console admin</h3><p>Une page <code>/#admin</code> : état du jeu, annonces (bandeau, fil, fenêtre, maintenance), joueurs et sanctions, signalements, économie, événements, cadeaux, bots. Tout dans un journal d'audit.</p><span class="tag">Conçue</span></div>
+      <div class="system"><h3>Événements</h3><p>Une seule machine pour tout : la Marée, les Routes franches, le Concours des Maîtres, des week-ends du bourg, un Gardien errant, la saison, les fêtes. Deux bandeaux, un menu, une page, le bourg qui se déguise.</p><span class="tag">Conçus, visuels listés</span></div>
+      <div class="system"><h3>Bots</h3><p>Vingt habitants : un cerveau sans IA qui joue tout par l'API, toutes les 15 min, aux heures d'un humain ; Claude passe toutes les heures pour les faire parler et leur donner du caractère.</p><span class="tag">Conçus ; reset seulement sur ton « oui »</span></div>
+    </div>
+  </section>
+
+  <section>
+    <span class="eyebrow">Serveur · mesuré</span>
+    <h2>Ton homeserver tient des centaines de joueurs</h2>
+    <p class="muted">Vrai test de charge sur le N100 (4 cœurs, 16 Go) : des joueurs virtuels qui interrogent le serveur au rythme du vrai client. Base PostgreSQL, celle prévue en production.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Joueurs connectés en même temps</th><th>Requêtes par seconde</th><th>Temps de réponse (95 %)</th><th>Processeur (un cœur)</th></tr></thead>
+        <tbody>
+          <tr><td>100</td><td class="num">35</td><td class="num up">38 ms</td><td class="num">16 %</td></tr>
+          <tr><td>200</td><td class="num">70</td><td class="num up">38 ms</td><td class="num">33 %</td></tr>
+          <tr><td>400</td><td class="num">140</td><td class="num up">53 ms</td><td class="num">62 %</td></tr>
+          <tr><td>600</td><td class="num">210</td><td class="num">252 ms</td><td class="num">83 %</td></tr>
+          <tr><td>800</td><td class="num">238</td><td class="num">3,6 s (saturé)</td><td class="num">105 %</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="lessons">
+      <div class="lesson"><h3>Le point faible : tout le monde revient à 19 h</h3><p>Un joueur qui revient après 16 h fait rejouer 16 h de métier et de route au serveur : 0,45 s de calcul, pendant lesquelles il ne répond à personne. 800 retours dans la même minute ont mis 6 minutes à passer. La réponse : faire ce calcul sur les 3 autres cœurs (inutilisés aujourd'hui), alléger la réponse de l'état (100 Ko toutes les 30 s) et pousser la discussion au lieu de la demander toutes les 8 s. On pourrait alors viser 800 à 1 000 connectés.</p></div>
+      <div class="lesson"><h3>Un seul monde</h3><p>Le marché « à la Dofus » a besoin de monde : trois serveurs de 100, ce sont trois marchés vides. Plusieurs mondes seulement pour une autre langue ou un autre fuseau horaire ; le cross-serveur n'a de sens qu'à ce moment-là.</p></div>
+      <div class="lesson"><h3>Gratuit, mais</h3><p>Il faut une connexion fibre (environ 2 à 4 Mbit/s montants pour 400 joueurs, compressé). Pour ne pas exposer ta maison, Cloudflare Tunnel (gratuit) évite d'ouvrir des ports. Il faut aussi des sauvegardes hors de la machine. Une coupure ne coûte rien aux joueurs : c'est un idle, la progression se calcule au retour. L'électricité coûte environ 1 à 2 € par mois.</p></div>
+    </div>
+  </section>
+
+  <section>
+    <span class="eyebrow">Combat · testé au simulateur</span>
+    <h2>Plus vif, plus gros, et les builds tiennent</h2>
+    <p class="muted">Trois classes, 24 rencontres de la route, un équipement Rare de son niveau. « Vif » : PV ennemis ÷ 2,5 en zone et ÷ 1,5 sur les gardiens, ennemis qui frappent deux fois plus souvent mais deux fois moins fort, sorts qui reviennent 30 % plus vite.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Mesure</th><th>Aujourd'hui</th><th>Vif</th></tr></thead>
+        <tbody>
+          <tr><td>Durée en zone / contre un gardien</td><td class="num">66 s / 63 s</td><td class="num up">20 s / 33 s</td></tr>
+          <tr><td>Fois où chaque sort part dans un combat</td><td class="num">6 à 9</td><td class="num up">2 à 4</td></tr>
+          <tr><td>Victoires en zone · PV au plus bas</td><td class="num">99 % · 40 %</td><td class="num">97 % · 41 %</td></tr>
+          <tr><td>Coup moyen (avec les chiffres ×10)</td><td class="num">121</td><td class="num up">1 250</td></tr>
+          <tr><td>Calcul du serveur par heure de route</td><td class="num">≈ 70 ms</td><td class="num">≈ 70 ms (inchangé)</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="lessons">
+      <div class="lesson"><h3>Les gemmes gardent leur effet</h3><p>Un build Tisons reste 15 % plus rapide qu'un build sans gemme, Entailles 12 %, Rancœur et Frimas 8 %, comme aujourd'hui. Les réserves qui se remplissent lentement (Mesure, Ferveur, Trophées) y perdent un peu. Une règle testée les relance : sur la route, la moitié des réserves passe à la rencontre suivante (Trophées −15 % de temps, Ferveur +46 % de dépenses).</p></div>
+      <div class="lesson"><h3>Le build « vitesse » existe enfin</h3><p>Aujourd'hui la Cadence est un piège : plafonnée à 23 %, elle bute sur la seconde fixe entre deux sorts. Si elle raccourcit aussi ce délai, comme la hâte d'un MMO, et monte à 50 %, elle vaut la Puissance. Elle devient meilleure avec ses gemmes : une gemme d'essai (« chaque attaque de base raccourcit les recharges ») rend le combat 8 à 12 % plus rapide, et plus la Cadence est haute, plus elle rapporte.</p></div>
+      <div class="lesson"><h3>Ce qui ne suffit pas : l'ordre des sorts</h3><p>Même en combat court, inverser son ouverture ne coûte presque rien : peu de sorts préparent le suivant. Il faut des enchaînements (marquer puis exploiter, chauffer puis tremper), affichés dans la Préparation.</p></div>
+      <div class="lesson"><h3>Comprendre son combat</h3><p>Six ajouts proposés. Le détail du combat, avec des barres par source (chaque sort, chaque gemme, chaque ensemble). Les talents qui s'allument au-dessus du personnage. La défaite expliquée en une phrase. Un mannequin pour tester son build. La pièce comparée « en vrai ». La carte de l'ennemi. Toujours un chiffre et une phrase, le détail dans la bulle.</p></div>
+    </div>
+  </section>
+
+  <section>
+    <span class="eyebrow">Conçu</span>
+    <h2>PvP, admin, événements, bots</h2>
+    <ul class="list">
+      <li class="item"><span class="pill should">PvP</span><div><h3>La Lice et ses Reflets</h3><p>On affronte la défense enregistrée d'un autre joueur (un de ses préréglages), qui n'a pas besoin d'être là. Cinq défis par jour, jamais achetables. Trois adversaires proposés, dont on voit le build. Au meilleur de trois manches. Se faire attaquer ne fait jamais perdre de points. Dans le monde, c'est le Reflet que la Marée garde des gens : il est en miroir et teinté d'eau, ce qui règle aussi la règle « jamais de miroir ». Règles propres au PvP : un budget de contrôle, soins ×0,7, usure de la Lice après 30 s. Récompenses cosmétiques seulement. Plus tard : Joutes des clans, tournoi mensuel en direct.</p></div></li>
+      <li class="item"><span class="pill should">Admin</span><div><h3>Gérer le jeu sans passer par Claude</h3><p>Le socle (environ une journée) : rôle administrateur, journal d'audit, état du jeu, annonces, fiche d'un joueur, sanctions, signalements. Ensuite : le registre de l'or et la page Économie, le courrier et les compensations, le mode maintenance, puis les événements, les réglages en direct et la page des bots. La console ne répond qu'aux adresses autorisées.</p></div></li>
+      <li class="item"><span class="pill should">Événements</span><div><h3>Un calendrier qui respire</h3><p>Chaque soir la Marée. Chaque semaine les Routes franches et le Concours des Maîtres. Un week-end sur deux, un week-end du bourg (Foire, Fièvre du filon…). Chaque mois le Gardien errant. Puis la saison, et les fêtes. Chaque événement a une illustration au format 3:1, une icône de 256 px, sa monnaie si besoin et un calque du bourg décoré. Ce qui n'est pas réclamé arrive dans la boîte aux lettres : on ne punit jamais l'absent.</p></div></li>
+      <li class="item"><span class="pill should">Bots</span><div><h3>Vingt habitants qui vivent à ton rythme</h3><p>Ils arrivent en décalé, pas tous le premier jour. Deux clans de bots, et quatre sans clan, dont deux que tu peux recruter. Ils commercent, prennent tes commandes, font la Marée quand ils « sont là ». Ils te répondent dans l'heure. Avant le reset, la base actuelle est sauvegardée et les outils d'essai verrouillés. À la sortie publique, il faudra soit les marquer comme « Habitants », soit les retirer : de faux joueurs, ça trompe de vrais joueurs.</p></div></li>
+    </ul>
+  </section>
+
+  <section>
+    <span class="eyebrow">La suite</span>
+    <h2>Ordre proposé</h2>
+    <ul class="list">
+      <li class="item"><span class="pill must">1</span><div><h3>Le combat d'abord</h3><p>Tes choix sur le rythme, puis la proposition « rythme-v1 » écrite et tout le banc rejoué, puis le détail du combat et la défaite expliquée. Mieux vaut le faire avant de vraiment jouer.</p></div></li>
+      <li class="item"><span class="pill must">2</span><div><h3>Le socle de la console admin</h3><p>Pour gérer seul, et pour avoir le bouton pause des bots.</p></div></li>
+      <li class="item"><span class="pill must">3</span><div><h3>Les bots, puis le reset</h3><p>Le cerveau d'abord, avec trois bots sur une pile à part. Ensuite les vingt profils et l'agent. Le reset vient en dernier, sur ton « oui ».</p></div></li>
+      <li class="item"><span class="pill should">4</span><div><h3>Le serveur pour le public</h3><p>Le calcul sur plusieurs cœurs, un état plus léger, la discussion poussée, la Marée réglée en tâche de fond. Puis le test de charge refait sur la configuration de production.</p></div></li>
+      <li class="item"><span class="pill should">5</span><div><h3>Les événements</h3><p>La machine et un premier week-end du bourg, puis le Concours, les Routes franches et le Gardien errant.</p></div></li>
+      <li class="item"><span class="pill later">6</span><div><h3>La Lice</h3><p>Elle demande le combat joueur contre joueur dans le moteur et ses mesures. Elle profite du combat vif : des manches de 20 à 40 s.</p></div></li>
+    </ul>
+  </section>
+
+  <section>
+    <span class="eyebrow">À toi de trancher</span>
+    <h2>Les questions qui débloquent la suite</h2>
+    <ol class="questions">
+      <li><p><strong>Chiffres ×10</strong> en combat (coups à 1 200, pointes à 10 000) : oui ?</p></li>
+      <li><p><strong>Combats vifs</strong> : zones vers 20 s et gardiens vers 33 s, ou un entre-deux (30 s et 45 s) ?</p></li>
+      <li><p><strong>Réserves reportées</strong> d'une rencontre de la route à la suivante (la moitié) : d'accord ?</p></li>
+      <li><p><strong>Archétype Cadence</strong> : la Cadence raccourcit le délai entre deux sorts, plafond à 50 %, gemmes de vitesse. On y va ?</p></li>
+      <li><p><strong>La Lice classée égalisée</strong> (le build compte, pas le farm), avec une Lice libre « amicale » à côté ?</p></li>
+      <li><p><strong>Le Reflet</strong> : l'adversaire en miroir et teinté d'eau, une exception à la règle « jamais de miroir » ?</p></li>
+      <li><p><strong>Le triangle</strong> mêlée &gt; tir &gt; magie en PvP : aucun (recommandé), ±5 %, ou plus ?</p></li>
+      <li><p><strong>Console admin</strong> seulement depuis la maison (et un accès privé), ou de partout avec une seconde vérification ?</p></li>
+      <li><p><strong>Week-ends du bourg</strong> à +10 %, ou un vrai « double XP » de temps en temps ?</p></li>
+      <li><p><strong>Bots</strong> : j'écris les vingt profils et tu relis ? Est-ce qu'ils te parlent en premier ? L'agent Claude toutes les heures de 8 h à minuit, à l'essai une semaine ?</p></li>
+      <li><p><strong>Un seul monde</strong> : d'accord ? Et ta connexion : débit montant, adresse fixe ou non ? Cloudflare Tunnel plutôt qu'ouvrir les ports ?</p></li>
+    </ol>
+    <p class="muted">Les autres questions, plus fines, sont à la fin de chaque fiche.</p>
+  </section>
+
+  <section>
+    <span class="eyebrow">Les fiches</span>
+    <h2>Où tout est écrit</h2>
+    <div class="sources">
+      <span><code>docs/design/serveur.md</code> : un monde ou plusieurs, le test de charge, ce que tient le homeserver</span>
+      <span><code>docs/design/coherence/rythme.md</code> : le combat plus vif, plus gros, la Cadence, la compréhension</span>
+      <span><code>docs/design/pvp.md</code> : la Lice</span>
+      <span><code>docs/design/admin.md</code> : la console d'administration</span>
+      <span><code>docs/design/evenements.md</code> : le système, l'affichage et les visuels des événements</span>
+      <span><code>docs/design/bots.md</code> : les vingt habitants et leur agent</span>
+      <span>Outils : <code>apps/server/src/scripts/stress/</code> (test de charge), <code>sim/src/rythme.ts</code> (rythme du combat)</span>
+    </div>
+  </section>
+</div>

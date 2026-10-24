@@ -65,6 +65,8 @@ export type GearStatsConversion = z.infer<typeof gearStatsSchema>;
 export const combatRulesSchema = z.object({
   tick: z.number().positive(),
   gcd: seconds,
+  /** La Cadence raccourcit aussi le délai entre deux compétences (essai du 24 octobre ; par défaut non). */
+  gcdHaste: z.boolean().optional(),
   fightLimit: z.number().positive(),
   opening: z.enum(['independent', 'sequence']),
   /** Horaire de première utilisation maximal d'un sort du plan (s). */
@@ -309,6 +311,8 @@ const talentAction = z.object({
   healShare: z.number().min(0).max(1).optional(),
   /** +x % de dégâts directs pendant `duration` s (une valeur par talent, remplacée). */
   buff: z.object({ amount: z.number().min(0), duration: z.number().positive() }).optional(),
+  /** Raccourcit de N s la recharge restante des sorts du plan (essai des builds de Cadence, 24 octobre). */
+  cooldownCut: z.number().positive().optional(),
   /** Braises rendues (Forgefeu). */
   heat: z.number().int().min(1).optional(),
   /** Rejoue une rune à ce multiple, en copie secondaire (ni écrite, ni Encre) : celle que lit l'action, ou celle de la préparation. */
@@ -346,6 +350,7 @@ const talentAction = z.object({
   scaleBy: id.optional(),
 });
 export interface TalentAction {
+  cooldownCut?: number;
   gain?: { pool: string; n: number };
   spendPool?: { pool: string; perStack: number; as: 'damage' | 'shield' | 'heal'; other?: number; duration: number; keep: number };
   scaleBy?: string;

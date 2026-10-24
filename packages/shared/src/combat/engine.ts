@@ -66,6 +66,8 @@ export interface CombatantSetup {
   beneficiary?: 'self' | 'lowest';
   /** PV au début de la rencontre (par défaut le maximum) : les PV se gardent d'une salle de donjon à l'autre. */
   startHp?: number;
+  /** Réserves au début de la rencontre (par défaut vides) : essai de réserves gardées d'une rencontre de la route à la suivante. */
+  startPools?: Record<string, number>;
   /**
    * Potions de secours (dossier « Activités et artisanat » §21) : une est bue automatiquement sous `below` des PV maximum,
    * rend `heal` des PV maximum, au plus une toutes les `cooldown` secondes, dans la limite de `count`.
@@ -119,6 +121,8 @@ export interface CombatantResult {
   hp: number;
   hpRatio: number;
   minHpRatio: number;
+  /** Réserves à la fin de la rencontre (les non vides). */
+  pools: Record<string, number>;
   contributions: Contributions;
   /** Compteurs détaillés : dégâts par origine, Braises dépensées, Angles exploités, runes lues… */
   metrics: Record<string, number>;
@@ -466,7 +470,7 @@ export function fight(combat: CombatContent, setups: CombatantSetup[], encounter
       prevSkill: null,
       skillTimes: new Map(),
       prevRead: null,
-      pools: new Map(Object.entries(s.pools ?? {}).map(([k, max]) => [k, { n: 0, max }])),
+      pools: new Map(Object.entries(s.pools ?? {}).map(([k, max]) => [k, { n: Math.min(max, s.startPools?.[k] ?? 0), max }])),
     };
   });
   hero = team[0] ?? null;
@@ -974,6 +978,7 @@ export function fight(combat: CombatContent, setups: CombatantSetup[], encounter
     if (act.heal) heal(c, recipient(c, act.heal.to), act.heal.coef * c.P * sc, true);
     if (act.healShare && ev.amount) heal(c, beneficiary(c), act.healShare * ev.amount, true);
     if (act.buff) c.buffs.set(fx.key, { amount: act.buff.amount, until: t + ms(act.buff.duration) });
+    if (act.cooldownCut) for (const slot of c.plan) if (slot.ready > t) slot.ready = Math.max(t, slot.ready - ms(act.cooldownCut));
     if (act.heat && c.kit.mechanic === 'heat') c.heat = Math.min(kp(c, 'cap') + c.mods.heatCap, c.heat + act.heat);
     if (act.transferDots && ev.target) {
       const dead = ev.target;
@@ -1395,7 +1400,7 @@ export function fight(combat: CombatContent, setups: CombatantSetup[], encounter
           cast(c, slot.spell);
           slot.opened = true;
           slot.ready = t + ms(slot.spell.cooldown / (1 + c.stats.haste));
-          c.gcdAt = t + ms(R.gcd);
+          c.gcdAt = t + ms(R.gcdHaste ? R.gcd / (1 + c.stats.haste) : R.gcd);
         }
       }
     }
@@ -1530,6 +1535,7 @@ export function fight(combat: CombatContent, setups: CombatantSetup[], encounter
       hp: Math.max(0, c.hp),
       hpRatio: Math.max(0, c.hp / c.stats.maxHp),
       minHpRatio: Math.max(0, c.minHp / c.stats.maxHp),
+      pools: Object.fromEntries([...c.pools].filter(([, p]) => p.n > 0).map(([k, p]) => [k, p.n])),
       contributions: c.contrib,
       metrics: c.m,
     })),

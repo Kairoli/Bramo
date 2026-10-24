@@ -3,6 +3,7 @@ import {
   type CharacterState,
   type Content,
   type JournalEntry,
+  type NotableLoot,
   type StateResponse,
   advance,
   resumeRoute,
@@ -62,14 +63,23 @@ async function grantLoot(tx: Tx, characterId: number, name: string, summary: Adv
   const vestiges = Object.entries(c.vestiges).map(([id, n]) => `${n} ${content.items[id]?.name ?? id}`);
   if (vestiges.length) entries.push({ at: now, kind: 'combat', text: `Vestiges : ${vestiges.join(', ')}.` });
   const rand = stream(characterId, `loot-lines:${now}`);
+  const notable: NotableLoot[] = [];
   for (const l of c.loot) {
     const m = content.gearModels[l.model];
     if (!m) continue;
     await grantGear(tx, characterId, m.id, content, rand);
     const where = content.combat?.encounters[l.encounter]?.name ?? l.encounter;
-    entries.push({ at: now, kind: 'combat', text: `Butin : ${m.name} (${RARITY_NAME[m.rarity]}, palier ${m.tier}), ${where}.` });
+    // Le butin qui compte ressort au journal (son titre) et en tête du résumé d'absence.
+    const why: NotableLoot['why'] | null = l.trophy ? 'trophy' : m.named ? 'named' : m.set ? 'set' : m.rarity === 'epic' || m.rarity === 'legendary' ? 'rarity' : null;
+    const title = why === 'trophy' ? 'Trophée' : why === 'named' ? 'Objet nommé' : why === 'set' ? 'Ensemble' : 'Butin';
+    entries.push({ at: now, kind: 'combat', text: `${title} : ${m.name} (${RARITY_NAME[m.rarity]}, palier ${m.tier}), ${where}.` });
+    if (why) {
+      const set = m.set ? (content.gearSets[m.set]?.name ?? m.set) : null;
+      notable.push({ name: m.name, rarity: m.rarity, tier: m.tier, slot: m.slot, family: m.family, why, where, effect: m.named ? (m.conditional ?? null) : null, set });
+    }
     if (m.named) events.push({ kind: 'loot', text: `${name} trouve ${m.name}${m.conditional?.startsWith('«') ? ` ${m.conditional.split(' — ')[0]}` : ''} (${where}).` });
   }
+  if (notable.length) c.notable = [...(c.notable ?? []), ...notable];
   return { entries, events };
 }
 

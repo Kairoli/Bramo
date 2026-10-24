@@ -259,6 +259,8 @@ describe('la route (PvE solo)', () => {
     expect(state.combat.route.best).toBeGreaterThan(9);
     const named = summary.combat.loot.filter((l) => content.gearModels[l.model]?.talent === 'petit_arrangement');
     expect(named.length).toBeGreaterThanOrEqual(1);
+    // Marqué comme trophée : il ressort au journal et en tête du résumé d'absence.
+    expect(named.some((l) => l.trophy)).toBe(true);
     // Rejouer le gardien déjà battu ne redonne pas le trophée.
     const again = startRoute(state, T0 + 2 * HOUR, content, 9);
     const r2 = advance(again, T0 + 2 * HOUR + 5 * 60_000, content);

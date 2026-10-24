@@ -78,6 +78,15 @@ export function GearCard({
   const gemsInBag = Object.entries(state.inventory).filter(([id, n]) => n > 0 && content.items[id]?.gem);
   const set = g.set ? content.gearSets[g.set] : undefined;
   const classes = g.classes.map((c) => content.classes[c]?.name ?? c);
+  // Jusqu'où montent les attributs de base : l'Affineur (rangs, sans plafond), ou rien.
+  const rankRule = content.gearCrafting?.refine?.rank;
+  const perRank = Math.round((rankRule?.statPerRank ?? 0) * 100);
+  const baseNote =
+    g.rankCost || g.rank > 0
+      ? `L’Affineur les monte de ${perRank} % par rang, sans plafond${g.rank > 0 ? ` (rang +${g.rank} : déjà +${perRank * g.rank} %)` : ''}.`
+      : (g.rarity === 'epic' || g.rarity === 'legendary') && rankRule && g.tier < rankRule.minTier
+        ? `C’est leur maximum ici : l’Affineur ne les monte qu’à partir du palier ${rankRule.minTier}.`
+        : 'C’est leur maximum : elles ne bougent pas.';
   // Comparaison : les caractéristiques des deux pièces, et leurs bonus en %.
   const statKeys = [...new Set([...g.stats.map((s) => s.stat), ...(compare?.stats.map((s) => s.stat) ?? [])])];
   const statOf = (x: GearItemView | null | undefined, k: string) => x?.stats.find((s) => s.stat === k)?.value ?? 0;
@@ -134,8 +143,14 @@ export function GearCard({
         )}
 
         {tab === 'sheet' && (
-        <section className="gear-card-block">
-          <span className="eyebrow">Ce qu’elle donne</span>
+        <section className="gear-card-block attrs-core">
+          {/* Comme les attributs de base et les attributs de The Division 2 [Louis, 24 octobre] : ce qui est fixe, puis ce qui est tiré. */}
+          <span className="attrs-head">
+            <span className="eyebrow">Attributs de base</span>
+            <span className="attrs-kind" title="Les mêmes sur toutes les pièces de ce modèle et de ce palier.">fixes</span>
+          </span>
+          {/* Jusqu'où ça monte [Louis, 24 octobre : « quel est le max ? jusqu'où je peux l'affiner ? »], en une ligne. */}
+          <p className="attrs-note">{baseNote}</p>
           {statKeys.map((k) => {
             const s = STATS[k] ?? { name: k, hint: '', icon: STATS.power!.icon };
             const v = statOf(g, k);
@@ -160,8 +175,13 @@ export function GearCard({
         )}
 
         {tab === 'sheet' && lineNames.length > 0 && (
-          <section className="gear-card-block">
-            <span className="eyebrow">Bonus</span>
+          <section className="gear-card-block attrs-rolled">
+            <span className="attrs-head">
+              <span className="eyebrow">Attributs</span>
+              <span className="attrs-kind" title="Tirés au hasard quand la pièce tombe ou se fabrique, dans une plage : la barre montre où tombe le tirage. Ils se retaillent chez l’Affineur.">
+                tirés au hasard
+              </span>
+            </span>
             {lineNames.map((n) => {
               const v = lineOf(g, n);
               const d = compare ? v - lineOf(compare, n) : 0;
@@ -171,7 +191,15 @@ export function GearCard({
                   <span>
                     {v ? `+${fmt(v)} % ` : ''}
                     {n}
-                    {line?.bonus ? <span className="muted small"> · chef-d’œuvre</span> : null}
+                    {line?.bonus ? (
+                      <span className="muted small"> · chef-d’œuvre</span>
+                    ) : line && line.max > line.min ? (
+                      line.value >= line.max - 1e-9 ? (
+                        <span className="gear-max at">max</span>
+                      ) : (
+                        <span className="gear-max">max {fmt(line.max)} %</span>
+                      )
+                    ) : null}
                   </span>
                   {line && !line.bonus && line.max > line.min && (
                     <span className="gear-roll" title={`Tirage entre ${fmt(line.min)} et ${fmt(line.max)} %`}>
@@ -182,6 +210,13 @@ export function GearCard({
                 </div>
               );
             })}
+            {g.lines.some((l) => !l.bonus && l.value < l.max - 1e-9) && (
+              <p className="attrs-note">
+                {g.honeable.length
+                  ? 'L’Affineur affûte une ligne jusqu’à son max, par petits pas.'
+                  : 'Le max d’une ligne ne s’atteint qu’au tirage (ou en retaillant) : l’affûtage ne travaille que les Épiques et Légendaires du palier 40 et plus.'}
+              </p>
+            )}
           </section>
         )}
 
@@ -228,7 +263,7 @@ export function GearCard({
           <section className="gear-card-block special">
             {g.conditional && (
               <p>
-                <strong>Effet</strong> · {g.conditional}
+                <strong>{g.named ? 'Talent' : 'Effet'}</strong> · {g.conditional}
               </p>
             )}
             {set && (

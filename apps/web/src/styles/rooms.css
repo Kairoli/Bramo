@@ -273,6 +273,23 @@
 .j-line:hover {
   background: rgb(255 255 255 / 0.03);
 }
+/* Butin qui compte : la ligne ressort, à la couleur de sa rareté. */
+.j-line.j-notable {
+  margin: 3px 0;
+  padding: 7px 8px;
+  border: 1px solid color-mix(in srgb, var(--rc) 55%, transparent);
+  background: linear-gradient(90deg, color-mix(in srgb, var(--rc) 18%, transparent), color-mix(in srgb, var(--rc) 4%, transparent));
+  box-shadow: 0 0 14px -6px var(--rc);
+}
+.j-line.j-notable .j-body > strong {
+  color: var(--rc);
+  text-transform: uppercase;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+}
+.j-line.j-notable .j-item {
+  font-weight: 800;
+}
 .j-icon {
   flex: none;
   display: grid;
@@ -9048,4 +9065,111 @@ div.tide-role {
 }
 .promo-hero .rig {
   width: 200px;
+}
+
+/* Résumé d'absence : le butin qui compte, en tête (24 octobre). */
+.absence-loot {
+  display: grid;
+  gap: 8px;
+  margin: 4px 0 12px;
+}
+.absence-loot-card {
+  display: grid;
+  grid-template-columns: 56px minmax(0, 1fr);
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid color-mix(in srgb, var(--rc) 55%, transparent);
+  background: linear-gradient(100deg, color-mix(in srgb, var(--rc) 20%, var(--sunken)), var(--sunken) 70%);
+  box-shadow: 0 0 18px -8px var(--rc);
+}
+.absence-loot-card > svg {
+  justify-self: center;
+}
+.absence-loot-text {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+.absence-loot-text strong {
+  color: var(--rc);
+  font-size: 16px;
+}
+.absence-loot-why {
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--rc);
+  opacity: 0.85;
+}
+.absence-loot-effect {
+  color: var(--text);
+  font-style: italic;
+}
+
+/* Fiche et bulle d'une pièce : attributs de base (fixes), attributs (tirés), talent [Louis, 24 octobre, comme The Division 2]. */
+.attrs-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+}
+.attrs-kind {
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 1px 7px;
+  border-radius: 999px;
+  color: var(--text-muted);
+  background: rgb(255 255 255 / 0.06);
+  cursor: help;
+}
+.gear-card-block.attrs-core {
+  border-left: 3px solid rgb(255 255 255 / 0.35);
+}
+.gear-card-block.attrs-rolled {
+  border-left: 3px solid #9fd2ff;
+}
+.gear-card-block.attrs-rolled .attrs-kind {
+  color: #9fd2ff;
+  background: rgb(159 210 255 / 0.1);
+}
+.tip-section {
+  margin-top: 4px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+.tip-section:first-child {
+  margin-top: 0;
+}
+.tip-section.rolled {
+  color: #9fd2ff;
+}
+.tip-section.talent {
+  color: var(--r-legendary);
+}
+
+/* Le max possible, sans surcharger : une ligne sous les attributs de base, « max X % » à côté d'un attribut tiré. */
+.attrs-note {
+  margin: 0;
+  font-size: 11.5px;
+  color: var(--text-muted);
+}
+.gear-max {
+  margin-left: 6px;
+  font-size: 11px;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+.gear-max.at {
+  color: var(--good);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }

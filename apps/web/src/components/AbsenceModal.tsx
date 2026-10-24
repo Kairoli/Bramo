@@ -1,7 +1,39 @@
-import type { AdvanceSummary } from '@bramo/shared';
+import type { CSSProperties } from 'react';
+import type { AdvanceSummary, NotableLoot } from '@bramo/shared';
 import { useGame } from '../game/GameContext';
 import { duration, num, pct } from '../format';
+import { GearIcon } from './GearIcon';
+import { SLOT } from './GearCard';
 import { Modal } from './ui';
+
+const RARITY_NAMES: Record<string, string> = { common: 'Commun', rare: 'Rare', epic: 'Épique', legendary: 'Légendaire' };
+const WHY: Record<NotableLoot['why'], string> = { trophy: 'Trophée', named: 'Objet nommé', set: 'Pièce d’ensemble', rarity: 'Trouvaille' };
+
+/** Le butin qui compte, en tête du résumé [Louis, 24 octobre : « le résumé d'absence doit montrer les loots importants »]. */
+function NotableList({ loot }: { loot: NotableLoot[] }) {
+  // Les plus belles d'abord : trophées et nommés, puis ensembles, puis par rareté et palier.
+  const order = { trophy: 0, named: 1, set: 2, rarity: 3 };
+  const rank = { legendary: 0, epic: 1, rare: 2, common: 3 };
+  const sorted = [...loot].sort((a, b) => order[a.why] - order[b.why] || rank[a.rarity] - rank[b.rarity] || b.tier - a.tier);
+  return (
+    <div className="absence-loot">
+      {sorted.slice(0, 4).map((l, i) => (
+        <div key={i} className={`absence-loot-card why-${l.why}`} style={{ '--rc': `var(--r-${l.rarity})` } as CSSProperties}>
+          <GearIcon slot={l.slot} family={l.family} tier={l.tier} rarity={l.rarity} size={48} />
+          <span className="absence-loot-text">
+            <span className="absence-loot-why">{WHY[l.why]}</span>
+            <strong>{l.name}</strong>
+            <span className="muted small">
+              {RARITY_NAMES[l.rarity]} · palier {l.tier} · {SLOT[l.slot] ?? l.slot} · {l.why === 'trophy' ? `trophée de ${l.where}` : l.where}
+            </span>
+            {(l.effect || l.set) && <span className="absence-loot-effect small">{l.effect ?? `Ensemble : ${l.set}`}</span>}
+          </span>
+        </div>
+      ))}
+      {sorted.length > 4 && <p className="muted small">Et {sorted.length - 4} autre{sorted.length > 5 ? 's' : ''} : dans le journal et le sac d’équipement.</p>}
+    </div>
+  );
+}
 
 /** S'ouvre seule au retour du joueur ; reste consultable depuis le journal. */
 export function AbsenceModal({ summary }: { summary: AdvanceSummary }) {
@@ -37,6 +69,7 @@ export function AbsenceModal({ summary }: { summary: AdvanceSummary }) {
     <Modal onClose={dismissAbsence}>
       <div className="eyebrow">Bon retour · absent {duration(summary.to - summary.from)}</div>
       <h2>Pendant votre absence</h2>
+      {summary.combat?.notable?.length ? <NotableList loot={summary.combat.notable} /> : null}
       <div className="stat-grid">
         {stats.map((s) => (
           <div className="stat" key={s.label}>

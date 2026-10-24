@@ -38,6 +38,8 @@ interface Line {
   count: number;
   /** Absence : son résumé à revoir. */
   data?: JournalEntry['data'];
+  /** Butin qui compte (trophée, nommé, ensemble, Épique, Légendaire) : la ligne ressort à la couleur de sa rareté. */
+  notable?: string;
 }
 
 const ICON = {
@@ -82,6 +84,16 @@ const TONE: Record<Tone, string> = {
   muted: 'var(--text-muted)',
 };
 const RARITY: Record<string, string> = { Commun: 'common', Rare: 'rare', Épique: 'epic', Légendaire: 'legendary' };
+
+/** Titres que le serveur donne au butin qui compte (game.ts, grantLoot). */
+const NOTABLE_TITLES = ['Trophée', 'Objet nommé', 'Ensemble'];
+/** La rareté d'un butin qui doit ressortir [Louis, 24 octobre : « j'ai failli le rater »], sinon rien. */
+function notableOf(title: string | null, text: string): string | undefined {
+  const r = /\((Commun|Rare|Épique|Légendaire), palier \d+\)/.exec(text)?.[1];
+  if (!r || !title) return undefined;
+  if (NOTABLE_TITLES.includes(title) || (title === 'Butin' && (r === 'Épique' || r === 'Légendaire'))) return RARITY[r];
+  return undefined;
+}
 
 /** « Vestiges : 9 Galets du puits. » → titre « Vestiges », texte « 9 Galets du puits. » (début court seulement). */
 function split(text: string): { title: string | null; text: string } {
@@ -181,7 +193,11 @@ export function JournalPanel() {
     return [...journal]
       .reverse()
       .filter((e) => tab === 'all' || (tab === 'combat' ? isCombat(e) : isCraft(e)))
-      .map((e): Line => ({ key: `j${e.id}`, at: e.at, ...KIND[e.kind], ...split(e.text), count: 1, ...(e.data ? { data: e.data } : {}) }));
+      .map((e): Line => {
+        const parts = split(e.text);
+        const notable = e.kind === 'combat' ? notableOf(parts.title, parts.text) : undefined;
+        return { key: `j${e.id}`, at: e.at, ...KIND[e.kind], ...(notable ? { tone: 'magic' as const, icon: ICON.chest } : {}), ...parts, count: 1, ...(e.data ? { data: e.data } : {}), ...(notable ? { notable } : {}) };
+      });
   }, [journal, tab, classNames]);
 
   const lines = merge(tab === 'clan' ? (clanLog ?? []) : tab === 'server' ? (feed ?? []) : mine);
@@ -306,7 +322,10 @@ export function JournalPanel() {
                   <span className="j-more">Revoir ›</span>
                 </button>
               ) : (
-                <div className={`j-line tone-${l.tone}`} style={{ '--tc': TONE[l.tone] } as CSSProperties}>
+                <div
+                  className={`j-line tone-${l.tone}${l.notable ? ' j-notable' : ''}`}
+                  style={{ '--tc': l.notable ? `var(--r-${l.notable})` : TONE[l.tone], ...(l.notable ? { '--rc': `var(--r-${l.notable})` } : {}) } as CSSProperties}
+                >
                   <JIcon tone={l.tone} d={l.icon} />
                   <span className="j-body">
                     {l.title && <strong>{l.title}</strong>} {rich(l.text)}

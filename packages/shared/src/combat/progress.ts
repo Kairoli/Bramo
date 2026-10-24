@@ -200,10 +200,28 @@ export interface CombatSummary {
   xp: Record<string, number>;
   levelUps: { classId: string; from: number; to: number }[];
   stopped: CombatState['stopped'];
-  /** Équipement tombé : modèles à créer dans le sac (le serveur tire leurs lignes). */
-  loot: { model: string; encounter: string }[];
+  /** Équipement tombé : modèles à créer dans le sac (le serveur tire leurs lignes) ; trophy = première victoire sur un gardien. */
+  loot: { model: string; encounter: string; trophy?: boolean }[];
   /** Vestiges tombés (déjà dans l'inventaire), par objet. */
   vestiges: Record<string, number>;
+  /** Le butin qui compte (rempli par le serveur, pour le résumé d'absence) : trophées, nommés, ensembles, Épiques, Légendaires. */
+  notable?: NotableLoot[];
+}
+
+/** Une trouvaille à montrer en tête du résumé d'absence [Louis, 24 octobre : « j'ai failli le rater »]. */
+export interface NotableLoot {
+  name: string;
+  rarity: Rarity;
+  tier: number;
+  slot: string;
+  family: string;
+  /** Pourquoi elle compte : trophée de gardien, objet nommé, pièce d'ensemble, ou sa rareté seule. */
+  why: 'trophy' | 'named' | 'set' | 'rarity';
+  /** Où elle est tombée (nom de la rencontre). */
+  where: string;
+  /** Talent d'un objet nommé, nom de l'ensemble. */
+  effect: string | null;
+  set: string | null;
 }
 
 export const emptyCombatSummary = (): CombatSummary => ({ fights: 0, wins: 0, losses: 0, xp: {}, levelUps: [], stopped: null, loot: [], vestiges: {} });
@@ -539,11 +557,11 @@ function guardianTrophy(state: CharacterState, f: FightRecord, content: Content,
   if (sets.length) {
     const set = sets[Math.floor(rand() * sets.length)]!;
     const models = idx.sets.get(`${set}|${tier}|epic|${cls}`)!;
-    summary.loot.push({ model: models[Math.floor(rand() * models.length)]!, encounter: e.id });
+    summary.loot.push({ model: models[Math.floor(rand() * models.length)]!, encounter: e.id, trophy: true });
     return;
   }
   const named = (e.loot.named ?? []).map((n) => (idx.named.get(n) ?? []).find((m) => m.tier <= tier)).filter((m): m is { id: string; tier: number } => !!m);
-  if (named.length) summary.loot.push({ model: named[Math.floor(rand() * named.length)]!.id, encounter: e.id });
+  if (named.length) summary.loot.push({ model: named[Math.floor(rand() * named.length)]!.id, encounter: e.id, trophy: true });
 }
 
 function gainXp(state: CharacterState, classId: string, xp: number, content: Content, summary: CombatSummary) {

@@ -56,6 +56,7 @@ function GearTipContent({ g }: { g: GearItemView }) {
         color={rarityColor(g.rarity)}
       />
       <div className="tip-body">
+        <div className="tip-section">Attributs de base · fixes</div>
         {g.stats.map((s) => (
           <TipLine key={s.stat} mark="▸">
             <strong>
@@ -64,11 +65,21 @@ function GearTipContent({ g }: { g: GearItemView }) {
             <span className="muted">{STATS[s.stat]?.hint}</span>
           </TipLine>
         ))}
+        {g.lines.length > 0 && <div className="tip-section rolled">Attributs · tirés au hasard</div>}
         {g.lines.map((l, i) => (
-          <TipLine key={i} color="var(--good)" mark="+">
+          <TipLine key={i} color="#9fd2ff" mark="+">
             {Math.round(l.value * 10) / 10} % {l.name}
+            {l.bonus ? <span className="muted"> · chef-d’œuvre</span> : l.max > l.min ? <span className="muted"> {l.value >= l.max - 1e-9 ? '· max' : `· max ${Math.round(l.max * 10) / 10} %`}</span> : null}
           </TipLine>
         ))}
+        {g.named && g.conditional && (
+          <>
+            <div className="tip-section talent">Talent</div>
+            <TipLine color="var(--r-legendary)" mark="★">
+              {g.conditional}
+            </TipLine>
+          </>
+        )}
         {g.set && (
           <TipLine color="var(--clan)" mark="◆">
             Ensemble : {content.gearSets[g.set]?.name ?? g.set}

@@ -166,3 +166,50 @@ voulus), or des recherches et des reliques × 2, or de la lanterne × 3 (le plus
 un joueur qui optimise garde moins d'or de côté et en met plus dans ses systèmes ; le rapport donne aussi ce qu'ajoutent les
 systèmes, en paliers (« dont systèmes »). **À faire** : relancer `pnpm --filter @bramo/sim exec tsx src/server/run.ts 120 90 real 11 v3-puissance`
 (~21 min) et vérifier : systèmes ~1,5 palier à trois mois, route du casu proche de 150, tryhard devant.
+
+### Remesuré après le recalage (audit des systèmes, 24 octobre, nuit)
+
+Même commande, même graine (11), données du commit `990d15b`, deux fois : avec le cache du simulateur d'avant
+(`sim/reports/serveur/v3-puissance.md`) et avec le cache précis (`CACHE_PARTS=4`, `v3-puissance-fin.md`). L'audit a trouvé que
+l'ancien cache arrondissait au centième les petites statistiques de la Puissance (régénération 0,27 %/s → 0) et faisait perdre
+des combats au mur (`sim/reports/audit/verifier.md` §2) ; la mesure qui compte est la seconde. Comparaison :
+`pnpm --filter @bramo/sim exec tsx src/audit/comparer-puissance.ts <rapport.json>…`.
+
+**Ce qu'ajoutent les systèmes** (« dont systèmes » : paliers de Force, ×1,9 chacun ; médiane par façon de jouer) :
+
+| | jour 30 | jour 60 | jour 89 |
+|---|---|---|---|
+| Cache précis : de… à… selon la façon de jouer | +0,3 à +0,9 | +0,7 à +1,2 | +0,7 à +1,7 |
+| Casu tranquille | +0,6 | +0,9 | +1,0 |
+| Tryhard méta | +0,9 | +1,2 | +1,3 |
+| Cache d'avant (casu / tryhard) | +0,6 / +0,7 | +0,9 / +0,9 | +1,1 / +1,2 |
+
+**La route au 89e jour** (étape médiane) :
+
+| | Avant le recalage | Après, cache d'avant | **Après, cache précis** |
+|---|---|---|---|
+| Casu tranquille | 170,5 | 156,5 | **158** |
+| Tryhard méta | 171 | 171,5 | **173** |
+| Casu qui suit les guides | 179 | 179 | 179 |
+| Combattant avant tout | 184,5 | 167,5 | 174 |
+
+Jours pour atteindre l'étape 120 / 150 (cache précis) : casu 38,5 / 59,5 j (61 % y arrivent), tryhard 24,5 / 51 j (100 %),
+soit un tryhard **1,2 à 1,6 fois** plus rapide que le casu (avant le recalage : 1,2 à 1,4).
+
+**L'or** (cache précis) : 23,9 M créés, 21,3 M détruits sur 90 jours (créé / détruit 1,12 ; **0,9 sur les 30 derniers
+jours** : plus d'or détruit que créé en fin de période) ; 10,8 M mis dans les systèmes, le premier puits du jeu (bâtiments de
+clan 6,7 M). Avec le cache d'avant : 1,17 sur 90 jours, 1,2 sur les 30 derniers, 10,2 M dans les systèmes.
+
+**Verdict sur les trois buts** :
+
+- **Route du casu proche de 150** : atteint (158, contre 170,5 avant le recalage).
+- **Tryhard devant** : atteint (173 contre 158), mais il ne va que 1,2 à 1,6 fois plus vite que le casu, sous le « 2 à 2,5 »
+  du principe n° 2 de `CLAUDE.md`. À instruire dans l'audit (phase 5) : le ratio dépend aussi du butin et du marché, pas
+  seulement de la Puissance.
+- **Systèmes ~1,5 palier à trois mois** : un peu en dessous, +1,0 (casu) à +1,3 (tryhard) au 89e jour, +1,7 au plus. Ces
+  paliers sont ceux de la Force ; `tempo/force.ts` avait trouvé la Force optimiste d'environ 0,4 palier sur le vrai mur.
+
+**Prudence** : une seule graine. Les deux simulations ne diffèrent que par la précision du cache, et pourtant certaines
+médianes bougent de 8 à 14 étapes au 30e jour (tryhard 129,5 / 143,5) : c'est l'ordre de grandeur du bruit d'une simulation
+seule. Les conclusions ci-dessus tiennent dans les deux ; un écart plus fin demanderait plusieurs graines (prévu en phase 5
+de l'audit).

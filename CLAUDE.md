@@ -52,6 +52,24 @@ Bramo est un **idle-RPG multijoueur jouable dans le navigateur**, dans l'esprit 
 - Tout nombre affiché au joueur vient du serveur (le client peut seulement interpoler pour l'animation).
 - Fins de ligne LF (`.gitattributes`).
 
+### Travail en sessions (depuis le 24 octobre 2026)
+
+Louis parle du jeu dans une conversation **superviseur**, qui lance les chantiers dans des sessions séparées et les suit. Règles
+pour chaque session :
+
+- **Ce fichier est la seule source de vérité partagée.** Le lire en entier avant de commencer ; à la fin, mettre à jour la
+  section « État » (un bloc « Fait — … » daté) et « À faire ». Un fait qui n'est écrit ni ici ni dans `docs/` n'existe pas pour
+  les autres sessions.
+- **Une session = un chantier = sa propre copie** (worktree et branche). Ne toucher qu'aux fichiers de son chantier ; ce qui en
+  sort doit être signalé dans son compte rendu. Le superviseur fusionne dans `main` après vérification.
+- **Jamais `apps/server/.pglite/`** : chaque session lance son serveur avec son propre `PORT` et son propre `PGLITE_DIR`
+  (voir §11).
+- **Ne pas changer le jeu sans la demande de Louis** (données d'équilibrage, règles, combat) : une session d'étude ou d'audit
+  écrit des rapports, des outils et des propositions (`sim/proposals/`), pas dans `data/`.
+- Les longues simulations tournent en arrière-plan ; leurs rapports vont dans `sim/reports/`, avec la commande et la graine
+  pour les refaire.
+- Compte rendu de fin : ce qui est fait et vérifié, ce qui ne l'est pas, la branche, les questions pour Louis.
+
 ---
 
 ## 5. État du projet (à jour au 24 octobre 2026)
